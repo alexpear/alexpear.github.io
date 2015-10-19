@@ -156,5 +156,39 @@ Node
   Intelligence
    HumanMind
 
+sketch of some nodes
+human character. location size weight actions components contents (stomach)
+jewelry box. location size weight components contents
+ghost. location size weight==0? actions components? contents?
+planetary orbit. location size contents/components
+trait: phobia. parent components?
+secret society. components possessions (+ rules traditions etc)
+planet. location size weight components and whatever you call sub-locations
+Eclipse Phase ego.
+  location (unless cloud) parent filesize actions
+  components? contents (ie secrets) shell
+office: presidency. parent? president-of-what pointer, holder
+xenoexpedition oversight committee. larger organisation, members, subordinate bodies (rules)
+
+(.size fields are 1-dimensional in style of D&D sizes.
+Stored in SI length units with 1 sig fig.)
+alternately i could have .size be in Liters, but similarly not specify dimensions.
+
+attempt at standardization:
+Organization: .obeys, .components/.parts, .parent/.superOrg/.whole, .controls/.subordinates
+Location: .location, .parts, .size
+Informational: .location/.container, .filesize, .parts
+Corporeal: .location, .size, .weight, .parts, .contents?, .whole
+Intelligence: .container, .filesize, .parts, .motives
+Trait: .whole, .parts?
+Spaceship: .location, .parts, .contents, .size, .weight
+Durasteel: (sentinel, just material stats)
+  (or course, many things are sentinels ie popular pointer recipients)
+  perhaps a .weight per 'meter' of size
+Unknown: (sentinel, displayed in place of what's really there but not visible)
+Ungenerated: (sentinel)
+
+todo: sketch an inheritance hierarchy that captures these overlapping sets
+.parts and .whole seem very common
 
 '''
