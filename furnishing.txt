@@ -1,0 +1,21 @@
+9 chair
+9 armchair
+9 bed
+9 four-poster
+9 tapestry
+9 painting
+9 portrait
+9 rug
+9 persian rug
+9 mirror
+9 sink
+9 drain
+9 faucet
+9 table
+9 glass table
+9 footstool
+9 stool
+9 ottoman
+9 loveseat
+9 bookshelf
+

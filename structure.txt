@@ -1,0 +1,16 @@
+world
+3 to 5 floor
+
+floor
+1 to 8 room
+
+room
+0 to 3 container
+0 to 3 furnishing
+0 to 1 creature
+
+container
+0 to 3 item
+
+creature
+0 to 1 item

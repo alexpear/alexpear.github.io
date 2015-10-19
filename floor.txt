@@ -1,0 +1,11 @@
+9 hospital
+9 dormitory
+9 warehouse
+9 factory
+9 mansion
+9 piscine
+9 ruins
+9 storage
+9 tunnels
+9 snowbound wastes
+9 windblown halls

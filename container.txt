@@ -1,0 +1,10 @@
+9 cabinet
+9 chest of drawers
+9 vanity
+9 cupboard
+9 chest
+9 carven box
+9 fireplace
+9 hidden panel
+9 loose floorboard
+9 discarded sack

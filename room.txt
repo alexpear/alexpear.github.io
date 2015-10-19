@@ -1,0 +1,9 @@
+9 sitting-room
+9 drawing room
+9 bedroom
+9 hall
+9 hallway
+9 grand hall
+9 dining room
+9 kitchen
+9 closet
