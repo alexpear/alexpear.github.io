@@ -172,11 +172,68 @@ xenoexpedition oversight committee. larger organisation, members, subordinate bo
 
 (.size fields are 1-dimensional in style of D&D sizes.
 Stored in SI length units with 1 sig fig.)
-alternately i could have .size be in Liters, but similarly not specify dimensions.
+alternately i could have .size be in Liters, but similarly not specify dimensions
+(ie not specify whether skinny, squat, boxy, etc).
+i could even do a conversion when displaying:
+1L == 10cm
+1000L == 1m
+or perhaps display higher numbers since it's the length of the /longest/
+dimension and most objects will be skinnier than boxes.
+
+there's more than one way to order nodes when talking about groups of corporeal and
+noncorporeal objects.
+Fleet
+ Squad
+  Sailor x20
+  Submarine
+vs
+Fleet
+ Submarine
+  Sailor x20
+vs
+Fleet
+ Squad
+  Submarine
+   Sailor x20
+or even link it both ways:
+squad.parts == [submarine, sailors x20] etc
+submarine.contents == [sailors x20]
+
+side note: i guess i could mark duplication like this
+Multiple
+ Sailor
+where multiple.parts == [sailor] and multiple.quantity == 100, etc.
+
+ie, are the Sailors in the .contents of the Submarine?
+is it the physical metal object? or the admiral's concept of a submarine + crew?
+better example:
+StarSystem
+ Star
+ Planet
+  Orbit
+  Surface
+   2DRegion
+vs
+StarSystem
+ Star
+ Orbit
+  Planet
+   2DRegion
+
+i like the latter. a Node should refer to the physical object,
+not the invisible stuff associated with it.
+
+how about software? or minds.
+perhaps the computer (if all in one place) has the software in .contents
+Corporeal
+ Human
+  Mind in .contents
+
+further complications to worry about later: where to put items a human is carrying?
 
 attempt at standardization:
 Organization: .obeys, .components/.parts, .parent/.superOrg/.whole, .controls/.subordinates
-Location: .location, .parts, .size
+Location: .location, .parts, .size .contents
 Informational: .location/.container, .filesize, .parts
 Corporeal: .location, .size, .weight, .parts, .contents?, .whole
 Intelligence: .container, .filesize, .parts, .motives
@@ -190,5 +247,30 @@ Ungenerated: (sentinel)
 
 todo: sketch an inheritance hierarchy that captures these overlapping sets
 .parts and .whole seem very common
+Trait, Material, Ungenerated, and Unknown are pretty minimal
+.obeys and .controls might be useful for Organization and Actors
+.motives also.
+.size is for Location and Corporeal
+.weight is for Corporeal
+.location is for Location and Corporeal,
+  altho it could maybe be replaced with .container? or a rewording of that?
+.filesize is just for Informationals and things that will be stored as data.
+
+rewording sketching
+.parts and .partOf
+.contents and .insideOf
+
+attempt:
+Node .whole .parts
+ ungenerated sentinel (instance)
+ unknown sentinel (instance)
+ Trait
+ Located .insideOf .contents
+  Voluminous .size
+   (Location)
+  Corporeal .weight
+   multiple inheritance: (Spaceship, Body, Jetpack, CelestialBody?)
+
+actually, Corporeal and Voluminous dont have to inherit from Located.
 
 '''
