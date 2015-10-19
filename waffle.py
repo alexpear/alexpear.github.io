@@ -273,4 +273,84 @@ Node .whole .parts
 
 actually, Corporeal and Voluminous dont have to inherit from Located.
 
+There are some more notes in my screen/tablet, and in my orange notebook.
+
+what wolfram language does is make all names explicit.
+i guess i have a set of candidate edge types, and
+i have to decide which ones to include.
+
+linear stats
+ .size
+ .weight
+ .filesize
+
+edges/links
+ .parts & .partOf
+ .contents and .insideOf
+ .location, if different from .insideOf
+ .obeys and .controls
+ .subOrganization and .superOrganization, if different from .parts and .partOf
+ .members, if different from .parts
+ .motives
+
+alpha sector
+tau ceti system
+cislunar system of Tau Ceti III
+ |
+ v
+orbit of Tau Ceti III's 2nd moon
+ |
+ | .insideOf
+ v           .insideOf         .insideOf
+a dreadnought -> dropship in hold -> power armor warriors in dropship
+ ^
+ | .memberOf?
+ |
+36th Fleet
+ ^
+ |
+Her Majesty's Navy
+
+well, for purposes of a game / IF ...
+for space battles world, need to know:
+ commandable units in faction as tree
+ location of each unit
+  including which are inside which vehicles
+ tree or other system of Locations
+ possibly which parts spaceships and mecha are built from.
+
+well, i'm in this spaceship pointer sounds very similar to
+i'm on this planet/continent pointer.
+call it .insideOf or .location
+maybe .location and .contents
+
+okay, so that's the physical tree. do i also have an organizational tree?
+
+types
+ commandable unit
+ location
+ physical unit?
+
+alt
+ location
+ locationless organizational unit
+ located organizational unit
+  'models' aka Human, vehicle, etc
+   components, equipment, parts
+
+technically, no org has a location, even tho a squad might in practise.
+if this is a little more narrativist and less simulationist,
+then we can assume that squads are never split up
+(we count those that split as casualties).
+basically each squad has a location and you can move them around
+(space battles simple game/prototype)
+you can also give an order to an organizational unit higher up
+on the tree and then all squads under that will move there.
+or rather all physical / top-level 'models' will move.
+ie spaceships, transports, vehicles, whatever is 'in the open'.
+so ... what if you didnt track organization units, and just considered squads
+to be unitary? and you give commands like 'all my units in this region' or
+'all my infantry in this region'.
+
+
 '''
