@@ -351,6 +351,9 @@ ie spaceships, transports, vehicles, whatever is 'in the open'.
 so ... what if you didnt track organization units, and just considered squads
 to be unitary? and you give commands like 'all my units in this region' or
 'all my infantry in this region'.
+or ... org units have a .location, but it's set to None when they split up. 
+or if the squads of the org are on two separate continents, it's ambiguated?
+set to point to the planet?
 
 
 '''
