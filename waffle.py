@@ -121,4 +121,40 @@ self.world = Region('Our lightless world')
 loop:
 .world.components.append(Floor())
 and Floor() creates its own child nodes
+
+Node (or Entity?)
+ Location
+  Floor
+  Room
+ Located (altho technically Locations are also 'Located')
+  InanimateObject
+  Actor
+   Humanoid
+   Monster
+
+playing around with some other ideas
+space opera
+Node
+ Location
+  SpaceRegion
+   StarSystem
+   Orbit
+  CelestialBody
+   Star
+   Planet
+    (technically both Location and Corporeal;
+    possibly relevant when talking about
+    Death Star planetbusters...)
+ Corporeal
+  Structure
+   SpaceShip
+   Building
+   Megastructure
+  Organism
+   Human
+ Informational
+  Intelligence
+   HumanMind
+
+
 '''
