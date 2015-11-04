@@ -85,19 +85,34 @@ class Output:
     self.fillSquareBrackets(random.choice([0,1]))
 
 
-class Node:
-  def __init__(self, name, typeName='entity'):
+class Entity:
+  def __init__(self, name='nameless entity', typeName='entity', parent=None):
     self.name = name
     self.typeName = typeName
-    self.components = []
+    self.in = parent
     self.contents = []
+
+class Region(Entity):
+  def __init__(self, name='amorphous region'):
+    super(Region, self).__init__(name, 'region')
+
+class PhysicalObject(Entity):
+  def __init__(self, name='unnamed object'):
+    super(PhysicalObject, self).__init__(name, 'physicalobject')
+    # self.weight =   # weight might not be needed; size carries most of it
+    # self.size =
+
+class Creature(PhysicalObject):
+  def __init__(self, name='unnamed creature'):
+    super(Creature, self).__init__(name, 'creature')
+    # self.mind =
+    # self.body =
 
 
 class WorldState:
   def __init__(self):
-    # self.root = Region('Our lightless world')
-    # for num in range(4):
-    #  self.world.components.append(Floor())
+    self.root = Region('Known Space')
+    # self.root.contents.append()
     pass
 
 
