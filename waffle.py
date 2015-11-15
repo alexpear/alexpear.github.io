@@ -111,7 +111,7 @@ class Creature(PhysicalObject):
 
 class WorldState:
   def __init__(self):
-    self.root = Region('Known Space')
+    self.root = InfiniteInteriorRegion('')
     # self.root.contents.append()
     pass
 
@@ -123,6 +123,20 @@ class Universe:
 
 '''
 notes
+
+downstairs (and Underdark)
+InfiniteInteriorRegion
+.getFloor() (infinite in both directions)
+  2dRegion
+  .at(x,y)
+    returns Contents, custom object describing various Entitys
+    .room pointer
+      Room, which stores traits and neighbors of a room, which may be multiple squares in size.
+      .coords list of coords, perhaps
+      .contents list of Things. (could be accessed via .coords instead of storing directly)
+      .neighbors list of Rooms, perhaps
+    .things list
+
 
 newWorld = WorldState()
 nextState = WorldState(oldState)
