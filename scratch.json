@@ -1,0 +1,43 @@
+{
+	"setting": {
+		"universe": {
+			"name": "the World Under the Sun",
+			"shape": "flat",
+			"groups": [
+				{
+					"name": "Azur Imperium",
+					"type": "group",
+					"subtype": "faction",
+					"parts": []
+				}
+			],
+			"parts": [
+				{
+					"type": "region",
+					"subtype": "3d",
+					"name": "the Heavens",
+					"parts": []
+				},
+				{
+					"type": "region",
+					"subtype": "3d",
+					"name": "the Surface",
+					"parts": [
+						{
+							"type": "region",
+							"subtype": "land",
+							"name": "the Bowl",
+							"terrain": "grassland"
+						}
+					]
+				},
+				{
+					"type": "region",
+					"subtype": "3d",
+					"name": "the Underworld",
+					"parts": []
+				}
+			]
+		}
+	}
+}
