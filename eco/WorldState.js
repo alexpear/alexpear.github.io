@@ -30,6 +30,13 @@ module.exports = class WorldState {
         return grid;
     }
 
+    at (coord) {
+        // Runspeed is not currently a priority.
+        return this.entities.find(function (entity) {
+            return entity.coord.equals(coord);
+        });
+    }
+
     step () {
         // Not yet implemented.
     }
