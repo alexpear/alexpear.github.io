@@ -31,7 +31,7 @@ module.exports = class WorldState {
             grid.push([]);
 
             for (var ci = 0; ci < colCount; ci++) {
-                grid[ri].push(new Region());
+                grid[ri].push(null);  // TODO: Is there a better way?
             }
         }
 
