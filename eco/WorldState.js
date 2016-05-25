@@ -4,9 +4,13 @@ var Region = require('./Region.js');
 var Util = require('./Util.js');
 
 module.exports = class WorldState {
-    constructor () {
+    constructor (rows, cols) {
         this.entities = [];
-        this.space = this.makeGrid();
+
+        // I'm not sure about the 2d array idea.
+        this.space = this.makeGrid(rows, cols);
+        this.rowCount = rows;
+        this.colCount = cols;
         this.stepCount = 0;
     }
 
