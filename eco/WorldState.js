@@ -38,6 +38,16 @@ module.exports = class WorldState {
         return grid;
     }
 
+    // TODO: Could cache this
+    asGrid () {
+        var grid = this.makeGrid();
+        this.entities.forEach(function(entity) {
+            grid[entity.coord.r][entity.coord.c] = entity;
+        });
+
+        return grid;
+    }
+
     at (coord) {
         // Runspeed is not currently a priority.
         return this.entities.find(function (entity) {
@@ -50,18 +60,11 @@ module.exports = class WorldState {
     }
 
     textImage () {
-        // Not yet implemented.
-        return JSON.stringify(this.space);
-
-        for (var r = 0; r < this.rowCount; r++) {
-            for (var c = 0; c < this.colCount; c++) {
-                // var TODO
-            }
-        }
-
-        return this.space.map(function (row) {
-            return row.map(function (region) {
-                // return
+        // Candidate alg: function to assemble a 2d array representation
+        // of the world, then render that in ascii.
+        return this.asGrid().map(function (row) {
+            return row.map(function (square) {
+                return square ? square.sprite : '.';
             }).join(' ');
         }).join('\n');
     }
