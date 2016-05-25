@@ -12,14 +12,14 @@ module.exports = class WorldState {
 
         // I'm not sure about the 2d array idea.
         this.space = this.makeGrid(rows, cols);
-        this.rowCount = rows;
-        this.colCount = cols;
+        this.rowCount = rows || Util.DEFAULTS.ROWCOUNT;
+        this.colCount = cols || Util.DEFAULTS.COLCOUNT;
         this.stepCount = 0;
     }
 
     makeGrid (rowCount, colCount) {
-        rowCount = rowCount || Util.DEFAULTS.ROWCOUNT;
-        colCount = colCount || Util.DEFAULTS.COLCOUNT;
+        rowCount = rowCount || this.rowCount;
+        colCount = colCount || this.colCount;
 
         var grid = [];
         for (var ri = 0; ri < rowCount; ri++) {
