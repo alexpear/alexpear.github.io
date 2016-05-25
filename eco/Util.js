@@ -1,8 +1,8 @@
 'use strict';
 
 var DEFAULTS = exports.DEFAULTS = {
-    ROWCOUNT: 50,
-    COLCOUNT: 50
+    ROWCOUNT: 12,
+    COLCOUNT: 12
 };
 
 var NODE_TYPES = exports.NODE_TYPES = {
