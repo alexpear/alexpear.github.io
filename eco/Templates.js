@@ -1,6 +1,6 @@
 'use strict';
 
-var Templates = exports.Templates = {
+module.exports = {
     infantry: {
         size: 1,
         moveInterval: 12,
