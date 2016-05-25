@@ -13,7 +13,5 @@ var sim = new Simulation();
 sim.worldState.debugSetup();
 sim.worldState.diagnostic();
 console.log(sim.worldState.textImage());
-// console.log(JSON.stringify(WorldState));
-console.log(JSON.stringify(sim.worldState));
 
 console.log('completed');
