@@ -44,5 +44,35 @@ module.exports = class WorldState {
     textImage () {
         // Not yet implemented.
         return JSON.stringify(this.space);
+
+        for (var r = 0; r < this.rowCount; r++) {
+            for (var c = 0; c < this.colCount; c++) {
+                // var TODO
+            }
+        }
+
+        return this.space.map(function (row) {
+            return row.map(function (region) {
+                // return
+            }).join(' ');
+        }).join('\n');
+    }
+
+    diagnostic () {
+        for (var i = 0; i < this.entities.length; i++) {
+            var entityOne = this.entities[i];
+            // Check entity is in bounds
+            if (! entityOne.coord.isInBounds(this.rowCount, this.colCount)) {
+                console.log('error: entity ' + entityOne.sprite + ' is out of bounds');
+            }
+
+            // Look for pairs of Entities that are in the same space
+            for (var j = i+1; j < this.entities.length; j++) {
+                var entityTwo = this.entities[j];
+                if (entityOne.coord.equals(entityTwo.coord)) {
+                    console.log('error: multiple entities are both occupying ' + entityOne.coord.toString());
+                }
+            }
+        }
     }
 };
