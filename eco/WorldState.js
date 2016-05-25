@@ -17,6 +17,11 @@ module.exports = class WorldState {
         this.stepCount = 0;
     }
 
+    debugSetup () {
+        this.entities.push(new Entity(Templates.evangelion, new Coord(4,6)));
+    }
+
+    // Probably deprecated.
     makeGrid (rowCount, colCount) {
         rowCount = rowCount || this.rowCount;
         colCount = colCount || this.colCount;
