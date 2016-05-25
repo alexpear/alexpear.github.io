@@ -7,7 +7,7 @@ var Util = require('./Util.js');
 
 module.exports = class Region {
 	constructor () {
-		this.type = NODE_TYPES.region;
-
+		this.type = Util.NODE_TYPES.region;
+		this.terrain = 'meadow';
 	}
 };
