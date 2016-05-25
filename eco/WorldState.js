@@ -1,6 +1,9 @@
 'use strict';
 
+var Coord = require('./Coord.js');
+var Entity = require('./Entity.js');
 var Region = require('./Region.js');
+var Templates = require('./Templates.js');
 var Util = require('./Util.js');
 
 module.exports = class WorldState {
