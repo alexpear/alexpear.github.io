@@ -1,0 +1,20 @@
+some notes for eco waffle
+
+step() implemented by iterating over .entities array
+draw() implemented by iterating over ...
+  - coordinates?
+  - is there a Region stored for each coordinate?
+
+allow multiple Entities per location?
+i dont think so... 
+
+how to deal with unit templates?
+
+this.create('air', spawnPoint);
+this.create(Templates.air);
+if (entity.type === Templates.air)
+
+
+
+
+
