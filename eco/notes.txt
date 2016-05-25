@@ -14,7 +14,16 @@ this.create('air', spawnPoint);
 this.create(Templates.air);
 if (entity.type === Templates.air)
 
-
+MRB
+- create()
+- debug func sets up a variety of entities
+- step() basics
+- runnable loop
+- movement
+- random movement
+- momentum/direction vector
+- combat / interaction rules alg
+- implement combat basics
 
 
 
