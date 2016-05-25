@@ -26,4 +26,12 @@ module.exports = class WorldState {
         return grid;
     }
 
+    step () {
+        // Not yet implemented.
+    }
+
+    textImage () {
+        // Not yet implemented.
+        return JSON.stringify(this.space);
+    }
 };
