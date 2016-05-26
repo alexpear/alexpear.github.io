@@ -1,9 +1,10 @@
 'use strict';
 
+var Factions = require('./Factions.js');
 var Templates = require('./Templates.js');
 
 module.exports = class Entity {
-    constructor (template, coord) {
+    constructor (template, faction, coord) {
         template = template || Templates.infantry;
 
         this.type = template.name;  // TODO standardize field name
@@ -11,5 +12,6 @@ module.exports = class Entity {
         this.coord = coord || new Coord();
         this.sprite = template.sprite;
         this.stepsTillMove = template.moveInterval - 1;
+        this.faction = faction || Factions.gaia;
     }
 };
