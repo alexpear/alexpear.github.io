@@ -55,6 +55,10 @@ module.exports = class WorldState {
         });
     }
 
+    create (template, faction, coord) {
+      return new Entity(template || Templates.infantry, faction, coord);
+    }
+
     step () {
         // Not yet implemented.
     }
