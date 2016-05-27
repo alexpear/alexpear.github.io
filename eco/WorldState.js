@@ -2,6 +2,7 @@
 
 var Coord = require('./Coord.js');
 var Entity = require('./Entity.js');
+var Factions = require('./Factions.js');
 var Region = require('./Region.js');
 var Templates = require('./Templates.js');
 var Util = require('./Util.js');
