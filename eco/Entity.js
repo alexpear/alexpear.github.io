@@ -15,4 +15,20 @@ module.exports = class Entity {
         this.stepsTillMove = template.moveInterval - 1;
         this.faction = faction || Factions.gaia;
     }
+
+    step () {
+        if (this.stepsTillMove > 0) {
+            this.stepsTillMove--;
+        } else {
+            var action = this.chooseAction();
+        }
+    }
+
+    chooseAction () {
+        return Actions.randomMove;
+    }
+
+    move (relativeCoord) {
+
+    }
 };
