@@ -42,6 +42,19 @@ module.exports = class Coord {
         return '[' + this.r + ',' + this.c + ']';
     }
 
+    static random (rCount, cCount) {
+        if (!rCount || !cCount) {
+            console.log('error: Coord.random() called with no arguments');
+            return new Coord(-1,-1);
+            // TODO throw exception, make supervisor reboot, et cetera.
+        }
+
+        return new Coord(
+            Util.randomUpTo(rCount-1),
+            Util.randomUpTo(cCount-1)
+        );
+    }
+
     static get relatives () {
         return [
             new Coord(-1,-1), new Coord(-1,0), new Coord(-1,1),
@@ -50,9 +63,16 @@ module.exports = class Coord {
         ];
     }
 
-    static randomAdjacent () {
-        return this.relatives[ Math.floor(Math.random() * this.relatives.length) ]
-            .plus(this);
+    static randomDirection () {
+        return Util.randomOf(coord.relatives);
+    }
+
+    randomAdjacent () {
+        do {
+            var candidateNeighbor = Coord.randomDirection().plus(this);
+        } while (! candidateNeighbor.isInBounds());
+
+        return candidateNeighbor;
     }
 };
 

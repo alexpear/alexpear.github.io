@@ -96,4 +96,13 @@ module.exports = class WorldState {
             }
         }
     }
+
+    // TODO check if all coords are occupied, to avoid infinite loop.
+    randomEmptyCoord () {
+        do {
+            var coord = Coord.random();
+        } while (!! this.at(coord));
+
+        return coord;
+    }
 };
