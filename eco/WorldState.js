@@ -59,7 +59,8 @@ module.exports = class WorldState {
     }
 
     create (template, faction, coord) {
-      return new Entity(template || Templates.infantry, faction, coord);
+      var newEntity = new Entity(template || Templates.infantry, faction, coord);
+      this.entities.push(newEntity);
     }
 
     step () {
