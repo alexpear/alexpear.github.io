@@ -1,11 +1,13 @@
 'use strict';
 
-var DEFAULTS = exports.DEFAULTS = {
+var Util = module.exports;
+
+Util.DEFAULTS = {
     ROWCOUNT: 12,
     COLCOUNT: 12
 };
 
-var NODE_TYPES = exports.NODE_TYPES = {
+Util.NODE_TYPES = {
     region: 'region',
     location: 'location'  // deprecated
 };

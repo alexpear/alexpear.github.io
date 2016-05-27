@@ -1,5 +1,7 @@
 'use strict';
 
+var Util = require('./Util.js');
+
 module.exports = class Coord {
     constructor (r,c) {
         this.r = r || -1;
