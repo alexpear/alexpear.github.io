@@ -1,15 +1,15 @@
 'use strict';
 
 exports.model = {
-  'gaia': {
+  gaia: {
       name: 'Gaia',
       color: '32'
   },
-  'empire': {
+  empire: {
       name: 'Empire',
       color: '33'
   },
-  'rebels': {
+  rebels: {
       name: 'Rebels',
       color: '34'
   }
