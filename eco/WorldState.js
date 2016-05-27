@@ -18,7 +18,9 @@ module.exports = class WorldState {
     }
 
     debugSetup () {
-        this.entities.push(new Entity(Templates.evangelion, new Coord(4,6)));
+        this.create(Templates.evangelion, Factions.empire, new Coord(4,6));
+        this.create(Templates.air, Factions.rebels, new Coord(8,6));
+        this.create(Templates.air, Factions.rebels, new Coord(9,9));
     }
 
     // Probably deprecated.
