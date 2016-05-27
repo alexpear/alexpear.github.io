@@ -1,5 +1,6 @@
 'use strict';
 
+var Actions = require('./Actions.js');
 var Factions = require('./Factions.js');
 var Templates = require('./Templates.js');
 
