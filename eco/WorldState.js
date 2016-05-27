@@ -64,7 +64,9 @@ module.exports = class WorldState {
     }
 
     step () {
-        // Not yet implemented.
+        this.entities.forEach(function (entity) {
+            entity.step();
+        });
     }
 
     textImage () {
