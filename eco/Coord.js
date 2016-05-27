@@ -41,4 +41,19 @@ module.exports = class Coord {
     toString () {
         return '[' + this.r + ',' + this.c + ']';
     }
+
+    static get relatives () {
+        return [
+            new Coord(-1,-1), new Coord(-1,0), new Coord(-1,1),
+            new Coord( 0,-1),                  new Coord( 0,1),
+            new Coord( 1,-1), new Coord( 1,0), new Coord( 1,1)
+        ];
+    }
+
+    static randomAdjacent () {
+        return this.relatives[ Math.floor(Math.random() * this.relatives.length) ]
+            .plus(this);
+    }
 };
+
+// Coord.ne = new Coord(-1, 1);
