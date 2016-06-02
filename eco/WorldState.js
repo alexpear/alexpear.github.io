@@ -69,6 +69,8 @@ module.exports = class WorldState {
         });
     }
 
+    // move (entity, destination)
+
     textImage () {
         // Candidate alg: function to assemble a 2d array representation
         // of the world, then render that in ascii.

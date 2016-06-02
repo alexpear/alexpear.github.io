@@ -28,7 +28,16 @@ module.exports = class Entity {
         return Actions.randomMove;
     }
 
+    // move this function to Gamestate?
     move (relativeCoord) {
+        if (2 <= relativeCoord.magnitude()) {
+            console.log('error: move() called with oversized relative coord.');
+            return;
+        }
 
+        var destination = this.coord.plus(relativeCoord);
+        if (! destination.isInBounds()) {
+
+        }
     }
 };
