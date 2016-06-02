@@ -35,6 +35,17 @@ module.exports = class Coord {
         );
     }
 
+    magnitude () {
+        return distanceTo(new Coord(0,0));
+    }
+
+    isAdjacentTo (other) {
+        var distance = this.distanceTo(other);
+
+        // ODDITY: i made the bounds approximate for some reason.
+        return 0.9 < distance && distance < 1.5;
+    }
+
     isInBounds (rowCount, colCount) {
         return 0 <= this.r && this.r < rowCount
             && 0 <= this.c && this.c < colCount;
