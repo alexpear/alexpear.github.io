@@ -14,6 +14,31 @@ this.create('air', spawnPoint);
 this.create(Templates.air);
 if (entity.type === Templates.air)
 
+opts for moving entities
+- circular dependency
+  - Worldstate <- Entity -> Worldstate
+  - pass in pointer? new Entity(this)?
+  - Entity has .worldstate field
+  - require ./Worldstate.js at end of Entity.js
+  - hm. Is entity.worldState needed for anything else?
+    - collision detection probably...
+- move() is in Worldstate
+  - and then where is the decide what to do function?
+    - this.entities[0].mind?
+    - the Mind needs to read about the Entity state and about the positions of other Entities
+    - is a Mind just functions? like the decisions are by functions, and 'emotional state' is stored in fields of Entity.
+    - so WorldState.act(entity) ?
+- Entity class caches the size of the grid as static fields
+- Or there is a WorldTraits.js which is a field of both WorldState and Entity
+- Or the bounds are constant in config, not customizable at runtime
+  - Technically could be a small limitation in a server version
+
+
+
+
+
+
+
 MRB
 - step() basics
 - runnable loop
