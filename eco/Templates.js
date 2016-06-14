@@ -35,5 +35,27 @@ module.exports = {
         armor: 12,
         attack: 6,
         range: 1
+    },
+    human: {
+        name: 'human',
+        sprite: 'h',
+        moveInterval: 12,
+        armor: 2,
+        attack: 2,
+        range: 1,
+        canCreate: {
+            'settlement': 0.01
+        }
+    },
+    settlement: {
+        name: 'settlement',
+        sprite: 'H',
+        moveInterval: null,
+        armor: 12,
+        attack: 4,
+        range: 1,
+        canCreate: {
+            'human': 0.02
+        }
     }
 };
