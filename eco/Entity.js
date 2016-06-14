@@ -48,5 +48,8 @@ module.exports = class Entity {
             console.log('ERROR: move() cant move you to an occupied square.');
             return;
         }
+
+        this.coord = destination;
+        // TODO: call draw()
     }
 };
