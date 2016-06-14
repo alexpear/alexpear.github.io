@@ -23,7 +23,7 @@ module.exports = {
     tower: {
         name: 'tower',
         sprite: 'T',
-        moveInterval: 9999,
+        moveInterval: null,
         armor: 12,
         attack: 4,
         range: 2
