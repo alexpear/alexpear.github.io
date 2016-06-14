@@ -15,7 +15,7 @@ this.create(Templates.air);
 if (entity.type === Templates.air)
 
 opts for moving entities
-- circular dependency
+- circular dependency ... i like this one 2016 June 3
   - Worldstate <- Entity -> Worldstate
   - pass in pointer? new Entity(this)?
   - Entity has .worldstate field
@@ -32,6 +32,8 @@ opts for moving entities
 - Or there is a WorldTraits.js which is a field of both WorldState and Entity
 - Or the bounds are constant in config, not customizable at runtime
   - Technically could be a small limitation in a server version
+- how did i do it in Commander?
+  - all the move functions are just in Gamestate
 
 
 
