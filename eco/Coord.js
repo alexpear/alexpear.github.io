@@ -46,11 +46,6 @@ module.exports = class Coord {
         return 0.9 < distance && distance < 1.5;
     }
 
-    isInBounds (rowCount, colCount) {
-        return 0 <= this.r && this.r < rowCount
-            && 0 <= this.c && this.c < colCount;
-    }
-
     toString () {
         return '[' + this.r + ',' + this.c + ']';
     }

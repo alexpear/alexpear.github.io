@@ -58,6 +58,11 @@ module.exports = class WorldState {
         });
     }
 
+    isInBounds (coord) {
+        return 0 <= coord.r && coord.r < this.rowCount
+            && 0 <= coord.c && coord.c < this.colCount;
+    }
+
     create (template, faction, coord) {
       var newEntity = new Entity(template || Templates.infantry, faction, coord);
       this.entities.push(newEntity);
@@ -85,7 +90,7 @@ module.exports = class WorldState {
         for (var i = 0; i < this.entities.length; i++) {
             var entityOne = this.entities[i];
             // Check entity is in bounds
-            if (! entityOne.coord.isInBounds(this.rowCount, this.colCount)) {
+            if (! this.isInBounds(entityOne.coord)) {
                 console.log('error: entity ' + entityOne.sprite + ' is out of bounds');
             }
 
