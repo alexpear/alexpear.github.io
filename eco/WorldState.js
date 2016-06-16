@@ -110,8 +110,7 @@ module.exports = class WorldState {
             return;
         }
 
-        // TODO: finalize whether to have an Entity.worldstate field.
-        if (this.thingAt(destination)) {
+        if (!! this.at(destination)) {
             console.log('ERROR: move() cant move you to an occupied square.');
             return;
         }
