@@ -72,6 +72,8 @@ module.exports = class WorldState {
         this.entities.forEach(function (entity) {
             entity.step();
         });
+
+        this.draw();
     }
 
     moveRelative (entity, relativeCoord) {
