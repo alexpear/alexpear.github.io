@@ -126,6 +126,8 @@ module.exports = class WorldState {
                 }
             }
         }
+
+        console.log('diagnostic completed.')
     }
 
     // TODO check if all coords are occupied, to avoid infinite loop.
