@@ -72,7 +72,7 @@ module.exports = class Coord {
     }
 
     static randomDirection () {
-        return Util.randomOf(coord.relatives);
+        return Util.randomOf(Coord.relatives);
     }
 
     randomAdjacent () {
