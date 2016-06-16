@@ -162,6 +162,10 @@ module.exports = class WorldState {
         }).join('\n');
     }
 
+    draw () {
+        console.log(this.textImage());
+    }
+
     diagnostic () {
         for (var i = 0; i < this.entities.length; i++) {
             var entityOne = this.entities[i];
