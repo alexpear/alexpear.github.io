@@ -26,29 +26,4 @@ module.exports = class Entity {
     chooseAction () {
         return Actions.randomMove;
     }
-
-    // move this function to Gamestate?
-    move (relativeCoord) {
-        if (2 <= relativeCoord.magnitude()) {
-            // TODO: better error handling
-            console.log('ERROR: move() called with oversized relative coord.');
-            return;
-        }
-
-        var destination = this.coord.plus(relativeCoord);
-        // TODO: where does isINBounds() live?
-        if (! destination.isInBounds()) {
-            console.log('ERROR: move() called with destination outside the bounds.');
-            return;
-        }
-
-        // TODO: finalize whether to have an Entity.worldstate field.
-        if (this.worldstate.thingAt(destination)) {
-            console.log('ERROR: move() cant move you to an occupied square.');
-            return;
-        }
-
-        this.coord = destination;
-        // TODO: call draw()
-    }
 };

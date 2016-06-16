@@ -74,7 +74,27 @@ module.exports = class WorldState {
         });
     }
 
-    // move (entity, destination)
+    moveRelative (entity, relativeCoord) {
+        if (2 <= relativeCoord.magnitude()) {
+            // TODO: better error handling
+            console.log('ERROR: move() called with oversized relative coord.');
+            return;
+        }
+
+        var destination = entity.coord.plus(relativeCoord);
+        if (! isInBounds(destination)) {
+            console.log('ERROR: move() called with destination outside the bounds.');
+            return;
+        }
+
+        // TODO: finalize whether to have an Entity.worldstate field.
+        if (this.thingAt(destination)) {
+            console.log('ERROR: move() cant move you to an occupied square.');
+            return;
+        }
+
+        entity.coord = destination;
+    }
 
     textImage () {
         // Candidate alg: function to assemble a 2d array representation
