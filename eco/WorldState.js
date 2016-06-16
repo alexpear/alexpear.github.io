@@ -82,16 +82,19 @@ module.exports = class WorldState {
     }
 
     visit (entity) {
-        // TODO: if entity timer is 0, act. else decrement.
-
         // TODO encounters and interactions
-        // TODO: Random action with weightings.
-        // var chosenAction = this.moveRandomly;
-        // chosenAction(entity);
+
+        if (entity.stepsTillMove > 0) {
+            entity.stepsTillMove--;
+        } else {
+            // TODO: Random action with weightings.
+            var chosenAction = this.moveRandomly.bind(this);
+            chosenAction(entity);
+        }
     }
 
     moveAbsolute (entity, destination) {
-        // TODO
+        this.moveRelative(entity, destination.minus(entity.coord));
     }
 
     moveRelative (entity, relativeCoord) {
@@ -133,7 +136,7 @@ module.exports = class WorldState {
     }
 
     moveRandomly (entity) {
-        // this.moveAbsolute(entity, this.randomEmptyNeighbor(entity.coord)); TODO
+        this.moveAbsolute(entity, this.randomEmptyNeighbor(entity.coord));
     }
 
     randomEmptyCoord () {
