@@ -130,8 +130,12 @@ module.exports = class WorldState {
         console.log('diagnostic completed.')
     }
 
-    // TODO check if all coords are occupied, to avoid infinite loop.
     randomEmptyCoord () {
+        if (this.rowCount * this.colCount <= this.entities.length) {
+            console.log('ERROR: Cant find an empty coord because there is already one entity per coord.');
+            return new Coord();
+        }
+
         do {
             var coord = Coord.random();
         } while (!! this.at(coord));
