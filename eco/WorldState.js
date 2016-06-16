@@ -7,6 +7,8 @@ var Region = require('./Region.js');
 var Templates = require('./Templates.js');
 var Util = require('./Util.js');
 
+// TODO: Will eventually need to split WorldState.js
+
 module.exports = class WorldState {
     constructor (rows, cols) {
         this.entities = [];
