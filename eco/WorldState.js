@@ -72,10 +72,23 @@ module.exports = class WorldState {
 
     step () {
         this.entities.forEach(function (entity) {
-            entity.step();
+            this.visit(entity);
         });
 
         this.draw();
+    }
+
+    visit (entity) {
+        // TODO: if entity timer is 0, act. else decrement.
+
+        // TODO encounters and interactions
+        // TODO: Random action with weightings.
+        // var chosenAction = this.moveRandomly;
+        // chosenAction(entity);
+    }
+
+    moveAbsolute (entity, destination) {
+        // TODO
     }
 
     moveRelative (entity, relativeCoord) {
@@ -98,6 +111,25 @@ module.exports = class WorldState {
         }
 
         entity.coord = destination;
+    }
+
+    emptiesAdjacentTo (centralCoord) {
+        return Coord.getRelatives()
+            .map(function (relativeCoord) {
+                return centralCoord.plus(relativeCoord);
+            })
+            .filter(function (neighbor) {
+                return this.isInBounds(neighbor)
+                    && ! this.at(neighbor);
+            });
+    }
+
+    randomEmptyNeighbor (centralCoord) {
+        return _.sample(this.emptiesAdjacentTo(centralCoord));
+    }
+
+    moveRandomly (entity) {
+        // this.moveAbsolute(entity, this.randomEmptyNeighbor(entity.coord)); TODO
     }
 
     randomEmptyCoord () {
