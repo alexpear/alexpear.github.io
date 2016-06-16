@@ -139,7 +139,8 @@ module.exports = class WorldState {
         }
 
         do {
-            var coord = Coord.random();
+            // TODO: move randomCoord() to worldstate
+            var coord = Coord.random(this.rowCount, this.colCount);
         } while (!! this.at(coord));
 
         return coord;
