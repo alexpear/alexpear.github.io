@@ -71,8 +71,9 @@ module.exports = class WorldState {
     }
 
     step () {
+        var self = this;
         this.entities.forEach(function (entity) {
-            this.visit(entity);
+            self.visit(entity);
         });
 
         this.draw();
@@ -99,7 +100,7 @@ module.exports = class WorldState {
         }
 
         var destination = entity.coord.plus(relativeCoord);
-        if (! isInBounds(destination)) {
+        if (! this.isInBounds(destination)) {
             console.log('ERROR: move() called with destination outside the bounds.');
             return;
         }
@@ -114,13 +115,14 @@ module.exports = class WorldState {
     }
 
     emptiesAdjacentTo (centralCoord) {
-        return Coord.getRelatives()
+        var self = this;
+        return Coord.relatives
             .map(function (relativeCoord) {
                 return centralCoord.plus(relativeCoord);
             })
             .filter(function (neighbor) {
-                return this.isInBounds(neighbor)
-                    && ! this.at(neighbor);
+                return self.isInBounds(neighbor)
+                    && ! self.at(neighbor);
             });
     }
 

@@ -36,7 +36,7 @@ module.exports = class Coord {
     }
 
     magnitude () {
-        return distanceTo(new Coord(0,0));
+        return this.distanceTo(new Coord(0,0));
     }
 
     isAdjacentTo (other) {
