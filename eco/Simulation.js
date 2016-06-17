@@ -33,8 +33,5 @@ var Simulation = class Simulation {
 var sim = new Simulation();
 
 sim.worldState.debugSetup();
-sim.run();
 sim.worldState.diagnostic();
-
-console.log('sim testing completed');
-console.log();
+sim.run();
