@@ -11,7 +11,7 @@ var Simulation = class Simulation {
     }
 
     run (maxSteps, secondsPerStep, logging, pauseEvery) {
-        maxSteps = Util.default(maxSteps, 12);
+        maxSteps = Util.default(maxSteps, 27);
         var world = this.worldState;
 
         while (world.stepCount < maxSteps) {
