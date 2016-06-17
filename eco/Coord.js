@@ -52,7 +52,7 @@ module.exports = class Coord {
 
     static random (rCount, cCount) {
         if (!rCount || !cCount) {
-            console.log('error: Coord.random() called with no arguments');
+            console.log('ERROR: Coord.random() called without arguments');
             return new Coord(-1,-1);
             // TODO throw exception, make supervisor reboot, et cetera.
         }

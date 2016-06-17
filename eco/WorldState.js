@@ -100,7 +100,9 @@ module.exports = class WorldState {
     moveRelative (entity, relativeCoord) {
         if (2 <= relativeCoord.magnitude()) {
             // TODO: better error handling
-            console.log('ERROR: move() called with oversized relative coord.');
+            console.log('ERROR: move() called with oversized relative coord: entity.coord === '
+                + entity.coord.toString() + ' and relativeCoord === ' + relativeCoord.toString()
+                + ', which has magnitude ' + relativeCoord.magnitude());
             return;
         }
 
@@ -171,14 +173,14 @@ module.exports = class WorldState {
             var entityOne = this.entities[i];
             // Check entity is in bounds
             if (! this.isInBounds(entityOne.coord)) {
-                console.log('error: entity ' + entityOne.sprite + ' is out of bounds');
+                console.log('ERROR: entity ' + entityOne.sprite + ' is out of bounds');
             }
 
             // Look for pairs of Entities that are in the same space
             for (var j = i+1; j < this.entities.length; j++) {
                 var entityTwo = this.entities[j];
                 if (entityOne.coord.equals(entityTwo.coord)) {
-                    console.log('error: multiple entities are both occupying ' + entityOne.coord.toString());
+                    console.log('ERROR: multiple entities are both occupying ' + entityOne.coord.toString());
                 }
             }
         }
