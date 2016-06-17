@@ -39,7 +39,7 @@ module.exports = {
     human: {
         name: 'human',
         sprite: 'h',
-        moveInterval: 12,
+        moveInterval: 2,
         armor: 2,
         attack: 2,
         range: 1,

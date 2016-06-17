@@ -24,7 +24,7 @@ var Simulation = class Simulation {
             world.step();
             console.log('Step ' + world.stepCount + ':');
             world.draw();
-            var interval = 1 * 1000;
+            var interval = 0.5 * 1000;
             setTimeout(this.executeStep.bind(this), interval);
         }
     }
