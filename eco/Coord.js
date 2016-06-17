@@ -4,8 +4,8 @@ var Util = require('./Util.js');
 
 module.exports = class Coord {
     constructor (r,c) {
-        this.r = r || -1;
-        this.c = c || -1;
+        this.r = Util.default(r, -1);
+        this.c = Util.default(c, -1);
     }
 
     equals (other) {

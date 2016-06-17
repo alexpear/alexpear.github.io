@@ -12,6 +12,14 @@ Util.NODE_TYPES = {
     location: 'location'  // deprecated
 };
 
+Util.default = function (input, defaultValue) {
+    if (input === undefined) {
+        return defaultValue;
+    } else {
+        return input;
+    }
+};
+
 Util.randomIntBetween = function (minInclusive, maxExclusive) {
     if (!minInclusive || !maxExclusive) {
         console.log('error: Util.randomIntBetween() called with missing parameters.');
