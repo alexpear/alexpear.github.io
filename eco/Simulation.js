@@ -6,18 +6,26 @@ var WorldState = require('./WorldState.js');
 var _ = require('underscore');
 
 var Simulation = class Simulation {
-    constructor (worldState) {
+    constructor (worldState, maxSteps) {
         this.worldState = Util.default(worldState, new WorldState());
+        this.maxSteps = Util.default(maxSteps, 27);
     }
 
-    run (maxSteps, secondsPerStep, logging, pauseEvery) {
-        maxSteps = Util.default(maxSteps, 27);
+    run (secondsPerStep, logging, pauseEvery) {
+        this.executeStep();
+    }
+
+    executeStep () {
         var world = this.worldState;
 
-        while (world.stepCount < maxSteps) {
+        if (world.stepCount >= this.maxSteps) {
+            return world;
+        } else {
             world.step();
             console.log('Step ' + world.stepCount + ':');
             world.draw();
+            var interval = 1 * 1000;
+            setTimeout(this.executeStep.bind(this), interval);
         }
     }
 };
