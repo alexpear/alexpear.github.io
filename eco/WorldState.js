@@ -13,6 +13,7 @@ var _ = require('underscore');
 
 module.exports = class WorldState {
     constructor (rows, cols) {
+        // OR Could entities = {}, because unordered.
         this.entities = [];
 
         // I'm not sure about the 2d array idea.
