@@ -43,7 +43,7 @@ module.exports = {
         armor: 2,
         attack: 2,
         range: 1,
-        canCreate: {
+        canBecome: {
             'settlement': 0.01
         }
     },

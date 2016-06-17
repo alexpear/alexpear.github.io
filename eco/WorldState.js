@@ -93,11 +93,27 @@ module.exports = class WorldState {
             entity.stepsTillMove = entity.moveInterval;
 
             // TODO: Random action with weightings.
-            var chosenAction = this.moveRandomly.bind(this);
+            var chosenAction = this.chooseAction(entity);
             chosenAction(entity);
         }
 
         entity.stepsTillMove--;
+    }
+
+    chooseAction (entity) {
+        // TODO: weighting
+        var options = [
+            this.moveRandomly
+        ];
+
+        if (entity.template.canCreate) {
+            options.push(this.createOffspring);
+        }
+        if (entity.template.canBecome) {
+            options.push(this.become);
+        }
+
+        return _.sample(options).bind(this);
     }
 
     moveAbsolute (entity, destination) {
@@ -143,8 +159,21 @@ module.exports = class WorldState {
         return _.sample(this.emptiesAdjacentTo(centralCoord));
     }
 
+    // Actions
     moveRandomly (entity) {
         this.moveAbsolute(entity, this.randomEmptyNeighbor(entity.coord));
+    }
+
+    createOffspring (entity) {
+
+    }
+
+    become (entity) {
+
+    }
+
+    wait (entity) {
+        return;
     }
 
     randomEmptyCoord () {
