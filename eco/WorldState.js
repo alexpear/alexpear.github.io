@@ -104,6 +104,7 @@ module.exports = class WorldState {
     chooseAction (entity) {
         // TODO: weighting
         var options = [
+            this.wait,
             this.moveRandomly
         ];
 
@@ -166,7 +167,9 @@ module.exports = class WorldState {
     }
 
     createOffspring (entity) {
-
+        var coord = this.randomEmptyNeighbor(coord);
+        // var offspringTemplate =
+        // this.entities.push()
     }
 
     become (entity) {
