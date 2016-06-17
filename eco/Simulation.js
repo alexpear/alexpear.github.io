@@ -10,12 +10,14 @@ var Simulation = class Simulation {
         this.worldState = Util.default(worldState, new WorldState());
     }
 
-    run (maxSteps, secondsPerStep, logging, pauseAt) {
-        maxSteps = Util.default(maxSteps, 100);
+    run (maxSteps, secondsPerStep, logging, pauseEvery) {
+        maxSteps = Util.default(maxSteps, 12);
+        var world = this.worldState;
 
-        return;  // debug
-        while (this.worldState.stepCount < maxSteps) {
-
+        while (world.stepCount < maxSteps) {
+            world.step();
+            console.log('Step ' + world.stepCount + ':');
+            world.draw();
         }
     }
 };
@@ -23,8 +25,7 @@ var Simulation = class Simulation {
 var sim = new Simulation();
 
 sim.worldState.debugSetup();
-sim.worldState.draw();
-sim.worldState.step();
+sim.run();
 sim.worldState.diagnostic();
 
 console.log('sim testing completed');

@@ -81,12 +81,9 @@ module.exports = class WorldState {
         var self = this;
 
         self.stepCount++;
-        console.log('Step ' + self.stepCount + ':');
         self.entities.forEach(function (entity) {
             self.visit(entity);
         });
-
-        self.draw();
     }
 
     visit (entity) {
