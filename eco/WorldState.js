@@ -89,13 +89,15 @@ module.exports = class WorldState {
     visit (entity) {
         // TODO encounters and interactions
 
-        if (entity.stepsTillMove > 0) {
-            entity.stepsTillMove--;
-        } else {
+        if (entity.stepsTillMove === 0) {
+            entity.stepsTillMove = entity.moveInterval;
+
             // TODO: Random action with weightings.
             var chosenAction = this.moveRandomly.bind(this);
             chosenAction(entity);
         }
+
+        entity.stepsTillMove--;
     }
 
     moveAbsolute (entity, destination) {

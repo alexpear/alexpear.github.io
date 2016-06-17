@@ -13,6 +13,7 @@ module.exports = class Entity {
         this.type = template.name;  // TODO standardize field name
         this.coord = Util.default(coord, new Coord());
         this.sprite = template.sprite;
+        this.moveInterval = template.moveInterval;
         this.stepsTillMove = template.moveInterval - 1;
         this.faction = Util.default(faction, Factions.gaia);
     }
