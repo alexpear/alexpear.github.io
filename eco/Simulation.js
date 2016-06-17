@@ -21,8 +21,8 @@ var Simulation = class Simulation {
 var sim = new Simulation();
 
 sim.worldState.debugSetup();
+sim.worldState.draw();
 sim.worldState.step();
 sim.worldState.diagnostic();
-console.log(sim.worldState.textImage());
 
-console.log('completed');
+console.log('sim testing completed');
