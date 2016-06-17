@@ -1,7 +1,9 @@
 'use strict';
 
-var _ = require('underscore');
+var Util = require('./Util.js');
 var WorldState = require('./WorldState.js');
+
+var _ = require('underscore');
 
 var Simulation = class Simulation {
     constructor (worldState) {
