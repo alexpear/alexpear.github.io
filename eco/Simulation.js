@@ -5,11 +5,11 @@ var WorldState = require('./WorldState.js');
 
 var Simulation = class Simulation {
     constructor (worldState) {
-        this.worldState = worldState || new WorldState();
+        this.worldState = Util.default(worldState, new WorldState());
     }
 
     run (maxSteps, secondsPerStep, logging, pauseAt) {
-        maxSteps = maxSteps || 100;
+        maxSteps = Util.default(maxSteps, 100);
 
         return;  // debug
         while (this.worldState.stepCount < maxSteps) {
