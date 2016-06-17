@@ -17,8 +17,8 @@ module.exports = class WorldState {
 
         // I'm not sure about the 2d array idea.
         this.space = this.makeGrid(rows, cols);
-        this.rowCount = rows || Util.DEFAULTS.ROWCOUNT;
-        this.colCount = cols || Util.DEFAULTS.COLCOUNT;
+        this.rowCount = Util.default(rows, Util.DEFAULTS.ROWCOUNT);
+        this.colCount = Util.default(cols, Util.DEFAULTS.COLCOUNT);
         this.stepCount = 0;
     }
 
@@ -30,8 +30,8 @@ module.exports = class WorldState {
 
     // Probably deprecated.
     makeGrid (rowCount, colCount) {
-        rowCount = rowCount || this.rowCount;
-        colCount = colCount || this.colCount;
+        rowCount = Util.default(rowCount, this.rowCount);
+        colCount = Util.default(colCount, this.colCount);
 
         var grid = [];
         for (var ri = 0; ri < rowCount; ri++) {
@@ -68,8 +68,13 @@ module.exports = class WorldState {
     }
 
     create (template, faction, coord) {
-      var newEntity = new Entity(template || Templates.infantry, faction, coord);
-      this.entities.push(newEntity);
+        var newEntity = new Entity(
+            Util.default(template, Templates.infantry),
+            faction,
+            coord
+        );
+
+        this.entities.push(newEntity);
     }
 
     step () {
