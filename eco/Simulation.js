@@ -26,3 +26,4 @@ sim.worldState.step();
 sim.worldState.diagnostic();
 
 console.log('sim testing completed');
+console.log();
