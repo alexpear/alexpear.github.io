@@ -168,9 +168,16 @@ module.exports = class WorldState {
     }
 
     createOffspring (entity) {
-        var coord = this.randomEmptyNeighbor(coord);
-        // var offspringTemplate =
-        // this.entities.push()
+        if (! entity.template.canCreate) {
+            console.log('ERROR: createOffspring(entity) called on an entity with no .canCreate field.');
+            return;
+        }
+
+        return this.create(
+            _.sample(entity.template.canCreate),
+            entity.faction,
+            this.randomEmptyNeighbor(entity.coord)
+        );
     }
 
     become (entity) {
