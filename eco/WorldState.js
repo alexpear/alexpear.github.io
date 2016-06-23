@@ -76,6 +76,7 @@ module.exports = class WorldState {
         );
 
         this.entities.push(newEntity);
+        return newEntity;
     }
 
     step () {
