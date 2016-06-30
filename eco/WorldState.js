@@ -137,6 +137,11 @@ module.exports = class WorldState {
     }
 
     moveAbsolute (entity, destination) {
+        if (! destination) {
+            console.log('ERROR: moveAbsolute() called with falsey destination parameter.');
+            return;
+        }
+
         this.moveRelative(entity, destination.minus(entity.coord));
     }
 
