@@ -8,7 +8,7 @@ var _ = require('underscore');
 var Simulation = class Simulation {
     constructor (worldState, maxSteps) {
         this.worldState = Util.default(worldState, new WorldState());
-        this.maxSteps = Util.default(maxSteps, 27);
+        this.maxSteps = Util.default(maxSteps, 9999999);
     }
 
     run (secondsPerStep, logging, pauseEvery) {
