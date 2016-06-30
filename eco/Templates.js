@@ -47,6 +47,7 @@ module.exports = {
             'settlement': 0.01
         }
     },
+    // TODO: reconcile moveInterval and canCreate chance, etc.
     settlement: {
         name: 'settlement',
         sprite: 'H',

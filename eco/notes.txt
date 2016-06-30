@@ -35,7 +35,11 @@ opts for moving entities
 - how did i do it in Commander?
   - all the move functions are just in Gamestate
 
-
+idea for fantasy entity actions
+- entities have an age counter, and eg humans dont gain access to the
+  Become (Settlement) action until they reach a specified age
+- so advanced actions require both a weight and a min age in the template?
+  - that could be later down the MRB path.
 
 
 

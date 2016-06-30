@@ -92,6 +92,7 @@ module.exports = class WorldState {
         // TODO encounters and interactions
 
         if (entity.stepsTillMove === 0) {
+            // TODO: support stationary entities.
             entity.stepsTillMove = entity.moveInterval;
 
             // TODO: Random action with weightings.
@@ -103,7 +104,7 @@ module.exports = class WorldState {
     }
 
     chooseAction (entity) {
-        // TODO: weighting
+        // TODO: weighting, eg for Settlements.
         var options = [
             this.wait,
             this.moveRandomly
