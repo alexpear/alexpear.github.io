@@ -130,7 +130,8 @@ module.exports = class WorldState {
             options.push(this.createOffspring);
         }
         if (entity.template.canBecome) {
-            options.push(this.become);
+            // TODO: prevent becoming settlement when adjacent to a settlement
+            options.push(this.transform);
         }
 
         return _.sample(options).bind(this);
@@ -202,8 +203,18 @@ module.exports = class WorldState {
         );
     }
 
-    become (entity) {
+    transform (entity) {
+        // console.log('transforming');
+        // TODO: weighting not yet implemented.
+        var templateName = _.sample(
+            Object.keys(
+                entity.template.canBecome
+            )
+        );
 
+        entity.become(
+            Templates[templateName]
+        );
     }
 
     wait (entity) {
