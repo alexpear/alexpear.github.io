@@ -107,9 +107,22 @@ module.exports = class WorldState {
         // TODO: weighting, eg for Settlements.
         var options = [
             this.wait,
-            this.moveRandomly
+            this.wait,
+            this.wait
         ];
 
+        if (! entity.template.immobile && this.emptiesAdjacentTo(entity.coord).length > 0) {
+            // hacky for now.
+            options.push(this.moveRandomly);
+            options.push(this.moveRandomly);
+            options.push(this.moveRandomly);
+            options.push(this.moveRandomly);
+            options.push(this.moveRandomly);
+            options.push(this.moveRandomly);
+            options.push(this.moveRandomly);
+            options.push(this.moveRandomly);
+            options.push(this.moveRandomly);
+        }
         if (entity.template.canCreate) {
             options.push(this.createOffspring);
         }
