@@ -1,58 +1,31 @@
 some notes for eco waffle
 
-step() implemented by iterating over .entities array
-draw() implemented by iterating over ...
-  - coordinates?
-  - is there a Region stored for each coordinate?
-
-allow multiple Entities per location?
-i dont think so... 
-
-how to deal with unit templates?
-
-this.create('air', spawnPoint);
-this.create(Templates.air);
-if (entity.type === Templates.air)
-
-opts for moving entities
-- circular dependency ... i like this one 2016 June 3
-  - Worldstate <- Entity -> Worldstate
-  - pass in pointer? new Entity(this)?
-  - Entity has .worldstate field
-  - require ./Worldstate.js at end of Entity.js
-  - hm. Is entity.worldState needed for anything else?
-    - collision detection probably...
-- move() is in Worldstate
-  - and then where is the decide what to do function?
-    - this.entities[0].mind?
-    - the Mind needs to read about the Entity state and about the positions of other Entities
-    - is a Mind just functions? like the decisions are by functions, and 'emotional state' is stored in fields of Entity.
-    - so WorldState.act(entity) ?
-- Entity class caches the size of the grid as static fields
-- Or there is a WorldTraits.js which is a field of both WorldState and Entity
-- Or the bounds are constant in config, not customizable at runtime
-  - Technically could be a small limitation in a server version
-- how did i do it in Commander?
-  - all the move functions are just in Gamestate
-
 idea for fantasy entity actions
 - entities have an age counter, and eg humans dont gain access to the
   Become (Settlement) action until they reach a specified age
 - so advanced actions require both a weight and a min age in the template?
   - that could be later down the MRB path.
+- Entities could move off the map and go into the offMap area.
+  - They have a random chance to come back, on a random spot on one of the edges.
 
++bugs
+Step 237:
+/Users/apearson/scratch/waffle/eco/WorldState.js:53
+            grid[entity.coord.r][entity.coord.c] = entity;
+                                                 ^
+TypeError: Cannot set property '-1' of undefined
+    at /Users/apearson/scratch/waffle/eco/WorldState.js:53:50
+    at Array.forEach (native)
+    at WorldState.asGrid (/Users/apearson/scratch/waffle/eco/WorldState.js:52:23)
+    at WorldState.textImage (/Users/apearson/scratch/waffle/eco/WorldState.js:246:21)
+    at WorldState.draw (/Users/apearson/scratch/waffle/eco/WorldState.js:258:26)
+    at Simulation.executeStep (/Users/apearson/scratch/waffle/eco/Simulation.js:26:19)
+    at Timer.listOnTimeout (timers.js:92:15)
 
 
 
 
 MRB
-- step() basics
-- runnable loop
-- movement
-- random movement
 - momentum/direction vector
 - combat / interaction rules alg
 - implement combat basics
-
-
-
