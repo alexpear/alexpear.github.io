@@ -244,8 +244,12 @@ module.exports = class WorldState {
         // Candidate alg: function to assemble a 2d array representation
         // of the world, then render that in ascii.
         return this.asGrid().map(function (row) {
-            return row.map(function (square) {
-                return square ? square.sprite : '.';
+            return row.map(function (entity) {
+                if (entity) {
+                    return entity.sprite ? entity.sprite : '?';
+                } else {
+                    return '.';
+                }
             }).join(' ');
         }).join('\n');
     }
