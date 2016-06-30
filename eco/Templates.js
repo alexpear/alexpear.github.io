@@ -51,7 +51,8 @@ module.exports = {
     settlement: {
         name: 'settlement',
         sprite: 'H',
-        moveInterval: null,
+        moveInterval: 16,
+        immobile: true,
         armor: 12,
         attack: 4,
         range: 1,
