@@ -69,6 +69,9 @@ module.exports = class WorldState {
     }
 
     create (template, faction, coord) {
+        // Leniency for string input.
+        template = (!! template.sprite) ? template : Templates[template];
+
         var newEntity = new Entity(
             Util.default(template, Templates.infantry),
             faction,
