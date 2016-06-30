@@ -197,7 +197,12 @@ module.exports = class WorldState {
         }
 
         return this.create(
-            _.sample(entity.template.canCreate),
+            // TODO: Weighting not yet implemented.
+            _.sample(
+                Object.keys(
+                    entity.template.canCreate
+                )
+            ),
             entity.faction,
             this.randomEmptyNeighbor(entity.coord)
         );
