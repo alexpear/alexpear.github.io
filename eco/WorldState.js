@@ -291,6 +291,7 @@ module.exports = class WorldState {
         if (attacker.attackSucceeds(target)) {
             // Remove defeated entity.
             target.alive = false;
+            console.log('Entity destroyed at ' + target.coord.toString());
             // Updating entities might not work while .forEach()ing over it.
             // this.entities = this.entities.filter(function (entity) {
             //     return entity.alive;
