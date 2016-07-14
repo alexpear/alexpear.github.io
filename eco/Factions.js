@@ -1,6 +1,6 @@
 'use strict';
 
-exports.model = {
+module.exports = {
   gaia: {
       name: 'Gaia',
       color: '32'
