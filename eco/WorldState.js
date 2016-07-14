@@ -167,15 +167,38 @@ module.exports = class WorldState {
         entity.coord = destination;
     }
 
-    emptiesAdjacentTo (centralCoord) {
+    coordsAdjacentTo (centralCoord) {
         var self = this;
         return Coord.relatives
             .map(function (relativeCoord) {
                 return centralCoord.plus(relativeCoord);
             })
             .filter(function (neighbor) {
-                return self.isInBounds(neighbor)
-                    && ! self.at(neighbor);
+                return self.isInBounds(neighbor);
+            });
+    }
+
+    entitiesAdjacentTo (centralCoord) {
+        var self = this;
+        return this.coordsAdjacentTo(centralCoord)
+            .filter(function (neighbor) {
+                return !! self.at(neighbor);
+            });
+    }
+
+    foesAdjacentTo (entity) {
+        var self = this;
+        return this.entitiesAdjacentTo(entity.coord)
+            .filter(function(other) {
+                return other.faction !== entity.faction;
+            });
+    }
+
+    emptiesAdjacentTo (centralCoord) {
+        var self = this;
+        return this.coordsAdjacentTo(centralCoord)
+            .filter(function (neighbor) {
+                return ! self.at(neighbor);
             });
     }
 
