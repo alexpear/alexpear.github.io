@@ -199,8 +199,12 @@ module.exports = class WorldState {
     entitiesAdjacentTo (centralCoord) {
         var self = this;
         return this.coordsAdjacentTo(centralCoord)
-            .filter(function (neighbor) {
-                return !! self.at(neighbor);
+            .map(function (coord) {
+                return self.at(coord);
+            })
+            .filter(function (coord) {
+                // at() returns undefined if the coord is unoccupied.
+                return !! coord;
             });
     }
 
