@@ -225,6 +225,15 @@ module.exports = class WorldState {
         return;
     }
 
+    attackRandom (attacker) {
+        var foes = this.foesAdjacentTo(attacker);
+        var target = _.sample(foes);
+        if (attacker.attackSucceeds(target)) {
+            // TODO Log above the grid?
+            // TODO remove defeated entity.
+        }
+    }
+
     randomEmptyCoord () {
         if (this.rowCount * this.colCount <= this.entities.length) {
             console.log('ERROR: Cant find an empty coord because there is already one entity per coord.');

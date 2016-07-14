@@ -42,4 +42,8 @@ module.exports = class Entity {
         this.stepsTillMove = template.moveInterval - 1;
         this.sprite = template.sprite;
     }
+
+    attackSucceeds (target) {
+        return; // TODO
+    }
 };
