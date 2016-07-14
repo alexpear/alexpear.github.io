@@ -120,7 +120,9 @@ module.exports = class WorldState {
             this.wait
         ];
 
-        if (! entity.template.immobile && this.emptiesAdjacentTo(entity.coord).length > 0) {
+        var emptyNeighbors = this.emptiesAdjacentTo(entity.coord);
+
+        if (! entity.template.immobile && emptyNeighbors.length > 0) {
             // hacky for now.
             options.push(this.moveRandomly);
             options.push(this.moveRandomly);
@@ -132,13 +134,13 @@ module.exports = class WorldState {
             options.push(this.moveRandomly);
             options.push(this.moveRandomly);
         }
-        if (entity.template.canCreate) {
+        if (entity.template.canCreate && emptyNeighbors.length > 0) {
             options.push(this.createOffspring);
         }
         if (entity.template.canBecome) {
             // TODO: This restriction is for settlements.
             // Other transformations will need other logic.
-            if (this.emptiesAdjacentTo(entity.coord).length === 0) {
+            if (this.entitiesAdjacentTo(entity.coord).length === 0) {
                 options.push(this.transform);
             }
         }
