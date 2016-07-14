@@ -45,6 +45,6 @@ module.exports = class Entity {
 
     attackSucceeds (target) {
         // TODO: This is not yet a function of attack or armor values.
-        return Math.random() < 0.1;
+        return Math.random() < 0.5;
     }
 };
