@@ -9,6 +9,7 @@ idea for fantasy entity actions
   - They have a random chance to come back, on a random spot on one of the edges.
 
 +bugs
+occasional / stochastic
 Step 237:
 /Users/apearson/scratch/waffle/eco/WorldState.js:53
             grid[entity.coord.r][entity.coord.c] = entity;
