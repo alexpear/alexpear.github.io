@@ -128,8 +128,16 @@ module.exports = class WorldState {
             options.push(this.createOffspring);
         }
         if (entity.template.canBecome) {
-            // TODO: prevent becoming settlement when adjacent to a settlement
-            options.push(this.transform);
+            // TODO: This restriction is for settlements.
+            // Other transformations will need other logic.
+            if (this.emptiesAdjacentTo(entity.coord).length === 0) {
+                options.push(this.transform);
+            }
+        }
+        // TODO Range 2+ not yet supported
+        if (entity.template.attack > 0 &&
+                this.foesAdjacentTo(entity).length > 0) {
+            options.push(this.attackRandom);
         }
 
         return (_.sample(options)).bind(this);
