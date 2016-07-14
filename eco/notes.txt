@@ -29,4 +29,4 @@ TypeError: Cannot set property '-1' of undefined
 MRB
 - momentum/direction vector
 - combat / interaction rules alg
-- implement combat basics
+- speciation / rebellions
