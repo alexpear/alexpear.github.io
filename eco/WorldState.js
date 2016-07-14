@@ -48,16 +48,18 @@ module.exports = class WorldState {
     asGrid () {
         var grid = this.makeGrid();
         this.entities.forEach(function(entity) {
+            if (! entity.alive) { return; }
             grid[entity.coord.r][entity.coord.c] = entity;
         });
 
         return grid;
     }
 
+    // Dead entities are ignored
     at (coord) {
         // Runspeed is not currently a priority.
         return this.entities.find(function (entity) {
-            return entity.coord.equals(coord);
+            return entity.alive && entity.coord.equals(coord);
         });
     }
 
@@ -86,7 +88,13 @@ module.exports = class WorldState {
 
         self.stepCount++;
         self.entities.forEach(function (entity) {
+            if (! entity.alive) { return; }
             self.visit(entity);
+        });
+
+        // At end of step, delete all dead entities.
+        this.entities = this.entities.filter(function (entity) {
+            return entity.alive;
         });
     }
 
