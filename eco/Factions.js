@@ -3,14 +3,14 @@
 module.exports = {
   gaia: {
       name: 'Gaia',
-      color: '32'
+      color: 'green'
   },
   empire: {
       name: 'Empire',
-      color: '33'
+      color: 'blue'
   },
   rebels: {
       name: 'Rebels',
-      color: '34'
+      color: 'red'
   }
 };

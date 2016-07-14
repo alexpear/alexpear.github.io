@@ -25,8 +25,7 @@ module.exports = class WorldState {
 
     debugSetup () {
         this.create(Templates.human, Factions.empire, new Coord(4,6));
-        this.create(Templates.human, Factions.empire, new Coord(8,6));
-        this.create(Templates.settlement, Factions.empire, new Coord(9,9));
+        this.create(Templates.human, Factions.rebels, new Coord(8,6));
     }
 
     // Probably deprecated.
@@ -246,7 +245,7 @@ module.exports = class WorldState {
         return this.asGrid().map(function (row) {
             return row.map(function (entity) {
                 if (entity) {
-                    return entity.sprite ? entity.sprite : '?';
+                    return entity.getSprite ? entity.getSprite() : '?';
                 } else {
                     return '.';
                 }
