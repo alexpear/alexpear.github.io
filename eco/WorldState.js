@@ -76,6 +76,7 @@ module.exports = class WorldState {
             coord
         );
 
+        newEntity.alive = true;
         this.entities.push(newEntity);
         return newEntity;
     }
@@ -257,9 +258,14 @@ module.exports = class WorldState {
     attackRandom (attacker) {
         var foes = this.foesAdjacentTo(attacker);
         var target = _.sample(foes);
+        // TODO Log above the grid?
         if (attacker.attackSucceeds(target)) {
-            // TODO Log above the grid?
-            // TODO remove defeated entity.
+            // Remove defeated entity.
+            target.alive = false;
+            // Updating entities might not work while .forEach()ing over it.
+            // this.entities = this.entities.filter(function (entity) {
+            //     return entity.alive;
+            // });
         }
     }
 
