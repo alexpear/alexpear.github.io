@@ -153,6 +153,15 @@ module.exports = class WorldState {
         // TODO Range 2+ not yet supported
         if (entity.template.attack > 0 &&
                 this.foesAdjacentTo(entity).length > 0) {
+            // Hacky for now
+            options.push(this.attackRandom);
+            options.push(this.attackRandom);
+            options.push(this.attackRandom);
+            options.push(this.attackRandom);
+            options.push(this.attackRandom);
+            options.push(this.attackRandom);
+            options.push(this.attackRandom);
+            options.push(this.attackRandom);
             options.push(this.attackRandom);
         }
 
