@@ -28,7 +28,6 @@ module.exports = class WorldState {
         this.create(Templates.human, Factions.rebels, new Coord(8,6));
     }
 
-    // Probably deprecated.
     makeGrid (rowCount, colCount) {
         rowCount = Util.default(rowCount, this.rowCount);
         colCount = Util.default(colCount, this.colCount);
