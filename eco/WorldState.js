@@ -132,7 +132,7 @@ module.exports = class WorldState {
             options.push(this.transform);
         }
 
-        return _.sample(options).bind(this);
+        return (_.sample(options)).bind(this);
     }
 
     moveAbsolute (entity, destination) {
