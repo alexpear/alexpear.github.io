@@ -92,7 +92,6 @@ module.exports = class WorldState {
 
     visit (entity) {
         // TODO encounters and interactions
-
         if (entity.stepsTillMove === 0) {
             // TODO: support stationary entities.
             entity.stepsTillMove = entity.moveInterval;
