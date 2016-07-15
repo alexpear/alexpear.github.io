@@ -124,6 +124,17 @@ module.exports = class WorldState {
         var options = [
             this.wait,
             this.wait,
+            this.wait,
+            this.wait,
+            this.wait,
+            this.wait,
+            this.wait,
+            this.wait,
+            this.wait,
+            this.wait,
+            this.wait,
+            this.wait,
+            this.wait,
             this.wait
         ];
 
@@ -143,6 +154,16 @@ module.exports = class WorldState {
         }
         if (entity.template.canCreate && emptyNeighbors.length > 0) {
             options.push(this.createOffspring);
+            options.push(this.createOffspring);
+            options.push(this.createOffspring);
+            options.push(this.createOffspring);
+            options.push(this.createOffspring);
+            options.push(this.createOffspring);
+            options.push(this.createOffspring);
+            options.push(this.createOffspring);
+            options.push(this.createOffspring);
+
+            options.push(this.createNewSpecies);
         }
         if (entity.template.canBecome) {
             // TODO: This restriction is for settlements.
