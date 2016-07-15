@@ -288,6 +288,45 @@ module.exports = class WorldState {
         );
     }
 
+    createNewSpecies (entity) {
+        if (! entity.template.canCreate) {
+            console.log('ERROR: createOffspring(entity) called on an entity with no .canCreate field.');
+            return;
+        }
+
+        return this.create(
+            // TODO: Weighting not yet implemented.
+            _.sample(
+                Object.keys(
+                    entity.template.canCreate
+                )
+            ),
+            this.makeNewFaction(),
+            this.randomEmptyNeighbor(entity.coord)
+        );
+    }
+
+    makeNewFaction () {
+        var colorNames = Object.keys(Util.colors);
+        colorNames = _.shuffle(colorNames);
+        var usedColors = Object.keys(Factions)
+            .map(function (faction) {
+                return faction.color;
+            });
+
+        do {
+            var unusedColor = colorNames.pop();
+        }
+        while (colorNames.length > 0 && ! _.contains(unusedColor, usedColors));
+
+        Factions[unusedColor] = {
+            name: unusedColor,
+            color: unusedColor
+        };
+
+        return Factions[unusedColor];
+    }
+
     transform (entity) {
         // console.log('transforming');
         // TODO: weighting not yet implemented.
