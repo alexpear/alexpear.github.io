@@ -28,6 +28,7 @@ module.exports = class WorldState {
         this.create(Templates.human, Factions.empire, new Coord(4,7));
         this.create(Templates.human, Factions.empire, new Coord(4,8));
         this.create(Templates.human, Factions.empire, new Coord(4,9));
+
         this.create(Templates.human, Factions.rebels, new Coord(8,6));
         this.create(Templates.human, Factions.rebels, new Coord(8,7));
         this.create(Templates.human, Factions.rebels, new Coord(8,8));
