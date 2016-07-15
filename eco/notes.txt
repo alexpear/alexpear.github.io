@@ -30,3 +30,5 @@ MRB
 - momentum/direction vector
 - combat / interaction rules alg
 - speciation / rebellions
+  - new Faction
+    - choose unused color
