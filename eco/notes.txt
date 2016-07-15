@@ -29,6 +29,5 @@ TypeError: Cannot set property '-1' of undefined
 MRB
 - momentum/direction vector
 - combat / interaction rules alg
-- speciation / rebellions
-  - new Faction
-    - choose unused color
+- Varying traits
+- Mutation
