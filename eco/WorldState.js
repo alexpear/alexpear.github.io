@@ -251,7 +251,7 @@ module.exports = class WorldState {
         var self = this;
         return this.entitiesAdjacentTo(entity.coord)
             .filter(function(other) {
-                return other.faction !== entity.faction;
+                return other.faction.color !== entity.faction.color;
             });
     }
 
