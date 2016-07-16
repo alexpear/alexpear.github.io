@@ -152,7 +152,9 @@ module.exports = class WorldState {
             options.push(this.moveRandomly);
             options.push(this.moveRandomly);
         }
-        if (entity.template.canCreate && emptyNeighbors.length > 0) {
+        if (entity.template.canCreate
+                && emptyNeighbors.length > 0
+                && this.entitiesAdjacentTo(entity.coord).length === 0) {
             options.push(this.createOffspring);
             options.push(this.createOffspring);
             options.push(this.createOffspring);
