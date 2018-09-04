@@ -35,7 +35,11 @@ var Simulation = class Simulation {
     }
 };
 
-var sim = new Simulation();
+var LAPTOP_R = 47;
+var LAPTOP_C = 88;
+var CLEAR_STRING = '\x1Bc';
+
+var sim = new Simulation(new WorldState(16, 16));
 
 sim.worldState.debugSetup();
 sim.worldState.diagnostic();
