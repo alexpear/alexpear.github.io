@@ -19,12 +19,17 @@ var Simulation = class Simulation {
         var world = this.worldState;
 
         if (world.stepCount >= this.maxSteps) {
-            return world;
+            return;
         } else {
-            world.step();
+            var newFrame = world.textImage();
+
+            console.log(CLEAR_STRING);
             console.log('Step ' + world.stepCount + ':');
-            world.draw();
-            var interval = 0.5 * 500;
+            console.log(newFrame);
+
+            world.step();
+
+            var interval = 0.5 * 1000;
             setTimeout(this.executeStep.bind(this), interval);
         }
     }
