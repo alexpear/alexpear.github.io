@@ -30,6 +30,7 @@ let WNode = module.exports = class WNode {
     deepCopy() {
         let clone = new WNode();
         Object.assign(clone, this);
+        clone.id = Util.newId();
 
         clone.components = this.components.map(component => component.deepCopy());
         return clone;
