@@ -1,6 +1,6 @@
 'use strict';
 
-var Util = require('./Util.js');
+var Util = require('../Util.js');
 
 module.exports = class Coord {
     constructor (r,c) {

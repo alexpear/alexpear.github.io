@@ -3,6 +3,8 @@
 const fs = require('fs');
 const Yaml = require('js-yaml');
 
+const Util = require('./Util.js');
+
 // Waffle Node
 // WAFFLE is a game engine related to the novel 'You' by Austen Grossman.
 // A person, creature, component, or thing is represented here

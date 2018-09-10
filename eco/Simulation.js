@@ -1,6 +1,6 @@
 'use strict';
 
-var Util = require('./Util.js');
+var Util = require('../Util.js');
 var WorldState = require('./WorldState.js');
 
 var _ = require('underscore');

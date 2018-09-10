@@ -4,7 +4,7 @@ var Actions = require('./Actions.js');
 var Coord = require('./Coord.js');
 var Factions = require('./Factions.js');
 var Templates = require('./Templates.js');
-var Util = require('./Util.js');
+var Util = require('../Util.js');
 
 module.exports = class Entity {
     constructor (template, faction, coord) {

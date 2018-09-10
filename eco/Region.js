@@ -1,6 +1,6 @@
 'use strict';
 
-var Util = require('./Util.js');
+var Util = require('../Util.js');
 
 // NOTE: I like 'Location' better than 'Region',
 // but the browser consideres 'location' a reserved keyword.
