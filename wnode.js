@@ -47,14 +47,15 @@ let WNode = module.exports = class WNode {
         let outString = furtherLine(Util.formatProp(this, 'name'));
         outString += furtherLine(Util.formatProp(this, 'templateName'));
 
-        const SPECIAL_PROPS = [
+        const SKIP_PROPS = [
             'name',
             'templateName',
+            'id',
             'components'
         ];
 
         for (let prop in this) {
-            if (! prop || Util.contains(SPECIAL_PROPS, prop)) {
+            if (! prop || Util.contains(SKIP_PROPS, prop)) {
                 continue;
             }
 
