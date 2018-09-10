@@ -1,6 +1,5 @@
 'use strict';
 
-const fs = require('fs');
 const Yaml = require('js-yaml');
 
 const Util = require('./Util.js');
