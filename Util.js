@@ -1,6 +1,6 @@
 'use strict';
 
-var Util = module.exports;
+const Util = module.exports;
 
 Util.DEFAULTS = {
     ROWCOUNT: 12,
@@ -23,12 +23,17 @@ Util.NODE_TYPES = {
     location: 'location'  // deprecated
 };
 
+// TODO reconsider this weird function syntax. Maybe declare a class of functions, then assign the field props to it?
 Util.default = function (input, defaultValue) {
     if (input === undefined) {
         return defaultValue;
     } else {
         return input;
     }
+};
+
+Util.contains = function (array, fugitive) {
+    return array.indexOf(fugitive) >= 0;
 };
 
 Util.randomIntBetween = function (minInclusive, maxExclusive) {
@@ -48,6 +53,40 @@ Util.randomUpTo = function (maxInclusive) {
 };
 
 Util.randomOf = function (array) {
-    var index = Math.floor(Math.random() * array.length);
+    const index = Math.floor(Math.random() * array.length);
     return array[index];
 };
+
+Util.newId = function () {
+    // Later research the most performant way to run this.
+    const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const ID_LENGTH = 50;
+
+    let id = '';
+    for (let i = 0; i < ID_LENGTH; i++) {
+        const index = Math.floor( Math.random() * ALPHABET.length );
+        id += ALPHABET[index];
+    }
+
+    return id;
+};
+
+Util.repeat = function (str, n) {
+    let outStr = '';
+    for (let i = 0; i < n; i++) {
+        outStr += str;
+    }
+
+    return outStr;
+};
+
+Util.formatProp = function (object, propName) {
+    if (! object[propName]) {
+        return '';
+    }
+
+    // Later handle special and modification objects better.
+    return `${ propName }: ${ object[propName] }`;
+};
+
+
