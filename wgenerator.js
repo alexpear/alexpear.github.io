@@ -9,6 +9,8 @@ class WGenerator {
     // Constructor param will be either a birddecisions-format string or a filename.
     constructor(todo) {
         this.rawString = '';
+        this.childTables = {};
+        this.aliasTables = {};
     }
 
     getOutput() {
@@ -63,6 +65,50 @@ class WGenerator {
     static test() {
         const pelican = WGenerator.exampleTree();
         console.log(`WGenerator.test(): \n\n${ pelican.toPrettyString()}`);
+    }
+}
+
+class AliasTable {
+    constructor(rawString) {
+        this.outputs = [];
+
+        const lines = rawString.trim().split('\n');
+        for (let li = 1; li < lines.length; li++) {
+            const line = lines[li];
+            if (line === '') {
+                continue;
+            }
+
+            const parts = line.split();
+
+            if (parts.length <= 1) {
+                throw new Error(`AliasTable could not parse line: ${parts.join(' ')}`);
+            }
+
+            const weightStr = parts[0];
+            const alias = line.slice(weightStr.length).trim(); // Everything after the weight prefix.
+            const weight = parseInt(weightStr);
+
+            if (typeof weight !== 'number') {
+                throw new Error(`AliasTable could not parse weight: ${ weightStr }`);
+            }
+
+            for (let wi = 0; wi < weight; wi++) {
+                this.outputs.push(alias);
+            }
+        }
+    }
+
+    getOutput() {
+        return Util.randomOf(this.outputs);
+    }
+}
+
+class ChildrenTable {
+    constructor(rawString) {
+        this.children = rawString.trim()
+            .split('\n')
+            .map(child => child.trim());
     }
 }
 
