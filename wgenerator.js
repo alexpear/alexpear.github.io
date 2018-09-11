@@ -18,6 +18,20 @@ class WGenerator {
         return new WNode('todo');
     }
 
+    addChildren(node, table) {
+        for (let i = 0; i < table.children.length; i++) {
+            let child = table.children[i].trim();
+            while (child[0] === '{') {
+                child = child.slice(1, child.length - 1);
+                const children = this.aliasTables[child].getOutput();
+                // TODO Deal with 1+ children here
+            }
+        }
+      // for element in table.children // TODO
+        // if not a template name, resolve its brackets using the appropriate alias table
+        node.add(new WNode(foo));
+    }
+
 
     static exampleTree() {
         /*
