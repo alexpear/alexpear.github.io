@@ -18,6 +18,14 @@ class WGenerator {
         return new WNode('todo');
     }
 
+    parse(str) {
+
+    }
+
+    maybeAddChildren(node) {
+
+    }
+
     addChildren(node, table) {
         for (let i = 0; i < table.children.length; i++) {
             let child = table.children[i].trim();
