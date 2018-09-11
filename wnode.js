@@ -21,9 +21,8 @@ let WNode = module.exports = class WNode {
         this.components = [];
     }
 
-    // TODO Also try a version of this func with a arbitrary number of params.
-    add(node2) {
-        this.components.push(node2);
+    add(...nodes) {
+        this.components = this.components.concat(nodes);
         return this;
     }
 
