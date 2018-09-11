@@ -27,19 +27,49 @@ class WGenerator {
     }
 
     addChildren(node, table) {
-        for (let i = 0; i < table.children.length; i++) {
-            let child = table.children[i].trim();
-            while (child[0] === '{') {
-                child = child.slice(1, child.length - 1);
-                const children = this.aliasTables[child].getOutput();
-                // TODO Deal with 1+ children here
-            }
+        const children = table.children.reduce(
+            (chidrenSoFar, entry) => {
+                // Note that resolveAlias always returns an array.
+                const newChildren = this.resolveAlias(entry)
+                    .map(templateName => new WNode(templateName));
+
+                return childrenSoFar.concat(newChildren);
+            },
+            []
+        );
+
+
+
+
+
         }
-      // for element in table.children // TODO
-        // if not a template name, resolve its brackets using the appropriate alias table
-        node.add(new WNode(foo));
     }
 
+    resolveAlias(str) {
+        str = str.trim();
+
+        if (str[0] === '{') {
+            if (str[str.length - 1] !== '}') {
+                throw new Error(`WGenerator.resolveAlias(): Error parsing a str: ${ str }`);
+            }
+
+            const alias = str.slice(1, str.length - 1);
+            const table = this.aliasTables[alias];
+
+            if (! table) {
+                throw new Error(`WGenerator.resolveAlias(): Could not find alias table: ${ str }`);
+            }
+
+            const output = table.getOutput();
+            return output.split(',')
+                .map(s => s.trim())
+                .map(s => this.resolveAlias(s));
+                // TODO also reduce() to flatten the arrays.
+        }
+        else {
+            return [str];
+        }
+    }
 
     static exampleTree() {
         /*
