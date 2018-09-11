@@ -167,3 +167,35 @@ class ChildrenTable {
 
 // Run
 WGenerator.test();
+
+
+
+
+/*
+{output}
+v
+parse
+v
+resolveAlias('output')
+v
+{leaders}, {troops}
+v
+parse
+v
+resolveAlias('leaders') and resolveAlias('troops')
+v
+'officer' and 'officer' and 'regular'
+v
+new WNode('officer') etc
+v
+maybeAddChildren(node)
+v
+addChildren(node, node.templateName)
+
+So maybe strings go to parse(), which ultimately resolves to WNode[]
+And calls maybeAddChildren on those.
+
+
+
+
+*/
