@@ -199,7 +199,34 @@ addChildren(node, node.templateName)
 So maybe strings go to parse(), which ultimately resolves to WNode[]
 And calls maybeAddChildren on those.
 
+2018 September 20:
+parse() or resolveString() takes any string and returns WNode[]
+it calls resolveCommas(), resolveAlias(), new WNode(), and maybeAddChildren()
+(or replace resolveAlias() with maybeResolveAlias(), whichever looks clearer.)
 
+resolveAlias() now returns string[], which contains no aliases.
+
+maybeAddChildren(node) looks up the strings representing children, calls parse() on them (this is recursion), and appends the nodes parse() returns to node.components as a side effect. No return value necessary, i think.
+
+More code in black notebook.
+
+
+
+In the longer term, would be nice if the syntax could specify the generation of a grid.
+Then you could generate a fleet of spaceships and also some basic floor plans of their bridges and cargo bays.
+Or island maps.
+But i guess that each square is so relevant to the contents of its neighbors that this reductionist generation might not produce very good results.
+Everything in each square appears at a random part of the island with uniform probability, right?
+I guess you could alias the squares as ForestSquare, DesertSquare, etc ....
+But still, how would you make sure the ForestSquares are adjacent to each other?
+I think perhaps the grid generation is best done by another module.
+That module could call WGenerator, which outputs a tree describing one square.
+Similarly, WGenerator could describe a spaceship and one of the leaves can be of template frigateFloorPlan.
+Outside WGenerator, frigateFloorPlan can call some grid generation program.
+That grid generation program can call WGenerator on each square, with inputs like 'squareBesideWall' and 'storageSquare'.
+So the final output will be a Waffle tree with grids in the middle. A tree containing grids of subtrees.
+Waffle will ideally support this.
+The ship node will have a grid node (representing the cargo bay) in its .components, or similar.
 
 
 */
