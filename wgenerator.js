@@ -18,13 +18,15 @@ class WGenerator {
         return new WNode('todo');
     }
 
-    parse(str) {
-        const elements = str.trim()
+    // Alternate name resolveString(), because it is random.
+    parse(inputString) {
+        const strings = inputString.trim()
             .split(',')
             .map(s => s.trim())
-            .map(s => this.resolveAlias(s));
-        
-        
+            .map(s => this.maybeResolveAlias(s));
+
+        return strings.map(str => new WNode(str))
+            .map(n => this.maybeAddChildren(n));
     }
 
     maybeAddChildren(node) {
@@ -32,8 +34,10 @@ class WGenerator {
     }
 
     addChildren(node, table) {
-        const children = table.children.reduce(
+        // TODO Add a 'if' statement for the base / undefined case.
+        const childNodes = table.children.reduce(
             (chidrenSoFar, entry) => {
+                // TODO Actually i think we should call parse() here.
                 // Note that resolveAlias always returns an array.
                 const newChildren = this.resolveAlias(entry)
                     .map(templateName => new WNode(templateName));
@@ -43,18 +47,20 @@ class WGenerator {
             []
         );
 
+        node.components.concat(childNodes);
 
-
-
-
+        return node;
     }
 
+    // Returns string[]
+    // No side effects
+    // TODO: choose between maybeResolveAlias and rA()
     resolveAlias(str) {
         str = str.trim();
 
         if (str[0] === '{') {
             if (str[str.length - 1] !== '}') {
-                throw new Error(`WGenerator.resolveAlias(): Error parsing a str: ${ str }`);
+                throw new Error(`WGenerator.resolveAlias(): Error parsing a string: ${ str }`);
             }
 
             const alias = str.slice(1, str.length - 1);
