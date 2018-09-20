@@ -19,7 +19,12 @@ class WGenerator {
     }
 
     parse(str) {
-
+        const elements = str.trim()
+            .split(',')
+            .map(s => s.trim())
+            .map(s => this.resolveAlias(s));
+        
+        
     }
 
     maybeAddChildren(node) {
