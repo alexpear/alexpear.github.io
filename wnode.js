@@ -10,12 +10,12 @@ const Util = require('./Util.js');
 // by a WNode or a tree of WNodes.
 
 let WNode = module.exports = class WNode {
-    constructor(name) {
+    constructor(templateName) {
         // Later: Safety checks, logging
         this.id = Util.newId();
 
-        if (name) {
-            this.name = name;
+        if (templateName) {
+            this.templateName = templateName;
         }
 
         this.components = [];
