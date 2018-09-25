@@ -7,15 +7,53 @@ const WNode = require('./wnode.js');
 
 class WGenerator {
     // Constructor param will be either a birddecisions-format string or a filename.
-    constructor(todo) {
-        this.rawString = '';
+    constructor (rawString) {
+        // Later the this.rawString field might not be necessary.
+        this.rawString = rawString.trim();
         this.childTables = {};
         this.aliasTables = {};
+
+        const tableRaws = this.rawString.split('*');
+
+        tableRaws.forEach(
+            tableRaw => {
+                tableRaw = tableRaw.trim();
+
+                if (! tableRaw.length) {
+                    return;
+                }
+
+                if (ChildrenTable.isAppropriateFor(tableRaw)) {
+                    const childTable = new ChildrenTable(tableRaw);
+                    const key = childTable.key;
+
+                    if (this.childTables[key]) {
+                        throw new Error(`WGenerator constructor: table key ${ key } appears twice`);
+                    }
+
+                    this.childTables[key] = childTable;
+                    return;
+                }
+
+                const aliasTable = new AliasTable(tableRaw);
+                const key = aliasTable.key;
+
+                if (this.aliasTables[key]) {
+                    throw new Error(`WGenerator constructor: table key ${ key } appears twice`);
+                }
+
+                this.aliasTables[key] = aliasTable;
+            }
+        );
+
+        // Check that the output alias table exists
+        if (! this.aliasTables['output']) {
+            throw new Error(`WGenerator constructor: output table not found. Object.keys(this.aliasTables).length is ${ Object.keys(this.aliasTables).length }`);
+        }
     }
 
-    getOutput() {
-
-        return new WNode('todo');
+    getOutput () {
+        return this.parse('{output}');
     }
 
     // Alternate name resolveString(), because it is random.
