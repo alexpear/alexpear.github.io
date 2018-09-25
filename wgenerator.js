@@ -122,6 +122,8 @@ class WGenerator {
             }
 
             const output = table.getOutput();
+
+            // TODO or should this return this.parse(output)? Seems weird to have 2 funcs handle comma splitting.
             return output.split(',')
                 .reduce(
                     (templatesSoFar, s) => templatesSoFar.concat(
@@ -366,6 +368,24 @@ That grid generation program can call WGenerator on each square, with inputs lik
 So the final output will be a Waffle tree with grids in the middle. A tree containing grids of subtrees.
 Waffle will ideally support this.
 The ship node will have a grid node (representing the cargo bay) in its .components, or similar.
+
+
+exampleRaw
+
+|
+v
+
+exampleOutput:
+  - marine:
+    has:
+      - flakArmor
+      - battleRifle
+  - marine:
+    has:
+      - flakArmor
+      - smg
+  - warthog
+
 
 
 */
