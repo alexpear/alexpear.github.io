@@ -19,7 +19,7 @@ class WGenerator {
     }
 
     // Alternate name resolveString(), because it is random.
-    parse(inputString) {
+    parse (inputString) {
         const strings = inputString.trim()
             .split(',')
             .map(s => s.trim())
@@ -81,7 +81,27 @@ class WGenerator {
         }
     }
 
-    static exampleTree() {
+    static exampleRaw () {
+        return `
+            * output
+            5 {vehicleCrew}, warthog
+
+            * vehicleCrew
+            5 marine, marine, marine
+            2 marine, marine
+
+            * children of marine
+            flakArmor
+            {weapon}
+
+            * weapon
+            5 smg
+            5 battleRifle
+            5 assaultRifle
+            1 shotgun`;
+    }
+
+    static exampleTree () {
         /*
         pelican
           pilot
@@ -131,7 +151,7 @@ class WGenerator {
 }
 
 class AliasTable {
-    constructor(rawString) {
+    constructor (rawString) {
         this.outputs = [];
 
         const lines = rawString.trim().split('\n');
@@ -161,7 +181,7 @@ class AliasTable {
         }
     }
 
-    getOutput() {
+    getOutput () {
         return Util.randomOf(this.outputs);
     }
 }
