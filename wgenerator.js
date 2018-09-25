@@ -3,6 +3,7 @@
 // Generator that outputs procedurally generated trees of WNodes (Waffle nodes).
 // These trees represent games states, game elements, narrative elements, and similar concepts.
 
+const Util = require('./Util.js');
 const WNode = require('./wnode.js');
 
 class WGenerator {
