@@ -198,9 +198,25 @@ class WGenerator {
         return pelican;
     }
 
-    static test() {
-        const pelican = WGenerator.exampleTree();
-        console.log(`WGenerator.test(): \n\n${ pelican.toPrettyString()}`);
+    static test () {
+        const raw = WGenerator.exampleRaw();
+        const wgen = new WGenerator(raw);
+
+        // Util.log(wgen, 'debug');
+
+        const output = wgen.getOutput();
+        const prettyStrings = output.map(
+            node => node.toPrettyString()
+        );
+
+        // console.log(`WGenerator.test(): \n\n${ Util.stringify(output) }`);
+        console.log(`WGenerator.test(): \n\n`);
+
+        output.forEach(
+            node => {
+                console.log(node.toPrettyString());
+            }
+        );
     }
 }
 
