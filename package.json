@@ -1,0 +1,37 @@
+{
+  "name": "waffle",
+  "version": "0.1.0",
+  "description": "graph model for procedurally generated narrative",
+  "main": "WGenerator.js",
+  "dependencies": {
+    "js-yaml": "^3.12.0",
+    "moment": "^2.22.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node WGenerator.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexpear/waffle.git"
+  },
+  "keywords": [
+    "procedural",
+    "generation",
+    "procedural",
+    "narrative",
+    "interactive",
+    "fiction",
+    "game",
+    "tree",
+    "graph",
+    "random",
+    "generation"
+  ],
+  "author": "Alex Pear",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexpear/waffle/issues"
+  },
+  "homepage": "https://github.com/alexpear/waffle#readme"
+}
