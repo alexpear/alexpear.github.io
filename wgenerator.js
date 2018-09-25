@@ -60,59 +60,74 @@ class WGenerator {
     parse (inputString) {
         const strings = inputString.trim()
             .split(',')
-            .map(s => s.trim())
-            .map(s => this.maybeResolveAlias(s));
+            .reduce(
+                (stringsSoFar, s) =>
+                    stringsSoFar.concat(
+                        this.maybeResolveAlias(s)
+                    ),
+                []
+            );
+            // .map(s => this.maybeResolveAlias(s));
 
         return strings.map(str => new WNode(str))
             .map(n => this.maybeAddChildren(n));
     }
 
-    maybeAddChildren(node) {
+    // Might modify node.children
+    // Returns a WNode
+    maybeAddChildren (node) {
+        const table = this.childTables[node.templateName];
 
+        if (table) {
+            return this.addChildren(node, table);
+        }
+        else {
+            return node;
+        }
     }
 
-    addChildren(node, table) {
-        // TODO Add a 'if' statement for the base / undefined case.
-        const childNodes = table.children.reduce(
-            (chidrenSoFar, entry) => {
-                // TODO Actually i think we should call parse() here.
-                // Note that resolveAlias always returns an array.
-                const newChildren = this.resolveAlias(entry)
-                    .map(templateName => new WNode(templateName));
-
-                return childrenSoFar.concat(newChildren);
-            },
-            []
+    // Modifies node.children
+    // Returns the modified WNode
+    addChildren (node, table) {
+        table.children.forEach(
+            childString => {
+                // Note that parse() always returns an array.
+                node.components = node.components.concat(
+                    this.parse(childString)
+                );
+            }
         );
-
-        node.components.concat(childNodes);
 
         return node;
     }
 
     // Returns string[]
-    // No side effects
-    // TODO: choose between maybeResolveAlias and rA()
-    resolveAlias(str) {
+    // No side effects.
+    maybeResolveAlias (str) {
         str = str.trim();
 
         if (str[0] === '{') {
             if (str[str.length - 1] !== '}') {
-                throw new Error(`WGenerator.resolveAlias(): Error parsing a string: ${ str }`);
+                throw new Error(`WGenerator.maybeResolveAlias(): Error parsing a string: ${ str }`);
             }
 
-            const alias = str.slice(1, str.length - 1);
+            const alias = str.slice(1, str.length - 1)
+                .trim();
+
             const table = this.aliasTables[alias];
 
             if (! table) {
-                throw new Error(`WGenerator.resolveAlias(): Could not find alias table: ${ str }`);
+                throw new Error(`WGenerator.maybeResolveAlias(): Could not find alias table: ${ str }`);
             }
 
             const output = table.getOutput();
             return output.split(',')
-                .map(s => s.trim())
-                .map(s => this.resolveAlias(s));
-                // TODO also reduce() to flatten the arrays.
+                .reduce(
+                    (templatesSoFar, s) => templatesSoFar.concat(
+                        this.maybeResolveAlias(s)
+                    ),
+                    []
+                );
         }
         else {
             return [str];
