@@ -1,0 +1,16 @@
+* output
+5 {vehicleCrew}, warthog
+
+* vehicleCrew
+5 marine, marine, marine
+2 marine, marine
+
+* children of marine
+flakArmor
+{weapon}
+
+* weapon
+5 smg
+5 battleRifle
+5 assaultRifle
+1 shotgun
