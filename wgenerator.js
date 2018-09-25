@@ -68,7 +68,6 @@ class WGenerator {
                     ),
                 []
             );
-            // .map(s => this.maybeResolveAlias(s));
 
         return strings.map(str => new WNode(str))
             .map(n => this.maybeAddChildren(n));
@@ -204,14 +203,11 @@ class WGenerator {
         const raw = WGenerator.exampleRaw();
         const wgen = new WGenerator(raw);
 
-        // Util.log(wgen, 'debug');
-
         const output = wgen.getOutput();
         const prettyStrings = output.map(
             node => node.toPrettyString()
         );
 
-        // console.log(`WGenerator.test(): \n\n${ Util.stringify(output) }`);
         console.log(`WGenerator.test(): \n\n`);
 
         output.forEach(
