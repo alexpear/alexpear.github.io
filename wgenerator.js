@@ -14,6 +14,7 @@ class WGenerator {
         this.childTables = {};
         this.aliasTables = {};
 
+        // TODO: Add support for ignoring comments.
         const tableRaws = this.rawString.split('*');
 
         tableRaws.forEach(
@@ -136,6 +137,7 @@ class WGenerator {
         }
     }
 
+    // TODO i'm also interested in reading from local .txt files.
     static exampleRaw () {
         return `
             * output
