@@ -224,27 +224,39 @@ class AliasTable {
     constructor (rawString) {
         this.outputs = [];
 
-        const lines = rawString.trim().split('\n');
+        const lines = rawString.trim()
+            .split('\n')
+            .map(line => line.trim());
+
+        // Later we could complain if the first line contains whitespace.
+        this.key = lines[0];
+
         for (let li = 1; li < lines.length; li++) {
             const line = lines[li];
+
             if (line === '') {
                 continue;
             }
 
-            const parts = line.split();
+            const parts = line.split(/\s/);
 
             if (parts.length <= 1) {
                 throw new Error(`AliasTable could not parse line: ${parts.join(' ')}`);
             }
 
             const weightStr = parts[0];
-            const alias = line.slice(weightStr.length).trim(); // Everything after the weight prefix.
+
+            // Everything after the weight prefix.
+            const alias = line.slice(weightStr.length)
+                .trim();
+
             const weight = parseInt(weightStr);
 
             if (typeof weight !== 'number') {
                 throw new Error(`AliasTable could not parse weight: ${ weightStr }`);
             }
 
+            // Replicated outputs. We assume memory is plentiful but time is scarce.
             for (let wi = 0; wi < weight; wi++) {
                 this.outputs.push(alias);
             }
@@ -257,12 +269,43 @@ class AliasTable {
 }
 
 class ChildrenTable {
-    constructor(rawString) {
-        this.children = rawString.trim()
+    constructor (rawString) {
+        const lines = rawString.trim()
             .split('\n')
             .map(child => child.trim());
+
+        this.key = ChildrenTable.withoutTheStarter(lines[0]);
+        this.children = lines.slice(1);
+    }
+
+    static isAppropriateFor (tableString) {
+        const s = tableString.trim()
+            .toLowerCase();
+
+        return ChildrenTable.STARTERS.some(
+            starter => s.startsWith(starter)
+        );
+    }
+
+    static withoutTheStarter (rawString) {
+        const s = rawString.trim();
+        const sLow = s.toLowerCase();
+
+        for (let starter of ChildrenTable.STARTERS) {
+            if (sLow.startsWith(starter)) {
+                return s.slice(starter.length)
+                    .trim();
+            }
+        }
+
+        return s;
     }
 }
+
+ChildrenTable.STARTERS = [
+    'children of',
+    'childrenof'
+];
 
 
 // Run
