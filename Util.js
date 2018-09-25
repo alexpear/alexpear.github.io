@@ -1,5 +1,7 @@
 'use strict';
 
+const moment = require('moment');
+
 const Util = module.exports;
 
 Util.DEFAULTS = {
@@ -87,6 +89,58 @@ Util.formatProp = function (object, propName) {
 
     // Later handle special and modification objects better.
     return `${ propName }: ${ object[propName] }`;
+};
+
+Util.isNumber = function (x) {
+    return typeof x === 'number';
+};
+
+Util.isString = function (x) {
+    return typeof x === 'string';
+};
+
+Util.isArray = function (x) {
+    // Later make this more sophisticated, or use a library.
+    return x &&
+        typeof x.length === 'number' &&
+        x.length >= 0 &&
+        (x.length === 0 || x[0] !== undefined);
+};
+
+Util.stringify = function (x) {
+    return JSON.stringify(
+        x,
+        undefined,
+        '    '
+    );
+};
+
+Util.log = function (input, tag) {
+    // Later: Use chalk functions instead.
+    // const TAG_COLORS = {
+    //     error: 'red',
+    //     warn: 'yellow',
+    //     beacon: 'purple',
+    //     event: 'blue',
+    //     noisy: 'cyan',
+    //     debug: 'green'
+    // };
+
+    tag = tag || 'event';
+    const tagStr = tag.toUpperCase();
+    // const tagColor = TAG_COLORS[tag.toLowerCase()] || TAG_COLORS['event'];
+    // const tagStr = tagColor ?
+    //     Util.colored(tag.toUpperCase(), tagColor) :
+    //     tag;
+
+    const dateTime = moment().format('YYYY MMM D hh:mm:ss.S');
+
+    const info = Util.isString(input) ?
+        input :
+        Util.stringify(input);
+
+    // Later: Red error and beacon text
+    console.log(`  ${tagStr} (${ dateTime }) ${ info }\n`);
 };
 
 
