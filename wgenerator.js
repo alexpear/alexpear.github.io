@@ -140,22 +140,110 @@ class WGenerator {
     // TODO i'm also interested in reading from local .txt files.
     static exampleRaw () {
         return `
-            * output
-            5 {vehicleCrew}, warthog
+* output
+1 fireteam
 
-            * vehicleCrew
-            5 marine, marine, marine
-            2 marine, marine
+* children of fireteam
+veteran
+marine
+marine
+{specialAsset}
 
-            * children of marine
-            flakArmor
-            {weapon}
+* specialAsset
+4 officer
+4 {vehicle}
 
-            * weapon
-            5 smg
-            5 battleRifle
-            5 assaultRifle
-            1 shotgun`;
+* children of veteran
+marineHelmet
+flakArmor
+{specialWeapon}
+{gear}
+
+* children of marine
+marineHelmet
+flakArmor
+{primaryWeapon}
+{gear}
+
+* children of officer
+uniform
+neuralLace
+{smallWeapon}
+{commandGear}
+
+* primaryWeapon
+4 smg
+4 battleRifle
+2 assaultRifle
+1 hybridAssaultRifle
+2 dmr
+1 hybridDmr
+1 shotgun
+
+* smallWeapon
+4 lightPistol
+4 reachPistol
+3 heavyPistol
+3 smg
+1 smgBayonet
+
+* gear
+6 {commandGear}
+6 fragGrenade
+6 medPack
+4 {smallWeapon}
+4 satchelCharge
+4 camoflageNet
+4 tripMine
+2 combatShield
+2 knife, knife
+2 climbingRope
+2 toolbox
+1 flashbang
+
+* commandGear
+4 targetLocator
+4 secureDatapad
+2 oneTimePad
+4 microwaveAntenna
+2 telescope
+1 binoculars
+1 plasmaPistol
+1 boltShot
+1 plasmaGrenade
+1 spikeGrenade
+1 paperMap
+1 bubbleShield
+
+* specialWeapon
+4 {smallWeapon}, {smallWeapon}
+4 sniper
+4 shotgun
+4 grenadeLauncher
+4 rocketLauncher
+1 adVictoriam
+3 saw
+3 hydra
+3 laser
+3 flamethrower
+
+* vehicle
+4 {warthog}
+4 {goose}, {goose}
+3 falcon
+3 transportHornet
+
+* warthog
+4 transportWarthog
+6 chaingunWarthog
+2 gaussWarthog
+1 rocketWarthog
+1 needlerWarthog
+1 oniChaingunWarthog
+
+* goose
+4 mongoose
+2 gungoose`;
     }
 
     static exampleTree () {
