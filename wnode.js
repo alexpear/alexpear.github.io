@@ -44,7 +44,7 @@ let WNode = module.exports = class WNode {
         indent = Util.default(indent, 0);
 
         let outString = furtherLine(Util.formatProp(this, 'name'));
-        outString += furtherLine(Util.formatProp(this, 'templateName'));
+        outString += furtherLine(this.templateName);
 
         const SKIP_PROPS = [
             'name',
