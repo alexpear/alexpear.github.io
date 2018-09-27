@@ -61,17 +61,11 @@ let WNode = module.exports = class WNode {
             outString += furtherLine(Util.formatProp(this, prop));
         }
 
-        if (this.components.length === 0) {
-            outString += furtherLine('components: []');
-        }
-        else {
-            outString += furtherLine('components:');
+        if (this.components.length > 0) {
+            outString += furtherLine('  components:');
             for (let component of this.components) {
-                outString += component.toPrettyString(indent + 2);
-                outString += '\n';
+                outString += component.toPrettyString(indent + 4);
             }
-
-            // outString += furtherLine(']');
         }
 
         return outString;
