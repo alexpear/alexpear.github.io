@@ -14,6 +14,7 @@ class WGenerator {
         this.childTables = {};
         this.aliasTables = {};
 
+        // TODO functionize table parsing logic.
         // TODO: Add support for ignoring comments.
         const tableRaws = this.rawString.split('*');
 
@@ -37,6 +38,7 @@ class WGenerator {
                     return;
                 }
 
+                // TODO support '* alias smallItem' syntax.
                 const aliasTable = new AliasTable(tableRaw);
                 const key = aliasTable.key;
 
