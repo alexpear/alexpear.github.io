@@ -474,4 +474,22 @@ exampleOutput:
 
 
 
+I may eventually want to combine the file of the children and alias tables with the file of template definitions.
+Didn't i call this the codex / templates split in the warbands project?
+Counterargument: I may want to have a template called 'dropship'. 'dropship' may have both children (soldiers) and stats.
+Is that a blocker?
+No.
+Entries would look like:
+* children of dropship
+* dropship [meaning the template's chassis, stats, variations from the chassis, whatever]
+There couldn't be a alias named dropship
+but maybe * dropshipSquad or something
+
+The above plan might require tagging alias tables like:
+* alias dropshipSquad
+
+
+
+
+
 */
