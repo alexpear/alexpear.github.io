@@ -156,13 +156,11 @@ marine
 4 {vehicle}
 
 * children of veteran
-marineHelmet
 flakArmor
 {specialWeapon}
 {gear}
 
 * children of marine
-marineHelmet
 flakArmor
 {primaryWeapon}
 {gear}
