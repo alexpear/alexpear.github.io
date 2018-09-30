@@ -1,0 +1,53 @@
+<body style="background: #236A89; color: #FFFFFF; font-size: 24px"> 
+
+  <script type="text/javascript">
+    function genText() {
+      let fullText = document.getElementById("boxaleph").value;
+      document.getElementById("outputDiv").innerHTML = 'generated';
+    }
+  </script>
+
+  <style>
+    .center * {
+      display: block;
+      margin: 0 auto 0 auto;
+    }
+
+    .center h3 {
+      text-align: center;
+    }
+
+    #generateButton {
+      margin-top: 30px;
+    }
+
+    #outputDiv {
+      width: 700px;
+    }
+
+    #boxaleph {
+      margin-bottom: 100px;
+    }
+  </style>
+
+  <div>
+    <h3 id="title">Tree Navigator</h3>
+    <p>Parent: </p>
+    <input id="parentButton" type="button" onclick="genText()" value="Newt Squad - Squad">
+    <br>
+    <input type="button" onclick="genText()" value="Discard this">
+    <br>
+    <h4 id="title">Suzy - Academy Student</h4>
+    <h4 id="title">Toughness: 8</h4>
+    <h4 id="title">Charisma: 4</h4>
+    <div>
+      <input type="button" onclick="genText()" value="Smg">
+      <br>
+      <input type="button" onclick="genText()" value="Helmet">
+      <br>
+      <input type="button" onclick="genText()" value="Walkie Talkie">
+      <br>
+    </div>
+  </div>
+
+</body>
