@@ -1,0 +1,108 @@
+* output
+fireteam
+
+* children of fireteam
+{leader}
+marine
+marine
+{specialAsset}
+
+* leader
+4 specialMarine
+4 marine
+
+* specialAsset
+4 specialMarine
+4 vehicle
+
+* children of specialMarine
+marineHelmet
+flakArmor
+{specialWeapon}
+{gear}
+
+* children of marine
+marineHelmet
+flakArmor
+{primaryWeapon}
+{gear}
+
+* children of officer
+uniform
+neuralLace
+{smallWeapon}
+
+* primaryWeapon
+4 smg
+2 assaultRifle
+1 hybridAssaultRifle
+4 battleRifle
+2 dmr
+1 hybridDmr
+1 shotgun
+
+* smallWeapon
+4 lightPistol
+4 reachPistol
+3 heavyPistol
+3 smg
+1 smgBayonet
+
+* gear
+4 {smallWeapon}
+4 fragGrenade
+2 telescope
+1 binoculars
+2 climbingRope
+6 medPack
+2 combatShield
+2 knife, knife
+1 flashbang
+4 satchelCharge
+2 oneTimePad
+4 secureDatapad
+1 bubbleShield
+4 targetLocator
+4 tripMine
+1 plasmaPistol
+1 boltShot
+1 plasmaGrenade
+1 spikeGrenade
+4 camoflageNet
+1 paperMap
+4 microwaveAntenna
+2 toolbox
+
+* specialWeapon
+3 saw
+3 hydra
+4 sniper
+4 shotgun
+4 grenadeLauncher
+3 laser
+4 rocketLauncher
+1 adVictoriam
+3 flamethrower
+4 {smallWeapon}, {smallWeapon}
+
+* vehicle
+4 {warthog}
+4 {goose}, {goose}
+3 falcon
+3 transportHornet
+
+* warthog
+4 transportWarthog
+6 chaingunWarthog
+2 gaussWarthog
+1 rocketWarthog
+1 needlerWarthog
+1 oniChaingunWarthog
+
+* goose
+4 mongoose
+2 gungoose
+
+
+
+
