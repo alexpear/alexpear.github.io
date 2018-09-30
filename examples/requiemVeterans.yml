@@ -1,0 +1,15 @@
+context:
+  - requiemVeteranMarine:
+    components:
+      - flakArmor
+      - smg
+      - boltshot
+      - autoSentry
+  - requiemVeteranMarine:
+    components:
+      - flakArmor
+      - shotgun
+      - boltshot
+      - splinterGrenade
+
+
