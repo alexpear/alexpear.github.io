@@ -38,7 +38,11 @@ class WGenerator {
                     return;
                 }
 
-                // TODO support '* alias smallItem' syntax.
+                // TODO
+                // if (AliasTable.isAppropriateFor(tableRaw)) {
+                // }
+
+                // Default interpretation of a table:
                 const aliasTable = new AliasTable(tableRaw);
                 const key = aliasTable.key;
 
