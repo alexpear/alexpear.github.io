@@ -353,8 +353,9 @@ class AliasTable {
             .split('\n')
             .map(line => line.trim());
 
-        // Later we could complain if the first line contains whitespace.
-        this.key = lines[0];
+        // Later we could complain if the first line's name contains whitespace.
+        this.key = AliasTable.withoutTheStarter(lines[0]);
+        // this.key = lines[0];
 
         for (let li = 1; li < lines.length; li++) {
             const line = lines[li];
@@ -391,7 +392,25 @@ class AliasTable {
     getOutput () {
         return Util.randomOf(this.outputs);
     }
+
+    static withoutTheStarter (rawString) {
+        const s = rawString.trim();
+        const sLow = s.toLowerCase();
+
+        for (let starter of AliasTable.STARTERS) {
+            if (sLow.startsWith(starter)) {
+                return s.slice(starter.length)
+                    .trim();
+            }
+        }
+
+        return s;
+    }
 }
+
+AliasTable.STARTERS = [
+    'alias'
+];
 
 class ChildrenTable {
     constructor (rawString) {
