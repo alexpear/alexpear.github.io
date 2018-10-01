@@ -145,29 +145,61 @@ class WGenerator {
 
     // TODO i'm also interested in reading from local .txt files.
     static exampleRaw () {
+        // TODO also add ODST squads, Spartans, maybe Spartan squads, & Spartans in vehicles.
         return `
 * output
-1 fireteam
+1 {squad}, {squad}, {squad}
 
-* children of fireteam
-veteran
-marine
-marine
-{specialAsset}
+* alias squad
+4 marineSquad
+4 {vehicleSquad}
 
-* specialAsset
-4 officer
-4 {vehicle}
+* children of marineSquad
+{specialSoldier}
+marines
 
-* children of veteran
-flakArmor
-{specialWeapon}
-{gear}
+* children of marines
+{basicWeapon}
 
-* children of marine
-flakArmor
-{primaryWeapon}
-{gear}
+* alias basicWeapon
+4 smg
+4 ar
+4 br
+3 dmr
+1 shotgun
+
+* alias specialSoldier
+4 veteranMarine
+3 officer
+
+* children of veteranMarine
+{specialItem}
+
+* alias specialItem
+4 {specialWeapon}
+4 {basicWeapon}, {specialGear}
+
+* alias specialWeapon
+4 shotgun
+4 saw
+4 sniperRifle
+4 hydra
+4 grenadeLauncher
+4 rocketLauncher
+4 laser
+3 turret
+3 flamethrower
+4 {smallWeapon}, {smallWeapon}
+
+* alias specialGear
+4 targetDesignator
+4 secureDatapad
+2 plasmaGrenades
+2 plasmaRifle
+1 plasmaPistol
+1 bubbleShield
+1 emp
+3 demolitionCharges
 
 * children of officer
 uniform
@@ -175,35 +207,12 @@ neuralLace
 {smallWeapon}
 {commandGear}
 
-* primaryWeapon
-4 smg
-4 battleRifle
-2 assaultRifle
-1 hybridAssaultRifle
-2 dmr
-1 hybridDmr
-1 shotgun
-
-* smallWeapon
+* alias smallWeapon
 4 lightPistol
 4 reachPistol
 3 heavyPistol
 3 smg
 1 smgBayonet
-
-* gear
-6 {commandGear}
-6 fragGrenade
-6 medPack
-4 {smallWeapon}
-4 satchelCharge
-4 camoflageNet
-4 tripMine
-2 combatShield
-2 knife, knife
-2 climbingRope
-2 toolbox
-1 flashbang
 
 * commandGear
 4 targetLocator
@@ -219,35 +228,59 @@ neuralLace
 1 paperMap
 1 bubbleShield
 
-* specialWeapon
-4 {smallWeapon}, {smallWeapon}
-4 sniper
-4 shotgun
-4 grenadeLauncher
-4 rocketLauncher
-1 adVictoriam
-3 saw
-3 hydra
-3 laser
-3 flamethrower
-
-* vehicle
-4 {warthog}
-4 {goose}, {goose}
-3 falcon
-3 transportHornet
+* alias vehicleSquad
+3 mongooseSquad
+1 gungooseSquad
+6 {warthog}
+5 {aircraft}
+3 scorpion
+2 elephant
 
 * warthog
-4 transportWarthog
-6 chaingunWarthog
-2 gaussWarthog
-1 rocketWarthog
-1 needlerWarthog
-1 oniChaingunWarthog
+2 scoutWarthog
+2 transportWarthog
+4 turretWarthog
 
-* goose
-4 mongoose
-2 gungoose`;
+* children of mongooseSquad
+marineSquad
+
+* children of gungooseSquad
+marineSquad
+
+* children of scorpion
+marineSquad
+
+* children of transportWarthog
+marineSquad
+
+* children of falcon
+marineSquad
+
+* children of hornet
+marines
+{specialSoldier}
+
+* children of scoutWarthog
+{specialSoldier}
+
+* children of turretWarthog
+{specialItem}
+{warthogTurret}
+
+* alias warthogTurret
+6 chaingun
+2 gaussTurret
+1 missilePod
+1 vespinTurret
+1 needleTurret
+
+* alias aircraft
+4 falcon
+4 hornet
+4 wasp
+
+* children of elephant
+marineSquad`;
     }
 
     static exampleTree () {
