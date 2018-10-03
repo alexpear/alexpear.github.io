@@ -20,6 +20,10 @@ class Group {
 
         group.quantity = 100;
         group.weakestCreatureHp = group.template.hp;
+        // Alternately, could just store group.totalHp
+        // and calculate quantity: group.getQuantity()
+        // This would make saving group state in replay and Encounter objs simpler.
+
         group.location = new Location();
 
         return group;
@@ -52,4 +56,57 @@ class Location {
 
 // Run.
 Group.test();
+
+
+/* Notes:
+
+const e = new Encounter();
+group1.faction = 'CG';
+group2.faction = 'CE';
+e.add(group1);
+e.add(group2);
+const outcome = e.resolve()
+
+... methodize that as:
+const outcome = Encounter.between(group1, group2);
+
+
+Dwarf Axe Throwers x100 (CG)
+vs
+Dwarf Axe Throwers x100 (CE)
+
+Dwarf Axe Throwers x100 (CG) go first
+Dwarf Axe Throwers x100 (CG) do 16 damage to Dwarf Axe Throwers x100 (CE).
+Dwarf Axe Throwers x100 (CE) takes 8 casualties and there are now 92 left.
+
+*/
+
+// Part of a Replay
+// Maybe called EncounterSummary
+// Basically stores what happened in a dungeon or on a battlefield.
+class EncounterOutcome {
+
+    static example () {
+        const outcome = new EncounterOutcome();
+
+        // Keys are ids of Groups
+        outcome.changes = {
+            ncfh387h2fd2843dh: {
+                totalHp: 13
+            },
+            f892hc8714cnf2m3o: {
+                buff: 2,
+                totalHp: 3
+            },
+            qc97hgmco8hmg111i: {
+                totalHp: 200
+            }
+        };
+
+        // Also something about items stolen or picked up, or dropped.
+
+        return outcome;
+    }
+}
+
 
