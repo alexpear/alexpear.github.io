@@ -34,7 +34,7 @@ class CreatureTemplate {
     static example () {
         const template = new CreatureTemplate();
 
-        // Dwarf Axethrower
+        // Dwarf Axe Thrower
         template.tags = [
             TAG.Dwarf,
             TAG.Humanoid,
@@ -53,6 +53,7 @@ class CreatureTemplate {
 }
 
 // Could extend a class Template if that simplifies anything.
+// TODO: Move to its own file.
 class ActionTemplate {
     constructor () {
 
