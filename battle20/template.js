@@ -76,3 +76,6 @@ class ActionTemplate {
     }
 }
 
+module.exports = CreatureTemplate;
+// module.exports.ActionTemplate = ActionTemplate;
+
