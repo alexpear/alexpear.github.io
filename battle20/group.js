@@ -90,6 +90,7 @@ class EncounterOutcome {
         const outcome = new EncounterOutcome();
 
         // Keys are ids of Groups
+        // The numbers are absolute (overwriting) not relative (summing)
         outcome.changes = {
             ncfh387h2fd2843dh: {
                 totalHp: 13
