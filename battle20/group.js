@@ -12,6 +12,12 @@ class Group {
 
     }
 
+    // Mostly reads from this.template reference,
+    // but sometimes items or status effects modify the output.
+    getStats () {
+
+    }
+
     static example () {
         const group = new Group();
 
