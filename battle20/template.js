@@ -8,7 +8,7 @@ const Util = require('../Util.js');
 // Later store these enums in another file
 const SIZE = {
     Tiny: 0.5,
-    Small: 0.8,
+    Small: 0.7,
     Medium: 1,
     Large: 2,
     Huge: 3,
