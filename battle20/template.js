@@ -69,6 +69,8 @@ class ActionTemplate {
             TAG.Projectile
         ];
 
+        // Range is in meters. It is okay to round it heavily.
+        template.range = 10;
         template.hit = 4;
         template.damage = 1;
 
