@@ -88,8 +88,9 @@ Dwarf Axe Throwers x100 (CE) takes 8 casualties and there are now 92 left.
 */
 
 // Part of a Replay
-// Maybe called EncounterSummary
+// Maybe name it EncounterSummary
 // Basically stores what happened in a dungeon or on a battlefield.
+// Or ... name it ActionOutcome and we save one of these for every turn taken inside encounters.
 class EncounterOutcome {
 
     static example () {
@@ -107,7 +108,8 @@ class EncounterOutcome {
             },
             qc97hgmco8hmg111i: {
                 totalHp: 200
-            }
+            },
+            u3145195yu0134tu3: {}  // Some participants were unchanged.
         };
 
         // Also something about items stolen or picked up, or dropped.
