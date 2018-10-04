@@ -15,7 +15,11 @@ class Group {
     // Mostly reads from this.template reference,
     // but sometimes items or status effects modify the output.
     getStats () {
+        return {};
+    }
 
+    maxDamage () {
+        return this.getQuantity() * this.getStats().damage;
     }
 
     static example () {
@@ -73,17 +77,34 @@ function attack (groupA, groupB, random) {
     outcome.targets = [groupB];
     // These references may or may not be collapsed into id strings during saving later.
 
+    const aStats = groupA.getStats();
     let damage = 0;
 
     if (random) {
+        if (resolution === 'high' || groupA.getQuantity() <= 5) {
+            const quantity = groupA.getQuantity();
+            const chance = hitChance(groupA, groupB);
 
+            for (let i = 0; i < quantity; i++) {
+                if (Math.random() <= hitChance) {
+                    damage += aStats.damage;
+                }
+            }
+        }
+        else {
+            // Low resolution combat simulation.
+            const maxDamage = 42;
+            const expectedDamage = maxDamage * hitChance(groupA, groupB);
+            damage = randomlyAdjusted(expectedDamage);
+        }
     }
     else {
-
+        const maxDamage = 42;
+        damage = maxDamage * hitChance(groupA, groupB);
     }
 
     if (damage) {
-        const finalHp = groupB.totalHp - damage;
+        const finalHp = max(groupB.totalHp - damage, 0);
 
         outcome.changes[groupB.id] = {
             totalHp: finalHp
@@ -94,9 +115,9 @@ function attack (groupA, groupB, random) {
 }
 
 function rollNeeded (groupA, groupB, cover) {
-    const adjustedDifficulty = groupB.defense - groupA.hit;
+    cover = cover || 0;
 
-    // Later, care about cover.
+    const adjustedDifficulty = groupB.getStats().defense + cover - groupA.getStats().hit;
 
     if (adjustedDifficulty > 20) {
         // They need a critical success.
@@ -111,8 +132,30 @@ function rollNeeded (groupA, groupB, cover) {
     }
 }
 
+function hitChance (groupA, groupB, cover) {
+    const needed = rollNeeded(groupA, groupB, cover);
+
+    return (21 - needed) / 20;
+}
+
 function dieRoll () {
-    
+    return Math.ceiling(
+        Math.random() * 20
+    );
+}
+
+function randomlyAdjusted (n, variance) {
+    return Math.round(
+        n * randomFactor(variance)
+    );
+}
+
+// Used to adjust expected values.
+function randomFactor (variance) {
+    variance = Util.default(variance, 0.5);
+
+    const minimum = 1 - variance;
+    return minimum + (Math.random() * variance * 2);
 }
 
 
