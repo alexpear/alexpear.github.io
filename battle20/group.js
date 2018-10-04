@@ -38,15 +38,15 @@ class Group {
         group.location = new Location();
 
         return group;
+    }
 
-        function getTemplate (templateName) {
+    static getTemplate (templateName) {
             // This is a mock function. Later, read from the template glossary in the World or Glossary object.
-            const exampleGlossary = {
-                dwarfAxeThrower: Template.example()
-            };
+        const exampleGlossary = {
+            dwarfAxeThrower: Template.example()
+        };
 
-            return exampleGlossary[templateName];
-        }
+        return exampleGlossary[templateName];
     }
 
     static test () {
@@ -65,10 +65,8 @@ class Location {
 }
 
 
-function attack (groupA, groupB, random) {
-    if (random === undefined) {
-        random = true;
-    }
+function attack (groupA, groupB, random, resolution) {
+    random = Util.default(random, true);
 
     const outcome = new ActionOutcome(groupA, groupB, 'attack');
 
@@ -124,7 +122,7 @@ function rollNeeded (groupA, groupB, cover) {
         return 20;
     }
     else if (adjustedDifficulty < 2) {
-        // They need anything above a critical failure.
+        // They need anything except a critical failure.
         return 2;
     }
     else {
