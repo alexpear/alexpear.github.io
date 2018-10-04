@@ -21,6 +21,7 @@ class Group {
     static example () {
         const group = new Group();
 
+        group.id = Util.newId();
         group.templateName = 'dwarfAxeThrower';
         group.template = getTemplate(group.templateName);
 
