@@ -53,11 +53,66 @@ class Group {
     }
 }
 
-// TODO: Move to own file.
+// TODO: Move all these classes & funcs to their own files.
 // Location is more relevant to Bottle Worlds than to battle20, which is spaceless.
 // This is a bit of a placeholder.
 class Location {
 
+}
+
+
+function attack (groupA, groupB, random) {
+    if (random === undefined) {
+        random = true;
+    }
+
+    const outcome = new ActionOutcome(groupA, groupB, 'attack');
+
+    // This logic can probably go inside ActionOutcome constructor later.
+    outcome.actor = groupA;
+    outcome.targets = [groupB];
+    // These references may or may not be collapsed into id strings during saving later.
+
+    let damage = 0;
+
+    if (random) {
+
+    }
+    else {
+
+    }
+
+    if (damage) {
+        const finalHp = groupB.totalHp - damage;
+
+        outcome.changes[groupB.id] = {
+            totalHp: finalHp
+        };
+    }
+
+    return outcome;
+}
+
+function rollNeeded (groupA, groupB, cover) {
+    const adjustedDifficulty = groupB.defense - groupA.hit;
+
+    // Later, care about cover.
+
+    if (adjustedDifficulty > 20) {
+        // They need a critical success.
+        return 20;
+    }
+    else if (adjustedDifficulty < 2) {
+        // They need anything above a critical failure.
+        return 2;
+    }
+    else {
+        return adjustedDifficulty;
+    }
+}
+
+function dieRoll () {
+    
 }
 
 
@@ -91,7 +146,6 @@ Dwarf Axe Throwers x100 (CE) takes 8 casualties and there are now 92 left.
 // Part of a Replay
 // Maybe name it EncounterSummary
 // Basically stores what happened in a dungeon or on a battlefield.
-// Or ... name it ActionOutcome and we save one of these for every turn taken inside encounters.
 class EncounterOutcome {
 
     static example () {
@@ -117,6 +171,11 @@ class EncounterOutcome {
 
         return outcome;
     }
+}
+
+// Or ... name it ActionOutcome and we save one of these for every turn taken inside encounters.
+class ActionOutcome {
+
 }
 
 
