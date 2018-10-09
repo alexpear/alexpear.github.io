@@ -343,21 +343,41 @@ marineSquad`;
         return `${ __dirname }/../codices`;
     }
 
-    static test () {
-        const wgen = WGenerator.fromCodex('halo/unsc/patrol');
+    // TODO: running this file with arguments,
+    // eg 'node wgenerator.ts halo/unsc/patrol', should call fromCodex(path).
 
-        const output = wgen.getOutput();
+    static run () {
+        let output;
+
+        if (process.argv.length > 2) {
+            const wgen = WGenerator.fromCodex(process.argv[2]);
+            output = wgen.getOutput();
+        }
+        else {
+            output = WGenerator.test();
+        }
+
+        WGenerator.debugPrint(output);
+    }
+
+    static debugPrint (output) {
         const prettyStrings = output.map(
             node => node.toPrettyString()
         );
-
-        console.log(`WGenerator.test(): \n\n`);
 
         output.forEach(
             node => {
                 console.log(node.toPrettyString());
             }
         );
+    }
+
+    static test () {
+        console.log(`WGenerator.test(): \n\n`);
+
+        const wgen = WGenerator.fromCodex('halo/unsc/patrol');
+
+        return wgen.getOutput();
     }
 }
 
@@ -470,7 +490,7 @@ ChildrenTable.STARTERS = [
 
 
 // Run
-WGenerator.test();
+WGenerator.run();
 
 
 
