@@ -4,6 +4,7 @@
 * alias squad
 4 marineSquad
 4 {vehicleSquad}
+0 TODO also add ODST squads, Spartans, maybe Spartan squads, & Spartans in vehicles.
 
 * children of marineSquad
 {specialSoldier}
