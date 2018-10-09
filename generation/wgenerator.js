@@ -145,187 +145,26 @@ class WGenerator {
         }
     }
 
-    // TODO i'm also interested in reading from local .txt files.
     static exampleRaw () {
-        // TODO also add ODST squads, Spartans, maybe Spartan squads, & Spartans in vehicles.
         return `
-* output
-1 {squad}, {squad}, {squad}
+            * output
+            1 {squad}, {squad}, {squad}
 
-* alias squad
-4 marineSquad
-4 {vehicleSquad}
+            * alias squad
+            4 marineSquad
 
-* children of marineSquad
-{specialSoldier}
-marines
+            * children of marineSquad
+            marines
 
-* children of marines
-{basicWeapon}
+            * children of marines
+            {basicWeapon}
 
-* alias basicWeapon
-4 smg
-4 ar
-4 br
-3 dmr
-1 shotgun
-
-* alias specialSoldier
-4 veteranMarine
-3 officer
-
-* children of veteranMarine
-{specialItem}
-
-* alias specialItem
-4 {specialWeapon}
-4 {basicWeapon}, {specialGear}
-
-* alias specialWeapon
-4 shotgun
-4 saw
-4 sniperRifle
-4 hydra
-4 grenadeLauncher
-4 rocketLauncher
-4 laser
-3 turret
-3 flamethrower
-4 {smallWeapon}, {smallWeapon}
-
-* alias specialGear
-4 targetDesignator
-4 secureDatapad
-2 plasmaGrenades
-2 plasmaRifle
-1 plasmaPistol
-1 bubbleShield
-1 emp
-3 demolitionCharges
-
-* children of officer
-uniform
-neuralLace
-{smallWeapon}
-{commandGear}
-
-* alias smallWeapon
-4 lightPistol
-4 reachPistol
-3 heavyPistol
-3 smg
-1 smgBayonet
-
-* commandGear
-4 targetLocator
-4 secureDatapad
-2 oneTimePad
-4 microwaveAntenna
-2 telescope
-1 binoculars
-1 plasmaPistol
-1 boltShot
-1 plasmaGrenade
-1 spikeGrenade
-1 paperMap
-1 bubbleShield
-
-* alias vehicleSquad
-3 mongooseSquad
-1 gungooseSquad
-6 {warthog}
-5 {aircraft}
-3 scorpion
-2 elephant
-
-* warthog
-2 scoutWarthog
-2 transportWarthog
-4 turretWarthog
-
-* children of mongooseSquad
-marineSquad
-
-* children of gungooseSquad
-marineSquad
-
-* children of scorpion
-marineSquad
-
-* children of transportWarthog
-marineSquad
-
-* children of falcon
-marineSquad
-
-* children of hornet
-marines
-{specialSoldier}
-
-* children of scoutWarthog
-{specialSoldier}
-
-* children of turretWarthog
-{specialItem}
-{warthogTurret}
-
-* alias warthogTurret
-6 chaingun
-2 gaussTurret
-1 missilePod
-1 vespinTurret
-1 needleTurret
-
-* alias aircraft
-4 falcon
-4 hornet
-4 wasp
-
-* children of elephant
-marineSquad`;
-    }
-
-    static exampleTree () {
-        /*
-        pelican
-          pilot
-            magnum
-          warthog
-            marine
-              magnum
-            marine
-              magnum
-            marine
-              magnum
-        */
-        const pelican = new WNode('pelican');
-        const pilot = new WNode('pilot');
-        const warthog = new WNode('warthog');
-        const marine = new WNode('marine');
-        const magnum = new WNode('magnum');
-
-        marine.add(
-            magnum.deepCopy()
-        );
-
-        pelican.add(
-            pilot.add(
-                magnum.deepCopy()
-            )
-        )
-        .add(
-            warthog.add(
-                marine.deepCopy()
-            )
-            .add(
-                marine.deepCopy()
-            )
-            .add(
-                marine.deepCopy()
-            )
-        );
-
-        return pelican;
+            * alias basicWeapon
+            4 smg
+            4 ar
+            4 br
+            3 dmr
+            1 shotgun`;
     }
 
     // Example input: 'sunlight/warbands/warrior'
@@ -342,9 +181,6 @@ marineSquad`;
     static codicesDir () {
         return `${ __dirname }/../codices`;
     }
-
-    // TODO: running this file with arguments,
-    // eg 'node wgenerator.ts halo/unsc/patrol', should call fromCodex(path).
 
     static run () {
         let output;
