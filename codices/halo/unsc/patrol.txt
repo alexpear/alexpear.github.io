@@ -2,9 +2,19 @@
 1 {squad}, {squad}, {squad}
 
 * alias squad
+10 {infantrySquad}
+10 {vehicleSquad}
+9 {support}
+1 friendlyHuragok
+
+* alias infantrySquad
 4 marineSquad
-4 {vehicleSquad}
-0 TODO also add ODST squads, Spartans, maybe Spartan squads, & Spartans in vehicles. Also representations of air, artillery, and orbital support.
+1 {rareInfantry}
+
+* alias rareInfantry
+6 odstSquad
+1 spartanSquad
+1 spartan
 
 * children of marineSquad
 {specialSoldier}
@@ -12,6 +22,7 @@ marines
 
 * children of marines
 {basicWeapon}
+{giGear}
 
 * alias basicWeapon
 4 smg
@@ -25,11 +36,14 @@ marines
 3 officer
 
 * children of veteranMarine
-{specialItem}
+{anyWeapon}
+{smallWeapon}
+{anyGear}
 
-* alias specialItem
+* alias anyWeapon
+4 {basicWeapon}
 4 {specialWeapon}
-4 {basicWeapon}, {specialGear}
+0 TODO split some of these item things out into separate files. So long as each usable table is still accessible.
 
 * alias specialWeapon
 4 shotgun
@@ -43,42 +57,110 @@ marines
 3 flamethrower
 4 {smallWeapon}, {smallWeapon}
 
-* alias specialGear
+* alias alienItem
+4 {alienGrenade}
+0 TODO
+
+* alias alienWeapon
+4 boltshot
+0 TODO
+
+* alias hardToCarryItem
+4 chaingun
+3 missilePod
+3 binaryRifle
+2 incinerationCannon
+
+* alias giGear
+4 fragGrenade
+4 {smallWeapon}
+4 portableTent
+4 extraAmmo
+4 extraRations
+4 camoCloak
+3 smokeGrenade
+3 trenchShovel
+3 radiationPills
+2 flashBangGrenade
+2 deployableCover
+2 caffeinePills
+1 medkit
+
+* alias anyGear
 4 targetDesignator
 4 secureDatapad
-2 plasmaGrenades
+4 medkit
+4 demolitionCharges
+4 {giGear}
+4 {commandGear}
+4 {smallWeapon}
+4 jetpack
+2 emp
 2 plasmaRifle
-1 plasmaPistol
-1 bubbleShield
-1 emp
-3 demolitionCharges
 
 * children of officer
-uniform
 neuralLace
 {smallWeapon}
 {commandGear}
 
 * alias smallWeapon
 4 lightPistol
-4 reachPistol
+4 pistol
 3 heavyPistol
 3 smg
 1 smgBayonet
+3 combatKnife
 
-* commandGear
+* alias commandGear
 4 targetLocator
 4 secureDatapad
-2 oneTimePad
+4 oneTimePad
 4 microwaveAntenna
+3 emp
 2 telescope
-1 binoculars
+2 binoculars
 1 plasmaPistol
 1 boltShot
-1 plasmaGrenade
-1 spikeGrenade
+4 {alienGrenade}
 1 paperMap
 1 bubbleShield
+
+* alias alienGrenade
+4 plasmaGrenade
+4 spikeGrenade
+3 fireGrenade
+3 pulseGrenade
+3 splinterGrenade
+
+* children of odstSquad
+veteranMarine
+odsts
+
+* children of odsts
+{basicWeapon}
+{giGear}
+
+* children of spartanSquad
+{basicWeapon}
+{giGear}
+
+* children of spartan
+{anyWeapon}
+{smallWeapon}
+{anyGear}
+{armorMod}
+
+* alias armorMod
+4 armorLock
+4 dropShield
+5 activeCamo
+4 hologram
+5 thrusterPack
+4 emp
+3 autoSentry
+3 regenField
+4 prometheanVision
+4 hardlightShield
 
 * alias vehicleSquad
 3 mongooseSquad
@@ -94,40 +176,50 @@ neuralLace
 4 turretWarthog
 
 * children of mongooseSquad
-marineSquad
+{infantrySquad}
 
 * children of gungooseSquad
-marineSquad
+{infantrySquad}
 
 * children of scorpion
+{driver}
 marineSquad
+
+* alias driver
+8 combatEngineer
+1 spartan
+
+* children of combatEngineer
+{smallWeapon}
+{anyGear}
 
 * children of transportWarthog
-marineSquad
+{infantrySquad}
 
 * children of falcon
-marineSquad
+{infantrySquad}
 
 * children of hornet
-marines
-{specialSoldier}
+{infantrySquad}
 
 * children of wasp
+{driver}
 chaingun
-{waspModule}
+{airModule}
 
-* alias waspModule
+* alias airModule
 4 missilePod
 2 targetDesignator
 2 gaussTurret
+2 laser
 1 needleTurret
 
 * children of scoutWarthog
-{specialSoldier}
+{infantrySquad}
 
 * children of turretWarthog
-{specialItem}
 {warthogTurret}
+{infantrySquad}
 
 * alias warthogTurret
 6 chaingun
@@ -140,6 +232,56 @@ chaingun
 4 falcon
 4 hornet
 4 wasp
+4 pelican
+
+* children of pelican
+chaingun
+{infantrySquad}
 
 * children of elephant
-marineSquad
+{infantrySquad}
+
+* alias support
+4 artillerySupport
+4 airSupport
+4 orbitalSupport
+4 aiSupport
+
+* children of artillerySupport
+{artillery}
+
+* alias artillery
+4 scorpionBattery
+4 longRangeMissiles
+4 tacticalMac
+
+* children of airSupport
+{airMission}
+
+* alias airMission
+4 longswordCarpetBombing
+4 longswordPrecisionBombing
+4 pelicanResupply
+4 falconGunshipFlyby
+4 waspReconFlyby
+
+* children of orbitalSupport
+{orbital}
+
+* alias orbital
+4 frigate
+4 mac
+4 odstSquad
+2 spartanSquad
+1 eliteCruiser
+
+* children of aiSupport
+{aiCoverage}
+
+* alias aiCoverage
+4 targeting
+4 intel
+4 fireMissions
+4 psyOps
+4 classified
+4 predictiveModeling
