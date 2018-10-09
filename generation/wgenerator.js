@@ -62,8 +62,8 @@ class WGenerator {
         }
     }
 
-    getOutput () {
-        return this.parse('{output}');
+    getOutput (key) {
+        return this.parse(key || '{output}');
     }
 
     // Alternate name resolveString(), because it is random.
