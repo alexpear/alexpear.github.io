@@ -3,6 +3,8 @@
 // Generator that outputs procedurally generated trees of WNodes (Waffle nodes).
 // These trees represent games states, game elements, narrative elements, and similar concepts.
 
+const fs = require('fs');
+
 const Util = require('../util/util.js');
 const WNode = require('../wnode/wnode.js');
 
@@ -326,9 +328,23 @@ marineSquad`;
         return pelican;
     }
 
+    // Example input: 'sunlight/warbands/warrior'
+    static fromCodex (codexPath) {
+        // Later, ignore leading slashes and trailing file extensions.
+        return WGenerator.fromFile(`${ WGenerator.codicesDir() }/${ codexPath }.txt`);
+    }
+
+    static fromFile (path) {
+        const fileString = fs.readFileSync(path, 'utf8');
+        return new WGenerator(fileString);
+    }
+
+    static codicesDir () {
+        return `${ __dirname }/../codices`;
+    }
+
     static test () {
-        const raw = WGenerator.exampleRaw();
-        const wgen = new WGenerator(raw);
+        const wgen = WGenerator.fromCodex('halo/unsc/patrol');
 
         const output = wgen.getOutput();
         const prettyStrings = output.map(
@@ -344,6 +360,7 @@ marineSquad`;
         );
     }
 }
+
 
 class AliasTable {
     constructor (rawString) {
