@@ -111,6 +111,16 @@ marineSquad
 marines
 {specialSoldier}
 
+* children of wasp
+chaingun
+{waspModule}
+
+* alias waspModule
+4 missilePod
+2 targetDesignator
+2 gaussTurret
+1 needleTurret
+
 * children of scoutWarthog
 {specialSoldier}
 
