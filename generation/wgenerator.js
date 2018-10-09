@@ -167,6 +167,10 @@ class WGenerator {
             1 shotgun`;
     }
 
+    // TODO: Consider a syntax like 'sunlight/warbands/warrior/squadLeader' for reaching into a table within a file.
+    // That may need to check whether the last keyword is a alias or not.
+    // I guess i should also consider a syntax wherein you can just mention a alias _without_ the surrounding brackets.
+
     // Example input: 'sunlight/warbands/warrior'
     static fromCodex (codexPath) {
         // Later, ignore leading slashes and trailing file extensions.
@@ -322,6 +326,7 @@ class ChildrenTable {
 ChildrenTable.STARTERS = [
     'children of',
     'childrenof'
+    // 'childrenOf' is implied by the call to toLowerCase()
 ];
 
 
