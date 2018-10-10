@@ -16,38 +16,33 @@
     .center h3 {
       text-align: center;
     }
-
-    #generateButton {
-      margin-top: 30px;
-    }
-
-    #outputDiv {
-      width: 700px;
-    }
-
-    #boxaleph {
-      margin-bottom: 100px;
-    }
   </style>
 
-  <div>
-    <h3 id="title">Tree Navigator</h3>
+  <div id="navigatorWindow">
+
+    <h3 id="uiTitle">Tree Navigator</h3>
+
     <p>Parent: </p>
-    <input id="parentButton" type="button" onclick="genText()" value="Newt Squad - Squad">
+    <input id="parentButton" type="button" class="iconButton group" onclick="goUp()" value="Newt Squad - Squad">
     <br>
-    <input type="button" onclick="genText()" value="Discard this">
+
+    <input type="button" onclick="discard()" value="Discard this!">
     <br>
-    <h4 id="title">Suzy - Academy Student</h4>
-    <h4 id="title">Toughness: 8</h4>
-    <h4 id="title">Charisma: 4</h4>
-    <div>
-      <input type="button" onclick="genText()" value="Smg">
+
+    <h4 id="nodeName">Suzy - Academy Student</h4>
+    <h4 class="property">Toughness: 8</h4>
+    <h4 class="property">Charisma: 4</h4>
+
+    <div id="childButtons">
+<!--       These will be created by JS: -->
+      <input type="button" class="iconButton item" onclick="goToChild(0)" value="Smg">
       <br>
-      <input type="button" onclick="genText()" value="Helmet">
+      <input type="button" class="iconButton item" onclick="goToChild(1)" value="Helmet">
       <br>
-      <input type="button" onclick="genText()" value="Walkie Talkie">
+      <input type="button" class="iconButton item" onclick="goToChild(2)" value="Walkie Talkie">
       <br>
     </div>
+
   </div>
 
 </body>
