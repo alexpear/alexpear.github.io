@@ -1,9 +1,45 @@
 <body style="background: #236A89; color: #FFFFFF; font-size: 24px"> 
 
   <script type="text/javascript">
-    function genText() {
-      let fullText = document.getElementById("boxaleph").value;
-      document.getElementById("outputDiv").innerHTML = 'generated';
+    // TODO consider whether to have these funcs be static funcs of a TreeBrowser class, or similar.
+    let currentNode;
+
+    function init () {
+
+    }
+
+    function loadFile (todo) {
+
+    }
+
+    function updateUi (wNode) {
+      document.getElementById("nodeName").innerHTML = wNode.getName();
+      // TODO
+    }
+
+    function goUp () {
+      if (! currentNode.parent) {
+        // TODO: Friendlier notification.
+        return alert('This node has no parent.');
+      }
+
+      currentNode = currentNode.parent;
+      updateUi();
+    }
+
+    function goToChild (childNumber) {
+      if (childNumber >= currentNode.components.length) {
+        // TODO: Friendlier notification.
+        return alert(`Error: Could not find child number ${ childNumber }`);
+      }
+
+      currentNode = currentNode.components[childNumber];
+      updateUi();
+    }
+
+    function discard () {
+
+      updateUi();
     }
   </script>
 
