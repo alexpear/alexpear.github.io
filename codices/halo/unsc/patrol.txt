@@ -36,6 +36,7 @@ marines
 3 officer
 
 * children of veteranMarine
+{gender}
 {anyWeapon}
 {smallWeapon}
 {anyGear}
@@ -97,9 +98,10 @@ marines
 4 jetpack
 2 emp
 2 plasmaRifle
+0 TODO traits table like muscular, clever, tireless, paranoid, blackBelt, injured, prostheticArm, xenolinguistics, homeworldDestroyed, exhausted, etc.
 
 * children of officer
-neuralLace
+{gender}
 {smallWeapon}
 {commandGear}
 
@@ -110,6 +112,11 @@ neuralLace
 3 smg
 1 smgBayonet
 3 combatKnife
+
+* alias gender
+4 male
+4 female
+1 postgender
 
 * alias commandGear
 4 targetLocator
@@ -141,14 +148,29 @@ odsts
 {giGear}
 
 * children of spartanSquad
+{spartanMod}
+{spartanArmor}
 {basicWeapon}
 {giGear}
 
 * children of spartan
+{gender}
+{spartanMod}
+{spartanArmor}
 {anyWeapon}
 {smallWeapon}
 {anyGear}
 {armorMod}
+
+* alias spartanMod
+3 spartanIIAugmentations
+4 spartanIIIAugmentations
+4 spartanIVAugmentations
+
+* alias spartanArmor
+4 mjolnirArmor
+4 spiArmor
+3 infiltrationSuit
 
 * alias armorMod
 4 armorLock
@@ -190,6 +212,7 @@ marineSquad
 1 spartan
 
 * children of combatEngineer
+{gender}
 {smallWeapon}
 {anyGear}
 
@@ -257,13 +280,15 @@ chaingun
 
 * children of airSupport
 {airMission}
+{aircraft}
 
 * alias airMission
-4 longswordCarpetBombing
-4 longswordPrecisionBombing
-4 pelicanResupply
-4 falconGunshipFlyby
-4 waspReconFlyby
+4 carpetBombing
+4 precisionBombing
+4 resupply
+4 strafingRun
+4 reconFlyover
+4 reserves
 
 * children of orbitalSupport
 {orbital}
@@ -276,6 +301,7 @@ chaingun
 1 eliteCruiser
 
 * children of aiSupport
+{gender}
 {aiCoverage}
 
 * alias aiCoverage
