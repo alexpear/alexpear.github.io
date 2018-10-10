@@ -2,6 +2,9 @@
 
 const moment = require('moment');
 
+// TODO: Change Util to util.
+// TODO: import util funcs from util.js in the warband repo
+// TODO: Maybe make this file generic, usable by most of my projects
 const Util = module.exports;
 
 Util.DEFAULTS = {
@@ -23,6 +26,13 @@ Util.colors = {
 Util.NODE_TYPES = {
     region: 'region',
     location: 'location'  // deprecated
+};
+
+Util.exists = (x) => {
+    return x !== undefined &&
+        x !== null &&
+        x !== NaN &&
+        x !== '';
 };
 
 // TODO reconsider this weird function syntax. Maybe declare a class of functions, then assign the field props to it?
@@ -91,6 +101,64 @@ Util.formatProp = function (object, propName) {
     return `${ propName }: ${ object[propName] }`;
 };
 
+Util.capitalized = (s) => {
+    if (! Util.exists(s)) {
+        return '';
+    }
+    else if (s.length === 1) {
+        return s.toUpperCase();
+    }
+
+    return s[0].toUpperCase() +
+        s.slice(1);
+        // s.slice(1).toLowerCase();
+};
+
+Util.toCamelCase = (s) => {
+    if (! Util.exists(s)) {
+        return '';
+    }
+
+    const words = s.split(/\s/);
+    const tail = words.slice(1)
+        .map(sub = Util.capitalized(sub))
+        .join('');
+
+    return words[0].toLowerCase() +
+        tail;
+};
+
+// input: 'dolphinWithWings'
+// returns: 'Dolphin With Wings'
+Util.fromCamelCase = (s) => {
+    if (! Util.exists(s)) {
+        return '';
+    }
+    else if (s.length === 1) {
+        return s.toUpperCase();
+    }
+
+    const wordStarts = [0];
+    const words = [];
+
+    for (let i = 1; i < s.length; i++) {
+        if (Util.isCapitalized(s[i])) {
+            wordStarts.push(i);
+
+            const firstLetter = wordStarts[wordStarts.length - 2];
+            const word = s.slice(firstLetter, i);
+            words.push(word);
+        }
+    }
+
+    const lastCapital = wordStarts[wordStarts.length - 1];
+    const lastWord = s.slice(lastCapital);
+    words.push(lastWord);
+
+    return words.map(w => Util.capitalized(w))
+        .join(' ');
+};
+
 Util.isNumber = function (x) {
     return typeof x === 'number';
 };
@@ -105,6 +173,10 @@ Util.isArray = function (x) {
         typeof x.length === 'number' &&
         x.length >= 0 &&
         (x.length === 0 || x[0] !== undefined);
+};
+
+Util.isCapitalized = (s) => {
+    return /[A-Z]/.test(s);
 };
 
 Util.stringify = function (x) {
