@@ -77,6 +77,21 @@ class Group {
 // TODO: Move all these classes & funcs to battle.js file probably.
 
 function attack (groupA, groupB, random, resolution) {
+    const outcome = attackOutcome(groupA, groupB, random, resolution);
+    // this.addOutcome(outcome); // add to Battle replay
+
+    // Later, record a Attack Event, etc.
+    // Motivation: Battle in a airship's gunpowder room where Attacks of type Fire have a % chance of setting off a explosion.
+    // TODO: Is there any benefit in conflating class Outcome and class Event?
+
+    // TODO: Update (groupB and/or groupA) based on the outcome.changes dict.
+    // This may trigger Death Events.
+    // Potentially calculate this stuff inside attackOutcome()
+
+    return outcome;
+}
+
+function attackOutcome (groupA, groupB, random, resolution) {
     random = Util.default(random, true);
 
     const outcome = new ActionOutcome(groupA, groupB, 'attack');
