@@ -14,10 +14,9 @@ class Group {
 
     }
 
-    // Mostly reads from this.template reference,
-    // but sometimes items or status effects modify the output.
     getStats () {
-        return {};
+        // Later sometimes items or status effects modify the output.
+        return this.template;
     }
 
     getQuantity () {
@@ -83,7 +82,7 @@ function attack (groupA, groupB, random, resolution) {
     outcome.targets = [groupB];
     // These references may or may not be collapsed into id strings during saving later.
 
-    const aStats = groupA.getStats();
+    const aAction = groupA.getStats().actions[0];
     let damage = 0;
 
     if (random) {
@@ -92,8 +91,8 @@ function attack (groupA, groupB, random, resolution) {
             const chance = hitChance(groupA, groupB);
 
             for (let i = 0; i < quantity; i++) {
-                if (Math.random() <= hitChance) {
-                    damage += aStats.damage;
+                if (Math.random() <= chance) {
+                    damage += aAction.damage;
                 }
             }
         }
@@ -110,7 +109,7 @@ function attack (groupA, groupB, random, resolution) {
     }
 
     if (damage) {
-        const finalHp = max(groupB.getTotalHp() - damage, 0);
+        const finalHp = Math.max(groupB.getTotalHp() - damage, 0);
 
         outcome.changes[groupB.id] = {
             totalHp: finalHp
@@ -123,7 +122,11 @@ function attack (groupA, groupB, random, resolution) {
 function rollNeeded (groupA, groupB, cover) {
     cover = cover || 0;
 
-    const adjustedDifficulty = groupB.getStats().defense + cover - groupA.getStats().hit;
+    const attack = groupA.getStats().actions[0];
+    const defense = groupB.getStats().defense;
+    const adjustedDifficulty = defense + cover - attack.hit;
+
+    Util.log(`adjustedDifficulty is ${ adjustedDifficulty }`, 'debug');
 
     if (adjustedDifficulty > 20) {
         // They need a critical success.

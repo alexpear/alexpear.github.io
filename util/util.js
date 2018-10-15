@@ -175,6 +175,10 @@ Util.isArray = function (x) {
         (x.length === 0 || x[0] !== undefined);
 };
 
+Util.array = (x) => {
+    return Util.isArray(x) ? x : [x];
+};
+
 Util.isCapitalized = (s) => {
     return /[A-Z]/.test(s);
 };
