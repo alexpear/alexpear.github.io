@@ -3,7 +3,8 @@
 // A stat block for a certain creature type.
 // Later, may want to merge this with WNode classes.
 
-const Util = require('../Util.js');
+const ActionTemplate = require('./actiontemplate.js');
+const Util = require('../util/util.js');
 
 // Later store these enums in another file
 const SIZE = {
@@ -26,7 +27,7 @@ const TAG = {
     Projectile: 'projectile'
 };
 
-class CreatureTemplate {
+module.exports = class CreatureTemplate {
     constructor () {
 
     }
@@ -51,33 +52,3 @@ class CreatureTemplate {
         return template;
     }
 }
-
-// Could extend a class Template if that simplifies anything.
-// TODO: Move to its own file.
-class ActionTemplate {
-    constructor () {
-
-    }
-
-    static example () {
-        const template = new ActionTemplate();
-
-        // Dwarven throwing axe
-        template.tags = [
-            TAG.Dwarf,
-            TAG.Blade,
-            TAG.Projectile
-        ];
-
-        // Range is in meters. It is okay to round it heavily.
-        template.range = 10;
-        template.hit = 4;
-        template.damage = 1;
-
-        return template;
-    }
-}
-
-module.exports = CreatureTemplate;
-// module.exports.ActionTemplate = ActionTemplate;
-

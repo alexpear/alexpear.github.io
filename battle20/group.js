@@ -4,8 +4,10 @@
 // Instanced in memory.
 // Individual creatures (eg dragons, hermits) will still be a Group of 1.
 
-const Util = require('../Util.js');
-const Template = require('./template.js');
+const ActionOutcome = require('./actionoutcome.js');
+const CreatureTemplate = require('./creaturetemplate.js');
+const Location = require('../bottleWorld/location.js');
+const Util = require('../util/util.js');
 
 class Group {
     constructor () {
@@ -27,7 +29,7 @@ class Group {
 
         group.id = Util.newId();
         group.templateName = 'dwarfAxeThrower';
-        group.template = getTemplate(group.templateName);
+        group.template = Group.getTemplate(group.templateName);
 
         group.quantity = 100;
         group.weakestCreatureHp = group.template.hp;
@@ -43,7 +45,7 @@ class Group {
     static getTemplate (templateName) {
             // This is a mock function. Later, read from the template glossary in the World or Glossary object.
         const exampleGlossary = {
-            dwarfAxeThrower: Template.example()
+            dwarfAxeThrower: CreatureTemplate.example()
         };
 
         return exampleGlossary[templateName];
@@ -58,12 +60,6 @@ class Group {
 }
 
 // TODO: Move all these classes & funcs to their own files.
-// Location is more relevant to Bottle Worlds than to battle20, which is spaceless.
-// This is a bit of a placeholder.
-class Location {
-
-}
-
 
 function attack (groupA, groupB, random, resolution) {
     random = Util.default(random, true);
@@ -183,40 +179,5 @@ Dwarf Axe Throwers x100 (CG) do 16 damage to Dwarf Axe Throwers x100 (CE).
 Dwarf Axe Throwers x100 (CE) takes 8 casualties and there are now 92 left.
 
 */
-
-// Part of a Replay
-// Maybe name it EncounterSummary
-// Basically stores what happened in a dungeon or on a battlefield.
-class EncounterOutcome {
-
-    static example () {
-        const outcome = new EncounterOutcome();
-
-        // Keys are ids of Groups
-        // The numbers are absolute (overwriting) not relative (summing)
-        outcome.changes = {
-            ncfh387h2fd2843dh: {
-                totalHp: 13
-            },
-            f892hc8714cnf2m3o: {
-                buff: 2,
-                totalHp: 3
-            },
-            qc97hgmco8hmg111i: {
-                totalHp: 200
-            },
-            u3145195yu0134tu3: {}  // Some participants were unchanged.
-        };
-
-        // Also something about items stolen or picked up, or dropped.
-
-        return outcome;
-    }
-}
-
-// Or ... name it ActionOutcome and we save one of these for every turn taken inside encounters.
-class ActionOutcome {
-
-}
 
 
