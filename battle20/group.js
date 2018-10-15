@@ -66,7 +66,7 @@ class Group {
     static test () {
         const ga = Group.example();
         const gb = Group.example();
-        const output = attack(ga, gb, true, 'high');
+        const output = attack(ga, gb, true, 'low');
 
         console.log(`Group.test() \n`);
         console.log(JSON.stringify(output, undefined, '    '));
@@ -104,14 +104,17 @@ function attack (groupA, groupB, random, resolution) {
         }
         else {
             // Low resolution combat simulation.
-            const maxDamage = 42;
+            const maxDamage = groupA.maxDamage();
             const expectedDamage = maxDamage * hitChance(groupA, groupB);
             damage = randomlyAdjusted(expectedDamage);
         }
     }
     else {
-        const maxDamage = 42;
-        damage = maxDamage * hitChance(groupA, groupB);
+        const maxDamage = groupA.maxDamage();
+        damage = Math.round(
+            maxDamage * hitChance(groupA, groupB)
+        );
+        // Later think about the edge case where this rounds down to 0 damage, eg in skirmishes.
     }
 
     if (damage) {
