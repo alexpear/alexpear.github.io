@@ -90,6 +90,8 @@ function attack (groupA, groupB, random, resolution) {
             const quantity = groupA.getQuantity();
             const chance = hitChance(groupA, groupB);
 
+            Util.log(`high res random branch, quantity: ${ quantity }, chance: ${ chance }`, 'debug');
+
             for (let i = 0; i < quantity; i++) {
                 if (Math.random() <= chance) {
                     damage += aAction.damage;
@@ -114,6 +116,9 @@ function attack (groupA, groupB, random, resolution) {
         outcome.changes[groupB.id] = {
             totalHp: finalHp
         };
+    }
+    else {
+        Util.log('damage is: ' + damage, 'debug');
     }
 
     return outcome;

@@ -28,6 +28,7 @@ Util.NODE_TYPES = {
     location: 'location'  // deprecated
 };
 
+// TODO: Specify all this as a class with static member funcs, not this silly function assignment syntax.
 Util.exists = (x) => {
     return x !== undefined &&
         x !== null &&
