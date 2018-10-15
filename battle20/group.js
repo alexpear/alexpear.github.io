@@ -20,6 +20,15 @@ class Group {
         return {};
     }
 
+    getQuantity () {
+        // Later this may change if we use the .totalHp model.
+        return this.quantity;
+    }
+
+    getTotalHp () {
+        return this.template.hp * (this.quantity - 1) + this.weakestCreatureHp;
+    }
+
     maxDamage () {
         return this.getQuantity() * this.getStats().damage;
     }
@@ -52,14 +61,17 @@ class Group {
     }
 
     static test () {
-        const output = Group.example();
-        console.log(`Group.test()`);
+        const ga = Group.example();
+        const gb = Group.example();
+        const output = attack(ga, gb, true, 'high');
+
+        console.log(`Group.test() \n`);
         console.log(JSON.stringify(output, undefined, '    '));
         return output;
     }
 }
 
-// TODO: Move all these classes & funcs to their own files.
+// TODO: Move all these classes & funcs to battle.js file probably.
 
 function attack (groupA, groupB, random, resolution) {
     random = Util.default(random, true);
@@ -98,7 +110,7 @@ function attack (groupA, groupB, random, resolution) {
     }
 
     if (damage) {
-        const finalHp = max(groupB.totalHp - damage, 0);
+        const finalHp = max(groupB.getTotalHp() - damage, 0);
 
         outcome.changes[groupB.id] = {
             totalHp: finalHp
