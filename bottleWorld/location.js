@@ -1,5 +1,5 @@
 'use strict';
 
-class Location {
+module.exports = class Location {
 
-}
+};
