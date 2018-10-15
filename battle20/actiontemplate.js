@@ -14,9 +14,9 @@ module.exports = class ActionTemplate {
 
         // Dwarven throwing axe
         template.tags = [
-            TAG.Dwarf,
-            TAG.Blade,
-            TAG.Projectile
+            TAG.DWARF,
+            TAG.BLADE,
+            TAG.PROJECTILE
         ];
 
         // Range is in meters. It is okay to round it heavily.
