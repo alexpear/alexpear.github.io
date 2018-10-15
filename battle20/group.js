@@ -19,6 +19,10 @@ class Group {
         return this.template;
     }
 
+    getFirstAction () {
+        return this.getStats().actions[0];
+    }
+
     getQuantity () {
         // Later this may change if we use the .totalHp model.
         return this.quantity;
@@ -29,7 +33,7 @@ class Group {
     }
 
     maxDamage () {
-        return this.getQuantity() * this.getStats().damage;
+        return this.getQuantity() * this.getFirstAction().damage;
     }
 
     static example () {
@@ -82,7 +86,7 @@ function attack (groupA, groupB, random, resolution) {
     outcome.targets = [groupB];
     // These references may or may not be collapsed into id strings during saving later.
 
-    const aAction = groupA.getStats().actions[0];
+    const aAction = groupA.getFirstAction();
     let damage = 0;
 
     if (random) {
@@ -127,7 +131,7 @@ function attack (groupA, groupB, random, resolution) {
 function rollNeeded (groupA, groupB, cover) {
     cover = cover || 0;
 
-    const attack = groupA.getStats().actions[0];
+    const attack = groupA.getFirstAction();
     const defense = groupB.getStats().defense;
     const adjustedDifficulty = defense + cover - attack.hit;
 
