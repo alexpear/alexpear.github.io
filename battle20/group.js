@@ -4,14 +4,28 @@
 // Instanced in memory.
 // Individual creatures (eg dragons, hermits) will still be a Group of 1.
 
+const Alignment = require('../dnd/alignment.js');
 const Event = require('./event.js');
 const CreatureTemplate = require('./creaturetemplate.js');
 const Location = require('../bottleWorld/location.js');
 const Util = require('../util/util.js');
 
-module.exports = class Group {
-    constructor () {
+class Group {
+    constructor (templateName, quantity) {
+        this.id = Util.newId();
 
+        this.templateName = templateName;
+        this.template = Group.getTemplate(this.templateName);
+        this.weakestCreatureHp = this.template.hp;
+
+        this.quantity = quantity || 1;
+        // Alternately, could just store group.totalHp
+        // and calculate quantity: group.getQuantity()
+        // This would make saving group state in replay and Encounter objs simpler.
+
+        this.location = new Location();
+
+        this.alignment = new Alignment('NN');
     }
 
     getStats () {
@@ -55,7 +69,7 @@ module.exports = class Group {
     }
 
     static getTemplate (templateName) {
-            // This is a mock function. Later, read from the template glossary in the World or Glossary object.
+        // This is a mock function. Later, read from the template glossary in the World or Glossary object.
         const exampleGlossary = {
             dwarfAxeThrower: CreatureTemplate.example()
         };
@@ -66,7 +80,10 @@ module.exports = class Group {
     static test () {
         const ga = Group.example();
         const gb = Group.example();
-        const output = attack(ga, gb, true, 'low');
+        gb.alignment = 'LG';
+
+        const output = attack(ga, gb, true, 'low')
+            .withoutCircularReferences('pretty');
 
         console.log(`Group.test() \n`);
         console.log(JSON.stringify(output, undefined, '    '));
@@ -193,6 +210,8 @@ function randomFactor (variance) {
     const minimum = 1 - variance;
     return minimum + (Math.random() * variance * 2);
 }
+
+module.exports = Group;
 
 
 // Run.
