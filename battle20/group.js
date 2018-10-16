@@ -63,6 +63,10 @@ class Group {
         return this.getTotalHp() % this.getStats().hp;
     }
 
+    isActive () {
+        return this.getQuantity() > 0;
+    }
+
     maxDamage () {
         return this.getQuantity() * this.getFirstAction().damage;
     }
@@ -72,7 +76,7 @@ class Group {
 
         // Later, maybe put retreat logic in here.
 
-        if (totalHp <= 0) {
+        if (this.totalHp <= 0) {
             Util.log(`Group ${ this.toPrettyString() } has been eliminated.`, 'debug');
             this.status = 'eliminated';
         }
@@ -172,13 +176,17 @@ function attackEvent (groupA, groupB, random, resolution) {
     }
 
     if (damage) {
-        const finalHp = Math.max(groupB.getTotalHp() - damage, 0);
+        // Later count quantity before & after damage to determine how many deaths happened. Relevant to necromancy.
+        groupB.takeDamage(damage);
+        event.addTag(TAG.Damage);
+
+        if (! groupB.isActive()) {
+            event.addTag(TAG.GroupElimination);
+        }
 
         event.changes[groupB.id] = {
-            totalHp: finalHp
+            totalHp: groupB.getTotalHp()
         };
-
-        // TODO: Update the Groups too.
     }
     else {
         Util.log('damage is: ' + damage, 'debug');
