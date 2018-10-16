@@ -27,27 +27,5 @@ module.exports = class Event {
                 obj.toPrettyString() :
                 obj.id;
         }
-
-
-
-        // const COMPLEX_FIELDS = [
-        //     'actor',
-        //     'targets'
-        // ];
-
-        // for (let key in this) {
-        //     const originalValue = this[key];
-
-        //     if (COMPLEX_FIELDS.includes(key)) {
-        //         simpleGroup[key] = mode === 'pretty' ?
-        //             originalValue.toPrettyString() :
-        //             originalValue.id;
-        //     }
-        //     else {
-        //         simpleGroup[key] = originalValue;
-        //     }
-        // }
-
-        // return simpleGroup;
     }
 };
