@@ -2,17 +2,17 @@
 
 const moment = require('moment');
 
-// TODO: Change Util to util.
 // TODO: import util funcs from util.js in the warband repo
-// TODO: Maybe make this file generic, usable by most of my projects
-const Util = module.exports;
+// TODO: Maybe make this file generic, usable by most of my projects.
+// Can split out Battle20 specific stuff into another utils file.
+const util = module.exports;
 
-Util.DEFAULTS = {
+util.DEFAULTS = {
     ROWCOUNT: 12,
     COLCOUNT: 12
 };
 
-Util.colors = {
+util.colors = {
     black: '1;37;40m',
     red: '1;37;41m',
     green: '1;30;42m',
@@ -23,13 +23,13 @@ Util.colors = {
     grey: '1;30;47m'
 };
 
-Util.NODE_TYPES = {
+util.NODE_TYPES = {
     region: 'region',
     location: 'location'  // deprecated
 };
 
 // TODO: Specify all this as a class with static member funcs, not this silly function assignment syntax.
-Util.exists = (x) => {
+util.exists = (x) => {
     return x !== undefined &&
         x !== null &&
         x !== NaN &&
@@ -37,7 +37,7 @@ Util.exists = (x) => {
 };
 
 // TODO reconsider this weird function syntax. Maybe declare a class of functions, then assign the field props to it?
-Util.default = function (input, defaultValue) {
+util.default = function (input, defaultValue) {
     if (input === undefined) {
         return defaultValue;
     } else {
@@ -45,32 +45,32 @@ Util.default = function (input, defaultValue) {
     }
 };
 
-Util.contains = function (array, fugitive) {
+util.contains = function (array, fugitive) {
     return array.indexOf(fugitive) >= 0;
 };
 
-Util.randomIntBetween = function (minInclusive, maxExclusive) {
+util.randomIntBetween = function (minInclusive, maxExclusive) {
     if (!minInclusive || !maxExclusive) {
-        console.log('error: Util.randomIntBetween() called with missing parameters.');
+        console.log('error: util.randomIntBetween() called with missing parameters.');
         return -1;
     } else if (maxExclusive <= minInclusive) {
-        console.log('error: Util.randomIntBetween() called with max <= min.');
+        console.log('error: util.randomIntBetween() called with max <= min.');
         return -1;
     }
 
     return Math.floor( Math.random() * (maxExclusive - minInclusive) + minInclusive );
 };
 
-Util.randomUpTo = function (maxInclusive) {
-    return Util.randomIntBetween(0, maxInclusive - 1);
+util.randomUpTo = function (maxInclusive) {
+    return util.randomIntBetween(0, maxInclusive - 1);
 };
 
-Util.randomOf = function (array) {
+util.randomOf = function (array) {
     const index = Math.floor(Math.random() * array.length);
     return array[index];
 };
 
-Util.newId = function () {
+util.newId = function () {
     // Later research the most performant way to run this.
     const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const ID_LENGTH = 50;
@@ -84,7 +84,7 @@ Util.newId = function () {
     return id;
 };
 
-Util.repeat = function (str, n) {
+util.repeat = function (str, n) {
     let outStr = '';
     for (let i = 0; i < n; i++) {
         outStr += str;
@@ -93,7 +93,7 @@ Util.repeat = function (str, n) {
     return outStr;
 };
 
-Util.formatProp = function (object, propName) {
+util.formatProp = function (object, propName) {
     if (! object[propName]) {
         return '';
     }
@@ -102,8 +102,8 @@ Util.formatProp = function (object, propName) {
     return `${ propName }: ${ object[propName] }`;
 };
 
-Util.capitalized = (s) => {
-    if (! Util.exists(s)) {
+util.capitalized = (s) => {
+    if (! util.exists(s)) {
         return '';
     }
     else if (s.length === 1) {
@@ -115,14 +115,14 @@ Util.capitalized = (s) => {
         // s.slice(1).toLowerCase();
 };
 
-Util.toCamelCase = (s) => {
-    if (! Util.exists(s)) {
+util.toCamelCase = (s) => {
+    if (! util.exists(s)) {
         return '';
     }
 
     const words = s.split(/\s/);
     const tail = words.slice(1)
-        .map(sub = Util.capitalized(sub))
+        .map(sub = util.capitalized(sub))
         .join('');
 
     return words[0].toLowerCase() +
@@ -131,8 +131,8 @@ Util.toCamelCase = (s) => {
 
 // input: 'dolphinWithWings'
 // returns: 'Dolphin With Wings'
-Util.fromCamelCase = (s) => {
-    if (! Util.exists(s)) {
+util.fromCamelCase = (s) => {
+    if (! util.exists(s)) {
         return '';
     }
     else if (s.length === 1) {
@@ -143,7 +143,7 @@ Util.fromCamelCase = (s) => {
     const words = [];
 
     for (let i = 1; i < s.length; i++) {
-        if (Util.isCapitalized(s[i])) {
+        if (util.isCapitalized(s[i])) {
             wordStarts.push(i);
 
             const firstLetter = wordStarts[wordStarts.length - 2];
@@ -156,19 +156,19 @@ Util.fromCamelCase = (s) => {
     const lastWord = s.slice(lastCapital);
     words.push(lastWord);
 
-    return words.map(w => Util.capitalized(w))
+    return words.map(w => util.capitalized(w))
         .join(' ');
 };
 
-Util.isNumber = function (x) {
+util.isNumber = function (x) {
     return typeof x === 'number';
 };
 
-Util.isString = function (x) {
+util.isString = function (x) {
     return typeof x === 'string';
 };
 
-Util.isArray = function (x) {
+util.isArray = function (x) {
     // Later make this more sophisticated, or use a library.
     return x &&
         typeof x.length === 'number' &&
@@ -176,15 +176,15 @@ Util.isArray = function (x) {
         (x.length === 0 || x[0] !== undefined);
 };
 
-Util.array = (x) => {
-    return Util.isArray(x) ? x : [x];
+util.array = (x) => {
+    return util.isArray(x) ? x : [x];
 };
 
-Util.isCapitalized = (s) => {
+util.isCapitalized = (s) => {
     return /[A-Z]/.test(s);
 };
 
-Util.stringify = function (x) {
+util.stringify = function (x) {
     return JSON.stringify(
         x,
         undefined,
@@ -192,7 +192,7 @@ Util.stringify = function (x) {
     );
 };
 
-Util.log = function (input, tag) {
+util.log = function (input, tag) {
     // Later: Use chalk functions instead.
     // const TAG_COLORS = {
     //     error: 'red',
@@ -207,14 +207,14 @@ Util.log = function (input, tag) {
     const tagStr = tag.toUpperCase();
     // const tagColor = TAG_COLORS[tag.toLowerCase()] || TAG_COLORS['event'];
     // const tagStr = tagColor ?
-    //     Util.colored(tag.toUpperCase(), tagColor) :
+    //     util.colored(tag.toUpperCase(), tagColor) :
     //     tag;
 
     const dateTime = moment().format('YYYY MMM D hh:mm:ss.S');
 
-    const info = Util.isString(input) ?
+    const info = util.isString(input) ?
         input :
-        Util.stringify(input);
+        util.stringify(input);
 
     // Later: Red error and beacon text
     console.log(`  ${tagStr} (${ dateTime }) ${ info }\n`);
