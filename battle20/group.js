@@ -244,7 +244,7 @@ function rollNeeded (groupA, groupB, cover) {
     const defense = groupB.getStats().defense;
     const adjustedDifficulty = defense + cover - attack.hit;
 
-    Util.log(`adjustedDifficulty is ${ adjustedDifficulty }`, 'debug');
+    // Util.log(`adjustedDifficulty is ${ adjustedDifficulty }`, 'debug');
 
     if (adjustedDifficulty > 20) {
         // They need a critical success.
