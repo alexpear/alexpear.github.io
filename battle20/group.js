@@ -7,7 +7,7 @@
 const Alignment = require('../dnd/alignment.js');
 const Event = require('./event.js');
 const CreatureTemplate = require('./creaturetemplate.js');
-const Location = require('../bottleWorld/location.js');
+const Coord = require('../util/coord.js');
 const Util = require('../util/util.js');
 
 class Group {
@@ -23,7 +23,13 @@ class Group {
         // and calculate quantity: group.getQuantity()
         // This would make saving group state in replay and Encounter objs simpler.
 
-        this.location = new Location();
+        // 2d or 3d position in meters.
+        // Battle.metersPerSquare converts between meters and squares.
+        // 1m = Individual / Skirmish = Furniture
+        // 10m = Squad = Garage
+        // 100m = Platoon / Formation = City Block
+        // 1000m = 1km = Battallion / Epic = University Campus
+        this.coord = new Coord();
 
         this.alignment = new Alignment('NN');
     }
