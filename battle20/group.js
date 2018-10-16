@@ -128,9 +128,6 @@ function attack (groupA, groupB, random, resolution) {
     const event = attackEvent(groupA, groupB, random, resolution);
     // this.saveEvent(event); // add to Battle replay
 
-    // Later, record tags in the Attack Event, etc.
-    // Motivation: Battle in a airship's gunpowder room where Attacks of type Fire have a % chance of setting off a explosion.
-
     return event;
 }
 
@@ -140,6 +137,8 @@ function attackEvent (groupA, groupB, random, resolution) {
     const event = new Event(groupA, groupB, 'attack');
     event.addTag(TAG.Action);
     event.addTag(TAG.Attack);
+    // Motivation for event tagging: A battle in a airship's gunpowder room
+    // where Attacks of type Fire have a % chance of setting off a explosion.
 
     const aAction = groupA.getFirstAction();
     event.addTag(aAction.tags);
