@@ -4,7 +4,7 @@
 // Instanced in memory.
 // Individual creatures (eg dragons, hermits) will still be a Group of 1.
 
-const ActionOutcome = require('./actionoutcome.js');
+const Event = require('./event.js');
 const CreatureTemplate = require('./creaturetemplate.js');
 const Location = require('../bottleWorld/location.js');
 const Util = require('../util/util.js');
@@ -94,9 +94,9 @@ function attack (groupA, groupB, random, resolution) {
 function attackOutcome (groupA, groupB, random, resolution) {
     random = Util.default(random, true);
 
-    const outcome = new ActionOutcome(groupA, groupB, 'attack');
+    const outcome = new Event(groupA, groupB, 'attack');
 
-    // This logic can probably go inside ActionOutcome constructor later.
+    // This logic can probably go inside Event constructor later.
     outcome.actor = groupA;
     outcome.targets = [groupB];
     // These references may or may not be collapsed into id strings during saving later.
