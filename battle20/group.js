@@ -3,6 +3,7 @@
 // A group of creatures in a bottle world.
 // Instanced in memory.
 // Individual creatures (eg dragons, hermits) will still be a Group of 1.
+// This is for ecology and procedural narrative simulations based on simplified D&D rules.
 
 const Alignment = require('../dnd/alignment.js');
 const Coord = require('../util/coord.js');
@@ -276,6 +277,16 @@ Dwarf Axe Throwers x100 (CE)
 Dwarf Axe Throwers x100 (CG) go first
 Dwarf Axe Throwers x100 (CG) do 16 damage to Dwarf Axe Throwers x100 (CE).
 Dwarf Axe Throwers x100 (CE) takes 8 casualties and there are now 92 left.
+
+
+Sketch of some relationships between classes:
+BottleUi
+Timeline
+WorldState
+Battle
+Group
+WNode (later)
+
 
 */
 
