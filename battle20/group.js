@@ -76,15 +76,15 @@ class Group {
         let damage = 0;
 
         const quantity = this.getQuantity();
-        const chance = hitChance(this, groupB);
-
-        Util.log(`high res random damage, quantity: ${ quantity }, chance: ${ chance }`, 'debug');
+        const chance = hitChance(this, targetGroup);
 
         for (let i = 0; i < quantity; i++) {
             if (Math.random() <= chance) {
                 damage += this.getFirstAction().damage;
             }
         }
+
+        Util.log(`high res random damage, quantity: ${ quantity }, chance: ${ chance }, actual damage: ${ damage }`, 'debug');
 
         return damage;
     }
