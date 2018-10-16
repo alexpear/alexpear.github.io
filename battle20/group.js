@@ -16,13 +16,12 @@ class Group {
 
         this.templateName = templateName;
         this.template = Group.getTemplate(this.templateName);
-        this.weakestCreatureHp = this.template.hp;
+        this.alignment = new Alignment('NN');
 
-        this.quantity = quantity || 1;
-        // Alternately, could just store group.totalHp
-        // and calculate quantity: group.getQuantity()
-        // This would make saving group state in replay and Encounter objs simpler.
-        // TODO: convert it.
+        this.baselineHp = (quantity || 1) * this.getStats().hp;
+
+        // HP is stored as a total to make saving group state in replay and Encounter objs simpler.
+        this.totalHp = this.baselineHp;
 
         // 2d or 3d position in meters.
         // For spaceless simulations (JRPG style), just use a 1x1 grid.
@@ -33,7 +32,7 @@ class Group {
         // 1000m = 1km = Battallion / Epic = University Campus
         this.coord = new Coord();
 
-        this.alignment = new Alignment('NN');
+        this.status = undefined;
     }
 
     getStats () {
@@ -46,12 +45,21 @@ class Group {
     }
 
     getQuantity () {
-        // Later this may change if we use the .totalHp model.
-        return this.quantity;
+        const quantity = Math.ceil(
+            this.getTotalHp() / this.getStats().hp
+        );
+
+        return Math.max(quantity, 0);
+
+        // Later, figure out how to handle effects like 'Buff: +1 HP'.
     }
 
     getTotalHp () {
-        return this.template.hp * (this.quantity - 1) + this.weakestCreatureHp;
+        return this.totalHp;
+    }
+
+    getWeakestCreatureHp () {
+        return this.getTotalHp() % this.getStats().hp;
     }
 
     maxDamage () {
@@ -59,7 +67,15 @@ class Group {
     }
 
     takeDamage (n) {
-        // TODO
+        this.totalHp -= n;
+
+        // Later, maybe put retreat logic in here.
+
+        if (totalHp <= 0) {
+            Util.log(`Group ${ this.toPrettyString() } has been eliminated.`, 'debug');
+            this.status = 'eliminated';
+            // TODO: Maybe death Event tag logic should go in the Battle functions.
+        }
     }
 
     prettyName () {
