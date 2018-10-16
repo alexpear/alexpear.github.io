@@ -71,6 +71,23 @@ class Group {
         return this.getQuantity() * this.getFirstAction().damage;
     }
 
+    highResRandomDamage (targetGroup) {
+        let damage = 0;
+
+        const quantity = this.getQuantity();
+        const chance = hitChance(this, groupB);
+
+        Util.log(`high res random damage, quantity: ${ quantity }, chance: ${ chance }`, 'debug');
+
+        for (let i = 0; i < quantity; i++) {
+            if (Math.random() <= chance) {
+                damage += this.getFirstAction().damage;
+            }
+        }
+
+        return damage;
+    }
+
     takeDamage (n) {
         this.totalHp -= n;
 
@@ -143,21 +160,11 @@ function attackEvent (groupA, groupB, random, resolution) {
     const aAction = groupA.getFirstAction();
     event.addTag(aAction.tags);
 
-    let damage = 0;
+    let damage;
 
     if (random) {
         if (resolution === 'high' || groupA.getQuantity() <= 5) {
-            // Later functionize this.
-            const quantity = groupA.getQuantity();
-            const chance = hitChance(groupA, groupB);
-
-            Util.log(`high res random branch, quantity: ${ quantity }, chance: ${ chance }`, 'debug');
-
-            for (let i = 0; i < quantity; i++) {
-                if (Math.random() <= chance) {
-                    damage += aAction.damage;
-                }
-            }
+            damage = groupA.highResRandomDamage(groupB);
         }
         else {
             // Low resolution combat simulation.
