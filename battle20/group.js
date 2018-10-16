@@ -9,7 +9,7 @@ const CreatureTemplate = require('./creaturetemplate.js');
 const Location = require('../bottleWorld/location.js');
 const Util = require('../util/util.js');
 
-class Group {
+module.exports = class Group {
     constructor () {
 
     }
