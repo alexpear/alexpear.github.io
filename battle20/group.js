@@ -50,21 +50,20 @@ class Group {
         return this.getQuantity() * this.getFirstAction().damage;
     }
 
+    prettyName () {
+        return Util.fromCamelCase(this.name || this.templateName);
+    }
+
+    toPrettyString () {
+        const name = this.prettyName();
+        const alignment = this.alignment;
+
+        return `${ name } (${ alignment }) x${ this.getQuantity() }`;
+    }
+
     static example () {
-        const group = new Group();
-
-        group.id = Util.newId();
-        group.templateName = 'dwarfAxeThrower';
-        group.template = Group.getTemplate(group.templateName);
-
-        group.quantity = 100;
-        group.weakestCreatureHp = group.template.hp;
-        // Alternately, could just store group.totalHp
-        // and calculate quantity: group.getQuantity()
-        // This would make saving group state in replay and Encounter objs simpler.
-
-        group.location = new Location();
-
+        const group = new Group('dwarfAxeThrower', 100);
+        group.alignment = 'CG';
         return group;
     }
 
