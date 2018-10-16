@@ -22,8 +22,10 @@ class Group {
         // Alternately, could just store group.totalHp
         // and calculate quantity: group.getQuantity()
         // This would make saving group state in replay and Encounter objs simpler.
+        // TODO: convert it.
 
         // 2d or 3d position in meters.
+        // For spaceless simulations (JRPG style), just use a 1x1 grid.
         // Battle.metersPerSquare converts between meters and squares.
         // 1m = Individual / Skirmish = Furniture
         // 10m = Squad = Garage
@@ -54,6 +56,10 @@ class Group {
 
     maxDamage () {
         return this.getQuantity() * this.getFirstAction().damage;
+    }
+
+    takeDamage (n) {
+        // TODO
     }
 
     prettyName () {
@@ -121,6 +127,7 @@ function attackEvent (groupA, groupB, random, resolution) {
 
     if (random) {
         if (resolution === 'high' || groupA.getQuantity() <= 5) {
+            // Later functionize this.
             const quantity = groupA.getQuantity();
             const chance = hitChance(groupA, groupB);
 
@@ -153,6 +160,8 @@ function attackEvent (groupA, groupB, random, resolution) {
         event.changes[groupB.id] = {
             totalHp: finalHp
         };
+
+        // TODO: Update the Groups too.
     }
     else {
         Util.log('damage is: ' + damage, 'debug');
