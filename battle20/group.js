@@ -142,6 +142,35 @@ class Group {
 
 // Later: Move all these classes & funcs to battle.js file probably.
 
+function simpleEncounter (groupA, groupB, random, resolution) {
+    let step = 0;
+
+    while (groupA.isActive() && groupB.isActive()) {
+        Util.log(`Step #${ step }`, 'info');
+
+        attack (groupA, groupB);
+        Util.log('\n' + prettySummary([groupA, groupB]), 'info');
+
+        attack (groupB, groupA);
+        Util.log('\n' + prettySummary([groupA, groupB]), 'info');
+
+        step += 1;
+    }
+}
+
+function prettySummary (groups) {
+    return groups.map(
+        g => g.toPrettyString()
+    )
+    .join('\n');
+}
+
+function someActive (groups) {
+    return groups.some(
+        g => g.isActive()
+    );
+}
+
 function attack (groupA, groupB, random, resolution) {
     const event = attackEvent(groupA, groupB, random, resolution);
     // this.saveEvent(event); // add to Battle replay
