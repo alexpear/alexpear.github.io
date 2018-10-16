@@ -75,7 +75,6 @@ class Group {
         if (totalHp <= 0) {
             Util.log(`Group ${ this.toPrettyString() } has been eliminated.`, 'debug');
             this.status = 'eliminated';
-            // TODO: Maybe death Event tag logic should go in the Battle functions.
         }
     }
 
@@ -128,10 +127,6 @@ function attack (groupA, groupB, random, resolution) {
     // Later, record tags in the Attack Event, etc.
     // Motivation: Battle in a airship's gunpowder room where Attacks of type Fire have a % chance of setting off a explosion.
 
-    // TODO: Update the world state (ie, groupB and/or groupA) based on the event.changes dict.
-    // This may add a DEATH tag to the Event.
-    // Potentially calculate this stuff inside attackEvent()
-
     return event;
 }
 
@@ -173,7 +168,7 @@ function attackEvent (groupA, groupB, random, resolution) {
         damage = Math.round(
             maxDamage * hitChance(groupA, groupB)
         );
-        // Later think about the edge case where this rounds down to 0 damage, eg in skirmishes.
+        // Later think about the edge case where this always rounds down to 0 damage, eg in skirmishes.
     }
 
     if (damage) {
