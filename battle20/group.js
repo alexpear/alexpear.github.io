@@ -127,16 +127,16 @@ class Group {
     }
 
     static test () {
+        console.log(`Group.test() \n`);
+
         const ga = Group.example();
-        const gb = Group.example();
+        const gb = new Group('dwarfAxeThrower', 108);
         gb.alignment = 'LG';
 
-        const output = attack(ga, gb, true, 'low')
-            .withoutCircularReferences('pretty');
+        simpleEncounter(ga, gb, true, 'low');
 
-        console.log(`Group.test() \n`);
-        console.log(JSON.stringify(output, undefined, '    '));
-        return output;
+        // console.log(JSON.stringify(output, undefined, '    '));
+        return ga;
     }
 }
 
