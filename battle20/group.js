@@ -118,7 +118,7 @@ class Group {
     }
 }
 
-// TODO: Move all these classes & funcs to battle.js file probably.
+// Later: Move all these classes & funcs to battle.js file probably.
 
 function attack (groupA, groupB, random, resolution) {
     const event = attackEvent(groupA, groupB, random, resolution);

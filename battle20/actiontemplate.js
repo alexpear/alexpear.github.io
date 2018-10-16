@@ -2,8 +2,6 @@
 
 const TAG = require('../codices/tags.js');
 
-// Could extend a class Template if that simplifies anything.
-// TODO: Move to its own file.
 module.exports = class ActionTemplate {
     constructor () {
 
