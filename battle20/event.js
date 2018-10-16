@@ -12,4 +12,42 @@ module.exports = class Event {
         this.type = actionType || 'unknown';
         this.changes = {};
     }
+
+    withoutCircularReferences (mode) {
+        // Idiom for shallow copy.
+        const simpleGroup = Object.assign({}, this);
+
+        simpleGroup.actor = simplify(this.actor);
+        simpleGroup.targets = this.targets.map(simplify);
+
+        return simpleGroup;
+
+        function simplify (obj) {
+            return mode === 'pretty' ?
+                obj.toPrettyString() :
+                obj.id;
+        }
+
+
+
+        // const COMPLEX_FIELDS = [
+        //     'actor',
+        //     'targets'
+        // ];
+
+        // for (let key in this) {
+        //     const originalValue = this[key];
+
+        //     if (COMPLEX_FIELDS.includes(key)) {
+        //         simpleGroup[key] = mode === 'pretty' ?
+        //             originalValue.toPrettyString() :
+        //             originalValue.id;
+        //     }
+        //     else {
+        //         simpleGroup[key] = originalValue;
+        //     }
+        // }
+
+        // return simpleGroup;
+    }
 };
