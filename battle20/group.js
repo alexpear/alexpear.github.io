@@ -93,30 +93,23 @@ class Group {
 // TODO: Move all these classes & funcs to battle.js file probably.
 
 function attack (groupA, groupB, random, resolution) {
-    const outcome = attackOutcome(groupA, groupB, random, resolution);
-    // this.addOutcome(outcome); // add to Battle replay
+    const event = attackEvent(groupA, groupB, random, resolution);
+    // this.saveEvent(event); // add to Battle replay
 
-    // Later, record a Attack Event, etc.
+    // Later, record tags in the Attack Event, etc.
     // Motivation: Battle in a airship's gunpowder room where Attacks of type Fire have a % chance of setting off a explosion.
-    // TODO: Is there any benefit in conflating class Outcome and class Event?
 
-    // TODO: Update (groupB and/or groupA) based on the outcome.changes dict.
-    // This may trigger Death Events.
-    // Potentially calculate this stuff inside attackOutcome()
+    // TODO: Update the world state (ie, groupB and/or groupA) based on the event.changes dict.
+    // This may add a DEATH tag to the Event.
+    // Potentially calculate this stuff inside attackEvent()
 
-    return outcome;
+    return event;
 }
 
-function attackOutcome (groupA, groupB, random, resolution) {
+function attackEvent (groupA, groupB, random, resolution) {
     random = Util.default(random, true);
 
-    const outcome = new Event(groupA, groupB, 'attack');
-
-    // This logic can probably go inside Event constructor later.
-    outcome.actor = groupA;
-    outcome.targets = [groupB];
-    // These references may or may not be collapsed into id strings during saving later.
-
+    const event = new Event(groupA, groupB, 'attack');
     const aAction = groupA.getFirstAction();
     let damage = 0;
 
@@ -151,7 +144,7 @@ function attackOutcome (groupA, groupB, random, resolution) {
     if (damage) {
         const finalHp = Math.max(groupB.getTotalHp() - damage, 0);
 
-        outcome.changes[groupB.id] = {
+        event.changes[groupB.id] = {
             totalHp: finalHp
         };
     }
@@ -159,7 +152,7 @@ function attackOutcome (groupA, groupB, random, resolution) {
         Util.log('damage is: ' + damage, 'debug');
     }
 
-    return outcome;
+    return event;
 }
 
 function rollNeeded (groupA, groupB, cover) {
@@ -224,10 +217,10 @@ group1.faction = 'CG';
 group2.faction = 'CE';
 e.add(group1);
 e.add(group2);
-const outcome = e.resolve()
+const event = e.resolve()
 
 ... methodize that as:
-const outcome = Encounter.between(group1, group2);
+const event = Encounter.between(group1, group2);
 
 
 Dwarf Axe Throwers x100 (CG)
