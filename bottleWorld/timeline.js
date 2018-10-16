@@ -1,6 +1,6 @@
 'use strict';
 
-
+// Analogous to a Halo 3 Theater replay.
 
 const util = require('../util/util.js');
 const WorldState = require('./worldState.js');
