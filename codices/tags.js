@@ -1,27 +1,39 @@
 'use strict';
 
-// Later, make this YAML or even custom txt.
-// Later, make these per-setting.
+// Later, make this YAML or JSON or even custom txt
+// Later, make these per-setting
 // Later, could consider a inheritance system (elf extends humanoid)
+// Later, could add a hierarchy like TAG.Event.Death and TAG.Creature.Human
 
-module.exports = {
-    HUMAN: 'human',
-    DWARF: 'dwarf',
-    ELF: 'elf',
-    GOBLIN: 'goblin',
-    UNDEAD: 'undead',
-    CONSTRUCT: 'construct',
-    FEY: 'fey',
+const Util = require('../util/util.js');
 
-    BLADE: 'blade',
-    PIERCING: 'piercing',
-    IMPACT: 'impact',
-    PROJECTILE: 'projectile',
-    FIRE: 'fire',
-    COLD: 'cold',
-    POISON: 'poison',
+module.exports = Util.makeEnum([
+    'Human',
+    'Dwarf',
+    'Elf',
+    'Goblin',
+    'Beast',
+    'Undead',
+    'Construct',
+    'Fey',
+    'Spirit',
+    'Elemental',
 
-    NECROTIC: 'necrotic',
-    RADIANT: 'radiant',
-    ELECTRIC: 'electric'
-};
+    'Blade',
+    'Piercing',
+    'Impact',
+    'Projectile',
+    'Fire',
+    'Cold',
+    'Poison',
+
+    'Necrotic',
+    'Radiant',
+    'Electric',
+
+    'Action',
+    'Attack',
+    'Damage',
+    'Death',
+    'GroupElimination'
+]);

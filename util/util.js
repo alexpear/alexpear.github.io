@@ -115,6 +115,18 @@ util.capitalized = (s) => {
         // s.slice(1).toLowerCase();
 };
 
+util.uncapitalized = (s) => {
+    if (! util.exists(s)) {
+        return '';
+    }
+    else if (s.length === 1) {
+        return s.toLowerCase();
+    }
+
+    return s[0].toLowerCase() +
+        s.slice(1);
+};
+
 util.toCamelCase = (s) => {
     if (! util.exists(s)) {
         return '';
@@ -172,6 +184,7 @@ util.isArray = function (x) {
     // Later make this more sophisticated, or use a library.
     return x &&
         typeof x.length === 'number' &&
+        ! util.isString(x) &&
         x.length >= 0 &&
         (x.length === 0 || x[0] !== undefined);
 };
@@ -218,6 +231,15 @@ util.log = function (input, tag) {
 
     // Later: Red error and beacon text
     console.log(`  ${tagStr} (${ dateTime }) ${ info }\n`);
+};
+
+util.makeEnum = (vals) => {
+    const dict = {};
+    for (let val of vals) {
+        dict[val] = util.uncapitalized(val);
+    }
+
+    return dict;
 };
 
 

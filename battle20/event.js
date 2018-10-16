@@ -11,6 +11,12 @@ module.exports = class Event {
         this.targets = util.array(targets);
         this.type = actionType || 'unknown';
         this.changes = {};
+        this.tags = [];
+    }
+
+    addTag (input) {
+        const newTags = util.array(input);
+        this.tags.push(...newTags);
     }
 
     withoutCircularReferences (mode) {

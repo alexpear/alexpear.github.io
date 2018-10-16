@@ -5,9 +5,10 @@
 // Individual creatures (eg dragons, hermits) will still be a Group of 1.
 
 const Alignment = require('../dnd/alignment.js');
-const Event = require('./event.js');
-const CreatureTemplate = require('./creaturetemplate.js');
 const Coord = require('../util/coord.js');
+const CreatureTemplate = require('./creaturetemplate.js');
+const Event = require('./event.js');
+const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
 class Group {
@@ -138,7 +139,12 @@ function attackEvent (groupA, groupB, random, resolution) {
     random = Util.default(random, true);
 
     const event = new Event(groupA, groupB, 'attack');
+    event.addTag(TAG.Action);
+    event.addTag(TAG.Attack);
+
     const aAction = groupA.getFirstAction();
+    event.addTag(aAction.tags);
+
     let damage = 0;
 
     if (random) {
