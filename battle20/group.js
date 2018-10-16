@@ -172,6 +172,11 @@ function someActive (groups) {
 }
 
 function attack (groupA, groupB, random, resolution) {
+    if (! groupA.isActive()) {
+        Util.log(`Non-active group cannot attack: ${ groupA.toPrettyString() } (id: ${ groupA.id })`, 'error');
+        return;
+    }
+
     const event = attackEvent(groupA, groupB, random, resolution);
     // this.saveEvent(event); // add to Battle replay
 
@@ -180,6 +185,7 @@ function attack (groupA, groupB, random, resolution) {
 
 function attackEvent (groupA, groupB, random, resolution) {
     random = Util.default(random, true);
+    resolution = Util.default(resolution, 'low');
 
     const event = new Event(groupA, groupB, 'attack');
     event.addTag(TAG.Action);
