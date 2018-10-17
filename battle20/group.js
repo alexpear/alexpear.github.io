@@ -152,10 +152,11 @@ class Group {
 function simpleEncounter (groups, random, resolution) {
     let step = 0;
 
+    sortByRange(groups);
+
     while (multipleAlignments(groups)) {
         Util.log(`Step #${ step }`, 'info');
 
-        // TODO: Let groups with most range stat attack first.
         for (let attacker of groups) {
             if (! attacker.isActive()) {
                 continue;
@@ -171,6 +172,13 @@ function simpleEncounter (groups, random, resolution) {
 
         step += 1;
     }
+}
+
+// In spaceless battles, long-ranged groups get to attack first.
+function sortByRange (groups) {
+    return groups.sort(
+        (a, b) => b.getFirstAction().range - a.getFirstAction().range
+    );
 }
 
 function prettySummary (groups) {
