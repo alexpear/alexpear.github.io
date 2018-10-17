@@ -311,32 +311,6 @@ function mostNumerousFoe (groups) {
         },
         undefined
     );
-
-    // const DUMMY = {
-    //     getQuantity: () => -1
-    // };
-
-    // const mostNumerous = groups.reduce(
-    //     (best, challenger) => {
-    //         if (
-    //             best.getQuantity() < challenger.getQuantity() &&
-    //             attacker.alignment !== challenger.alignment
-    //         ) {
-    //             return challenger;
-    //         }
-    //         else {
-    //             return best;
-    //         }
-    //     },
-    //     DUMMY
-    // );
-
-    // if (mostNumerous === DUMMY) {
-    //     return;
-    // }
-    // else {
-    //     return mostNumerous;
-    // }
 }
 
 module.exports = Group;
