@@ -134,13 +134,13 @@ class Group {
         const gb = new Group('dwarfAxeThrower', 108);
         gb.alignment = 'LG';
 
-        // const gc = Group.example();
-        // gc.totalHp = 666;
-        // gc.alignment = 'LE';
+        const gc = Group.example();
+        gc.totalHp = 3000000;
+        gc.alignment = 'LE';
 
         // Util.log(mostNumerousFoe([ga, gb, gc]).toPrettyString(), 'debug');
 
-        simpleEncounter(ga, gb, true, 'low');
+        simpleEncounter([ga, gb, gc], true, 'low');
 
         // console.log(JSON.stringify(output, undefined, '    '));
         return ga;
@@ -149,17 +149,24 @@ class Group {
 
 // Later: Move all these classes & funcs to battle.js file probably.
 
-function simpleEncounter (groupA, groupB, random, resolution) {
+function simpleEncounter (groups, random, resolution) {
     let step = 0;
 
-    while (groupA.isActive() && groupB.isActive()) {
+    while (multipleAlignments(groups)) {
         Util.log(`Step #${ step }`, 'info');
 
-        attack (groupA, groupB);
-        Util.log('\n' + prettySummary([groupA, groupB]), 'info');
+        for (let attacker of groups) {
+            if (! attacker.isActive()) {
+                continue;
+            }
 
-        attack (groupB, groupA);
-        Util.log('\n' + prettySummary([groupA, groupB]), 'info');
+            const target = mostNumerousFoe(groups, attacker);
+            attack(attacker, target);
+
+            if (step % 1 === 0) {
+                Util.log('\n' + prettySummary(groups), 'info');
+            }
+        }
 
         step += 1;
     }
@@ -176,6 +183,21 @@ function someActive (groups) {
     return groups.some(
         g => g.isActive()
     );
+}
+
+function factionsActive (groups) {
+    const alignments = groups.filter(
+        g => g.isActive()
+    )
+    .map(
+        g => g.alignment
+    );
+
+    return Util.unique(alignments);
+}
+
+function multipleAlignments (groups) {
+    return factionsActive(groups).length >= 2;
 }
 
 function attack (groupA, groupB, random, resolution) {
@@ -293,8 +315,8 @@ function randomFactor (variance) {
 }
 
 // This is kindof a rough draft / demo.
-function mostNumerousFoe (groups) {
-    const attacker = groups[0]; // Pretend they are in a arbitrary position.
+function mostNumerousFoe (groups, attacker) {
+    attacker = attacker || groups[0]; // Pretend they are in a arbitrary position.
 
     const foes = groups.filter(
         g => g.alignment !== attacker.alignment
