@@ -246,6 +246,8 @@ function attackEvent (groupA, groupB, random, resolution) {
         // Later think about the edge case where this always rounds down to 0 damage, eg in skirmishes.
     }
 
+    Util.log(`${groupA.toPrettyString()} attacks ${groupB.toPrettyString()} for ${damage} damage.`, 'event');
+
     if (damage) {
         // Later count quantity before & after damage to determine how many deaths happened. Relevant to necromancy.
         groupB.takeDamage(damage);
