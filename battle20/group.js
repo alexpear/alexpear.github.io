@@ -155,6 +155,7 @@ function simpleEncounter (groups, random, resolution) {
     while (multipleAlignments(groups)) {
         Util.log(`Step #${ step }`, 'info');
 
+        // TODO: Let groups with most range stat attack first.
         for (let attacker of groups) {
             if (! attacker.isActive()) {
                 continue;
