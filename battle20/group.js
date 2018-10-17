@@ -133,6 +133,12 @@ class Group {
         const gb = new Group('dwarfAxeThrower', 108);
         gb.alignment = 'LG';
 
+        // const gc = Group.example();
+        // gc.totalHp = 666;
+        // gc.alignment = 'LE';
+
+        // Util.log(mostNumerousFoe([ga, gb, gc]).toPrettyString(), 'debug');
+
         simpleEncounter(ga, gb, true, 'low');
 
         // console.log(JSON.stringify(output, undefined, '    '));
@@ -283,6 +289,54 @@ function randomFactor (variance) {
 
     const minimum = 1 - variance;
     return minimum + (Math.random() * variance * 2);
+}
+
+// This is kindof a rough draft / demo.
+function mostNumerousFoe (groups) {
+    const attacker = groups[0]; // Pretend they are in a arbitrary position.
+
+    const foes = groups.filter(
+        g => g.alignment !== attacker.alignment
+    );
+
+    return foes.reduce(
+        (largest, current) => {
+            if (! largest) {
+                return current;
+            }
+
+            return current.getQuantity() < largest.getQuantity() ?
+                largest :
+                current;
+        },
+        undefined
+    );
+
+    // const DUMMY = {
+    //     getQuantity: () => -1
+    // };
+
+    // const mostNumerous = groups.reduce(
+    //     (best, challenger) => {
+    //         if (
+    //             best.getQuantity() < challenger.getQuantity() &&
+    //             attacker.alignment !== challenger.alignment
+    //         ) {
+    //             return challenger;
+    //         }
+    //         else {
+    //             return best;
+    //         }
+    //     },
+    //     DUMMY
+    // );
+
+    // if (mostNumerous === DUMMY) {
+    //     return;
+    // }
+    // else {
+    //     return mostNumerous;
+    // }
 }
 
 module.exports = Group;
