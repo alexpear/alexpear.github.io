@@ -193,6 +193,10 @@ util.array = (x) => {
     return util.isArray(x) ? x : [x];
 };
 
+util.unique = (array) => {
+    return Array.from(new Set(array));
+}
+
 util.isCapitalized = (s) => {
     return /[A-Z]/.test(s);
 };
