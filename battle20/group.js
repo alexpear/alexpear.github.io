@@ -113,7 +113,7 @@ class Group {
     }
 
     static example () {
-        const group = new Group('dwarfAxeThrower', 100);
+        const group = new Group('dwarfAxeThrower', 100000);
         group.alignment = 'CG';
         return group;
     }
@@ -131,7 +131,7 @@ class Group {
         console.log(`Group.test() \n`);
 
         const ga = Group.example();
-        const gb = new Group('dwarfAxeThrower', 108);
+        const gb = new Group('dwarfAxeThrower', 908000);
         gb.alignment = 'LG';
 
         const gc = Group.example();
