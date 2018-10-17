@@ -95,8 +95,9 @@ class Group {
         // Later, maybe put retreat logic in here.
 
         if (this.totalHp <= 0) {
-            Util.log(`Group ${ this.toPrettyString() } has been eliminated.`, 'debug');
+            // Negative HP represents less possibility of recovery from injuries.
             this.status = 'eliminated';
+            Util.log(`Group ${ this.toPrettyString() } has been eliminated.`, 'debug');
         }
     }
 
