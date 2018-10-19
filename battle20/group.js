@@ -170,25 +170,27 @@ class Group {
         const gb = new Group('dwarfAxeThrower', 908000);
         gb.alignment = 'LG';
 
-        const gc = Group.example();
-        gc.totalHp = 3000000;
+        const gc = new Group('dwarfAxeThrower', 800000);
         gc.alignment = 'LE';
+
+        const gd = Group.example();
+        gd.alignment = 'CE';
 
         // Util.log(mostNumerousFoe([ga, gb, gc]).toPrettyString(), 'debug');
 
-        simpleEncounter([ga, gb, gc], true, 'low');
+        simpleEncounter([ga, gb, gc, gd], true, 'low');
 
         // console.log(JSON.stringify(output, undefined, '    '));
         return ga;
     }
 }
 
-// Later: Move all these classes & funcs to battle.js file probably.
+// TODO: Move all these classes & funcs to battle.js file probably.
 
 function simpleEncounter (groups, random, resolution) {
-    let step = 0;
-
     sortByRange(groups);
+
+    let step = 0;
 
     while (multipleAlignments(groups)) {
         Util.log(`Step #${ step }`, 'info');
@@ -202,7 +204,7 @@ function simpleEncounter (groups, random, resolution) {
             attack(attacker, target);
 
             if (step % 1 === 0) {
-                Util.log('\n' + prettySummary(groups), 'info');
+                Util.log('\n' + detailedSummary(groups), 'info');
             }
         }
 
