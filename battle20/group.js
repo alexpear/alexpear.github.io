@@ -373,7 +373,8 @@ function mostNumerousFoe (groups, attacker) {
     attacker = attacker || groups[0]; // Pretend they are in a arbitrary position.
 
     const foes = groups.filter(
-        g => g.alignment !== attacker.alignment
+        g => g.alignment !== attacker.alignment &&
+            g.isActive()
     );
 
     return foes.reduce(
