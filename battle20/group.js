@@ -120,8 +120,32 @@ class Group {
     toPrettyString () {
         const name = this.prettyName();
         const alignment = this.alignment;
+        const statusSuffix = this.status ? ` (${ this.status })` : '';
 
-        return `${ name } (${ alignment }) x${ this.getQuantity() }`;
+        return `${ name } (${ alignment }) x${ this.getQuantity() }${ statusSuffix }`;
+    }
+
+    toDetailedString () {
+        const locationStr = `, location ${ this.coord.toString() }`;
+        const idStr = '';  // `, id ${ this.id }`;
+
+        const baseHp = this.getStats().hp;
+
+        const baselineQuantity = Math.ceil(this.baselineHp / baseHp);
+        const casualties = baselineQuantity - this.getQuantity();
+        const deadRatio = Math.round(casualties / baselineQuantity * 100);
+
+        const casualtiesStr = casualties ?
+            `, ${ casualties } casualties (${ deadRatio }%)` :
+            '';
+
+        const curHp = this.getWeakestCreatureHp();
+
+        const injuryStr = curHp === baseHp ?
+            '' :
+            `, individual w/ ${ curHp }/${ baseHp } HP`;
+
+        return `${ this.toPrettyString() }${ locationStr }${ idStr }${ casualtiesStr }${ injuryStr }`;
     }
 
     static example () {
@@ -196,6 +220,13 @@ function sortByRange (groups) {
 function prettySummary (groups) {
     return groups.map(
         g => g.toPrettyString()
+    )
+    .join('\n');
+}
+
+function detailedSummary (groups) {
+    return groups.map(
+        g => g.toDetailedString()
     )
     .join('\n');
 }
