@@ -67,7 +67,13 @@ class Group {
     }
 
     isActive () {
-        return this.getQuantity() > 0;
+        const INACTIVE_STATUSES = [
+            'eliminated',
+            'retreated'
+        ];
+
+        return this.getQuantity() > 0 &&
+            ! INACTIVE_STATUSES.includes(this.status);
     }
 
     maxDamage () {
