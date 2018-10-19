@@ -100,12 +100,16 @@ class Group {
     takeDamage (n) {
         this.totalHp -= n;
 
-        // Later, maybe put retreat logic in here.
+        const FLEE_THRESHOLD = 0.3;
 
         if (this.totalHp <= 0) {
             // Negative HP represents less possibility of recovery from injuries.
             this.status = 'eliminated';
             Util.log(`Group ${ this.toPrettyString() } has been eliminated.`, 'debug');
+        }
+        else if (this.totalHp <= this.baselineHp * FLEE_THRESHOLD) {
+            this.status = 'retreated';
+            Util.log(`Group ${ this.toPrettyString() } has retreated.`, 'debug');
         }
     }
 
