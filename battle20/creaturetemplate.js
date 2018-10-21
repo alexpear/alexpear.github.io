@@ -49,6 +49,12 @@ module.exports = class CreatureTemplate {
             ActionTemplate.example()
         ];
 
+        template.resistance = {};
+        template.resistance[TAG.Mental] = 1;
+        template.resistance[TAG.Piercing] = 1;
+        template.resistance[TAG.Blade] = 1;
+        template.resistance[TAG.Impact] = 1;
+
         return template;
     }
 }
