@@ -63,7 +63,8 @@ class Group {
     getWeakestCreatureHp () {
         const maxHp = this.getStats().hp;
         const modulo = this.getTotalHp() % maxHp;
-        return modulo || maxHp;
+        const creatureHp = modulo || maxHp;
+        return Math.max(creatureHp, 0);
     }
 
     isActive () {
