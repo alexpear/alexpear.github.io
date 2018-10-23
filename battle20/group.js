@@ -445,12 +445,34 @@ Group:
 which comes from a WGenerator output, tree of WNodes:
 
 group
-  .quantity: 10
+  .quantity: 10  // How to express this in the .txt codex?
   components:
     marine
       components:
         smg
         flakArmor
+
+and i would need to be able to look up 'marine' and 'smg' somewhere and discern their creature and attack stats.
+The intuitive place would be more entries in a .txt codex.
+
+* template marine
+hp: 2
+defense: 11
+tags: human soldier tech10 unsc
+
+* template flakArmor
+defense: 6
+resistances: fire 1, piercing 1
+
+* template smg
+tags: bullet fullAuto
+range: 20
+hit: 3
+damage: 1
+
+
+
+
 
 
 
