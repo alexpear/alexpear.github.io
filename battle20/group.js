@@ -432,6 +432,30 @@ Group
 WNode (later)
 
 
+Sketch of a WNode tree that underlies a Group:
+
+Group:
+  getQuantity() === 10
+  template:
+    marine
+      components:
+        smg
+        flakArmor
+
+which comes from a WGenerator output, tree of WNodes:
+
+group
+  .quantity: 10
+  components:
+    marine
+      components:
+        smg
+        flakArmor
+
+
+
+
+
 */
 
 
