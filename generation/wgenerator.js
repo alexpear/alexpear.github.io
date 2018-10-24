@@ -291,9 +291,15 @@ class AliasTable {
         const t = tableString.trim()
             .toLowerCase();
 
-        return AliasTable.STARTERS.some(
-            starter => t.startsWith(starter)
-        );
+        if (
+            AliasTable.STARTERS.some(
+                starter => t.startsWith(starter)
+            )
+        ) {
+            return true;
+        }
+
+        return t.startsWith('output');
     }
 
 
