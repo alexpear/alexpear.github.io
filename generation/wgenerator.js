@@ -15,6 +15,8 @@ class WGenerator {
         this.rawString = rawString.trim();
         this.aliasTables = {};
         this.childTables = {};
+        // Later, make this a pointer to a Glossary instance.
+        // usage: glossary.getTemplate('naga');
         this.glossary = {};
 
         // TODO functionize table parsing logic.
@@ -53,7 +55,7 @@ class WGenerator {
                 const key = aliasTable.key;
 
                 if (this.aliasTables[key]) {
-                    throw new Error(`WGenerator constructor: table key ${ key } appears twice`);
+                    throw new Error(`WGenerator constructor: table key '${ key }' appears twice`);
                 }
 
                 this.aliasTables[key] = aliasTable;
@@ -274,6 +276,16 @@ class AliasTable {
         return Util.randomOf(this.outputs);
     }
 
+    static isAppropriateFor (tableString) {
+        const t = tableString.trim()
+            .toLowerCase();
+
+        return AliasTable.STARTERS.some(
+            starter => t.startsWith(starter)
+        );
+    }
+
+
     static withoutTheStarter (rawString) {
         const s = rawString.trim();
         const sLow = s.toLowerCase();
@@ -304,11 +316,11 @@ class ChildrenTable {
     }
 
     static isAppropriateFor (tableString) {
-        const s = tableString.trim()
+        const t = tableString.trim()
             .toLowerCase();
 
         return ChildrenTable.STARTERS.some(
-            starter => s.startsWith(starter)
+            starter => t.startsWith(starter)
         );
     }
 

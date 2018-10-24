@@ -2,7 +2,7 @@
 
 const TAG = require('../codices/tags.js');
 
-module.exports = class ActionTemplate {
+class ActionTemplate {
     constructor () {
 
     }
@@ -25,3 +25,5 @@ module.exports = class ActionTemplate {
         return template;
     }
 };
+
+module.exports = ActionTemplate;
