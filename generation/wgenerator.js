@@ -357,6 +357,86 @@ ChildrenTable.STARTERS = [
 ];
 
 
+// TODO put this in class Template and template.js or something.
+// This will probably become or call a constructor
+// and store the first line in this.key
+function parseTemplate (tableRaw) {
+    const templateObj = {};
+
+    tableRaw.split('\n')
+        .slice(1)
+        .map(
+            line => {
+                const pair = parseTemplateLine(line);
+                const key = pair[0];
+
+                if (key in templateObj) {
+                    throw new Error(`parseTemplate(): duplicate key '${ key }' in template: ${ tableRaw }`);
+                }
+
+                templateObj[key] = pair[0];
+            }
+        );
+
+    // TODO at some point, detect whether it is a ActionTemplate or CreatureTemplate.
+    // Probably mark templateObj.type, or instantiate the appropriate class, or something.
+
+    return templateObj;
+}
+
+function parseTemplateLine (line) {
+    line = line.trim();
+
+    const colonIndex = line.indexOf(':');
+
+    if (colonIndex < 0) {
+        throw new Error(`parseTemplateLine(): No colon found in ${ line }`);
+    }
+
+    const key = line.slice(0, colonIndex)
+        .trim();
+    const rest = line.slice(colonIndex + 1)
+        .trim();
+
+    let value;
+    if (key === 'tags') {
+        value = rest.split(/\s/);
+    }
+    else if (key === 'resistances') {
+        value = {};
+
+        const entries = rest.split(',');
+
+        entries.forEach(
+            e => {
+                const parts = e.trim()
+                    .split(/\s/);
+                const resistanceKey = parts[0];
+                const modifier = Number(parts[1]);
+
+                value[resistanceKey] = modifier;
+            }
+        );
+    }
+    else {
+        // Default case.
+        const parsed = Number(rest);
+        value = Util.exists(parsed) ?
+            parsed :
+            rest;
+    }
+
+    // TODO return { key: key, value: value } probably
+    return [key, value];
+}
+
+function templateKeyWithoutTheStarter (firstLine) {
+    return firstLine.replace('template', '')
+        .trim();
+}
+
+
+
 // Run
 WGenerator.run();
 
