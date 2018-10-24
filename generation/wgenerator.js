@@ -35,8 +35,9 @@ class WGenerator {
                     const childTable = new ChildrenTable(tableRaw);
                     const key = childTable.key;
 
-                    if (this.childTables[key]) {
-                        throw new Error(`WGenerator constructor: table key ${ key } appears twice`);
+                    if (key in this.childTables) {
+                        // Later perhaps also mention which file this is, or paste the content of the file
+                        throw new Error(`WGenerator constructor: children table key ${ key } appears twice`);
                     }
 
                     this.childTables[key] = childTable;
