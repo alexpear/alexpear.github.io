@@ -44,6 +44,9 @@ class WGenerator {
                 // if (AliasTable.isAppropriateFor(tableRaw)) {
                 // }
 
+                // TODO detect tables that start with * template ...
+                // parse their colons and commas, and add them to this.glossary as pojos.
+
                 // Default interpretation of a table:
                 const aliasTable = new AliasTable(tableRaw);
                 const key = aliasTable.key;

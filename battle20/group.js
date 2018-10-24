@@ -455,6 +455,9 @@ group
 and i would need to be able to look up 'marine' and 'smg' somewhere and discern their creature and attack stats.
 The intuitive place would be more entries in a .txt codex.
 
+* template marineSquad
+quantity: 10
+
 * template marine
 hp: 2
 defense: 11
@@ -463,6 +466,7 @@ tags: human soldier tech10 unsc
 * template flakArmor
 defense: 6
 resistances: fire 1, piercing 1
+tags: armor
 
 * template smg
 tags: bullet fullAuto
