@@ -20,7 +20,7 @@ class WGenerator {
         this.glossary = {};
 
         // TODO functionize table parsing logic.
-        // TODO: Add support for ignoring comments.
+        // TODO: Add support for ignorable comments in codex files
         const tableRaws = this.rawString.split('*');
 
         tableRaws.forEach(
