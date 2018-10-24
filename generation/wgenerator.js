@@ -13,8 +13,9 @@ class WGenerator {
     constructor (rawString) {
         // Later the this.rawString field might not be necessary.
         this.rawString = rawString.trim();
-        this.childTables = {};
         this.aliasTables = {};
+        this.childTables = {};
+        this.glossary = {};
 
         // TODO functionize table parsing logic.
         // TODO: Add support for ignoring comments.
