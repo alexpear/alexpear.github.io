@@ -44,22 +44,32 @@ class WGenerator {
                     return;
                 }
 
-                // TODO
-                // if (AliasTable.isAppropriateFor(tableRaw)) {
-                // }
+                if (AliasTable.isAppropriateFor(tableRaw)) {
+                    const aliasTable = new AliasTable(tableRaw);
+                    const key = aliasTable.key;
 
-                // TODO detect tables that start with * template ...
-                // parse their colons and commas, and add them to this.glossary as pojos.
+                    if (key in this.aliasTables) {
+                        throw new Error(`WGenerator constructor: alias table key '${ key }' appears twice`);
+                    }
 
-                // Default interpretation of a table:
-                const aliasTable = new AliasTable(tableRaw);
-                const key = aliasTable.key;
-
-                if (this.aliasTables[key]) {
-                    throw new Error(`WGenerator constructor: table key '${ key }' appears twice`);
+                    this.aliasTables[key] = aliasTable;
+                    return;
                 }
 
-                this.aliasTables[key] = aliasTable;
+                if (/* isTemplate(tableRaw) */ tableRaw.startsWith('template ')) {
+                    // Parse their colons and commas, and add them to this.glossary.
+                    const key = templateKeyWithoutTheStarter(tableRaw.split('\n')[0]);
+
+                    if (key in this.glossary) {
+                        throw new Error(`WGenerator constructor: template table key '${ key }' appears twice`);
+                    }
+
+                    this.glossary[key] = parseTemplate(tableRaw);
+                    return;
+                }
+
+                // Default case...
+                throw new Error(`Could not identify table: ${ tableRaw }`);
             }
         );
 
