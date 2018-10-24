@@ -1,0 +1,43 @@
+* output
+4 {squad}
+
+* alias squad
+4 {infantrySquad}
+
+* alias infantrySquad
+4 marineSquad
+
+* template marineSquad
+quantity: 10
+
+* children of marineSquad
+marine
+
+* template marine
+hp: 2
+defense: 11
+tags: human soldier tech10 unsc
+
+* children of marine
+{basicWeapon}
+flakArmor
+
+* template flakArmor
+defense: 6
+resistances: fire 1, piercing 1
+tags: armor
+
+* alias basicWeapon
+4 smg
+4 ar
+4 br
+3 dmr
+1 shotgun
+
+* template smg
+tags: bullet fullAuto
+range: 20
+hit: 3
+damage: 1
+
+
