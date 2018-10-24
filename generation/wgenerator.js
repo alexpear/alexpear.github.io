@@ -219,7 +219,7 @@ class WGenerator {
     static test () {
         console.log(`WGenerator.test(): \n\n`);
 
-        const wgen = WGenerator.fromCodex('halo/unsc/patrol');
+        const wgen = WGenerator.fromCodex('battle20/halo/unsc/group');
 
         return wgen.getOutput();
     }
