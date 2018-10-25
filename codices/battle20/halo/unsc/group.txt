@@ -40,4 +40,26 @@ range: 20
 hit: 3
 damage: 1
 
+* template ar
+tags: bullet fullAuto
+range: 30
+hit: 3
+damage: 1
 
+* template br
+tags: bullet fullAuto
+range: 50
+hit: 3
+damage: 1
+
+* template dmr
+tags: bullet fullAuto
+range: 60
+hit: 3
+damage: 1
+
+* template shotgun
+tags: bullet fullAuto
+range: 5
+hit: 5
+damage: 2
