@@ -322,6 +322,7 @@ AliasTable.STARTERS = [
     'alias'
 ];
 
+
 class ChildrenTable {
     constructor (rawString) {
         const lines = rawString.trim()
@@ -373,14 +374,14 @@ function parseTemplate (tableRaw) {
         .slice(1)
         .map(
             line => {
-                const pair = parseTemplateLine(line);
-                const key = pair[0];
+                const parsed = parseTemplateLine(line);
+                const key = parsed.key;
 
                 if (key in templateObj) {
                     throw new Error(`parseTemplate(): duplicate key '${ key }' in template: ${ tableRaw }`);
                 }
 
-                templateObj[key] = pair[0];
+                templateObj[key] = parsed.value;
             }
         );
 
@@ -432,8 +433,10 @@ function parseTemplateLine (line) {
             rest;
     }
 
-    // TODO return { key: key, value: value } probably
-    return [key, value];
+    return {
+        key: key,
+        value: value
+    };
 }
 
 function templateKeyWithoutTheStarter (firstLine) {
