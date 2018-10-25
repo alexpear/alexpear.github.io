@@ -80,7 +80,7 @@ class WGenerator {
     }
 
     getOutput (key) {
-        return this.parse(key || '{output}');
+        return this.resolveString(key || '{output}');
     }
 
     resolveCommas (inputString) {
@@ -95,8 +95,7 @@ class WGenerator {
             );
     }
 
-    // TODO Alternate name resolveString(), because it is random.
-    parse (inputString) {
+    resolveString (inputString) {
         return this.resolveCommas(inputString)
             .map(str => new WNode(str))
             .map(n => this.maybeAddChildren(n));
@@ -120,9 +119,9 @@ class WGenerator {
     addChildren (node, table) {
         table.children.forEach(
             childString => {
-                // Note that parse() always returns an array.
+                // Note that resolveString() always returns an array.
                 node.components = node.components.concat(
-                    this.parse(childString)
+                    this.resolveString(childString)
                 );
             }
         );
