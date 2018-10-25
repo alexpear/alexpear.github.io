@@ -99,6 +99,7 @@ class Group {
     }
 
     takeDamage (n) {
+        // TODO: Modify based on damage tags and damage resistance.
         this.totalHp -= n;
 
         const FLEE_THRESHOLD = 0.3;
