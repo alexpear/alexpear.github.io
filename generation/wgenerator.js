@@ -19,7 +19,6 @@ class WGenerator {
         // usage: glossary.getTemplate('naga');
         this.glossary = {};
 
-        // TODO functionize table parsing logic.
         // TODO: Add support for ignorable comments in codex files
         const tableRaws = this.rawString.split('*');
 
@@ -32,6 +31,7 @@ class WGenerator {
                 }
 
                 if (ChildrenTable.isAppropriateFor(tableRaw)) {
+                    // TODO functionize the table parsing logic.
                     const childTable = new ChildrenTable(tableRaw);
                     const key = childTable.key;
 
@@ -83,7 +83,7 @@ class WGenerator {
         return this.parse(key || '{output}');
     }
 
-    // Alternate name resolveString(), because it is random.
+    // TODO Alternate name resolveString(), because it is random.
     parse (inputString) {
         const strings = inputString.trim()
             .split(',')
