@@ -31,44 +31,19 @@ class WGenerator {
                 }
 
                 if (ChildrenTable.isAppropriateFor(tableRaw)) {
-                    // TODO functionize the table parsing logic.
-                    const childTable = new ChildrenTable(tableRaw);
-                    const key = childTable.key;
-
-                    if (key in this.childTables) {
-                        // Later perhaps also mention which file this is, or paste the content of the file
-                        throw new Error(`WGenerator constructor: children table key ${ key } appears twice`);
-                    }
-
-                    this.childTables[key] = childTable;
-                    return;
+                    return this.addChildTable(tableRaw);
                 }
 
                 if (AliasTable.isAppropriateFor(tableRaw)) {
-                    const aliasTable = new AliasTable(tableRaw);
-                    const key = aliasTable.key;
-
-                    if (key in this.aliasTables) {
-                        throw new Error(`WGenerator constructor: alias table key '${ key }' appears twice`);
-                    }
-
-                    this.aliasTables[key] = aliasTable;
-                    return;
+                    return this.addAliasTable(tableRaw);
                 }
 
-                if (/* isTemplate(tableRaw) */ tableRaw.startsWith('template ')) {
-                    // Parse their colons and commas, and add them to this.glossary.
-                    const key = templateKeyWithoutTheStarter(tableRaw.split('\n')[0]);
-
-                    if (key in this.glossary) {
-                        throw new Error(`WGenerator constructor: template table key '${ key }' appears twice`);
-                    }
-
-                    this.glossary[key] = parseTemplate(tableRaw);
-                    return;
+                // Later, this could be neater and not involve a string literal.
+                if (tableRaw.startsWith('template ')) {
+                    return this.addTemplate(tableRaw);
                 }
 
-                // Default case...
+                // Default case.
                 throw new Error(`Could not identify table: ${ tableRaw }`);
             }
         );
@@ -77,6 +52,40 @@ class WGenerator {
         if (! this.aliasTables['output']) {
             throw new Error(`WGenerator constructor: output table not found. Object.keys(this.aliasTables).length is ${ Object.keys(this.aliasTables).length }`);
         }
+    }
+
+    addChildTable (tableRaw) {
+        const childTable = new ChildrenTable(tableRaw);
+        const key = childTable.key;
+
+        if (key in this.childTables) {
+            // Later perhaps also mention which file this is, or paste the content of the file
+            throw new Error(`children table key '${ key }' appears twice`);
+        }
+
+        return this.childTables[key] = childTable;
+    }
+
+    addAliasTable (tableRaw) {
+        const aliasTable = new AliasTable(tableRaw);
+        const key = aliasTable.key;
+
+        if (key in this.aliasTables) {
+            throw new Error(`alias table key '${ key }' appears twice`);
+        }
+
+        return this.aliasTables[key] = aliasTable;
+    }
+
+    addTemplate (tableRaw) {
+        // Later, this could be neater.
+        const key = templateKeyWithoutTheStarter(tableRaw.split('\n')[0]);
+
+        if (key in this.glossary) {
+            throw new Error(`template key '${ key }' appears twice`);
+        }
+
+        return this.glossary[key] = parseTemplate(tableRaw);
     }
 
     getOutput (key) {
