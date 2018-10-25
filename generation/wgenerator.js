@@ -83,9 +83,8 @@ class WGenerator {
         return this.parse(key || '{output}');
     }
 
-    // TODO Alternate name resolveString(), because it is random.
-    parse (inputString) {
-        const strings = inputString.trim()
+    resolveCommas (inputString) {
+        return inputString.trim()
             .split(',')
             .reduce(
                 (stringsSoFar, s) =>
@@ -94,8 +93,12 @@ class WGenerator {
                     ),
                 []
             );
+    }
 
-        return strings.map(str => new WNode(str))
+    // TODO Alternate name resolveString(), because it is random.
+    parse (inputString) {
+        return this.resolveCommas(inputString)
+            .map(str => new WNode(str))
             .map(n => this.maybeAddChildren(n));
     }
 
@@ -148,14 +151,7 @@ class WGenerator {
 
             const output = table.getOutput();
 
-            // TODO or should this return this.parse(output)? Seems weird to have 2 funcs handle comma splitting.
-            return output.split(',')
-                .reduce(
-                    (templatesSoFar, s) => templatesSoFar.concat(
-                        this.maybeResolveAlias(s)
-                    ),
-                    []
-                );
+            return this.resolveCommas(output);
         }
         else {
             return [str];
