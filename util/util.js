@@ -32,8 +32,8 @@ util.NODE_TYPES = {
 util.exists = (x) => {
     return x !== undefined &&
         x !== null &&
-        x !== NaN &&
-        x !== '';
+        x !== '' &&
+        ! Number.isNaN(x);
 };
 
 // TODO reconsider this weird function syntax. Maybe declare a class of functions, then assign the field props to it?
