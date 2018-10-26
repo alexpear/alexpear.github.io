@@ -66,6 +66,8 @@ class WorldState {
     getAggregatedTemplate (wnode) {
         const template = this.getTemplate(wnode.templateName);
 
+        // TODO: Devise a syntax for distinguishing between child WNodes that introduce a new Action (eg weapons or tools) and child WNodes that modify one or all existing Actions (eg modifications of weapons, training, etc).
+
         if (wnode.components.length === 0) {
             return template;
         }

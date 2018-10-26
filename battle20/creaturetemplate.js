@@ -32,6 +32,7 @@ module.exports = class CreatureTemplate {
 
     }
 
+    // Or could name it combinedWith() potentially
     modifiedBy (modifications) {
         const combinedTemplate = new CreatureTemplate();
 
@@ -44,6 +45,13 @@ module.exports = class CreatureTemplate {
         return combinedTemplate;
     }
 
+    static isCreatureTemplate (template) {
+
+    }
+
+    static isActionTemplate (template) {
+
+    }
 
     static example () {
         const template = new CreatureTemplate();
