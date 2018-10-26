@@ -16,6 +16,7 @@ marine
 * template marine
 hp: 2
 defense: 11
+alignment: LG
 tags: human soldier tech10 unsc
 
 * children of marine
