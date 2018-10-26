@@ -14,13 +14,16 @@ const Util = require('../util/util.js');
 
 class Group {
     constructor (templateName, quantity) {
+        templateName = templateName || 'dwarfAxeThrower';
+        quantity = quantity || 1;
+
         this.id = Util.newId();
 
         this.templateName = templateName;
         this.template = Group.getTemplate(this.templateName);
         this.alignment = new Alignment('NN');
 
-        this.baselineHp = (quantity || 1) * this.getStats().hp;
+        this.baselineHp = (quantity) * this.getStats().hp;
 
         // HP is stored as a total to make saving group state in replay and Encounter objs simpler.
         this.totalHp = this.baselineHp;
