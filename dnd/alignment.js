@@ -30,6 +30,10 @@ class Alignment {
         // Later, make this function more robust.
         return ALIGNMENTS[this.abbreviation] || {};
     }
+
+    toString () {
+        return this.abbreviation;
+    }
 }
 
 module.exports = Alignment;
