@@ -434,9 +434,16 @@ function parseTemplateLine (line) {
             }
         );
     }
+    else if (rest === 'true') {
+        value = true;
+    }
+    else if (rest === 'false') {
+        value = false;
+    }
     else {
-        // Default case.
+        // number case.
         const parsed = Number(rest);
+
         value = Util.exists(parsed) ?
             parsed :
             rest;
