@@ -31,7 +31,7 @@ class Group {
 
         this.alignment = this.template.alignment || new Alignment('NN');
 
-        this.baselineHp = (quantity) * this.getStats().hp;
+        this.baselineHp = quantity * this.getStats().hp;
 
         // HP is stored as a total to make saving group state in replay and Encounter objs simpler.
         this.totalHp = this.baselineHp;
