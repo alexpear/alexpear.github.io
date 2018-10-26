@@ -33,7 +33,7 @@ util.exists = (x) => {
     return x !== undefined &&
         x !== null &&
         x !== '' &&
-        ! Number.isNaN(x);
+        ! util.isNaN(x);
 };
 
 // TODO reconsider this weird function syntax. Maybe declare a class of functions, then assign the field props to it?
