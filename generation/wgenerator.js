@@ -450,6 +450,8 @@ function templateKeyWithoutTheStarter (firstLine) {
         .trim();
 }
 
+module.exports = WGenerator;
+
 
 
 // Run
