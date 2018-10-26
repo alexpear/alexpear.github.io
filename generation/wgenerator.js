@@ -451,7 +451,7 @@ function templateKeyWithoutTheStarter (firstLine) {
 
 
 // Run
-WGenerator.run();
+// WGenerator.run();
 
 
 
