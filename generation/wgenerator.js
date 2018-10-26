@@ -88,7 +88,8 @@ class WGenerator {
         return this.glossary[key] = parseTemplate(tableRaw);
     }
 
-    getOutput (key) {
+    // Returns WNode[]
+    getOutputs (key) {
         return this.resolveString(key || '{output}');
     }
 
@@ -212,7 +213,7 @@ class WGenerator {
 
         if (process.argv.length > 2) {
             const wgen = WGenerator.fromCodex(process.argv[2]);
-            output = wgen.getOutput();
+            output = wgen.getOutputs();
         }
         else {
             output = WGenerator.test();
@@ -238,7 +239,7 @@ class WGenerator {
 
         const wgen = WGenerator.fromCodex('battle20/halo/unsc/group');
 
-        return wgen.getOutput();
+        return wgen.getOutputs();
     }
 }
 
@@ -287,6 +288,7 @@ class AliasTable {
         }
     }
 
+    // Returns string
     getOutput () {
         return Util.randomOf(this.outputs);
     }
