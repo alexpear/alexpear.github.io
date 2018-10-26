@@ -78,14 +78,14 @@ class WGenerator {
     }
 
     addTemplate (tableRaw) {
-        // Later, this could be neater.
-        const key = templateKeyWithoutTheStarter(tableRaw.split('\n')[0]);
+        const templateObj = parseTemplate(tableRaw);
+        const key = templateObj.key;
 
         if (key in this.glossary) {
             throw new Error(`template key '${ key }' appears twice`);
         }
 
-        return this.glossary[key] = parseTemplate(tableRaw);
+        return this.glossary[key] = templateObj;
     }
 
     // Returns WNode[]
@@ -392,6 +392,8 @@ function parseTemplate (tableRaw) {
             }
         );
 
+    templateObj.key = templateKey(tableRaw);
+
     // TODO at some point, detect whether it is a ActionTemplate or CreatureTemplate.
     // Probably mark templateObj.type, or instantiate the appropriate class, or something.
 
@@ -446,8 +448,12 @@ function parseTemplateLine (line) {
     };
 }
 
-function templateKeyWithoutTheStarter (firstLine) {
-    return firstLine.replace('template', '')
+function templateKey (tableRaw) {
+    const START = 'template ';
+    const startIndex = tableRaw.indexOf(START);
+    const endIndex = tableRaw.indexOf('\n');
+
+    return tableRaw.slice(startIndex + START.length, endIndex)
         .trim();
 }
 
