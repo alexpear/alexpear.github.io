@@ -30,8 +30,8 @@ tags: armor
 
 * alias basicWeapon
 4 smg
-4 ar
-4 br
+4 assaultRifle
+4 battleRifle
 3 dmr
 1 shotgun
 
@@ -41,13 +41,13 @@ range: 20
 hit: 3
 damage: 1
 
-* template ar
+* template assaultRifle
 tags: action bullet fullAuto
 range: 30
 hit: 3
 damage: 1
 
-* template br
+* template battleRifle
 tags: action bullet fullAuto
 range: 50
 hit: 3
