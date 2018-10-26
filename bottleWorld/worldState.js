@@ -29,7 +29,7 @@ class WorldState {
     }
 
     groupFromTree (nodeTree) {
-        Util.log(nodeTree.toPrettyString(), 'debug');
+        Util.log('\n' + nodeTree.toYaml(), 'debug');
 
         return new Group('dwarfAxeThrower');
     }
