@@ -31,7 +31,35 @@ class WorldState {
     groupFromTree (nodeTree) {
         Util.log('\n' + nodeTree.toYaml(), 'debug');
 
-        return new Group('dwarfAxeThrower');
+        const groupTemplate = this.getTemplate(nodeTree.templateName);
+        const quantity = groupTemplate.quantity;
+
+        // Later, make this more robust.
+        const individualTree = nodeTree.components[0];
+        const individualTemplateName = individualTree.templateName;
+        const individualTemplate = this.getTemplate(individualTemplateName);
+
+        Util.log(individualTemplate, 'debug');
+
+        // TODO get templates of all component nodes recursively
+        // TODO apply modifications in all those templates.
+
+        const group = new Group(individualTemplate, quantity);
+
+        return group;
+    }
+
+    getTemplate (templateName) {
+        if (templateName in this.glossary) {
+            const template = this.glossary[templateName];
+
+            template.templateName = templateName;
+
+            return template;
+        }
+        else {
+            throw new Error(`Could not find template '${ templateName }' in WorldState's glossary.`);
+        }
     }
 
     static test () {
