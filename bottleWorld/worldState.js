@@ -41,8 +41,7 @@ class WorldState {
 
         Util.log(individualTemplate, 'debug');
 
-        // TODO get templates of all component nodes recursively
-        // TODO apply modifications in all those templates.
+        const combinedTemplate = this.getAggregatedTemplate(nodeTree);
 
         const group = new Group(individualTemplate, quantity);
 
@@ -60,6 +59,25 @@ class WorldState {
         else {
             throw new Error(`Could not find template '${ templateName }' in WorldState's glossary.`);
         }
+    }
+
+    // Get templates of all component nodes recursively
+    // Apply the properties of all those templates, as modifiers.
+    getAggregatedTemplate (wnode) {
+        const template = this.getTemplate(wnode.templateName);
+
+        if (wnode.components.length === 0) {
+            return template;
+        }
+
+        return wnode.components.reduce(
+            (aggregated, component) => {
+                const contribution = this.getAggregatedTemplate(component);
+
+                // TODO combineTemplates must work on both Creature and Action (and modifier) Templates interchangeably.
+                return combineTemplates(aggregated, contribution);
+            }
+        );
     }
 
     static test () {

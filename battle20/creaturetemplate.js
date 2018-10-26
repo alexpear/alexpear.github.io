@@ -32,6 +32,19 @@ module.exports = class CreatureTemplate {
 
     }
 
+    modifiedBy (modifications) {
+        const combinedTemplate = new CreatureTemplate();
+
+        // TODO this was just copied from ActionTemplate
+        // combinedTemplate.range = this.range + (modifications.range || 0);
+        // combinedTemplate.hit = this.hit + (modifications.hit || 0);
+        // combinedTemplate.damage = this.damage + (modifications.damage || 0);
+        // combinedTemplate.tags = Util.union(this.tags, modifications.tags);
+
+        return combinedTemplate;
+    }
+
+
     static example () {
         const template = new CreatureTemplate();
 
