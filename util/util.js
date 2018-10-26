@@ -201,9 +201,10 @@ util.unique = (array) => {
     return Array.from(new Set(array));
 };
 
-// TODO
-util.union = () => {
-    return;
+util.union = (a1, a2) => {
+    return util.unique(
+        a1.concat(a2)
+    );
 };
 
 util.isCapitalized = (s) => {
