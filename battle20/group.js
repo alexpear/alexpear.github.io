@@ -13,15 +13,23 @@ const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
 class Group {
-    constructor (templateName, quantity) {
-        templateName = templateName || 'dwarfAxeThrower';
+    constructor (template, quantity) {
+        // TODO am i calling 2 different things 'templates'?
+        template = template || 'dwarfAxeThrower';
         quantity = quantity || 1;
 
         this.id = Util.newId();
 
-        this.templateName = templateName;
-        this.template = Group.getTemplate(this.templateName);
-        this.alignment = new Alignment('NN');
+        if (Util.isString(template)) {
+            this.templateName = template;
+            this.template = Group.getTemplate(template);
+        } else {
+            // Assume it is a template object for now.
+            this.templateName = template.templateName; // TODO or .name?
+            this.template = template;
+        }
+
+        this.alignment = this.template.alignment || new Alignment('NN');
 
         this.baselineHp = (quantity) * this.getStats().hp;
 
