@@ -14,8 +14,8 @@ const WGenerator = require('../generation/wgenerator.js');
 class WorldState {
     constructor () {
         this.things = [];
-        this.glossary = {};
         this.wanderingGenerator = WGenerator.fromCodex('battle20/halo/unsc/group');
+        this.glossary = this.wanderingGenerator.glossary;
     }
 
     thingsAt (coord) {
