@@ -257,6 +257,7 @@ class AliasTable {
         // this.key = lines[0];
 
         for (let li = 1; li < lines.length; li++) {
+            // Later probably functionize this part.
             const line = lines[li];
 
             if (line === '') {
