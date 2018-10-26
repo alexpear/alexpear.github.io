@@ -180,6 +180,10 @@ util.isString = function (x) {
     return typeof x === 'string';
 };
 
+util.isNaN = function (x) {
+    return Number.isNaN(x);
+}
+
 util.isArray = function (x) {
     // Later make this more sophisticated, or use a library.
     return x &&
@@ -195,7 +199,12 @@ util.array = (x) => {
 
 util.unique = (array) => {
     return Array.from(new Set(array));
-}
+};
+
+// TODO
+util.union = () => {
+    return;
+};
 
 util.isCapitalized = (s) => {
     return /[A-Z]/.test(s);
