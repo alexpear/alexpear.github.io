@@ -127,6 +127,8 @@ class Group {
         const alignment = this.alignment;
         const statusSuffix = this.status ? ` (${ this.status })` : '';
 
+        // TODO Also mention their most salient items, such as their main weapon.
+
         return `${ name } (${ alignment }) x${ this.getQuantity() }${ statusSuffix }`;
     }
 
@@ -160,7 +162,7 @@ class Group {
     }
 
     static getTemplate (templateName) {
-        // This is a mock function. Later, read from the template glossary in the World or Glossary object.
+        // This is a mock function. Later, read from the template glossary in the WorldState or WGenerator or Glossary object.
         const exampleGlossary = {
             dwarfAxeThrower: CreatureTemplate.example()
         };
