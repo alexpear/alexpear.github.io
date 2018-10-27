@@ -77,7 +77,8 @@ class WorldState {
                 const contribution = this.getAggregatedTemplate(component);
 
                 return aggregated.combinedWith(contribution);
-            }
+            },
+            template
         );
     }
 
