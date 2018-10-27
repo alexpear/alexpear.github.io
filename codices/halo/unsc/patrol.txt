@@ -192,7 +192,7 @@ odsts
 3 scorpion
 2 elephant
 
-* warthog
+* alias warthog
 2 scoutWarthog
 2 transportWarthog
 4 turretWarthog
