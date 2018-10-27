@@ -213,7 +213,7 @@ class WGenerator {
             output = wgen.getOutputs();
         }
         else {
-            output = WGenerator.test();
+            output = [];
         }
 
         WGenerator.debugPrint(output);
@@ -466,7 +466,7 @@ module.exports = WGenerator;
 
 
 // Run
-// WGenerator.run();
+WGenerator.run();
 
 
 
