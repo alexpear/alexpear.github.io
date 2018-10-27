@@ -74,8 +74,7 @@ class WorldState {
             (aggregated, component) => {
                 const contribution = this.getAggregatedTemplate(component);
 
-                // TODO combineTemplates must work on both Creature and Action (and modifier) Templates interchangeably.
-                return combineTemplates(aggregated, contribution);
+                return aggregated.combinedWith(contribution);
             }
         );
     }
