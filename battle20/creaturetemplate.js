@@ -33,7 +33,9 @@ const TAG = {
 // when transforming trees of WNodes to Groups.
 class CreatureTemplate {
     constructor () {
-
+        this.tags = [];
+        this.actions = [];
+        this.resistance = {};
     }
 
     // Or could name it modifiedBy() potentially
