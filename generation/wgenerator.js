@@ -220,10 +220,6 @@ class WGenerator {
     }
 
     static debugPrint (output) {
-        const prettyStrings = output.map(
-            node => node.toPrettyString()
-        );
-
         output.forEach(
             node => {
                 console.log(node.toPrettyString());
