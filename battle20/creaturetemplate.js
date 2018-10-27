@@ -28,7 +28,10 @@ const TAG = {
     Projectile: 'projectile'
 };
 
-module.exports = class CreatureTemplate {
+// TODO possibly rename to just Template
+// since it is use for intermediate representations
+// when transforming trees of WNodes to Groups.
+class CreatureTemplate {
     constructor () {
 
     }
@@ -80,3 +83,5 @@ module.exports = class CreatureTemplate {
         return template;
     }
 }
+
+module.exports = CreatureTemplate;
