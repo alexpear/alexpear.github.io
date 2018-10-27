@@ -5,6 +5,9 @@
 
 const fs = require('fs');
 
+// TODO perhaps restructure so that WGenerator doesn't import any Battle20 files.
+// Eg, perhaps CreatureTemplate should not be Battle20-specific?
+const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const Util = require('../util/util.js');
 const WNode = require('../wnode/wnode.js');
 
@@ -368,7 +371,7 @@ ChildrenTable.STARTERS = [
 // This will probably become or call a constructor
 // and store the first line in this.key
 function parseTemplate (tableRaw) {
-    const templateObj = {};
+    const templateObj = new CreatureTemplate();
 
     tableRaw.split('\n')
         .slice(1)
@@ -377,8 +380,11 @@ function parseTemplate (tableRaw) {
                 const parsed = parseTemplateLine(line);
                 const key = parsed.key;
 
-                if (key in templateObj) {
-                    throw new Error(`parseTemplate(): duplicate key '${ key }' in template: ${ tableRaw }`);
+                if (
+                    key in templateObj &&
+                    ! ['tags', 'actions', 'resistance'].includes(key)
+                ) {
+                    throw new Error(`parseTemplate(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
                 }
 
                 templateObj[key] = parsed.value;
