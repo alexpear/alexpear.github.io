@@ -34,17 +34,14 @@ class WGenerator {
                     return this.addChildTable(tableRaw);
                 }
 
-                if (AliasTable.isAppropriateFor(tableRaw)) {
-                    return this.addAliasTable(tableRaw);
-                }
-
                 // Later, this could be neater and not involve a string literal.
                 if (tableRaw.startsWith('template ')) {
                     return this.addTemplate(tableRaw);
                 }
 
                 // Default case.
-                throw new Error(`Could not identify table: ${ tableRaw }`);
+                // Includes '* output'
+                return this.addAliasTable(tableRaw);
             }
         );
 
