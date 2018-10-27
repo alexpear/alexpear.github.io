@@ -17,6 +17,7 @@ const SIZE = {
     Colossal: 6
 };
 
+// TODO replace with tag.js
 const TAG = {
     Humanoid: 'humanoid',
     Human: 'human',
@@ -32,15 +33,15 @@ module.exports = class CreatureTemplate {
 
     }
 
-    // Or could name it combinedWith() potentially
-    modifiedBy (modifications) {
+    // Or could name it modifiedBy() potentially
+    combinedWith (other) {
         const combinedTemplate = new CreatureTemplate();
 
         // TODO this was just copied from ActionTemplate
-        // combinedTemplate.range = this.range + (modifications.range || 0);
-        // combinedTemplate.hit = this.hit + (modifications.hit || 0);
-        // combinedTemplate.damage = this.damage + (modifications.damage || 0);
-        // combinedTemplate.tags = Util.union(this.tags, modifications.tags);
+        // combinedTemplate.range = this.range + (other.range || 0);
+        // combinedTemplate.hit = this.hit + (other.hit || 0);
+        // combinedTemplate.damage = this.damage + (other.damage || 0);
+        // combinedTemplate.tags = Util.union(this.tags, other.tags);
 
         return combinedTemplate;
     }

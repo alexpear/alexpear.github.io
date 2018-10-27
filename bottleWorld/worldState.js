@@ -153,6 +153,81 @@ from pilot: {
     }]
 }
 
+...
+
+Sketch of what we will model for MRB 1:
+  marine w/ battleRifle
+  marine w/ assaultRifle w/ kineticBolts
+  marineInElephant (a Group of this template represents a Elephant transport)
+  marineInWarthog
+  warthog variants: transport, gauss, swordNeedler
+  scorpion, wasp, etc - passengers are 'passenger' or 'marinePassenger' template and contribute no stat modifiers
+  pelicans & transports - maybe focus on the infantry squad and ignore the vehicle! MRB 1 is spaceless.
+  jetpack marines
+  odst & spartan infantry
+  marine w/ dualPistols - when dual wielding, a pair is one template
+    dualSmgs dualLightPistols dualHeavyPistols dualNeedlers dualPlasmaRifles
+    pistolx2 heavyPistolx2
+    pistolPair plasmaRiflePair
+  simple items such as scopes, alternate weapons on a wasp, armor abilities, stealth gear (+1 defense), etc
+  squad with a item, such as a bubble shield, or heavy weapon
+    maybe Group.nodeTree should point to the squad WNode
+    that way the squad's shared items have a clear place to be stored.
+  passengers can be represented as low res stat modifiers, such as mongoose passengers
+  mongoose
+    marine
+      smg
+  or
+  mongooseMarinex2
+    smg
+  or
+  gungoose
+    driveByMarine
+      hit: -1
+      smg
+  or, because additional attacks dont add benefit to the gungoose
+  gungoose
+    passengerSmg
+  where passengerSmg is a node that adds +1 hit +1 damage or something
+  or
+  gungoose
+    passengerHydra
+  or
+  warthog
+    chainGun
+  warthog
+    passengerSmgx4
+  warthog
+    passengerAssaultRifle
+  or maybe just describe a Scout Warthog like this:
+  warthog
+    assaultRifle
+  lance
+    grunt
+      quantity: 8
+      ...
+    eliteLeader
+      range: 10
+      hit: 1
+      damage: 1
+      <A 'squad item' that buffs them. Not tagged 'action'.>
+
+Okay, so, summary of MRB 1 plan:
+The WGenerator will only output trees where the resulting Group is homogenous and shows behavior no more complex than the Group stats enable.
+If passengers and other inner complexities are output by the WGenerator, they will be low res templates like 'marinePassenger' or 'passengerSmg'.
+A recursive reduce() call aggregates templates by looking at the templates of child WNodes and summing up the stats (modifiers).
+Templates can be pojos in MRB 1 if necessary.
+Templates affect their parents, not siblings. 
+The squad WNode is the one that will become a Group. All its children are mere modifiers as far as Battle20 is concerned. 
+Templates with the 'action' tag resolve into a Action pojo. This absorbs all range/hit/damage modifiers from its children.
+Both Groups and Actions can have .hit modifiers. Represents the aim of a warrior and the accuracy / usability of a weapon.
+Splash damage is represented by just giving the weapon more damage; there is no special mechanic for that yet. Monsters and vehicles can have more HP to make this work.
+Damage spills over across individuals within a single Group. Not across groups.
+Templates list defense as a modifier, not as '12' or '19'. 19 would be listed as 9. Each Group has a base defense of 10. That is implied.
+(Groups have base ranges and hits of 0.)
+When combining size stats, take the max of the two rather than summing.
+For infantry in a transport or armored truck, model them as a infantry squad involving template soldierInTruck etc.
+If you want to represent the presence of a extra soldier, special soldier, or armed passenger, just use a modifier node, as if they were a item. You can attach this to the squad's WNode (top level).
 
 
 
