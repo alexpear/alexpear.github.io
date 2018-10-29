@@ -49,6 +49,32 @@ class CreatureTemplate {
         // combinedTemplate.tags = Util.union(this.tags, other.tags);
 
         return combinedTemplate;
+
+        function addProp (aggregation, key) {
+            const existingValue = aggregation[key];
+            const otherValue = other[key];
+
+            if (Util.isArray(otherValue)) {
+                aggregation[key] = Util.union(aggregation[key], otherValue);
+            }
+            else if (Util.isNumber(otherValue)) {
+                aggregation[key] = (existingValue || 0) + (otherValue || 0);
+            }
+            else if (Util.isObject(otherValue)) {
+                // eg 'resistance' object
+                Object.assign(aggregation[key], otherValue);
+                // TODO, acutally, we want to sum the numbers in resistance.
+                // Perhaps recurse addProp on it...
+                // Deal with closure reference to 'other' tho
+            }
+            else if (Util.exists(otherValue)) {
+                // Overwrite
+                aggregation[key] = otherValue;
+            }
+            else {
+                throw new Error(`Mysterious key '${ key }' in child WNode when combining templates of WNode tree. Value is: ${ Util.stringify(otherValue) }`);
+            }
+        }
     }
 
     static isCreatureTemplate (template) {
