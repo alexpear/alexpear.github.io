@@ -172,8 +172,11 @@ util.fromCamelCase = (s) => {
         .join(' ');
 };
 
+// Note that typeof NaN is also 'number',
+// but it is still despicable.
 util.isNumber = function (x) {
-    return typeof x === 'number';
+    return typeof x === 'number' &&
+        ! util.isNaN(x);
 };
 
 util.isString = function (x) {
