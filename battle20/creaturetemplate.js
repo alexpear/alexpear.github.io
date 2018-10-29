@@ -42,11 +42,15 @@ class CreatureTemplate {
     combinedWith (other) {
         const combinedTemplate = new CreatureTemplate();
 
-        // TODO this was just copied from ActionTemplate
-        // combinedTemplate.range = this.range + (other.range || 0);
-        // combinedTemplate.hit = this.hit + (other.hit || 0);
-        // combinedTemplate.damage = this.damage + (other.damage || 0);
-        // combinedTemplate.tags = Util.union(this.tags, other.tags);
+        if (other.tags && other.tags.includes('action')) {
+
+        }
+
+        const TODO = other.keys()
+            .reduce(
+                addProp,
+                combinedTemplate
+            );
 
         return combinedTemplate;
 
