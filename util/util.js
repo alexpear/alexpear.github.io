@@ -185,7 +185,12 @@ util.isString = function (x) {
 
 util.isNaN = function (x) {
     return Number.isNaN(x);
-}
+};
+
+util.isObject = function (x) {
+    return typeof x === 'object' &&
+        x !== null;
+};
 
 util.isArray = function (x) {
     // Later make this more sophisticated, or use a library.
@@ -206,7 +211,7 @@ util.unique = (array) => {
 
 util.union = (a1, a2) => {
     return util.unique(
-        a1.concat(a2)
+        (a1 || []).concat(a2 || [])
     );
 };
 
