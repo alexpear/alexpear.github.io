@@ -66,10 +66,18 @@ class TextSquare {
     static test (size) {
         size = size || 4;
         const textSquare = new TextSquare(size);
-        const output = `TextSquare.test(${ size }): \n${ textSquare.toString() }\n`;
+        const output = `${ size}:\n${ textSquare.toString() }`;
 
         console.log(output);
         return output;
+    }
+
+    static run (limit) {
+        limit = limit || 88;
+
+        for (let i = 1; i <= limit; i++) {
+            TextSquare.test(i);
+        }
     }
 }
 
@@ -83,10 +91,7 @@ TextSquare.HORIZONTAL = '─';
 
 
 // Run
-TextSquare.test(1);
-TextSquare.test(2);
-TextSquare.test(3);
-TextSquare.test(4);
+TextSquare.run();
 
 
 /*
