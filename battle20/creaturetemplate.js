@@ -81,6 +81,17 @@ class CreatureTemplate {
         }
     }
 
+    static mergeResistances (a, b) {
+        const keys = Util.union(a.keys(), b.keys());
+        return keys.reduce(
+            (merged, key) => {
+                merged[key] = (a[key] || 0) + (b[key] || 0);
+                return merged;
+            },
+            {}
+        );
+    }
+
     static isCreatureTemplate (template) {
 
     }
