@@ -120,7 +120,7 @@ class CreatureTemplate {
     }
 
     static mergeResistances (a, b) {
-        const keys = Util.union(a.keys(), b.keys());
+        const keys = Util.union(Object.keys(a), Object.keys(b));
         return keys.reduce(
             (merged, key) => {
                 merged[key] = (a[key] || 0) + (b[key] || 0);
