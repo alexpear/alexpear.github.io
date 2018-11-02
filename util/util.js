@@ -215,6 +215,11 @@ util.union = (a1, a2) => {
     );
 };
 
+// Returns a shallow copy of a array.
+util.arrayCopy = (a) => {
+    return a.map(x => x);
+}
+
 util.isCapitalized = (s) => {
     return /[A-Z]/.test(s);
 };
