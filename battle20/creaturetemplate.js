@@ -62,6 +62,9 @@ class CreatureTemplate {
                 aggregation[key] = Util.union(existingValue, otherValue);
             }
             else if (Util.isNumber(otherValue)) {
+                // TODO: if aggregation will have actions, and key is range, hit, or damage, then the prop should be applied to all of aggregation's actions, not to the aggregation template itself.
+                // For example, a WNode that modifies a weapon might want to apply +1 hit to its Action.
+                // This may necessitate processing number props last... possibly.
                 aggregation[key] = (existingValue || 0) + (otherValue || 0);
             }
             else if (Util.isObject(otherValue)) {
@@ -92,11 +95,11 @@ class CreatureTemplate {
     }
 
     static isCreatureTemplate (template) {
-
+        // TODO
     }
 
     static isActionTemplate (template) {
-
+        // TODO
     }
 
     static example () {
