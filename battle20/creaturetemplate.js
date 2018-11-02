@@ -38,15 +38,32 @@ class CreatureTemplate {
         this.resistance = {};
     }
 
+    deepCopy () {
+        const copy = Object.assign(new CreatureTemplate(), this);
+
+        // Later make sure that other pointers (eg .peers, .neighbors, .siblings) get deep copied.
+        // Could maybe use a addProp()-style func that checks the type of each prop.
+
+        copy.tags = Util.arrayCopy(this.tags);
+
+        copy.actions = this.actions.map(
+            action => action.deepCopy()
+        );
+
+        copy.resistance = Object.assign({}, this.resistance);
+
+        return copy;
+    }
+
     // Or could name it modifiedBy() potentially
+    // Side effect: Transforms other if it is tagged as generating a 'action'
     combinedWith (other) {
-        const combinedTemplate = new CreatureTemplate();
+        let combinedTemplate = this.deepCopy();
+        other.setUpAction();
+        // if 'action' is in this.tags ... just leave it i guess.
 
-        if (other.tags && other.tags.includes('action')) {
-
-        }
-
-        const TODO = other.keys()
+        // Note: addProp() unions .actions; it does not overwrite the array.
+        combinedTemplate = Object.keys(other)
             .reduce(
                 addProp,
                 combinedTemplate
@@ -79,7 +96,26 @@ class CreatureTemplate {
                 throw new Error(`Mysterious key '${ key }' in child WNode when combining templates of WNode tree. Value is: ${ Util.stringify(otherValue) }`);
             }
 
+            return aggregation;
+        }
+    }
 
+    // Check if a template (from WGenerator output) is tagged as one that generates a Action.
+    // Typically this would be a tool or weapon.
+    // If so, transforms this CreatureTemplate to have a ActionTemplate with the relevant stats.
+    // Also removes the old modifiers and tag.
+    setUpAction () {
+        const actionTagIndex = this.tags && this.tags.indexOf('action');
+
+        if (actionTagIndex >= 0) {
+            const action = new ActionTemplate(this.range, this.hit, this.damage);
+
+            delete this.range;
+            delete this.hit;
+            delete this.damage;
+
+            // Remove the 'action' tag.
+            this.tags.splice(actionTagIndex, 1);
         }
     }
 
