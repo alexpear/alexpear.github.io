@@ -296,6 +296,7 @@ function attackEvent (groupA, groupB, random, resolution) {
 
     let damage;
 
+    // Later: add the outnumbered rule. (Attacker can only use a quantity up to defender.quantity() * 3. Represents only the front of a large army being able to attack a small group.)
     if (random) {
         if (resolution === 'high' || groupA.getQuantity() <= 5) {
             damage = groupA.highResRandomDamage(groupB);

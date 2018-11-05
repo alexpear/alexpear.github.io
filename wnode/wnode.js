@@ -80,4 +80,9 @@ let WNode = module.exports = class WNode {
     toYaml () {
         return Yaml.dump(this);
     }
+
+    encyclopediaEntry () {
+
+        return '';
+    }
 };
