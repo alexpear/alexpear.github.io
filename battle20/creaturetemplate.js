@@ -121,11 +121,11 @@ class CreatureTemplate {
     }
 
     static isCreatureTemplate (template) {
-        // TODO
+        return template instanceof CreatureTemplate;
     }
 
     static isActionTemplate (template) {
-        // TODO
+        return template instanceof ActionTemplate;
     }
 
     static example () {

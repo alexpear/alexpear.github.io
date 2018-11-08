@@ -82,7 +82,7 @@ let WNode = module.exports = class WNode {
     }
 
     encyclopediaEntry () {
-
-        return '';
+        // Later.
+        return `${ Util.capitalized(this.templateName) }: A creature with the following traits: ${ this.components.map(c => c.toString()).join(', ') }.`;
     }
 };
