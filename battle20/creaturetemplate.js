@@ -4,6 +4,7 @@
 // Later, may want to merge this with WNode classes.
 
 const ActionTemplate = require('./actiontemplate.js');
+const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
 // Later store these enums in another file
@@ -15,17 +16,6 @@ const SIZE = {
     Huge: 3,
     Gargantuan: 4,
     Colossal: 6
-};
-
-// TODO replace with tag.js
-const TAG = {
-    Humanoid: 'humanoid',
-    Human: 'human',
-    Dwarf: 'dwarf',
-    Elf: 'elf',
-    Soldier: 'soldier',
-    Blade: 'blade',
-    Projectile: 'projectile'
 };
 
 // TODO possibly rename to just Template
