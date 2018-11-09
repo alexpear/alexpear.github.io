@@ -53,7 +53,9 @@ class CreatureTemplate {
         // (Necessary if the root is a weapon or tool.)
         combinedTemplate.setUpAction();
         other.setUpAction();
-        // if 'action' is in this.tags ... just leave it i guess.
+
+        combinedTemplate.actions = Util.union(combinedTemplate.actions, other.actions);
+        combinedTemplate.applyActionModifiers(other);
 
         // Note: addProp() unions .actions; it does not overwrite the array.
         combinedTemplate = Object.keys(other)
@@ -109,6 +111,30 @@ class CreatureTemplate {
 
             // Remove the 'action' tag.
             this.tags.splice(actionTagIndex, 1);
+        }
+    }
+
+    // Helper function when combining templates.
+    // Side effects: Modifies 'this'.
+    applyActionModifiers (other) {
+        // If action properties are present after setUpAction(),
+        // then assume they should modify other.actions and not the creature template itself.
+        const modifierKeys = ['range', 'hit', 'damage'].filter(
+            key => Util.exists(other[key])
+        );
+
+        if (modifierKeys.length >= 1) {
+            modifierKeys.forEach(
+                key => {
+                    other.actions.forEach(
+                        action => {
+                            action[key] += other[key];
+                        }
+                    );
+
+                    delete other[key];
+                }
+            );
         }
     }
 
