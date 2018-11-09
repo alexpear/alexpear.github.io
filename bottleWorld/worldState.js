@@ -11,6 +11,8 @@ const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 const WGenerator = require('../generation/wgenerator.js');
 
+const Yaml = require('js-yaml');
+
 class WorldState {
     constructor () {
         this.things = [];
@@ -89,6 +91,9 @@ class WorldState {
         const trees = ws.randomTrees();
         const arbitraryTree = trees[0];
         const group = ws.groupFromTree(arbitraryTree);
+
+        Util.log('(WorldState) ws.glossary:\n' + Yaml.dump(ws.glossary), 'debug');
+
 
         const output = group.toPrettyString();
         Util.log(output, 'debug');
