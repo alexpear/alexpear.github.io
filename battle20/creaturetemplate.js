@@ -49,6 +49,9 @@ class CreatureTemplate {
     // Side effect: Transforms other if it is tagged as generating a 'action'
     combinedWith (other) {
         let combinedTemplate = this.deepCopy();
+
+        // (Necessary if the root is a weapon or tool.)
+        combinedTemplate.setUpAction();
         other.setUpAction();
         // if 'action' is in this.tags ... just leave it i guess.
 
