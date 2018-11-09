@@ -71,16 +71,15 @@ class CreatureTemplate {
             const otherValue = other[key];
 
             if (Util.isArray(otherValue)) {
+                // eg other.tags or other.actions
                 aggregation[key] = Util.union(existingValue, otherValue);
             }
             else if (Util.isNumber(otherValue)) {
-                // TODO: if aggregation will have actions, and key is range, hit, or damage, then the prop should be applied to all of aggregation's actions, not to the aggregation template itself.
-                // For example, a WNode that modifies a weapon might want to apply +1 hit to its Action.
-                // This may necessitate processing number props last... possibly.
+                // Interpreted as modifiers, not absolute stats.
                 aggregation[key] = (existingValue || 0) + (otherValue || 0);
             }
             else if (Util.isObject(otherValue)) {
-                // eg 'resistance' object
+                // eg other.resistance
                 aggregation[key] = CreatureTemplate.mergeResistances(existingValue || {}, otherValue);
             }
             else if (Util.exists(otherValue)) {
