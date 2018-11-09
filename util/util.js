@@ -218,7 +218,86 @@ util.union = (a1, a2) => {
 // Returns a shallow copy of a array.
 util.arrayCopy = (a) => {
     return a.map(x => x);
-}
+};
+
+util.sigFigsOf = (n) => {
+    if (! util.isNumber(n)) {
+        n = parseFloat(n);
+    }
+
+    let s = n.toString();
+    // let firstFigIndex;
+    // let lastFigIndex;
+    // let sigFigsBeforeDecimal = 0;
+    // let sigFigsAfterDecimal = 0;
+    // let sigFigs = 0;
+
+    const parts = s.split('.');
+    // const preDecimal = parts[0];
+    // const postDecimal = parts[1];
+
+    // Post decimal
+    if (parts[1]) {
+        if (parts[0] === '0') {
+            // eg 0.0705 => 3
+            const zeroes = util.charCountAtStart(parts[1], '0');
+            return parts[1].length - zeroes;
+
+            // const withoutZeroes = parseFloat(parts[1]).toString();
+            // return withoutZeroes.length;
+        }
+        else {
+            // eg 400.01 => 5
+            return parts[0].length + parts[1].length;
+        }
+    }
+    else {
+        // eg 108000 => 3
+        const zeroes = util.charCountAtEnd(s, '0');
+        return s.length - zeroes;
+    }
+
+    // if (n < 1) {
+    //     // Remove the '0.' prefix
+    //     s = s.slice(2);
+    //     sigFigsBeforeDecimal = 0;
+    // }
+
+    // if (n % 1 === 0) {
+    //     firstFigIndex = 0;
+    //     sigFigsAfterDecimal = 0;
+    //     // const trailingZeroes = 
+    // }
+
+    // for (let i = 0; i < s.length; i++) {
+    //     if (/[1-9]/.test(s[i])) {
+
+    //     }
+    // }
+
+    // return lastFigIndex - firstFigIndex;
+};
+
+// eg ('00705', '0') => 2
+util.charCountAtStart = (str, char) => {
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] !== char) {
+            return i;
+        }
+    }
+
+    return str.length;
+};
+
+util.charCountAtEnd = (str, char) => {
+    for (let i = str.length - 1; i >= 0; i--) {
+        if (str[i] !== char) {
+            return (str.length - 1) - i;
+        }
+    }
+
+    return str.length;
+};
 
 util.isCapitalized = (s) => {
     return /[A-Z]/.test(s);
