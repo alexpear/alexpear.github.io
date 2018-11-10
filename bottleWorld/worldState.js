@@ -33,7 +33,7 @@ class WorldState {
     }
 
     groupFromTree (nodeTree) {
-        Util.log('\n' + nodeTree.toYaml(), 'debug');
+        Util.log(`WorldState.groupFromTree(): nodeTree is: \n${nodeTree.toYaml()}`, 'debug');
 
         const groupTemplate = this.getTemplate(nodeTree.templateName);
         const quantity = groupTemplate.quantity;
@@ -42,8 +42,6 @@ class WorldState {
         const individualTree = nodeTree.components[0];
         const individualTemplateName = individualTree.templateName;
         const individualTemplate = this.getTemplate(individualTemplateName);
-
-        Util.log(individualTemplate, 'debug');
 
         const combinedTemplate = this.getAggregatedTemplate(nodeTree);
 
@@ -83,18 +81,17 @@ class WorldState {
     }
 
     static test () {
-        Util.log(`WorldState.test()\n`, 'debug');
+        Util.log(`WorldState.test()\n`, 'info');
 
         const ws = new WorldState();
         const trees = ws.randomTrees();
         const arbitraryTree = trees[0];
         const group = ws.groupFromTree(arbitraryTree);
 
-        Util.log('(WorldState) ws.glossary:\n' + Yaml.dump(ws.glossary), 'debug');
+        Util.log('WorldState.test(): ws.glossary:\n' + Yaml.dump(ws.glossary), 'debug');
 
-
-        const output = group.toPrettyString();
-        Util.log(output, 'debug');
+        const output = Util.stringify(group);
+        Util.log(`WorldState.test(): ${output}`, 'info');
     }
 }
 
