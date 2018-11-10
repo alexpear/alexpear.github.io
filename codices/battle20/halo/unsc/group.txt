@@ -48,19 +48,19 @@ hit: 3
 damage: 1
 
 * template battleRifle
-tags: action bullet fullAuto
+tags: action bullet
 range: 50
 hit: 3
 damage: 1
 
 * template dmr
-tags: action bullet fullAuto
+tags: action bullet
 range: 60
 hit: 3
 damage: 1
 
 * template shotgun
-tags: action bullet fullAuto
+tags: action bullet
 range: 5
 hit: 5
 damage: 2
