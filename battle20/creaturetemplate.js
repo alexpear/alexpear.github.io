@@ -102,14 +102,16 @@ class CreatureTemplate {
         const actionTagIndex = this.tags && this.tags.indexOf('action');
 
         if (actionTagIndex >= 0) {
+            // Remove the 'action' tag.
+            this.tags.splice(actionTagIndex, 1);
+
             const action = new ActionTemplate(this.range, this.hit, this.damage);
+            action.tags = Util.arrayCopy(this.tags);
+            this.actions.push(action);
 
             delete this.range;
             delete this.hit;
             delete this.damage;
-
-            // Remove the 'action' tag.
-            this.tags.splice(actionTagIndex, 1);
         }
     }
 
