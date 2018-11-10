@@ -171,6 +171,7 @@ class Group {
 
     static getTemplate (templateName) {
         // This is a mock function. Later, read from the template glossary in the WorldState or WGenerator or Glossary object.
+        // Later, would also be interested in aggregated templates, from nodeTrees.
         const exampleGlossary = {
             dwarfAxeThrower: CreatureTemplate.example()
         };
