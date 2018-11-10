@@ -67,6 +67,10 @@ class CreatureTemplate {
         return combinedTemplate;
 
         function addProp (aggregation, key) {
+            if (CreatureTemplate.UNCOPIED_KEYS.includes(key)) {
+                return aggregation;
+            }
+
             const existingValue = aggregation[key];
             const otherValue = other[key];
 
@@ -184,5 +188,10 @@ class CreatureTemplate {
         return template;
     }
 }
+
+// These are not copied over when combining templates.
+CreatureTemplate.UNCOPIED_KEYS = [
+    'templateName'
+];
 
 module.exports = CreatureTemplate;
