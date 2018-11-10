@@ -56,7 +56,8 @@ class WGenerator {
 
     addChildTable (tableRaw) {
         const childTable = new ChildrenTable(tableRaw);
-        const key = childTable.key;
+        // TODO replace terminology: key -> templateName
+        const key = childTable.templateName;
 
         if (key in this.childTables) {
             // Later perhaps also mention which file this is, or paste the content of the file
@@ -68,7 +69,7 @@ class WGenerator {
 
     addAliasTable (tableRaw) {
         const aliasTable = new AliasTable(tableRaw);
-        const key = aliasTable.key;
+        const key = aliasTable.templateName;
 
         if (key in this.aliasTables) {
             throw new Error(`alias table key '${ key }' appears twice`);
@@ -79,7 +80,7 @@ class WGenerator {
 
     addTemplate (tableRaw) {
         const templateObj = parseTemplate(tableRaw);
-        const key = templateObj.key;
+        const key = templateObj.templateName;
 
         if (key in this.glossary) {
             throw new Error(`template key '${ key }' appears twice`);
@@ -249,8 +250,7 @@ class AliasTable {
             .map(line => line.trim());
 
         // Later we could complain if the first line's name contains whitespace.
-        this.key = AliasTable.withoutTheStarter(lines[0]);
-        // this.key = lines[0];
+        this.templateName = AliasTable.withoutTheStarter(lines[0]);
 
         for (let li = 1; li < lines.length; li++) {
             // Later probably functionize this part.
@@ -332,7 +332,7 @@ class ChildrenTable {
             .split('\n')
             .map(child => child.trim());
 
-        this.key = ChildrenTable.withoutTheStarter(lines[0]);
+        this.templateName = ChildrenTable.withoutTheStarter(lines[0]);
         this.children = lines.slice(1);
     }
 
@@ -369,7 +369,7 @@ ChildrenTable.STARTERS = [
 
 // TODO put this in class Template and template.js or something.
 // This will probably become or call a constructor
-// and store the first line in this.key
+// and store the first line in this.templateName
 function parseTemplate (tableRaw) {
     const templateObj = new CreatureTemplate();
 
@@ -391,7 +391,9 @@ function parseTemplate (tableRaw) {
             }
         );
 
-    templateObj.key = templateKey(tableRaw);
+    // templateObj.key = templateKey(tableRaw);
+    templateObj.templateName = templateKey(tableRaw);
+    templateObj.setUpAction();
 
     // TODO at some point, detect whether it is a ActionTemplate or CreatureTemplate.
     // Probably mark templateObj.type, or instantiate the appropriate class, or something.
