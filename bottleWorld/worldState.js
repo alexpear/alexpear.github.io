@@ -56,8 +56,6 @@ class WorldState {
         if (templateName in this.glossary) {
             const template = this.glossary[templateName];
 
-            template.templateName = templateName;
-
             return template;
         }
         else {
