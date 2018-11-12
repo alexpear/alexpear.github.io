@@ -123,6 +123,7 @@ class CreatureTemplate {
 
             const action = new ActionTemplate(this.range, this.hit, this.damage);
             action.tags = Util.arrayCopy(this.tags);
+            this.tags = [];
             this.actions.push(action);
 
             delete this.range;
