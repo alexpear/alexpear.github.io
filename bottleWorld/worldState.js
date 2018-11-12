@@ -45,7 +45,8 @@ class WorldState {
 
         const combinedTemplate = this.getAggregatedTemplate(nodeTree);
 
-        const group = new Group(individualTemplate, quantity);
+        const group = new Group(combinedTemplate, quantity);
+        group.nodeTree = nodeTree;
 
         return group;
     }
