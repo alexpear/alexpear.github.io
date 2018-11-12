@@ -25,8 +25,8 @@ class Group {
             this.template = Group.getTemplate(template);
         } else {
             // Assume it is a template object for now.
-            this.templateName = template.templateName; // TODO or .name?
-            this.template = template;
+            this.templateName = template.templateName;
+            this.template = Group.sanitizedTemplate(template);
         }
 
         this.alignment = this.template.alignment || new Alignment('NN');
@@ -161,6 +161,20 @@ class Group {
             `, individual w/ ${ curHp }/${ baseHp } HP`;
 
         return `${ this.toPrettyString() }${ locationStr }${ idStr }${ casualtiesStr }${ injuryStr }`;
+    }
+
+    // Returns a copy, sanitized for use as a Battle 20 Group.
+    static sanitizedTemplate (template) {
+        const copy = template.deepCopy();
+
+        copy.alignment = Util.default(copy.alignment, new Alignment('NN'));
+        copy.size = Util.default(copy.size, 1);
+        copy.hp = Util.default(copy.hp, 1);
+        copy.defense = Util.default(copy.defense, 10);
+        copy.actions = Util.default(copy.actions, []);
+        copy.tags = Util.default(copy.tags, []);
+
+        return copy;
     }
 
     static example () {
