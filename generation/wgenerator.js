@@ -395,7 +395,7 @@ function parseTemplate (tableRaw) {
     templateObj.templateName = templateKey(tableRaw);
     templateObj.setUpAction();
 
-    // TODO at some point, detect whether it is a ActionTemplate or CreatureTemplate.
+    // Later: at some point, detect whether it is a ActionTemplate or CreatureTemplate.
     // Probably mark templateObj.type, or instantiate the appropriate class, or something.
 
     return templateObj;

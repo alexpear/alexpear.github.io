@@ -18,7 +18,7 @@ const SIZE = {
     Colossal: 6
 };
 
-// TODO possibly rename to just Template
+// Later possibly rename to just Template
 // since it is use for intermediate representations
 // when transforming trees of WNodes to Groups.
 class CreatureTemplate {
@@ -78,6 +78,8 @@ class CreatureTemplate {
 
             if (Util.isArray(otherValue)) {
                 // eg other.tags or other.actions
+                // Later: We actually might not want item tags to propogate all the way up to Group.
+                // For example, should a squad of soldiers (Group) have tag 'armor'?
                 aggregation[key] = Util.union(existingValue, otherValue);
             }
             else if (Util.isNumber(otherValue)) {
@@ -110,6 +112,12 @@ class CreatureTemplate {
         const actionTagIndex = this.tags && this.tags.indexOf('action');
 
         if (actionTagIndex >= 0) {
+            // Later, consider this: If the template is tagged 'action', we could just transform it into a action template entirely.
+            // ie, const action = this.deepCopy()
+            // action.removeActionTag()
+            // this.actions.push(action);
+            // delete all keys of 'this' except this.actions
+
             // Remove the 'action' tag.
             this.tags.splice(actionTagIndex, 1);
 
