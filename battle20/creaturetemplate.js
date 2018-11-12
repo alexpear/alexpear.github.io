@@ -57,6 +57,8 @@ class CreatureTemplate {
         combinedTemplate.actions = Util.union(combinedTemplate.actions, other.actions);
         combinedTemplate.applyActionModifiers(other);
 
+        Util.log(`Combining '${this.templateName}' with '${other.templateName}'.`, 'debug');
+
         // Note: addProp() unions .actions; it does not overwrite the array.
         combinedTemplate = Object.keys(other)
             .reduce(
@@ -79,6 +81,8 @@ class CreatureTemplate {
                 aggregation[key] = Util.union(existingValue, otherValue);
             }
             else if (Util.isNumber(otherValue)) {
+                Util.log(`addProp() / isNumber(): key = '${key}', ${existingValue} (old) + ${otherValue} (new)`, 'debug');
+
                 // Interpreted as modifiers, not absolute stats.
                 aggregation[key] = (existingValue || 0) + (otherValue || 0);
             }
