@@ -25,7 +25,7 @@ flakArmor
 
 * template flakArmor
 defense: 6
-resistances: fire 1, piercing 1
+resistance: fire 1, piercing 1
 tags: armor
 
 * alias basicWeapon

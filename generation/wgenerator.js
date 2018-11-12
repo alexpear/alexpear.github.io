@@ -419,7 +419,7 @@ function parseTemplateLine (line) {
     if (key === 'tags') {
         value = rest.split(/\s/);
     }
-    else if (key === 'resistances') {
+    else if (key === 'resistance') {
         value = {};
 
         const entries = rest.split(',');
