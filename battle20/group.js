@@ -280,10 +280,13 @@ function factionsActive (groups) {
     return Util.unique(alignments);
 }
 
+// Checks whether the set contains more than 1 alignment.
+// Returns boolean
 function multipleAlignments (groups) {
     return factionsActive(groups).length >= 2;
 }
 
+// TODO: Implement the Flood's reanimation attack against a casualty Group.
 function attack (groupA, groupB, random, resolution) {
     if (! groupA.isActive()) {
         Util.log(`Non-active group cannot attack: ${ groupA.toPrettyString() } (id: ${ groupA.id })`, 'error');
