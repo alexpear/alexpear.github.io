@@ -1,7 +1,50 @@
 <body style="background: #236A89; color: #FFFFFF; font-size: 24px"> 
 
-  <!-- TODO wnode.js calls require(), which isnt supported here. Use a stripped-down WNode class for now? -->
-  <script type="text/javascript" src="../wnode/wnode.js"></script>
+  <!-- TODO wnode.js calls require(), which isnt supported here. See stripped-down WNode class for now -->
+  <!-- <script type="text/javascript" src="../wnode/wnode.js"></script> -->
+  <script type="text/javascript">
+    // This func was pasted from util.js for now
+    function newId () {
+        // Later research the most performant way to run this.
+        const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const ID_LENGTH = 50;
+
+        let id = '';
+        for (let i = 0; i < ID_LENGTH; i++) {
+            const index = Math.floor( Math.random() * ALPHABET.length );
+            id += ALPHABET[index];
+        }
+
+        return id;
+    }
+
+    // For now, stripped-down version of WNode class.
+    // Later, learn how to deal with browser not recognizing 'require', and import it properly.
+    class WNode {
+        constructor(templateName) {
+            // Later: Safety checks, logging
+            this.id = newId();
+
+            if (templateName) {
+                this.templateName = templateName;
+            }
+
+            this.components = [];
+        }
+
+        add(...nodes) {
+            nodes.forEach(node => {
+                node.parent = this;
+            });
+            this.components = this.components.concat(nodes);
+            return this;
+        }
+
+        toString () {
+            return JSON.stringify(this, undefined, '    ');
+        }
+    }
+  </script>
 
   <script type="text/javascript">
     let currentNode;
