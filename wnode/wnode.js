@@ -22,6 +22,9 @@ let WNode = module.exports = class WNode {
     }
 
     add(...nodes) {
+        nodes.forEach(node => {
+            node.parent = this;
+        });
         this.components = this.components.concat(nodes);
         return this;
     }
