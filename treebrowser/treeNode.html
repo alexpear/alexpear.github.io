@@ -189,6 +189,7 @@
   }
 
   function goToChild (childId) {
+    // alert(`calling goToChild(${childId})`);
     const child = currentNode.components.find(component => component.id === childId);
 
     if (! child) {
