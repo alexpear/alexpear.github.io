@@ -80,8 +80,8 @@
           return this;
       }
 
-      toString () {
-          return JSON.stringify(this, undefined, '    ');
+      toSimpleString () {
+          return this.templateName || '(WNode without a template)';
       }
   }
 </script>
@@ -136,7 +136,7 @@
     if (newNode) {
       // Update parent button
       if (newNode.parent) {
-        domStuff.parentButton.value = newNode.parent.toString();
+        domStuff.parentButton.value = newNode.parent.toSimpleString();
       }
       else {
         domStuff.parentButton.value = '(No parent)';
@@ -144,7 +144,7 @@
 
       // Update current node
       // TODO newNode has a circular reference, according to JSON.stringify()
-      domStuff.currentNodeName.innerHTML = newNode.toString();
+      domStuff.currentNodeName.innerHTML = newNode.toSimpleString();
 
       // Update component buttons
       updateComponentButtons(newNode);
@@ -159,6 +159,7 @@
       button.setAttribute('type', 'button');
       button.setAttribute('id', component.id);
       button.classList.add('iconButton');
+      button.value = component.toSimpleString();
 
       domStuff.componentsDiv.appendChild(button);
 
