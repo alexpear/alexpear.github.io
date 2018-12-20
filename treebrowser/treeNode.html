@@ -162,7 +162,9 @@
 
       domStuff.componentsDiv.appendChild(button);
 
-      button.onclick = 'goToChild(this.id)';
+      button.onclick = function () {
+        goToChild(this.id);
+      };
     });
   }
 
