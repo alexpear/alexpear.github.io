@@ -42,6 +42,10 @@ let WNode = module.exports = class WNode {
         return JSON.stringify(this, undefined, '    ');
     }
 
+    toSimpleString () {
+        return this.templateName || '(WNode with no template)';
+    }
+
     // Format that looks like informal YAML but with props above components.
     toPrettyString (indent) {
         indent = Util.default(indent, 0);
