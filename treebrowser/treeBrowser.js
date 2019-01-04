@@ -1,7 +1,8 @@
 'use strict';
 
+// TODO look up info about browserify and relative paths
 const WGenerator = require('../generation/wgenerator.js');
-const WNode = require('../wnode/wnode.js');
+// const WNode = require('../wnode/wnode.js');
 const Util = require('../util/util.js');
 
 //
@@ -11,6 +12,18 @@ const TreeBrowser = module.exports = class TreeBrowser {
         this.currentNode = curNode || this.exampleRoot();
 
         this.parentButton = document.getElementById('parentButton');
+        if (!this.parentButton) {
+            alert('parentButton seems undefined :o');
+            console.log('parentButton seems undefined :o :o');
+        }
+        else {
+            alert('all is well :)');
+            console.log('all is well :)');
+        }
+
+        // this.fake.bad.foolish = {};
+
+
         this.currentNodeName = document.getElementById('currentNodeName');
         this.discardButton = document.getElementById('discardButton');
         this.propertiesDiv = document.getElementById('properties');
