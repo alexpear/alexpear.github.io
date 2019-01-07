@@ -131,8 +131,12 @@ class WGenerator {
         table.children.forEach(
             childString => {
                 // Note that resolveString() always returns an array.
-                node.components = node.components.concat(
-                    this.resolveString(childString)
+                const children = this.resolveString(childString);
+                node.components = node.components.concat(children);
+                children.forEach(
+                    child => {
+                        child.parent = node;
+                    }
                 );
             }
         );
