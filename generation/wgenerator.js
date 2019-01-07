@@ -210,6 +210,14 @@ class WGenerator {
     }
 
     static run () {
+        if (! process.argv ||
+            ! process.argv[0] ||
+            ! process.argv[0].endsWith('node') ||
+            ! process.argv[1].endsWith('wgenerator.js')) {
+            // This function is for command-line use only.
+            return;
+        }
+
         let output;
 
         if (process.argv.length > 2) {
