@@ -13,11 +13,9 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
         this.parentButton = document.getElementById('parentButton');
         if (!this.parentButton) {
-            alert('parentButton seems undefined :o');
             console.log('parentButton seems undefined :o :o');
         }
         else {
-            alert('all is well :)');
             console.log('all is well :)');
         }
 
@@ -91,7 +89,6 @@ const TreeBrowser = module.exports = class TreeBrowser {
     }
 
     goToChild (childId) {
-        // alert(`calling goToChild(${childId})`);
         const child = this.currentNode.components.find(component => component.id === childId);
 
         if (! child) {
