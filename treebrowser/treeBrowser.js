@@ -2,7 +2,7 @@
 
 // TODO look up info about browserify and relative paths
 const WGenerator = require('../generation/wgenerator.js');
-// const WNode = require('../wnode/wnode.js');
+const WNode = require('../wnode/wnode.js');
 const Util = require('../util/util.js');
 
 //
