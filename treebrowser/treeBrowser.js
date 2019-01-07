@@ -77,26 +77,26 @@ const TreeBrowser = module.exports = class TreeBrowser {
     }
 
     goToNode (newNode) {
-        currentNode = newNode;
+        this.currentNode = newNode;
         this.updateUi(newNode);
     }
 
     goUp () {
-        if (! currentNode.parent) {
+        if (! this.currentNode.parent) {
             // TODO: Friendlier notification.
             return alert('This node has no parent.');
         }
 
-        goToNode(currentNode.parent);
+        this.goToNode(this.currentNode.parent);
     }
 
     goToChild (childId) {
         // alert(`calling goToChild(${childId})`);
-        const child = currentNode.components.find(component => component.id === childId);
+        const child = this.currentNode.components.find(component => component.id === childId);
 
         if (! child) {
             // TODO: Friendlier notification.
-            return alert(`Error: Could not find a child component with id ${ childId }. The number of child components is ${ currentNode.components.length }.`);
+            return alert(`Error: Could not find a child component with id ${ childId }. The number of child components is ${ this.currentNode.components.length }.`);
         }
 
         this.goToNode(child);
@@ -104,7 +104,7 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
     discard () {
         // TODO
-        updateUi();
+        this.updateUi();
     }
 
     loadFile (fileName) {
