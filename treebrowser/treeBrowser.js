@@ -109,18 +109,12 @@ const TreeBrowser = module.exports = class TreeBrowser {
     }
 
     exampleRoot () {
-        const li = new WNode('adacemyStudent');
-        li.add(new WNode('smg'));
-        li.add(new WNode('helmet'));
-
-        const wren = new WNode('academyStudent');
-        wren.add(new WNode('gladius'));
-        wren.add(new WNode('combatShield'));
-
-        const squad = new WNode('infantrySquad');
-        squad.add(li, wren);
-
-        return squad;
+        // TODO: fs doesnt play nice with browserify.
+        // https://stackoverflow.com/questions/16640177/browserify-with-requirefs#comment74864880_23267470
+        // const wgen = WGenerator.fromCodex('halo/unsc/patrol');
+        const wgen = new WGenerator(WGenerator.exampleRaw());
+        const outputs = wgen.getOutputs();
+        return outputs[0];
     }
 };
 
