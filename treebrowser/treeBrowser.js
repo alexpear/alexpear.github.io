@@ -28,7 +28,7 @@ const TreeBrowser = module.exports = class TreeBrowser {
         this.discardButton = document.getElementById('discardButton');
         this.propertiesDiv = document.getElementById('properties');
         // TODO this is turning out undefined for some reason
-        this.componentsDiv - document.getElementById('components');
+        this.componentsDiv = document.getElementById('components');
 
         this.updateUi(this.currentNode);
     }
