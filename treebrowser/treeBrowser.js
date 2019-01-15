@@ -50,8 +50,11 @@ const TreeBrowser = module.exports = class TreeBrowser {
         }
     }
 
-    updateComponentButtons (newNode) {
+    async updateComponentButtons (newNode) {
+        this.clearComponentShortcuts();
         this.clearDiv(this.componentsDiv);
+
+        await this.sleep(100);
 
         newNode.components.forEach((component, index) => {
             const button = document.createElement('input');
@@ -125,6 +128,11 @@ const TreeBrowser = module.exports = class TreeBrowser {
         const wgen = new WGenerator(WGenerator.exampleRaw());
         const outputs = wgen.getOutputs();
         return outputs[0];
+    }
+
+    // TODO add to utils.js
+    sleep (ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 };
 
