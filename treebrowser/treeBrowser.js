@@ -41,11 +41,9 @@ const TreeBrowser = module.exports = class TreeBrowser {
                 this.parentButton.value = '(No parent)';
             }
 
-            // Update current node
             // TODO newNode has a circular reference, according to JSON.stringify()
             this.currentNodeName.innerHTML = newNode.toSimpleString();
 
-            // Update component buttons
             this.updateComponentButtons(newNode);
         }
     }
