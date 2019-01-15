@@ -109,10 +109,6 @@ const TreeBrowser = module.exports = class TreeBrowser {
     }
 
     exampleRoot () {
-        // TODO: fs doesnt play nice with browserify.
-        // https://stackoverflow.com/questions/16640177/browserify-with-requirefs#comment74864880_23267470
-        // Consider transforming codices/halo/unsc/patrol.txt into a .js module that exports a string.
-        // const wgen = WGenerator.fromCodex('halo/unsc/patrol');
         const wgen = new WGenerator(WGenerator.exampleRaw());
         const outputs = wgen.getOutputs();
         return outputs[0];
