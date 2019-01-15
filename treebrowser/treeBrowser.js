@@ -17,11 +17,6 @@ const TreeBrowser = module.exports = class TreeBrowser {
         if (!this.parentButton) {
             console.log('parentButton seems undefined :o :o');
         }
-        else {
-            console.log('all is well :)');
-        }
-
-        // this.fake.bad.foolish = {};
 
         Hotkeys('q', (event, handler) => {
             this.parentButton.click();
@@ -99,8 +94,8 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
     goUp () {
         if (! this.currentNode.parent) {
-            // TODO: Friendlier notification.
-            return alert('This node has no parent.');
+            console.log('Cannot go up to parent because this node has no parent.');
+            return;
         }
 
         this.goToNode(this.currentNode.parent);
