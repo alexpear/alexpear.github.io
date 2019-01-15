@@ -173,25 +173,8 @@ class WGenerator {
     }
 
     static exampleRaw () {
-        return `
-            * output
-            1 {squad}, {squad}, {squad}
-
-            * alias squad
-            4 marineSquad
-
-            * children of marineSquad
-            marines
-
-            * children of marines
-            {basicWeapon}
-
-            * alias basicWeapon
-            4 smg
-            4 ar
-            4 br
-            3 dmr
-            1 shotgun`;
+        const patrolRaw = require('../codices/halo/unsc/patrol.js');
+        return patrolRaw;
     }
 
     // TODO: Consider a syntax like 'sunlight/warbands/warrior/squadLeader' for reaching into a table within a file.
