@@ -5,6 +5,8 @@ const WGenerator = require('../generation/wgenerator.js');
 const WNode = require('../wnode/wnode.js');
 const Util = require('../util/util.js');
 
+const Hotkeys = require('hotkeys-js');
+
 //
 
 const TreeBrowser = module.exports = class TreeBrowser {
@@ -21,6 +23,9 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
         // this.fake.bad.foolish = {};
 
+        Hotkeys('q', (event, handler) => {
+            this.parentButton.click();
+        });
 
         this.currentNodeName = document.getElementById('currentNodeName');
         this.discardButton = document.getElementById('discardButton');
@@ -60,12 +65,25 @@ const TreeBrowser = module.exports = class TreeBrowser {
             button.classList.add('iconButton');
             button.value = component.toSimpleString();
 
+            const numberString = (index + 1).toString();
+            Hotkeys(numberString, (event, handler) => {
+                button.click();
+                console.log(`Detected keyboard shortcut ${numberString} and going to ${button.value}`);
+            });
+
             this.componentsDiv.appendChild(button);
 
             button.onclick = function () {
                 window.treeBrowser.goToChild(this.id);
             };
         });
+    }
+
+    clearComponentShortcuts () {
+        for (let i = 1; i <= this.componentsDiv.childElementCount; i++) {
+            Hotkeys.unbind(i.toString());
+            // console.log(`Cleared hotkey ${i}`);
+        }
     }
 
     clearDiv (div) {
