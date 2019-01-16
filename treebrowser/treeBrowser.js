@@ -61,11 +61,14 @@ const TreeBrowser = module.exports = class TreeBrowser {
             button.classList.add('iconButton');
             button.value = component.toSimpleString();
 
-            const numberString = (index + 1).toString();
-            Hotkeys(numberString, (event, handler) => {
-                button.click();
-                console.log(`Detected keyboard shortcut ${numberString} and going to ${button.value}`);
-            });
+            // Keys 1-9 are keyboard shortcuts
+            if (index <= 8) {
+                const numberString = (index + 1).toString();
+                Hotkeys(numberString, (event, handler) => {
+                    button.click();
+                    console.log(`Detected keyboard shortcut ${numberString} and going to ${button.value}`);
+                });
+            }
 
             this.componentsDiv.appendChild(button);
 
