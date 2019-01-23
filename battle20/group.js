@@ -110,7 +110,6 @@ class Group {
     }
 
     takeDamage (n) {
-        // TODO: Modify based on damage tags and damage resistance.
         this.totalHp -= n;
 
         const FLEE_THRESHOLD = 0.3;
@@ -318,6 +317,7 @@ function attackEvent (groupA, groupB, random, resolution) {
     if (random) {
         if (resolution === 'high' || groupA.getQuantity() <= 5) {
             damage = groupA.highResRandomDamage(groupB);
+            // TODO: Modify based on damage tags and damage resistance, for all 3 damage calc methods.
         }
         else {
             // Low resolution combat simulation.
