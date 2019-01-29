@@ -88,19 +88,44 @@ class Group {
             ! INACTIVE_STATUSES.includes(this.status);
     }
 
-    maxDamage () {
-        return this.getQuantity() * this.getFirstAction().damage;
+    maxDamage (target) {
+        return this.getQuantity() * this.getDamageVs(target);
     }
 
-    highResRandomDamage (targetGroup) {
+    // Note that negative resistance (ie, vulnerability) is indeed supported.
+    getDamageVs (target) {
+        const baseDamage = this.getFirstAction().damage;
+
+        if (! target) {
+            return baseDamage;
+        }
+
+        const attackTags = [];
+        const resistances = target.getStats().resistances;
+        let resisted = 0;
+
+        for (let i = 0; i < attackTags.length; i++) {
+            const tag = attackTags[i];
+            const resistance = resistances[tag];
+            if (Util.exists(resistance)) {
+                resisted += resistance;
+            }
+        }
+
+        // Could log.
+
+        return Math.max(baseDamage - resisted, 0)
+    }
+
+    highResRandomDamage (target) {
         let damage = 0;
 
         const quantity = this.getQuantity();
-        const chance = hitChance(this, targetGroup);
+        const chance = hitChance(this, target);
 
         for (let i = 0; i < quantity; i++) {
             if (Math.random() <= chance) {
-                damage += this.getFirstAction().damage;
+                damage += this.getDamageVs(target);
             }
         }
 
@@ -317,17 +342,16 @@ function attackEvent (groupA, groupB, random, resolution) {
     if (random) {
         if (resolution === 'high' || groupA.getQuantity() <= 5) {
             damage = groupA.highResRandomDamage(groupB);
-            // TODO: Modify based on damage tags and damage resistance, for all 3 damage calc methods.
         }
         else {
             // Low resolution combat simulation.
-            const maxDamage = groupA.maxDamage();
+            const maxDamage = groupA.maxDamage(groupB);
             const expectedDamage = maxDamage * hitChance(groupA, groupB);
             damage = randomlyAdjusted(expectedDamage);
         }
     }
     else {
-        const maxDamage = groupA.maxDamage();
+        const maxDamage = groupA.maxDamage(groupB);
         damage = Math.round(
             maxDamage * hitChance(groupA, groupB)
         );
