@@ -108,6 +108,10 @@ class WGenerator {
 
     // TODO: Maybe interpret '{halo/unsc/vehicle}' as referring to a different codex module.
     // Detect this by looking for the '/' char.
+    // Perhaps during the 'loading' (addAliasTable() etc), slash-strings can be detected. The corresponding codex modules can be tracked down and also loaded as tables.
+    // The pointers to that table may have to be standardized as absolute paths in-memory (unsc/vehicle/hardPoint -> halo/unsc/vehicle/hardPoint).
+    // I think if the 'reaching into' syntax is absent, it will be workable but will require many short modules (ie, lots of exporting).
+    // A more desirable way to split up unsc files might be: item, individual, squad, vehicle, group, ship, fleet.
     resolveString (inputString) {
         return this.resolveCommas(inputString)
             .map(str => new WNode(str))
