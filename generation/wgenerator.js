@@ -106,6 +106,8 @@ class WGenerator {
             );
     }
 
+    // TODO: Maybe interpret '{halo/unsc/vehicle}' as referring to a different codex module.
+    // Detect this by looking for the '/' char.
     resolveString (inputString) {
         return this.resolveCommas(inputString)
             .map(str => new WNode(str))
