@@ -33,6 +33,7 @@ class WGenerator {
                     return;
                 }
 
+                // TODO During WGenerator construction, Interpret keys with slashes as external pointers. These trigger construction of new wgenerator objects. The first generator can maintain a dict of slashy absolute pointers to those generators. 
                 if (ChildrenTable.isAppropriateFor(tableRaw)) {
                     return this.addChildTable(tableRaw);
                 }
