@@ -190,7 +190,9 @@ class WGenerator {
     // Example input: 'sunlight/warbands/warrior'
     static fromCodex (codexPath) {
         // Later, ignore leading slashes and trailing file extensions.
-        return WGenerator.fromFile(`${ WGenerator.codicesDir() }/${ codexPath }.txt`);
+        const codexString = require(`${ WGenerator.codicesDir() }/${ codexPath }.js`);
+
+        return new WGenerator(codexString);
     }
 
     static fromFile (path) {
