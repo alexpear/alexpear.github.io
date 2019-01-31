@@ -279,6 +279,7 @@ class AliasTable {
             if (Util.contains(alias, '/')) {
                 // TODO: Find the file and table being referred to.
                 // (In the style of how npm searches up for a node_modules.)
+                // I suppose this might be incompatible with Browserify ... but we'll see.
                 // TODO require that file and construct a new WGenerator for it.
                 // TODO Add that WGenerator to ourWGenerator.otherGenerators['halo/unsc/vehicle'] (ie, the keys are absolute paths).
                 // TODO: The alias local variable here should be set to the absolute path (including the table within the external Generator), not the relative path
