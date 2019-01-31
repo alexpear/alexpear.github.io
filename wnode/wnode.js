@@ -38,10 +38,6 @@ let WNode = module.exports = class WNode {
         return clone;
     }
 
-    toString () {
-        return JSON.stringify(this, undefined, '    ');
-    }
-
     toSimpleString () {
         return this.templateName || '(WNode with no template)';
     }
@@ -57,6 +53,7 @@ let WNode = module.exports = class WNode {
             'name',
             'templateName',
             'id',
+            'parent',
             'components'
         ];
 
