@@ -467,7 +467,8 @@ class AliasTable {
 
     // TODO this logic is needed by ChildrenTable too. Move it to WGenerator (ie parent).
     getAbsolutePath (relativePathStr) {
-        const relativePath = relativePathStr.split('/');
+        const relativePath = relativePathStr.trim()
+            .split('/');
         let curPath = this.generator.codexPath.split('/');
 
         while (curPath.length >= 1) {
