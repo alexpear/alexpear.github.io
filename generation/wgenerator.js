@@ -73,7 +73,7 @@ class WGenerator {
     }
 
     addAliasTable (tableRaw) {
-        const aliasTable = new AliasTable(tableRaw);
+        const aliasTable = new AliasTable(tableRaw, this);
         const key = aliasTable.templateName;
 
         if (key in this.aliasTables) {
@@ -310,7 +310,9 @@ class WGenerator {
 
 
 class AliasTable {
-    constructor (rawString) {
+    constructor (rawString, generator) {
+        // The parent pointer is used when resolving slash path aliases.
+        this.generator = generator;
         this.outputs = [];
 
         const lines = rawString.trim()
