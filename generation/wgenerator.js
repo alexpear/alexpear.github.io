@@ -431,7 +431,7 @@ class AliasTable {
 
             // During WGenerator construction, Interpret keys with slashes as external pointers.
             if (Util.contains(alias, '/')) {
-                alias = this.getAbsolutePath(alias);
+                alias = this.getAbsoluteAlias(alias);
             }
 
             const weight = parseInt(weightStr);
@@ -452,6 +452,20 @@ class AliasTable {
         return Util.randomOf(this.outputs);
     }
 
+    // TODO this logic is needed by ChildrenTable too. Move it to WGenerator (ie parent).
+    getAbsoluteAlias (relativePathAlias) {
+        if (relativePathAlias.startsWith('{')) {
+            relativePathAlias = relativePathAlias.slice(1);
+        }
+        if (relativePathAlias.endsWith('}')) {
+            relativePathAlias = relativePathAlias.slice(0, relativePathAlias.length - 1);
+        }
+
+        const absolutePath = this.getAbsolutePath(relativePathAlias);
+        return `{${absolutePath}}`;
+    }
+
+    // TODO this logic is needed by ChildrenTable too. Move it to WGenerator (ie parent).
     getAbsolutePath (relativePathStr) {
         const relativePath = relativePathStr.split('/');
         let curPath = this.generator.codexPath.split('/');
@@ -513,7 +527,22 @@ class ChildrenTable {
             .map(child => child.trim());
 
         this.templateName = ChildrenTable.withoutTheStarter(lines[0]);
-        this.children = lines.slice(1);
+        this.children = lines.slice(1)
+            .map(
+                line => {
+                    if (Util.contains(line, '/')) {
+                        if (line.startsWith('{')) {
+                            line = this.getAbsoluteAlias(line);
+                        }
+                        else {
+                            // Referring to a external template name.
+                            line = this.getAbsolutePath(line);
+                        }
+                    }
+
+                    return line;
+                }
+            );
     }
 
     static isAppropriateFor (tableString) {
