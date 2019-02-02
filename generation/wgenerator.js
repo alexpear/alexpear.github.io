@@ -54,7 +54,7 @@ class WGenerator {
         );
 
         // Check that the output alias table exists
-        if (! this.aliasTables['output']) {
+        if (! this.aliasTables.output) {
             throw new Error(`WGenerator constructor: output table not found. Object.keys(this.aliasTables).length is ${ Object.keys(this.aliasTables).length }`);
         }
     }
