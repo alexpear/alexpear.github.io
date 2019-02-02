@@ -14,6 +14,10 @@ const WNode = require('../wnode/wnode.js');
 class WGenerator {
     // Constructor param will be either a birddecisions-format string or a filename.
     constructor (rawString) {
+        if (! typeof (rawString === 'string') || ! rawString.length) {
+            return;
+        }
+
         // Later the this.rawString field might not be necessary.
         this.rawString = rawString.trim();
         this.aliasTables = {};
