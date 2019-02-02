@@ -60,7 +60,7 @@ class WGenerator {
     }
 
     addChildTable (tableRaw) {
-        const childTable = new ChildrenTable(tableRaw);
+        const childTable = new ChildrenTable(tableRaw, this);
         // TODO replace terminology: key -> templateName
         const key = childTable.templateName;
 
@@ -522,7 +522,9 @@ AliasTable.STARTERS = [
 
 
 class ChildrenTable {
-    constructor (rawString) {
+    constructor (rawString, generator) {
+        this.generator = generator;
+
         const lines = rawString.trim()
             .split('\n')
             .map(child => child.trim());
