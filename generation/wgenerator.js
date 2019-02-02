@@ -312,12 +312,8 @@ class WGenerator {
     // Path parameters are arrays of strings
     // Returns string or undefined
     static interpretRelativePathAsFile (relativePath, contextPath) {
-        if (contextPath[contextPath.length - 1] !== relativePath[0]) {
-            return;
-        }
-
-        // concat() and slice() have no side effects.
-        const fullPath = contextPath.concat(relativePath.slice(1));
+        // concat() has no side effects.
+        const fullPath = contextPath.concat(relativePath);
         const fullPathStr = fullPath.join('/');
         if (WGenerator.generators[fullPathStr]) {
             return fullPathStr;
@@ -329,16 +325,15 @@ class WGenerator {
     // Path parameters are arrays of strings
     // Returns string or undefined
     static interpretRelativePathAsTable (relativePath, contextPath) {
-        if (
-            contextPath[contextPath.length - 1] !== relativePath[0] ||
-            relativePath.length < 2
-        ) {
+        if (relativePath.length < 2) {
             return;
         }
 
-        // Omit the table
         const tableIndex = relativePath.length - 1;
-        const genPath = contextPath.concat(relativePath.slice(1, tableIndex));
+
+        // Omit the table
+        // concat() and slice() have no side effects.
+        const genPath = contextPath.concat(relativePath.slice(0, tableIndex));
         const genPathStr = genPath.join('/');
         const gen = WGenerator.generators[genPathStr];
 
