@@ -183,6 +183,10 @@ class WGenerator {
         }
     }
 
+    findCodex (partialPath) {
+
+    }
+
     static exampleRaw () {
         const patrolRaw = require('../codices/halo/unsc/patrol.js');
         return patrolRaw;
