@@ -252,6 +252,10 @@ class WGenerator {
             require('../codices/halo/unsc/fleet'),
             'halo/unsc/fleet'
         );
+        WGenerator.addGenerator(
+            require('../codices/halo/unsc/patrol'),
+            'halo/unsc/patrol'
+        );
     }
 
     static addGenerator (moduleContents, codexPath) {
