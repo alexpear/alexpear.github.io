@@ -429,7 +429,7 @@ class AliasTable {
             let alias = line.slice(weightStr.length)
                 .trim();
 
-            // TODO During WGenerator construction, Interpret keys with slashes as external pointers.
+            // During WGenerator construction, Interpret keys with slashes as external pointers.
             if (Util.contains(alias, '/')) {
                 alias = this.getAbsolutePath(alias);
             }
