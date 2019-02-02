@@ -168,7 +168,10 @@ class WGenerator {
             const alias = str.slice(1, str.length - 1)
                 .trim();
 
-            const table = this.aliasTables[alias];
+            // Slashes indicate pointers to external WGenerators.
+            const table = Util.contains(alias, '/') ?
+                WGenerator.getAliasTable(alias) :
+                this.aliasTables[alias];
 
             if (! table) {
                 throw new Error(`WGenerator.maybeResolveAlias(): Could not find alias table: ${ str }`);
@@ -311,16 +314,40 @@ class WGenerator {
         if (gen) {
             const goalTable = relativePath[tableIndex];
 
+            // TODO unsure whether i want a alias-only function or what.
             if (
                 gen.aliasTables[goalTable] ||
                 gen.childTables[goalTable] ||
                 gen.glossary[goalTable]
             ) {
-                return genPathStr;
+                return genPathStr + '/' + goalTable;
             }
         }
 
         return;
+    }
+
+    static getAliasTable (absolutePath) {
+        // First check if this refers to whole WGenerator instead of just a AliasTable
+        let gen = WGenerator.generators[absolutePath];
+
+        if (gen) {
+            return gen.aliasTables.output;
+        }
+
+        // Otherwise interpret the last term of absolutePath as the name of a AliasTable
+        const terms = absolutePath.split('/');
+        const tableIndex = terms.length - 1;
+        const genPath = terms.slice(0, tableIndex)
+            .join('/');
+        const tableName = terms[tableIndex];
+        gen = WGenerator.generators[genPath];
+
+        if (gen) {
+            return gen.aliasTables[tableName];
+        }
+
+        throw new Error(`External AliasTable not found: ${ absolutePath }`);
     }
 
     static run () {
