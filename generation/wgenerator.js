@@ -401,16 +401,13 @@ class AliasTable {
             const alias = line.slice(weightStr.length)
                 .trim();
 
-            // TODO During WGenerator construction, Interpret keys with slashes as external pointers. These trigger construction of new wgenerator objects. The first generator can maintain a dict of slashy absolute pointers to those generators.
+            // TODO During WGenerator construction, Interpret keys with slashes as external pointers.
             if (Util.contains(alias, '/')) {
-                // TODO: Find the file and table being referred to.
-                // (In the style of how npm searches up for a node_modules.)
-                // I suppose this might be incompatible with Browserify ... but we'll see.
-                // const path = WGenerator.findCodex(alias);
-                // TODO We need to know what the current codex path is, but that's tricky within a AliasTable function.
-                // TODO require that file and construct a new WGenerator for it.
-                // TODO Add that WGenerator to ourWGenerator.otherGenerators['halo/unsc/vehicle'] (ie, the keys are absolute paths).
+                const otherGen = this.findCodex(alias);
+                const absolutePath = otherGen.codexPath;
                 // TODO: The alias local variable here should be set to the absolute path (including the table within the external Generator), not the relative path
+                // TODO the 'new AliasTable()' call should probably be wrapped. In this external pointer scenario, i want to reference one of otherGen's existing AliasTable (or ChildTable etc later) objects, and to customize the slashy key.
+                throw new Error(`Slash pointers are not yet supported: ${ alias }`);
             }
 
             const weight = parseInt(weightStr);
