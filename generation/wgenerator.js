@@ -180,6 +180,47 @@ class WGenerator {
         }
     }
 
+    makePathAbsolute (relativePathStr) {
+        if (relativePathStr.startsWith('{')) {
+            return this.getAbsoluteAlias(relativePathStr);
+        }
+
+        // Referring to a external template name.
+        return this.getAbsolutePath(relativePathStr);
+    }
+
+    getAbsoluteAlias (relativePathAlias) {
+        // One duplicate comparison. I dont think this will slow performance appreciably.
+        if (relativePathAlias.startsWith('{')) {
+            relativePathAlias = relativePathAlias.slice(1);
+        }
+        if (relativePathAlias.endsWith('}')) {
+            relativePathAlias = relativePathAlias.slice(0, relativePathAlias.length - 1);
+        }
+
+        const absolutePath = this.getAbsolutePath(relativePathAlias);
+        return `{${absolutePath}}`;
+    }
+
+    getAbsolutePath (relativePathStr) {
+        const relativePath = relativePathStr.trim()
+            .split('/');
+        let curPath = this.codexPath.split('/');
+
+        while (curPath.length >= 1) {
+            // TODO I may want to interpret the last term as a possible alias table name, but not as a childTable or glossary name.
+            const genPath = WGenerator.interpretRelativePath(relativePath, curPath);
+
+            if (genPath) {
+                return genPath;
+            }
+
+            curPath.pop();
+        }
+
+        throw new Error(`Could not find codex path ${ relativePathStr }`);
+    }
+
     static exampleRaw () {
         const patrolRaw = require('../codices/halo/unsc/patrol.js');
         return patrolRaw;
@@ -421,7 +462,7 @@ class AliasTable {
 
             // During WGenerator construction, Interpret keys with slashes as external pointers.
             if (Util.contains(alias, '/')) {
-                alias = this.getAbsoluteAlias(alias);
+                alias = this.generator.makePathAbsolute(alias);
             }
 
             const weight = parseInt(weightStr);
@@ -443,37 +484,6 @@ class AliasTable {
     }
 
     // TODO this logic is needed by ChildrenTable too. Move it to WGenerator (ie parent).
-    getAbsoluteAlias (relativePathAlias) {
-        if (relativePathAlias.startsWith('{')) {
-            relativePathAlias = relativePathAlias.slice(1);
-        }
-        if (relativePathAlias.endsWith('}')) {
-            relativePathAlias = relativePathAlias.slice(0, relativePathAlias.length - 1);
-        }
-
-        const absolutePath = this.getAbsolutePath(relativePathAlias);
-        return `{${absolutePath}}`;
-    }
-
-    // TODO this logic is needed by ChildrenTable too. Move it to WGenerator (ie parent).
-    getAbsolutePath (relativePathStr) {
-        const relativePath = relativePathStr.trim()
-            .split('/');
-        let curPath = this.generator.codexPath.split('/');
-
-        while (curPath.length >= 1) {
-            // TODO I want to interpret the last term as a possible alias table name, but not as a childTable or glossary name.
-            const genPath = WGenerator.interpretRelativePath(relativePath, curPath);
-
-            if (genPath) {
-                return genPath;
-            }
-
-            curPath.pop();
-        }
-
-        throw new Error(`Could not find codex path ${ relativePathStr }`);
-    }
 
     static isAppropriateFor (tableString) {
         const t = tableString.trim()
@@ -524,13 +534,7 @@ class ChildrenTable {
             .map(
                 line => {
                     if (Util.contains(line, '/')) {
-                        if (line.startsWith('{')) {
-                            line = this.getAbsoluteAlias(line);
-                        }
-                        else {
-                            // Referring to a external template name.
-                            line = this.getAbsolutePath(line);
-                        }
+                        line = this.generator.makePathAbsolute(line);
                     }
 
                     return line;
