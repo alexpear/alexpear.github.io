@@ -38,7 +38,7 @@ class WGenerator {
                     return;
                 }
 
-                if (ChildrenTable.isAppropriateFor(tableRaw)) {
+                if (ChildTable.isAppropriateFor(tableRaw)) {
                     return this.addChildTable(tableRaw);
                 }
 
@@ -60,7 +60,7 @@ class WGenerator {
     }
 
     addChildTable (tableRaw) {
-        const childTable = new ChildrenTable(tableRaw, this);
+        const childTable = new ChildTable(tableRaw, this);
         // TODO replace terminology: key -> templateName
         const key = childTable.templateName;
 
@@ -480,7 +480,7 @@ class AliasTable {
         return Util.randomOf(this.outputs);
     }
 
-    // TODO this logic is needed by ChildrenTable too. Move it to WGenerator (ie parent).
+    // TODO this logic is needed by ChildTable too. Move it to WGenerator (ie parent).
 
     static isAppropriateFor (tableString) {
         const t = tableString.trim()
@@ -517,8 +517,7 @@ AliasTable.STARTERS = [
     'alias'
 ];
 
-
-class ChildrenTable {
+class ChildTable {
     constructor (rawString, generator) {
         this.generator = generator;
 
@@ -526,7 +525,7 @@ class ChildrenTable {
             .split('\n')
             .map(child => child.trim());
 
-        this.templateName = ChildrenTable.withoutTheStarter(lines[0]);
+        this.templateName = ChildTable.withoutTheStarter(lines[0]);
         this.children = lines.slice(1)
             .map(
                 line => {
@@ -543,7 +542,7 @@ class ChildrenTable {
         const t = tableString.trim()
             .toLowerCase();
 
-        return ChildrenTable.STARTERS.some(
+        return ChildTable.STARTERS.some(
             starter => t.startsWith(starter)
         );
     }
@@ -552,7 +551,7 @@ class ChildrenTable {
         const s = rawString.trim();
         const sLow = s.toLowerCase();
 
-        for (let starter of ChildrenTable.STARTERS) {
+        for (let starter of ChildTable.STARTERS) {
             if (sLow.startsWith(starter)) {
                 return s.slice(starter.length)
                     .trim();
@@ -563,7 +562,7 @@ class ChildrenTable {
     }
 }
 
-ChildrenTable.STARTERS = [
+ChildTable.STARTERS = [
     'children of',
     'childrenof'
     // 'childrenOf' is implied by the call to toLowerCase()
