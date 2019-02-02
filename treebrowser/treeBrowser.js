@@ -18,7 +18,7 @@ const TreeBrowser = module.exports = class TreeBrowser {
             console.log('parentButton seems undefined :o :o');
         }
 
-        Hotkeys('q', (event, handler) => {
+        Hotkeys('`', (event, handler) => {
             this.parentButton.click();
         });
 
