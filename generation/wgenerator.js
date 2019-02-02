@@ -13,13 +13,14 @@ const WNode = require('../wnode/wnode.js');
 
 class WGenerator {
     // Constructor param will be either a birddecisions-format string or a filename.
-    constructor (rawString) {
+    constructor (rawString, codexPath) {
         if (! typeof (rawString === 'string') || ! rawString.length) {
             return;
         }
 
         // Later the this.rawString field might not be necessary.
         this.rawString = rawString.trim();
+        this.codexPath = codexPath;
         this.aliasTables = {};
         this.childTables = {};
         // Later, make this a pointer to a Glossary instance.
@@ -223,24 +224,36 @@ class WGenerator {
         }
 
         // This awkward repeated-string-literal style is browserify can only see require statements with string literals in them. Make this more beautiful later.
-        WGenerator.generators['halo/unsc/item'] = new WGenerator(
-            require('../codices/halo/unsc/item')
+        WGenerator.addGenerator(
+            require('../codices/halo/unsc/item'),
+            'halo/unsc/item'
         );
-        WGenerator.generators['halo/unsc/individual'] = new WGenerator(
-            require('../codices/halo/unsc/individual')
+        WGenerator.addGenerator(
+            require('../codices/halo/unsc/individual'),
+            'halo/unsc/individual'
         );
-        WGenerator.generators['halo/unsc/squad'] = new WGenerator(
-            require('../codices/halo/unsc/squad')
+        WGenerator.addGenerator(
+            require('../codices/halo/unsc/squad'),
+            'halo/unsc/squad'
         );
-        WGenerator.generators['halo/unsc/vehicle'] = new WGenerator(
-            require('../codices/halo/unsc/vehicle')
+        WGenerator.addGenerator(
+            require('../codices/halo/unsc/vehicle'),
+            'halo/unsc/vehicle'
         );
-        WGenerator.generators['halo/unsc/ship'] = new WGenerator(
-            require('../codices/halo/unsc/ship')
+        WGenerator.addGenerator(
+            require('../codices/halo/unsc/ship'),
+            'halo/unsc/ship'
         );
-        WGenerator.generators['halo/unsc/fleet'] = new WGenerator(
-            require('../codices/halo/unsc/fleet')
+        WGenerator.addGenerator(
+            require('../codices/halo/unsc/fleet'),
+            'halo/unsc/fleet'
         );
+    }
+
+    static addGenerator (moduleContents, codexPath) {
+        const gen = new WGenerator(moduleContents, codexPath);
+
+        WGenerator.generators[codexPath] = gen;
     }
 
     static run () {
@@ -324,6 +337,8 @@ class AliasTable {
                 // TODO: Find the file and table being referred to.
                 // (In the style of how npm searches up for a node_modules.)
                 // I suppose this might be incompatible with Browserify ... but we'll see.
+                // const path = WGenerator.findCodex(alias);
+                // TODO We need to know what the current codex path is, but that's tricky within a AliasTable function.
                 // TODO require that file and construct a new WGenerator for it.
                 // TODO Add that WGenerator to ourWGenerator.otherGenerators['halo/unsc/vehicle'] (ie, the keys are absolute paths).
                 // TODO: The alias local variable here should be set to the absolute path (including the table within the external Generator), not the relative path
