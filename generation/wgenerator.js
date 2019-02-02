@@ -111,12 +111,6 @@ class WGenerator {
             );
     }
 
-    // TODO: Maybe interpret '{halo/unsc/vehicle}' as referring to a different codex module.
-    // Detect this by looking for the '/' char.
-    // Perhaps during the 'loading' (addAliasTable() etc), slash-strings can be detected. The corresponding codex modules can be tracked down and also loaded as tables.
-    // The pointers to that table may have to be standardized as absolute paths in-memory (unsc/vehicle/hardPoint -> halo/unsc/vehicle/hardPoint).
-    // I think if the 'reaching into' syntax is absent, it will be workable but will require many short modules (ie, lots of exporting).
-    // A more desirable way to split up unsc files might be: item, individual, squad, vehicle, group, ship, fleet.
     resolveString (inputString) {
         return this.resolveCommas(inputString)
             .map(str => new WNode(str))
@@ -190,10 +184,6 @@ class WGenerator {
         const patrolRaw = require('../codices/halo/unsc/patrol.js');
         return patrolRaw;
     }
-
-    // TODO: Consider a syntax like 'sunlight/warbands/warrior/squadLeader' for reaching into a table within a file.
-    // That may need to check whether the last keyword is a alias or not.
-    // I guess i should also consider a syntax wherein you can just mention a alias _without_ the surrounding brackets.
 
     // Example input: 'sunlight/warbands/warrior'
     static fromCodex (codexPath) {
