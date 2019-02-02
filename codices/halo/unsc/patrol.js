@@ -46,7 +46,7 @@ marines
 {gender}
 {anyWeapon}
 {smallWeapon}
-{anyGear}
+{item/anyGear}
 
 * alias anyWeapon
 4 {basicWeapon}
@@ -94,7 +94,7 @@ marines
 2 caffeinePills
 1 medkit
 
-* alias anyGear
+* alias hiddenAnyGear
 4 targetDesignator
 4 secureDatapad
 4 medkit
@@ -166,7 +166,7 @@ odsts
 {spartanArmor}
 {anyWeapon}
 {smallWeapon}
-{anyGear}
+{item/anyGear}
 {armorMod}
 
 * alias spartanMod
@@ -221,7 +221,7 @@ marineSquad
 * children of combatEngineer
 {gender}
 {smallWeapon}
-{anyGear}
+{item/anyGear}
 
 * children of transportWarthog
 {infantrySquad}

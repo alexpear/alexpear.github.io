@@ -298,6 +298,8 @@ class WGenerator {
     // Returns a absolute path version of the relative path (as a string) if it finds one
     // Otherwise it returns undefined.
     static interpretRelativePath (relativePath, contextPath) {
+        // console.log(`Top of WGenerator.interpretRelativePath([${relativePath}], [${contextPath}])`);
+
         // The last term of relativePath might refer to a file.
         const filePath = WGenerator.interpretRelativePathAsFile(relativePath, contextPath);
 
