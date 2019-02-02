@@ -183,10 +183,6 @@ class WGenerator {
         }
     }
 
-    findCodex (partialPath) {
-
-    }
-
     static exampleRaw () {
         const patrolRaw = require('../codices/halo/unsc/patrol.js');
         return patrolRaw;
@@ -262,6 +258,69 @@ class WGenerator {
         const gen = new WGenerator(moduleContents, codexPath);
 
         WGenerator.generators[codexPath] = gen;
+    }
+
+    // The path parameters are arrays of strings.
+    // Returns a absolute path version of the relative path (as a string) if it finds one
+    // Otherwise it returns undefined.
+    static interpretRelativePath (relativePath, contextPath) {
+        // The last term of relativePath might refer to a file.
+        const filePath = WGenerator.interpretRelativePathAsFile(relativePath, contextPath);
+
+        if (filePath) {
+            return filePath;
+        }
+
+        // Or the last term might refer to a table within a file.
+        return WGenerator.interpretRelativePathAsTable(relativePath, contextPath);
+    }
+
+    // Path parameters are arrays of strings
+    // Returns string or undefined
+    static interpretRelativePathAsFile (relativePath, contextPath) {
+        if (contextPath[contextPath.length - 1] !== relativePath[0]) {
+            return;
+        }
+
+        // concat() and slice() have no side effects.
+        const fullPath = contextPath.concat(relativePath.slice(1));
+        const fullPathStr = fullPath.join('/');
+        if (WGenerator.generators[fullPathStr]) {
+            return fullPathStr;
+        }
+
+        return;
+    }
+
+    // Path parameters are arrays of strings
+    // Returns string or undefined
+    static interpretRelativePathAsTable (relativePath, contextPath) {
+        if (
+            contextPath[contextPath.length - 1] !== relativePath[0] ||
+            relativePath.length < 2
+        ) {
+            return;
+        }
+
+        // Omit the table
+        const tableIndex = relativePath.length - 1;
+        const genPath = contextPath.concat(relativePath.slice(1, tableIndex));
+        const genPathStr = genPath.join('/');
+        const gen = WGenerator.generators[genPathStr];
+
+        if (gen) {
+            const goalTable = relativePath[tableIndex];
+
+            if (
+                gen.aliasTables[goalTable] ||
+                gen.childTables[goalTable] ||
+                gen.glossary[goalTable]
+            ) {
+                return genPathStr;
+            }
+        }
+
+        return;
     }
 
     static run () {
@@ -370,6 +429,25 @@ class AliasTable {
     // Returns string
     getOutput () {
         return Util.randomOf(this.outputs);
+    }
+
+    findCodex (requestedPath) {
+        const relativePath = requestedPath.split('/');
+        let curPath = this.generator.codexPath.split('/');
+
+        while (curPath.length >= 1) {
+            // TODO I want to interpret the last term as a possible alias table name, but not as a childTable or glossary name.
+            const genPath = WGenerator.interpretRelativePath(relativePath, curPath);
+
+            if (genPath) {
+                // Note that this is the full generator, even if the path asked for a specific table in it.
+                return WGenerator.generators[genPath];
+            }
+
+            curPath.pop();
+        }
+
+        throw new Error(`Could not find codex path ${ requestedPath }`);
     }
 
     static isAppropriateFor (tableString) {
