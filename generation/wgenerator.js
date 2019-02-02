@@ -426,16 +426,12 @@ class AliasTable {
             const weightStr = parts[0];
 
             // Everything after the weight prefix.
-            const alias = line.slice(weightStr.length)
+            let alias = line.slice(weightStr.length)
                 .trim();
 
             // TODO During WGenerator construction, Interpret keys with slashes as external pointers.
             if (Util.contains(alias, '/')) {
-                const otherGen = this.findCodex(alias);
-                const absolutePath = otherGen.codexPath;
-                // TODO: The alias local variable here should be set to the absolute path (including the table within the external Generator), not the relative path
-                // TODO the 'new AliasTable()' call should probably be wrapped. In this external pointer scenario, i want to reference one of otherGen's existing AliasTable (or ChildTable etc later) objects, and to customize the slashy key.
-                throw new Error(`Slash pointers are not yet supported: ${ alias }`);
+                alias = this.getAbsolutePath(alias);
             }
 
             const weight = parseInt(weightStr);
@@ -456,8 +452,8 @@ class AliasTable {
         return Util.randomOf(this.outputs);
     }
 
-    findCodex (requestedPath) {
-        const relativePath = requestedPath.split('/');
+    getAbsolutePath (relativePathStr) {
+        const relativePath = relativePathStr.split('/');
         let curPath = this.generator.codexPath.split('/');
 
         while (curPath.length >= 1) {
@@ -465,14 +461,13 @@ class AliasTable {
             const genPath = WGenerator.interpretRelativePath(relativePath, curPath);
 
             if (genPath) {
-                // Note that this is the full generator, even if the path asked for a specific table in it.
-                return WGenerator.generators[genPath];
+                return genPath;
             }
 
             curPath.pop();
         }
 
-        throw new Error(`Could not find codex path ${ requestedPath }`);
+        throw new Error(`Could not find codex path ${ relativePathStr }`);
     }
 
     static isAppropriateFor (tableString) {
