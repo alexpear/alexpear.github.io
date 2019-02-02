@@ -418,6 +418,7 @@ class AliasTable {
 
             const parts = line.split(/\s/);
 
+            // Later i want to also support some sort of simple no-weights format.
             if (parts.length <= 1) {
                 throw new Error(`AliasTable could not parse line: ${parts.join(' ')}`);
             }
