@@ -102,11 +102,28 @@ util.formatProp = function (object, propName) {
     return `${ propName }: ${ object[propName] }`;
 };
 
+util.containsVowels = (s) => {
+    const chars = s.toUpperCase()
+        .split('');
+
+    for (let char of chars) {
+        if (util.contains('AEIOUY', char)) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
 util.capitalized = (s) => {
     if (! util.exists(s)) {
         return '';
     }
     else if (s.length === 1) {
+        return s.toUpperCase();
+    }
+    // Controversially, interpret no-vowel strings as acronyms
+    else if (! util.containsVowels(s)) {
         return s.toUpperCase();
     }
 
