@@ -208,12 +208,52 @@ class WGenerator {
         return `${ __dirname }/../codices`;
     }
 
+    static loadCodices () {
+        // For now, this is hard coded to one fictional setting.
+        WGenerator.loadHaloCodices();
+    }
+
+    static loadHaloCodices () {
+        if (! WGenerator.generators) {
+            WGenerator.generators = {};
+        }
+        else if (Util.exists( WGenerator.generators['halo/unsc/item'] )) {
+            // WGenerator.generators already looks loaded.
+            return;
+        }
+
+        // This awkward repeated-string-literal style is browserify can only see require statements with string literals in them. Make this more beautiful later.
+        WGenerator.generators['halo/unsc/item'] = new WGenerator(
+            require('../codices/halo/unsc/item')
+        );
+        WGenerator.generators['halo/unsc/individual'] = new WGenerator(
+            require('../codices/halo/unsc/individual')
+        );
+        WGenerator.generators['halo/unsc/squad'] = new WGenerator(
+            require('../codices/halo/unsc/squad')
+        );
+        WGenerator.generators['halo/unsc/vehicle'] = new WGenerator(
+            require('../codices/halo/unsc/vehicle')
+        );
+        WGenerator.generators['halo/unsc/ship'] = new WGenerator(
+            require('../codices/halo/unsc/ship')
+        );
+        WGenerator.generators['halo/unsc/fleet'] = new WGenerator(
+            require('../codices/halo/unsc/fleet')
+        );
+    }
+
     static run () {
+        WGenerator.loadCodices();
+
+        const codexPaths = Object.keys(WGenerator.generators || []).join('\n');
+        console.log(`Loaded the following WGenerator codices:\n${ codexPaths }`);
+
         if (! process.argv ||
             ! process.argv[0] ||
             ! process.argv[0].endsWith('node') ||
             ! process.argv[1].endsWith('wgenerator.js')) {
-            // This function is for command-line use only.
+            // The following logic is for command-line use only.
             return;
         }
 
