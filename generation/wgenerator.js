@@ -205,6 +205,8 @@ class WGenerator {
     getAbsolutePath (relativePathStr) {
         const relativePath = relativePathStr.trim()
             .split('/');
+
+        // TODO codexPath is sometimes not initialized.
         let curPath = this.codexPath.split('/');
 
         while (curPath.length >= 1) {
@@ -446,7 +448,7 @@ class AliasTable {
 
             const parts = line.split(/\s/);
 
-            // Later i want to also support some sort of simple no-weights format.
+            // Later i want to also support some sort of simple no-weights format, like Perchance does.
             if (parts.length <= 1) {
                 throw new Error(`AliasTable could not parse line: ${parts.join(' ')}`);
             }

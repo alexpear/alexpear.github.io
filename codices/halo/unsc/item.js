@@ -4,8 +4,8 @@ module.exports = `* output
 4 {component}
 
 * alias anyWeapon
-0 gi means General Issue
 10 {smallWeapon}
+0 gi means General Issue
 0 {giWeapon}
 0 {specialInfantryWeapon}
 0 {highWeightWeapon}
@@ -49,8 +49,7 @@ module.exports = `* output
 3 emp
 2 telescope
 2 binoculars
-1 plasmaPistol
-1 boltShot
+0 {alienWeapon}
 0 {alienGrenade}
 1 paperMap
 1 bubbleShield
