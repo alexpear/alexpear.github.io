@@ -454,6 +454,14 @@ class AliasTable {
             }
 
             const weightStr = parts[0];
+            const weight = parseInt(weightStr);
+
+            if (weight === 0) {
+                continue;
+            }
+            else if (typeof weight !== 'number') {
+                throw new Error(`AliasTable could not parse weight: ${ weightStr }`);
+            }
 
             // Everything after the weight prefix.
             let alias = line.slice(weightStr.length)
@@ -462,12 +470,6 @@ class AliasTable {
             // During WGenerator construction, Interpret keys with slashes as external pointers.
             if (Util.contains(alias, '/')) {
                 alias = this.generator.makePathAbsolute(alias);
-            }
-
-            const weight = parseInt(weightStr);
-
-            if (typeof weight !== 'number') {
-                throw new Error(`AliasTable could not parse weight: ${ weightStr }`);
             }
 
             // Replicated outputs. We assume memory is plentiful but time is scarce.
