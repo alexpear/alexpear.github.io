@@ -169,6 +169,8 @@ class WGenerator {
                 this.aliasTables[alias];
 
             if (! table) {
+                // Util.log(`this.codexPath === ${this.codexPath}`, 'debug');
+
                 throw new Error(`WGenerator.maybeResolveAlias(): Could not find alias table: ${ str }`);
             }
 
