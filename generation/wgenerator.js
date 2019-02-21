@@ -176,9 +176,7 @@ class WGenerator {
                 throw new Error(`WGenerator.maybeResolveAlias(): Could not find alias table: ${ str }`);
             }
 
-            const output = table.getOutput();
-
-            return this.resolveCommas(output);
+            return table.getOutputAndResolveIt();
         }
         else {
             return [str];
@@ -487,6 +485,13 @@ class AliasTable {
     // Returns string
     getOutput () {
         return Util.randomOf(this.outputs);
+    }
+
+    // Returns string[]
+    getOutputAndResolveIt () {
+        const outputStr = this.getOutput();
+
+        return this.generator.resolveCommas(outputStr);
     }
 
     // TODO this logic is needed by ChildTable too. Move it to WGenerator (ie parent).
