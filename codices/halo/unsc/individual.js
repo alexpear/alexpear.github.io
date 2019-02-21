@@ -11,21 +11,21 @@ module.exports = `
 {halo/unsc/item}
 
 * childrenof marinePrivate
-flakHelmet
-flakArmor
 {halo/unsc/item/giWeapon}
 {halo/unsc/item}
+flakHelmet
+flakArmor
 
 * childrenof officer
 {halo/unsc/item/smallWeapon}
 {halo/unsc/item/commandGear}
 
 * childrenof odst
-visrHelmet
-odstArmor
 {halo/unsc/item/veteranWeapon}
 {halo/unsc/item/smallWeapon}
 {halo/unsc/item/anyGear}
+visrHelmet
+odstArmor
 fragGrenade
 
 * childrenof spartan
