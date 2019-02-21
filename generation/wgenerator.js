@@ -99,6 +99,7 @@ class WGenerator {
         return this.resolveString(key || '{output}');
     }
 
+    // Returns string[]
     resolveCommas (inputString) {
         return inputString.trim()
             .split(',')
@@ -111,6 +112,7 @@ class WGenerator {
             );
     }
 
+    // Returns WNode[]
     resolveString (inputString) {
         return this.resolveCommas(inputString)
             .map(str => new WNode(str))
