@@ -164,11 +164,19 @@ class WGenerator {
             const alias = str.slice(1, str.length - 1)
                 .trim();
 
+            let table;
+
             // Slashes indicate pointers to external WGenerators.
-            const table = Util.contains(alias, '/') ?
-            // TODO If there is a slash, we need to start interpreting its output in terms of the external table.
-                WGenerator.getAliasTable(alias) :
-                this.aliasTables[alias];
+            if (Util.contains(alias, '/')) {
+                // TODO If there is a slash, we need to start interpreting its output in terms of the external WGenerator.
+                // So we actually want to get the external WGenerator, not just its AliasTable.
+                // const externalTableOutput = externalTable.getOutput()
+                // return externalGenerator.resolveString(externalTableOutput);
+                table = WGenerator.getAliasTable(alias);
+            }
+            else {
+                table = this.aliasTables[alias];
+            }
 
             if (! table) {
                 // Util.log(`this.codexPath === ${this.codexPath}`, 'debug');
