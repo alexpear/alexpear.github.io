@@ -212,7 +212,7 @@ class WGenerator {
         // TODO codexPath is sometimes not initialized.
         let curPath = this.codexPath.split('/');
 
-        while (curPath.length >= 1) {
+        while (curPath.length >= 0) {
             // TODO I may want to interpret the last term as a possible alias table name, but not as a childTable or glossary name.
             const genPath = WGenerator.interpretRelativePath(relativePath, curPath);
 
