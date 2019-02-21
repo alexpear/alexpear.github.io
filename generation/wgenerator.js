@@ -236,12 +236,12 @@ class WGenerator {
         // Later, ignore leading slashes and trailing file extensions.
         const codexString = require(`${ WGenerator.codicesDir() }/${ codexPath }.js`);
 
-        return new WGenerator(codexString);
+        return new WGenerator(codexString, codexPath);
     }
 
     static fromFile (path) {
         const fileString = fs.readFileSync(path, 'utf8');
-        return new WGenerator(fileString);
+        return new WGenerator(fileString, codexPath);
     }
 
     static codicesDir () {
