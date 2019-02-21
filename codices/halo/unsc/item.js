@@ -1,12 +1,12 @@
 module.exports = `* output
 10 {anyWeapon}
 10 {anyGear}
-4 {component}
+3 {component}
 
 * alias anyWeapon
 10 {smallWeapon}
 0 gi means General Issue
-0 {giWeapon}
+20 {giWeapon}
 0 {specialInfantryWeapon}
 0 {highWeightWeapon}
 0 {alienWeapon}
@@ -28,6 +28,7 @@ module.exports = `* output
 4 br
 3 dmr
 1 shotgun
+0 generate attachments and weapon traits
 
 * alias specialInfantryWeapon
 4 shotgun
@@ -40,6 +41,10 @@ module.exports = `* output
 3 turret
 3 flamethrower
 4 {smallWeapon}, {smallWeapon}
+
+* alias veteranWeapon
+10 {giWeapon}
+10 {specialInfantryWeapon}
 
 * alias highWeightWeapon
 6 {warthogTurret}
