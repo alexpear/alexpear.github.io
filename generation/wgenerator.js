@@ -387,7 +387,7 @@ class WGenerator {
         WGenerator.loadCodices();
 
         const codexPaths = Object.keys(WGenerator.generators || []).join('\n');
-        console.log(`Loaded the following WGenerator codices:\n${ codexPaths }`);
+        console.log(`Loaded the following WGenerator codices:\n${ codexPaths }\n`);
 
         if (! process.argv ||
             ! process.argv[0] ||
