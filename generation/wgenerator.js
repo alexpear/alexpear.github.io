@@ -164,6 +164,7 @@ class WGenerator {
 
             // Slashes indicate pointers to external WGenerators.
             const table = Util.contains(alias, '/') ?
+            // TODO If there is a slash, we need to start interpreting its output in terms of the external table.
                 WGenerator.getAliasTable(alias) :
                 this.aliasTables[alias];
 
