@@ -186,6 +186,16 @@ class WGenerator {
         }
     }
 
+    resolveLocalAlias (tableName) {
+        const table = this.aliasTables[tableName];
+
+        if (! table) {
+            throw new Error(`Could not find local alias table: ${ str }`);
+        }
+
+        return table.getOutputAndResolveIt();
+    }
+
     makePathAbsolute (relativePathStr) {
         if (relativePathStr.startsWith('{')) {
             return this.getAbsoluteAlias(relativePathStr);
