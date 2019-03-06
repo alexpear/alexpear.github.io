@@ -165,21 +165,15 @@ class WGenerator {
                 .trim();
 
             // Slashes indicate pointers to external WGenerators.
-            // TODO If there is a slash, we need to start interpreting its output in terms of the external table.
-            // return WGenerator.resolveAlias(alias);
-            // TODO we will need similar logic for slash-pointers in the rows of ChildTables
-
-            const table = Util.contains(alias, '/') ?
-                WGenerator.getAliasTable(alias) :
-                this.aliasTables[alias];
-
-            if (! table) {
-                // Util.log(`this.codexPath === ${this.codexPath}`, 'debug');
-
-                throw new Error(`WGenerator.maybeResolveAlias(): Could not find alias table: ${ str }`);
+            // Any slashpaths here will already have been made absolute during AliasTable setup.
+            if (Util.contains(alias, '/')) {
+                return WGenerator.resolveExternalAlias(alias);
+            }
+            else {
+                return this.resolveLocalAlias(alias);
             }
 
-            return table.getOutputAndResolveIt();
+            // TODO we will need similar logic for slash-pointers in the rows of ChildTables
         }
         else {
             return [str];
@@ -381,27 +375,45 @@ class WGenerator {
         return;
     }
 
-    static getAliasTable (absolutePath) {
-        // First check if this refers to whole WGenerator instead of just a AliasTable
+    // The 'absolutePath' param might be the path to a codex or to a name within that codex.
+    static findGenAndTable (absolutePath) {
+        // First check if this refers to whole codex file instead of a table within it.
         let gen = WGenerator.generators[absolutePath];
 
         if (gen) {
-            return gen.aliasTables.output;
+            return {
+                gen: gen,
+                table: 'output'
+            };
         }
 
-        // Otherwise interpret the last term of absolutePath as the name of a AliasTable
+        // Otherwise interpret the last term of absolutePath as the name of a table.
+        // Later, functionize this string-splitting logic.
         const terms = absolutePath.split('/');
         const tableIndex = terms.length - 1;
         const genPath = terms.slice(0, tableIndex)
             .join('/');
         const tableName = terms[tableIndex];
+
         gen = WGenerator.generators[genPath];
 
         if (gen) {
-            return gen.aliasTables[tableName];
+            return {
+                gen: gen,
+                table: tableName
+            };
         }
 
-        throw new Error(`External AliasTable not found: ${ absolutePath }`);
+        throw new Error(`Could not find a WGenerator for this absolutePath: ${ absolutePath }`);
+    }
+
+    static resolveExternalAlias (absolutePath) {
+        const findings = WGenerator.findGenAndTable(absolutePath);
+        if (! findings || ! findings.gen || ! findings.table) {
+            throw new Error(`Did not find gen and/or table for absolutePath: ${absolutePath}`);
+        }
+
+        return findings.gen.resolveLocalAlias(findings.table);
     }
 
     static run () {
