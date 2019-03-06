@@ -277,17 +277,25 @@ class WGenerator {
             'halo/unsc/squad'
         );
         WGenerator.addGenerator(
-            require('../codices/halo/unsc/vehicle'),
-            'halo/unsc/vehicle'
+            require('../codices/halo/unsc/company'),
+            'halo/unsc/company'
         );
         WGenerator.addGenerator(
-            require('../codices/halo/unsc/ship'),
-            'halo/unsc/ship'
+            require('../codices/halo/unsc/battalion'),
+            'halo/unsc/battalion'
         );
-        WGenerator.addGenerator(
-            require('../codices/halo/unsc/fleet'),
-            'halo/unsc/fleet'
-        );
+        // WGenerator.addGenerator(
+        //     require('../codices/halo/unsc/vehicle'),
+        //     'halo/unsc/vehicle'
+        // );
+        // WGenerator.addGenerator(
+        //     require('../codices/halo/unsc/ship'),
+        //     'halo/unsc/ship'
+        // );
+        // WGenerator.addGenerator(
+        //     require('../codices/halo/unsc/fleet'),
+        //     'halo/unsc/fleet'
+        // );
         WGenerator.addGenerator(
             require('../codices/halo/unsc/patrol'),
             'halo/unsc/patrol'
