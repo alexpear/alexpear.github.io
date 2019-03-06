@@ -167,6 +167,7 @@ class WGenerator {
             // Slashes indicate pointers to external WGenerators.
             const table = Util.contains(alias, '/') ?
                 // TODO If there is a slash, we need to start interpreting its output in terms of the external table.
+                // TODO we will need similar logic for slash-pointers in the rows of ChildTables
                 WGenerator.getAliasTable(alias) :
                 this.aliasTables[alias];
 
@@ -262,7 +263,7 @@ class WGenerator {
             return;
         }
 
-        // This awkward repeated-string-literal style is browserify can only see require statements with string literals in them. Make this more beautiful later.
+        // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
         WGenerator.addGenerator(
             require('../codices/halo/unsc/item'),
             'halo/unsc/item'
