@@ -165,9 +165,11 @@ class WGenerator {
                 .trim();
 
             // Slashes indicate pointers to external WGenerators.
+            // TODO If there is a slash, we need to start interpreting its output in terms of the external table.
+            // return WGenerator.resolveAlias(alias);
+            // TODO we will need similar logic for slash-pointers in the rows of ChildTables
+
             const table = Util.contains(alias, '/') ?
-                // TODO If there is a slash, we need to start interpreting its output in terms of the external table.
-                // TODO we will need similar logic for slash-pointers in the rows of ChildTables
                 WGenerator.getAliasTable(alias) :
                 this.aliasTables[alias];
 
@@ -786,6 +788,13 @@ but maybe * dropshipSquad or something
 The above plan might require tagging alias tables like:
 * alias dropshipSquad
 
+...
+
+Parsing external pointers
+localThing
+{localThing}
+halo/unsc/item/externalThing
+{halo/unsc/item/externalThing}
 
 
 
