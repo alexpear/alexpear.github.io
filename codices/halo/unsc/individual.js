@@ -16,6 +16,19 @@ module.exports = `
 flakHelmet
 flakArmor
 
+* alias squadLeader
+4 marinePrivate
+4 marineSpecialist
+1 officer
+1 odst
+
+* childrenof marineSpecialist
+{halo/unsc/item/veteranWeapon}
+{halo/unsc/item/smallWeapon}
+{halo/unsc/item}
+flakHelmet
+flakArmor
+
 * childrenof officer
 {halo/unsc/item/smallWeapon}
 {halo/unsc/item/commandGear}
@@ -35,4 +48,9 @@ fragGrenade
 fragGrenade
 fragGrenade
 
+* alias driver
+8 marinePrivate
+10 crewMember
+4 odst
+1 spartan
 `;

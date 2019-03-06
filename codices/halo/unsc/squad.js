@@ -81,10 +81,81 @@ chaingun
 4 hornet
 4 wasp
 4 pelican
+1 longsword
+1 saber
+1 sparrowhawk
 
 * children of pelican
-chaingun
+{airModule}
 {infantrySquad}
 
 * children of elephant
-{infantrySquad}`;
+{infantrySquad}
+{turret}
+{turret}
+
+* children of mammoth
+{infantrySquad}
+{turret}
+{turret}
+{turret}
+{turret}
+
+* alias airSpeedSquad
+4 {aircraft}
+
+* alias fastSquad
+6 {warthog}
+3 mongooseSquad
+2 gungooseSquad
+
+* alias fastCompatibleSquad
+4 {fastSquad}
+2 {airSpeedSquad}
+
+* alias slowSquad
+20 {infantrySquad}
+10 scorpion
+2 elephant
+1 mammoth
+
+* alias slowCompatibleSquad
+4 {slowSquad}
+1 {fastSquad}
+1 {airSpeedSquad}
+
+* alias staticSquad
+4 fortifiedInfantrySquad
+2 bunker
+1 {bigGun}
+
+* alias staticCompatibleSquad
+10 {staticSquad}
+3 {slowSquad}
+2 {fastSquad}
+1 {airSpeedSquad}
+
+* childrenof fortifiedInfantrySquad
+{infantryFireteam}
+{infantryFireteam}
+{turret}
+{turret}
+
+* childrenof bunker
+{infantrySquad}
+
+* alias bigGun
+4 aaGun
+1 missileSilo
+1 tacticalMac
+
+* childrenof aaGun
+crewFireteam
+
+* childrenof missileSilo
+crewFireteam
+
+* childrenof tacticalMac
+crewFireteam
+
+`;
