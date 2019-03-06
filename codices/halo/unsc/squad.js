@@ -7,11 +7,54 @@ module.exports = `* output
 
 * alias infantrySquad
 4 marineSquad
-1 {rareInfantry}
+1 {rareInfantrySquad}
 
-* alias rareInfantry
+* childrenof marineSquad
+marineFireteam
+marineFireteam
+
+* childrenof marineFireteam
+{halo/unsc/individual/squadLeader}
+halo/unsc/individual/marinePrivate
+halo/unsc/individual/marinePrivate
+halo/unsc/individual/marinePrivate
+
+* alias rareInfantrySquad
 6 odstSquad
+0 odstJetpackSquad
 2 spartanSquad
+
+* childrenof odstSquad
+odstFireteam
+odstFireteam
+
+* childrenof odstFireteam
+halo/unsc/individual/odst
+halo/unsc/individual/odst
+halo/unsc/individual/odst
+halo/unsc/individual/odst
+
+* childrenof spartanSquad
+spartanFireteam
+spartanFireteam
+
+* childrenof spartanFireteam
+halo/unsc/individual/spartan
+halo/unsc/individual/spartan
+halo/unsc/individual/spartan
+halo/unsc/individual/spartan
+
+* alias infantryFireteam
+20 marineFireteam
+5 odstFireteam
+2 crewFireteam
+1 spartanFireteam
+
+* childrenof crewFireteam
+halo/unsc/individual/crewMember
+halo/unsc/individual/crewMember
+halo/unsc/individual/crewMember
+halo/unsc/individual/crewMember
 
 * alias vehicleSquad
 3 mongooseSquad
@@ -20,56 +63,66 @@ module.exports = `* output
 5 {aircraft}
 3 scorpion
 2 elephant
+1 mammoth
 
 * alias warthog
 2 scoutWarthog
 2 transportWarthog
 4 turretWarthog
 
-* children of mongooseSquad
-{infantrySquad}
+* childrenof mongooseSquad
+mongoose
+mongoose
 
-* children of gungooseSquad
-{infantrySquad}
+* childrenof mongoose
+{halo/unsc/individual/driver}
+{halo/unsc/individual}
 
-* children of scorpion
-{driver}
-marineSquad
+* childrenof gungooseSquad
+gungoose
+gungoose
 
-* alias driver
-8 combatEngineer
-1 odst
-1 spartan
+* childrenof gungoose
+{halo/unsc/individual/driver}
 
-* children of transportWarthog
-{infantrySquad}
+* childrenof scorpion
+{halo/unsc/individual/driver}
+marineFireteam
 
-* children of falcon
-{infantrySquad}
+* childrenof transportWarthog
+{infantryFireteam}
+
+* childrenof falcon
+{infantryFireteam}
+{airModule}
 
 * children of hornet
-{infantrySquad}
+{halo/unsc/individual/driver}
+{halo/unsc/individual}
+{halo/unsc/individual}
+{airModule}
 
 * children of wasp
-{driver}
+{halo/unsc/individual/driver}
 chaingun
 {airModule}
 
 * alias airModule
-4 missilePod
-2 targetDesignator
-2 gaussTurret
-2 laser
-1 needleTurret
+6 {turret}
+1 targetDesignator
+1 laser
 
 * children of scoutWarthog
-{infantrySquad}
+{halo/unsc/individual/driver}
+{halo/unsc/individual}
 
 * children of turretWarthog
-{warthogTurret}
-{infantrySquad}
+{turret}
+{halo/unsc/individual/driver}
+{halo/unsc/individual}
+{halo/unsc/individual}
 
-* alias warthogTurret
+* alias turret
 6 chaingun
 2 gaussTurret
 1 missilePod
