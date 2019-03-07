@@ -20,9 +20,9 @@ halo/unsc/individual/marinePrivate
 halo/unsc/individual/marinePrivate
 
 * alias rareInfantrySquad
-6 odstSquad
+10 odstSquad
 0 odstJetpackSquad
-2 spartanSquad
+1 spartanSquad
 
 * childrenof odstSquad
 odstFireteam
