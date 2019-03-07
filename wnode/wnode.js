@@ -68,7 +68,7 @@ let WNode = module.exports = class WNode {
         }
 
         if (this.components.length > 0) {
-            outString += furtherLine('  components:');
+            outString += furtherLine('  w/');
             for (let component of this.components) {
                 outString += component.toPrettyString(indent + 4);
             }
