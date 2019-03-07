@@ -140,7 +140,16 @@ chaingun
 
 * children of pelican
 {airModule}
-{infantrySquad}
+{pelicanCargo}
+
+* alias pelicanCargo
+10 {infantrySquad}
+4 {warthog}
+2 ammoCrate
+1 gungooseSquad
+1 mongooseSquad
+1 mantis
+1 scorpion
 
 * children of elephant
 {infantrySquad}
