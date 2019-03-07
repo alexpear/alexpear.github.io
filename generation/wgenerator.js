@@ -115,8 +115,18 @@ class WGenerator {
     // Returns WNode[]
     resolveString (inputString) {
         return this.resolveCommas(inputString)
-            .map(str => new WNode(str))
-            .map(n => this.maybeAddChildren(n));
+            .map(name => this.makeSubtree(name));
+    }
+
+    makeSubtree (name) {
+        return Util.contains(name, '/') ?
+            WGenerator.makeExternalSubtree(name) :
+            this.makeLocalSubtree(name);
+    }
+
+    makeLocalSubtree (name) {
+        const node = new WNode(name);
+        return this.maybeAddChildren(node);
     }
 
     // Might modify node.children
@@ -409,11 +419,23 @@ class WGenerator {
 
     static resolveExternalAlias (absolutePath) {
         const findings = WGenerator.findGenAndTable(absolutePath);
-        if (! findings || ! findings.gen || ! findings.table) {
-            throw new Error(`Did not find gen and/or table for absolutePath: ${absolutePath}`);
+        if (! findings || ! findings.gen || ! findings.name) {
+            throw new Error(`Did not find gen and/or name for absolutePath: ${absolutePath}`);
         }
 
-        return findings.gen.resolveLocalAlias(findings.table);
+        return findings.gen.resolveLocalAlias(findings.name);
+    }
+
+    // Returns WNode
+    // References the appropriate WGenerator's ChildTables, templates, etc
+    // The path was already made absolute during table construction (both AliasTable and ChildTable rows).
+    static makeExternalSubtree (absolutePath) {
+        const findings = WGenerator.findGenAndTable(absolutePath);
+        if (! findings || ! findings.gen || ! findings.name || findings.name === 'output') {
+            throw new Error(`Did not find gen and/or name for absolutePath: ${absolutePath}`);
+        }
+
+        return findings.gen.makeLocalSubtree(findings.name);
     }
 
     static run () {
