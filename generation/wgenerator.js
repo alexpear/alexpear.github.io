@@ -158,6 +158,8 @@ class WGenerator {
             }
         );
 
+        // TODO also sort node.components by templateName, to make long semi-homogenous sets look less shuffled, and easier to read
+
         return node;
     }
 
@@ -183,13 +185,16 @@ class WGenerator {
                 return this.resolveLocalAlias(alias);
             }
 
-            // TODO we will need similar logic for slash-pointers in the rows of ChildTables
+            // TODO: resolveExternalAlias returns string[], without reference to which codex it is from. The originating codex must be checked because its ChildTables may be relevant.
+            // One option would be to format all names returned from these funcs as absolute paths.
+            // Or as objects: { gen: 'the/abs/path', name: 'marineSpecialist' }
         }
         else {
             return [str];
         }
     }
 
+    // Returns string[]
     resolveLocalAlias (tableName) {
         const table = this.aliasTables[tableName];
 
