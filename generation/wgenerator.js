@@ -178,12 +178,9 @@ class WGenerator {
 
             // Slashes indicate pointers to external WGenerators.
             // Any slashpaths here will already have been made absolute during AliasTable setup.
-            if (Util.contains(alias, '/')) {
-                return WGenerator.resolveExternalAlias(alias);
-            }
-            else {
-                return this.resolveLocalAlias(alias);
-            }
+            return Util.contains(alias, '/') ?
+                WGenerator.resolveExternalAlias(alias) :
+                this.resolveLocalAlias(alias);
 
             // TODO: resolveExternalAlias returns string[], without reference to which codex it is from. The originating codex must be checked because its ChildTables may be relevant.
             // One option would be to format all names returned from these funcs as absolute paths.
@@ -398,7 +395,7 @@ class WGenerator {
         if (gen) {
             return {
                 gen: gen,
-                table: 'output'
+                name: 'output'
             };
         }
 
@@ -415,7 +412,7 @@ class WGenerator {
         if (gen) {
             return {
                 gen: gen,
-                table: tableName
+                name: tableName
             };
         }
 
