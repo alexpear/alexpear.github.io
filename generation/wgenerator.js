@@ -639,6 +639,19 @@ ChildTable.STARTERS = [
     // 'childrenOf' is implied by the call to toLowerCase()
 ];
 
+// Intermediate representation used during parsing and generation. Represents a name (of a template or of a alias) with a codex path for context.
+class CodexString {
+    // Example:
+    // {
+    //     name: 'civilian',
+    //     codexPath: 'halo/unsc/individual'
+    // }
+    constructor (name, codexPath) {
+        this.name = name;
+        // TODO: Somehow guarantee that this is always a absolute path.
+        this.codexPath = codexPath;
+    }
+}
 
 // TODO put this in class Template and template.js or something.
 // This will probably become or call a constructor
