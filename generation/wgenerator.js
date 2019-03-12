@@ -118,7 +118,7 @@ class WGenerator {
     }
 
     makeSubtree (cString) {
-        Util.log(`Top of makeSubtree( '${cString}' ), this.codexPath is ${this.codexPath}`, 'debug');
+        // Util.log(`Top of makeSubtree( '${cString}' ), this.codexPath is ${this.codexPath}`, 'debug');
 
         return cString.path === this.codexPath ?
             this.makeLocalSubtree(cString) :
@@ -129,7 +129,7 @@ class WGenerator {
         // Later, read from the templates of the WGenerator specified by cString.path
         const node = new WNode(cString.name);
 
-        Util.log(`Middle of makeLocalSubtree(${cString}). Expression node.templateName is ${node.templateName}`, 'debug');
+        // Util.log(`Middle of makeLocalSubtree(${cString}). Expression node.templateName is ${node.templateName}`, 'debug');
 
         return this.maybeAddChildren(node);
     }
