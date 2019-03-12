@@ -91,4 +91,21 @@ let WNode = module.exports = class WNode {
         // Later.
         return `${ Util.capitalized(this.templateName) }: A creature with the following traits: ${ this.components.map(c => c.toString()).join(', ') }.`;
     }
+
+    static sortSubtrees (nodes) {
+        nodes.sort(
+            WNode.comparator
+        )
+        .forEach(
+            node => {
+                WNode.sortSubtrees(node.components);
+            }
+        );
+    }
+
+    static comparator (a, b) {
+        return (a.templateName || '').localeCompare(
+            b.templateName || ''
+        );
+    }
 };

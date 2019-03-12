@@ -113,8 +113,11 @@ class WGenerator {
 
     // Returns WNode[]
     resolveString (inputString) {
-        return this.resolveCommas(inputString)
+        const nodes = this.resolveCommas(inputString)
             .map(contextString => this.makeSubtree(contextString));
+
+        WNode.sortSubtrees(nodes);
+        return nodes;
     }
 
     makeSubtree (cString) {
@@ -166,8 +169,6 @@ class WGenerator {
                 );
             }
         );
-
-        // TODO also sort node.components by templateName, to make long semi-homogenous sets look less shuffled, and easier to read
 
         return node;
     }
