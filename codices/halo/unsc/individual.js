@@ -7,14 +7,19 @@ module.exports = `
 5 odst
 1 spartan
 
+* childrenof civilian
+{gender}
+
 * childrenof crewMember
 {halo/unsc/item}
+{gender}
 
 * childrenof marinePrivate
 {halo/unsc/item/giWeapon}
 {halo/unsc/item}
 flakHelmet
 flakArmor
+{gender}
 
 * alias squadLeader
 4 marinePrivate
@@ -28,10 +33,12 @@ flakArmor
 {halo/unsc/item}
 flakHelmet
 flakArmor
+{gender}
 
 * childrenof officer
 {halo/unsc/item/smallWeapon}
 {halo/unsc/item/commandGear}
+{gender}
 
 * childrenof odst
 {halo/unsc/item/veteranWeapon}
@@ -40,6 +47,7 @@ flakArmor
 visrHelmet
 odstArmor
 fragGrenade
+{gender}
 
 * childrenof spartan
 {halo/unsc/item/anyWeapon}
@@ -47,10 +55,16 @@ fragGrenade
 {halo/unsc/item/anyGear}
 fragGrenade
 fragGrenade
+{gender}
 
 * alias driver
 8 marinePrivate
 10 crewMember
 4 odst
 1 spartan
+
+* alias gender
+10 female
+10 male
+1 postgender
 `;
