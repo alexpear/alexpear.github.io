@@ -14,6 +14,10 @@ module.exports = `
 {halo/unsc/item}
 {gender}
 
+* template marinePrivate
+individuals: 1
+weight: 70
+
 * childrenof marinePrivate
 {halo/unsc/item/giWeapon}
 {halo/unsc/item}
