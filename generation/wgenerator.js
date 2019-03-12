@@ -173,6 +173,7 @@ class WGenerator {
         return node;
     }
 
+    // Returns ContextString[]
     // No side effects.
     maybeResolveAlias (str) {
         str = str.trim();
@@ -235,6 +236,7 @@ class WGenerator {
         return `{${absolutePath}}`;
     }
 
+    // Later i could return ContextString instead of a absolute path.
     getAbsolutePath (relativePathStr) {
         const relativePath = relativePathStr.trim()
             .split('/');
