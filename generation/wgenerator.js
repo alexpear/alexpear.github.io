@@ -99,7 +99,6 @@ class WGenerator {
         return this.resolveString(key || '{output}');
     }
 
-    // Returns string[]
     resolveCommas (inputString) {
         return inputString.trim()
             .split(',')
@@ -115,17 +114,23 @@ class WGenerator {
     // Returns WNode[]
     resolveString (inputString) {
         return this.resolveCommas(inputString)
-            .map(name => this.makeSubtree(name));
+            .map(contextString => this.makeSubtree(contextString));
     }
 
-    makeSubtree (name) {
-        return Util.contains(name, '/') ?
-            WGenerator.makeExternalSubtree(name) :
-            this.makeLocalSubtree(name);
+    makeSubtree (cString) {
+        Util.log(`Top of makeSubtree( '${cString}' ), this.codexPath is ${this.codexPath}`, 'debug');
+
+        return cString.path === this.codexPath ?
+            this.makeLocalSubtree(cString) :
+            WGenerator.makeExternalSubtree(cString);
     }
 
-    makeLocalSubtree (name) {
-        const node = new WNode(name);
+    makeLocalSubtree (cString) {
+        // Later, read from the templates of the WGenerator specified by cString.path
+        const node = new WNode(cString.name);
+
+        Util.log(`Middle of makeLocalSubtree(${cString}). Expression node.templateName is ${node.templateName}`, 'debug');
+
         return this.maybeAddChildren(node);
     }
 
@@ -163,7 +168,6 @@ class WGenerator {
         return node;
     }
 
-    // Returns string[]
     // No side effects.
     maybeResolveAlias (str) {
         str = str.trim();
@@ -183,15 +187,14 @@ class WGenerator {
                 this.resolveLocalAlias(alias);
 
             // TODO: resolveExternalAlias returns string[], without reference to which codex it is from. The originating codex must be checked because its ChildTables may be relevant.
-            // One option would be to format all names returned from these funcs as absolute paths.
-            // Or as objects: { gen: 'the/abs/path', name: 'marineSpecialist' }
+            // One option would be for these funcs to return ContextString objs
         }
         else {
-            return [str];
+            const cString = new ContextString(str, this.codexPath);
+            return [cString];
         }
     }
 
-    // Returns string[]
     resolveLocalAlias (tableName) {
         const table = this.aliasTables[tableName];
 
@@ -421,6 +424,7 @@ class WGenerator {
 
     static resolveExternalAlias (absolutePath) {
         const findings = WGenerator.findGenAndTable(absolutePath);
+        // Later, check if this throwing is redundant.
         if (! findings || ! findings.gen || ! findings.name) {
             throw new Error(`Did not find gen and/or name for absolutePath: ${absolutePath}`);
         }
@@ -431,13 +435,9 @@ class WGenerator {
     // Returns WNode
     // References the appropriate WGenerator's ChildTables, templates, etc
     // The path was already made absolute during table construction (both AliasTable and ChildTable rows).
-    static makeExternalSubtree (absolutePath) {
-        const findings = WGenerator.findGenAndTable(absolutePath);
-        if (! findings || ! findings.gen || ! findings.name || findings.name === 'output') {
-            throw new Error(`Did not find gen and/or name for absolutePath: ${absolutePath}`);
-        }
-
-        return findings.gen.makeLocalSubtree(findings.name);
+    static makeExternalSubtree (cString) {
+        const gen = WGenerator.generators[cString.path];
+        return gen.makeLocalSubtree(cString);
     }
 
     static run () {
@@ -544,7 +544,6 @@ class AliasTable {
         return Util.randomOf(this.outputs);
     }
 
-    // Returns string[]
     getOutputAndResolveIt () {
         const outputStr = this.getOutput();
 
@@ -640,16 +639,28 @@ ChildTable.STARTERS = [
 ];
 
 // Intermediate representation used during parsing and generation. Represents a name (of a template or of a alias) with a codex path for context.
-class CodexString {
+// Alternate names: CodexString, PathName, PathString, ContextName, ContextString
+class ContextString {
     // Example:
     // {
     //     name: 'civilian',
     //     codexPath: 'halo/unsc/individual'
     // }
-    constructor (name, codexPath) {
-        this.name = name;
-        // TODO: Somehow guarantee that this is always a absolute path.
-        this.codexPath = codexPath;
+    constructor (name, path) {
+        if (Util.contains(name, '/')) {
+            const findings = WGenerator.findGenAndTable(name);
+            this.name = findings.name;
+            this.path = findings.gen.codexPath;
+        }
+        else {
+            this.name = name;
+            // TODO: guarantee that this is always a absolute path.
+            this.path = path;
+        }
+    }
+
+    toString () {
+        return `{name:${this.name}, path:${this.path}}`;
     }
 }
 
