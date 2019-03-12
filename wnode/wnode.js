@@ -10,7 +10,7 @@ const Util = require('../util/util.js');
 // by a WNode or a tree of WNodes.
 
 let WNode = module.exports = class WNode {
-    constructor(templateName) {
+    constructor (templateName) {
         // Later: Safety checks, logging
         this.id = Util.newId();
 
@@ -21,7 +21,7 @@ let WNode = module.exports = class WNode {
         this.components = [];
     }
 
-    add(...nodes) {
+    add (...nodes) {
         nodes.forEach(node => {
             node.parent = this;
         });
@@ -29,7 +29,7 @@ let WNode = module.exports = class WNode {
         return this;
     }
 
-    deepCopy() {
+    deepCopy () {
         let clone = new WNode();
         Object.assign(clone, this);
         clone.id = Util.newId();
