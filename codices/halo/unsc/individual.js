@@ -21,8 +21,8 @@ weight: 70
 * childrenof marinePrivate
 {halo/unsc/item/giWeapon}
 {halo/unsc/item}
-flakHelmet
-flakArmor
+halo/unsc/item/flakHelmet
+halo/unsc/item/flakArmor
 {gender}
 
 * alias squadLeader
@@ -35,8 +35,8 @@ flakArmor
 {halo/unsc/item/veteranWeapon}
 {halo/unsc/item/smallWeapon}
 {halo/unsc/item}
-flakHelmet
-flakArmor
+halo/unsc/item/flakHelmet
+halo/unsc/item/flakArmor
 {gender}
 
 * childrenof officer
@@ -48,17 +48,17 @@ flakArmor
 {halo/unsc/item/veteranWeapon}
 {halo/unsc/item/smallWeapon}
 {halo/unsc/item/anyGear}
-visrHelmet
-odstArmor
-fragGrenade
+halo/unsc/item/visrHelmet
+halo/unsc/item/odstArmor
+halo/unsc/item/fragGrenade
 {gender}
 
 * childrenof spartan
 {halo/unsc/item/anyWeapon}
 {halo/unsc/item/anyWeapon}
 {halo/unsc/item/anyGear}
-fragGrenade
-fragGrenade
+halo/unsc/item/fragGrenade
+halo/unsc/item/fragGrenade
 {gender}
 
 * alias driver
