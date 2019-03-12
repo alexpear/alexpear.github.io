@@ -140,9 +140,13 @@ class WGenerator {
         const table = this.childTables[node.templateName];
 
         if (table) {
+            // Util.log(`End of maybeAddChildren(node of '${node.templateName}'). table exists.`, 'debug');
+
             return this.addChildren(node, table);
         }
         else {
+            // Util.log(`End of maybeAddChildren(node of '${node.templateName}'). table not found.`, 'debug');
+
             return node;
         }
     }
@@ -171,6 +175,8 @@ class WGenerator {
     // No side effects.
     maybeResolveAlias (str) {
         str = str.trim();
+
+        // Util.log(`Top of maybeResolveAlias( '${str}' )`, 'debug');
 
         if (str[0] === '{') {
             if (str[str.length - 1] !== '}') {
@@ -472,6 +478,7 @@ class WGenerator {
         output.forEach(
             node => {
                 console.log(node.toPrettyString());
+                // Util.log(`There are ${node.components.length} components. The first one is ${node.components[0] && node.components[0].templateName}.`, 'debug');
             }
         );
     }
