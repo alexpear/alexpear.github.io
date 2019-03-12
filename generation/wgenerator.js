@@ -252,6 +252,11 @@ class WGenerator {
                 return genPath;
             }
 
+            // do/while would be neater but whatever.
+            if (curPath.length === 0) {
+                break;
+            }
+
             curPath.pop();
         }
 
@@ -352,8 +357,8 @@ class WGenerator {
             return filePath;
         }
 
-        // Or the last term might refer to a table within a file.
-        return WGenerator.interpretRelativePathAsTable(relativePath, contextPath);
+        // Or the last term might refer to a name within a context path.
+        return WGenerator.interpretRelativePathAsName(relativePath, contextPath);
     }
 
     // Path parameters are arrays of strings
@@ -371,30 +376,22 @@ class WGenerator {
 
     // Path parameters are arrays of strings
     // Returns string or undefined
-    static interpretRelativePathAsTable (relativePath, contextPath) {
+    static interpretRelativePathAsName (relativePath, contextPath) {
         if (relativePath.length < 2) {
             return;
         }
 
-        const tableIndex = relativePath.length - 1;
+        const nameIndex = relativePath.length - 1;
 
-        // Omit the table
+        // Omit the name
         // concat() and slice() have no side effects.
-        const genPath = contextPath.concat(relativePath.slice(0, tableIndex));
+        const genPath = contextPath.concat(relativePath.slice(0, nameIndex));
         const genPathStr = genPath.join('/');
         const gen = WGenerator.generators[genPathStr];
 
         if (gen) {
-            const goalTable = relativePath[tableIndex];
-
-            // TODO unsure whether i want a alias-only function or what.
-            if (
-                gen.aliasTables[goalTable] ||
-                gen.childTables[goalTable] ||
-                gen.glossary[goalTable]
-            ) {
-                return genPathStr + '/' + goalTable;
-            }
+            const goalName = relativePath[nameIndex];
+            return genPathStr + '/' + goalName;
         }
 
         return;
