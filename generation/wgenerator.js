@@ -245,6 +245,9 @@ class WGenerator {
         let curPath = this.codexPath.split('/');
 
         while (curPath.length >= 0) {
+
+            // Util.log(`In ChildTable.getAbsolutePath( '${relativePathStr}' ) loop. curPath is ${curPath}. curPath.length is ${curPath.length}. curPath[0] is ${curPath[0]}.`, 'debug');
+
             // TODO I may want to interpret the last term as a possible alias table name, but not as a childTable or glossary name.
             const genPath = WGenerator.interpretRelativePath(relativePath, curPath);
 
@@ -291,6 +294,8 @@ class WGenerator {
     }
 
     static loadHaloCodices () {
+        // Util.log(`Top of loadHaloCodices(), WGenerator.generators is ${WGenerator.generators}.`, 'debug');
+
         if (! WGenerator.generators) {
             WGenerator.generators = {};
         }
@@ -304,10 +309,16 @@ class WGenerator {
             require('../codices/halo/unsc/item'),
             'halo/unsc/item'
         );
+
+        // Util.log(`Middle of loadHaloCodices(), item is loaded.`, 'debug');
+
         WGenerator.addGenerator(
             require('../codices/halo/unsc/individual'),
             'halo/unsc/individual'
         );
+
+        // Util.log(`Middle of loadHaloCodices(), individual is loaded.`, 'debug');
+
         WGenerator.addGenerator(
             require('../codices/halo/unsc/squad'),
             'halo/unsc/squad'
@@ -608,6 +619,8 @@ class ChildTable {
             .map(
                 line => {
                     if (Util.contains(line, '/')) {
+                        // Util.log(`In ChildTable constructor. line is ${line}`, 'debug');
+
                         line = this.generator.makePathAbsolute(line);
                     }
 
