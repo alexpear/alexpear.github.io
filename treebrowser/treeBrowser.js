@@ -1,6 +1,5 @@
 'use strict';
 
-// TODO look up info about browserify and relative paths
 const WGenerator = require('../generation/wgenerator.js');
 const WNode = require('../wnode/wnode.js');
 const Util = require('../util/util.js');
@@ -140,5 +139,8 @@ const TreeBrowser = module.exports = class TreeBrowser {
 function init () {
     window.treeBrowser = new TreeBrowser();
 }
+
+// Make the bundle like this in the CLI:
+// browserify treeBrowser.js -o bundle.js
 
 init();
