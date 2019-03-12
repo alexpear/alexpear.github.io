@@ -182,6 +182,7 @@ class WGenerator {
 
             // Slashes indicate pointers to external WGenerators.
             // Any slashpaths here will already have been made absolute during AliasTable setup.
+            // Should we convert alias to a ContextString here?
             return Util.contains(alias, '/') ?
                 WGenerator.resolveExternalAlias(alias) :
                 this.resolveLocalAlias(alias);
