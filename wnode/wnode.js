@@ -38,6 +38,18 @@ let WNode = module.exports = class WNode {
         return clone;
     }
 
+    // Object with all the node's properties except components, id, templateName, functions, etc.
+    traits () {
+
+    }
+
+    // String for displaying the traits
+    prettyTraits () {
+        const traits = this.traits();
+
+        return ``;
+    }
+
     toSimpleString () {
         return this.templateName ?
             Util.fromCamelCase(this.templateName) :
