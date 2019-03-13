@@ -49,6 +49,16 @@ util.contains = function (array, fugitive) {
     return array.indexOf(fugitive) >= 0;
 };
 
+util.sum = function (array) {
+    return util.array(array).reduce(
+        (sumSoFar, element) => {
+            const n = Number(element) || 0;
+            return sumSoFar + n;
+        },
+        0
+    );
+};
+
 util.randomIntBetween = function (minInclusive, maxExclusive) {
     if (!minInclusive || !maxExclusive) {
         console.log('error: util.randomIntBetween() called with missing parameters.');
