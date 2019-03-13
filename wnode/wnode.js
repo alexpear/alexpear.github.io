@@ -62,7 +62,7 @@ let WNode = module.exports = class WNode {
     traitMax (propStr) {
         const localTrait = this[propStr] || 0;
         const max = this.components.reduce(
-            (soFar, component) => Math.max(soFar, component[propStr] || 0),
+            (soFar, component) => Math.max(soFar, component.traitMax(propStr)),
             localTrait
         );
 
@@ -72,7 +72,7 @@ let WNode = module.exports = class WNode {
     traitMin (propStr) {
         const localTrait = this[propStr];
         const min = this.components.reduce(
-            (soFar, component) => Math.min(soFar, component[propStr] || Infinity),
+            (soFar, component) => Math.min(soFar, component.traitMin(propStr)),
             localTrait || Infinity
         );
 
