@@ -70,6 +70,8 @@ human
 {halo/unsc/item/anyGear}
 halo/unsc/item/fragGrenade
 halo/unsc/item/fragGrenade
+{halo/unsc/item/spartanMod}
+{halo/unsc/item/spartanArmor}
 human
 
 * alias driver

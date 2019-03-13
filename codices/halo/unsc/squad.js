@@ -89,9 +89,6 @@ gungoose
 {halo/unsc/individual/driver}
 marineFireteam
 
-* childrenof transportWarthog
-{infantryFireteam}
-
 * childrenof falcon
 {infantryFireteam}
 {airModule}
@@ -112,15 +109,26 @@ chaingun
 1 targetDesignator
 1 laser
 
+* template warthogChassis
+weight: 2000
+defense: 10
+tags: vehicle
+
 * children of scoutWarthog
 {halo/unsc/individual/driver}
 {halo/unsc/individual}
+warthogChassis
+
+* childrenof transportWarthog
+{infantryFireteam}
+warthogChassis
 
 * children of turretWarthog
 {turret}
 {halo/unsc/individual/driver}
 {halo/unsc/individual}
 {halo/unsc/individual}
+warthogChassis
 
 * alias turret
 6 chaingun
@@ -138,6 +146,18 @@ chaingun
 1 saber
 1 sparrowhawk
 
+* template falcon
+weight: 1500
+
+* template hornet
+weight: 1000
+
+* template wasp
+weight: 1000
+
+* template pelican
+weight: 20000
+
 * children of pelican
 {airModule}
 {pelicanCargo}
@@ -150,6 +170,10 @@ chaingun
 1 mongooseSquad
 1 mantis
 1 scorpion
+
+* template scorpion
+weight: 60000
+armor: 20
 
 * children of elephant
 {infantrySquad}
