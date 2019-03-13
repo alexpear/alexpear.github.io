@@ -36,6 +36,11 @@ util.exists = (x) => {
         ! util.isNaN(x);
 };
 
+util.legit = (x) =>
+    util.exists(x) &&
+    x !== [] &&
+    x !== {};
+
 // TODO reconsider this weird function syntax. Maybe declare a class of functions, then assign the field props to it?
 util.default = function (input, defaultValue) {
     if (input === undefined) {
@@ -104,13 +109,42 @@ util.repeat = function (str, n) {
 };
 
 util.formatProp = function (object, propName) {
-    if (! object[propName]) {
+    const value = object[propName];
+    if (! util.legit(value)) {
         return '';
     }
 
     // Later handle special and modification objects better.
-    return `${ propName }: ${ object[propName] }`;
+    return `${ propName }: ${ util.formatExpression(value) }`;
 };
+
+util.formatExpression = function (input) {
+    const type = typeof input;
+    if (util.isArray(input)) {
+        return input.map(
+            x => util.formatExpression(x)
+        )
+        .join(', ');
+    }
+    if (type === 'object') {
+        return util.formatObj(input);
+    }
+
+    return input;
+}
+
+util.formatObj = function (obj) {
+    // if (typeof obj !== 'object') {
+    //     return obj;
+    // }
+
+    const pairs = Object.keys(obj)
+        .map(
+            key => `${key}: ${obj[key]}`
+        )
+        .join(', ');
+    return `{${pairs}}`;
+}
 
 util.containsVowels = (s) => {
     const chars = s.toUpperCase()
