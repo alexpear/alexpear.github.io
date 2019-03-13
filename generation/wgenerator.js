@@ -719,6 +719,8 @@ function parseTemplate (tableRaw) {
                 }
 
                 templateObj[key] = parsed.value;
+
+                // Util.log(`in parseTemplate(). Just wrote key/value pair {${key}: ${parsed.value}}`, 'debug');
             }
         );
 
@@ -779,6 +781,8 @@ function parseTemplateLine (line) {
         value = Util.exists(parsed) ?
             parsed :
             rest;
+
+        // Util.log(`in parseTemplateLine( '${line}' ). value is ${value}.`, 'debug');
     }
 
     return {
