@@ -135,27 +135,27 @@ let WNode = module.exports = class WNode {
                 continue;
             }
 
-            outString += furtherLine(Util.formatProp(this, prop));
+            outString += furtherLine('  ' + Util.formatProp(this, prop));
         }
 
         const headCount = this.headCount();
         if (headCount) {
-            outString += furtherLine(`${headCount} personnel`);
+            outString += furtherLine(`  ${headCount} personnel`);
         }
 
         const weight = this.getWeight();
         if (weight) {
-            outString += furtherLine(`${weight} kg`);
+            outString += furtherLine(`  ${weight} kg`);
         }
 
         const speed = this.getSpeed();
         if (speed) {
-            outString += furtherLine(`Mobility Rating: ${speed}`);
+            outString += furtherLine(`  Mobility Rating: ${speed}`);
         }
 
         const stealth = this.getStealth();
         if (stealth) {
-            outString += furtherLine(`Stealth Rating: ${stealth}`);
+            outString += furtherLine(`  Stealth Rating: ${stealth}`);
         }
 
         if (this.components.length > 0) {
