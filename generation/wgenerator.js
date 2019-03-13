@@ -134,7 +134,20 @@ class WGenerator {
 
         // Util.log(`Middle of makeLocalSubtree(${cString}). Expression node.templateName is ${node.templateName}`, 'debug');
 
+        this.applyTemplate(node, cString);
         return this.maybeAddChildren(node);
+    }
+
+    applyTemplate (node, cString) {
+        const template = this.glossary[cString.name];
+        if (! template) {
+            return;
+        }
+
+        for (let prop in template) {
+            // Later there might be some properties that shouldn't be overwritten.
+            node[prop] = template[prop];
+        }
     }
 
     // Might modify node.children
