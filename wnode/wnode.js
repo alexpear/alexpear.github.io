@@ -82,7 +82,11 @@ let WNode = module.exports = class WNode {
     }
 
     headCount () {
-        return this.traitSum('individuals');
+        const sum = this.traitSum('individuals');
+
+        // Util.log(`In headCount(). this.templateName is ${this.templateName}. sum is ${sum}. this.individuals is ${this.individuals}.`, 'debug');
+
+        return sum;
     }
 
     getWeight () {
