@@ -50,6 +50,61 @@ let WNode = module.exports = class WNode {
         return ``;
     }
 
+    traitSum (propStr) {
+        return (this[propStr] || 0) +
+            Util.sum(
+                this.components.map(
+                    c => c.traitSum(propStr)
+                )
+            );
+    }
+
+    traitMax (propStr) {
+        const localTrait = this[propStr] || 0;
+        const max = this.components.reduce(
+            (soFar, component) => Math.max(soFar, component[propStr] || 0),
+            localTrait
+        );
+
+        return max || localTrait;
+    }
+
+    traitMin (propStr) {
+        const localTrait = this[propStr];
+        const min = this.components.reduce(
+            (soFar, component) => Math.min(soFar, component[propStr] || Infinity),
+            localTrait || Infinity
+        );
+
+        return min === Infinity ?
+            localTrait :
+            min;
+    }
+
+    headCount () {
+        return this.traitSum('individuals');
+    }
+
+    getWeight () {
+        return this.traitSum('weight');
+    }
+
+    maxSize () {
+        return this.traitMax('size');
+    }
+
+    minSize () {
+        return this.traitMin('size');
+    }
+
+    getSpeed () {
+        return this.traitMin('speed');
+    }
+
+    getStealth () {
+        return this.traitMin('stealth');
+    }
+
     toSimpleString () {
         return this.templateName ?
             Util.fromCamelCase(this.templateName) :
@@ -77,6 +132,26 @@ let WNode = module.exports = class WNode {
             }
 
             outString += furtherLine(Util.formatProp(this, prop));
+        }
+
+        const headCount = this.headCount();
+        if (headCount) {
+            outString += furtherLine(`${headCount} personnel`);
+        }
+
+        const weight = this.getWeight();
+        if (weight) {
+            outString += furtherLine(`${weight} kg`);
+        }
+
+        const speed = this.getSpeed();
+        if (speed) {
+            outString += furtherLine(`Mobility Rating: ${speed}`);
+        }
+
+        const stealth = this.getStealth();
+        if (stealth) {
+            outString += furtherLine(`Stealth Rating: ${stealth}`);
         }
 
         if (this.components.length > 0) {
