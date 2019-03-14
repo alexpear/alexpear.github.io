@@ -1,5 +1,6 @@
 'use strict';
 
+const commaNumber = require('comma-number');
 const moment = require('moment');
 
 // TODO: import util funcs from util.js in the warband repo
@@ -280,6 +281,9 @@ util.union = (a1, a2) => {
 util.arrayCopy = (a) => {
     return a.map(x => x);
 };
+
+util.commaNumber = (n) =>
+    commaNumber(n);
 
 util.sigFigsOf = (n) => {
     if (! util.isNumber(n)) {
