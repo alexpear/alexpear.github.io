@@ -140,12 +140,12 @@ let WNode = module.exports = class WNode {
 
         const headCount = this.headCount();
         if (headCount) {
-            outString += furtherLine(`  ${headCount} personnel`);
+            outString += furtherLine(`  ${Util.commaNumber(headCount)} personnel`);
         }
 
         const weight = this.getWeight();
         if (weight) {
-            outString += furtherLine(`  ${weight} kg`);
+            outString += furtherLine(`  ${Util.commaNumber(weight)} kg`);
         }
 
         const speed = this.getSpeed();
