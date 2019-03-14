@@ -140,6 +140,9 @@ module.exports = `* output
 4 spiArmor
 3 infiltrationSuit
 
+* template mjolnirArmor
+weight: 454
+
 * alias armorMod
 4 armorLock
 4 dropShield

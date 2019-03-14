@@ -74,6 +74,9 @@ halo/unsc/individual/crewMember
 mongoose
 mongoose
 
+* template mongoose
+weight: 406
+
 * childrenof mongoose
 {halo/unsc/individual/driver}
 {halo/unsc/individual}
@@ -81,6 +84,9 @@ mongoose
 * childrenof gungooseSquad
 gungoose
 gungoose
+
+* template gungoose
+weight: 420
 
 * childrenof gungoose
 {halo/unsc/individual/driver}
@@ -110,7 +116,7 @@ chaingun
 1 laser
 
 * template warthogChassis
-weight: 2000
+weight: 3000
 defense: 10
 tags: vehicle
 
@@ -131,11 +137,18 @@ warthogChassis
 warthogChassis
 
 * alias turret
+0 TODO: Move this to halo/unsc/item
 6 chaingun
 2 gaussTurret
 1 missilePod
 1 vespinTurret
 1 needleTurret
+
+* template chaingun
+weight: 100
+
+* template missilePod
+weight: 200
 
 * alias aircraft
 4 falcon
@@ -156,7 +169,7 @@ weight: 1000
 weight: 1000
 
 * template pelican
-weight: 20000
+weight: 138000
 
 * children of pelican
 {airModule}
@@ -172,13 +185,19 @@ weight: 20000
 1 scorpion
 
 * template scorpion
-weight: 60000
+weight: 35000
 armor: 20
+
+* template elephant
+weight: 205000
 
 * children of elephant
 {infantrySquad}
 {turret}
 {turret}
+
+* template mammoth
+weight: 484000
 
 * children of mammoth
 {infantrySquad}
