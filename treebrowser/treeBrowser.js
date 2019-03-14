@@ -40,11 +40,17 @@ const TreeBrowser = module.exports = class TreeBrowser {
                 this.parentButton.value = '(No parent)';
             }
 
+            this.updatePropertiesDiv(newNode);
+
             // TODO newNode has a circular reference, according to JSON.stringify()
             this.currentNodeName.innerHTML = newNode.toSimpleString();
 
             this.updateComponentButtons(newNode);
         }
+    }
+
+    updatePropertiesDiv (newNode) {
+        this.propertiesDiv.innerHTML = newNode.getPropText();
     }
 
     async updateComponentButtons (newNode) {

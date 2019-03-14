@@ -174,6 +174,22 @@ let WNode = module.exports = class WNode {
         }
     }
 
+    getPropSummary () {
+        return {
+            headCount: this.headCount() || 0,
+            weight: this.getWeight() || 0
+        };
+    }
+
+    getPropText () {
+        const props = this.getPropSummary();
+        return [
+            props.headCount ? `${Util.commaNumber(props.headCount)} personnel` : '',
+            props.weight ? `${Util.commaNumber(props.weight)} kg` : ''
+        ]
+        .join('<br>');
+    }
+
     toYaml () {
         return Yaml.dump(this);
     }
