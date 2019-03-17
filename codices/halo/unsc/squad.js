@@ -173,12 +173,13 @@ weight: 138000
 
 * children of pelican
 {airModule}
-{pelicanCargo}
+{infantrySquad}
+{pelicanDangling}
 
-* alias pelicanCargo
-10 {infantrySquad}
+* alias pelicanDangling
+8 nothing
 4 {warthog}
-2 ammoCrate
+2 supplyCrate
 1 gungooseSquad
 1 mongooseSquad
 1 mantis
