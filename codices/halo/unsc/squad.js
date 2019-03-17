@@ -53,7 +53,7 @@ halo/unsc/individual/spartan
 1 spartanFireteam
 
 * childrenof crewFireteam
-halo/unsc/individual/crewMember
+halo/unsc/individual/officer
 halo/unsc/individual/crewMember
 halo/unsc/individual/crewMember
 halo/unsc/individual/crewMember
