@@ -212,6 +212,9 @@ class WGenerator {
             // TODO: resolveExternalAlias returns string[], without reference to which codex it is from. The originating codex must be checked because its ChildTables may be relevant.
             // One option would be for these funcs to return ContextString objs
         }
+        else if (str === 'nothing') {
+            return [];
+        }
         else {
             const cString = new ContextString(str, this.codexPath);
             return [cString];
