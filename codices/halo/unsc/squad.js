@@ -12,6 +12,7 @@ module.exports = `* output
 * childrenof marineSquad
 marineFireteam
 marineFireteam
+marineFireteam
 
 * childrenof marineFireteam
 {halo/unsc/individual/squadLeader}
@@ -25,6 +26,7 @@ halo/unsc/individual/marinePrivate
 1 spartanSquad
 
 * childrenof odstSquad
+odstFireteam
 odstFireteam
 odstFireteam
 
