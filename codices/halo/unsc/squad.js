@@ -94,7 +94,6 @@ weight: 420
 
 * childrenof scorpion
 {halo/unsc/individual/driver}
-marineFireteam
 
 * childrenof falcon
 {infantryFireteam}
