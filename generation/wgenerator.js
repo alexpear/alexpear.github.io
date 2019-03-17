@@ -153,6 +153,7 @@ class WGenerator {
     // Might modify node.children
     // Returns a WNode
     maybeAddChildren (node) {
+        // Later make this case insensitive
         const table = this.childTables[node.templateName];
 
         if (table) {
