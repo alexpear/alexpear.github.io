@@ -5,26 +5,14 @@ module.exports = `* output
 2 airCompany
 
 * childrenof staticCompany
-{halo/unsc/squad/staticSquad}
-{halo/unsc/squad/staticCompatibleSquad}
-{halo/unsc/squad/staticCompatibleSquad}
-{halo/unsc/squad/staticCompatibleSquad}
-{halo/unsc/squad/staticCompatibleSquad}
-{halo/unsc/squad/staticCompatibleSquad}
-{halo/unsc/squad/staticCompatibleSquad}
-{halo/unsc/squad/staticCompatibleSquad}
+{halo/unsc/squad/4staticCompatibleSquads}
+{halo/unsc/squad/4staticCompatibleSquads}
 {halo/unsc/squad/staticCompatibleSquad}
 {halo/unsc/squad/staticCompatibleSquad}
 
 * childrenof slowCompany
-{halo/unsc/squad/slowSquad}
-{halo/unsc/squad/slowCompatibleSquad}
-{halo/unsc/squad/slowCompatibleSquad}
-{halo/unsc/squad/slowCompatibleSquad}
-{halo/unsc/squad/slowCompatibleSquad}
-{halo/unsc/squad/slowCompatibleSquad}
-{halo/unsc/squad/slowCompatibleSquad}
-{halo/unsc/squad/slowCompatibleSquad}
+{halo/unsc/squad/4slowCompatibleSquads}
+{halo/unsc/squad/4slowCompatibleSquads}
 {halo/unsc/squad/slowCompatibleSquad}
 {halo/unsc/squad/slowCompatibleSquad}
 

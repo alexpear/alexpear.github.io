@@ -63,7 +63,6 @@ halo/unsc/individual/crewMember
 5 {aircraft}
 3 scorpion
 2 elephant
-1 mammoth
 
 * alias warthog
 2 scoutWarthog
@@ -192,19 +191,38 @@ armor: 20
 weight: 205000
 
 * children of elephant
-{infantrySquad}
 {turret}
 {turret}
+crewFireteam
+marineFireteam
+{8mCargo}
+
+* alias 8mCargo
+10 {warthog}
+10 {infantrySquad}
+6 supplyCrate
+8 mongooseSquad
+2 gungooseSquad
+3 mantis
+
+* alias 10mCargo
+10 {8mCargo}
+4 scorpion
 
 * template mammoth
 weight: 484000
 
 * children of mammoth
+crewFireteam
 {infantrySquad}
+{10mCargo}
+{10mCargo}
+{10mCargo}
 {turret}
 {turret}
 {turret}
 {turret}
+tacticalMac
 
 * alias airSpeedSquad
 4 {aircraft}
@@ -222,6 +240,9 @@ weight: 484000
 20 {infantrySquad}
 10 scorpion
 2 elephant
+
+* alias 4slowCompatibleSquads
+10 {slowSquad}, {slowCompatibleSquad}, {slowCompatibleSquad}, {slowCompatibleSquad}
 1 mammoth
 
 * alias slowCompatibleSquad
@@ -233,6 +254,10 @@ weight: 484000
 4 fortifiedInfantrySquad
 2 bunker
 1 {bigGun}
+
+* alias 4staticCompatibleSquads
+10 {staticSquad}, {staticCompatibleSquad}, {staticCompatibleSquad}, {staticCompatibleSquad}
+1 mammoth
 
 * alias staticCompatibleSquad
 10 {staticSquad}
