@@ -131,9 +131,9 @@ module.exports = `* output
 1 needleTurret
 
 * alias spartanMod
-3 spartanIIAugmentations
-4 spartanIIIAugmentations
-4 spartanIVAugmentations
+3 spartan2Augmentations
+4 spartan3Augmentations
+4 spartan4Augmentations
 
 * alias spartanArmor
 4 mjolnirArmor
