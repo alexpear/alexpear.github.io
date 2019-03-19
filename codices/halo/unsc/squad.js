@@ -96,6 +96,7 @@ weight: 420
 {halo/unsc/individual/driver}
 
 * childrenof falcon
+{halo/unsc/individual/driver}
 {infantryFireteam}
 {airModule}
 
@@ -126,6 +127,7 @@ tags: vehicle
 warthogChassis
 
 * childrenof transportWarthog
+{halo/unsc/individual/driver}
 {infantryFireteam}
 warthogChassis
 
@@ -173,6 +175,7 @@ weight: 138000
 
 * children of pelican
 {airModule}
+{halo/unsc/individual/driver}
 {infantrySquad}
 {pelicanDangling}
 
