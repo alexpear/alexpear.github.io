@@ -211,6 +211,19 @@ let WNode = module.exports = class WNode {
     }
 
     static comparator (a, b) {
+        // Later, learn why maxSize() sorting seems screwy with UNSC army tree (2019 March)
+        // const aSize = a.maxSize();
+        // const bSize = b.maxSize();
+        // if (aSize > 0 || bSize > 0) {
+        //     return bSize - aSize;
+        // }
+
+        const aWeight = a.getWeight();
+        const bWeight = b.getWeight();
+        if (aWeight > 0 || bWeight > 0) {
+            return bWeight - aWeight;
+        }
+
         return (a.templateName || '').localeCompare(
             b.templateName || ''
         );
