@@ -101,6 +101,8 @@ class WGenerator {
     }
 
     resolveCommas (inputString) {
+        // Util.log(`Top of resolveCommas(), inputString is '${inputString}'`, 'debug');
+
         return inputString.trim()
             .split(',')
             .reduce(
@@ -539,6 +541,8 @@ class AliasTable {
         for (let li = 1; li < lines.length; li++) {
             // Later probably functionize this part.
             const line = lines[li];
+
+            // Util.log(`in AliasTable() constructor, parsing line '${line}'`, 'debug');
 
             if (line === '') {
                 continue;
