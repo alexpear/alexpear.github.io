@@ -3,7 +3,7 @@ module.exports = `* output
 4 slowBattalion
 4 fastBattalion
 2 airBattalion
-0 boardingBattalion
+1 cqcBattalion
 
 * childrenof staticBattalion
 halo/unsc/company/staticCompany
@@ -64,5 +64,17 @@ halo/unsc/company/boardingCompany
 halo/unsc/company/boardingCompany
 halo/unsc/company/boardingCompany
 halo/unsc/company/boardingCompany
+
+* childrenof cqcBattalion
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
 
 `;
