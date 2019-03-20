@@ -3,6 +3,7 @@ module.exports = `* output
 4 slowBattalion
 4 fastBattalion
 2 airBattalion
+0 boardingBattalion
 
 * childrenof staticBattalion
 halo/unsc/company/staticCompany
