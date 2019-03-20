@@ -23,6 +23,30 @@ module.exports = `* output
 {halo/unsc/squad/stealthSquad}
 {halo/unsc/squad/stealthSquad}
 
+* childrenof cqcCompany
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+
+* childrenof boardingCompany
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+
 * childrenof slowCompany
 {halo/unsc/squad/4slowCompatibleSquads}
 {halo/unsc/squad/4slowCompatibleSquads}
