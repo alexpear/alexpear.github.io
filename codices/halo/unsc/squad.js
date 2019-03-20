@@ -255,6 +255,10 @@ tacticalMac
 1 {fastSquad}
 1 {airSpeedSquad}
 
+* alias stealthSquad
+4 odstSquad
+1 infantrySquad
+
 * alias staticSquad
 4 fortifiedInfantrySquad
 2 bunker

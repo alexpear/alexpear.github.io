@@ -1,5 +1,6 @@
 module.exports = `* output
 1 staticCompany
+1 stealthCompany
 4 slowCompany
 4 fastCompany
 2 airCompany
@@ -9,6 +10,18 @@ module.exports = `* output
 {halo/unsc/squad/4staticCompatibleSquads}
 {halo/unsc/squad/staticCompatibleSquad}
 {halo/unsc/squad/staticCompatibleSquad}
+
+* childrenof stealthCompany
+{halo/unsc/squad/stealthSquad}
+{halo/unsc/squad/stealthSquad}
+{halo/unsc/squad/stealthSquad}
+{halo/unsc/squad/stealthSquad}
+{halo/unsc/squad/stealthSquad}
+{halo/unsc/squad/stealthSquad}
+{halo/unsc/squad/stealthSquad}
+{halo/unsc/squad/stealthSquad}
+{halo/unsc/squad/stealthSquad}
+{halo/unsc/squad/stealthSquad}
 
 * childrenof slowCompany
 {halo/unsc/squad/4slowCompatibleSquads}
