@@ -227,7 +227,7 @@ class WGenerator {
         const table = this.aliasTables[tableName];
 
         if (! table) {
-            throw new Error(`Could not find local alias table: ${ str }`);
+            throw new Error(`Could not find local alias table: ${ tableName }`);
         }
 
         return table.getOutputAndResolveIt();
