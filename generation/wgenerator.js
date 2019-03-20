@@ -352,14 +352,14 @@ class WGenerator {
         //     require('../codices/halo/unsc/vehicle'),
         //     'halo/unsc/vehicle'
         // );
-        // WGenerator.addGenerator(
-        //     require('../codices/halo/unsc/ship'),
-        //     'halo/unsc/ship'
-        // );
-        // WGenerator.addGenerator(
-        //     require('../codices/halo/unsc/fleet'),
-        //     'halo/unsc/fleet'
-        // );
+        WGenerator.addGenerator(
+            require('../codices/halo/unsc/ship'),
+            'halo/unsc/ship'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/unsc/fleet'),
+            'halo/unsc/fleet'
+        );
         WGenerator.addGenerator(
             require('../codices/halo/unsc/patrol'),
             'halo/unsc/patrol'
