@@ -1283,7 +1283,6 @@ halo/unsc/individual/marinePrivate
 * alias rareInfantrySquad
 10 odstSquad
 4 helljumperSquad
-0 odstJetpackSquad
 1 spartanSquad
 
 * childrenof odstSquad
@@ -1360,8 +1359,18 @@ halo/unsc/item/memoryChip
 0 TODO later give these item/cqcWeapon and cqcGear
 
 * alias boardingElement
-4 pelican
-4 dropPodSquad
+40 pelican
+40 dropPodSquad
+1 assaultFrameFireteam
+
+* childrenof assaultFrameFireteam
+assaultFrame
+assaultFrame
+assaultFrame
+assaultFrame
+
+* childrenof assaultFrame
+spartan
 
 * childrenof dropPodSquad
 dropPodFireteam
@@ -1649,6 +1658,7 @@ forklift
 2 tier2asset
 1 tier1asset
 0 NOTE: These are not squads, but are sometimes squad-sized
+0 TODO maybe revise the asset system into priorityItem, vip, priorityCargo, which are nested.
 
 * alias tier1asset
 2 novaBomb
