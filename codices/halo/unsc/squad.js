@@ -99,8 +99,18 @@ halo/unsc/item/memoryChip
 0 TODO later give these item/cqcWeapon and cqcGear
 
 * alias boardingElement
-4 pelican
-4 dropPodSquad
+40 pelican
+40 dropPodSquad
+1 assaultFrameFireteam
+
+* childrenof assaultFrameFireteam
+assaultFrame
+assaultFrame
+assaultFrame
+assaultFrame
+
+* childrenof assaultFrame
+spartan
 
 * childrenof dropPodSquad
 dropPodFireteam
