@@ -42,10 +42,10 @@ helljumperFireteam
 helljumperFireteam
 
 * childrenof helljumperFireteam
-{halo/unsc/individual/helljumperMember}
-{halo/unsc/individual/helljumperMember}
-{halo/unsc/individual/helljumperMember}
-{halo/unsc/individual/helljumperMember}
+halo/unsc/individual/helljumper
+halo/unsc/individual/helljumper
+halo/unsc/individual/helljumper
+halo/unsc/individual/helljumper
 
 * childrenof spartanSquad
 spartanFireteam
@@ -394,9 +394,9 @@ forklift
 forklift
 
 * alias priorityAsset
-50 tier3asset, tier3asset
-2 tier2asset
-1 tier1asset
+50 {tier3asset}, {tier3asset}
+2 {tier2asset}
+1 {tier1asset}
 0 NOTE: These are not squads, but are sometimes squad-sized
 0 TODO maybe revise the asset system into priorityItem, vip, priorityCargo, which are nested.
 
@@ -417,7 +417,7 @@ forklift
 * alias tier3asset
 4 halo/unsc/individual/officer
 3 halo/unsc/individual/civilian
-2 {halo/unsc/item/alienWeapon}
-2 {halo/unsc/item/alienGrenade}
+0 {halo/unsc/item/alienWeapon}
+0 {halo/unsc/item/alienGrenade}
 
 `;

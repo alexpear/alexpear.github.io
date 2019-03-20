@@ -68,17 +68,13 @@ halo/unsc/item/odstArmor
 halo/unsc/item/fragGrenade
 human
 
-* alias helljumperMember
-100 helljumper
-1 airSpartan
-
 * childrenof helljumper
 halo/unsc/item/jetpack
-odst
+{helljumperMember}
 
-* childrenof airSpartan
-halo/unsc/item/jetpack
-spartan
+* alias helljumperMember
+100 odst
+1 spartan
 
 * childrenof spartan
 {halo/unsc/item/anyWeapon}

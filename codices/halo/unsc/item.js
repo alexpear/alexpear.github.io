@@ -28,7 +28,7 @@ module.exports = `* output
 4 br
 3 dmr
 1 shotgun
-0 generate attachments and weapon traits
+0 Later generate attachments and weapon traits, perhaps on customWeapon
 
 * alias specialInfantryWeapon
 4 shotgun
@@ -38,7 +38,7 @@ module.exports = `* output
 4 grenadeLauncher
 4 rocketLauncher
 4 laser
-3 turret
+2 turret
 3 flamethrower
 4 {smallWeapon}, {smallWeapon}
 
@@ -52,8 +52,7 @@ module.exports = `* output
 8 assaultRifle
 4 silencedPistol
 1 saw
-1 {anyWeapon}
-0 TODO would like to also give the individual a drop pod or space pelican
+1 {specialInfantryWeapon}
 
 * alias cqcGear
 4 flashbangGrenade
