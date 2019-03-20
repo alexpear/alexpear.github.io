@@ -112,9 +112,11 @@ chaingun
 {airModule}
 
 * alias airModule
+0 TODO move this to halo/unsc/item
 6 {turret}
 1 targetDesignator
 1 laser
+1 decoyLauncher
 
 * template warthogChassis
 weight: 3000
@@ -188,6 +190,14 @@ weight: 138000
 1 mantis
 1 scorpion
 
+* template mantis
+weight: 5200
+
+* children of mantis
+{halo/unsc/individual/driver}
+{turret}
+{turret}
+
 * template scorpion
 weight: 35000
 armor: 20
@@ -223,6 +233,7 @@ crewFireteam
 {10mCargo}
 {10mCargo}
 {10mCargo}
+forklift
 {turret}
 {turret}
 {turret}
@@ -261,7 +272,8 @@ tacticalMac
 
 * alias staticSquad
 4 fortifiedInfantrySquad
-2 bunker
+1 bunker
+1 firebase
 1 {bigGun}
 
 * alias 4staticCompatibleSquads
@@ -275,13 +287,17 @@ tacticalMac
 1 {airSpeedSquad}
 
 * childrenof fortifiedInfantrySquad
-{infantryFireteam}
-{infantryFireteam}
+{infantrySquad}
+halo/unsc/item/sandbags
 {turret}
 {turret}
 
 * childrenof bunker
 {infantrySquad}
+
+* childrenof firebase
+{infantrySquad}
+{turret}
 
 * alias bigGun
 4 aaGun
@@ -296,5 +312,31 @@ crewFireteam
 
 * childrenof tacticalMac
 crewFireteam
+
+* alias priorityAsset
+50 tier3asset, tier3asset
+2 tier2asset
+1 tier1asset
+0 NOTE: These are not squads, but are sometimes squad-sized
+
+* alias tier1asset
+2 novaBomb
+1 luminary
+1 cryptum
+4 huragok
+1 forerunnerMonitor
+1 forerunnerArtefact
+
+* alias tier2asset
+4 navComputer
+4 halo/unsc/item/memoryChip
+4 slipspaceDrive
+1 captiveProphet
+
+* alias tier3asset
+4 halo/unsc/individual/officer
+3 halo/unsc/individual/civilian
+2 {halo/unsc/item/alienWeapon}
+2 {halo/unsc/item/alienGrenade}
 
 `;

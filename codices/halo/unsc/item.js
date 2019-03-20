@@ -163,6 +163,22 @@ weight: 454
 0 {banished/item/grenade}
 0 {forerunner/item/grenade}
 
+* childrenof memoryChip
+{classifiedData}
+
+* alias classifiedData
+8 navigationData
+10 shipboardAi
+4 dumbAi
+2 civilianSmartAi
+5 weaponPlans
+6 cyberintrusionSuite
+1 forerunnerCoordinates
+1 covenantAi
+2 archaeologicalReport
+1 blackmailMaterial
+1 falsifiedMilitaryPlans
+
 * template flakArmor
 defense: 6
 resistance: fire 1, piercing 1
