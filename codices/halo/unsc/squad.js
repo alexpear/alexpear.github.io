@@ -22,7 +22,7 @@ halo/unsc/individual/marinePrivate
 
 * alias rareInfantrySquad
 10 odstSquad
-0 odstJetpackSquad
+4 helljumperSquad
 1 spartanSquad
 
 * childrenof odstSquad
@@ -35,6 +35,17 @@ halo/unsc/individual/odst
 halo/unsc/individual/odst
 halo/unsc/individual/odst
 halo/unsc/individual/odst
+
+* childrenof helljumperSquad
+helljumperFireteam
+helljumperFireteam
+helljumperFireteam
+
+* childrenof helljumperFireteam
+{halo/unsc/individual/helljumperMember}
+{halo/unsc/individual/helljumperMember}
+{halo/unsc/individual/helljumperMember}
+{halo/unsc/individual/helljumperMember}
 
 * childrenof spartanSquad
 spartanFireteam
@@ -58,12 +69,57 @@ halo/unsc/individual/crewMember
 halo/unsc/individual/crewMember
 halo/unsc/individual/crewMember
 
+* childrenof scienceTeam
+halo/unsc/individual/civilian
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{priorityAsset}
+
+* childrenof bridgeCrew
+halo/unsc/individual/officer
+{halo/unsc/individual}
+{halo/unsc/individual}
+crewFireteam
+crewFireteam
+halo/unsc/item/memoryChip
+{priorityAsset}
+
+* alias cqcElement
+20 infantrySquad
+5 fortifiedInfantrySquad
+1 mantis
+0 TODO later give these item/cqcWeapon and cqcGear
+
+* alias boardingElement
+4 pelican
+4 dropPodSquad
+
+* childrenof dropPodSquad
+dropPodFireteam
+dropPodFireteam
+dropPodFireteam
+
+* childrenof dropPodFireteam
+halo/unsc/individual/dropPod
+halo/unsc/individual/dropPod
+halo/unsc/individual/dropPod
+halo/unsc/individual/dropPod
+
 * alias vehicleSquad
 3 mongooseSquad
 1 gungooseSquad
 6 {warthog}
 5 {aircraft}
 3 scorpion
+2 mantis
 2 elephant
 
 * alias warthog
@@ -274,7 +330,7 @@ tacticalMac
 1 {airSpeedSquad}
 
 * alias stealthSquad
-4 odstSquad
+3 odstSquad
 1 infantrySquad
 
 * alias staticSquad
@@ -316,15 +372,23 @@ crewFireteam
 
 * childrenof missileBattery
 crewFireteam
+crewFireteam
 
 * childrenof tacticalMac
 crewFireteam
+
+* childrenof logisticalCargo
+crewFireteam
+crewFireteam
+forklift
+forklift
 
 * alias priorityAsset
 50 tier3asset, tier3asset
 2 tier2asset
 1 tier1asset
 0 NOTE: These are not squads, but are sometimes squad-sized
+0 TODO maybe revise the asset system into priorityItem, vip, priorityCargo, which are nested.
 
 * alias tier1asset
 2 novaBomb
