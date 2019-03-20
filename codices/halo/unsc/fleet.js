@@ -7,14 +7,16 @@ module.exports = `
 
 * alias fleetChildren
 10 {majorElement}, {majorElement}, {majorElement}, {majorElement}, {majorElement}
-1 halo/unsc/ship/infinityClass
+1 halo/unsc/ship/infinityClassSupercarrier
 
 * alias majorElement
-4 halo/unsc/ship/marathonClass
-4 {minorElement}, {minorElement}
+10 halo/unsc/ship/marathonClassCruiser
+10 {minorElement}, {minorElement}
+1 halo/unsc/ship/phoenixClassCarrier
 
 * alias minorElement
 4 halo/unsc/ship/frigate
+2 halo/unsc/ship/gladiusClassCorvette
 1 halo/unsc/ship/prowler
 
 `;
