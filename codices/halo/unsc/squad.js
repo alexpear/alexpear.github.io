@@ -301,13 +301,13 @@ halo/unsc/item/sandbags
 
 * alias bigGun
 4 aaGun
-1 missileSilo
+1 missileBattery
 1 tacticalMac
 
 * childrenof aaGun
 crewFireteam
 
-* childrenof missileSilo
+* childrenof missileBattery
 crewFireteam
 
 * childrenof tacticalMac
