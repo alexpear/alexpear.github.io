@@ -131,7 +131,7 @@ const TreeBrowser = module.exports = class TreeBrowser {
     }
 
     exampleRoot () {
-        const wgen = WGenerator.generators['halo/unsc/battalion'];
+        const wgen = WGenerator.generators['halo/unsc/fleet'];
         const outputs = wgen.getOutputs();
         return outputs[0];
     }
