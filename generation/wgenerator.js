@@ -69,6 +69,7 @@ class WGenerator {
             throw new Error(`children table key '${ key }' appears twice`);
         }
 
+        // Later make this case insensitive
         return this.childTables[key] = childTable;
     }
 
@@ -222,6 +223,7 @@ class WGenerator {
     }
 
     resolveLocalAlias (tableName) {
+        // Later make this case insensitive
         const table = this.aliasTables[tableName];
 
         if (! table) {
@@ -565,6 +567,8 @@ class AliasTable {
 
             // During WGenerator construction, Interpret keys with slashes as external pointers.
             if (Util.contains(alias, '/')) {
+                // TODO: alias could be a comma-separated set of names
+                // {halo/unsc/item/dualWieldable}, {halo/unsc/item/dualWieldable}
                 alias = this.generator.makePathAbsolute(alias);
             }
 
@@ -703,6 +707,7 @@ class ContextString {
 }
 
 // TODO put this in class Template and template.js or something.
+// Later likely rename to class TraitsTable and '* traits foo', for clarity.
 // This will probably become or call a constructor
 // and store the first line in this.templateName
 function parseTemplate (tableRaw) {
