@@ -29,6 +29,10 @@ human
 {halo/unsc/item}
 human
 
+* alias scienceTeamMember
+4 civilian
+1 {output}
+
 * childrenof marinePrivate
 {halo/unsc/item/giWeapon}
 {halo/unsc/item}
@@ -64,6 +68,18 @@ halo/unsc/item/odstArmor
 halo/unsc/item/fragGrenade
 human
 
+* alias helljumperMember
+100 helljumper
+1 airSpartan
+
+* childrenof helljumper
+halo/unsc/item/jetpack
+odst
+
+* childrenof airSpartan
+halo/unsc/item/jetpack
+spartan
+
 * childrenof spartan
 {halo/unsc/item/anyWeapon}
 {halo/unsc/item/anyWeapon}
@@ -79,4 +95,17 @@ human
 10 crewMember
 4 odst
 1 spartan
+
+* template dropPod
+weight: 1000
+
+* childrenof dropPod
+{dropPodSoldier}
+
+* alias dropPodSoldier
+80 odst
+2 marineSpecialist
+1 spartan
+1 {output}
+
 `;
