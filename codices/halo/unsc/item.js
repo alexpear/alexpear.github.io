@@ -1,14 +1,14 @@
 module.exports = `* output
-10 {anyWeapon}
-10 {anyGear}
-3 {component}
+15 {anyWeapon}
+20 {anyGear}
+1 {gunComponent}
 
 * alias anyWeapon
 10 {smallWeapon}
 0 gi means General Issue
 20 {giWeapon}
-0 {specialInfantryWeapon}
-0 {highWeightWeapon}
+1 {specialInfantryWeapon}
+1 {highWeightWeapon}
 0 {alienWeapon}
 
 * alias smallWeapon
@@ -46,6 +46,37 @@ module.exports = `* output
 10 {giWeapon}
 10 {specialInfantryWeapon}
 
+* alias cqcWeapon
+9 smg
+10 shotgun
+8 assaultRifle
+4 silencedPistol
+1 saw
+1 {anyWeapon}
+0 TODO would like to also give the individual a drop pod or space pelican
+
+* alias cqcGear
+4 flashbangGrenade
+4 smokeGrenade
+3 fragGrenade, fragGrenade
+1 powerDrainDevice
+1 bubbleShield
+4 tripMine
+1 satchelCharge
+4 periscope
+4 extraArmor
+4 titaniumBayonet
+4 combatKnife
+
+* alias longRangeWeapon
+8 br
+8 dmr
+6 sniperRifle
+6 hydra
+4 rocketLauncher
+2 saw
+1 covenantCarbine
+
 * alias highWeightWeapon
 6 {warthogTurret}
 3 binaryRifle
@@ -77,7 +108,7 @@ module.exports = `* output
 3 smokeGrenade
 3 trenchShovel
 3 radiationPills
-2 flashBangGrenade
+2 flashbangGrenade
 2 deployableCover
 2 caffeinePills
 1 medkit
@@ -95,7 +126,7 @@ module.exports = `* output
 1 paperMap
 1 bubbleShield
 
-* alias component
+* alias gunComponent
 4 2xScope
 3 4xScope
 3 10xScope
@@ -167,17 +198,20 @@ weight: 454
 {classifiedData}
 
 * alias classifiedData
+18 {ai}
 8 navigationData
-10 shipboardAi
-4 dumbAi
-2 civilianSmartAi
 5 weaponPlans
 6 cyberintrusionSuite
 1 forerunnerCoordinates
-1 covenantAi
 2 archaeologicalReport
 1 blackmailMaterial
 1 falsifiedMilitaryPlans
+
+* alias ai
+10 shipboardAi
+4 dumbAi
+2 civilianSmartAi
+1 covenantAi
 
 * template flakArmor
 defense: 6
