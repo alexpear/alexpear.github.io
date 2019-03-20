@@ -545,17 +545,13 @@ halo/unsc/item/odstArmor
 halo/unsc/item/fragGrenade
 human
 
-* alias helljumperMember
-100 helljumper
-1 airSpartan
-
 * childrenof helljumper
 halo/unsc/item/jetpack
-odst
+{helljumperMember}
 
-* childrenof airSpartan
-halo/unsc/item/jetpack
-spartan
+* alias helljumperMember
+100 odst
+1 spartan
 
 * childrenof spartan
 {halo/unsc/item/anyWeapon}
@@ -618,7 +614,7 @@ module.exports = `* output
 4 br
 3 dmr
 1 shotgun
-0 generate attachments and weapon traits
+0 Later generate attachments and weapon traits, perhaps on customWeapon
 
 * alias specialInfantryWeapon
 4 shotgun
@@ -628,7 +624,7 @@ module.exports = `* output
 4 grenadeLauncher
 4 rocketLauncher
 4 laser
-3 turret
+2 turret
 3 flamethrower
 4 {smallWeapon}, {smallWeapon}
 
@@ -642,8 +638,7 @@ module.exports = `* output
 8 assaultRifle
 4 silencedPistol
 1 saw
-1 {anyWeapon}
-0 TODO would like to also give the individual a drop pod or space pelican
+1 {specialInfantryWeapon}
 
 * alias cqcGear
 4 flashbangGrenade
@@ -1302,10 +1297,10 @@ helljumperFireteam
 helljumperFireteam
 
 * childrenof helljumperFireteam
-{halo/unsc/individual/helljumperMember}
-{halo/unsc/individual/helljumperMember}
-{halo/unsc/individual/helljumperMember}
-{halo/unsc/individual/helljumperMember}
+halo/unsc/individual/helljumper
+halo/unsc/individual/helljumper
+halo/unsc/individual/helljumper
+halo/unsc/individual/helljumper
 
 * childrenof spartanSquad
 spartanFireteam
@@ -1654,9 +1649,9 @@ forklift
 forklift
 
 * alias priorityAsset
-50 tier3asset, tier3asset
-2 tier2asset
-1 tier1asset
+50 {tier3asset}, {tier3asset}
+2 {tier2asset}
+1 {tier1asset}
 0 NOTE: These are not squads, but are sometimes squad-sized
 0 TODO maybe revise the asset system into priorityItem, vip, priorityCargo, which are nested.
 
@@ -1677,8 +1672,8 @@ forklift
 * alias tier3asset
 4 halo/unsc/individual/officer
 3 halo/unsc/individual/civilian
-2 {halo/unsc/item/alienWeapon}
-2 {halo/unsc/item/alienGrenade}
+0 {halo/unsc/item/alienWeapon}
+0 {halo/unsc/item/alienGrenade}
 
 `;
 
@@ -1831,6 +1826,8 @@ class WGenerator {
     }
 
     resolveCommas (inputString) {
+        // Util.log(`Top of resolveCommas(), inputString is '${inputString}'`, 'debug');
+
         return inputString.trim()
             .split(',')
             .reduce(
@@ -2269,6 +2266,8 @@ class AliasTable {
         for (let li = 1; li < lines.length; li++) {
             // Later probably functionize this part.
             const line = lines[li];
+
+            // Util.log(`in AliasTable() constructor, parsing line '${line}'`, 'debug');
 
             if (line === '') {
                 continue;
