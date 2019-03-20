@@ -9,7 +9,7 @@ module.exports = `* output
 1 infinityClass
 
 * template frigate
-weight: 100000
+weight: 200000000
 
 * childrenof frigate
 halo/unsc/item/frigateMac
@@ -23,7 +23,7 @@ halo/unsc/item/frigateMac
 4 {halo/unsc/battalion}
 
 * template prowler
-weight: 100000
+weight: 907000
 
 * childrenof prowler
 {halo/unsc/squad/priorityAsset}
@@ -38,13 +38,13 @@ halo/unsc/item/frigateMac
 {navalCargo}
 
 * template orbitalDefensePlatform
-weight: 100000
+weight: 2900000000
 
 * childrenof orbitalDefensePlatform
 halo/unsc/item/marathonMac
 
 * template marathonClass
-weight: 200000
+weight: 9000000000
 
 * childrenof marathonClass
 halo/unsc/item/marathonMac
@@ -63,7 +63,7 @@ halo/unsc/item/marathonMac
 {navalCargo}
 
 * template infinityClass
-weight: 20000000
+weight: 907000000000
 
 * childrenof infinityClass
 halo/unsc/item/infinityMac
