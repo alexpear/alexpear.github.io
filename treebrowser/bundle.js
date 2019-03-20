@@ -270,6 +270,7 @@ module.exports = `* output
 4 slowBattalion
 4 fastBattalion
 2 airBattalion
+1 cqcBattalion
 
 * childrenof staticBattalion
 halo/unsc/company/staticCompany
@@ -319,6 +320,30 @@ halo/unsc/company/airCompany
 halo/unsc/company/airCompany
 halo/unsc/company/airCompany
 
+* childrenof boardingBattalion
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+
+* childrenof cqcBattalion
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+halo/unsc/company/cqcCompany
+
 `;
 
 },{}],4:[function(require,module,exports){
@@ -346,6 +371,30 @@ module.exports = `* output
 {halo/unsc/squad/stealthSquad}
 {halo/unsc/squad/stealthSquad}
 {halo/unsc/squad/stealthSquad}
+
+* childrenof cqcCompany
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+{halo/unsc/squad/cqcElement}
+
+* childrenof boardingCompany
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
+{halo/unsc/squad/boardingElement}
 
 * childrenof slowCompany
 {halo/unsc/squad/4slowCompatibleSquads}
@@ -377,6 +426,30 @@ module.exports = `* output
 {halo/unsc/squad/airSpeedSquad}
 {halo/unsc/squad/airSpeedSquad}
 
+* childrenof spaceFighterWing
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+
+* childrenof spaceFighterSquadron
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+
 `;
 },{}],5:[function(require,module,exports){
 module.exports = `
@@ -388,14 +461,16 @@ module.exports = `
 
 * alias fleetChildren
 10 {majorElement}, {majorElement}, {majorElement}, {majorElement}, {majorElement}
-1 halo/unsc/ship/infinityClass
+1 halo/unsc/ship/infinityClassSupercarrier
 
 * alias majorElement
-4 halo/unsc/ship/marathonClass
-4 {minorElement}, {minorElement}
+10 halo/unsc/ship/marathonClassCruiser
+10 {minorElement}, {minorElement}
+1 halo/unsc/ship/phoenixClassCarrier
 
 * alias minorElement
 4 halo/unsc/ship/frigate
+2 halo/unsc/ship/gladiusClassCorvette
 1 halo/unsc/ship/prowler
 
 `;
@@ -430,6 +505,10 @@ human
 * childrenof crewMember
 {halo/unsc/item}
 human
+
+* alias scienceTeamMember
+4 civilian
+1 {output}
 
 * childrenof marinePrivate
 {halo/unsc/item/giWeapon}
@@ -466,6 +545,18 @@ halo/unsc/item/odstArmor
 halo/unsc/item/fragGrenade
 human
 
+* alias helljumperMember
+100 helljumper
+1 airSpartan
+
+* childrenof helljumper
+halo/unsc/item/jetpack
+odst
+
+* childrenof airSpartan
+halo/unsc/item/jetpack
+spartan
+
 * childrenof spartan
 {halo/unsc/item/anyWeapon}
 {halo/unsc/item/anyWeapon}
@@ -481,20 +572,33 @@ human
 10 crewMember
 4 odst
 1 spartan
+
+* template dropPod
+weight: 1000
+
+* childrenof dropPod
+{dropPodSoldier}
+
+* alias dropPodSoldier
+80 odst
+2 marineSpecialist
+1 spartan
+1 {output}
+
 `;
 
 },{}],7:[function(require,module,exports){
 module.exports = `* output
-10 {anyWeapon}
-10 {anyGear}
-3 {component}
+15 {anyWeapon}
+20 {anyGear}
+1 {gunComponent}
 
 * alias anyWeapon
 10 {smallWeapon}
 0 gi means General Issue
 20 {giWeapon}
-0 {specialInfantryWeapon}
-0 {highWeightWeapon}
+1 {specialInfantryWeapon}
+1 {highWeightWeapon}
 0 {alienWeapon}
 
 * alias smallWeapon
@@ -532,6 +636,37 @@ module.exports = `* output
 10 {giWeapon}
 10 {specialInfantryWeapon}
 
+* alias cqcWeapon
+9 smg
+10 shotgun
+8 assaultRifle
+4 silencedPistol
+1 saw
+1 {anyWeapon}
+0 TODO would like to also give the individual a drop pod or space pelican
+
+* alias cqcGear
+4 flashbangGrenade
+4 smokeGrenade
+3 fragGrenade, fragGrenade
+1 powerDrainDevice
+1 bubbleShield
+4 tripMine
+1 satchelCharge
+4 periscope
+4 extraArmor
+4 titaniumBayonet
+4 combatKnife
+
+* alias longRangeWeapon
+8 br
+8 dmr
+6 sniperRifle
+6 hydra
+4 rocketLauncher
+2 saw
+1 covenantCarbine
+
 * alias highWeightWeapon
 6 {warthogTurret}
 3 binaryRifle
@@ -563,7 +698,7 @@ module.exports = `* output
 3 smokeGrenade
 3 trenchShovel
 3 radiationPills
-2 flashBangGrenade
+2 flashbangGrenade
 2 deployableCover
 2 caffeinePills
 1 medkit
@@ -581,7 +716,7 @@ module.exports = `* output
 1 paperMap
 1 bubbleShield
 
-* alias component
+* alias gunComponent
 4 2xScope
 3 4xScope
 3 10xScope
@@ -653,17 +788,20 @@ weight: 454
 {classifiedData}
 
 * alias classifiedData
+18 {ai}
 8 navigationData
-10 shipboardAi
-4 dumbAi
-2 civilianSmartAi
 5 weaponPlans
 6 cyberintrusionSuite
 1 forerunnerCoordinates
-1 covenantAi
 2 archaeologicalReport
 1 blackmailMaterial
 1 falsifiedMilitaryPlans
+
+* alias ai
+10 shipboardAi
+4 dumbAi
+2 civilianSmartAi
+1 covenantAi
 
 * template flakArmor
 defense: 6
@@ -1030,70 +1168,83 @@ module.exports = `* output
 
 * alias ship
 10 frigate
-10 marathonClass
-2 gladiusClass
-2 phoenixClass
-1 infinityClass
+10 marathonClassCruiser
+2 gladiusClassCorvette
+2 phoenixClassCarrier
+1 infinityClassSupercarrier
 
 * template frigate
-weight: 100000
+weight: 200000000
 
 * childrenof frigate
 halo/unsc/item/frigateMac
+halo/unsc/squad/bridgeCrew
 {navalCargo}
 
 * alias navalCargo
-4 halo/unsc/item/missileBattery
+4 halo/unsc/squad/missileBattery
 4 additionalArmor
-4 halo/unsc/squad/spaceFighterWing
+4 halo/unsc/company/spaceFighterWing
 4 halo/unsc/battalion/boardingBattalion
 4 {halo/unsc/battalion}
+4 halo/unsc/squad/logisticalCargo
 
 * template prowler
-weight: 100000
+weight: 907000
 
 * childrenof prowler
+halo/unsc/squad/bridgeCrew
 {halo/unsc/squad/priorityAsset}
 {halo/unsc/company}
 
-* template gladiusClass
-weight: 100000
+* template gladiusClassCorvette
+weight: 36000000
 
-* childrenof gladiusClass
-halo/unsc/item/frigateMac
+* childrenof gladiusClassCorvette
+halo/unsc/squad/bridgeCrew
 halo/unsc/item/frigateMac
 {navalCargo}
 
 * template orbitalDefensePlatform
-weight: 100000
+weight: 2900000000
 
 * childrenof orbitalDefensePlatform
+halo/unsc/squad/bridgeCrew
 halo/unsc/item/marathonMac
+halo/unsc/company/cqcCompany
+halo/unsc/squad/crewFireteam
+halo/unsc/squad/crewFireteam
+halo/unsc/squad/crewFireteam
+halo/unsc/squad/crewFireteam
 
-* template marathonClass
-weight: 200000
+* template marathonClassCruiser
+weight: 9000000000
 
-* childrenof marathonClass
+* childrenof marathonClassCruiser
 halo/unsc/item/marathonMac
+halo/unsc/squad/bridgeCrew
 {navalCargo}
 {navalCargo}
 
-* template phoenixClass
-weight: 2000000
+* template phoenixClassCarrier
+weight: 44000000000
 
-* childrenof phoenixClass
+* childrenof phoenixClassCarrier
 halo/unsc/item/marathonMac
+halo/unsc/squad/bridgeCrew
 {halo/unsc/battalion}
 {navalCargo}
 {navalCargo}
 {navalCargo}
 {navalCargo}
 
-* template infinityClass
-weight: 20000000
+* template infinityClassSupercarrier
+weight: 907000000000
 
-* childrenof infinityClass
+* childrenof infinityClassSupercarrier
 halo/unsc/item/infinityMac
+halo/unsc/squad/bridgeCrew
+halo/unsc/squad/scienceTeam
 {halo/unsc/battalion}
 {halo/unsc/battalion}
 {halo/unsc/battalion}
@@ -1131,6 +1282,7 @@ halo/unsc/individual/marinePrivate
 
 * alias rareInfantrySquad
 10 odstSquad
+4 helljumperSquad
 0 odstJetpackSquad
 1 spartanSquad
 
@@ -1144,6 +1296,17 @@ halo/unsc/individual/odst
 halo/unsc/individual/odst
 halo/unsc/individual/odst
 halo/unsc/individual/odst
+
+* childrenof helljumperSquad
+helljumperFireteam
+helljumperFireteam
+helljumperFireteam
+
+* childrenof helljumperFireteam
+{halo/unsc/individual/helljumperMember}
+{halo/unsc/individual/helljumperMember}
+{halo/unsc/individual/helljumperMember}
+{halo/unsc/individual/helljumperMember}
 
 * childrenof spartanSquad
 spartanFireteam
@@ -1167,12 +1330,57 @@ halo/unsc/individual/crewMember
 halo/unsc/individual/crewMember
 halo/unsc/individual/crewMember
 
+* childrenof scienceTeam
+halo/unsc/individual/civilian
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{halo/unsc/individual/scienceTeamMember}
+{priorityAsset}
+
+* childrenof bridgeCrew
+halo/unsc/individual/officer
+{halo/unsc/individual}
+{halo/unsc/individual}
+crewFireteam
+crewFireteam
+halo/unsc/item/memoryChip
+{priorityAsset}
+
+* alias cqcElement
+20 infantrySquad
+5 fortifiedInfantrySquad
+1 mantis
+0 TODO later give these item/cqcWeapon and cqcGear
+
+* alias boardingElement
+4 pelican
+4 dropPodSquad
+
+* childrenof dropPodSquad
+dropPodFireteam
+dropPodFireteam
+dropPodFireteam
+
+* childrenof dropPodFireteam
+halo/unsc/individual/dropPod
+halo/unsc/individual/dropPod
+halo/unsc/individual/dropPod
+halo/unsc/individual/dropPod
+
 * alias vehicleSquad
 3 mongooseSquad
 1 gungooseSquad
 6 {warthog}
 5 {aircraft}
 3 scorpion
+2 mantis
 2 elephant
 
 * alias warthog
@@ -1269,8 +1477,15 @@ weight: 200
 4 wasp
 4 pelican
 1 longsword
-1 saber
+1 sabre
 1 sparrowhawk
+
+* alias spaceFighter
+4 sabre
+4 longsword
+4 broadsword
+4 shortsword
+1 pelican
 
 * template falcon
 weight: 1500
@@ -1376,7 +1591,7 @@ tacticalMac
 1 {airSpeedSquad}
 
 * alias stealthSquad
-4 odstSquad
+3 odstSquad
 1 infantrySquad
 
 * alias staticSquad
@@ -1418,9 +1633,16 @@ crewFireteam
 
 * childrenof missileBattery
 crewFireteam
+crewFireteam
 
 * childrenof tacticalMac
 crewFireteam
+
+* childrenof logisticalCargo
+crewFireteam
+crewFireteam
+forklift
+forklift
 
 * alias priorityAsset
 50 tier3asset, tier3asset
