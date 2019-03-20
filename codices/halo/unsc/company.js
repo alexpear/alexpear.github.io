@@ -53,4 +53,28 @@ module.exports = `* output
 {halo/unsc/squad/airSpeedSquad}
 {halo/unsc/squad/airSpeedSquad}
 
+* childrenof spaceFighterWing
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+spaceFighterSquadron
+
+* childrenof spaceFighterSquadron
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+{halo/unsc/squad/spaceFighter}
+
 `;

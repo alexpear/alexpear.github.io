@@ -18,8 +18,8 @@ halo/unsc/item/frigateMac
 * alias navalCargo
 4 halo/unsc/item/missileBattery
 4 additionalArmor
-4 halo/unsc/squad/spaceFighterWing
-4 halo/unsc/battalion/boardingBattalion
+4 halo/unsc/company/spaceFighterWing
+4 halo/unsc/company/boardingCompany
 4 {halo/unsc/battalion}
 
 * template prowler

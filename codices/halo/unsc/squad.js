@@ -160,8 +160,15 @@ weight: 200
 4 wasp
 4 pelican
 1 longsword
-1 saber
+1 sabre
 1 sparrowhawk
+
+* alias spaceFighter
+4 sabre
+4 longsword
+4 broadsword
+4 shortsword
+1 pelican
 
 * template falcon
 weight: 1500

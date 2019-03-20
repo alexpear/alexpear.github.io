@@ -52,4 +52,16 @@ halo/unsc/company/airCompany
 halo/unsc/company/airCompany
 halo/unsc/company/airCompany
 
+* childrenof boardingBattalion
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+halo/unsc/company/boardingCompany
+
 `;
