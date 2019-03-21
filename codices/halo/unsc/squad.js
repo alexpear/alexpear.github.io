@@ -15,10 +15,10 @@ marineFireteam
 marineFireteam
 
 * childrenof marineFireteam
-{halo/unsc/individual/squadLeader}
-halo/unsc/individual/marinePrivate
-halo/unsc/individual/marinePrivate
-halo/unsc/individual/marinePrivate
+{unsc/individual/squadLeader}
+unsc/individual/marinePrivate
+unsc/individual/marinePrivate
+unsc/individual/marinePrivate
 
 * alias rareInfantrySquad
 10 odstSquad
@@ -31,10 +31,10 @@ odstFireteam
 odstFireteam
 
 * childrenof odstFireteam
-halo/unsc/individual/odst
-halo/unsc/individual/odst
-halo/unsc/individual/odst
-halo/unsc/individual/odst
+unsc/individual/odst
+unsc/individual/odst
+unsc/individual/odst
+unsc/individual/odst
 
 * childrenof helljumperSquad
 helljumperFireteam
@@ -42,20 +42,20 @@ helljumperFireteam
 helljumperFireteam
 
 * childrenof helljumperFireteam
-halo/unsc/individual/helljumper
-halo/unsc/individual/helljumper
-halo/unsc/individual/helljumper
-halo/unsc/individual/helljumper
+unsc/individual/helljumper
+unsc/individual/helljumper
+unsc/individual/helljumper
+unsc/individual/helljumper
 
 * childrenof spartanSquad
 spartanFireteam
 spartanFireteam
 
 * childrenof spartanFireteam
-halo/unsc/individual/spartan
-halo/unsc/individual/spartan
-halo/unsc/individual/spartan
-halo/unsc/individual/spartan
+unsc/individual/spartan
+unsc/individual/spartan
+unsc/individual/spartan
+unsc/individual/spartan
 
 * alias infantryFireteam
 20 marineFireteam
@@ -64,32 +64,32 @@ halo/unsc/individual/spartan
 1 spartanFireteam
 
 * childrenof crewFireteam
-halo/unsc/individual/officer
-halo/unsc/individual/crewMember
-halo/unsc/individual/crewMember
-halo/unsc/individual/crewMember
+unsc/individual/officer
+unsc/individual/crewMember
+unsc/individual/crewMember
+unsc/individual/crewMember
 
 * childrenof scienceTeam
-halo/unsc/individual/civilian
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
+unsc/individual/civilian
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
 {priorityAsset}
 
 * childrenof bridgeCrew
-halo/unsc/individual/officer
-{halo/unsc/individual}
-{halo/unsc/individual}
+unsc/individual/officer
+{unsc/individual}
+{unsc/individual}
 crewFireteam
 crewFireteam
-halo/unsc/item/memoryChip
+unsc/item/memoryChip
 {priorityAsset}
 
 * alias cqcElement
@@ -118,10 +118,10 @@ dropPodFireteam
 dropPodFireteam
 
 * childrenof dropPodFireteam
-halo/unsc/individual/dropPod
-halo/unsc/individual/dropPod
-halo/unsc/individual/dropPod
-halo/unsc/individual/dropPod
+unsc/individual/dropPod
+unsc/individual/dropPod
+unsc/individual/dropPod
+unsc/individual/dropPod
 
 * alias vehicleSquad
 3 mongooseSquad
@@ -145,8 +145,8 @@ mongoose
 weight: 406
 
 * childrenof mongoose
-{halo/unsc/individual/driver}
-{halo/unsc/individual}
+{unsc/individual/driver}
+{unsc/individual}
 
 * childrenof gungooseSquad
 gungoose
@@ -156,29 +156,29 @@ gungoose
 weight: 420
 
 * childrenof gungoose
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 
 * childrenof scorpion
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 
 * childrenof falcon
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 {infantryFireteam}
 {airModule}
 
 * children of hornet
-{halo/unsc/individual/driver}
-{halo/unsc/individual}
-{halo/unsc/individual}
+{unsc/individual/driver}
+{unsc/individual}
+{unsc/individual}
 {airModule}
 
 * children of wasp
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 chaingun
 {airModule}
 
 * alias airModule
-0 TODO move this to halo/unsc/item
+0 TODO move this to unsc/item
 6 {turret}
 1 targetDesignator
 1 laser
@@ -190,24 +190,24 @@ defense: 10
 tags: vehicle
 
 * children of scoutWarthog
-{halo/unsc/individual/driver}
-{halo/unsc/individual}
+{unsc/individual/driver}
+{unsc/individual}
 warthogChassis
 
 * childrenof transportWarthog
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 {infantryFireteam}
 warthogChassis
 
 * children of turretWarthog
 {turret}
-{halo/unsc/individual/driver}
-{halo/unsc/individual}
-{halo/unsc/individual}
+{unsc/individual/driver}
+{unsc/individual}
+{unsc/individual}
 warthogChassis
 
 * alias turret
-0 TODO: Move this to halo/unsc/item
+0 TODO: Move this to unsc/item
 6 chaingun
 2 gaussTurret
 1 missilePod
@@ -250,7 +250,7 @@ weight: 138000
 
 * children of pelican
 {airModule}
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 {infantrySquad}
 {pelicanDangling}
 
@@ -267,7 +267,7 @@ weight: 138000
 weight: 5200
 
 * children of mantis
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 {turret}
 {turret}
 
@@ -361,7 +361,7 @@ tacticalMac
 
 * childrenof fortifiedInfantrySquad
 {infantrySquad}
-halo/unsc/item/sandbags
+unsc/item/sandbags
 {turret}
 {turret}
 
@@ -410,14 +410,14 @@ forklift
 
 * alias tier2asset
 4 navComputer
-4 halo/unsc/item/memoryChip
+4 unsc/item/memoryChip
 4 slipspaceDrive
 1 captiveProphet
 
 * alias tier3asset
-4 halo/unsc/individual/officer
-3 halo/unsc/individual/civilian
-0 {halo/unsc/item/alienWeapon}
-0 {halo/unsc/item/alienGrenade}
+4 unsc/individual/officer
+3 unsc/individual/civilian
+0 {unsc/item/alienWeapon}
+0 {unsc/item/alienGrenade}
 
 `;

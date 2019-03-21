@@ -6,76 +6,76 @@ module.exports = `* output
 2 airCompany
 
 * childrenof staticCompany
-{halo/unsc/squad/4staticCompatibleSquads}
-{halo/unsc/squad/4staticCompatibleSquads}
-{halo/unsc/squad/staticCompatibleSquad}
-{halo/unsc/squad/staticCompatibleSquad}
+{unsc/squad/4staticCompatibleSquads}
+{unsc/squad/4staticCompatibleSquads}
+{unsc/squad/staticCompatibleSquad}
+{unsc/squad/staticCompatibleSquad}
 
 * childrenof stealthCompany
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
 
 * childrenof cqcCompany
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
 
 * childrenof boardingCompany
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
 
 * childrenof slowCompany
-{halo/unsc/squad/4slowCompatibleSquads}
-{halo/unsc/squad/4slowCompatibleSquads}
-{halo/unsc/squad/slowCompatibleSquad}
-{halo/unsc/squad/slowCompatibleSquad}
+{unsc/squad/4slowCompatibleSquads}
+{unsc/squad/4slowCompatibleSquads}
+{unsc/squad/slowCompatibleSquad}
+{unsc/squad/slowCompatibleSquad}
 
 * childrenof fastCompany
-{halo/unsc/squad/fastSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
 
 * childrenof airCompany
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
 
 * childrenof spaceFighterWing
 spaceFighterSquadron
@@ -90,15 +90,15 @@ spaceFighterSquadron
 spaceFighterSquadron
 
 * childrenof spaceFighterSquadron
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
 
 `;

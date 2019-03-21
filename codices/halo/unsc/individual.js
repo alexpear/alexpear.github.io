@@ -26,7 +26,7 @@ stealth: 10
 human
 
 * childrenof crewMember
-{halo/unsc/item}
+{unsc/item}
 human
 
 * alias scienceTeamMember
@@ -34,10 +34,10 @@ human
 1 {output}
 
 * childrenof marinePrivate
-{halo/unsc/item/giWeapon}
-{halo/unsc/item}
-halo/unsc/item/flakHelmet
-halo/unsc/item/flakArmor
+{unsc/item/giWeapon}
+{unsc/item}
+unsc/item/flakHelmet
+unsc/item/flakArmor
 human
 
 * alias squadLeader
@@ -47,29 +47,29 @@ human
 1 odst
 
 * childrenof marineSpecialist
-{halo/unsc/item/veteranWeapon}
-{halo/unsc/item/smallWeapon}
-{halo/unsc/item}
-halo/unsc/item/flakHelmet
-halo/unsc/item/flakArmor
+{unsc/item/veteranWeapon}
+{unsc/item/smallWeapon}
+{unsc/item}
+unsc/item/flakHelmet
+unsc/item/flakArmor
 human
 
 * childrenof officer
-{halo/unsc/item/smallWeapon}
-{halo/unsc/item/commandGear}
+{unsc/item/smallWeapon}
+{unsc/item/commandGear}
 human
 
 * childrenof odst
-{halo/unsc/item/veteranWeapon}
-{halo/unsc/item/smallWeapon}
-{halo/unsc/item/anyGear}
-halo/unsc/item/visrHelmet
-halo/unsc/item/odstArmor
-halo/unsc/item/fragGrenade
+{unsc/item/veteranWeapon}
+{unsc/item/smallWeapon}
+{unsc/item/anyGear}
+unsc/item/visrHelmet
+unsc/item/odstArmor
+unsc/item/fragGrenade
 human
 
 * childrenof helljumper
-halo/unsc/item/jetpack
+unsc/item/jetpack
 {helljumperMember}
 
 * alias helljumperMember
@@ -77,13 +77,13 @@ halo/unsc/item/jetpack
 1 spartan
 
 * childrenof spartan
-{halo/unsc/item/anyWeapon}
-{halo/unsc/item/anyWeapon}
-{halo/unsc/item/anyGear}
-halo/unsc/item/fragGrenade
-halo/unsc/item/fragGrenade
-{halo/unsc/item/spartanMod}
-{halo/unsc/item/spartanArmor}
+{unsc/item/anyWeapon}
+{unsc/item/anyWeapon}
+{unsc/item/anyGear}
+unsc/item/fragGrenade
+unsc/item/fragGrenade
+{unsc/item/spartanMod}
+{unsc/item/spartanArmor}
 human
 
 * alias driver

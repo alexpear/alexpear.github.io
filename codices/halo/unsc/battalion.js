@@ -6,75 +6,75 @@ module.exports = `* output
 1 cqcBattalion
 
 * childrenof staticBattalion
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/airCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/slowCompany
+unsc/company/fastCompany
+unsc/company/airCompany
 
 * childrenof slowBattalion
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/airCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/airCompany
 
 * childrenof fastBattalion
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
 
 * childrenof airBattalion
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
 
 * childrenof boardingBattalion
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
 
 * childrenof cqcBattalion
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
 
 `;
