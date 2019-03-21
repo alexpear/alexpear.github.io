@@ -10,8 +10,8 @@ module.exports = `
 1 halo/unsc/ship/infinityClassSupercarrier
 
 * alias majorElement
-10 halo/unsc/ship/marathonClassCruiser
-10 {minorElement}, {minorElement}
+20 halo/unsc/ship/marathonClassCruiser
+20 {minorElement}, {minorElement}
 1 halo/unsc/ship/phoenixClassCarrier
 
 * alias minorElement
