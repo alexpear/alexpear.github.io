@@ -273,76 +273,76 @@ module.exports = `* output
 1 cqcBattalion
 
 * childrenof staticBattalion
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/staticCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/airCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/staticCompany
+unsc/company/slowCompany
+unsc/company/fastCompany
+unsc/company/airCompany
 
 * childrenof slowBattalion
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/slowCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/airCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/slowCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/airCompany
 
 * childrenof fastBattalion
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/fastCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/fastCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
 
 * childrenof airBattalion
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
-halo/unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
+unsc/company/airCompany
 
 * childrenof boardingBattalion
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
-halo/unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
+unsc/company/boardingCompany
 
 * childrenof cqcBattalion
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
-halo/unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
+unsc/company/cqcCompany
 
 `;
 
@@ -355,76 +355,76 @@ module.exports = `* output
 2 airCompany
 
 * childrenof staticCompany
-{halo/unsc/squad/4staticCompatibleSquads}
-{halo/unsc/squad/4staticCompatibleSquads}
-{halo/unsc/squad/staticCompatibleSquad}
-{halo/unsc/squad/staticCompatibleSquad}
+{unsc/squad/4staticCompatibleSquads}
+{unsc/squad/4staticCompatibleSquads}
+{unsc/squad/staticCompatibleSquad}
+{unsc/squad/staticCompatibleSquad}
 
 * childrenof stealthCompany
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
-{halo/unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
+{unsc/squad/stealthSquad}
 
 * childrenof cqcCompany
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
-{halo/unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
+{unsc/squad/cqcElement}
 
 * childrenof boardingCompany
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
-{halo/unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
+{unsc/squad/boardingElement}
 
 * childrenof slowCompany
-{halo/unsc/squad/4slowCompatibleSquads}
-{halo/unsc/squad/4slowCompatibleSquads}
-{halo/unsc/squad/slowCompatibleSquad}
-{halo/unsc/squad/slowCompatibleSquad}
+{unsc/squad/4slowCompatibleSquads}
+{unsc/squad/4slowCompatibleSquads}
+{unsc/squad/slowCompatibleSquad}
+{unsc/squad/slowCompatibleSquad}
 
 * childrenof fastCompany
-{halo/unsc/squad/fastSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
-{halo/unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
+{unsc/squad/fastCompatibleSquad}
 
 * childrenof airCompany
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
-{halo/unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
+{unsc/squad/airSpeedSquad}
 
 * childrenof spaceFighterWing
 spaceFighterSquadron
@@ -439,16 +439,16 @@ spaceFighterSquadron
 spaceFighterSquadron
 
 * childrenof spaceFighterSquadron
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
-{halo/unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
+{unsc/squad/spaceFighter}
 
 `;
 },{}],5:[function(require,module,exports){
@@ -460,18 +460,19 @@ module.exports = `
 {fleetChildren}
 
 * alias fleetChildren
+0 TODO move majorElement to ship.js
 10 {majorElement}, {majorElement}, {majorElement}, {majorElement}, {majorElement}
-1 halo/unsc/ship/infinityClassSupercarrier
+1 unsc/ship/infinityClassSupercarrier
 
 * alias majorElement
-10 halo/unsc/ship/marathonClassCruiser
-10 {minorElement}, {minorElement}
-1 halo/unsc/ship/phoenixClassCarrier
+20 unsc/ship/marathonClassCruiser
+20 {minorElement}, {minorElement}
+1 unsc/ship/phoenixClassCarrier
 
 * alias minorElement
-4 halo/unsc/ship/frigate
-2 halo/unsc/ship/gladiusClassCorvette
-1 halo/unsc/ship/prowler
+4 unsc/ship/frigate
+2 unsc/ship/gladiusClassCorvette
+1 unsc/ship/prowler
 
 `;
 },{}],6:[function(require,module,exports){
@@ -503,7 +504,7 @@ stealth: 10
 human
 
 * childrenof crewMember
-{halo/unsc/item}
+{unsc/item}
 human
 
 * alias scienceTeamMember
@@ -511,10 +512,10 @@ human
 1 {output}
 
 * childrenof marinePrivate
-{halo/unsc/item/giWeapon}
-{halo/unsc/item}
-halo/unsc/item/flakHelmet
-halo/unsc/item/flakArmor
+{unsc/item/giWeapon}
+{unsc/item}
+unsc/item/flakHelmet
+unsc/item/flakArmor
 human
 
 * alias squadLeader
@@ -524,29 +525,29 @@ human
 1 odst
 
 * childrenof marineSpecialist
-{halo/unsc/item/veteranWeapon}
-{halo/unsc/item/smallWeapon}
-{halo/unsc/item}
-halo/unsc/item/flakHelmet
-halo/unsc/item/flakArmor
+{unsc/item/veteranWeapon}
+{unsc/item/smallWeapon}
+{unsc/item}
+unsc/item/flakHelmet
+unsc/item/flakArmor
 human
 
 * childrenof officer
-{halo/unsc/item/smallWeapon}
-{halo/unsc/item/commandGear}
+{unsc/item/smallWeapon}
+{unsc/item/commandGear}
 human
 
 * childrenof odst
-{halo/unsc/item/veteranWeapon}
-{halo/unsc/item/smallWeapon}
-{halo/unsc/item/anyGear}
-halo/unsc/item/visrHelmet
-halo/unsc/item/odstArmor
-halo/unsc/item/fragGrenade
+{unsc/item/veteranWeapon}
+{unsc/item/smallWeapon}
+{unsc/item/anyGear}
+unsc/item/visrHelmet
+unsc/item/odstArmor
+unsc/item/fragGrenade
 human
 
 * childrenof helljumper
-halo/unsc/item/jetpack
+unsc/item/jetpack
 {helljumperMember}
 
 * alias helljumperMember
@@ -554,13 +555,13 @@ halo/unsc/item/jetpack
 1 spartan
 
 * childrenof spartan
-{halo/unsc/item/anyWeapon}
-{halo/unsc/item/anyWeapon}
-{halo/unsc/item/anyGear}
-halo/unsc/item/fragGrenade
-halo/unsc/item/fragGrenade
-{halo/unsc/item/spartanMod}
-{halo/unsc/item/spartanArmor}
+{unsc/item/anyWeapon}
+{unsc/item/anyWeapon}
+{unsc/item/anyGear}
+unsc/item/fragGrenade
+unsc/item/fragGrenade
+{unsc/item/spartanMod}
+{unsc/item/spartanArmor}
 human
 
 * alias driver
@@ -701,6 +702,7 @@ module.exports = `* output
 * alias commandGear
 4 targetLocator
 4 secureDatapad
+4 memoryChip
 4 oneTimePad
 4 microwaveAntenna
 3 emp
@@ -1172,52 +1174,52 @@ module.exports = `* output
 weight: 200000000
 
 * childrenof frigate
-halo/unsc/item/frigateMac
-halo/unsc/squad/bridgeCrew
+unsc/item/frigateMac
+unsc/squad/bridgeCrew
 {navalCargo}
 
 * alias navalCargo
-4 halo/unsc/squad/missileBattery
+4 unsc/squad/missileBattery
 4 additionalArmor
-4 halo/unsc/company/spaceFighterWing
-4 halo/unsc/battalion/boardingBattalion
-4 {halo/unsc/battalion}
-4 halo/unsc/squad/logisticalCargo
+4 unsc/company/spaceFighterWing
+4 unsc/battalion/boardingBattalion
+4 {unsc/battalion}
+4 unsc/squad/logisticalCargo
 
 * template prowler
 weight: 907000
 
 * childrenof prowler
-halo/unsc/squad/bridgeCrew
-{halo/unsc/squad/priorityAsset}
-{halo/unsc/company}
+unsc/squad/bridgeCrew
+{unsc/squad/priorityAsset}
+{unsc/company}
 
 * template gladiusClassCorvette
 weight: 36000000
 
 * childrenof gladiusClassCorvette
-halo/unsc/squad/bridgeCrew
-halo/unsc/item/frigateMac
+unsc/squad/bridgeCrew
+unsc/item/frigateMac
 {navalCargo}
 
 * template orbitalDefensePlatform
 weight: 2900000000
 
 * childrenof orbitalDefensePlatform
-halo/unsc/squad/bridgeCrew
-halo/unsc/item/marathonMac
-halo/unsc/company/cqcCompany
-halo/unsc/squad/crewFireteam
-halo/unsc/squad/crewFireteam
-halo/unsc/squad/crewFireteam
-halo/unsc/squad/crewFireteam
+unsc/squad/bridgeCrew
+unsc/item/marathonMac
+unsc/company/cqcCompany
+unsc/squad/crewFireteam
+unsc/squad/crewFireteam
+unsc/squad/crewFireteam
+unsc/squad/crewFireteam
 
 * template marathonClassCruiser
 weight: 9000000000
 
 * childrenof marathonClassCruiser
-halo/unsc/item/marathonMac
-halo/unsc/squad/bridgeCrew
+unsc/item/marathonMac
+unsc/squad/bridgeCrew
 {navalCargo}
 {navalCargo}
 
@@ -1225,9 +1227,9 @@ halo/unsc/squad/bridgeCrew
 weight: 44000000000
 
 * childrenof phoenixClassCarrier
-halo/unsc/item/marathonMac
-halo/unsc/squad/bridgeCrew
-{halo/unsc/battalion}
+unsc/item/marathonMac
+unsc/squad/bridgeCrew
+{unsc/battalion}
 {navalCargo}
 {navalCargo}
 {navalCargo}
@@ -1237,12 +1239,12 @@ halo/unsc/squad/bridgeCrew
 weight: 907000000000
 
 * childrenof infinityClassSupercarrier
-halo/unsc/item/infinityMac
-halo/unsc/squad/bridgeCrew
-halo/unsc/squad/scienceTeam
-{halo/unsc/battalion}
-{halo/unsc/battalion}
-{halo/unsc/battalion}
+unsc/item/infinityMac
+unsc/squad/bridgeCrew
+unsc/squad/scienceTeam
+{unsc/battalion}
+{unsc/battalion}
+{unsc/battalion}
 {navalCargo}
 {navalCargo}
 {navalCargo}
@@ -1270,10 +1272,10 @@ marineFireteam
 marineFireteam
 
 * childrenof marineFireteam
-{halo/unsc/individual/squadLeader}
-halo/unsc/individual/marinePrivate
-halo/unsc/individual/marinePrivate
-halo/unsc/individual/marinePrivate
+{unsc/individual/squadLeader}
+unsc/individual/marinePrivate
+unsc/individual/marinePrivate
+unsc/individual/marinePrivate
 
 * alias rareInfantrySquad
 10 odstSquad
@@ -1286,10 +1288,10 @@ odstFireteam
 odstFireteam
 
 * childrenof odstFireteam
-halo/unsc/individual/odst
-halo/unsc/individual/odst
-halo/unsc/individual/odst
-halo/unsc/individual/odst
+unsc/individual/odst
+unsc/individual/odst
+unsc/individual/odst
+unsc/individual/odst
 
 * childrenof helljumperSquad
 helljumperFireteam
@@ -1297,20 +1299,20 @@ helljumperFireteam
 helljumperFireteam
 
 * childrenof helljumperFireteam
-halo/unsc/individual/helljumper
-halo/unsc/individual/helljumper
-halo/unsc/individual/helljumper
-halo/unsc/individual/helljumper
+unsc/individual/helljumper
+unsc/individual/helljumper
+unsc/individual/helljumper
+unsc/individual/helljumper
 
 * childrenof spartanSquad
 spartanFireteam
 spartanFireteam
 
 * childrenof spartanFireteam
-halo/unsc/individual/spartan
-halo/unsc/individual/spartan
-halo/unsc/individual/spartan
-halo/unsc/individual/spartan
+unsc/individual/spartan
+unsc/individual/spartan
+unsc/individual/spartan
+unsc/individual/spartan
 
 * alias infantryFireteam
 20 marineFireteam
@@ -1319,32 +1321,32 @@ halo/unsc/individual/spartan
 1 spartanFireteam
 
 * childrenof crewFireteam
-halo/unsc/individual/officer
-halo/unsc/individual/crewMember
-halo/unsc/individual/crewMember
-halo/unsc/individual/crewMember
+unsc/individual/officer
+unsc/individual/crewMember
+unsc/individual/crewMember
+unsc/individual/crewMember
 
 * childrenof scienceTeam
-halo/unsc/individual/civilian
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
-{halo/unsc/individual/scienceTeamMember}
+unsc/individual/civilian
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
+{unsc/individual/scienceTeamMember}
 {priorityAsset}
 
 * childrenof bridgeCrew
-halo/unsc/individual/officer
-{halo/unsc/individual}
-{halo/unsc/individual}
+unsc/individual/officer
+{unsc/individual}
+{unsc/individual}
 crewFireteam
 crewFireteam
-halo/unsc/item/memoryChip
+unsc/item/memoryChip
 {priorityAsset}
 
 * alias cqcElement
@@ -1373,10 +1375,10 @@ dropPodFireteam
 dropPodFireteam
 
 * childrenof dropPodFireteam
-halo/unsc/individual/dropPod
-halo/unsc/individual/dropPod
-halo/unsc/individual/dropPod
-halo/unsc/individual/dropPod
+unsc/individual/dropPod
+unsc/individual/dropPod
+unsc/individual/dropPod
+unsc/individual/dropPod
 
 * alias vehicleSquad
 3 mongooseSquad
@@ -1400,8 +1402,8 @@ mongoose
 weight: 406
 
 * childrenof mongoose
-{halo/unsc/individual/driver}
-{halo/unsc/individual}
+{unsc/individual/driver}
+{unsc/individual}
 
 * childrenof gungooseSquad
 gungoose
@@ -1411,29 +1413,29 @@ gungoose
 weight: 420
 
 * childrenof gungoose
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 
 * childrenof scorpion
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 
 * childrenof falcon
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 {infantryFireteam}
 {airModule}
 
 * children of hornet
-{halo/unsc/individual/driver}
-{halo/unsc/individual}
-{halo/unsc/individual}
+{unsc/individual/driver}
+{unsc/individual}
+{unsc/individual}
 {airModule}
 
 * children of wasp
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 chaingun
 {airModule}
 
 * alias airModule
-0 TODO move this to halo/unsc/item
+0 TODO move this to unsc/item
 6 {turret}
 1 targetDesignator
 1 laser
@@ -1445,24 +1447,24 @@ defense: 10
 tags: vehicle
 
 * children of scoutWarthog
-{halo/unsc/individual/driver}
-{halo/unsc/individual}
+{unsc/individual/driver}
+{unsc/individual}
 warthogChassis
 
 * childrenof transportWarthog
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 {infantryFireteam}
 warthogChassis
 
 * children of turretWarthog
 {turret}
-{halo/unsc/individual/driver}
-{halo/unsc/individual}
-{halo/unsc/individual}
+{unsc/individual/driver}
+{unsc/individual}
+{unsc/individual}
 warthogChassis
 
 * alias turret
-0 TODO: Move this to halo/unsc/item
+0 TODO: Move this to unsc/item
 6 chaingun
 2 gaussTurret
 1 missilePod
@@ -1505,7 +1507,7 @@ weight: 138000
 
 * children of pelican
 {airModule}
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 {infantrySquad}
 {pelicanDangling}
 
@@ -1522,7 +1524,7 @@ weight: 138000
 weight: 5200
 
 * children of mantis
-{halo/unsc/individual/driver}
+{unsc/individual/driver}
 {turret}
 {turret}
 
@@ -1616,7 +1618,7 @@ tacticalMac
 
 * childrenof fortifiedInfantrySquad
 {infantrySquad}
-halo/unsc/item/sandbags
+unsc/item/sandbags
 {turret}
 {turret}
 
@@ -1665,15 +1667,15 @@ forklift
 
 * alias tier2asset
 4 navComputer
-4 halo/unsc/item/memoryChip
+4 unsc/item/memoryChip
 4 slipspaceDrive
 1 captiveProphet
 
 * alias tier3asset
-4 halo/unsc/individual/officer
-3 halo/unsc/individual/civilian
-0 {halo/unsc/item/alienWeapon}
-0 {halo/unsc/item/alienGrenade}
+4 unsc/individual/officer
+3 unsc/individual/civilian
+0 {unsc/item/alienWeapon}
+0 {unsc/item/alienGrenade}
 
 `;
 
@@ -1958,6 +1960,17 @@ class WGenerator {
         }
 
         return table.getOutputAndResolveIt();
+    }
+
+    makeSomePathsAbsolute (slashStr) {
+        return slashStr.split(',')
+            .map(
+                p => {
+                    const path = p.trim();
+                    return this.makePathAbsolute(path);
+                }
+            )
+            .join(',');
     }
 
     makePathAbsolute (relativePathStr) {
@@ -2296,9 +2309,9 @@ class AliasTable {
 
             // During WGenerator construction, Interpret keys with slashes as external pointers.
             if (Util.contains(alias, '/')) {
-                // TODO: alias could be a comma-separated set of names
+                // Note that 'alias' could be a comma-separated set of names
                 // {halo/unsc/item/dualWieldable}, {halo/unsc/item/dualWieldable}
-                alias = this.generator.makePathAbsolute(alias);
+                alias = this.generator.makeSomePathsAbsolute(alias);
             }
 
             // Replicated outputs. We assume memory is plentiful but time is scarce.
