@@ -235,6 +235,17 @@ class WGenerator {
         return table.getOutputAndResolveIt();
     }
 
+    makeSomePathsAbsolute (slashStr) {
+        return slashStr.split(',')
+            .map(
+                p => {
+                    const path = p.trim();
+                    return this.makePathAbsolute(path);
+                }
+            )
+            .join(',');
+    }
+
     makePathAbsolute (relativePathStr) {
         if (relativePathStr.startsWith('{')) {
             return this.getAbsoluteAlias(relativePathStr);
@@ -571,9 +582,9 @@ class AliasTable {
 
             // During WGenerator construction, Interpret keys with slashes as external pointers.
             if (Util.contains(alias, '/')) {
-                // TODO: alias could be a comma-separated set of names
+                // Note that 'alias' could be a comma-separated set of names
                 // {halo/unsc/item/dualWieldable}, {halo/unsc/item/dualWieldable}
-                alias = this.generator.makePathAbsolute(alias);
+                alias = this.generator.makeSomePathsAbsolute(alias);
             }
 
             // Replicated outputs. We assume memory is plentiful but time is scarce.
