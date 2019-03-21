@@ -6,6 +6,7 @@ module.exports = `
 {fleetChildren}
 
 * alias fleetChildren
+0 TODO move majorElement to ship.js
 10 {majorElement}, {majorElement}, {majorElement}, {majorElement}, {majorElement}
 1 unsc/ship/infinityClassSupercarrier
 
