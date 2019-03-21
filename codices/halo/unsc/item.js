@@ -115,6 +115,7 @@ module.exports = `* output
 * alias commandGear
 4 targetLocator
 4 secureDatapad
+4 memoryChip
 4 oneTimePad
 4 microwaveAntenna
 3 emp
