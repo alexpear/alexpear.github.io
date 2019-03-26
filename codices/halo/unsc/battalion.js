@@ -4,6 +4,7 @@ module.exports = `* output
 4 fastBattalion
 2 airBattalion
 1 cqcBattalion
+0 crewBattalion
 
 * childrenof staticBattalion
 unsc/company/staticCompany

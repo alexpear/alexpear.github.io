@@ -10,18 +10,36 @@ module.exports = `
 0 droneLance
 
 * childrenof lightLance
-{lanceLeader}
+{lightLanceLeader}
 {lightLanceTroops}
 
-* alias lanceLeader
-4 cov/individual/elite
+* alias lightLanceLeader
+4 individual/elite
 0 NOTE: Brutes only lead Brute squads, because this is set before the Great Schism.
-4 cov/individual/jackal
-4 {cov/individual/gruntLeader}
+3 individual/jackal
+3 {individual/gruntLeader}
 
 * alias lightLanceTroops
 0 13 + 1 = 14
-4 {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}, {cov/individual/grunt}
-4 cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal, cov/individual/shieldJackal
+0 TODO: A 'x13' syntax would be nice here.
+4 {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}
+2 individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal
+1 individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal
+
+* childrenof eliteLance
+{individual/eliteLeader}
+{individual/elite}
+{individual/elite}
+{individual/elite}
+{individual/elite}
+{individual/elite}
+{individual/elite}
+{individual/elite}
+{individual/elite}
+{individual/elite}
+{individual/elite}
+{individual/elite}
+{individual/elite}
+{individual/elite}
 
 `;

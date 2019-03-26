@@ -101,15 +101,15 @@ unsc/item/memoryChip
 * alias boardingElement
 40 pelican
 40 dropPodSquad
-1 assaultFrameFireteam
+1 boosterFrameFireteam
 
-* childrenof assaultFrameFireteam
-assaultFrame
-assaultFrame
-assaultFrame
-assaultFrame
+* childrenof boosterFrameFireteam
+boosterFrame
+boosterFrame
+boosterFrame
+boosterFrame
 
-* childrenof assaultFrame
+* childrenof boosterFrame
 spartan
 
 * childrenof dropPodSquad
