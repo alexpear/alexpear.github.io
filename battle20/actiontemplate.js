@@ -31,6 +31,10 @@ class ActionTemplate {
     }
 
     static example () {
+        return ActionTemplate.dwarfExample();
+    }
+
+    static dwarfExample () {
         const template = new ActionTemplate();
 
         // Range is in meters. It is okay to round it heavily.
@@ -43,6 +47,23 @@ class ActionTemplate {
             TAG.Dwarf,
             TAG.Blade,
             TAG.Projectile
+        ];
+
+        return template;
+    }
+
+    static soldierExample () {
+        const template = new ActionTemplate();
+
+        // Range is in meters. It is okay to round it heavily.
+        template.range = 40;
+        template.hit = 3;
+        template.damage = 2;
+
+        // UNSC assault rifle
+        template.tags = [
+            TAG.Bullet,
+            TAG.RapidFire
         ];
 
         return template;

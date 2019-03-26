@@ -176,6 +176,36 @@ class CreatureTemplate {
     }
 
     static example () {
+        return CreatureTemplate.dwarfExample();
+    }
+
+    static soldierExample () {
+        const template = new CreatureTemplate();
+
+        // UNSC Marine (Halo)
+        template.tags = [
+            TAG.Human,
+            TAG.Soldier,
+            TAG.Tech10,
+            TAG.UNSC
+        ];
+
+        template.size = SIZE.Medium;
+        template.hp = 3;
+        template.defense = 16;
+        template.actions = [
+            ActionTemplate.soldierExample()
+        ];
+
+        template.resistance = {};
+        template.resistance[TAG.Fire] = 1;
+        template.resistance[TAG.Piercing] = 1;
+        template.resistance[TAG.Impact] = 1;
+
+        return template;
+    }
+
+    static dwarfExample () {
         const template = new CreatureTemplate();
 
         // Dwarf Axe Thrower

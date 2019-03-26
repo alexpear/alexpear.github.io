@@ -202,8 +202,10 @@ class Group {
     }
 
     static example () {
-        const group = new Group('dwarfAxeThrower', 100000);
-        group.alignment = 'CG';
+        // For the Tip of the Spear fish tank battle.
+        // Later probably use a codex address, like halo/unsc/simple/marineSquad
+        const group = new Group('marineSquad', 12);
+        group.alignment = 'LN';
         return group;
     }
 
@@ -211,7 +213,8 @@ class Group {
         // TODO This is a mock function. Later, read from the template glossary in the WorldState or WGenerator or Glossary object.
         // Later, would also be interested in aggregated templates, from nodeTrees.
         const exampleGlossary = {
-            dwarfAxeThrower: CreatureTemplate.example()
+            dwarfAxeThrower: CreatureTemplate.example(),
+            'marineSquad': CreatureTemplate.soldierExample()
         };
 
         return exampleGlossary[templateName];
@@ -221,18 +224,12 @@ class Group {
         console.log(`Group.test() \n`);
 
         const ga = Group.example();
-        const gb = new Group('dwarfAxeThrower', 908000);
-        gb.alignment = 'LG';
-
-        const gc = new Group('dwarfAxeThrower', 800000);
-        gc.alignment = 'LE';
-
-        const gd = Group.example();
-        gd.alignment = 'CE';
+        const gb = Group.example();
+        gb.alignment = 'LE';
 
         // Util.log(mostNumerousFoe([ga, gb, gc]).toPrettyString(), 'debug');
 
-        simpleEncounter([ga, gb, gc, gd], true, 'low');
+        simpleEncounter([ga, gb], true, 'low');
 
         // console.log(JSON.stringify(output, undefined, '    '));
         return ga;
