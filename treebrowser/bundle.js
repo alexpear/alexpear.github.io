@@ -32,6 +32,10 @@ class ActionTemplate {
     }
 
     static example () {
+        return ActionTemplate.dwarfExample();
+    }
+
+    static dwarfExample () {
         const template = new ActionTemplate();
 
         // Range is in meters. It is okay to round it heavily.
@@ -44,6 +48,23 @@ class ActionTemplate {
             TAG.Dwarf,
             TAG.Blade,
             TAG.Projectile
+        ];
+
+        return template;
+    }
+
+    static soldierExample () {
+        const template = new ActionTemplate();
+
+        // Range is in meters. It is okay to round it heavily.
+        template.range = 40;
+        template.hit = 3;
+        template.damage = 2;
+
+        // UNSC assault rifle
+        template.tags = [
+            TAG.Bullet,
+            TAG.RapidFire
         ];
 
         return template;
@@ -231,6 +252,36 @@ class CreatureTemplate {
     }
 
     static example () {
+        return CreatureTemplate.dwarfExample();
+    }
+
+    static soldierExample () {
+        const template = new CreatureTemplate();
+
+        // UNSC Marine (Halo)
+        template.tags = [
+            TAG.Human,
+            TAG.Soldier,
+            TAG.Tech10,
+            TAG.UNSC
+        ];
+
+        template.size = SIZE.Medium;
+        template.hp = 3;
+        template.defense = 16;
+        template.actions = [
+            ActionTemplate.soldierExample()
+        ];
+
+        template.resistance = {};
+        template.resistance[TAG.Fire] = 1;
+        template.resistance[TAG.Piercing] = 1;
+        template.resistance[TAG.Impact] = 1;
+
+        return template;
+    }
+
+    static dwarfExample () {
         const template = new CreatureTemplate();
 
         // Dwarf Axe Thrower
@@ -271,6 +322,7 @@ module.exports = `* output
 4 fastBattalion
 2 airBattalion
 1 cqcBattalion
+0 crewBattalion
 
 * childrenof staticBattalion
 unsc/company/staticCompany
@@ -1240,11 +1292,46 @@ weight: 907000000000
 
 * childrenof infinityClassSupercarrier
 unsc/item/infinityMac
+unsc/squad/missileBattery
+unsc/squad/missileBattery
+unsc/squad/missileBattery
+unsc/squad/missileBattery
+unsc/squad/missileBattery
+unsc/squad/missileBattery
+frigate
+frigate
+frigate
+frigate
+frigate
+frigate
+frigate
+frigate
+frigate
+frigate
 unsc/squad/bridgeCrew
+unsc/squad/scienceTeam
+unsc/squad/scienceTeam
+unsc/squad/scienceTeam
+unsc/squad/scienceTeam
+unsc/squad/scienceTeam
 unsc/squad/scienceTeam
 {unsc/battalion}
 {unsc/battalion}
 {unsc/battalion}
+{unsc/battalion}
+{navalCargo}
+{navalCargo}
+{navalCargo}
+{navalCargo}
+{navalCargo}
+{navalCargo}
+{navalCargo}
+{navalCargo}
+{navalCargo}
+{navalCargo}
+{navalCargo}
+{navalCargo}
+{navalCargo}
 {navalCargo}
 {navalCargo}
 {navalCargo}
@@ -1358,15 +1445,15 @@ unsc/item/memoryChip
 * alias boardingElement
 40 pelican
 40 dropPodSquad
-1 assaultFrameFireteam
+1 boosterFrameFireteam
 
-* childrenof assaultFrameFireteam
-assaultFrame
-assaultFrame
-assaultFrame
-assaultFrame
+* childrenof boosterFrameFireteam
+boosterFrame
+boosterFrame
+boosterFrame
+boosterFrame
 
-* childrenof assaultFrame
+* childrenof boosterFrame
 spartan
 
 * childrenof dropPodSquad
@@ -2000,11 +2087,12 @@ class WGenerator {
         const relativePath = relativePathStr.trim()
             .split('/');
 
-        // TODO codexPath is sometimes not initialized.
+        // Later: codexPath is sometimes not initialized.
         let curPath = this.codexPath.split('/');
 
+        // Later, could detect if a path is absolute by checking whether its first term is on a whitelist of settings.
+        // const CONTEXTS = ['40k', 'darktapestry', 'dnd', 'downstairs', 'halo', 'parahumans', 'scifi', 'sunlight', 'wizardingworld', 'yearsofadventure'];
         while (curPath.length >= 0) {
-
             // Util.log(`In ChildTable.getAbsolutePath( '${relativePathStr}' ) loop. curPath is ${curPath}. curPath.length is ${curPath.length}. curPath[0] is ${curPath[0]}.`, 'debug');
 
             // TODO I may want to interpret the last term as a possible alias table name, but not as a childTable or glossary name.
