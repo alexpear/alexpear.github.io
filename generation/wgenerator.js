@@ -273,11 +273,12 @@ class WGenerator {
         const relativePath = relativePathStr.trim()
             .split('/');
 
-        // TODO codexPath is sometimes not initialized.
+        // Later: codexPath is sometimes not initialized.
         let curPath = this.codexPath.split('/');
 
+        // Later, could detect if a path is absolute by checking whether its first term is on a whitelist of settings.
+        // const CONTEXTS = ['40k', 'darktapestry', 'dnd', 'downstairs', 'halo', 'parahumans', 'scifi', 'sunlight', 'wizardingworld', 'yearsofadventure'];
         while (curPath.length >= 0) {
-
             // Util.log(`In ChildTable.getAbsolutePath( '${relativePathStr}' ) loop. curPath is ${curPath}. curPath.length is ${curPath.length}. curPath[0] is ${curPath[0]}.`, 'debug');
 
             // TODO I may want to interpret the last term as a possible alias table name, but not as a childTable or glossary name.

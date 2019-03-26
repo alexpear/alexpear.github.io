@@ -377,6 +377,7 @@ function attackEvent (groupA, groupB, random, resolution) {
     return event;
 }
 
+// TODO I also want a spaceful calculation that cares about distance, for Fish Tank.
 function rollNeeded (groupA, groupB, cover) {
     cover = cover || 0;
 
