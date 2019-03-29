@@ -110,9 +110,16 @@ let WNode = module.exports = class WNode {
     }
 
     toSimpleString () {
-        return this.templateName ?
+        const tName = this.templateName ?
             Util.fromCamelCase(this.templateName) :
-            '(WNode with no template)';
+            `<WNode with no template>`;
+
+        if (this.displayName) {
+            return `${this.displayName} (${tName})`;
+        }
+        else {
+            return tName;
+        }
     }
 
     // Format that looks like informal YAML but with props above components.
