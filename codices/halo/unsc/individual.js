@@ -16,6 +16,7 @@ stealth: 10
 
 * childrenof human
 {gender}
+mbti
 
 * alias gender
 10 female

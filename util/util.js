@@ -385,4 +385,13 @@ util.makeEnum = (vals) => {
     return dict;
 };
 
-
+// Myers-Briggs Type Indicator (personality category)
+util.mbti = () => {
+    return [
+        util.randomOf(['I', 'E']),
+        util.randomOf(['S', 'N']),
+        util.randomOf(['T', 'F']),
+        util.randomOf(['P', 'J'])
+    ]
+    .join('');
+};
