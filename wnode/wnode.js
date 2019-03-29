@@ -206,6 +206,26 @@ let WNode = module.exports = class WNode {
         return `${ Util.capitalized(this.templateName) }: A creature with the following traits: ${ this.components.map(c => c.toString()).join(', ') }.`;
     }
 
+    // Modify and touch up a tree
+    tidy () {
+        this.updateMbti();
+        // Later could add a function to combine trait-subtrees into simpler forms
+        // Eg this subtree: soldier > human > female
+        // could become soldier (w/ human props & gender prop)
+
+        this.components.forEach(
+            c => c.tidy()
+        );
+    }
+
+    // Myers-Briggs personality category
+    updateMbti () {
+        if (! this.displayName && this.templateName.toLowerCase() === 'mbti') {
+            this.displayName = Util.mbti();
+            this.description = 'Myers-Briggs personality category';
+        }
+    }
+
     static sortSubtrees (nodes) {
         nodes.sort(
             WNode.comparator

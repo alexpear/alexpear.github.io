@@ -97,7 +97,13 @@ class WGenerator {
 
     // Returns WNode[]
     getOutputs (key) {
-        return this.resolveString(key || '{output}');
+        const nodes = this.resolveString(key || '{output}');
+
+        nodes.forEach(
+            n => n.tidy()
+        );
+
+        return nodes;
     }
 
     resolveCommas (inputString) {
