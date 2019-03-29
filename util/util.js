@@ -218,6 +218,16 @@ util.fromCamelCase = (s) => {
 
     for (let i = 1; i < s.length; i++) {
         if (util.isCapitalized(s[i])) {
+            if (util.isCapitalized(s[i-1])) {
+                // Detect acronym words and leave them uppercase.
+                // eg: openHTMLFile
+                const followedByLowercase = (i < s.length - 1) &&
+                    ! util.isCapitalized(s[i+1]);
+                if (! followedByLowercase) {
+                    continue;
+                }
+            }
+
             wordStarts.push(i);
 
             const firstLetter = wordStarts[wordStarts.length - 2];
@@ -230,8 +240,13 @@ util.fromCamelCase = (s) => {
     const lastWord = s.slice(lastCapital);
     words.push(lastWord);
 
-    return words.map(w => util.capitalized(w))
-        .join(' ');
+    return words.map(
+        // Do not change acronyms
+        w => util.isAllCaps(w) ?
+            w :
+            util.capitalized(w)
+    )
+    .join(' ');
 };
 
 // Note that typeof NaN is also 'number',
@@ -335,7 +350,13 @@ util.charCountAtEnd = (str, char) => {
 };
 
 util.isCapitalized = (s) => {
+    // TODO: /[A-Z]/ is more like 'contains capitals'.
     return /[A-Z]/.test(s);
+};
+
+util.isAllCaps = (s) => {
+    // TODO implement this.
+    return false;
 };
 
 util.stringify = function (x) {
