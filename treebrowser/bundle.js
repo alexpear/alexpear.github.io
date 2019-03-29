@@ -546,6 +546,7 @@ stealth: 10
 
 * childrenof human
 {gender}
+mbti
 
 * alias gender
 10 female
@@ -1911,7 +1912,13 @@ class WGenerator {
 
     // Returns WNode[]
     getOutputs (key) {
-        return this.resolveString(key || '{output}');
+        const nodes = this.resolveString(key || '{output}');
+
+        nodes.forEach(
+            n => n.tidy()
+        );
+
+        return nodes;
     }
 
     resolveCommas (inputString) {
@@ -12177,6 +12184,16 @@ util.fromCamelCase = (s) => {
 
     for (let i = 1; i < s.length; i++) {
         if (util.isCapitalized(s[i])) {
+            if (util.isCapitalized(s[i-1])) {
+                // Detect acronym words and leave them uppercase.
+                // eg: openHTMLFile
+                const followedByLowercase = (i < s.length - 1) &&
+                    ! util.isCapitalized(s[i+1]);
+                if (! followedByLowercase) {
+                    continue;
+                }
+            }
+
             wordStarts.push(i);
 
             const firstLetter = wordStarts[wordStarts.length - 2];
@@ -12189,8 +12206,13 @@ util.fromCamelCase = (s) => {
     const lastWord = s.slice(lastCapital);
     words.push(lastWord);
 
-    return words.map(w => util.capitalized(w))
-        .join(' ');
+    return words.map(
+        // Do not change acronyms
+        w => util.isAllCaps(w) ?
+            w :
+            util.capitalized(w)
+    )
+    .join(' ');
 };
 
 // Note that typeof NaN is also 'number',
@@ -12294,7 +12316,13 @@ util.charCountAtEnd = (str, char) => {
 };
 
 util.isCapitalized = (s) => {
+    // TODO: /[A-Z]/ is more like 'contains capitals'.
     return /[A-Z]/.test(s);
+};
+
+util.isAllCaps = (s) => {
+    // TODO implement this.
+    return false;
 };
 
 util.stringify = function (x) {
@@ -12344,7 +12372,16 @@ util.makeEnum = (vals) => {
     return dict;
 };
 
-
+// Myers-Briggs Type Indicator (personality category)
+util.mbti = () => {
+    return [
+        util.randomOf(['I', 'E']),
+        util.randomOf(['S', 'N']),
+        util.randomOf(['T', 'F']),
+        util.randomOf(['P', 'J'])
+    ]
+    .join('');
+};
 
 },{"comma-number":13,"moment":47}],50:[function(require,module,exports){
 'use strict';
@@ -12459,9 +12496,16 @@ let WNode = module.exports = class WNode {
     }
 
     toSimpleString () {
-        return this.templateName ?
+        const tName = this.templateName ?
             Util.fromCamelCase(this.templateName) :
-            '(WNode with no template)';
+            `<WNode with no template>`;
+
+        if (this.displayName) {
+            return `${this.displayName} (${tName})`;
+        }
+        else {
+            return tName;
+        }
     }
 
     // Format that looks like informal YAML but with props above components.
@@ -12546,6 +12590,26 @@ let WNode = module.exports = class WNode {
     encyclopediaEntry () {
         // Later.
         return `${ Util.capitalized(this.templateName) }: A creature with the following traits: ${ this.components.map(c => c.toString()).join(', ') }.`;
+    }
+
+    // Modify and touch up a tree
+    tidy () {
+        this.updateMbti();
+        // Later could add a function to combine trait-subtrees into simpler forms
+        // Eg this subtree: soldier > human > female
+        // could become soldier (w/ human props & gender prop)
+
+        this.components.forEach(
+            c => c.tidy()
+        );
+    }
+
+    // Myers-Briggs personality category
+    updateMbti () {
+        if (! this.displayName && this.templateName.toLowerCase() === 'mbti') {
+            this.displayName = Util.mbti();
+            this.description = 'Myers-Briggs personality category';
+        }
     }
 
     static sortSubtrees (nodes) {
