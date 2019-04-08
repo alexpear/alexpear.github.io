@@ -449,7 +449,7 @@ function simpleEncounter (groups, random, resolution) {
             attack(attacker, target);
 
             if (step % 1 === 0) {
-                Util.log('\n' + detailedSummary(groups), 'info');
+                Util.log('\n\n' + detailedSummary(groups), 'info');
             }
         }
 
