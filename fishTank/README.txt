@@ -13,11 +13,14 @@ a browser
 
 How to run locally:
 go to the fishTank directory in the terminal
-npm i
-http-server (no options needed)
+npm start
 go to localhost:8080 in the browser
 
+(see package.json's scripts section for backstage details)
 
+
+Notes
+* Phaser image loading documentation: https://photonstorm.github.io/phaser3-docs/Phaser.Loader.LoaderPlugin.html#image__anchor
 
 
 

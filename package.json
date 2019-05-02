@@ -12,7 +12,10 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "node WGenerator.js"
+    "test": "node WGenerator.js",
+    "server": "http-server",
+    "fish-tank": "npm i && npm run server",
+    "start": "npm run fish-tank"
   },
   "repository": {
     "type": "git",
