@@ -47,13 +47,22 @@ function release () {
     {
         var pos = Phaser.Geom.Rectangle.Random(spriteBounds);
 
-        var block = group.create(pos.x, pos.y, 'soldier');
+        var soldier = group.create(pos.x, pos.y, 'soldier');
 
-        block.setBounce(0.9);
-        block.setCollideWorldBounds(true);
-        block.setVelocity(Phaser.Math.Between(-200, 200), Phaser.Math.Between(-100, -200));
-        block.setMaxVelocity(300);
-        block.setBlendMode(1);
+        soldier.setBounce(0.9);
+        soldier.setCollideWorldBounds(true);
+        soldier.setVelocity(0, 0);
+        soldier.setMaxVelocity(3000);
+        soldier.setBlendMode(1);
+
+        soldier.mind = {
+            destination: {
+                dims: [
+                    Phaser.Math.Between(0, WIDTH),
+                    Phaser.Math.Between(0, HEIGHT)
+                ]
+            }
+        };
     }
 
     text.setText('Total: ' + group.getLength());
