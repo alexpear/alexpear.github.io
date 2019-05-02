@@ -9,6 +9,7 @@
 var WIDTH = 1200;
 var HEIGHT = 700;
 
+// Rough draft example version came from http://labs.phaser.io/edit.html?src=src/physics/arcade/mass%20collision%20test.js
 var config = {
     type: Phaser.WEBGL,
     width: WIDTH,
@@ -84,6 +85,8 @@ function create () {
 }
 
 function update () {
+    // See example: http://labs.phaser.io/edit.html?src=src/games/topdownShooter/topdown_combatMechanics.js
+
     player.setVelocity(0);
 
     if (cursors.left.isDown)
