@@ -28,6 +28,53 @@ var config = {
     }
 };
 
+var Individual = new Phaser.Class({
+    Extends: Phaser.GameObjects.Image,
+
+    // Constructor
+    initialize: function Individual (scene) {
+        var start = Phaser.Geom.Rectangle.Random(spriteBounds);
+
+        Phaser.GameObjects.Image.call(this, scene, start.x, start.y, 'soldier');
+        this.speed = 0.1;
+        this.xSpeed = 0;
+        this.ySpeed = 0;
+        this.destination = Phaser.Geom.Rectangle.Random(spriteBounds);
+    },
+
+    // Updates the position each cycle
+    update: function (time, delta) {
+        this.orient();
+        this.x += this.xSpeed * delta;
+        this.y += this.ySpeed * delta;
+    },
+
+    // Sets xSpeed and ySpeed correctly
+    orient: function () {
+        var dest = this.destination;
+
+        // If at destination, stop and relax.
+        if (Math.abs(dest.x - this.x) <= 2 && Math.abs(dest.y - this.y) <= 2) {
+            this.xSpeed = 0;
+            this.ySpeed = 0;
+            return;
+        }
+
+        this.direction = Math.atan( (dest.x - this.x) / (dest.y - this.y) );
+
+        if (dest.y >= this.y) {
+            this.xSpeed = this.speed * Math.sin(this.direction);
+            this.ySpeed = this.speed * Math.cos(this.direction);
+        }
+        else {
+            this.xSpeed = -this.speed * Math.sin(this.direction);
+            this.ySpeed = -this.speed * Math.cos(this.direction);
+        }
+
+        this.rotation = Phaser.Math.Angle.Between(this.x, this.y, dest.x, dest.y) + (Math.PI / 2);
+    }
+});
+
 var controls;
 var player;
 var group;
