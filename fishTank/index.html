@@ -90,8 +90,7 @@ function preload () {
 }
 
 function release () {
-    for (var i = 0; i < 100; i++)
-    {
+    for (var i = 0; i < 100; i++) {
         var pos = Phaser.Geom.Rectangle.Random(spriteBounds);
 
         var soldier = soldierGroup.create(pos.x, pos.y, 'soldier');
@@ -101,15 +100,6 @@ function release () {
         soldier.setVelocity(0, 0);
         soldier.setMaxVelocity(3000);
         soldier.setBlendMode(1);
-
-        soldier.mind = {
-            destination: {
-                dims: [
-                    Phaser.Math.Between(0, WIDTH),
-                    Phaser.Math.Between(0, HEIGHT)
-                ]
-            }
-        };
     }
 
     text.setText('Total: ' + soldierGroup.getLength());
@@ -137,12 +127,12 @@ function create () {
 
     player.setCollideWorldBounds(true);
 
-    this.physics.add.collider(player, group);
+    this.physics.add.collider(player, soldierGroup);
 
     text = this.add.text(10, 10, 'Total: 0', { font: '16px Courier', fill: '#ffffff' });
 }
 
-function update () {
+function update (time, delta) {
     // See example: http://labs.phaser.io/edit.html?src=src/games/topdownShooter/topdown_combatMechanics.js
 
     player.setVelocity(0);
