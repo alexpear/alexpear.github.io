@@ -77,7 +77,7 @@ var Individual = new Phaser.Class({
 
 var controls;
 var player;
-var group;
+var soldierGroup;
 var spriteBounds;
 var text;
 
@@ -94,7 +94,7 @@ function release () {
     {
         var pos = Phaser.Geom.Rectangle.Random(spriteBounds);
 
-        var soldier = group.create(pos.x, pos.y, 'soldier');
+        var soldier = soldierGroup.create(pos.x, pos.y, 'soldier');
 
         soldier.setBounce(0.9);
         soldier.setCollideWorldBounds(true);
@@ -112,7 +112,7 @@ function release () {
         };
     }
 
-    text.setText('Total: ' + group.getLength());
+    text.setText('Total: ' + soldierGroup.getLength());
 }
 
 function create () {
@@ -124,8 +124,10 @@ function create () {
     spriteBounds = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(this.physics.world.bounds), -10, -200);
     spriteBounds.y += 100;
 
-    group = this.physics.add.group();
-    group.runChildUpdate = false;
+    soldierGroup = this.physics.add.group({
+        classType: Individual,
+        runChildUpdate: true
+    });
 
     this.time.addEvent({ delay: 500, callback: release, callbackScope: this});
 
