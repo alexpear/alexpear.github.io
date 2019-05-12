@@ -33,13 +33,13 @@ var Individual = new Phaser.Class({
 
     // Constructor
     initialize: function Individual (scene) {
-        var start = Phaser.Geom.Rectangle.Random(spriteBounds);
+        var start = Phaser.Geom.Rectangle.Random(scene.physics.world.bounds);
 
         Phaser.GameObjects.Image.call(this, scene, start.x, start.y, 'soldier');
         this.speed = 0.1;
         this.xSpeed = 0;
         this.ySpeed = 0;
-        this.destination = Phaser.Geom.Rectangle.Random(spriteBounds);
+        this.destination = Phaser.Geom.Rectangle.Random(scene.physics.world.bounds);
     },
 
     // Updates the position each cycle
@@ -78,7 +78,6 @@ var Individual = new Phaser.Class({
 var controls;
 var player;
 var soldierGroup;
-var spriteBounds;
 var text;
 
 var game = new Phaser.Game(config);
@@ -91,7 +90,7 @@ function preload () {
 
 function release () {
     for (var i = 0; i < 100; i++) {
-        var pos = Phaser.Geom.Rectangle.Random(spriteBounds);
+        var pos = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
 
         var soldier = soldierGroup.create(pos.x, pos.y, 'soldier');
 
@@ -110,9 +109,6 @@ function create () {
     graphics.fillStyle(0x000044);
 
     this.physics.world.setBounds(0, 0, WIDTH, HEIGHT);
-
-    spriteBounds = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(this.physics.world.bounds), -10, -200);
-    spriteBounds.y += 100;
 
     soldierGroup = this.physics.add.group({
         classType: Individual,
