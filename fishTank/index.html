@@ -90,6 +90,8 @@ function preload () {
 
 function release () {
     for (var i = 0; i < 100; i++) {
+        // Later assign a .faction prop
+        // Later deploy in team's deployment zone. Perhaps just offscreen.
         var pos = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
 
         // Tutorial https://phaser.io/tutorials/making-your-first-phaser-3-game/part3
