@@ -92,12 +92,9 @@ function release () {
     for (var i = 0; i < 100; i++) {
         var pos = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
 
+        // Tutorial https://phaser.io/tutorials/making-your-first-phaser-3-game/part3
         var soldier = soldierGroup.create(pos.x, pos.y, 'soldier');
 
-        soldier.setBounce(0.9);
-        soldier.setCollideWorldBounds(true);
-        soldier.setVelocity(0, 0);
-        soldier.setMaxVelocity(3000);
         soldier.setBlendMode(1);
     }
 
@@ -115,6 +112,7 @@ function create () {
         runChildUpdate: true
     });
 
+    // Yikes, looks like im lucky it bound 'this' for me.
     this.time.addEvent({ delay: 500, callback: release, callbackScope: this});
 
     cursors = this.input.keyboard.createCursorKeys();
