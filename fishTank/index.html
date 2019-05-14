@@ -32,16 +32,24 @@ const Individual = new Phaser.Class({
 
     // Constructor
     initialize: function Individual (scene, x, y, spriteName, faction) {
-        Phaser.GameObjects.Image.call(this, scene, x, y, spriteName);
-        this.speed = 0.1;
         this.xSpeed = 0;
         this.ySpeed = 0;
-        this.destination = Phaser.Geom.Rectangle.Random(scene.physics.world.bounds);
-        this.faction = faction;
+        // this.destination = Phaser.Geom.Rectangle.Random(scene.physics.world.bounds);
+        this.faction = randomFromObj(Constants.factions);
 
-        if (faction === Constants.factions.covenant) {
+        if (this.faction === Constants.factions.covenant) {
+            Phaser.GameObjects.Image.call(this, scene, 100, y, spriteName);
             this.speed = 0.15;
         }
+        else {
+            Phaser.GameObjects.Image.call(this, scene, 1000, y, spriteName);
+            this.speed = 0.1;
+        }
+
+        // TODO store factions as arrays. Choose target from a different faction.
+        // BTW the first to be created matches with themself.
+        const allSoldiers = soldierGroup.getChildren();
+        this.target = randomOf(allSoldiers) || allSoldiers[0];
     },
 
     // Updates the position each cycle
@@ -53,7 +61,11 @@ const Individual = new Phaser.Class({
 
     // Sets xSpeed and ySpeed correctly
     orient: function () {
-        const dest = this.destination;
+        if (! this.target) {
+            return;
+        }
+
+        const dest = this.target;
 
         // If at destination, stop and relax.
         if (Math.abs(dest.x - this.x) <= 2 && Math.abs(dest.y - this.y) <= 2) {
@@ -107,7 +119,7 @@ function release (faction) {
         const pos = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
 
         // Tutorial https://phaser.io/tutorials/making-your-first-phaser-3-game/part3
-        const soldier = soldierGroup.create(pos.x, pos.y, 'soldier', faction);
+        const soldier = soldierGroup.create(pos.x, pos.y, 'soldier');
 
         soldier.setBlendMode(0);
     }
