@@ -80,10 +80,10 @@ let soldierGroup;
 let text;
 
 const Constants = {
-    factions: [
-        'unsc',
-        'covenant'
-    ]
+    factions: {
+        unsc: 'unsc',
+        covenant: 'covenant'
+    }
 };
 
 const game = new Phaser.Game(config);
@@ -94,14 +94,15 @@ function preload () {
     this.load.image('crate', 'assets/sprites/crate.png');
 }
 
-function release () {
-    for (let i = 0; i < 100; i++) {
+function release (faction) {
+    for (let i = 0; i < 60; i++) {
         // Later assign a .faction prop
         // Later deploy in team's deployment zone. Perhaps just offscreen.
         const pos = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
 
         // Tutorial https://phaser.io/tutorials/making-your-first-phaser-3-game/part3
         const soldier = soldierGroup.create(pos.x, pos.y, 'soldier');
+        soldier.faction = faction;
 
         soldier.setBlendMode(1);
     }
@@ -121,7 +122,8 @@ function create () {
     });
 
     // Yikes, looks like im lucky it bound 'this' for me.
-    this.time.addEvent({ delay: 500, callback: release, callbackScope: this});
+    this.time.addEvent({ delay: 500, callback: release.bind(this, Constants.factions.unsc), callbackScope: this});
+    this.time.addEvent({ delay: 1000, callback: release.bind(this, Constants.factions.covenant), callbackScope: this});
 
     cursors = this.input.keyboard.createCursorKeys();
 
@@ -156,6 +158,17 @@ function update (time, delta) {
     {
         player.setVelocityY(500);
     }
+}
+
+// Later import util.js properly. Perhaps Browserify or http-server is suitable.
+function randomOf (array) {
+    const index = Math.floor(Math.random() * array.length);
+    return array[index];
+}
+
+function randomFromObj (obj) {
+    const key = randomOf(Object.keys(obj));
+    return obj[key];
 }
 
     </script>
