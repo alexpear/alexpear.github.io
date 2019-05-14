@@ -109,7 +109,7 @@ function release (faction) {
         // Tutorial https://phaser.io/tutorials/making-your-first-phaser-3-game/part3
         const soldier = soldierGroup.create(pos.x, pos.y, 'soldier', faction);
 
-        soldier.setBlendMode(1);
+        soldier.setBlendMode(0);
     }
 
     text.setText('Total: ' + soldierGroup.getLength());
