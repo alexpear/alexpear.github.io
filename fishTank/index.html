@@ -4,13 +4,12 @@
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
 </head>
 <body>
-
     <script>
-var WIDTH = 1200;
-var HEIGHT = 700;
+const WIDTH = 1200;
+const HEIGHT = 700;
 
 // Rough draft example version came from http://labs.phaser.io/edit.html?src=src/physics/arcade/mass%20collision%20test.js
-var config = {
+const config = {
     type: Phaser.WEBGL,
     width: WIDTH,
     height: HEIGHT,
@@ -28,12 +27,12 @@ var config = {
     }
 };
 
-var Individual = new Phaser.Class({
+const Individual = new Phaser.Class({
     Extends: Phaser.GameObjects.Image,
 
     // Constructor
     initialize: function Individual (scene) {
-        var start = Phaser.Geom.Rectangle.Random(scene.physics.world.bounds);
+        const start = Phaser.Geom.Rectangle.Random(scene.physics.world.bounds);
 
         Phaser.GameObjects.Image.call(this, scene, start.x, start.y, 'soldier');
         this.speed = 0.1;
@@ -51,7 +50,7 @@ var Individual = new Phaser.Class({
 
     // Sets xSpeed and ySpeed correctly
     orient: function () {
-        var dest = this.destination;
+        const dest = this.destination;
 
         // If at destination, stop and relax.
         if (Math.abs(dest.x - this.x) <= 2 && Math.abs(dest.y - this.y) <= 2) {
@@ -75,12 +74,19 @@ var Individual = new Phaser.Class({
     }
 });
 
-var controls;
-var player;
-var soldierGroup;
-var text;
+let controls;
+let player;
+let soldierGroup;
+let text;
 
-var game = new Phaser.Game(config);
+const Constants = {
+    factions: [
+        'unsc',
+        'covenant'
+    ]
+};
+
+const game = new Phaser.Game(config);
 
 function preload () {
     this.load.path = 'sprites/';
@@ -89,13 +95,13 @@ function preload () {
 }
 
 function release () {
-    for (var i = 0; i < 100; i++) {
+    for (let i = 0; i < 100; i++) {
         // Later assign a .faction prop
         // Later deploy in team's deployment zone. Perhaps just offscreen.
-        var pos = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
+        const pos = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
 
         // Tutorial https://phaser.io/tutorials/making-your-first-phaser-3-game/part3
-        var soldier = soldierGroup.create(pos.x, pos.y, 'soldier');
+        const soldier = soldierGroup.create(pos.x, pos.y, 'soldier');
 
         soldier.setBlendMode(1);
     }
@@ -104,7 +110,7 @@ function release () {
 }
 
 function create () {
-    var graphics = this.add.graphics();
+    const graphics = this.add.graphics();
     graphics.fillStyle(0x000044);
 
     this.physics.world.setBounds(0, 0, WIDTH, HEIGHT);
