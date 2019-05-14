@@ -34,8 +34,8 @@ const Individual = new Phaser.Class({
     initialize: function Individual (scene, x, y, spriteName, faction) {
         this.xSpeed = 0;
         this.ySpeed = 0;
-        // this.destination = Phaser.Geom.Rectangle.Random(scene.physics.world.bounds);
-        this.faction = randomFromObj(Constants.factions);
+        this.faction = faction || randomFromObj(Constants.factions);
+        this.setBlendMode(0);
 
         if (this.faction === Constants.factions.covenant) {
             Phaser.GameObjects.Image.call(this, scene, 100, y, spriteName);
@@ -92,6 +92,8 @@ const Individual = new Phaser.Class({
 let controls;
 let player;
 let soldierGroup;
+let unscSquads;
+let covenantSquads;
 let text;
 
 const Constants = {
@@ -109,22 +111,22 @@ function preload () {
     this.load.image('crate', 'assets/sprites/crate.png');
 }
 
-function release (faction) {
+function deploySquads (faction) {
     // Later deploy in team's deployment zone. Perhaps just offscreen.
     // TODO set up deployment zone rectangles instead of the full physics.world.bounds.
     const usncZone = {};
     const covZone = {};
 
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 100; i++) {
+        const faction = randomFromObj(Constants.factions);
+        // Later pos should depend on deployment zones.
         const pos = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
 
         // Tutorial https://phaser.io/tutorials/making-your-first-phaser-3-game/part3
-        const soldier = soldierGroup.create(pos.x, pos.y, 'soldier');
-
-        soldier.setBlendMode(0);
+        const soldier = soldierGroup.create(pos.x, pos.y, 'soldier', faction);
     }
 
-    text.setText('Total: ' + soldierGroup.getLength());
+    text.setText(`Death Planet, Population ${(unscSquads.length + covenantSquads.length) || 'You'}`);
 }
 
 function create () {
@@ -138,9 +140,18 @@ function create () {
         runChildUpdate: true
     });
 
+    unscSquads = this.physics.add.group({
+        classType: Individual,
+        runChildUpdate: true
+    });
+
+    covenantSquads = this.physics.add.group({
+        classType: Individual,
+        runChildUpdate: true
+    });
+
     // Yikes, looks like im lucky it bound 'this' for me.
-    this.time.addEvent({ delay: 500, callback: release.bind(this, Constants.factions.unsc), callbackScope: this});
-    this.time.addEvent({ delay: 1000, callback: release.bind(this, Constants.factions.covenant), callbackScope: this});
+    this.time.addEvent({ delay: 500, callback: deploySquads, callbackScope: this});
 
     cursors = this.input.keyboard.createCursorKeys();
 
