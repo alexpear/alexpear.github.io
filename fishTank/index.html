@@ -31,14 +31,17 @@ const Individual = new Phaser.Class({
     Extends: Phaser.GameObjects.Image,
 
     // Constructor
-    initialize: function Individual (scene) {
-        const start = Phaser.Geom.Rectangle.Random(scene.physics.world.bounds);
-
-        Phaser.GameObjects.Image.call(this, scene, start.x, start.y, 'soldier');
+    initialize: function Individual (scene, x, y, spriteName, faction) {
+        Phaser.GameObjects.Image.call(this, scene, x, y, spriteName);
         this.speed = 0.1;
         this.xSpeed = 0;
         this.ySpeed = 0;
         this.destination = Phaser.Geom.Rectangle.Random(scene.physics.world.bounds);
+        this.faction = faction;
+
+        if (faction === Constants.factions.covenant) {
+            this.speed = 0.15;
+        }
     },
 
     // Updates the position each cycle
@@ -95,14 +98,16 @@ function preload () {
 }
 
 function release (faction) {
+    // Later deploy in team's deployment zone. Perhaps just offscreen.
+    // TODO set up deployment zone rectangles instead of the full physics.world.bounds.
+    const usncZone = {};
+    const covZone = {};
+
     for (let i = 0; i < 60; i++) {
-        // Later assign a .faction prop
-        // Later deploy in team's deployment zone. Perhaps just offscreen.
         const pos = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
 
         // Tutorial https://phaser.io/tutorials/making-your-first-phaser-3-game/part3
-        const soldier = soldierGroup.create(pos.x, pos.y, 'soldier');
-        soldier.faction = faction;
+        const soldier = soldierGroup.create(pos.x, pos.y, 'soldier', faction);
 
         soldier.setBlendMode(1);
     }
