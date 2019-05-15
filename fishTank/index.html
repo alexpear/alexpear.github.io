@@ -32,24 +32,19 @@ const Individual = new Phaser.Class({
 
     // Constructor
     initialize: function Individual (scene, x, y, spriteName, faction) {
+        Phaser.GameObjects.Image.call(this, scene, x, y, spriteName);
         this.xSpeed = 0;
         this.ySpeed = 0;
         this.faction = faction || randomFromObj(Constants.factions);
         this.setBlendMode(0);
 
-        if (this.faction === Constants.factions.covenant) {
-            Phaser.GameObjects.Image.call(this, scene, 100, y, spriteName);
-            this.speed = 0.15;
+        if (this.faction === Constants.factions.unsc) {
+            // BTW the first to be created sees empty children arrays.
+            this.target = randomOf(covenantSquads.getChildren()) || unscSquads.getChildren()[0];
         }
         else {
-            Phaser.GameObjects.Image.call(this, scene, 1000, y, spriteName);
-            this.speed = 0.1;
+            this.target = randomOf(unscSquads.getChildren()) || covenantSquads.getChildren()[0];
         }
-
-        // TODO store factions as arrays. Choose target from a different faction.
-        // BTW the first to be created matches with themself.
-        const allSoldiers = soldierGroup.getChildren();
-        this.target = randomOf(allSoldiers) || allSoldiers[0];
     },
 
     // Updates the position each cycle
@@ -91,7 +86,6 @@ const Individual = new Phaser.Class({
 
 let controls;
 let player;
-let soldierGroup;
 let unscSquads;
 let covenantSquads;
 let text;
@@ -112,18 +106,19 @@ function preload () {
 }
 
 function deploySquads (faction) {
-    // Later deploy in team's deployment zone. Perhaps just offscreen.
-    // TODO set up deployment zone rectangles instead of the full physics.world.bounds.
-    const usncZone = {};
-    const covZone = {};
-
     for (let i = 0; i < 100; i++) {
         const faction = randomFromObj(Constants.factions);
-        // Later pos should depend on deployment zones.
-        const pos = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
+        const start = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
+        let squad;
 
-        // Tutorial https://phaser.io/tutorials/making-your-first-phaser-3-game/part3
-        const soldier = soldierGroup.create(pos.x, pos.y, 'soldier', faction);
+        if (faction === Constants.factions.unsc) {
+            squad = unscSquads.create(1000, start.y, 'soldier', faction);
+            squad.speed = 0.1;
+        }
+        else {
+            squad = covenantSquads.create(100, start.y, 'soldier', faction);
+            squad.speed = 0.15;
+        }
     }
 
     text.setText(`Death Planet, Population ${(unscSquads.length + covenantSquads.length) || 'You'}`);
@@ -134,11 +129,6 @@ function create () {
     graphics.fillStyle(0x000044);
 
     this.physics.world.setBounds(0, 0, WIDTH, HEIGHT);
-
-    soldierGroup = this.physics.add.group({
-        classType: Individual,
-        runChildUpdate: true
-    });
 
     unscSquads = this.physics.add.group({
         classType: Individual,
@@ -159,7 +149,8 @@ function create () {
 
     player.setCollideWorldBounds(true);
 
-    this.physics.add.collider(player, soldierGroup);
+    // Later probably have the soldiers collide with each other too.
+    this.physics.add.collider(player, covenantSquads);
 
     text = this.add.text(10, 10, 'Total: 0', { font: '16px Courier', fill: '#ffffff' });
 }
