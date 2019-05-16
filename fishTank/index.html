@@ -6,6 +6,7 @@
 <body>
 
 <script>
+// TODO Move all this to .js files and use browserify.
 
 const WIDTH = 1200;
 const HEIGHT = 700;
@@ -55,7 +56,6 @@ const Individual = new Phaser.Class({
 
         if (this.faction === Constants.factions.unsc) {
             // BTW the first to be created sees empty children arrays.
-            // Later default to target being the center of the screen, a objective.
             this.target = randomOf(covenantSquads.getChildren()) || Constants.objective;
         }
         else {
