@@ -51,18 +51,16 @@ const Individual = new Phaser.Class({
     // Constructor
     initialize: function Individual (scene, x, y, spriteName, faction) {
         Phaser.GameObjects.Image.call(this, scene, x, y, spriteName);
+
         this.xSpeed = 0;
         this.ySpeed = 0;
-        this.faction = faction || randomFromObj(Constants.factions);
-        this.setBlendMode(0);
 
-        if (this.faction === Constants.factions.unsc) {
-            // BTW the first to be created sees empty children arrays.
-            this.target = randomOf(covenantSquads.getChildren()) || Constants.objective;
-        }
-        else {
-            this.target = randomOf(unscSquads.getChildren()) || Constants.objective;
-        }
+        this.faction = faction || randomFromObj(Constants.factions);
+
+        // BTW the first to be created sees empty children arrays.
+        this.target = this.randomEnemy() || Constants.objective;
+
+        this.setBlendMode(0);
     },
 
     // Updates the position each cycle
@@ -97,7 +95,7 @@ const Individual = new Phaser.Class({
     // Sets xSpeed and ySpeed correctly
     orient: function () {
         if (! (this.target && this.target.active)) {
-            this.target = Constants.objective;
+            this.target = this.randomEnemy() || Constants.objective;
         }
 
         const dest = this.target;
@@ -121,6 +119,12 @@ const Individual = new Phaser.Class({
         }
 
         this.rotation = Phaser.Math.Angle.Between(this.x, this.y, dest.x, dest.y) + (Math.PI / 2);
+    },
+
+    randomEnemy: function () {
+        return randomFromFaction(
+            enemyOfFaction(this.faction)
+        );
     }
 });
 
@@ -227,9 +231,42 @@ function maybeClearGraphics (time) {
     }
 }
 
+
+function enemyOfFaction (goodGuys) {
+    return goodGuys === Constants.factions.unsc ?
+        Constants.factions.covenant :
+        Constants.factions.unsc;
+}
+
+// Later implement notThisOne exclusion functionality.
+function randomFromFaction (faction, notThisOne) {
+    const group = faction === Constants.factions.unsc ? unscSquads : covenantSquads;
+
+    const squads = group.getChildren();
+    let offset = randomIntBelow(squads.length);
+
+    // BTW, this has a slight bias towards active squads that are preceded by multiple inactive squads.
+    // This could be made less biased by calling Math.random() in a while loop.
+    // This would be slightly less performant.
+    for (let k = 0; k < squads.length; k++) {
+        const i = (k + offset) % squads.length;
+        const candidate = squads[i];
+        if (candidate.active && candidate !== notThisOne) {
+            return candidate;
+        }
+    }
+
+    // Case where whole faction is not active:
+    return undefined;
+}
+
+function randomIntBelow (n) {
+    return Math.floor(Math.random() * n);
+}
+
 // Later import util.js properly. Perhaps Browserify or http-server is suitable.
 function randomOf (array) {
-    const index = Math.floor(Math.random() * array.length);
+    const index = randomIntBelow(array.length);
     return array[index];
 }
 
