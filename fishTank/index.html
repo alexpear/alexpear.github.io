@@ -22,7 +22,7 @@ const Constants = {
         x: WIDTH / 2,
         y: HEIGHT / 2
     },
-    shootChance: 0.005,
+    shootChance: 0.01,
     clearGraphicsEvery: 200  // ms
 };
 
@@ -70,7 +70,6 @@ const Individual = new Phaser.Class({
         maybeClearGraphics(time);
 
         this.orient();
-
         this.maybeShoot();
 
         this.x += this.xSpeed * delta;
@@ -78,23 +77,27 @@ const Individual = new Phaser.Class({
     },
 
     maybeShoot: function () {
-        if (Math.random() <= Constants.shootChance) {
+        if (this.target && this.target.active && Math.random() <= Constants.shootChance) {
             this.shoot();
         }
     },
 
     shoot: function (target) {
-        target = target || this.target;
+        target = target || this.target || Constants.objective;
 
         const trajectory = new Phaser.Geom.Line(this.x, this.y, target.x, target.y);
         graphics.strokeLineShape(trajectory);
-        // Destroy target later
+
+        if (target.visible) {
+            target.setActive(false);
+            target.setVisible(false);
+        }
     },
 
     // Sets xSpeed and ySpeed correctly
     orient: function () {
-        if (! this.target) {
-            return;
+        if (! (this.target && this.target.active)) {
+            this.target = Constants.objective;
         }
 
         const dest = this.target;
