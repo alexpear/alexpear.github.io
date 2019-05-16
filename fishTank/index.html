@@ -21,7 +21,9 @@ const Constants = {
     objective: {
         x: WIDTH / 2,
         y: HEIGHT / 2
-    }
+    },
+    shootChance: 0.005,
+    clearGraphicsEvery: 200  // ms
 };
 
 // Rough draft example version came from http://labs.phaser.io/edit.html?src=src/physics/arcade/mass%20collision%20test.js
@@ -65,9 +67,28 @@ const Individual = new Phaser.Class({
 
     // Updates the position each cycle
     update: function (time, delta) {
+        maybeClearGraphics(time);
+
         this.orient();
+
+        this.maybeShoot();
+
         this.x += this.xSpeed * delta;
         this.y += this.ySpeed * delta;
+    },
+
+    maybeShoot: function () {
+        if (Math.random() <= Constants.shootChance) {
+            this.shoot();
+        }
+    },
+
+    shoot: function (target) {
+        target = target || this.target;
+
+        const trajectory = new Phaser.Geom.Line(this.x, this.y, target.x, target.y);
+        graphics.strokeLineShape(trajectory);
+        // Destroy target later
     },
 
     // Sets xSpeed and ySpeed correctly
@@ -100,6 +121,8 @@ const Individual = new Phaser.Class({
     }
 });
 
+let graphics;
+let graphicsLastCleared = 0;
 let controls;
 let player;
 let unscSquads;
@@ -134,8 +157,14 @@ function deploySquads (faction) {
 }
 
 function create () {
-    const graphics = this.add.graphics();
-    graphics.fillStyle(0x000044);
+    graphics = this.add.graphics({
+        lineStyle: {
+            width: 4,
+            color: 0xaaaa00
+        }
+    });
+
+    graphics.fillStyle(0x004400);
 
     this.physics.world.setBounds(0, 0, Constants.width, Constants.height);
 
@@ -185,6 +214,13 @@ function update (time, delta) {
     else if (cursors.down.isDown)
     {
         player.setVelocityY(500);
+    }
+}
+
+function maybeClearGraphics (time) {
+    if (time - graphicsLastCleared >= Constants.clearGraphicsEvery) {
+        graphics.clear();
+        graphicsLastCleared = time;
     }
 }
 
