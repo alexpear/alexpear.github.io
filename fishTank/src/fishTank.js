@@ -1,4 +1,5 @@
-// const Util = require('../../util/util.js');
+const Util = require('../../util/util.js');
+const Timeline = require('../../battle20/timeline.js');
 
 const WIDTH = 1200;
 const HEIGHT = 700;
@@ -47,7 +48,7 @@ const Individual = new Phaser.Class({
         this.xSpeed = 0;
         this.ySpeed = 0;
 
-        this.faction = faction || randomFromObj(Constants.factions);
+        this.faction = faction || Util.randomFromObj(Constants.factions);
 
         // BTW the first to be created sees empty children arrays.
         this.target = this.randomEnemy() || Constants.objective;
@@ -139,7 +140,7 @@ function preload () {
 
 function deploySquads (faction) {
     for (let i = 0; i < 100; i++) {
-        const faction = randomFromObj(Constants.factions);
+        const faction = Util.randomFromObj(Constants.factions);
         const start = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
         let squad;
 
@@ -247,7 +248,7 @@ function randomFromFaction (faction, notThisOne) {
     const group = faction === Constants.factions.unsc ? unscSquads : covenantSquads;
 
     const squads = group.getChildren();
-    let offset = randomIntBelow(squads.length);
+    let offset = Util.randomBelow(squads.length);
 
     // BTW, this has a slight bias towards active squads that are preceded by multiple inactive squads.
     // This could be made less biased by calling Math.random() in a while loop.
@@ -262,19 +263,4 @@ function randomFromFaction (faction, notThisOne) {
 
     // Case where whole faction is not active:
     return undefined;
-}
-
-function randomIntBelow (n) {
-    return Math.floor(Math.random() * n);
-}
-
-// Later import util.js properly. Perhaps Browserify or http-server is suitable.
-function randomOf (array) {
-    const index = randomIntBelow(array.length);
-    return array[index];
-}
-
-function randomFromObj (obj) {
-    const key = randomOf(Object.keys(obj));
-    return obj[key];
 }
