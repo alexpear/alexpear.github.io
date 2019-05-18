@@ -1,5 +1,5 @@
 const Util = require('../../util/util.js');
-const Timeline = require('../../battle20/timeline.js');
+const WorldState = require('../../bottleWorld/worldState.js');
 
 const WIDTH = 1200;
 const HEIGHT = 700;
@@ -48,6 +48,7 @@ const Individual = new Phaser.Class({
         this.xSpeed = 0;
         this.ySpeed = 0;
 
+        // Later Phaser GameObjects should be the view that portrays the underlying WorldState model.
         this.faction = faction || Util.randomFromObj(Constants.factions);
 
         // BTW the first to be created sees empty children arrays.
@@ -77,7 +78,7 @@ const Individual = new Phaser.Class({
         target = target || this.target || Constants.objective;
 
         const trajectory = new Phaser.Geom.Line(this.x, this.y, target.x, target.y);
-        graphics.strokeLineShape(trajectory);
+        fishTank.graphics.strokeLineShape(trajectory);
 
         if (target.visible) {
             target.setActive(false);
@@ -121,16 +122,8 @@ const Individual = new Phaser.Class({
     }
 });
 
-let graphics;
-let graphicsLastCleared = 0;
-let controls;
-let player;
-let timeline;
-let unscSquads;
-let covenantSquads;
-let text;
-
 const game = new Phaser.Game(config);
+let fishTank;
 
 function preload () {
     this.load.path = 'sprites/';
@@ -145,94 +138,68 @@ function deploySquads (faction) {
         let squad;
 
         if (faction === Constants.factions.unsc) {
-            squad = unscSquads.create(1000, start.y, 'soldier', faction);
+            squad = fishTank.worldState.squads.unsc.create(1000, start.y, 'soldier', faction);
             squad.speed = 0.1;
         }
         else {
-            squad = covenantSquads.create(100, start.y, 'soldier', faction);
+            squad = fishTank.worldState.squads.covenant.create(100, start.y, 'soldier', faction);
             squad.speed = 0.15;
         }
     }
-
-    text.setText(`Death Planet, Population ${(unscSquads.length + covenantSquads.length) || 'You'}`);
 }
 
 function create () {
-    // timeline = new Timeline();
-
-    graphics = this.add.graphics({
-        lineStyle: {
-            width: 4,
-            color: 0xaaaa00
-        }
-    });
-
-    graphics.fillStyle(0x004400);
+    fishTank = window.fishTank = {
+        game: game,
+        graphics: this.add.graphics({
+            lineStyle: {
+                width: 4,
+                color: 0xaaaa00
+            }
+        }),
+        graphicsLastCleared: 0,
+        text: undefined,
+        worldState: new WorldState()
+    };
 
     this.physics.world.setBounds(0, 0, Constants.width, Constants.height);
 
-    unscSquads = this.physics.add.group({
-        classType: Individual,
-        runChildUpdate: true
-    });
+    fishTank.graphics.fillStyle(0x004400);
 
-    covenantSquads = this.physics.add.group({
-        classType: Individual,
-        runChildUpdate: true
-    });
+    fishTank.worldState.squads = {
+        unsc: this.physics.add.group({
+            classType: Individual,
+            runChildUpdate: true
+        }),
+        covenant: this.physics.add.group({
+            classType: Individual,
+            runChildUpdate: true
+        })
+    };
 
     // Yikes, looks like im lucky it bound 'this' for me.
     this.time.addEvent({ delay: 500, callback: deploySquads, callbackScope: this});
 
-    cursors = this.input.keyboard.createCursorKeys();
+    // Later probably have the soldiers collide with each other.
 
-    player = this.physics.add.image(100, 100, 'crate');
-
-    player.setCollideWorldBounds(true);
-
-    // Later probably have the soldiers collide with each other too.
-    this.physics.add.collider(player, covenantSquads);
-
-    text = this.add.text(10, 10, 'Total: 0', { font: '16px Courier', fill: '#ffffff' });
+    fishTank.text = this.add.text(10, 10, 'Total: 0', { font: '16px Courier', fill: '#ffffff' });
 }
 
 function update (time, delta) {
-    // See example: http://labs.phaser.io/edit.html?src=src/games/topdownShooter/topdown_combatMechanics.js
+    // Later
+    // fishTank.worldState.computeNextInstant();
 
-    // timeline.computeNextInstant();
-
-    // TODO
-    // maybeReinforce(time);
-
-    player.setVelocity(0);
-
-    if (cursors.left.isDown)
-    {
-        player.setVelocityX(-500);
-    }
-    else if (cursors.right.isDown)
-    {
-        player.setVelocityX(500);
-    }
-
-    if (cursors.up.isDown)
-    {
-        player.setVelocityY(-500);
-    }
-    else if (cursors.down.isDown)
-    {
-        player.setVelocityY(500);
-    }
+    fishTank.text.setText(`Death Planet, Population ${(fishTank.worldState.squads.unsc.countActive() + fishTank.worldState.squads.covenant.countActive()) || 'You'}`);
 }
 
 function maybeReinforce (time) {
-    // This may be easier to do after integrating Timeline
+    // This may be easier to do later, after integrating Timeline as the model for what happens
 }
 
 function maybeClearGraphics (time) {
-    if (time - graphicsLastCleared >= Constants.clearGraphicsEvery) {
-        graphics.clear();
-        graphicsLastCleared = time;
+    if (time - fishTank.graphicsLastCleared >= Constants.clearGraphicsEvery) {
+        fishTank.graphics.clear();
+        fishTank.graphicsLastCleared = time;
     }
 }
 
@@ -245,7 +212,7 @@ function enemyOfFaction (goodGuys) {
 
 // Later implement notThisOne exclusion functionality.
 function randomFromFaction (faction, notThisOne) {
-    const group = faction === Constants.factions.unsc ? unscSquads : covenantSquads;
+    const group = fishTank.worldState.squads[faction];
 
     const squads = group.getChildren();
     let offset = Util.randomBelow(squads.length);
