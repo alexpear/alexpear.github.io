@@ -132,6 +132,7 @@ let graphics;
 let graphicsLastCleared = 0;
 let controls;
 let player;
+let timeline;
 let unscSquads;
 let covenantSquads;
 let text;
@@ -164,6 +165,8 @@ function deploySquads (faction) {
 }
 
 function create () {
+    // timeline = new Timeline();
+
     graphics = this.add.graphics({
         lineStyle: {
             width: 4,
@@ -203,6 +206,11 @@ function create () {
 function update (time, delta) {
     // See example: http://labs.phaser.io/edit.html?src=src/games/topdownShooter/topdown_combatMechanics.js
 
+    // timeline.computeNextInstant();
+
+    // TODO
+    // maybeReinforce(time);
+
     player.setVelocity(0);
 
     if (cursors.left.isDown)
@@ -222,6 +230,10 @@ function update (time, delta) {
     {
         player.setVelocityY(500);
     }
+}
+
+function maybeReinforce (time) {
+    // This may be easier to do after integrating Timeline
 }
 
 function maybeClearGraphics (time) {
