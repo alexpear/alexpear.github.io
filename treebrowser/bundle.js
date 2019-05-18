@@ -2127,7 +2127,7 @@ class WGenerator {
 
     // Example input: 'sunlight/warbands/warrior'
     static fromCodex (codexPath) {
-        // Later, ignore leading slashes and trailing file extensions.
+        // Warning: dynamic require() calls are incompatible with browserify.
         const codexRaw = require(`${ WGenerator.codicesDir() }/${ codexPath }.js`);
 
         return new WGenerator(codexRaw, codexPath);
@@ -12047,9 +12047,18 @@ util.randomUpTo = function (maxInclusive) {
     return util.randomIntBetween(0, maxInclusive - 1);
 };
 
+util.randomBelow = function (maxExclusive) {
+    return Math.floor(Math.random() * maxExclusive);
+};
+
 util.randomOf = function (array) {
-    const index = Math.floor(Math.random() * array.length);
+    const index = util.randomBelow(array.length);
     return array[index];
+};
+
+util.randomFromObj = function (obj) {
+    const key = util.randomOf(Object.keys(obj));
+    return obj[key];
 };
 
 util.newId = function () {
