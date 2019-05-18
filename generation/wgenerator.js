@@ -312,7 +312,7 @@ class WGenerator {
 
     // Example input: 'sunlight/warbands/warrior'
     static fromCodex (codexPath) {
-        // Later, ignore leading slashes and trailing file extensions.
+        // Warning: dynamic require() calls are incompatible with browserify.
         const codexRaw = require(`${ WGenerator.codicesDir() }/${ codexPath }.js`);
 
         return new WGenerator(codexRaw, codexPath);

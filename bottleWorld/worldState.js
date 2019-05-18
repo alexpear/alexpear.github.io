@@ -17,7 +17,11 @@ const Yaml = require('js-yaml');
 module.exports = class WorldState {
     constructor () {
         this.things = [];
-        this.wanderingGenerator = WGenerator.fromCodex('battle20/halo/unsc/group');
+        this.wanderingGenerator = new WGenerator(
+            require('../codices/battle20/halo/unsc/group.js'),
+            'battle20/halo/unsc/group'
+        );
+
         // Contrary to a popular misconception, the W in WGenerator does not stand for Wandering.
         // It stands for WAFFLE.
         this.glossary = this.wanderingGenerator.glossary;
@@ -100,7 +104,7 @@ module.exports = class WorldState {
 
 
 // Run
-WorldState.test();
+// WorldState.test();
 
 
 
