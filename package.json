@@ -12,10 +12,13 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "node WGenerator.js",
+    "start": "npm i && npm run refresh",
+    "refresh": "npm run buildAll && npm run server",
+    "buildAll": "npm run buildTreeBrowser && npm run buildFishTank",
+    "buildTreeBrowser": "browserify treebrowser/treeBrowser.js -o treebrowser/bundle.js",
+    "buildFishTank": "browserify fishTank/src/*.js -o fishTank/bundle.js",
     "server": "http-server",
-    "fish-tank": "npm i && npm run server",
-    "start": "npm run fish-tank"
+    "test": "node generation/WGenerator.js"
   },
   "repository": {
     "type": "git",
