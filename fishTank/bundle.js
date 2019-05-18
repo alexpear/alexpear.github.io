@@ -1,2762 +1,394 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
-const TAG = require('../codices/tags.js');
-const Util = require('../util/util.js');
+// A Blip is the front-end visual representation of 1 or more objects or warriors in the FishTank world.
+// It can represent a large squad or regiment when the view is zoomed out a lot.
+// Blips are strictly part of the view, not part of the model. They serve to explain.
+// When zooming out, many Blips may be instantly forgotten and new ones created. The new ones refer to larger groups of warriors.
+// Each Blip is associated with a array of WNode trees, which the Blip represents.
+// Blips are centered on the approximate position of the represented warriors. Blips should be rendered at a size corresponding with how large and numerous the warriors are.
 
-class ActionTemplate {
-    constructor (range, hit, damage) {
-        this.tags = [];
-        this.range = range || 1;
-        this.hit = hit || 0;
-        this.damage = damage || 0;
+const Coord = require('../../util/coord.js');
+const Util = require('../../util/util.js');
+const WNode = require('../../wnode/wnode.js');
+
+class Blip {
+    constructor (wnodes) {
+        this.nodes = wnodes || [];
+        this.image = undefined;
+        this.coord = undefined;
     }
 
-    deepCopy () {
-        const copy = Object.assign(new ActionTemplate(), this);
+    loadImage () {
 
-        copy.tags = Util.arrayCopy(this.tags);
-
-        return copy;
     }
 
-    modifiedBy (modifications) {
-        const combinedTemplate = new ActionTemplate();
-
-        combinedTemplate.range = this.range + (modifications.range || 0);
-        combinedTemplate.hit = this.hit + (modifications.hit || 0);
-        combinedTemplate.damage = this.damage + (modifications.damage || 0);
-        combinedTemplate.tags = Util.union(this.tags, modifications.tags);
-
-        return combinedTemplate;
+    getImage () {
+        // Hmm ... i suppose we will need to know the FishTank's meters per pixel ratio (zoom).
+        // Maybe the resizing should be done in class FishTank.
+        const size = this.size();
+        // Placeholder
+        return this.image;
     }
 
-    static example () {
-        return ActionTemplate.dwarfExample();
-    }
-
-    static dwarfExample () {
-        const template = new ActionTemplate();
-
-        // Range is in meters. It is okay to round it heavily.
-        template.range = 10;
-        template.hit = 4;
-        template.damage = 1;
-
-        // Dwarven throwing axe
-        template.tags = [
-            TAG.Dwarf,
-            TAG.Blade,
-            TAG.Projectile
-        ];
-
-        return template;
-    }
-
-    static soldierExample () {
-        const template = new ActionTemplate();
-
-        // Range is in meters. It is okay to round it heavily.
-        template.range = 40;
-        template.hit = 3;
-        template.damage = 2;
-
-        // UNSC assault rifle
-        template.tags = [
-            TAG.Bullet,
-            TAG.RapidFire
-        ];
-
-        return template;
-    }
-};
-
-module.exports = ActionTemplate;
-
-},{"../codices/tags.js":11,"../util/util.js":49}],2:[function(require,module,exports){
-'use strict';
-
-// A stat block for a certain creature type.
-// Later, may want to merge this with WNode classes.
-
-const ActionTemplate = require('./actiontemplate.js');
-const TAG = require('../codices/tags.js');
-const Util = require('../util/util.js');
-
-// Later store these enums in another file
-const SIZE = {
-    Tiny: 0.5,
-    Small: 0.7,
-    Medium: 1,
-    Large: 2,
-    Huge: 3,
-    Gargantuan: 4,
-    Colossal: 6
-};
-
-// Later possibly rename to just Template
-// since it is use for intermediate representations
-// when transforming trees of WNodes to Groups.
-class CreatureTemplate {
-    constructor () {
-        this.tags = [];
-        this.actions = [];
-        this.resistance = {};
-    }
-
-    deepCopy () {
-        const copy = Object.assign(new CreatureTemplate(), this);
-
-        // Later make sure that other pointers (eg .peers, .neighbors, .siblings) get deep copied.
-        // Could maybe use a addProp()-style func that checks the type of each prop.
-
-        copy.tags = Util.arrayCopy(this.tags);
-
-        copy.actions = this.actions.map(
-            action => action.deepCopy()
-        );
-
-        copy.resistance = Object.assign({}, this.resistance);
-
-        return copy;
-    }
-
-    // Or could name it modifiedBy() potentially
-    // Side effect: Transforms other if it is tagged as generating a 'action'
-    combinedWith (other) {
-        let combinedTemplate = this.deepCopy();
-
-        // (Necessary if the root is a weapon or tool.)
-        combinedTemplate.setUpAction();
-        other.setUpAction();
-
-        combinedTemplate.actions = Util.union(combinedTemplate.actions, other.actions);
-        combinedTemplate.applyActionModifiers(other);
-
-        Util.log(`Combining '${this.templateName}' with '${other.templateName}'.`, 'debug');
-
-        // Note: addProp() unions .actions; it does not overwrite the array.
-        combinedTemplate = Object.keys(other)
-            .reduce(
-                addProp,
-                combinedTemplate
-            );
-
-        return combinedTemplate;
-
-        function addProp (aggregation, key) {
-            if (CreatureTemplate.UNCOPIED_KEYS.includes(key)) {
-                return aggregation;
-            }
-
-            const existingValue = aggregation[key];
-            const otherValue = other[key];
-
-            if (Util.isArray(otherValue)) {
-                // eg other.tags or other.actions
-                // Later: We actually might not want item tags to propogate all the way up to Group.
-                // For example, should a squad of soldiers (Group) have tag 'armor'?
-                aggregation[key] = Util.union(existingValue, otherValue);
-            }
-            else if (Util.isNumber(otherValue)) {
-                Util.log(`addProp() / isNumber(): key = '${key}', ${existingValue} (old) + ${otherValue} (new)`, 'debug');
-
-                // Interpreted as modifiers, not absolute stats.
-                aggregation[key] = (existingValue || 0) + (otherValue || 0);
-            }
-            else if (Util.isObject(otherValue)) {
-                // eg other.resistance
-                aggregation[key] = CreatureTemplate.mergeResistances(existingValue || {}, otherValue);
-            }
-            else if (Util.exists(otherValue)) {
-                // Overwrite
-                aggregation[key] = otherValue;
-            }
-            else {
-                throw new Error(`Mysterious key '${ key }' in child WNode when combining templates of WNode tree. Value is: ${ Util.stringify(otherValue) }`);
-            }
-
-            return aggregation;
-        }
-    }
-
-    // Check if a template (from WGenerator output) is tagged as one that generates a Action.
-    // Typically this would be a tool or weapon.
-    // If so, transforms this CreatureTemplate to have a ActionTemplate with the relevant stats.
-    // Also removes the old modifiers and tag.
-    setUpAction () {
-        const actionTagIndex = this.tags && this.tags.indexOf('action');
-
-        if (actionTagIndex >= 0) {
-            // Later, consider this: If the template is tagged 'action', we could just transform it into a action template entirely.
-            // ie, const action = this.deepCopy()
-            // action.removeActionTag()
-            // this.actions.push(action);
-            // delete all keys of 'this' except this.actions
-
-            // Remove the 'action' tag.
-            this.tags.splice(actionTagIndex, 1);
-
-            const action = new ActionTemplate(this.range, this.hit, this.damage);
-            action.tags = Util.arrayCopy(this.tags);
-            this.tags = [];
-            this.actions.push(action);
-
-            delete this.range;
-            delete this.hit;
-            delete this.damage;
-        }
-    }
-
-    // Helper function when combining templates.
-    // Side effects: Modifies 'this'.
-    applyActionModifiers (other) {
-        // If action properties are present after setUpAction(),
-        // then assume they should modify other.actions and not the creature template itself.
-        const modifierKeys = ['range', 'hit', 'damage'].filter(
-            key => Util.exists(other[key])
-        );
-
-        if (modifierKeys.length >= 1) {
-            modifierKeys.forEach(
-                key => {
-                    other.actions.forEach(
-                        action => {
-                            action[key] += other[key];
-                        }
-                    );
-
-                    delete other[key];
-                }
-            );
-        }
-    }
-
-    static mergeResistances (a, b) {
-        const keys = Util.union(Object.keys(a), Object.keys(b));
-        return keys.reduce(
-            (merged, key) => {
-                merged[key] = (a[key] || 0) + (b[key] || 0);
-                return merged;
-            },
-            {}
-        );
-    }
-
-    static isCreatureTemplate (template) {
-        return template instanceof CreatureTemplate;
-    }
-
-    static isActionTemplate (template) {
-        return template instanceof ActionTemplate;
-    }
-
-    static example () {
-        return CreatureTemplate.dwarfExample();
-    }
-
-    static soldierExample () {
-        const template = new CreatureTemplate();
-
-        // UNSC Marine (Halo)
-        template.tags = [
-            TAG.Human,
-            TAG.Soldier,
-            TAG.Tech10,
-            TAG.UNSC
-        ];
-
-        template.size = SIZE.Medium;
-        template.hp = 3;
-        template.defense = 16;
-        template.actions = [
-            ActionTemplate.soldierExample()
-        ];
-
-        template.resistance = {};
-        template.resistance[TAG.Fire] = 1;
-        template.resistance[TAG.Piercing] = 1;
-        template.resistance[TAG.Impact] = 1;
-
-        return template;
-    }
-
-    static dwarfExample () {
-        const template = new CreatureTemplate();
-
-        // Dwarf Axe Thrower
-        template.tags = [
-            TAG.Dwarf,
-            TAG.Humanoid,
-            TAG.Soldier
-        ];
-
-        template.size = SIZE.Small;
-        template.hp = 3;
-        template.defense = 17;
-        template.actions = [
-            ActionTemplate.example()
-        ];
-
-        template.resistance = {};
-        template.resistance[TAG.Mental] = 1;
-        template.resistance[TAG.Piercing] = 1;
-        template.resistance[TAG.Blade] = 1;
-        template.resistance[TAG.Impact] = 1;
-
-        return template;
+    size () {
+        // Replace this placeholder later
+        return 100 * this.nodes.length + 100;
     }
 }
 
-// These are not copied over when combining templates.
-CreatureTemplate.UNCOPIED_KEYS = [
-    'templateName'
-];
+module.exports = Blip;
 
-module.exports = CreatureTemplate;
+// Blip.run();
 
-},{"../codices/tags.js":11,"../util/util.js":49,"./actiontemplate.js":1}],3:[function(require,module,exports){
-module.exports = `* output
-1 staticBattalion
-4 slowBattalion
-4 fastBattalion
-2 airBattalion
-1 cqcBattalion
-0 crewBattalion
-
-* childrenof staticBattalion
-unsc/company/staticCompany
-unsc/company/staticCompany
-unsc/company/staticCompany
-unsc/company/staticCompany
-unsc/company/staticCompany
-unsc/company/staticCompany
-unsc/company/staticCompany
-unsc/company/slowCompany
-unsc/company/fastCompany
-unsc/company/airCompany
-
-* childrenof slowBattalion
-unsc/company/slowCompany
-unsc/company/slowCompany
-unsc/company/slowCompany
-unsc/company/slowCompany
-unsc/company/slowCompany
-unsc/company/slowCompany
-unsc/company/slowCompany
-unsc/company/fastCompany
-unsc/company/fastCompany
-unsc/company/airCompany
-
-* childrenof fastBattalion
-unsc/company/fastCompany
-unsc/company/fastCompany
-unsc/company/fastCompany
-unsc/company/fastCompany
-unsc/company/fastCompany
-unsc/company/fastCompany
-unsc/company/fastCompany
-unsc/company/airCompany
-unsc/company/airCompany
-unsc/company/airCompany
-
-* childrenof airBattalion
-unsc/company/airCompany
-unsc/company/airCompany
-unsc/company/airCompany
-unsc/company/airCompany
-unsc/company/airCompany
-unsc/company/airCompany
-unsc/company/airCompany
-unsc/company/airCompany
-unsc/company/airCompany
-unsc/company/airCompany
-
-* childrenof boardingBattalion
-unsc/company/boardingCompany
-unsc/company/boardingCompany
-unsc/company/boardingCompany
-unsc/company/boardingCompany
-unsc/company/boardingCompany
-unsc/company/boardingCompany
-unsc/company/boardingCompany
-unsc/company/boardingCompany
-unsc/company/boardingCompany
-unsc/company/boardingCompany
-
-* childrenof cqcBattalion
-unsc/company/cqcCompany
-unsc/company/cqcCompany
-unsc/company/cqcCompany
-unsc/company/cqcCompany
-unsc/company/cqcCompany
-unsc/company/cqcCompany
-unsc/company/cqcCompany
-unsc/company/cqcCompany
-unsc/company/cqcCompany
-unsc/company/cqcCompany
-
-`;
-
-},{}],4:[function(require,module,exports){
-module.exports = `* output
-1 staticCompany
-1 stealthCompany
-4 slowCompany
-4 fastCompany
-2 airCompany
-
-* childrenof staticCompany
-{unsc/squad/4staticCompatibleSquads}
-{unsc/squad/4staticCompatibleSquads}
-{unsc/squad/staticCompatibleSquad}
-{unsc/squad/staticCompatibleSquad}
-
-* childrenof stealthCompany
-{unsc/squad/stealthSquad}
-{unsc/squad/stealthSquad}
-{unsc/squad/stealthSquad}
-{unsc/squad/stealthSquad}
-{unsc/squad/stealthSquad}
-{unsc/squad/stealthSquad}
-{unsc/squad/stealthSquad}
-{unsc/squad/stealthSquad}
-{unsc/squad/stealthSquad}
-{unsc/squad/stealthSquad}
-
-* childrenof cqcCompany
-{unsc/squad/cqcElement}
-{unsc/squad/cqcElement}
-{unsc/squad/cqcElement}
-{unsc/squad/cqcElement}
-{unsc/squad/cqcElement}
-{unsc/squad/cqcElement}
-{unsc/squad/cqcElement}
-{unsc/squad/cqcElement}
-{unsc/squad/cqcElement}
-{unsc/squad/cqcElement}
-
-* childrenof boardingCompany
-{unsc/squad/boardingElement}
-{unsc/squad/boardingElement}
-{unsc/squad/boardingElement}
-{unsc/squad/boardingElement}
-{unsc/squad/boardingElement}
-{unsc/squad/boardingElement}
-{unsc/squad/boardingElement}
-{unsc/squad/boardingElement}
-{unsc/squad/boardingElement}
-{unsc/squad/boardingElement}
-
-* childrenof slowCompany
-{unsc/squad/4slowCompatibleSquads}
-{unsc/squad/4slowCompatibleSquads}
-{unsc/squad/slowCompatibleSquad}
-{unsc/squad/slowCompatibleSquad}
-
-* childrenof fastCompany
-{unsc/squad/fastSquad}
-{unsc/squad/fastCompatibleSquad}
-{unsc/squad/fastCompatibleSquad}
-{unsc/squad/fastCompatibleSquad}
-{unsc/squad/fastCompatibleSquad}
-{unsc/squad/fastCompatibleSquad}
-{unsc/squad/fastCompatibleSquad}
-{unsc/squad/fastCompatibleSquad}
-{unsc/squad/fastCompatibleSquad}
-{unsc/squad/fastCompatibleSquad}
-
-* childrenof airCompany
-{unsc/squad/airSpeedSquad}
-{unsc/squad/airSpeedSquad}
-{unsc/squad/airSpeedSquad}
-{unsc/squad/airSpeedSquad}
-{unsc/squad/airSpeedSquad}
-{unsc/squad/airSpeedSquad}
-{unsc/squad/airSpeedSquad}
-{unsc/squad/airSpeedSquad}
-{unsc/squad/airSpeedSquad}
-{unsc/squad/airSpeedSquad}
-
-* childrenof spaceFighterWing
-spaceFighterSquadron
-spaceFighterSquadron
-spaceFighterSquadron
-spaceFighterSquadron
-spaceFighterSquadron
-spaceFighterSquadron
-spaceFighterSquadron
-spaceFighterSquadron
-spaceFighterSquadron
-spaceFighterSquadron
-
-* childrenof spaceFighterSquadron
-{unsc/squad/spaceFighter}
-{unsc/squad/spaceFighter}
-{unsc/squad/spaceFighter}
-{unsc/squad/spaceFighter}
-{unsc/squad/spaceFighter}
-{unsc/squad/spaceFighter}
-{unsc/squad/spaceFighter}
-{unsc/squad/spaceFighter}
-{unsc/squad/spaceFighter}
-{unsc/squad/spaceFighter}
-
-`;
-},{}],5:[function(require,module,exports){
-module.exports = `
-* output
-1 fleet
-
-* childrenof fleet
-{fleetChildren}
-
-* alias fleetChildren
-0 TODO move majorElement to ship.js
-10 {majorElement}, {majorElement}, {majorElement}, {majorElement}, {majorElement}
-1 unsc/ship/infinityClassSupercarrier
-
-* alias majorElement
-20 unsc/ship/marathonClassCruiser
-20 {minorElement}, {minorElement}
-1 unsc/ship/phoenixClassCarrier
-
-* alias minorElement
-4 unsc/ship/frigate
-2 unsc/ship/gladiusClassCorvette
-1 unsc/ship/prowler
-
-`;
-},{}],6:[function(require,module,exports){
-module.exports = `
-* output
-5 civilian
-7 crewMember
-10 marinePrivate
-7 officer
-5 odst
-1 spartan
-
-* template human
-individuals: 1
-weight: 70
-size: 2
-speed: 10
-stealth: 10
-
-* childrenof human
-{gender}
-mbti
-
-* alias gender
-10 female
-10 male
-1 postgender
-
-* childrenof civilian
-human
-
-* childrenof crewMember
-{unsc/item}
-human
-
-* alias scienceTeamMember
-4 civilian
-1 {output}
-
-* childrenof marinePrivate
-{unsc/item/giWeapon}
-{unsc/item}
-unsc/item/flakHelmet
-unsc/item/flakArmor
-human
-
-* alias squadLeader
-4 marinePrivate
-4 marineSpecialist
-1 officer
-1 odst
-
-* childrenof marineSpecialist
-{unsc/item/veteranWeapon}
-{unsc/item/smallWeapon}
-{unsc/item}
-unsc/item/flakHelmet
-unsc/item/flakArmor
-human
-
-* childrenof officer
-{unsc/item/smallWeapon}
-{unsc/item/commandGear}
-human
-
-* childrenof odst
-{unsc/item/veteranWeapon}
-{unsc/item/smallWeapon}
-{unsc/item/anyGear}
-unsc/item/visrHelmet
-unsc/item/odstArmor
-unsc/item/fragGrenade
-human
-
-* childrenof helljumper
-unsc/item/jetpack
-{helljumperMember}
-
-* alias helljumperMember
-100 odst
-1 spartan
-
-* childrenof spartan
-{unsc/item/anyWeapon}
-{unsc/item/anyWeapon}
-{unsc/item/anyGear}
-unsc/item/fragGrenade
-unsc/item/fragGrenade
-{unsc/item/spartanMod}
-{unsc/item/spartanArmor}
-human
-
-* alias driver
-8 marinePrivate
-10 crewMember
-4 odst
-1 spartan
-
-* template dropPod
-weight: 1000
-
-* childrenof dropPod
-{dropPodSoldier}
-
-* alias dropPodSoldier
-80 odst
-2 marineSpecialist
-1 spartan
-1 {output}
-
-`;
-
-},{}],7:[function(require,module,exports){
-module.exports = `* output
-15 {anyWeapon}
-20 {anyGear}
-1 {gunComponent}
-
-* alias anyWeapon
-10 {smallWeapon}
-0 gi means General Issue
-20 {giWeapon}
-1 {specialInfantryWeapon}
-1 {highWeightWeapon}
-0 {alienWeapon}
-
-* alias smallWeapon
-10 reachPistol
-4 heavyPistol
-4 silencedPistol
-3 lightPistol
-2 gunfighterPistol
-1 machinePistol
-3 smg
-1 smgBayonet
-3 combatKnife
-
-* alias giWeapon
-4 smg
-4 assaultRifle
-4 br
-3 dmr
-1 shotgun
-0 Later generate attachments and weapon traits, perhaps on customWeapon
-
-* alias specialInfantryWeapon
-4 shotgun
-4 saw
-4 sniperRifle
-4 hydra
-4 grenadeLauncher
-4 rocketLauncher
-4 laser
-2 turret
-3 flamethrower
-4 {smallWeapon}, {smallWeapon}
-
-* alias veteranWeapon
-10 {giWeapon}
-10 {specialInfantryWeapon}
-
-* alias cqcWeapon
-9 smg
-10 shotgun
-8 assaultRifle
-4 silencedPistol
-1 saw
-1 {specialInfantryWeapon}
-
-* alias cqcGear
-4 flashbangGrenade
-4 smokeGrenade
-3 fragGrenade, fragGrenade
-1 powerDrainDevice
-1 bubbleShield
-4 tripMine
-1 satchelCharge
-4 periscope
-4 extraArmor
-4 titaniumBayonet
-4 combatKnife
-
-* alias longRangeWeapon
-8 br
-8 dmr
-6 sniperRifle
-6 hydra
-4 rocketLauncher
-2 saw
-1 covenantCarbine
-
-* alias highWeightWeapon
-6 {warthogTurret}
-3 binaryRifle
-2 plasmaTurret
-2 incinerationCannon
-2 gravityHammer
-2 oniChaingun
-1 splinterTurret
-
-* alias anyGear
-4 targetDesignator
-4 secureDatapad
-4 medkit
-4 demolitionCharges
-4 {giGear}
-4 {commandGear}
-4 {smallWeapon}
-4 jetpack
-2 emp
-2 plasmaRifle
-
-* alias giGear
-4 fragGrenade
-4 {smallWeapon}
-4 portableTent
-4 extraAmmo
-4 extraRations
-4 camoCloak
-3 smokeGrenade
-3 trenchShovel
-3 radiationPills
-2 flashbangGrenade
-2 deployableCover
-2 caffeinePills
-1 medkit
-
-* alias commandGear
-4 targetLocator
-4 secureDatapad
-4 memoryChip
-4 oneTimePad
-4 microwaveAntenna
-3 emp
-2 telescope
-2 binoculars
-0 {alienWeapon}
-0 {alienGrenade}
-1 paperMap
-1 bubbleShield
-
-* alias gunComponent
-4 2xScope
-3 4xScope
-3 10xScope
-4 morphScope
-4 hybridScope
-4 cogScope
-3 visrScopeForGun
-3 kineticBolts
-3 stabilizationJetsForGun
-4 titaniumBayonet
-4 energyBayonet
-3 extendedMagazine
-3 laserSight
-4 silencer
-1 longBarrel
-1 soundDampener
-4 threatMarker
-3 knightBlade
-0 etc
-
-* alias airComponent
-4 missilePod
-2 targetDesignator
-2 gaussTurret
-2 laser
-1 needleTurret
-
-* alias warthogTurret
-6 chaingun
-2 gaussTurret
-1 missilePod
-1 vespinTurret
-1 needleTurret
-
-* alias spartanMod
-3 spartan2Augmentations
-4 spartan3Augmentations
-4 spartan4Augmentations
-
-* alias spartanArmor
-4 mjolnirArmor
-4 spiArmor
-3 infiltrationSuit
-
-* template mjolnirArmor
-weight: 454
-
-* alias armorMod
-4 armorLock
-4 dropShield
-5 activeCamo
-4 hologram
-5 thrusterPack
-4 emp
-3 autoSentry
-3 regenField
-4 prometheanVision
-4 hardlightShield
-
-* alias alienWeapon
-0 {cov/item/smallWeapon}
-0 {forerunner/item/smallWeapon}
-
-* alias alienGrenade
-0 {banished/item/grenade}
-0 {forerunner/item/grenade}
-
-* childrenof memoryChip
-{classifiedData}
-
-* alias classifiedData
-18 {ai}
-8 navigationData
-5 weaponPlans
-6 cyberintrusionSuite
-1 forerunnerCoordinates
-2 archaeologicalReport
-1 blackmailMaterial
-1 falsifiedMilitaryPlans
-
-* alias ai
-10 shipboardAi
-4 dumbAi
-2 civilianSmartAi
-1 covenantAi
-
-* template flakArmor
-defense: 6
-resistance: fire 1, piercing 1
-tags: armor
-
-* template smg
-tags: action bullet fullAuto
-range: 20
-hit: 3
-damage: 1
-
-* template assaultRifle
-tags: action bullet fullAuto
-range: 30
-hit: 3
-damage: 1
-
-* template battleRifle
-tags: action bullet
-range: 50
-hit: 3
-damage: 1
-
-* template dmr
-tags: action bullet
-range: 60
-hit: 3
-damage: 1
-
-* template shotgun
-tags: action bullet
-range: 5
-hit: 5
-damage: 2
-
-`;
-
-},{}],8:[function(require,module,exports){
-// UNSC combat patrol of a few squads/units.
-
-module.exports = `* output
-1 patrol
-
-* children of patrol
-{squad}
-{squad}
-{squad}
-
-* alias squad
-10 {infantrySquad}
-10 {vehicleSquad}
-9 {support}
-1 friendlyHuragok
-
-* alias infantrySquad
-4 marineSquad
-1 {rareInfantry}
-
-* alias rareInfantry
-6 odstSquad
-1 spartanSquad
-1 spartan
-
-* children of marineSquad
-{specialSoldier}
-marines
-
-* children of marines
-{basicWeapon}
-{giGear}
-
-* alias basicWeapon
-4 smg
-4 ar
-4 br
-3 dmr
-1 shotgun
-
-* alias specialSoldier
-4 veteranMarine
-3 officer
-
-* children of veteranMarine
-{gender}
-{anyWeapon}
-{smallWeapon}
-{item/anyGear}
-
-* alias anyWeapon
-4 {basicWeapon}
-4 {specialWeapon}
-0 TODO split some of these item things out into separate files. So long as each usable table is still accessible.
-
-* alias specialWeapon
-4 shotgun
-4 saw
-4 sniperRifle
-4 hydra
-4 grenadeLauncher
-4 rocketLauncher
-4 laser
-3 turret
-3 flamethrower
-4 {smallWeapon}, {smallWeapon}
-
-* alias alienItem
-4 {alienGrenade}
-0 TODO
-
-* alias alienWeapon
-4 boltshot
-0 TODO
-
-* alias hardToCarryItem
-4 chaingun
-3 missilePod
-3 binaryRifle
-2 incinerationCannon
-
-* alias giGear
-4 fragGrenade
-4 {smallWeapon}
-4 portableTent
-4 extraAmmo
-4 extraRations
-4 camoCloak
-3 smokeGrenade
-3 trenchShovel
-3 radiationPills
-2 flashBangGrenade
-2 deployableCover
-2 caffeinePills
-1 medkit
-
-* alias hiddenAnyGear
-4 targetDesignator
-4 secureDatapad
-4 medkit
-4 demolitionCharges
-4 {giGear}
-4 {commandGear}
-4 {smallWeapon}
-4 jetpack
-2 emp
-2 plasmaRifle
-0 TODO traits table like muscular, clever, tireless, paranoid, blackBelt, injured, prostheticArm, xenolinguistics, homeworldDestroyed, exhausted, etc.
-
-* children of officer
-{gender}
-{smallWeapon}
-{commandGear}
-
-* alias smallWeapon
-4 lightPistol
-4 pistol
-3 heavyPistol
-3 smg
-1 smgBayonet
-3 combatKnife
-
-* alias gender
-4 male
-4 female
-1 postgender
-
-* alias commandGear
-4 targetLocator
-4 secureDatapad
-4 oneTimePad
-4 microwaveAntenna
-3 emp
-2 telescope
-2 binoculars
-1 plasmaPistol
-1 boltShot
-4 {alienGrenade}
-1 paperMap
-1 bubbleShield
-
-* alias alienGrenade
-4 plasmaGrenade
-4 spikeGrenade
-3 fireGrenade
-3 pulseGrenade
-3 splinterGrenade
-
-* children of odstSquad
-veteranMarine
-odsts
-
-* children of odsts
-{basicWeapon}
-{giGear}
-
-* children of spartanSquad
-{spartanMod}
-{spartanArmor}
-{basicWeapon}
-{giGear}
-
-* children of spartan
-{gender}
-{spartanMod}
-{spartanArmor}
-{anyWeapon}
-{smallWeapon}
-{item/anyGear}
-{armorMod}
-
-* alias spartanMod
-3 spartanIIAugmentations
-4 spartanIIIAugmentations
-4 spartanIVAugmentations
-
-* alias spartanArmor
-4 mjolnirArmor
-4 spiArmor
-3 infiltrationSuit
-
-* alias armorMod
-4 armorLock
-4 dropShield
-5 activeCamo
-4 hologram
-5 thrusterPack
-4 emp
-3 autoSentry
-3 regenField
-4 prometheanVision
-4 hardlightShield
-
-* alias vehicleSquad
-3 mongooseSquad
-1 gungooseSquad
-6 {warthog}
-5 {aircraft}
-3 scorpion
-2 elephant
-
-* alias warthog
-2 scoutWarthog
-2 transportWarthog
-4 turretWarthog
-
-* children of mongooseSquad
-{infantrySquad}
-
-* children of gungooseSquad
-{infantrySquad}
-
-* children of scorpion
-{driver}
-marineSquad
-
-* alias driver
-8 combatEngineer
-1 spartan
-
-* children of combatEngineer
-{gender}
-{smallWeapon}
-{item/anyGear}
-
-* children of transportWarthog
-{infantrySquad}
-
-* children of falcon
-{infantrySquad}
-
-* children of hornet
-{infantrySquad}
-
-* children of wasp
-{driver}
-chaingun
-{airModule}
-
-* alias airModule
-4 missilePod
-2 targetDesignator
-2 gaussTurret
-2 laser
-1 needleTurret
-
-* children of scoutWarthog
-{infantrySquad}
-
-* children of turretWarthog
-{warthogTurret}
-{infantrySquad}
-
-* alias warthogTurret
-6 chaingun
-2 gaussTurret
-1 missilePod
-1 vespinTurret
-1 needleTurret
-
-* alias aircraft
-4 falcon
-4 hornet
-4 wasp
-4 pelican
-
-* children of pelican
-chaingun
-{infantrySquad}
-
-* children of elephant
-{infantrySquad}
-
-* alias support
-4 artillerySupport
-4 airSupport
-4 orbitalSupport
-4 aiSupport
-
-* children of artillerySupport
-{artillery}
-
-* alias artillery
-4 scorpionBattery
-4 longRangeMissiles
-4 tacticalMac
-
-* children of airSupport
-{airMission}
-{aircraft}
-
-* alias airMission
-4 carpetBombing
-4 precisionBombing
-4 resupply
-4 strafingRun
-4 reconFlyover
-4 reserves
-
-* children of orbitalSupport
-{orbital}
-
-* alias orbital
-4 frigate
-4 mac
-4 odstSquad
-2 spartanSquad
-1 eliteCruiser
-
-* children of aiSupport
-{gender}
-{aiCoverage}
-
-* alias aiCoverage
-4 targeting
-4 intel
-4 fireMissions
-4 psyOps
-4 classified
-4 predictiveModeling`;
-
-},{}],9:[function(require,module,exports){
-module.exports = `* output
-1 {ship}
-
-* alias ship
-10 frigate
-10 marathonClassCruiser
-2 gladiusClassCorvette
-2 phoenixClassCarrier
-1 infinityClassSupercarrier
-
-* template frigate
-weight: 200000000
-
-* childrenof frigate
-unsc/item/frigateMac
-unsc/squad/bridgeCrew
-{navalCargo}
-
-* alias navalCargo
-4 unsc/squad/missileBattery
-4 additionalArmor
-4 unsc/company/spaceFighterWing
-4 unsc/battalion/boardingBattalion
-4 {unsc/battalion}
-4 unsc/squad/logisticalCargo
-
-* template prowler
-weight: 907000
-
-* childrenof prowler
-unsc/squad/bridgeCrew
-{unsc/squad/priorityAsset}
-{unsc/company}
-
-* template gladiusClassCorvette
-weight: 36000000
-
-* childrenof gladiusClassCorvette
-unsc/squad/bridgeCrew
-unsc/item/frigateMac
-{navalCargo}
-
-* template orbitalDefensePlatform
-weight: 2900000000
-
-* childrenof orbitalDefensePlatform
-unsc/squad/bridgeCrew
-unsc/item/marathonMac
-unsc/company/cqcCompany
-unsc/squad/crewFireteam
-unsc/squad/crewFireteam
-unsc/squad/crewFireteam
-unsc/squad/crewFireteam
-
-* template marathonClassCruiser
-weight: 9000000000
-
-* childrenof marathonClassCruiser
-unsc/item/marathonMac
-unsc/squad/bridgeCrew
-{navalCargo}
-{navalCargo}
-
-* template phoenixClassCarrier
-weight: 44000000000
-
-* childrenof phoenixClassCarrier
-unsc/item/marathonMac
-unsc/squad/bridgeCrew
-{unsc/battalion}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-
-* template infinityClassSupercarrier
-weight: 907000000000
-
-* childrenof infinityClassSupercarrier
-unsc/item/infinityMac
-unsc/squad/missileBattery
-unsc/squad/missileBattery
-unsc/squad/missileBattery
-unsc/squad/missileBattery
-unsc/squad/missileBattery
-unsc/squad/missileBattery
-frigate
-frigate
-frigate
-frigate
-frigate
-frigate
-frigate
-frigate
-frigate
-frigate
-unsc/squad/bridgeCrew
-unsc/squad/scienceTeam
-unsc/squad/scienceTeam
-unsc/squad/scienceTeam
-unsc/squad/scienceTeam
-unsc/squad/scienceTeam
-unsc/squad/scienceTeam
-{unsc/battalion}
-{unsc/battalion}
-{unsc/battalion}
-{unsc/battalion}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-{navalCargo}
-
-`;
-},{}],10:[function(require,module,exports){
-module.exports = `* output
-1 {squad}
-
-* alias squad
-10 {infantrySquad}
-10 {vehicleSquad}
-
-* alias infantrySquad
-4 marineSquad
-1 {rareInfantrySquad}
-
-* childrenof marineSquad
-marineFireteam
-marineFireteam
-marineFireteam
-
-* childrenof marineFireteam
-{unsc/individual/squadLeader}
-unsc/individual/marinePrivate
-unsc/individual/marinePrivate
-unsc/individual/marinePrivate
-
-* alias rareInfantrySquad
-10 odstSquad
-4 helljumperSquad
-1 spartanSquad
-
-* childrenof odstSquad
-odstFireteam
-odstFireteam
-odstFireteam
-
-* childrenof odstFireteam
-unsc/individual/odst
-unsc/individual/odst
-unsc/individual/odst
-unsc/individual/odst
-
-* childrenof helljumperSquad
-helljumperFireteam
-helljumperFireteam
-helljumperFireteam
-
-* childrenof helljumperFireteam
-unsc/individual/helljumper
-unsc/individual/helljumper
-unsc/individual/helljumper
-unsc/individual/helljumper
-
-* childrenof spartanSquad
-spartanFireteam
-spartanFireteam
-
-* childrenof spartanFireteam
-unsc/individual/spartan
-unsc/individual/spartan
-unsc/individual/spartan
-unsc/individual/spartan
-
-* alias infantryFireteam
-20 marineFireteam
-5 odstFireteam
-2 crewFireteam
-1 spartanFireteam
-
-* childrenof crewFireteam
-unsc/individual/officer
-unsc/individual/crewMember
-unsc/individual/crewMember
-unsc/individual/crewMember
-
-* childrenof scienceTeam
-unsc/individual/civilian
-{unsc/individual/scienceTeamMember}
-{unsc/individual/scienceTeamMember}
-{unsc/individual/scienceTeamMember}
-{unsc/individual/scienceTeamMember}
-{unsc/individual/scienceTeamMember}
-{unsc/individual/scienceTeamMember}
-{unsc/individual/scienceTeamMember}
-{unsc/individual/scienceTeamMember}
-{unsc/individual/scienceTeamMember}
-{unsc/individual/scienceTeamMember}
-{priorityAsset}
-
-* childrenof bridgeCrew
-unsc/individual/officer
-{unsc/individual}
-{unsc/individual}
-crewFireteam
-crewFireteam
-unsc/item/memoryChip
-{priorityAsset}
-
-* alias cqcElement
-20 infantrySquad
-5 fortifiedInfantrySquad
-1 mantis
-0 TODO later give these item/cqcWeapon and cqcGear
-
-* alias boardingElement
-40 pelican
-40 dropPodSquad
-1 boosterFrameFireteam
-
-* childrenof boosterFrameFireteam
-boosterFrame
-boosterFrame
-boosterFrame
-boosterFrame
-
-* childrenof boosterFrame
-spartan
-
-* childrenof dropPodSquad
-dropPodFireteam
-dropPodFireteam
-dropPodFireteam
-
-* childrenof dropPodFireteam
-unsc/individual/dropPod
-unsc/individual/dropPod
-unsc/individual/dropPod
-unsc/individual/dropPod
-
-* alias vehicleSquad
-3 mongooseSquad
-1 gungooseSquad
-6 {warthog}
-5 {aircraft}
-3 scorpion
-2 mantis
-2 elephant
-
-* alias warthog
-2 scoutWarthog
-2 transportWarthog
-4 turretWarthog
-
-* childrenof mongooseSquad
-mongoose
-mongoose
-
-* template mongoose
-weight: 406
-
-* childrenof mongoose
-{unsc/individual/driver}
-{unsc/individual}
-
-* childrenof gungooseSquad
-gungoose
-gungoose
-
-* template gungoose
-weight: 420
-
-* childrenof gungoose
-{unsc/individual/driver}
-
-* childrenof scorpion
-{unsc/individual/driver}
-
-* childrenof falcon
-{unsc/individual/driver}
-{infantryFireteam}
-{airModule}
-
-* children of hornet
-{unsc/individual/driver}
-{unsc/individual}
-{unsc/individual}
-{airModule}
-
-* children of wasp
-{unsc/individual/driver}
-chaingun
-{airModule}
-
-* alias airModule
-0 TODO move this to unsc/item
-6 {turret}
-1 targetDesignator
-1 laser
-1 decoyLauncher
-
-* template warthogChassis
-weight: 3000
-defense: 10
-tags: vehicle
-
-* children of scoutWarthog
-{unsc/individual/driver}
-{unsc/individual}
-warthogChassis
-
-* childrenof transportWarthog
-{unsc/individual/driver}
-{infantryFireteam}
-warthogChassis
-
-* children of turretWarthog
-{turret}
-{unsc/individual/driver}
-{unsc/individual}
-{unsc/individual}
-warthogChassis
-
-* alias turret
-0 TODO: Move this to unsc/item
-6 chaingun
-2 gaussTurret
-1 missilePod
-1 vespinTurret
-1 needleTurret
-
-* template chaingun
-weight: 100
-
-* template missilePod
-weight: 200
-
-* alias aircraft
-4 falcon
-4 hornet
-4 wasp
-4 pelican
-1 longsword
-1 sabre
-1 sparrowhawk
-
-* alias spaceFighter
-4 sabre
-4 longsword
-4 broadsword
-4 shortsword
-1 pelican
-
-* template falcon
-weight: 1500
-
-* template hornet
-weight: 1000
-
-* template wasp
-weight: 1000
-
-* template pelican
-weight: 138000
-
-* children of pelican
-{airModule}
-{unsc/individual/driver}
-{infantrySquad}
-{pelicanDangling}
-
-* alias pelicanDangling
-8 nothing
-4 {warthog}
-2 supplyCrate
-1 gungooseSquad
-1 mongooseSquad
-1 mantis
-1 scorpion
-
-* template mantis
-weight: 5200
-
-* children of mantis
-{unsc/individual/driver}
-{turret}
-{turret}
-
-* template scorpion
-weight: 35000
-armor: 20
-
-* template elephant
-weight: 205000
-
-* children of elephant
-{turret}
-{turret}
-crewFireteam
-marineFireteam
-{8mCargo}
-
-* alias 8mCargo
-10 {warthog}
-10 {infantrySquad}
-6 supplyCrate
-8 mongooseSquad
-2 gungooseSquad
-3 mantis
-
-* alias 10mCargo
-10 {8mCargo}
-4 scorpion
-
-* template mammoth
-weight: 484000
-
-* children of mammoth
-crewFireteam
-{infantrySquad}
-{10mCargo}
-{10mCargo}
-{10mCargo}
-forklift
-{turret}
-{turret}
-{turret}
-{turret}
-tacticalMac
-
-* alias airSpeedSquad
-4 {aircraft}
-
-* alias fastSquad
-6 {warthog}
-3 mongooseSquad
-2 gungooseSquad
-
-* alias fastCompatibleSquad
-4 {fastSquad}
-2 {airSpeedSquad}
-
-* alias slowSquad
-20 {infantrySquad}
-10 scorpion
-2 elephant
-
-* alias 4slowCompatibleSquads
-10 {slowSquad}, {slowCompatibleSquad}, {slowCompatibleSquad}, {slowCompatibleSquad}
-1 mammoth
-
-* alias slowCompatibleSquad
-4 {slowSquad}
-1 {fastSquad}
-1 {airSpeedSquad}
-
-* alias stealthSquad
-3 odstSquad
-1 infantrySquad
-
-* alias staticSquad
-4 fortifiedInfantrySquad
-1 bunker
-1 firebase
-1 {bigGun}
-
-* alias 4staticCompatibleSquads
-10 {staticSquad}, {staticCompatibleSquad}, {staticCompatibleSquad}, {staticCompatibleSquad}
-1 mammoth
-
-* alias staticCompatibleSquad
-10 {staticSquad}
-3 {slowSquad}
-2 {fastSquad}
-1 {airSpeedSquad}
-
-* childrenof fortifiedInfantrySquad
-{infantrySquad}
-unsc/item/sandbags
-{turret}
-{turret}
-
-* childrenof bunker
-{infantrySquad}
-
-* childrenof firebase
-{infantrySquad}
-{turret}
-
-* alias bigGun
-4 aaGun
-1 missileBattery
-1 tacticalMac
-
-* childrenof aaGun
-crewFireteam
-
-* childrenof missileBattery
-crewFireteam
-crewFireteam
-
-* childrenof tacticalMac
-crewFireteam
-
-* childrenof logisticalCargo
-crewFireteam
-crewFireteam
-forklift
-forklift
-
-* alias priorityAsset
-50 {tier3asset}, {tier3asset}
-2 {tier2asset}
-1 {tier1asset}
-0 NOTE: These are not squads, but are sometimes squad-sized
-0 TODO maybe revise the asset system into priorityItem, vip, priorityCargo, which are nested.
-
-* alias tier1asset
-2 novaBomb
-1 luminary
-1 cryptum
-4 huragok
-1 forerunnerMonitor
-1 forerunnerArtefact
-
-* alias tier2asset
-4 navComputer
-4 unsc/item/memoryChip
-4 slipspaceDrive
-1 captiveProphet
-
-* alias tier3asset
-4 unsc/individual/officer
-3 unsc/individual/civilian
-0 {unsc/item/alienWeapon}
-0 {unsc/item/alienGrenade}
-
-`;
-
-},{}],11:[function(require,module,exports){
+},{"../../util/coord.js":36,"../../util/util.js":37,"../../wnode/wnode.js":38}],2:[function(require,module,exports){
 'use strict';
 
-// Later, make this YAML or JSON or even custom txt
-// Later, make these per-setting
-// Later, could consider a inheritance system (elf extends humanoid)
-// Later, could add a hierarchy like TAG.Event.Death and TAG.Creature.Human
-// Later, change file name to tag.js
-// Also, i'm torn about uppercase/lowercase.
-// Uppercase is more beautiful. Lowercase is more consistent.
+// A EffectVisual is the front-end visual representation of a action or effect in the game world.
+// It can represent a bullet animation, a explosion, or other animation.
+// EffectVisuals typically last for several frames after the event they represent, then they vanish and are forgotten.
+// EffectVisual are strictly part of the view, not part of the model. They serve to explain.
+// When zooming out, EffectVisuals may change size, vanish, or start to appear.
+// EffectVisuals may be rendered as a yellow line between a soldier and a target, for example.
 
-const Util = require('../util/util.js');
+const Coord = require('../../util/coord.js');
+const Util = require('../../util/util.js');
+const WNode = require('../../wnode/wnode.js');
 
-module.exports = Util.makeEnum([
-    'Human',
-    'Dwarf',
-    'Elf',
-    'Goblin',
-    'Beast',
-    'Undead',
-    'Construct',
-    'Fey',
-    'Spirit',
-    'Elemental',
+class EffectVisual {
+    constructor (type, coord, targetCoord) {
+        this.type = type || EffectVisual.TYPE.Explosion;
+        this.coord = coord;
+        this.targetCoord = targetCoord;
+        this.parent = undefined;
+        this.image = undefined;
+        this.color = undefined;
 
-    'Blade',
-    'Piercing',
-    'Impact',
-    'Projectile',
-    'Fire',
-    'Cold',
-    'Poison',
+        // We animate projectiles differently depending on whether they hit or miss.
+        this.hit = true;
+        this.timeLeft = 100; // Later init this properly
+    }
 
-    'Necrotic',
-    'Radiant',
-    'Electric',
+    static newBallistic (coord, targetCoord, hit, color) {
+        const visual = new EffectVisual(EffectVisual.TYPE.Ballistic, coord, targetCoord);
+        visual.hit = hit || true;
+        visual.color = color || 'FFFF00';
 
-    'Action',
-    'Attack',
-    'Damage',
-    'Death',
-    'GroupElimination'
+        return visual;
+    } 
+
+    loadImage () {
+
+    }
+
+    getImage () {
+        // Hmm ... i suppose we will need to know the FishTank's meters per pixel ratio (zoom).
+        // Maybe the resizing should be done in class FishTank.
+        const size = this.size();
+        // Placeholder
+        return this.image;
+    }
+
+    size () {
+        // Replace this placeholder later
+        return 100 * this.nodes.length + 100;
+    }
+}
+
+EffectVisual.TYPE = Util.makeEnum([
+    'Ballistic',
+    'Explosion',
+    'Forcefield',
+    'Surprise'
 ]);
 
-},{"../util/util.js":49}],12:[function(require,module,exports){
-(function (process,__dirname){
-'use strict';
+module.exports = EffectVisual;
 
-// Generator that outputs procedurally generated trees of WNodes (Waffle nodes).
-// These trees represent games states, game elements, narrative elements, and similar concepts.
+// EffectVisual.run();
 
-const fs = require('fs');
+},{"../../util/coord.js":36,"../../util/util.js":37,"../../wnode/wnode.js":38}],3:[function(require,module,exports){
+// const Util = require('../../util/util.js');
 
-// TODO perhaps restructure so that WGenerator doesn't import any Battle20 files.
-// Eg, perhaps CreatureTemplate should not be Battle20-specific?
-const CreatureTemplate = require('../battle20/creaturetemplate.js');
-const Util = require('../util/util.js');
-const WNode = require('../wnode/wnode.js');
+const WIDTH = 1200;
+const HEIGHT = 700;
 
-class WGenerator {
-    // Constructor param will be either a birddecisions-format string or a filename.
-    constructor (rawString, codexPath) {
-        if (! typeof (rawString === 'string') || ! rawString.length) {
+const Constants = {
+    width: WIDTH,
+    height: HEIGHT,
+    factions: {
+        unsc: 'unsc',
+        covenant: 'covenant'
+    },
+    objective: {
+        x: WIDTH / 2,
+        y: HEIGHT / 2
+    },
+    shootChance: 0.01,
+    clearGraphicsEvery: 200  // ms
+};
+
+// Rough draft example version came from http://labs.phaser.io/edit.html?src=src/physics/arcade/mass%20collision%20test.js
+const config = {
+    type: Phaser.WEBGL,
+    width: Constants.width,
+    height: Constants.height,
+    parent: 'phaser-example',
+    physics: {
+        default: 'arcade',
+        arcade: {
+            useTree: false
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
+
+const Individual = new Phaser.Class({
+    Extends: Phaser.GameObjects.Image,
+
+    // Constructor
+    initialize: function Individual (scene, x, y, spriteName, faction) {
+        Phaser.GameObjects.Image.call(this, scene, x, y, spriteName);
+
+        this.xSpeed = 0;
+        this.ySpeed = 0;
+
+        this.faction = faction || randomFromObj(Constants.factions);
+
+        // BTW the first to be created sees empty children arrays.
+        this.target = this.randomEnemy() || Constants.objective;
+
+        this.setBlendMode(0);
+    },
+
+    // Updates the position each cycle
+    update: function (time, delta) {
+        maybeClearGraphics(time);
+
+        this.orient();
+        this.maybeShoot();
+
+        this.x += this.xSpeed * delta;
+        this.y += this.ySpeed * delta;
+    },
+
+    maybeShoot: function () {
+        if (this.target && this.target.active && Math.random() <= Constants.shootChance) {
+            this.shoot();
+        }
+    },
+
+    shoot: function (target) {
+        target = target || this.target || Constants.objective;
+
+        const trajectory = new Phaser.Geom.Line(this.x, this.y, target.x, target.y);
+        graphics.strokeLineShape(trajectory);
+
+        if (target.visible) {
+            target.setActive(false);
+            target.setVisible(false);
+        }
+    },
+
+    // Sets xSpeed and ySpeed correctly
+    orient: function () {
+        if (! (this.target && this.target.active)) {
+            this.target = this.randomEnemy() || Constants.objective;
+        }
+
+        const dest = this.target;
+
+        // If at destination, stop and relax.
+        if (Math.abs(dest.x - this.x) <= 2 && Math.abs(dest.y - this.y) <= 2) {
+            this.xSpeed = 0;
+            this.ySpeed = 0;
             return;
         }
 
-        // Later the this.rawString field might not be necessary.
-        this.rawString = rawString.trim();
-        this.codexPath = codexPath;
-        this.aliasTables = {};
-        this.childTables = {};
-        // Later, make this a pointer to a Glossary instance.
-        // usage: glossary.getTemplate('naga');
-        this.glossary = {};
+        this.direction = Math.atan( (dest.x - this.x) / (dest.y - this.y) );
 
-        // TODO: Add support for ignorable comments in codex files
-        const tableRaws = this.rawString.split('*');
-
-        tableRaws.forEach(
-            tableRaw => {
-                tableRaw = tableRaw.trim();
-
-                if (! tableRaw.length) {
-                    return;
-                }
-
-                if (ChildTable.isAppropriateFor(tableRaw)) {
-                    return this.addChildTable(tableRaw);
-                }
-
-                // Later, this could be neater and not involve a string literal.
-                if (tableRaw.startsWith('template ')) {
-                    return this.addTemplate(tableRaw);
-                }
-
-                // Default case.
-                // Includes '* output'
-                return this.addAliasTable(tableRaw);
-            }
-        );
-
-        // Check that the output alias table exists
-        if (! this.aliasTables.output) {
-            throw new Error(`WGenerator constructor: output table not found. Object.keys(this.aliasTables).length is ${ Object.keys(this.aliasTables).length }`);
-        }
-    }
-
-    addChildTable (tableRaw) {
-        const childTable = new ChildTable(tableRaw, this);
-        // TODO replace terminology: key -> templateName
-        const key = childTable.templateName;
-
-        if (key in this.childTables) {
-            // Later perhaps also mention which file this is, or paste the content of the file
-            throw new Error(`children table key '${ key }' appears twice`);
-        }
-
-        // Later make this case insensitive
-        return this.childTables[key] = childTable;
-    }
-
-    addAliasTable (tableRaw) {
-        const aliasTable = new AliasTable(tableRaw, this);
-        const key = aliasTable.templateName;
-
-        if (key in this.aliasTables) {
-            throw new Error(`alias table key '${ key }' appears twice`);
-        }
-
-        return this.aliasTables[key] = aliasTable;
-    }
-
-    addTemplate (tableRaw) {
-        const templateObj = parseTemplate(tableRaw);
-        const key = templateObj.templateName;
-
-        if (key in this.glossary) {
-            throw new Error(`template key '${ key }' appears twice`);
-        }
-
-        return this.glossary[key] = templateObj;
-    }
-
-    // Returns WNode[]
-    getOutputs (key) {
-        const nodes = this.resolveString(key || '{output}');
-
-        nodes.forEach(
-            n => n.tidy()
-        );
-
-        return nodes;
-    }
-
-    resolveCommas (inputString) {
-        // Util.log(`Top of resolveCommas(), inputString is '${inputString}'`, 'debug');
-
-        return inputString.trim()
-            .split(',')
-            .reduce(
-                (stringsSoFar, s) =>
-                    stringsSoFar.concat(
-                        this.maybeResolveAlias(s)
-                    ),
-                []
-            );
-    }
-
-    // Returns WNode[]
-    resolveString (inputString) {
-        const nodes = this.resolveCommas(inputString)
-            .map(contextString => this.makeSubtree(contextString));
-
-        WNode.sortSubtrees(nodes);
-        return nodes;
-    }
-
-    makeSubtree (cString) {
-        // Util.log(`Top of makeSubtree( '${cString}' ), this.codexPath is ${this.codexPath}`, 'debug');
-
-        return cString.path === this.codexPath ?
-            this.makeLocalSubtree(cString) :
-            WGenerator.makeExternalSubtree(cString);
-    }
-
-    makeLocalSubtree (cString) {
-        // Later, read from the templates of the WGenerator specified by cString.path
-        const node = new WNode(cString.name);
-
-        // Util.log(`Middle of makeLocalSubtree(${cString}). Expression node.templateName is ${node.templateName}`, 'debug');
-
-        this.applyTemplate(node, cString);
-        return this.maybeAddChildren(node);
-    }
-
-    applyTemplate (node, cString) {
-        const template = this.glossary[cString.name];
-        if (! template) {
-            return;
-        }
-
-        for (let prop in template) {
-            // Later there might be some properties that shouldn't be overwritten.
-            node[prop] = template[prop];
-        }
-    }
-
-    // Might modify node.children
-    // Returns a WNode
-    maybeAddChildren (node) {
-        // Later make this case insensitive
-        const table = this.childTables[node.templateName];
-
-        if (table) {
-            // Util.log(`End of maybeAddChildren(node of '${node.templateName}'). table exists.`, 'debug');
-
-            return this.addChildren(node, table);
+        if (dest.y >= this.y) {
+            this.xSpeed = this.speed * Math.sin(this.direction);
+            this.ySpeed = this.speed * Math.cos(this.direction);
         }
         else {
-            // Util.log(`End of maybeAddChildren(node of '${node.templateName}'). table not found.`, 'debug');
-
-            return node;
+            this.xSpeed = -this.speed * Math.sin(this.direction);
+            this.ySpeed = -this.speed * Math.cos(this.direction);
         }
-    }
 
-    // Modifies node.children
-    // Returns the modified WNode
-    addChildren (node, table) {
-        table.children.forEach(
-            childString => {
-                // Note that resolveString() always returns an array.
-                const children = this.resolveString(childString);
-                node.components = node.components.concat(children);
-                children.forEach(
-                    child => {
-                        child.parent = node;
-                    }
-                );
-            }
+        this.rotation = Phaser.Math.Angle.Between(this.x, this.y, dest.x, dest.y) + (Math.PI / 2);
+    },
+
+    randomEnemy: function () {
+        return randomFromFaction(
+            enemyOfFaction(this.faction)
         );
-
-        return node;
     }
+});
 
-    // Returns ContextString[]
-    // No side effects.
-    maybeResolveAlias (str) {
-        str = str.trim();
+let graphics;
+let graphicsLastCleared = 0;
+let controls;
+let player;
+let timeline;
+let unscSquads;
+let covenantSquads;
+let text;
 
-        // Util.log(`Top of maybeResolveAlias( '${str}' )`, 'debug');
+const game = new Phaser.Game(config);
 
-        if (str[0] === '{') {
-            if (str[str.length - 1] !== '}') {
-                throw new Error(`WGenerator.maybeResolveAlias(): Error parsing a string: ${ str }`);
-            }
+function preload () {
+    this.load.path = 'sprites/';
+    this.load.image('soldier', 'fishTankSoldier.png');
+    this.load.image('crate', 'assets/sprites/crate.png');
+}
 
-            const alias = str.slice(1, str.length - 1)
-                .trim();
+function deploySquads (faction) {
+    for (let i = 0; i < 100; i++) {
+        const faction = randomFromObj(Constants.factions);
+        const start = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
+        let squad;
 
-            // Slashes indicate pointers to external WGenerators.
-            // Any slashpaths here will already have been made absolute during AliasTable setup.
-            // Should we convert alias to a ContextString here?
-            return Util.contains(alias, '/') ?
-                WGenerator.resolveExternalAlias(alias) :
-                this.resolveLocalAlias(alias);
-
-            // TODO: resolveExternalAlias returns string[], without reference to which codex it is from. The originating codex must be checked because its ChildTables may be relevant.
-            // One option would be for these funcs to return ContextString objs
-        }
-        else if (str === 'nothing') {
-            return [];
+        if (faction === Constants.factions.unsc) {
+            squad = unscSquads.create(1000, start.y, 'soldier', faction);
+            squad.speed = 0.1;
         }
         else {
-            const cString = new ContextString(str, this.codexPath);
-            return [cString];
+            squad = covenantSquads.create(100, start.y, 'soldier', faction);
+            squad.speed = 0.15;
         }
     }
 
-    resolveLocalAlias (tableName) {
-        // Later make this case insensitive
-        const table = this.aliasTables[tableName];
+    text.setText(`Death Planet, Population ${(unscSquads.length + covenantSquads.length) || 'You'}`);
+}
 
-        if (! table) {
-            throw new Error(`Could not find local alias table: ${ tableName }`);
+function create () {
+    // timeline = new Timeline();
+
+    graphics = this.add.graphics({
+        lineStyle: {
+            width: 4,
+            color: 0xaaaa00
         }
+    });
 
-        return table.getOutputAndResolveIt();
+    graphics.fillStyle(0x004400);
+
+    this.physics.world.setBounds(0, 0, Constants.width, Constants.height);
+
+    unscSquads = this.physics.add.group({
+        classType: Individual,
+        runChildUpdate: true
+    });
+
+    covenantSquads = this.physics.add.group({
+        classType: Individual,
+        runChildUpdate: true
+    });
+
+    // Yikes, looks like im lucky it bound 'this' for me.
+    this.time.addEvent({ delay: 500, callback: deploySquads, callbackScope: this});
+
+    cursors = this.input.keyboard.createCursorKeys();
+
+    player = this.physics.add.image(100, 100, 'crate');
+
+    player.setCollideWorldBounds(true);
+
+    // Later probably have the soldiers collide with each other too.
+    this.physics.add.collider(player, covenantSquads);
+
+    text = this.add.text(10, 10, 'Total: 0', { font: '16px Courier', fill: '#ffffff' });
+}
+
+function update (time, delta) {
+    // See example: http://labs.phaser.io/edit.html?src=src/games/topdownShooter/topdown_combatMechanics.js
+
+    // timeline.computeNextInstant();
+
+    // TODO
+    // maybeReinforce(time);
+
+    player.setVelocity(0);
+
+    if (cursors.left.isDown)
+    {
+        player.setVelocityX(-500);
+    }
+    else if (cursors.right.isDown)
+    {
+        player.setVelocityX(500);
     }
 
-    makeSomePathsAbsolute (slashStr) {
-        return slashStr.split(',')
-            .map(
-                p => {
-                    const path = p.trim();
-                    return this.makePathAbsolute(path);
-                }
-            )
-            .join(',');
+    if (cursors.up.isDown)
+    {
+        player.setVelocityY(-500);
     }
-
-    makePathAbsolute (relativePathStr) {
-        if (relativePathStr.startsWith('{')) {
-            return this.getAbsoluteAlias(relativePathStr);
-        }
-
-        // Referring to a external template name.
-        return this.getAbsolutePath(relativePathStr);
+    else if (cursors.down.isDown)
+    {
+        player.setVelocityY(500);
     }
+}
 
-    getAbsoluteAlias (relativePathAlias) {
-        // One duplicate comparison. I dont think this will slow performance appreciably.
-        if (relativePathAlias.startsWith('{')) {
-            relativePathAlias = relativePathAlias.slice(1);
-        }
-        if (relativePathAlias.endsWith('}')) {
-            relativePathAlias = relativePathAlias.slice(0, relativePathAlias.length - 1);
-        }
+function maybeReinforce (time) {
+    // This may be easier to do after integrating Timeline
+}
 
-        const absolutePath = this.getAbsolutePath(relativePathAlias);
-        return `{${absolutePath}}`;
-    }
-
-    // Later i could return ContextString instead of a absolute path.
-    getAbsolutePath (relativePathStr) {
-        const relativePath = relativePathStr.trim()
-            .split('/');
-
-        // Later: codexPath is sometimes not initialized.
-        let curPath = this.codexPath.split('/');
-
-        // Later, could detect if a path is absolute by checking whether its first term is on a whitelist of settings.
-        // const CONTEXTS = ['40k', 'darktapestry', 'dnd', 'downstairs', 'halo', 'parahumans', 'scifi', 'sunlight', 'wizardingworld', 'yearsofadventure'];
-        while (curPath.length >= 0) {
-            // Util.log(`In ChildTable.getAbsolutePath( '${relativePathStr}' ) loop. curPath is ${curPath}. curPath.length is ${curPath.length}. curPath[0] is ${curPath[0]}.`, 'debug');
-
-            // TODO I may want to interpret the last term as a possible alias table name, but not as a childTable or glossary name.
-            const genPath = WGenerator.interpretRelativePath(relativePath, curPath);
-
-            if (genPath) {
-                return genPath;
-            }
-
-            // do/while would be neater but whatever.
-            if (curPath.length === 0) {
-                break;
-            }
-
-            curPath.pop();
-        }
-
-        throw new Error(`Could not find codex path ${ relativePathStr }`);
-    }
-
-    static exampleRaw () {
-        const patrolRaw = require('../codices/halo/unsc/patrol.js');
-        return patrolRaw;
-    }
-
-    // Example input: 'sunlight/warbands/warrior'
-    static fromCodex (codexPath) {
-        // Later, ignore leading slashes and trailing file extensions.
-        const codexRaw = require(`${ WGenerator.codicesDir() }/${ codexPath }.js`);
-
-        return new WGenerator(codexRaw, codexPath);
-    }
-
-    static fromFile (path) {
-        const fileString = fs.readFileSync(path, 'utf8');
-        return new WGenerator(fileString, codexPath);
-    }
-
-    static codicesDir () {
-        return `${ __dirname }/../codices`;
-    }
-
-    static loadCodices () {
-        // For now, this is hard coded to one fictional setting.
-        WGenerator.loadHaloCodices();
-    }
-
-    static loadHaloCodices () {
-        // Util.log(`Top of loadHaloCodices(), WGenerator.generators is ${WGenerator.generators}.`, 'debug');
-
-        if (! WGenerator.generators) {
-            WGenerator.generators = {};
-        }
-        else if (Util.exists( WGenerator.generators['halo/unsc/item'] )) {
-            // WGenerator.generators already looks loaded.
-            return;
-        }
-
-        // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
-        WGenerator.addGenerator(
-            require('../codices/halo/unsc/item'),
-            'halo/unsc/item'
-        );
-
-        // Util.log(`Middle of loadHaloCodices(), item is loaded.`, 'debug');
-
-        WGenerator.addGenerator(
-            require('../codices/halo/unsc/individual'),
-            'halo/unsc/individual'
-        );
-
-        // Util.log(`Middle of loadHaloCodices(), individual is loaded.`, 'debug');
-
-        WGenerator.addGenerator(
-            require('../codices/halo/unsc/squad'),
-            'halo/unsc/squad'
-        );
-        WGenerator.addGenerator(
-            require('../codices/halo/unsc/company'),
-            'halo/unsc/company'
-        );
-        WGenerator.addGenerator(
-            require('../codices/halo/unsc/battalion'),
-            'halo/unsc/battalion'
-        );
-        // WGenerator.addGenerator(
-        //     require('../codices/halo/unsc/vehicle'),
-        //     'halo/unsc/vehicle'
-        // );
-        WGenerator.addGenerator(
-            require('../codices/halo/unsc/ship'),
-            'halo/unsc/ship'
-        );
-        WGenerator.addGenerator(
-            require('../codices/halo/unsc/fleet'),
-            'halo/unsc/fleet'
-        );
-        WGenerator.addGenerator(
-            require('../codices/halo/unsc/patrol'),
-            'halo/unsc/patrol'
-        );
-    }
-
-    static addGenerator (moduleContents, codexPath) {
-        const gen = new WGenerator(moduleContents, codexPath);
-
-        WGenerator.generators[codexPath] = gen;
-    }
-
-    // The path parameters are arrays of strings.
-    // Returns a absolute path version of the relative path (as a string) if it finds one
-    // Otherwise it returns undefined.
-    static interpretRelativePath (relativePath, contextPath) {
-        // console.log(`Top of WGenerator.interpretRelativePath([${relativePath}], [${contextPath}])`);
-
-        // The last term of relativePath might refer to a file.
-        const filePath = WGenerator.interpretRelativePathAsFile(relativePath, contextPath);
-
-        if (filePath) {
-            return filePath;
-        }
-
-        // Or the last term might refer to a name within a context path.
-        return WGenerator.interpretRelativePathAsName(relativePath, contextPath);
-    }
-
-    // Path parameters are arrays of strings
-    // Returns string or undefined
-    static interpretRelativePathAsFile (relativePath, contextPath) {
-        // concat() has no side effects.
-        const fullPath = contextPath.concat(relativePath);
-        const fullPathStr = fullPath.join('/');
-        if (WGenerator.generators[fullPathStr]) {
-            return fullPathStr;
-        }
-
-        return;
-    }
-
-    // Path parameters are arrays of strings
-    // Returns string or undefined
-    static interpretRelativePathAsName (relativePath, contextPath) {
-        if (relativePath.length < 2) {
-            return;
-        }
-
-        const nameIndex = relativePath.length - 1;
-
-        // Omit the name
-        // concat() and slice() have no side effects.
-        const genPath = contextPath.concat(relativePath.slice(0, nameIndex));
-        const genPathStr = genPath.join('/');
-        const gen = WGenerator.generators[genPathStr];
-
-        if (gen) {
-            const goalName = relativePath[nameIndex];
-            return genPathStr + '/' + goalName;
-        }
-
-        return;
-    }
-
-    // The 'absolutePath' param might be the path to a codex or to a name within that codex.
-    static findGenAndTable (absolutePath) {
-        // First check if this refers to whole codex file instead of a table within it.
-        let gen = WGenerator.generators[absolutePath];
-
-        if (gen) {
-            return {
-                gen: gen,
-                name: 'output'
-            };
-        }
-
-        // Otherwise interpret the last term of absolutePath as the name of a table.
-        // Later, functionize this string-splitting logic.
-        const terms = absolutePath.split('/');
-        const tableIndex = terms.length - 1;
-        const genPath = terms.slice(0, tableIndex)
-            .join('/');
-        const tableName = terms[tableIndex];
-
-        gen = WGenerator.generators[genPath];
-
-        if (gen) {
-            return {
-                gen: gen,
-                name: tableName
-            };
-        }
-
-        throw new Error(`Could not find a WGenerator for this absolutePath: ${ absolutePath }`);
-    }
-
-    static resolveExternalAlias (absolutePath) {
-        const findings = WGenerator.findGenAndTable(absolutePath);
-        // Later, check if this throwing is redundant.
-        if (! findings || ! findings.gen || ! findings.name) {
-            throw new Error(`Did not find gen and/or name for absolutePath: ${absolutePath}`);
-        }
-
-        return findings.gen.resolveLocalAlias(findings.name);
-    }
-
-    // Returns WNode
-    // References the appropriate WGenerator's ChildTables, templates, etc
-    // The path was already made absolute during table construction (both AliasTable and ChildTable rows).
-    static makeExternalSubtree (cString) {
-        const gen = WGenerator.generators[cString.path];
-        return gen.makeLocalSubtree(cString);
-    }
-
-    static run () {
-        WGenerator.loadCodices();
-
-        const codexPaths = Object.keys(WGenerator.generators || []).join('\n');
-        console.log(`Loaded the following WGenerator codices:\n${ codexPaths }\n`);
-
-        if (! process.argv ||
-            ! process.argv[0] ||
-            ! process.argv[0].endsWith('node') ||
-            ! process.argv[1].endsWith('wgenerator.js')) {
-            // The following logic is for command-line use only.
-            return;
-        }
-
-        let output;
-
-        if (process.argv.length > 2) {
-            const wgen = WGenerator.fromCodex(process.argv[2]);
-            output = wgen.getOutputs();
-        }
-        else {
-            output = [];
-        }
-
-        WGenerator.debugPrint(output);
-    }
-
-    static debugPrint (output) {
-        output.forEach(
-            node => {
-                console.log(node.toPrettyString());
-                // Util.log(`There are ${node.components.length} components. The first one is ${node.components[0] && node.components[0].templateName}.`, 'debug');
-            }
-        );
-    }
-
-    static test () {
-        console.log(`WGenerator.test(): \n\n`);
-
-        const wgen = WGenerator.fromCodex('battle20/halo/unsc/group');
-
-        return wgen.getOutputs();
+function maybeClearGraphics (time) {
+    if (time - graphicsLastCleared >= Constants.clearGraphicsEvery) {
+        graphics.clear();
+        graphicsLastCleared = time;
     }
 }
 
 
-class AliasTable {
-    constructor (rawString, generator) {
-        // The parent pointer is used when resolving slash path aliases.
-        this.generator = generator;
-        this.outputs = [];
+function enemyOfFaction (goodGuys) {
+    return goodGuys === Constants.factions.unsc ?
+        Constants.factions.covenant :
+        Constants.factions.unsc;
+}
 
-        const lines = rawString.trim()
-            .split('\n')
-            .map(line => line.trim());
+// Later implement notThisOne exclusion functionality.
+function randomFromFaction (faction, notThisOne) {
+    const group = faction === Constants.factions.unsc ? unscSquads : covenantSquads;
 
-        // Later we could complain if the first line's name contains whitespace.
-        this.templateName = AliasTable.withoutTheStarter(lines[0]);
+    const squads = group.getChildren();
+    let offset = randomIntBelow(squads.length);
 
-        for (let li = 1; li < lines.length; li++) {
-            // Later probably functionize this part.
-            const line = lines[li];
-
-            // Util.log(`in AliasTable() constructor, parsing line '${line}'`, 'debug');
-
-            if (line === '') {
-                continue;
-            }
-
-            const parts = line.split(/\s/);
-
-            // Later i want to also support some sort of simple no-weights format, like Perchance does.
-            if (parts.length <= 1) {
-                throw new Error(`AliasTable could not parse line: ${parts.join(' ')}`);
-            }
-
-            const weightStr = parts[0];
-            const weight = parseInt(weightStr);
-
-            if (weight === 0) {
-                continue;
-            }
-            else if (typeof weight !== 'number') {
-                throw new Error(`AliasTable could not parse weight: ${ weightStr }`);
-            }
-
-            // Everything after the weight prefix.
-            let alias = line.slice(weightStr.length)
-                .trim();
-
-            // During WGenerator construction, Interpret keys with slashes as external pointers.
-            if (Util.contains(alias, '/')) {
-                // Note that 'alias' could be a comma-separated set of names
-                // {halo/unsc/item/dualWieldable}, {halo/unsc/item/dualWieldable}
-                alias = this.generator.makeSomePathsAbsolute(alias);
-            }
-
-            // Replicated outputs. We assume memory is plentiful but time is scarce.
-            for (let wi = 0; wi < weight; wi++) {
-                this.outputs.push(alias);
-            }
+    // BTW, this has a slight bias towards active squads that are preceded by multiple inactive squads.
+    // This could be made less biased by calling Math.random() in a while loop.
+    // This would be slightly less performant.
+    for (let k = 0; k < squads.length; k++) {
+        const i = (k + offset) % squads.length;
+        const candidate = squads[i];
+        if (candidate.active && candidate !== notThisOne) {
+            return candidate;
         }
     }
 
-    // Returns string
-    getOutput () {
-        return Util.randomOf(this.outputs);
-    }
-
-    getOutputAndResolveIt () {
-        const outputStr = this.getOutput();
-
-        return this.generator.resolveCommas(outputStr);
-    }
-
-    // TODO this logic is needed by ChildTable too. Move it to WGenerator (ie parent).
-
-    static isAppropriateFor (tableString) {
-        const t = tableString.trim()
-            .toLowerCase();
-
-        if (
-            AliasTable.STARTERS.some(
-                starter => t.startsWith(starter)
-            )
-        ) {
-            return true;
-        }
-
-        return t.startsWith('output');
-    }
-
-
-    static withoutTheStarter (rawString) {
-        const s = rawString.trim();
-        const sLow = s.toLowerCase();
-
-        for (let starter of AliasTable.STARTERS) {
-            if (sLow.startsWith(starter)) {
-                return s.slice(starter.length)
-                    .trim();
-            }
-        }
-
-        return s;
-    }
+    // Case where whole faction is not active:
+    return undefined;
 }
 
-AliasTable.STARTERS = [
-    'alias'
-];
-
-class ChildTable {
-    constructor (rawString, generator) {
-        this.generator = generator;
-
-        const lines = rawString.trim()
-            .split('\n')
-            .map(child => child.trim());
-
-        this.templateName = ChildTable.withoutTheStarter(lines[0]);
-        this.children = lines.slice(1)
-            .map(
-                line => {
-                    if (Util.contains(line, '/')) {
-                        // Util.log(`In ChildTable constructor. line is ${line}`, 'debug');
-
-                        line = this.generator.makePathAbsolute(line);
-                    }
-
-                    return line;
-                }
-            );
-    }
-
-    static isAppropriateFor (tableString) {
-        const t = tableString.trim()
-            .toLowerCase();
-
-        return ChildTable.STARTERS.some(
-            starter => t.startsWith(starter)
-        );
-    }
-
-    static withoutTheStarter (rawString) {
-        const s = rawString.trim();
-        const sLow = s.toLowerCase();
-
-        for (let starter of ChildTable.STARTERS) {
-            if (sLow.startsWith(starter)) {
-                return s.slice(starter.length)
-                    .trim();
-            }
-        }
-
-        return s;
-    }
+function randomIntBelow (n) {
+    return Math.floor(Math.random() * n);
 }
 
-ChildTable.STARTERS = [
-    'children of',
-    'childrenof'
-    // 'childrenOf' is implied by the call to toLowerCase()
-];
-
-// Intermediate representation used during parsing and generation. Represents a name (of a template or of a alias) with a codex path for context.
-// Alternate names: CodexString, PathName, PathString, ContextName, ContextString
-class ContextString {
-    // Example:
-    // {
-    //     name: 'civilian',
-    //     codexPath: 'halo/unsc/individual'
-    // }
-    constructor (name, path) {
-        if (Util.contains(name, '/')) {
-            const findings = WGenerator.findGenAndTable(name);
-            this.name = findings.name;
-            this.path = findings.gen.codexPath;
-        }
-        else {
-            this.name = name;
-            // TODO: guarantee that this is always a absolute path.
-            this.path = path;
-        }
-    }
-
-    toString () {
-        return `{name:${this.name}, path:${this.path}}`;
-    }
+// Later import util.js properly. Perhaps Browserify or http-server is suitable.
+function randomOf (array) {
+    const index = randomIntBelow(array.length);
+    return array[index];
 }
 
-// TODO put this in class Template and template.js or something.
-// Later likely rename to class TraitsTable and '* traits foo', for clarity.
-// This will probably become or call a constructor
-// and store the first line in this.templateName
-function parseTemplate (tableRaw) {
-    const templateObj = new CreatureTemplate();
-
-    tableRaw.split('\n')
-        .slice(1)
-        .map(
-            line => {
-                const parsed = parseTemplateLine(line);
-                const key = parsed.key;
-
-                if (
-                    key in templateObj &&
-                    ! ['tags', 'actions', 'resistance'].includes(key)
-                ) {
-                    throw new Error(`parseTemplate(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
-                }
-
-                templateObj[key] = parsed.value;
-
-                // Util.log(`in parseTemplate(). Just wrote key/value pair {${key}: ${parsed.value}}`, 'debug');
-            }
-        );
-
-    // templateObj.key = templateKey(tableRaw);
-    templateObj.templateName = templateKey(tableRaw);
-    templateObj.setUpAction();
-
-    // Later: at some point, detect whether it is a ActionTemplate or CreatureTemplate.
-    // Probably mark templateObj.type, or instantiate the appropriate class, or something.
-
-    return templateObj;
+function randomFromObj (obj) {
+    const key = randomOf(Object.keys(obj));
+    return obj[key];
 }
 
-function parseTemplateLine (line) {
-    line = line.trim();
-
-    const colonIndex = line.indexOf(':');
-
-    if (colonIndex < 0) {
-        throw new Error(`parseTemplateLine(): No colon found in ${ line }`);
-    }
-
-    const key = line.slice(0, colonIndex)
-        .trim();
-    const rest = line.slice(colonIndex + 1)
-        .trim();
-
-    let value;
-    if (key === 'tags') {
-        value = rest.split(/\s/);
-    }
-    else if (key === 'resistance') {
-        value = {};
-
-        const entries = rest.split(',');
-
-        entries.forEach(
-            e => {
-                const parts = e.trim()
-                    .split(/\s/);
-                const resistanceKey = parts[0];
-                const modifier = Number(parts[1]);
-
-                value[resistanceKey] = modifier;
-            }
-        );
-    }
-    else if (rest === 'true') {
-        value = true;
-    }
-    else if (rest === 'false') {
-        value = false;
-    }
-    else {
-        // number case.
-        const parsed = Number(rest);
-
-        value = Util.exists(parsed) ?
-            parsed :
-            rest;
-
-        // Util.log(`in parseTemplateLine( '${line}' ). value is ${value}.`, 'debug');
-    }
-
-    return {
-        key: key,
-        value: value
-    };
-}
-
-function templateKey (tableRaw) {
-    const START = 'template ';
-    const startIndex = tableRaw.indexOf(START);
-    const endIndex = tableRaw.indexOf('\n');
-
-    return tableRaw.slice(startIndex + START.length, endIndex)
-        .trim();
-}
-
-module.exports = WGenerator;
-
-
-
-// Run
-WGenerator.run();
-
-
-
-
-/*
-{output}
-v
-parse
-v
-resolveAlias('output')
-v
-{leaders}, {troops}
-v
-parse
-v
-resolveAlias('leaders') and resolveAlias('troops')
-v
-'officer' and 'officer' and 'regular'
-v
-new WNode('officer') etc
-v
-maybeAddChildren(node)
-v
-addChildren(node, node.templateName)
-
-So maybe strings go to parse(), which ultimately resolves to WNode[]
-And calls maybeAddChildren on those.
-
-2018 September 20:
-parse() or resolveString() takes any string and returns WNode[]
-it calls resolveCommas(), resolveAlias(), new WNode(), and maybeAddChildren()
-(or replace resolveAlias() with maybeResolveAlias(), whichever looks clearer.)
-
-resolveAlias() now returns string[], which contains no aliases.
-
-maybeAddChildren(node) looks up the strings representing children, calls parse() on them (this is recursion), and appends the nodes parse() returns to node.components as a side effect. No return value necessary, i think.
-
-More code in black notebook.
-
-
-
-In the longer term, would be nice if the syntax could specify the generation of a grid.
-Then you could generate a fleet of spaceships and also some basic floor plans of their bridges and cargo bays.
-Or island maps.
-But i guess that each square is so relevant to the contents of its neighbors that this reductionist generation might not produce very good results.
-Everything in each square appears at a random part of the island with uniform probability, right?
-I guess you could alias the squares as ForestSquare, DesertSquare, etc ....
-But still, how would you make sure the ForestSquares are adjacent to each other?
-I think perhaps the grid generation is best done by another module.
-That module could call WGenerator, which outputs a tree describing one square.
-Similarly, WGenerator could describe a spaceship and one of the leaves can be of template frigateFloorPlan.
-Outside WGenerator, frigateFloorPlan can call some grid generation program.
-That grid generation program can call WGenerator on each square, with inputs like 'squareBesideWall' and 'storageSquare'.
-So the final output will be a Waffle tree with grids in the middle. A tree containing grids of subtrees.
-Waffle will ideally support this.
-The ship node will have a grid node (representing the cargo bay) in its .components, or similar.
-
-
-exampleRaw
-
-|
-v
-
-exampleOutput:
-  - marine:
-    has:
-      - flakArmor
-      - battleRifle
-  - marine:
-    has:
-      - flakArmor
-      - smg
-  - warthog
-
-
-
-I may eventually want to combine the file of the children and alias tables with the file of template definitions.
-Didn't i call this the codex / templates split in the warbands project?
-Counterargument: I may want to have a template called 'dropship'. 'dropship' may have both children (soldiers) and stats.
-Is that a blocker?
-No.
-Entries would look like:
-* children of dropship
-* dropship [meaning the template's chassis, stats, variations from the chassis, whatever]
-There couldn't be a alias named dropship
-but maybe * dropshipSquad or something
-
-The above plan might require tagging alias tables like:
-* alias dropshipSquad
-
-...
-
-Parsing external pointers
-localThing
-{localThing}
-halo/unsc/item/externalThing
-{halo/unsc/item/externalThing}
-
-
-
-
-*/
-
-}).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":2,"../codices/halo/unsc/battalion":3,"../codices/halo/unsc/company":4,"../codices/halo/unsc/fleet":5,"../codices/halo/unsc/individual":6,"../codices/halo/unsc/item":7,"../codices/halo/unsc/patrol":8,"../codices/halo/unsc/patrol.js":8,"../codices/halo/unsc/ship":9,"../codices/halo/unsc/squad":10,"../util/util.js":49,"../wnode/wnode.js":50,"_process":52,"fs":51}],13:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 // return a string with the provided number formatted with commas.
 // can specify either a Number or a String.
 function commaNumber(number, separator, decimalChar) {
@@ -2861,434 +493,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],14:[function(require,module,exports){
-/*!
- * hotkeys-js v3.4.4
- * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies.
- * 
- * Copyright (c) 2019 kenny wong <wowohoo@qq.com>
- * http://jaywcjlove.github.io/hotkeys
- * 
- * Licensed under the MIT license.
- */
-
-'use strict';
-
-var isff = typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase().indexOf('firefox') > 0 : false;
-
-// 绑定事件
-function addEvent(object, event, method) {
-  if (object.addEventListener) {
-    object.addEventListener(event, method, false);
-  } else if (object.attachEvent) {
-    object.attachEvent('on' + event, function () {
-      method(window.event);
-    });
-  }
-}
-
-// 修饰键转换成对应的键码
-function getMods(modifier, key) {
-  var mods = key.slice(0, key.length - 1);
-  for (var i = 0; i < mods.length; i++) {
-    mods[i] = modifier[mods[i].toLowerCase()];
-  }return mods;
-}
-
-// 处理传的key字符串转换成数组
-function getKeys(key) {
-  if (!key) key = '';
-
-  key = key.replace(/\s/g, ''); // 匹配任何空白字符,包括空格、制表符、换页符等等
-  var keys = key.split(','); // 同时设置多个快捷键，以','分割
-  var index = keys.lastIndexOf('');
-
-  // 快捷键可能包含','，需特殊处理
-  for (; index >= 0;) {
-    keys[index - 1] += ',';
-    keys.splice(index, 1);
-    index = keys.lastIndexOf('');
-  }
-
-  return keys;
-}
-
-// 比较修饰键的数组
-function compareArray(a1, a2) {
-  var arr1 = a1.length >= a2.length ? a1 : a2;
-  var arr2 = a1.length >= a2.length ? a2 : a1;
-  var isIndex = true;
-
-  for (var i = 0; i < arr1.length; i++) {
-    if (arr2.indexOf(arr1[i]) === -1) isIndex = false;
-  }
-  return isIndex;
-}
-
-var _keyMap = { // 特殊键
-  backspace: 8,
-  tab: 9,
-  clear: 12,
-  enter: 13,
-  return: 13,
-  esc: 27,
-  escape: 27,
-  space: 32,
-  left: 37,
-  up: 38,
-  right: 39,
-  down: 40,
-  del: 46,
-  delete: 46,
-  ins: 45,
-  insert: 45,
-  home: 36,
-  end: 35,
-  pageup: 33,
-  pagedown: 34,
-  capslock: 20,
-  '⇪': 20,
-  ',': 188,
-  '.': 190,
-  '/': 191,
-  '`': 192,
-  '-': isff ? 173 : 189,
-  '=': isff ? 61 : 187,
-  ';': isff ? 59 : 186,
-  '\'': 222,
-  '[': 219,
-  ']': 221,
-  '\\': 220
-};
-
-var _modifier = { // 修饰键
-  '⇧': 16,
-  shift: 16,
-  '⌥': 18,
-  alt: 18,
-  option: 18,
-  '⌃': 17,
-  ctrl: 17,
-  control: 17,
-  '⌘': isff ? 224 : 91,
-  cmd: isff ? 224 : 91,
-  command: isff ? 224 : 91
-};
-var _downKeys = []; // 记录摁下的绑定键
-var modifierMap = {
-  16: 'shiftKey',
-  18: 'altKey',
-  17: 'ctrlKey'
-};
-var _mods = { 16: false, 18: false, 17: false };
-var _handlers = {};
-
-// F1~F12 特殊键
-for (var k = 1; k < 20; k++) {
-  _keyMap['f' + k] = 111 + k;
-}
-
-// 兼容Firefox处理
-modifierMap[isff ? 224 : 91] = 'metaKey';
-_mods[isff ? 224 : 91] = false;
-
-var _scope = 'all'; // 默认热键范围
-var isBindElement = false; // 是否绑定节点
-
-// 返回键码
-var code = function code(x) {
-  return _keyMap[x.toLowerCase()] || _modifier[x.toLowerCase()] || x.toUpperCase().charCodeAt(0);
-};
-
-// 设置获取当前范围（默认为'所有'）
-function setScope(scope) {
-  _scope = scope || 'all';
-}
-// 获取当前范围
-function getScope() {
-  return _scope || 'all';
-}
-// 获取摁下绑定键的键值
-function getPressedKeyCodes() {
-  return _downKeys.slice(0);
-}
-
-// 表单控件控件判断 返回 Boolean
-function filter(event) {
-  var target = event.target || event.srcElement;
-  var tagName = target.tagName;
-  // 忽略这些情况下快捷键无效
-
-  return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' || target.isContentEditable);
-}
-
-// 判断摁下的键是否为某个键，返回true或者false
-function isPressed(keyCode) {
-  if (typeof keyCode === 'string') {
-    keyCode = code(keyCode); // 转换成键码
-  }
-  return _downKeys.indexOf(keyCode) !== -1;
-}
-
-// 循环删除handlers中的所有 scope(范围)
-function deleteScope(scope, newScope) {
-  var handlers = void 0;
-  var i = void 0;
-
-  // 没有指定scope，获取scope
-  if (!scope) scope = getScope();
-
-  for (var key in _handlers) {
-    if (Object.prototype.hasOwnProperty.call(_handlers, key)) {
-      handlers = _handlers[key];
-      for (i = 0; i < handlers.length;) {
-        if (handlers[i].scope === scope) handlers.splice(i, 1);else i++;
-      }
-    }
-  }
-
-  // 如果scope被删除，将scope重置为all
-  if (getScope() === scope) setScope(newScope || 'all');
-}
-
-// 清除修饰键
-function clearModifier(event) {
-  var key = event.keyCode || event.which || event.charCode;
-  var i = _downKeys.indexOf(key);
-
-  // 从列表中清除按压过的键
-  if (i >= 0) _downKeys.splice(i, 1);
-
-  // 修饰键 shiftKey altKey ctrlKey (command||metaKey) 清除
-  if (key === 93 || key === 224) key = 91;
-  if (key in _mods) {
-    _mods[key] = false;
-
-    // 将修饰键重置为false
-    for (var k in _modifier) {
-      if (_modifier[k] === key) hotkeys[k] = false;
-    }
-  }
-}
-
-// 解除绑定某个范围的快捷键
-function unbind(key, scope, method) {
-  var multipleKeys = getKeys(key);
-  var keys = void 0;
-  var mods = [];
-  var obj = void 0;
-  // 通过函数判断，是否解除绑定
-  // https://github.com/jaywcjlove/hotkeys/issues/44
-  if (typeof scope === 'function') {
-    method = scope;
-    scope = 'all';
-  }
-
-  for (var i = 0; i < multipleKeys.length; i++) {
-    // 将组合快捷键拆分为数组
-    keys = multipleKeys[i].split('+');
-
-    // 记录每个组合键中的修饰键的键码 返回数组
-    if (keys.length > 1) mods = getMods(_modifier, keys);
-
-    // 获取除修饰键外的键值key
-    key = keys[keys.length - 1];
-    key = key === '*' ? '*' : code(key);
-
-    // 判断是否传入范围，没有就获取范围
-    if (!scope) scope = getScope();
-
-    // 如何key不在 _handlers 中返回不做处理
-    if (!_handlers[key]) return;
-
-    // 清空 handlers 中数据，
-    // 让触发快捷键键之后没有事件执行到达解除快捷键绑定的目的
-    for (var r = 0; r < _handlers[key].length; r++) {
-      obj = _handlers[key][r];
-      // 通过函数判断，是否解除绑定，函数相等直接返回
-      var isMatchingMethod = method ? obj.method === method : true;
-
-      // 判断是否在范围内并且键值相同
-      if (isMatchingMethod && obj.scope === scope && compareArray(obj.mods, mods)) {
-        _handlers[key][r] = {};
-      }
-    }
-  }
-}
-
-// 对监听对应快捷键的回调函数进行处理
-function eventHandler(event, handler, scope) {
-  var modifiersMatch = void 0;
-
-  // 看它是否在当前范围
-  if (handler.scope === scope || handler.scope === 'all') {
-    // 检查是否匹配修饰符（如果有返回true）
-    modifiersMatch = handler.mods.length > 0;
-
-    for (var y in _mods) {
-      if (Object.prototype.hasOwnProperty.call(_mods, y)) {
-        if (!_mods[y] && handler.mods.indexOf(+y) > -1 || _mods[y] && handler.mods.indexOf(+y) === -1) modifiersMatch = false;
-      }
-    }
-
-    // 调用处理程序，如果是修饰键不做处理
-    if (handler.mods.length === 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91] || modifiersMatch || handler.shortcut === '*') {
-      if (handler.method(event, handler) === false) {
-        if (event.preventDefault) event.preventDefault();else event.returnValue = false;
-        if (event.stopPropagation) event.stopPropagation();
-        if (event.cancelBubble) event.cancelBubble = true;
-      }
-    }
-  }
-}
-
-// 处理keydown事件
-function dispatch(event) {
-  var asterisk = _handlers['*'];
-  var key = event.keyCode || event.which || event.charCode;
-
-  // 搜集绑定的键
-  if (_downKeys.indexOf(key) === -1) _downKeys.push(key);
-
-  // Gecko(Firefox)的command键值224，在Webkit(Chrome)中保持一致
-  // Webkit左右command键值不一样
-  if (key === 93 || key === 224) key = 91;
-
-  if (key in _mods) {
-    _mods[key] = true;
-
-    // 将特殊字符的key注册到 hotkeys 上
-    for (var k in _modifier) {
-      if (_modifier[k] === key) hotkeys[k] = true;
-    }
-
-    if (!asterisk) return;
-  }
-
-  // 将modifierMap里面的修饰键绑定到event中
-  for (var e in _mods) {
-    if (Object.prototype.hasOwnProperty.call(_mods, e)) {
-      _mods[e] = event[modifierMap[e]];
-    }
-  }
-
-  // 表单控件过滤 默认表单控件不触发快捷键
-  if (!hotkeys.filter.call(this, event)) return;
-
-  // 获取范围 默认为all
-  var scope = getScope();
-
-  // 对任何快捷键都需要做的处理
-  if (asterisk) {
-    for (var i = 0; i < asterisk.length; i++) {
-      if (asterisk[i].scope === scope) eventHandler(event, asterisk[i], scope);
-    }
-  }
-  // key 不在_handlers中返回
-  if (!(key in _handlers)) return;
-
-  for (var _i = 0; _i < _handlers[key].length; _i++) {
-    // 找到处理内容
-    eventHandler(event, _handlers[key][_i], scope);
-  }
-}
-
-function hotkeys(key, option, method) {
-  var keys = getKeys(key); // 需要处理的快捷键列表
-  var mods = [];
-  var scope = 'all'; // scope默认为all，所有范围都有效
-  var element = document; // 快捷键事件绑定节点
-  var i = 0;
-
-  // 对为设定范围的判断
-  if (method === undefined && typeof option === 'function') {
-    method = option;
-  }
-
-  if (Object.prototype.toString.call(option) === '[object Object]') {
-    if (option.scope) scope = option.scope; // eslint-disable-line
-    if (option.element) element = option.element; // eslint-disable-line
-  }
-
-  if (typeof option === 'string') scope = option;
-
-  // 对于每个快捷键进行处理
-  for (; i < keys.length; i++) {
-    key = keys[i].split('+'); // 按键列表
-    mods = [];
-
-    // 如果是组合快捷键取得组合快捷键
-    if (key.length > 1) mods = getMods(_modifier, key);
-
-    // 将非修饰键转化为键码
-    key = key[key.length - 1];
-    key = key === '*' ? '*' : code(key); // *表示匹配所有快捷键
-
-    // 判断key是否在_handlers中，不在就赋一个空数组
-    if (!(key in _handlers)) _handlers[key] = [];
-
-    _handlers[key].push({
-      scope: scope,
-      mods: mods,
-      shortcut: keys[i],
-      method: method,
-      key: keys[i]
-    });
-  }
-  // 在全局document上设置快捷键
-  if (typeof element !== 'undefined' && !isBindElement) {
-    isBindElement = true;
-    addEvent(element, 'keydown', function (e) {
-      dispatch(e);
-    });
-    addEvent(element, 'keyup', function (e) {
-      clearModifier(e);
-    });
-  }
-}
-
-var _api = {
-  setScope: setScope,
-  getScope: getScope,
-  deleteScope: deleteScope,
-  getPressedKeyCodes: getPressedKeyCodes,
-  isPressed: isPressed,
-  filter: filter,
-  unbind: unbind
-};
-for (var a in _api) {
-  if (Object.prototype.hasOwnProperty.call(_api, a)) {
-    hotkeys[a] = _api[a];
-  }
-}
-
-if (typeof window !== 'undefined') {
-  var _hotkeys = window.hotkeys;
-  hotkeys.noConflict = function (deep) {
-    if (deep && window.hotkeys === hotkeys) {
-      window.hotkeys = _hotkeys;
-    }
-    return hotkeys;
-  };
-  window.hotkeys = hotkeys;
-}
-
-module.exports = hotkeys;
-
-},{}],15:[function(require,module,exports){
-/*! hotkeys-js v3.4.4 | MIT (c) 2019 kenny wong <wowohoo@qq.com> | http://jaywcjlove.github.io/hotkeys */
-"use strict";var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,o,t){e.addEventListener?e.addEventListener(o,t,!1):e.attachEvent&&e.attachEvent("on"+o,function(){t(window.event)})}function getMods(e,o){for(var t=o.slice(0,o.length-1),n=0;n<t.length;n++)t[n]=e[t[n].toLowerCase()];return t}function getKeys(e){e||(e="");for(var o=(e=e.replace(/\s/g,"")).split(","),t=o.lastIndexOf("");0<=t;)o[t-1]+=",",o.splice(t,1),t=o.lastIndexOf("");return o}function compareArray(e,o){for(var t=e.length<o.length?o:e,n=e.length<o.length?e:o,r=!0,s=0;s<t.length;s++)-1===n.indexOf(t[s])&&(r=!1);return r}for(var _keyMap={backspace:8,tab:9,clear:12,enter:13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":isff?224:91,cmd:isff?224:91,command:isff?224:91},_downKeys=[],modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey"},_mods={16:!1,18:!1,17:!1},_handlers={},k=1;k<20;k++)_keyMap["f"+k]=111+k;var _scope="all",isBindElement=_mods[isff?224:91]=!(modifierMap[isff?224:91]="metaKey"),code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function filter(e){var o=e.target||e.srcElement,t=o.tagName;return!("INPUT"===t||"SELECT"===t||"TEXTAREA"===t||o.isContentEditable)}function isPressed(e){return"string"==typeof e&&(e=code(e)),-1!==_downKeys.indexOf(e)}function deleteScope(e,o){var t=void 0,n=void 0;for(var r in e||(e=getScope()),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,r))for(t=_handlers[r],n=0;n<t.length;)t[n].scope===e?t.splice(n,1):n++;getScope()===e&&setScope(o||"all")}function clearModifier(e){var o=e.keyCode||e.which||e.charCode,t=_downKeys.indexOf(o);if(t<0||_downKeys.splice(t,1),93!==o&&224!==o||(o=91),o in _mods)for(var n in _mods[o]=!1,_modifier)_modifier[n]===o&&(hotkeys[n]=!1)}function unbind(e,o,t){var n=getKeys(e),r=void 0,s=[],i=void 0;"function"==typeof o&&(t=o,o="all");for(var d=0;d<n.length;d++){if(1<(r=n[d].split("+")).length&&(s=getMods(_modifier,r)),e="*"===(e=r[r.length-1])?"*":code(e),o||(o=getScope()),!_handlers[e])return;for(var a=0;a<_handlers[e].length;a++){i=_handlers[e][a],(!t||i.method===t)&&i.scope===o&&compareArray(i.mods,s)&&(_handlers[e][a]={})}}}function eventHandler(e,o,t){var n=void 0;if(o.scope===t||"all"===o.scope){for(var r in n=0<o.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(!_mods[r]&&-1<o.mods.indexOf(+r)||_mods[r]&&-1===o.mods.indexOf(+r))&&(n=!1);(0!==o.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!n&&"*"!==o.shortcut||!1===o.method(e,o)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(e){var o=_handlers["*"],t=e.keyCode||e.which||e.charCode;if(-1===_downKeys.indexOf(t)&&_downKeys.push(t),93!==t&&224!==t||(t=91),t in _mods){for(var n in _mods[t]=!0,_modifier)_modifier[n]===t&&(hotkeys[n]=!0);if(!o)return}for(var r in _mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(_mods[r]=e[modifierMap[r]]);if(hotkeys.filter.call(this,e)){var s=getScope();if(o)for(var i=0;i<o.length;i++)o[i].scope===s&&eventHandler(e,o[i],s);if(t in _handlers)for(var d=0;d<_handlers[t].length;d++)eventHandler(e,_handlers[t][d],s)}}function hotkeys(e,o,t){var n=getKeys(e),r=[],s="all",i=document,d=0;for(void 0===t&&"function"==typeof o&&(t=o),"[object Object]"===Object.prototype.toString.call(o)&&(o.scope&&(s=o.scope),o.element&&(i=o.element)),"string"==typeof o&&(s=o);d<n.length;d++)r=[],1<(e=n[d].split("+")).length&&(r=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({scope:s,mods:r,shortcut:n[d],method:t,key:n[d]});void 0===i||isBindElement||(isBindElement=!0,addEvent(i,"keydown",function(e){dispatch(e)}),addEvent(i,"keyup",function(e){clearModifier(e)}))}var _api={setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,unbind:unbind};for(var a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);if("undefined"!=typeof window){var _hotkeys=window.hotkeys;hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys}module.exports=hotkeys;
-},{}],16:[function(require,module,exports){
-(function (process){
-
-if (process.env.NODE_ENV === 'production') {
-  module.exports = require('./dist/hotkeys.common.min.js');
-} else {
-  module.exports = require('./dist/hotkeys.common.js');
-}
-
-}).call(this,require('_process'))
-},{"./dist/hotkeys.common.js":14,"./dist/hotkeys.common.min.js":15,"_process":52}],17:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 
@@ -3297,7 +502,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":18}],18:[function(require,module,exports){
+},{"./lib/js-yaml.js":6}],6:[function(require,module,exports){
 'use strict';
 
 
@@ -3338,7 +543,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":20,"./js-yaml/exception":21,"./js-yaml/loader":22,"./js-yaml/schema":24,"./js-yaml/schema/core":25,"./js-yaml/schema/default_full":26,"./js-yaml/schema/default_safe":27,"./js-yaml/schema/failsafe":28,"./js-yaml/schema/json":29,"./js-yaml/type":30}],19:[function(require,module,exports){
+},{"./js-yaml/dumper":8,"./js-yaml/exception":9,"./js-yaml/loader":10,"./js-yaml/schema":12,"./js-yaml/schema/core":13,"./js-yaml/schema/default_full":14,"./js-yaml/schema/default_safe":15,"./js-yaml/schema/failsafe":16,"./js-yaml/schema/json":17,"./js-yaml/type":18}],7:[function(require,module,exports){
 'use strict';
 
 
@@ -3399,7 +604,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],20:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -4228,7 +1433,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":19,"./exception":21,"./schema/default_full":26,"./schema/default_safe":27}],21:[function(require,module,exports){
+},{"./common":7,"./exception":9,"./schema/default_full":14,"./schema/default_safe":15}],9:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -4273,7 +1478,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],22:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -5873,7 +3078,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":19,"./exception":21,"./mark":23,"./schema/default_full":26,"./schema/default_safe":27}],23:[function(require,module,exports){
+},{"./common":7,"./exception":9,"./mark":11,"./schema/default_full":14,"./schema/default_safe":15}],11:[function(require,module,exports){
 'use strict';
 
 
@@ -5951,7 +3156,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":19}],24:[function(require,module,exports){
+},{"./common":7}],12:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -6061,7 +3266,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":19,"./exception":21,"./type":30}],25:[function(require,module,exports){
+},{"./common":7,"./exception":9,"./type":18}],13:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -6081,7 +3286,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":24,"./json":29}],26:[function(require,module,exports){
+},{"../schema":12,"./json":17}],14:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -6108,7 +3313,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":24,"../type/js/function":35,"../type/js/regexp":36,"../type/js/undefined":37,"./default_safe":27}],27:[function(require,module,exports){
+},{"../schema":12,"../type/js/function":23,"../type/js/regexp":24,"../type/js/undefined":25,"./default_safe":15}],15:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -6138,7 +3343,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":24,"../type/binary":31,"../type/merge":39,"../type/omap":41,"../type/pairs":42,"../type/set":44,"../type/timestamp":46,"./core":25}],28:[function(require,module,exports){
+},{"../schema":12,"../type/binary":19,"../type/merge":27,"../type/omap":29,"../type/pairs":30,"../type/set":32,"../type/timestamp":34,"./core":13}],16:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -6157,7 +3362,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":24,"../type/map":38,"../type/seq":43,"../type/str":45}],29:[function(require,module,exports){
+},{"../schema":12,"../type/map":26,"../type/seq":31,"../type/str":33}],17:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -6184,7 +3389,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":24,"../type/bool":32,"../type/float":33,"../type/int":34,"../type/null":40,"./failsafe":28}],30:[function(require,module,exports){
+},{"../schema":12,"../type/bool":20,"../type/float":21,"../type/int":22,"../type/null":28,"./failsafe":16}],18:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -6247,7 +3452,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":21}],31:[function(require,module,exports){
+},{"./exception":9}],19:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -6387,7 +3592,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":30}],32:[function(require,module,exports){
+},{"../type":18}],20:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -6424,7 +3629,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":30}],33:[function(require,module,exports){
+},{"../type":18}],21:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -6542,7 +3747,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":19,"../type":30}],34:[function(require,module,exports){
+},{"../common":7,"../type":18}],22:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -6717,7 +3922,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":19,"../type":30}],35:[function(require,module,exports){
+},{"../common":7,"../type":18}],23:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -6811,7 +4016,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":30}],36:[function(require,module,exports){
+},{"../../type":18}],24:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -6873,7 +4078,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":30}],37:[function(require,module,exports){
+},{"../../type":18}],25:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -6903,7 +4108,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":30}],38:[function(require,module,exports){
+},{"../../type":18}],26:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -6913,7 +4118,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":30}],39:[function(require,module,exports){
+},{"../type":18}],27:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -6927,7 +4132,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":30}],40:[function(require,module,exports){
+},{"../type":18}],28:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -6963,7 +4168,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":30}],41:[function(require,module,exports){
+},{"../type":18}],29:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7009,7 +4214,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":30}],42:[function(require,module,exports){
+},{"../type":18}],30:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7064,7 +4269,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":30}],43:[function(require,module,exports){
+},{"../type":18}],31:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7074,7 +4279,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":30}],44:[function(require,module,exports){
+},{"../type":18}],32:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7105,7 +4310,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":30}],45:[function(require,module,exports){
+},{"../type":18}],33:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7115,7 +4320,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":30}],46:[function(require,module,exports){
+},{"../type":18}],34:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7205,7 +4410,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":30}],47:[function(require,module,exports){
+},{"../type":18}],35:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -11809,161 +9014,96 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],48:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
-const WGenerator = require('../generation/wgenerator.js');
-const WNode = require('../wnode/wnode.js');
-const Util = require('../util/util.js');
+// TODO make this name lowercase.
+var Util = require('./util.js');
 
-const Hotkeys = require('hotkeys-js');
+class Coord {
+    constructor (r,c) {
+        this.r = Util.default(r, -1);
+        this.c = Util.default(c, -1);
+    }
 
-//
+    equals (other) {
+        return this.r === other.r && this.c === other.c;
+    }
 
-const TreeBrowser = module.exports = class TreeBrowser {
-    constructor (curNode) {
-        this.currentNode = curNode || this.exampleRoot();
+    is (other) { return this.equals(other); }
 
-        this.parentButton = document.getElementById('parentButton');
-        if (!this.parentButton) {
-            console.log('parentButton seems undefined :o :o');
+    plus (other) {
+        return new Coord(
+            this.r + other.r,
+            this.c + other.c
+        );
+    }
+
+    minus (other) {
+        return new Coord(
+            this.r - other.r,
+            this.c - other.c
+        );
+    }
+
+    distanceTo (other) {
+        return Math.sqrt(
+            Math.pow(this.r - other.r, 2) +
+            Math.pow(this.c - other.c, 2)
+        );
+    }
+
+    magnitude () {
+        return this.distanceTo(new Coord(0,0));
+    }
+
+    isAdjacentTo (other) {
+        var distance = this.distanceTo(other);
+
+        // ODDITY: i made the bounds approximate for some reason.
+        return 0.9 < distance && distance < 1.5;
+    }
+
+    toString () {
+        return '[' + this.r + ',' + this.c + ']';
+    }
+
+    static random (rCount, cCount) {
+        if (!rCount || !cCount) {
+            console.log('ERROR: Coord.random() called without arguments');
+            return new Coord(-1,-1);
+            // TODO throw exception, make supervisor reboot, et cetera.
         }
 
-        Hotkeys('`', (event, handler) => {
-            this.parentButton.click();
-        });
-
-        this.currentNodeName = document.getElementById('currentNodeName');
-        this.discardButton = document.getElementById('discardButton');
-        this.propertiesDiv = document.getElementById('properties');
-        // TODO this is turning out undefined for some reason
-        this.componentsDiv = document.getElementById('components');
-
-        this.updateUi(this.currentNode);
+        return new Coord(
+            Util.randomUpTo(rCount-1),
+            Util.randomUpTo(cCount-1)
+        );
     }
 
-    updateUi (newNode) {
-        if (newNode) {
-            // Update parent button
-            if (newNode.parent) {
-                this.parentButton.value = newNode.parent.toSimpleString();
-            }
-            else {
-                this.parentButton.value = '(No parent)';
-            }
-
-            this.updatePropertiesDiv(newNode);
-
-            // TODO newNode has a circular reference, according to JSON.stringify()
-            this.currentNodeName.innerHTML = newNode.toSimpleString();
-
-            this.updateComponentButtons(newNode);
-        }
+    static get relatives () {
+        return [
+            new Coord(-1,-1), new Coord(-1,0), new Coord(-1,1),
+            new Coord( 0,-1),                  new Coord( 0,1),
+            new Coord( 1,-1), new Coord( 1,0), new Coord( 1,1)
+        ];
     }
 
-    updatePropertiesDiv (newNode) {
-        this.propertiesDiv.innerHTML = newNode.getPropText();
+    static randomDirection () {
+        return Util.randomOf(Coord.relatives);
     }
 
-    async updateComponentButtons (newNode) {
-        this.clearComponentShortcuts();
-        this.clearDiv(this.componentsDiv);
+    randomAdjacent () {
+        do {
+            var candidateNeighbor = Coord.randomDirection().plus(this);
+        } while (! candidateNeighbor.isInBounds());
 
-        await this.sleep(100);
-
-        newNode.components.forEach((component, index) => {
-            const button = document.createElement('input');
-            button.setAttribute('type', 'button');
-            button.setAttribute('id', component.id);
-            button.classList.add('iconButton');
-            button.value = component.toSimpleString();
-
-            // Keys 1-9 are keyboard shortcuts
-            if (index <= 8) {
-                const numberString = (index + 1).toString();
-                Hotkeys(numberString, (event, handler) => {
-                    button.click();
-                    console.log(`Detected keyboard shortcut ${numberString} and going to ${button.value}`);
-                });
-            }
-
-            this.componentsDiv.appendChild(button);
-
-            button.onclick = function () {
-                window.treeBrowser.goToChild(this.id);
-            };
-        });
-    }
-
-    clearComponentShortcuts () {
-        for (let i = 1; i <= this.componentsDiv.childElementCount; i++) {
-            Hotkeys.unbind(i.toString());
-            // console.log(`Cleared hotkey ${i}`);
-        }
-    }
-
-    clearDiv (div) {
-        while(div && div.firstChild) {
-            div.removeChild(div.firstChild);
-        }
-    }
-
-    goToNode (newNode) {
-        this.currentNode = newNode;
-        this.updateUi(newNode);
-    }
-
-    goUp () {
-        if (! this.currentNode.parent) {
-            console.log('Cannot go up to parent because this node has no parent.');
-            return;
-        }
-
-        this.goToNode(this.currentNode.parent);
-    }
-
-    goToChild (childId) {
-        const child = this.currentNode.components.find(component => component.id === childId);
-
-        if (! child) {
-            // TODO: Friendlier notification.
-            return alert(`Error: Could not find a child component with id ${ childId }. The number of child components is ${ this.currentNode.components.length }.`);
-        }
-
-        this.goToNode(child);
-    }
-
-    discard () {
-        // TODO
-        this.updateUi();
-    }
-
-    loadFile (fileName) {
-        // Later
-    }
-
-    exampleRoot () {
-        const wgen = WGenerator.generators['halo/unsc/fleet'];
-        const outputs = wgen.getOutputs();
-        return outputs[0];
-    }
-
-    // TODO add to utils.js
-    sleep (ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return candidateNeighbor;
     }
 };
 
-function init () {
-    window.treeBrowser = new TreeBrowser();
-}
-
-// Make the bundle like this in the CLI:
-// browserify treeBrowser.js -o bundle.js
-
-init();
-
-},{"../generation/wgenerator.js":12,"../util/util.js":49,"../wnode/wnode.js":50,"hotkeys-js":16}],49:[function(require,module,exports){
+module.exports = Coord;
+},{"./util.js":37}],37:[function(require,module,exports){
 'use strict';
 
 const commaNumber = require('comma-number');
@@ -12383,7 +9523,7 @@ util.mbti = () => {
     .join('');
 };
 
-},{"comma-number":13,"moment":47}],50:[function(require,module,exports){
+},{"comma-number":4,"moment":35}],38:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -12643,192 +9783,4 @@ let WNode = module.exports = class WNode {
     }
 };
 
-},{"../util/util.js":49,"js-yaml":17}],51:[function(require,module,exports){
-
-},{}],52:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}]},{},[48]);
+},{"../util/util.js":37,"js-yaml":5}]},{},[1,2,3]);
