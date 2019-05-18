@@ -27,15 +27,13 @@
   "keywords": [
     "procedural",
     "generation",
-    "procedural",
     "narrative",
     "interactive",
     "fiction",
     "game",
     "tree",
     "graph",
-    "random",
-    "generation"
+    "random"
   ],
   "author": "Alex Pear",
   "license": "ISC",
