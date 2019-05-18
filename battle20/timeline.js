@@ -3,7 +3,7 @@
 // Hashmap ({}) of sets of Events
 // The hashmap is indexed by timestamps in number format.
 
-class Timeline {
+module.exports = class Timeline {
     constructor () {
         this.timestamps = {};
     }
@@ -22,5 +22,4 @@ class Timeline {
             this.timestamps[time] = [event];
         }
     }
-}
-
+};
