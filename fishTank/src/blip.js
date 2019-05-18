@@ -7,9 +7,9 @@
 // Each Blip is associated with a array of WNode trees, which the Blip represents.
 // Blips are centered on the approximate position of the represented warriors. Blips should be rendered at a size corresponding with how large and numerous the warriors are.
 
-const Coord = require('../util/coord.js');
-const Util = require('../util/util.js');
-const WNode = require('../wnode/wnode.js');
+const Coord = require('../../util/coord.js');
+const Util = require('../../util/util.js');
+const WNode = require('../../wnode/wnode.js');
 
 class Blip {
     constructor (wnodes) {

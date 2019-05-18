@@ -7,9 +7,9 @@
 // When zooming out, EffectVisuals may change size, vanish, or start to appear.
 // EffectVisuals may be rendered as a yellow line between a soldier and a target, for example.
 
-const Coord = require('../util/coord.js');
-const Util = require('../util/util.js');
-const WNode = require('../wnode/wnode.js');
+const Coord = require('../../util/coord.js');
+const Util = require('../../util/util.js');
+const WNode = require('../../wnode/wnode.js');
 
 class EffectVisual {
     constructor (type, coord, targetCoord) {
