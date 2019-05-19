@@ -1,3 +1,6 @@
+'use strict';
+
+const Timeline = require('../../bottleWorld/timeline.js');
 const Util = require('../../util/util.js');
 const WorldState = require('../../bottleWorld/worldState.js');
 
@@ -159,6 +162,7 @@ function create () {
         }),
         graphicsLastCleared: 0,
         text: undefined,
+        timeline: new Timeline(),
         worldState: new WorldState()
     };
 
