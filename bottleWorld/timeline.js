@@ -1,16 +1,36 @@
 'use strict';
 
-// Analogous to a Halo 3 Theater replay.
+// Hashmap ({}) of sets of Events
+// The hashmap is indexed by timestamps in number format.
 
-const util = require('../util/util.js');
 const WorldState = require('./worldState.js');
 
 module.exports = class Timeline {
     constructor () {
-        this.startState = new WorldState();
-        this.events = [];
+        this.timestamps = {};
+        this.now = 0;
+        this.currentWorldState = new WorldState(this);
     }
-}
 
+    // returns Event[]
+    getEventsAt (time) {
+        return this.timestamps[time] || [];
+    }
 
+    addEvent (event, time) {
+        const existingEvents = this.timestamps[time];
+        if (existingEvents) {
+            existingEvents.push(event);
+        }
+        else {
+            this.timestamps[time] = [event];
+        }
+    }
 
+    computeNextInstant () {
+        this.now += 1;
+
+        const events = this.getEventsAt(this.now);
+
+    }
+};

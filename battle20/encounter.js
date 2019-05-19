@@ -1,6 +1,6 @@
 'use strict';
 
-const Timeline = require('./Timeline.js');
+const Timeline = require('../bottleWorld/timeline.js');
 
 // The (backend) model for a fictional encounter or battle in Waffle simulations.
 // Spaceful: 3D grid. The unit is the meter.

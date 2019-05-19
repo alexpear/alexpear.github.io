@@ -8,7 +8,7 @@ const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const Event = require('../battle20/event.js');
 const Group = require('../battle20/group.js');
 const TAG = require('../codices/tags.js');
-const Timeline = require('../battle20/timeline.js');
+const Timeline = require('../bottleWorld/timeline.js');
 const Util = require('../util/util.js');
 const WGenerator = require('../generation/wgenerator.js');
 
