@@ -8,14 +8,15 @@ const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const Event = require('../battle20/event.js');
 const Group = require('../battle20/group.js');
 const TAG = require('../codices/tags.js');
-const Timeline = require('../bottleWorld/timeline.js');
+const Timeline = require('./timeline.js');
 const Util = require('../util/util.js');
 const WGenerator = require('../generation/wgenerator.js');
 
 const Yaml = require('js-yaml');
 
 module.exports = class WorldState {
-    constructor () {
+    constructor (timeline) {
+        this.timeline = timeline;
         this.things = [];
         this.wanderingGenerator = new WGenerator(
             require('../codices/battle20/halo/unsc/group.js'),
@@ -25,7 +26,6 @@ module.exports = class WorldState {
         // Contrary to a popular misconception, the W in WGenerator does not stand for Wandering.
         // It stands for WAFFLE.
         this.glossary = this.wanderingGenerator.glossary;
-        this.timeline = new Timeline();
     }
 
     thingsAt (coord) {
