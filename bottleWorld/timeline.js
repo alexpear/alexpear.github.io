@@ -32,5 +32,8 @@ module.exports = class Timeline {
 
         const events = this.getEventsAt(this.now);
 
+        events.forEach(event => {
+            this.currentWorldState.resolveEvent(event);
+        });
     }
 };

@@ -87,6 +87,10 @@ module.exports = class WorldState {
         );
     }
 
+    resolveEvent (event) {
+        // Implement later.
+    }
+
     static test () {
         Util.log(`WorldState.test()\n`, 'info');
 
