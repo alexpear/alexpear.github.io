@@ -65,6 +65,8 @@ const Individual = new Phaser.Class({
         maybeClearGraphics(time);
 
         this.orient();
+        // TODO Implement simple soldier functionality in Timeline and WorldState.
+        // Then make blip.update() simply read from the coord position of this Thing in WorldState.
         this.maybeShoot();
 
         this.x += this.xSpeed * delta;
@@ -128,6 +130,7 @@ const Individual = new Phaser.Class({
 const game = new Phaser.Game(config);
 let fishTank;
 
+// TODO make these nomadic functions into member functions of a class FishTankView.
 function preload () {
     this.load.path = 'sprites/';
     this.load.image('soldier', 'fishTankSoldier.png');
