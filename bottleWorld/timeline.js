@@ -36,4 +36,25 @@ module.exports = class Timeline {
             this.currentWorldState.resolveEvent(event);
         });
     }
+
+    toDebugString () {
+        let lines = [];
+
+        for (let t = 0; t <= this.now; t++) {
+            if (this.timestamps[t]) {
+                const eventsSummary = this.getEventsAt(t)
+                    .map(e => e.type)
+                    .join(', ');
+
+                lines.push(`${t}: ${eventsSummary}`);
+            }
+            // If a timespan has no events, represent that whole timespan with one '...' line.
+            // If t-1 also has no events, print nothing, to avoid long stacks of '...'s.
+            else if (this.timestamps[t-1]) {
+                lines.push('...');
+            }
+        }
+
+        return lines.join('\n');
+    }
 };
