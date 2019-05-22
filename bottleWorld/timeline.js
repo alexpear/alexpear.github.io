@@ -57,4 +57,8 @@ module.exports = class Timeline {
 
         return lines.join('\n');
     }
+
+    debugPrint () {
+        console.log(this.toDebugString());
+    }
 };
