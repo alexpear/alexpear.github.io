@@ -3,8 +3,8 @@
 const Util = require('../util/util.js');
 
 module.exports = class Event {
-    constructor (type, protagonist, target, coord) {
-        this.type = type;
+    constructor (eventType, protagonist, target, coord) {
+        this.eventType = eventType;
         this.protagonist = protagonist;
         this.target = target;
         this.coord = coord;
