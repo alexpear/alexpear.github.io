@@ -86,6 +86,12 @@ module.exports = class Event {
         event.props = props;
         return event;
     }
+
+    // The runEvery parameter stores the number of seconds between instances of this recurring event.
+    static universalUpdate (runEvery, updateType) {
+        this.runEvery = runEvery;
+        this.updateType = updateType;
+    }
 };
 
 Event.TYPES = Util.makeEnum([
@@ -98,5 +104,6 @@ Event.TYPES = Util.makeEnum([
     'ActionReady',
     'Update',
     'Explosion',
-    'Effect'
+    'Effect',
+    'UniversalUpdate'
 ]);
