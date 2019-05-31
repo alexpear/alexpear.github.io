@@ -3,6 +3,7 @@
 // Hashmap ({}) of sets of Events
 // The hashmap is indexed by timestamps in number format.
 
+const Event = require('./event.js');
 const WorldState = require('./worldState.js');
 
 module.exports = class Timeline {
@@ -60,5 +61,18 @@ module.exports = class Timeline {
 
     debugPrint () {
         console.log(this.toDebugString());
+    }
+
+    static example () {
+        const timeline = new Timeline();
+        timeline.addEvent(Event.arrival());
+
+        return timeline;
+    }
+
+    static test () {
+        const timeline = Timeline.example();
+
+        timeline.debugPrint();
     }
 };

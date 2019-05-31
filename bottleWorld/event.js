@@ -5,13 +5,27 @@ const Util = require('../util/util.js');
 module.exports = class Event {
     constructor (eventType, protagonist, target, coord) {
         this.eventType = eventType;
+
+        // WAIT: Hang on. Is protagonist a Thing or a id number?
+        // It could be a Thing in memory, and a id number when serialized.
         this.protagonist = protagonist;
         this.target = target;
         this.coord = coord;
         this.props = {};
-        this.outcomes = [];
+        this.outcomes = [];  // Array of other Events
     }
 
+    serializable () {
+        const smallVersion = Object.assign({}, this);
+
+        // Serialize just the ids of linked objects. Gets rid of circular reference and saves space.
+        smallVersion.protagonist = this.protagonist.id;
+        smallVersion.target = this.target.id;
+        smallVersion.outcomes = this.outcomes.map(event => event.serializable());
+    }
+
+    // TODO probably make subclasses of Event for Arrival, Explosion, etc.
+    // Each could probably even have a .resolve() member func.
     static arrival (protagonist, coord) {
         return new Event(Event.TYPES.Arrival, protagonist, undefined, coord);
     }
@@ -87,7 +101,7 @@ module.exports = class Event {
         return event;
     }
 
-    // The runEvery parameter stores the number of seconds between instances of this recurring event.
+    // The runEvery parameter stores the duration (number, probably seconds) between instances of this recurring event.
     static universalUpdate (runEvery, updateType) {
         this.runEvery = runEvery;
         this.updateType = updateType;

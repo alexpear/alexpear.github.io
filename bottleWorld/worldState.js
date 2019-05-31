@@ -30,10 +30,16 @@ module.exports = class WorldState {
         this.glossary = this.wanderingGenerator.glossary;
     }
 
+    // I currently plan for Thing to extend WNode
     thingsAt (coord) {
         return this.things.filter(
             t => t.coord && t.coord.equals(coord)
         );
+    }
+
+    addThing (thing, coord) {
+        thing.coord = coord;
+        this.things.push(thing);
     }
 
     randomTrees () {
