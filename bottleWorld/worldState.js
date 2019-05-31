@@ -13,8 +13,7 @@ const Util = require('../util/util.js');
 const WGenerator = require('../generation/wgenerator.js');
 
 const Yaml = require('js-yaml');
-
-module.exports = class WorldState {
+class WorldState {
     constructor (timeline) {
         this.timeline = timeline;
         // Later perhaps remove timeline.now and replace it with a getter that calls timeline.currentWorldState.now
@@ -112,33 +111,39 @@ module.exports = class WorldState {
         const output = Util.stringify(group);
         Util.log(`WorldState.test(): ${output}`, 'info');
     }
-};
+}
 
 // Continuous-space environments, as opposed to grids or graphs.
+// Later move to its own file.
 class ContinuousWorldState extends WorldState {}
 
+// Later move to its own file.
 class DeathPlanetWorldState extends ContinuousWorldState {
     static proceed () {
         // Iterate over the set of Events in the timeline's current instant.
         // Later perhaps put proceed() in a new class Transitioner, or Mover, or Director, or Simulator, or Mastermind.
     }
-    
+
     static example (timeline) {
         const worldState = new DeathPlanetWorldState(timeline);
         worldState.glossary['soldier'] = CreatureTemplate.soldierExample();
 
         for (let i = 0; i < 20; i++) {
-            const soldier = new WNode('soldier');
-            worldState.things.push(soldier);
-            
-            // TODO Or perhaps start with 20 Events of type Arrival. They can be resolved in the first call to worldState.proceed()
+            // const soldier = new WNode('soldier');
+            // worldState.things.push(soldier);
+
+            // Start with 20 Events of type Arrival. They can be resolved in the first call to worldState.proceed()
             // Arrival events have the outcome of causing a AbilityReady Event to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
+            worldState.timeline.addEvent(
+                Event.arrival(new WNode('soldier'))
+            );
         }
 
-        return worldState;    
+        return worldState;
     }
 }
 
+module.exports = WorldState;
 
 // Run
 // WorldState.test();

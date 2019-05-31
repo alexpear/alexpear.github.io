@@ -4,6 +4,7 @@
 // The hashmap is indexed by timestamps in number format.
 
 const Event = require('./event.js');
+const Util = require('../util/util.js');
 const WorldState = require('./worldState.js');
 
 module.exports = class Timeline {
@@ -19,6 +20,8 @@ module.exports = class Timeline {
     }
 
     addEvent (event, time) {
+        time = Util.exists(time) ? time : this.now;
+
         const existingEvents = this.timestamps[time];
         if (existingEvents) {
             existingEvents.push(event);

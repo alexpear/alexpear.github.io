@@ -1,5 +1,6 @@
 'use strict';
 
+const Coord = require('../util/coord.js');
 const Util = require('../util/util.js');
 
 module.exports = class Event {
@@ -27,7 +28,12 @@ module.exports = class Event {
     // TODO probably make subclasses of Event for Arrival, Explosion, etc.
     // Each could probably even have a .resolve() member func.
     static arrival (protagonist, coord) {
-        return new Event(Event.TYPES.Arrival, protagonist, undefined, coord);
+        return new Event(
+            Event.TYPES.Arrival,
+            protagonist,
+            undefined,
+            coord || new Coord()
+        );
     }
 
     static departure (protagonist) {

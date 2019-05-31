@@ -134,7 +134,6 @@ let fishTank;
 function preload () {
     this.load.path = 'sprites/';
     this.load.image('soldier', 'fishTankSoldier.png');
-    this.load.image('crate', 'assets/sprites/crate.png');
 }
 
 function deploySquads (faction) {
