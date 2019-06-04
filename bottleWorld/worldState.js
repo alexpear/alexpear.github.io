@@ -148,6 +148,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
     static test () {
         const worldState = DeathPlanetWorldState.example();
         worldState.timeline.debugPrint();
+        // TODO Implement Arrival.resolve() and have that get called on all BEvents in the now instant.
     }
 
     static run () {
