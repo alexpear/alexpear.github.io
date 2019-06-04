@@ -95,6 +95,7 @@ util.randomFromObj = function (obj) {
     return obj[key];
 };
 
+// Returns string
 util.newId = function () {
     // Later research the most performant way to run this.
     const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

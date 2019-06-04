@@ -11,6 +11,7 @@ const TAG = require('../codices/tags.js');
 const Timeline = require('./timeline.js');
 const Util = require('../util/util.js');
 const WGenerator = require('../generation/wgenerator.js');
+const WNode = require('../wnode/wnode.js');
 
 const Yaml = require('js-yaml');
 class WorldState {
@@ -133,9 +134,6 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         worldState.glossary['soldier'] = CreatureTemplate.soldierExample();
 
         for (let i = 0; i < 20; i++) {
-            // const soldier = new WNode('soldier');
-            // worldState.things.push(soldier);
-
             // Start with 20 Events of type Arrival. They can be resolved in the first call to worldState.proceed()
             // Arrival events have the outcome of causing a AbilityReady Event to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
             worldState.timeline.addEvent(
