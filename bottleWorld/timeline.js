@@ -3,7 +3,7 @@
 // Hashmap ({}) of sets of Events
 // The hashmap is indexed by timestamps in number format.
 
-const Event = require('./event.js');
+const BEvent = require('./bEvent.js');
 const Util = require('../util/util.js');
 const WorldState = require('./worldState.js');
 
@@ -15,20 +15,20 @@ module.exports = class Timeline {
         this.currentWorldState = worldState || new WorldState(this);
     }
 
-    // returns Event[]
+    // returns BEvent[]
     getEventsAt (time) {
         return this.timestamps[time] || [];
     }
 
-    addEvent (event, time) {
+    addEvent (bEvent, time) {
         time = Util.exists(time) ? time : this.now;
 
         const existingEvents = this.timestamps[time];
         if (existingEvents) {
-            existingEvents.push(event);
+            existingEvents.push(bEvent);
         }
         else {
-            this.timestamps[time] = [event];
+            this.timestamps[time] = [bEvent];
         }
     }
 
@@ -69,7 +69,7 @@ module.exports = class Timeline {
 
     static example () {
         const timeline = new Timeline();
-        timeline.addEvent(Event.arrival());
+        timeline.addEvent(BEvent.arrival());
 
         return timeline;
     }

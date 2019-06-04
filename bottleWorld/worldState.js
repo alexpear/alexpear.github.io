@@ -5,7 +5,7 @@
 const Alignment = require('../dnd/alignment.js');
 const Coord = require('../util/coord.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
-const Event = require('../bottleWorld/event.js');
+const BEvent = require('../bottleWorld/bEvent.js');
 const Group = require('../battle20/group.js');
 const TAG = require('../codices/tags.js');
 const Timeline = require('./timeline.js');
@@ -97,7 +97,7 @@ class WorldState {
         );
     }
 
-    resolveEvent (event) {
+    resolveEvent (bEvent) {
         // Implement later.
     }
 
@@ -123,7 +123,7 @@ class ContinuousWorldState extends WorldState {}
 // Later move to its own file.
 class DeathPlanetWorldState extends ContinuousWorldState {
     static proceed () {
-        // Iterate over the set of Events in the timeline's current instant.
+        // Iterate over the set of BEvents in the timeline's current instant.
         // Later perhaps put proceed() in a new class Transitioner, or Mover, or Director, or Simulator, or Mastermind.
     }
 
@@ -134,10 +134,11 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         worldState.glossary['soldier'] = CreatureTemplate.soldierExample();
 
         for (let i = 0; i < 20; i++) {
-            // Start with 20 Events of type Arrival. They can be resolved in the first call to worldState.proceed()
-            // Arrival events have the outcome of causing a AbilityReady Event to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
+            // Start with 20 BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
+            // Arrival BEvents have the outcome of causing a AbilityReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
+
             worldState.timeline.addEvent(
-                Event.arrival(new WNode('soldier'))
+                BEvent.arrival(new WNode('soldier'))
             );
         }
 
