@@ -73,7 +73,7 @@ class ActionTemplate {
 
 module.exports = ActionTemplate;
 
-},{"../codices/tags.js":16,"../util/util.js":55}],2:[function(require,module,exports){
+},{"../codices/tags.js":17,"../util/util.js":56}],2:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
@@ -315,7 +315,7 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":16,"../util/util.js":55,"./actiontemplate.js":1}],3:[function(require,module,exports){
+},{"../codices/tags.js":17,"../util/util.js":56,"./actiontemplate.js":1}],3:[function(require,module,exports){
 'use strict';
 
 const util = require('../util/util.js');
@@ -356,7 +356,7 @@ class Event {
 
 module.exports = Event;
 
-},{"../util/util.js":55}],4:[function(require,module,exports){
+},{"../util/util.js":56}],4:[function(require,module,exports){
 'use strict';
 
 // A group of creatures in a bottle world.
@@ -1094,34 +1094,239 @@ damage: 1
 
 
 
-},{"../codices/tags.js":16,"../dnd/alignment.js":17,"../util/coord.js":54,"../util/util.js":55,"./creaturetemplate.js":2,"./event.js":3}],5:[function(require,module,exports){
+},{"../codices/tags.js":17,"../dnd/alignment.js":18,"../util/coord.js":55,"../util/util.js":56,"./creaturetemplate.js":2,"./event.js":3}],5:[function(require,module,exports){
+'use strict';
+
+const Coord = require('../util/coord.js');
+const Util = require('../util/util.js');
+
+// BEvent stands for Bottle World Event
+const BEvent = module.exports = class BEvent {
+    constructor (eventType, protagonist, target, coord) {
+        this.eventType = eventType;
+
+        // WAIT: Hang on. Is protagonist a Thing or a id number?
+        // It could be a Thing in memory, and a id number when serialized.
+        this.protagonist = protagonist;
+        this.target = target;
+        this.coord = coord;
+        this.props = {};
+        this.outcomes = [];  // Array of other BEvent
+    }
+
+    serializable () {
+        const smallVersion = Object.assign({}, this);
+
+        // Serialize just the ids of linked objects. Gets rid of circular reference and saves space.
+        smallVersion.protagonist = this.protagonist.id;
+        smallVersion.target = this.target.id;
+        smallVersion.outcomes = this.outcomes.map(event => event.serializable());
+
+        return smallVersion;
+    }
+
+    // TODO probably make subclasses of BEvent for Arrival, Explosion, etc.
+    // Each could probably even have a .resolve() member func.
+    static arrival (protagonist, coord) {
+        return new BEvent(
+            BEvent.TYPES.Arrival,
+            protagonist,
+            undefined,
+            coord || new Coord()
+        );
+    }
+
+    static departure (protagonist) {
+        return new BEvent(BEvent.TYPES.Departure, protagonist);
+    }
+
+    // Might later revise this. Maybe some actions can be performed with a parameter.
+    static action (protagonist, target, coord, actionType) {
+        const event = new BEvent(BEvent.TYPES.Action, protagonist, target, coord);
+        event.actionType = actionType;
+        return event;
+        // Outcome information is to be stored in a separate Update event.
+    }
+
+    // Builds a chain of BEvent of length up to 3
+    // Does not work for splash damage or other attacks with complex effects.
+    static simpleAttack (protagonist, target, actionType, damage, targetDead) {
+        const actionEvent = new BEvent(BEvent.TYPES.Action, protagonist, target);
+
+        const damageProps = {
+            hp: -1 * damage,
+            relative: true
+        };
+
+        const damageEvent = BEvent.update(target, damageProps)
+        actionEvent.outcomes.push(damageEvent);
+
+        if (targetDead) {
+            actionEvent.outcomes.push(
+                BEvent.death(target)
+            );
+        }
+
+        return actionEvent;
+    }
+
+    static death (protagonist) {
+        return new BEvent(BEvent.TYPES.Death, protagonist);
+    }
+
+    static newTarget (protagonist, target) {
+        return new BEvent(BEvent.TYPES.NewTarget, protagonist, target);
+    }
+
+    static newDestination (protagonist, coord) {
+        return new BEvent(BEvent.TYPES.NewDestination, protagonist, undefined, coord);
+    }
+
+    static actionReady (protagonist, actionType) {
+        const event = new BEvent(BEvent.TYPES.ActionReady, protagonist);
+
+        event.actionType = actionType;
+
+        return event;
+    }
+
+    static update (protagonist, props) {
+        const event = new BEvent(BEvent.TYPES.Update, protagonist);
+
+        event.props = props;
+
+        return event;
+    }
+
+    static explosion (coord, radius, damage) {
+        const event = new BEvent(BEvent.TYPES.Explosion, undefined, undefined, coord);
+
+        event.props.radius = radius;
+        event.props.damage = damage;
+
+        return event;
+    }
+
+    static effect (coord, props) {
+        const event = new BEvent(BEvent.TYPES.Effect, undefined, undefined, coord);
+
+        event.props = props;
+
+        return event;
+    }
+
+    // The runEvery parameter stores the duration (number, probably seconds) between instances of this recurring event.
+    static universalUpdate (runEvery, updateType, specialProps) {
+        const event = new BEvent(BEvent.TYPES.UniversalUpdate);
+
+        Object.assign(event.props, specialProps);
+        event.props.runEvery = runEvery;
+        event.props.updateType = updateType;
+
+        return event;
+    }
+};
+
+BEvent.TYPES = Util.makeEnum([
+    'Arrival',
+    'Departure',
+    'Action',
+    'Death',
+    'NewTarget',
+    'NewDestination',
+    'ActionReady',
+    'Update',
+    'Explosion',
+    'Effect',
+    'UniversalUpdate'
+]);
+
+},{"../util/coord.js":55,"../util/util.js":56}],6:[function(require,module,exports){
 'use strict';
 
 // Hashmap ({}) of sets of Events
 // The hashmap is indexed by timestamps in number format.
 
+const BEvent = require('./bEvent.js');
+const Util = require('../util/util.js');
+const WorldState = require('./worldState.js');
+
 module.exports = class Timeline {
-    constructor () {
+    constructor (worldState) {
         this.timestamps = {};
+        // TODO move the now counter to currentWorldState instead.
+        this.now = 0;
+        this.currentWorldState = worldState || new WorldState(this);
     }
 
-    // returns Event[]
+    // returns BEvent[]
     getEventsAt (time) {
         return this.timestamps[time] || [];
     }
 
-    addEvent (event, time) {
+    addEvent (bEvent, time) {
+        time = Util.exists(time) ? time : this.now;
+
         const existingEvents = this.timestamps[time];
         if (existingEvents) {
-            existingEvents.push(event);
+            existingEvents.push(bEvent);
         }
         else {
-            this.timestamps[time] = [event];
+            this.timestamps[time] = [bEvent];
         }
+    }
+
+    computeNextInstant () {
+        this.now += 1;
+
+        const events = this.getEventsAt(this.now);
+
+        events.forEach(event => {
+            this.currentWorldState.resolveEvent(event);
+        });
+    }
+
+    toDebugString () {
+        let lines = [];
+
+        for (let t = 0; t <= this.now; t++) {
+            if (this.timestamps[t]) {
+                const eventsSummary = this.getEventsAt(t)
+                    .map(e => e.eventType)
+                    .join(', ');
+
+                lines.push(`${t}: ${eventsSummary}`);
+            }
+            // If a timespan has no events, represent that whole timespan with one '...' line.
+            // If t-1 also has no events, print nothing, to avoid long stacks of '...'s.
+            else if (this.timestamps[t-1]) {
+                lines.push('...');
+            }
+        }
+
+        return lines.join('\n');
+    }
+
+    debugPrint () {
+        console.log(this.toDebugString());
+    }
+
+    static example () {
+        const timeline = new Timeline();
+        timeline.addEvent(BEvent.arrival());
+
+        return timeline;
+    }
+
+    static test () {
+        const timeline = Timeline.example();
+
+        timeline.debugPrint();
     }
 };
 
-},{}],6:[function(require,module,exports){
+},{"../util/util.js":56,"./bEvent.js":5,"./worldState.js":7}],7:[function(require,module,exports){
+(function (process){
 'use strict';
 
 // Represents the world in a Bottle World at one moment.
@@ -1129,18 +1334,23 @@ module.exports = class Timeline {
 const Alignment = require('../dnd/alignment.js');
 const Coord = require('../util/coord.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
-const Event = require('../battle20/event.js');
+const BEvent = require('../bottleWorld/bEvent.js');
 const Group = require('../battle20/group.js');
 const TAG = require('../codices/tags.js');
-const Timeline = require('../battle20/timeline.js');
+const Timeline = require('./timeline.js');
 const Util = require('../util/util.js');
 const WGenerator = require('../generation/wgenerator.js');
+const WNode = require('../wnode/wnode.js');
 
 const Yaml = require('js-yaml');
-
-module.exports = class WorldState {
-    constructor () {
+class WorldState {
+    constructor (timeline) {
+        this.timeline = timeline;
+        // Later perhaps remove timeline.now and replace it with a getter that calls timeline.currentWorldState.now
+        this.now = timeline ? timeline.now : 0;
         this.things = [];
+
+        // Later, dont always use this example WGenerator.
         this.wanderingGenerator = new WGenerator(
             require('../codices/battle20/halo/unsc/group.js'),
             'battle20/halo/unsc/group'
@@ -1149,13 +1359,18 @@ module.exports = class WorldState {
         // Contrary to a popular misconception, the W in WGenerator does not stand for Wandering.
         // It stands for WAFFLE.
         this.glossary = this.wanderingGenerator.glossary;
-        this.timeline = new Timeline();
     }
 
+    // I currently plan for Thing to extend WNode
     thingsAt (coord) {
         return this.things.filter(
             t => t.coord && t.coord.equals(coord)
         );
+    }
+
+    addThing (thing, coord) {
+        thing.coord = coord;
+        this.things.push(thing);
     }
 
     randomTrees () {
@@ -1211,6 +1426,10 @@ module.exports = class WorldState {
         );
     }
 
+    resolveEvent (bEvent) {
+        // Implement later.
+    }
+
     static test () {
         Util.log(`WorldState.test()\n`, 'info');
 
@@ -1224,11 +1443,56 @@ module.exports = class WorldState {
         const output = Util.stringify(group);
         Util.log(`WorldState.test(): ${output}`, 'info');
     }
-};
+}
 
+// Continuous-space environments, as opposed to grids or graphs.
+// Later move to its own file.
+class ContinuousWorldState extends WorldState {}
+
+// Later move to its own file.
+class DeathPlanetWorldState extends ContinuousWorldState {
+    static proceed () {
+        // Iterate over the set of BEvents in the timeline's current instant.
+        // Later perhaps put proceed() in a new class Transitioner, or Mover, or Director, or Simulator, or Mastermind.
+    }
+
+    static example (timeline) {
+        timeline = timeline || new Timeline(this);
+
+        const worldState = new DeathPlanetWorldState(timeline);
+        worldState.glossary['soldier'] = CreatureTemplate.soldierExample();
+
+        for (let i = 0; i < 12; i++) {
+            // Start with 20 BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
+            // Arrival BEvents have the outcome of causing a AbilityReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
+
+            worldState.timeline.addEvent(
+                BEvent.arrival(new WNode('soldier'))
+            );
+        }
+
+        return worldState;
+    }
+
+    static test () {
+        const worldState = DeathPlanetWorldState.example();
+        worldState.timeline.debugPrint();
+        // TODO Implement Arrival.resolve() and have that get called on all BEvents in the now instant.
+    }
+
+    static run () {
+        const consoleArguments = process.argv;
+        if (consoleArguments[2] === 'test') {
+            DeathPlanetWorldState.test();
+        }
+    }
+}
+
+module.exports = WorldState;
 
 // Run
-// WorldState.test();
+// node worldState.js test
+DeathPlanetWorldState.run();
 
 
 
@@ -1367,7 +1631,8 @@ If you want to represent the presence of a extra soldier, special soldier, or ar
 
 */
 
-},{"../battle20/creaturetemplate.js":2,"../battle20/event.js":3,"../battle20/group.js":4,"../battle20/timeline.js":5,"../codices/battle20/halo/unsc/group.js":7,"../codices/tags.js":16,"../dnd/alignment.js":17,"../generation/wgenerator.js":21,"../util/coord.js":54,"../util/util.js":55,"js-yaml":23}],7:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"../battle20/creaturetemplate.js":2,"../battle20/group.js":4,"../bottleWorld/bEvent.js":5,"../codices/battle20/halo/unsc/group.js":8,"../codices/tags.js":17,"../dnd/alignment.js":18,"../generation/wgenerator.js":22,"../util/coord.js":55,"../util/util.js":56,"../wnode/wnode.js":57,"./timeline.js":6,"_process":59,"js-yaml":24}],8:[function(require,module,exports){
 module.exports = `
 * output
 4 {squad}
@@ -1438,7 +1703,7 @@ damage: 2
 
 `;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -1521,7 +1786,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -1626,7 +1891,7 @@ spaceFighterSquadron
 {unsc/squad/spaceFighter}
 
 `;
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -1650,7 +1915,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -1760,7 +2025,7 @@ weight: 1000
 
 `;
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = `* output
 15 {anyWeapon}
 20 {anyGear}
@@ -2013,7 +2278,7 @@ damage: 2
 
 `;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -2335,7 +2600,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -2465,7 +2730,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -2890,7 +3155,7 @@ forklift
 
 `;
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -2934,7 +3199,7 @@ module.exports = Util.makeEnum([
     'GroupElimination'
 ]);
 
-},{"../util/util.js":55}],17:[function(require,module,exports){
+},{"../util/util.js":56}],18:[function(require,module,exports){
 'use strict';
 
 // similar to alignment.js in hobby/ git repo.
@@ -2975,7 +3240,7 @@ class Alignment {
 
 module.exports = Alignment;
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 // A Blip is the front-end visual representation of 1 or more objects or warriors in the FishTank world.
@@ -3018,7 +3283,7 @@ module.exports = Blip;
 
 // Blip.run();
 
-},{"../../util/coord.js":54,"../../util/util.js":55,"../../wnode/wnode.js":56}],19:[function(require,module,exports){
+},{"../../util/coord.js":55,"../../util/util.js":56,"../../wnode/wnode.js":57}],20:[function(require,module,exports){
 'use strict';
 
 // A EffectVisual is the front-end visual representation of a action or effect in the game world.
@@ -3083,7 +3348,10 @@ module.exports = EffectVisual;
 
 // EffectVisual.run();
 
-},{"../../util/coord.js":54,"../../util/util.js":55,"../../wnode/wnode.js":56}],20:[function(require,module,exports){
+},{"../../util/coord.js":55,"../../util/util.js":56,"../../wnode/wnode.js":57}],21:[function(require,module,exports){
+'use strict';
+
+const Timeline = require('../../bottleWorld/timeline.js');
 const Util = require('../../util/util.js');
 const WorldState = require('../../bottleWorld/worldState.js');
 
@@ -3148,6 +3416,8 @@ const Individual = new Phaser.Class({
         maybeClearGraphics(time);
 
         this.orient();
+        // TODO Implement simple soldier functionality in Timeline and WorldState.
+        // Then make blip.update() simply read from the coord position of this Thing in WorldState.
         this.maybeShoot();
 
         this.x += this.xSpeed * delta;
@@ -3211,10 +3481,10 @@ const Individual = new Phaser.Class({
 const game = new Phaser.Game(config);
 let fishTank;
 
+// TODO make these nomadic functions into member functions of a class FishTankView.
 function preload () {
     this.load.path = 'sprites/';
     this.load.image('soldier', 'fishTankSoldier.png');
-    this.load.image('crate', 'assets/sprites/crate.png');
 }
 
 function deploySquads (faction) {
@@ -3245,6 +3515,7 @@ function create () {
         }),
         graphicsLastCleared: 0,
         text: undefined,
+        timeline: new Timeline(),
         worldState: new WorldState()
     };
 
@@ -3318,7 +3589,7 @@ function randomFromFaction (faction, notThisOne) {
     return undefined;
 }
 
-},{"../../bottleWorld/worldState.js":6,"../../util/util.js":55}],21:[function(require,module,exports){
+},{"../../bottleWorld/timeline.js":6,"../../bottleWorld/worldState.js":7,"../../util/util.js":56}],22:[function(require,module,exports){
 (function (process,__dirname){
 'use strict';
 
@@ -4263,7 +4534,7 @@ halo/unsc/item/externalThing
 */
 
 }).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":2,"../codices/halo/unsc/battalion":8,"../codices/halo/unsc/company":9,"../codices/halo/unsc/fleet":10,"../codices/halo/unsc/individual":11,"../codices/halo/unsc/item":12,"../codices/halo/unsc/patrol":13,"../codices/halo/unsc/patrol.js":13,"../codices/halo/unsc/ship":14,"../codices/halo/unsc/squad":15,"../util/util.js":55,"../wnode/wnode.js":56,"_process":58,"fs":57}],22:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":2,"../codices/halo/unsc/battalion":9,"../codices/halo/unsc/company":10,"../codices/halo/unsc/fleet":11,"../codices/halo/unsc/individual":12,"../codices/halo/unsc/item":13,"../codices/halo/unsc/patrol":14,"../codices/halo/unsc/patrol.js":14,"../codices/halo/unsc/ship":15,"../codices/halo/unsc/squad":16,"../util/util.js":56,"../wnode/wnode.js":57,"_process":59,"fs":58}],23:[function(require,module,exports){
 // return a string with the provided number formatted with commas.
 // can specify either a Number or a String.
 function commaNumber(number, separator, decimalChar) {
@@ -4368,7 +4639,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 
@@ -4377,7 +4648,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":24}],24:[function(require,module,exports){
+},{"./lib/js-yaml.js":25}],25:[function(require,module,exports){
 'use strict';
 
 
@@ -4418,7 +4689,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":26,"./js-yaml/exception":27,"./js-yaml/loader":28,"./js-yaml/schema":30,"./js-yaml/schema/core":31,"./js-yaml/schema/default_full":32,"./js-yaml/schema/default_safe":33,"./js-yaml/schema/failsafe":34,"./js-yaml/schema/json":35,"./js-yaml/type":36}],25:[function(require,module,exports){
+},{"./js-yaml/dumper":27,"./js-yaml/exception":28,"./js-yaml/loader":29,"./js-yaml/schema":31,"./js-yaml/schema/core":32,"./js-yaml/schema/default_full":33,"./js-yaml/schema/default_safe":34,"./js-yaml/schema/failsafe":35,"./js-yaml/schema/json":36,"./js-yaml/type":37}],26:[function(require,module,exports){
 'use strict';
 
 
@@ -4479,7 +4750,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -5308,7 +5579,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":25,"./exception":27,"./schema/default_full":32,"./schema/default_safe":33}],27:[function(require,module,exports){
+},{"./common":26,"./exception":28,"./schema/default_full":33,"./schema/default_safe":34}],28:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -5353,7 +5624,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -6953,7 +7224,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":25,"./exception":27,"./mark":29,"./schema/default_full":32,"./schema/default_safe":33}],29:[function(require,module,exports){
+},{"./common":26,"./exception":28,"./mark":30,"./schema/default_full":33,"./schema/default_safe":34}],30:[function(require,module,exports){
 'use strict';
 
 
@@ -7031,7 +7302,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":25}],30:[function(require,module,exports){
+},{"./common":26}],31:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -7141,7 +7412,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":25,"./exception":27,"./type":36}],31:[function(require,module,exports){
+},{"./common":26,"./exception":28,"./type":37}],32:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -7161,7 +7432,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":30,"./json":35}],32:[function(require,module,exports){
+},{"../schema":31,"./json":36}],33:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -7188,7 +7459,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":30,"../type/js/function":41,"../type/js/regexp":42,"../type/js/undefined":43,"./default_safe":33}],33:[function(require,module,exports){
+},{"../schema":31,"../type/js/function":42,"../type/js/regexp":43,"../type/js/undefined":44,"./default_safe":34}],34:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -7218,7 +7489,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":30,"../type/binary":37,"../type/merge":45,"../type/omap":47,"../type/pairs":48,"../type/set":50,"../type/timestamp":52,"./core":31}],34:[function(require,module,exports){
+},{"../schema":31,"../type/binary":38,"../type/merge":46,"../type/omap":48,"../type/pairs":49,"../type/set":51,"../type/timestamp":53,"./core":32}],35:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -7237,7 +7508,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":30,"../type/map":44,"../type/seq":49,"../type/str":51}],35:[function(require,module,exports){
+},{"../schema":31,"../type/map":45,"../type/seq":50,"../type/str":52}],36:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -7264,7 +7535,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":30,"../type/bool":38,"../type/float":39,"../type/int":40,"../type/null":46,"./failsafe":34}],36:[function(require,module,exports){
+},{"../schema":31,"../type/bool":39,"../type/float":40,"../type/int":41,"../type/null":47,"./failsafe":35}],37:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -7327,7 +7598,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":27}],37:[function(require,module,exports){
+},{"./exception":28}],38:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -7467,7 +7738,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":36}],38:[function(require,module,exports){
+},{"../type":37}],39:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7504,7 +7775,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":36}],39:[function(require,module,exports){
+},{"../type":37}],40:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -7622,7 +7893,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":25,"../type":36}],40:[function(require,module,exports){
+},{"../common":26,"../type":37}],41:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -7797,7 +8068,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":25,"../type":36}],41:[function(require,module,exports){
+},{"../common":26,"../type":37}],42:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -7891,7 +8162,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":36}],42:[function(require,module,exports){
+},{"../../type":37}],43:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -7953,7 +8224,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":36}],43:[function(require,module,exports){
+},{"../../type":37}],44:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -7983,7 +8254,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":36}],44:[function(require,module,exports){
+},{"../../type":37}],45:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7993,7 +8264,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":36}],45:[function(require,module,exports){
+},{"../type":37}],46:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8007,7 +8278,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":36}],46:[function(require,module,exports){
+},{"../type":37}],47:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8043,7 +8314,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":36}],47:[function(require,module,exports){
+},{"../type":37}],48:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8089,7 +8360,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":36}],48:[function(require,module,exports){
+},{"../type":37}],49:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8144,7 +8415,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":36}],49:[function(require,module,exports){
+},{"../type":37}],50:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8154,7 +8425,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":36}],50:[function(require,module,exports){
+},{"../type":37}],51:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8185,7 +8456,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":36}],51:[function(require,module,exports){
+},{"../type":37}],52:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8195,7 +8466,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":36}],52:[function(require,module,exports){
+},{"../type":37}],53:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8285,7 +8556,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":36}],53:[function(require,module,exports){
+},{"../type":37}],54:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -12889,7 +13160,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 'use strict';
 
 // TODO make this name lowercase.
@@ -12978,7 +13249,7 @@ class Coord {
 };
 
 module.exports = Coord;
-},{"./util.js":55}],55:[function(require,module,exports){
+},{"./util.js":56}],56:[function(require,module,exports){
 'use strict';
 
 const commaNumber = require('comma-number');
@@ -13076,6 +13347,7 @@ util.randomFromObj = function (obj) {
     return obj[key];
 };
 
+// Returns string
 util.newId = function () {
     // Later research the most performant way to run this.
     const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -13407,7 +13679,7 @@ util.mbti = () => {
     .join('');
 };
 
-},{"comma-number":22,"moment":53}],56:[function(require,module,exports){
+},{"comma-number":23,"moment":54}],57:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -13419,7 +13691,7 @@ const Util = require('../util/util.js');
 // A person, creature, component, or thing is represented here
 // by a WNode or a tree of WNodes.
 
-let WNode = module.exports = class WNode {
+class WNode {
     constructor (templateName) {
         // Later: Safety checks, logging
         this.id = Util.newId();
@@ -13440,7 +13712,7 @@ let WNode = module.exports = class WNode {
     }
 
     deepCopy () {
-        let clone = new WNode();
+        const clone = new WNode();
         Object.assign(clone, this);
         clone.id = Util.newId();
 
@@ -13665,11 +13937,28 @@ let WNode = module.exports = class WNode {
             b.templateName || ''
         );
     }
-};
+}
 
-},{"../util/util.js":55,"js-yaml":23}],57:[function(require,module,exports){
+// Later move to its own file.
+class Thing extends WNode {
+    constructor (templateName, coord) {
+        super(templateName);
 
-},{}],58:[function(require,module,exports){
+        this.coord = coord || new Coord();
+        this.size = undefined;
+        this.weight = undefined;
+
+        // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
+        this.active = true;
+    }
+}
+
+
+module.exports = WNode;
+
+},{"../util/util.js":56,"js-yaml":24}],58:[function(require,module,exports){
+
+},{}],59:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -13855,4 +14144,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[18,19,20]);
+},{}]},{},[19,20,21]);

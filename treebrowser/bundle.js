@@ -12061,6 +12061,7 @@ util.randomFromObj = function (obj) {
     return obj[key];
 };
 
+// Returns string
 util.newId = function () {
     // Later research the most performant way to run this.
     const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -12404,7 +12405,7 @@ const Util = require('../util/util.js');
 // A person, creature, component, or thing is represented here
 // by a WNode or a tree of WNodes.
 
-let WNode = module.exports = class WNode {
+class WNode {
     constructor (templateName) {
         // Later: Safety checks, logging
         this.id = Util.newId();
@@ -12425,7 +12426,7 @@ let WNode = module.exports = class WNode {
     }
 
     deepCopy () {
-        let clone = new WNode();
+        const clone = new WNode();
         Object.assign(clone, this);
         clone.id = Util.newId();
 
@@ -12650,7 +12651,24 @@ let WNode = module.exports = class WNode {
             b.templateName || ''
         );
     }
-};
+}
+
+// Later move to its own file.
+class Thing extends WNode {
+    constructor (templateName, coord) {
+        super(templateName);
+
+        this.coord = coord || new Coord();
+        this.size = undefined;
+        this.weight = undefined;
+
+        // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
+        this.active = true;
+    }
+}
+
+
+module.exports = WNode;
 
 },{"../util/util.js":49,"js-yaml":17}],51:[function(require,module,exports){
 
