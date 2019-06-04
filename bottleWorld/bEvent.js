@@ -8,8 +8,7 @@ const BEvent = module.exports = class BEvent {
     constructor (eventType, protagonist, target, coord) {
         this.eventType = eventType;
 
-        // WAIT: Hang on. Is protagonist a Thing or a id number?
-        // It could be a Thing in memory, and a id number when serialized.
+        // Protagonist could be: a specific Thing, or a string templateName of a CreatureTemplate (used in Arrival BEvents).
         this.protagonist = protagonist;
         this.target = target;
         this.coord = coord;
@@ -21,8 +20,12 @@ const BEvent = module.exports = class BEvent {
         const smallVersion = Object.assign({}, this);
 
         // Serialize just the ids of linked objects. Gets rid of circular reference and saves space.
-        smallVersion.protagonist = this.protagonist.id;
-        smallVersion.target = this.target.id;
+        smallVersion.protagonist = this.protagonist && this.protagonist.id ?
+            this.protagonist.id :
+            this.protagonist;
+        smallVersion.target = this.target && this.target.id ?
+            this.target.id :
+            this.target;
         smallVersion.outcomes = this.outcomes.map(event => event.serializable());
 
         return smallVersion;
@@ -30,14 +33,6 @@ const BEvent = module.exports = class BEvent {
 
     // TODO probably make subclasses of BEvent for Arrival, Explosion, etc.
     // Each could probably even have a .resolve() member func.
-    static arrival (protagonist, coord) {
-        return new BEvent(
-            BEvent.TYPES.Arrival,
-            protagonist,
-            undefined,
-            coord || new Coord()
-        );
-    }
 
     static departure (protagonist) {
         return new BEvent(BEvent.TYPES.Departure, protagonist);
@@ -129,6 +124,28 @@ const BEvent = module.exports = class BEvent {
         return event;
     }
 };
+
+// TODO separate file probably
+class ArrivalEvent extends BEvent {
+    constructor (protagonist, coord) {
+        super(
+            BEvent.TYPES.Arrival,
+            protagonist,
+            undefined,
+            coord || new Coord()
+        );
+    }
+
+    resolve (worldState) {
+        const arriver = Util.isString(this.protagonist) ?
+            worldState.fromTemplateName(this.protagonist) :  // Later write this func.
+            this.protagonist;
+
+        worldState.addThing(arriver, coord);
+    }
+}
+
+// TODO write the other subclasses
 
 BEvent.TYPES = Util.makeEnum([
     'Arrival',

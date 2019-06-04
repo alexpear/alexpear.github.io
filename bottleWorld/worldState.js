@@ -138,7 +138,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
             // Arrival BEvents have the outcome of causing a AbilityReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
 
             worldState.timeline.addEvent(
-                BEvent.arrival(new WNode('soldier'))
+                new ArrivalEvent(new WNode('soldier'))
             );
         }
 
