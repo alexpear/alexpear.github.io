@@ -8,10 +8,11 @@ const Util = require('../util/util.js');
 const WorldState = require('./worldState.js');
 
 module.exports = class Timeline {
-    constructor () {
+    constructor (worldState) {
         this.timestamps = {};
+        // TODO move the now counter to currentWorldState instead.
         this.now = 0;
-        this.currentWorldState = new WorldState(this);
+        this.currentWorldState = worldState || new WorldState(this);
     }
 
     // returns Event[]

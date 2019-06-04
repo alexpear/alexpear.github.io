@@ -19,6 +19,8 @@ class WorldState {
         // Later perhaps remove timeline.now and replace it with a getter that calls timeline.currentWorldState.now
         this.now = timeline ? timeline.now : 0;
         this.things = [];
+
+        // Later, dont always use this example WGenerator.
         this.wanderingGenerator = new WGenerator(
             require('../codices/battle20/halo/unsc/group.js'),
             'battle20/halo/unsc/group'
@@ -125,6 +127,8 @@ class DeathPlanetWorldState extends ContinuousWorldState {
     }
 
     static example (timeline) {
+        timeline = timeline || new Timeline(this);
+
         const worldState = new DeathPlanetWorldState(timeline);
         worldState.glossary['soldier'] = CreatureTemplate.soldierExample();
 
@@ -140,6 +144,11 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         }
 
         return worldState;
+    }
+
+    static test () {
+        const worldState = DeathPlanetWorldState.example();
+        worldState.timeline.debugPrint();
     }
 }
 
