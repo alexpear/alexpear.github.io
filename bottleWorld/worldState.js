@@ -149,12 +149,20 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         const worldState = DeathPlanetWorldState.example();
         worldState.timeline.debugPrint();
     }
+
+    static run () {
+        const consoleArguments = process.argv;
+        if (consoleArguments[2] === 'test') {
+            DeathPlanetWorldState.test();
+        }
+    }
 }
 
 module.exports = WorldState;
 
 // Run
-// WorldState.test();
+// node worldState.js test
+DeathPlanetWorldState.run();
 
 
 
