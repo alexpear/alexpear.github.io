@@ -133,7 +133,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         const worldState = new DeathPlanetWorldState(timeline);
         worldState.glossary['soldier'] = CreatureTemplate.soldierExample();
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 12; i++) {
             // Start with 20 BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
             // Arrival BEvents have the outcome of causing a AbilityReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
 
