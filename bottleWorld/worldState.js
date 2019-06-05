@@ -97,6 +97,13 @@ class WorldState {
         );
     }
 
+    fromTemplateName (templateName) {
+        const template = this.getTemplate(templateName);
+        // Later use the template to customize the fields of the Thing
+
+        return new Thing(templateName);
+    }
+
     resolveEvent (bEvent) {
         // Implement later.
     }
@@ -138,7 +145,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
             // Arrival BEvents have the outcome of causing a AbilityReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
 
             worldState.timeline.addEvent(
-                new ArrivalEvent(new WNode('soldier'))
+                new ArrivalEvent('soldier')
             );
         }
 
@@ -148,7 +155,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
     static test () {
         const worldState = DeathPlanetWorldState.example();
         worldState.timeline.debugPrint();
-        // TODO Implement Arrival.resolve() and have that get called on all BEvents in the now instant.
+        // TODO Implement ArrivalEvent.resolve() and have that get called on all BEvents in the now instant.
     }
 
     static run () {

@@ -125,27 +125,8 @@ const BEvent = module.exports = class BEvent {
     }
 };
 
-// TODO separate file probably
-class ArrivalEvent extends BEvent {
-    constructor (protagonist, coord) {
-        super(
-            BEvent.TYPES.Arrival,
-            protagonist,
-            undefined,
-            coord || new Coord()
-        );
-    }
 
-    resolve (worldState) {
-        const arriver = Util.isString(this.protagonist) ?
-            worldState.fromTemplateName(this.protagonist) :  // Later write this func.
-            this.protagonist;
-
-        worldState.addThing(arriver, coord);
-    }
-}
-
-// TODO write the other subclasses
+// TODO write the other subclass files
 
 BEvent.TYPES = Util.makeEnum([
     'Arrival',

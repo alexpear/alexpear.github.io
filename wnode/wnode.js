@@ -257,19 +257,4 @@ class WNode {
     }
 }
 
-// Later move to its own file.
-class Thing extends WNode {
-    constructor (templateName, coord) {
-        super(templateName);
-
-        this.coord = coord || new Coord();
-        this.size = undefined;
-        this.weight = undefined;
-
-        // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
-        this.active = true;
-    }
-}
-
-
 module.exports = WNode;
