@@ -2,15 +2,16 @@
 
 // Represents the world in a Bottle World at one moment.
 
-const Alignment = require('../dnd/alignment.js');
-const Coord = require('../util/coord.js');
-const CreatureTemplate = require('../battle20/creaturetemplate.js');
-const BEvent = require('../bottleWorld/bEvent.js');
-const Group = require('../battle20/group.js');
-const TAG = require('../codices/tags.js');
 const Timeline = require('./timeline.js');
-const Util = require('../util/util.js');
+const ArrivalEvent = require('./events/arrivalEvent.js');
+const CreatureTemplate = require('../battle20/creaturetemplate.js');
+const Group = require('../battle20/group.js');
+const BEvent = require('../bottleWorld/bEvent.js');
+const TAG = require('../codices/tags.js');
+const Alignment = require('../dnd/alignment.js');
 const WGenerator = require('../generation/wgenerator.js');
+const Coord = require('../util/coord.js');
+const Util = require('../util/util.js');
 const WNode = require('../wnode/wnode.js');
 
 const Yaml = require('js-yaml');
