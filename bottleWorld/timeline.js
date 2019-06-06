@@ -64,7 +64,7 @@ module.exports = class Timeline {
     }
 
     debugPrint () {
-        console.log(this.toDebugString());
+        Util.log(this.toDebugString(), 'debug');
     }
 
     static example () {

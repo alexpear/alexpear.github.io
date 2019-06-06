@@ -109,6 +109,19 @@ class WorldState {
         // Implement later.
     }
 
+    thingString () {
+        return this.things.map(
+            t => t.templateName
+        )
+        .join(', ') || `[No Things in this world]`;
+    }
+
+    printThings () {
+        const output = `At t=${ this.now }, this world contains: ${ this.thingString() }`;
+
+        Util.log(output, 'debug');
+    }
+
     static test () {
         Util.log(`WorldState.test()\n`, 'info');
 
@@ -156,6 +169,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
     static test () {
         const worldState = DeathPlanetWorldState.example();
         worldState.timeline.debugPrint();
+        worldState.printThings();
         // TODO Implement ArrivalEvent.resolve() and have that get called on all BEvents in the now instant.
     }
 
