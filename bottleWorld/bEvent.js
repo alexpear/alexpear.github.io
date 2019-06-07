@@ -34,95 +34,95 @@ const BEvent = module.exports = class BEvent {
     // TODO probably make subclasses of BEvent for Arrival, Explosion, etc.
     // Each could probably even have a .resolve() member func.
 
-    static departure (protagonist) {
-        return new BEvent(BEvent.TYPES.Departure, protagonist);
-    }
+    // static departure (protagonist) {
+    //     return new BEvent(BEvent.TYPES.Departure, protagonist);
+    // }
 
-    // Might later revise this. Maybe some actions can be performed with a parameter.
-    static action (protagonist, target, coord, actionType) {
-        const event = new BEvent(BEvent.TYPES.Action, protagonist, target, coord);
-        event.actionType = actionType;
-        return event;
-        // Outcome information is to be stored in a separate Update event.
-    }
+    // // Might later revise this. Maybe some actions can be performed with a parameter.
+    // static action (protagonist, target, coord, actionType) {
+    //     const event = new BEvent(BEvent.TYPES.Action, protagonist, target, coord);
+    //     event.actionType = actionType;
+    //     return event;
+    //     // Outcome information is to be stored in a separate Update event.
+    // }
 
-    // Builds a chain of BEvent of length up to 3
-    // Does not work for splash damage or other attacks with complex effects.
-    static simpleAttack (protagonist, target, actionType, damage, targetDead) {
-        const actionEvent = new BEvent(BEvent.TYPES.Action, protagonist, target);
+    // // Builds a chain of BEvent of length up to 3
+    // // Does not work for splash damage or other attacks with complex effects.
+    // static simpleAttack (protagonist, target, actionType, damage, targetDead) {
+    //     const actionEvent = new BEvent(BEvent.TYPES.Action, protagonist, target);
 
-        const damageProps = {
-            hp: -1 * damage,
-            relative: true
-        };
+    //     const damageProps = {
+    //         hp: -1 * damage,
+    //         relative: true
+    //     };
 
-        const damageEvent = BEvent.update(target, damageProps)
-        actionEvent.outcomes.push(damageEvent);
+    //     const damageEvent = BEvent.update(target, damageProps)
+    //     actionEvent.outcomes.push(damageEvent);
 
-        if (targetDead) {
-            actionEvent.outcomes.push(
-                BEvent.death(target)
-            );
-        }
+    //     if (targetDead) {
+    //         actionEvent.outcomes.push(
+    //             BEvent.death(target)
+    //         );
+    //     }
 
-        return actionEvent;
-    }
+    //     return actionEvent;
+    // }
 
-    static death (protagonist) {
-        return new BEvent(BEvent.TYPES.Death, protagonist);
-    }
+    // static death (protagonist) {
+    //     return new BEvent(BEvent.TYPES.Death, protagonist);
+    // }
 
-    static newTarget (protagonist, target) {
-        return new BEvent(BEvent.TYPES.NewTarget, protagonist, target);
-    }
+    // static newTarget (protagonist, target) {
+    //     return new BEvent(BEvent.TYPES.NewTarget, protagonist, target);
+    // }
 
-    static newDestination (protagonist, coord) {
-        return new BEvent(BEvent.TYPES.NewDestination, protagonist, undefined, coord);
-    }
+    // static newDestination (protagonist, coord) {
+    //     return new BEvent(BEvent.TYPES.NewDestination, protagonist, undefined, coord);
+    // }
 
-    static actionReady (protagonist, actionType) {
-        const event = new BEvent(BEvent.TYPES.ActionReady, protagonist);
+    // static actionReady (protagonist, actionType) {
+    //     const event = new BEvent(BEvent.TYPES.ActionReady, protagonist);
 
-        event.actionType = actionType;
+    //     event.actionType = actionType;
 
-        return event;
-    }
+    //     return event;
+    // }
 
-    static update (protagonist, props) {
-        const event = new BEvent(BEvent.TYPES.Update, protagonist);
+    // static update (protagonist, props) {
+    //     const event = new BEvent(BEvent.TYPES.Update, protagonist);
 
-        event.props = props;
+    //     event.props = props;
 
-        return event;
-    }
+    //     return event;
+    // }
 
-    static explosion (coord, radius, damage) {
-        const event = new BEvent(BEvent.TYPES.Explosion, undefined, undefined, coord);
+    // static explosion (coord, radius, damage) {
+    //     const event = new BEvent(BEvent.TYPES.Explosion, undefined, undefined, coord);
 
-        event.props.radius = radius;
-        event.props.damage = damage;
+    //     event.props.radius = radius;
+    //     event.props.damage = damage;
 
-        return event;
-    }
+    //     return event;
+    // }
 
-    static effect (coord, props) {
-        const event = new BEvent(BEvent.TYPES.Effect, undefined, undefined, coord);
+    // static effect (coord, props) {
+    //     const event = new BEvent(BEvent.TYPES.Effect, undefined, undefined, coord);
 
-        event.props = props;
+    //     event.props = props;
 
-        return event;
-    }
+    //     return event;
+    // }
 
-    // The runEvery parameter stores the duration (number, probably seconds) between instances of this recurring event.
-    static universalUpdate (runEvery, updateType, specialProps) {
-        const event = new BEvent(BEvent.TYPES.UniversalUpdate);
+    // // The runEvery parameter stores the duration (number, probably seconds) between instances of this recurring event.
+    // static universalUpdate (runEvery, updateType, specialProps) {
+    //     const event = new BEvent(BEvent.TYPES.UniversalUpdate);
 
-        Object.assign(event.props, specialProps);
-        event.props.runEvery = runEvery;
-        event.props.updateType = updateType;
+    //     Object.assign(event.props, specialProps);
+    //     event.props.runEvery = runEvery;
+    //     event.props.updateType = updateType;
 
-        return event;
-    }
+    //     return event;
+    // }
 };
 
 
