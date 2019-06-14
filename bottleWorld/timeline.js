@@ -2,17 +2,28 @@
 
 // Hashmap ({}) of sets of Events
 // The hashmap is indexed by timestamps in number format.
+// Parent of WorldState. A WorldState only describes a single instant.
 
 const BEvent = require('./bEvent.js');
 const Util = require('../util/util.js');
 const WorldState = require('./worldState.js');
 
+const SECONDS_PER_TICK = 1;
+
 module.exports = class Timeline {
     constructor (worldState) {
+        Util.log(typeof WorldState, `debug`);
+        Util.log(Object.keys(WorldState), `debug`);
+        Util.log(WorldState, `debug`);
+
         this.timestamps = {};
-        // TODO move the now counter to currentWorldState instead.
-        this.now = 0;
-        this.currentWorldState = worldState || new WorldState(this);
+        // Later fix a weird bug where new WorldState() throws 'WorldState is not a constructor'.
+        this.currentWorldState = worldState || new WorldState(this, 0);
+    }
+
+    // returns number
+    now () {
+        return this.currentWorldState.now();
     }
 
     // returns BEvent[]
@@ -21,7 +32,7 @@ module.exports = class Timeline {
     }
 
     addEvent (bEvent, time) {
-        time = Util.exists(time) ? time : this.now;
+        time = Util.exists(time) ? time : this.now();
 
         const existingEvents = this.timestamps[time];
         if (existingEvents) {
@@ -33,9 +44,9 @@ module.exports = class Timeline {
     }
 
     computeNextInstant () {
-        this.now += 1;
+        this.currentWorldState.now += SECONDS_PER_TICK;
 
-        const events = this.getEventsAt(this.now);
+        const events = this.getEventsAt(this.now());
 
         events.forEach(event => {
             this.currentWorldState.resolveEvent(event);
@@ -45,7 +56,7 @@ module.exports = class Timeline {
     toDebugString () {
         let lines = [];
 
-        for (let t = 0; t <= this.now; t++) {
+        for (let t = 0; t <= this.now(); t++) {
             if (this.timestamps[t]) {
                 const eventsSummary = this.getEventsAt(t)
                     .map(e => e.eventType)

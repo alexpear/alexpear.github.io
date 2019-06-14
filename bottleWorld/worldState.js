@@ -15,11 +15,11 @@ const Util = require('../util/util.js');
 const WNode = require('../wnode/wnode.js');
 
 const Yaml = require('js-yaml');
+
 class WorldState {
-    constructor (timeline) {
+    constructor (timeline, t) {
         this.timeline = timeline;
-        // Later perhaps remove timeline.now and replace it with a getter that calls timeline.currentWorldState.now
-        this.now = timeline ? timeline.now : 0;
+        this.now = t || 0;
         this.things = [];
 
         // Later, dont always use this example WGenerator.
@@ -31,6 +31,11 @@ class WorldState {
         // Contrary to a popular misconception, the W in WGenerator does not stand for Wandering.
         // It stands for WAFFLE.
         this.glossary = this.wanderingGenerator.glossary;
+    }
+
+    // Could also name this t(), after the physics notation, or timestamp() or time()
+    now () {
+        return this.now;
     }
 
     // I currently plan for Thing to extend WNode
@@ -113,11 +118,11 @@ class WorldState {
         return this.things.map(
             t => t.templateName
         )
-        .join(', ') || `[No Things in this world]`;
+        .join(', ') || `[Only the tireless void]`;
     }
 
     printThings () {
-        const output = `At t=${ this.now }, this world contains: ${ this.thingString() }`;
+        const output = `At t=${ this.now() }, this world contains: ${ this.thingString() }`;
 
         Util.log(output, 'debug');
     }
@@ -137,60 +142,16 @@ class WorldState {
     }
 }
 
-// Continuous-space environments, as opposed to grids or graphs.
-// Later move to its own file.
-class ContinuousWorldState extends WorldState {}
-
-// Later move to its own file.
-class DeathPlanetWorldState extends ContinuousWorldState {
-    static proceed () {
-        // Iterate over the set of BEvents in the timeline's current instant.
-        // Later perhaps put proceed() in a new class Transitioner, or Mover, or Director, or Simulator, or Mastermind.
-    }
-
-    static example (timeline) {
-        timeline = timeline || new Timeline(this);
-
-        const worldState = new DeathPlanetWorldState(timeline);
-        worldState.glossary['soldier'] = CreatureTemplate.soldierExample();
-
-        for (let i = 0; i < 12; i++) {
-            // Start with 20 BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
-            // Arrival BEvents have the outcome of causing a AbilityReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
-
-            worldState.timeline.addEvent(
-                new ArrivalEvent('soldier')
-            );
-        }
-
-        return worldState;
-    }
-
-    static test () {
-        const worldState = DeathPlanetWorldState.example();
-        worldState.timeline.debugPrint();
-        worldState.printThings();
-        // TODO Implement ArrivalEvent.resolve() and have that get called on all BEvents in the now instant.
-    }
-
-    static run () {
-        const consoleArguments = process.argv;
-        if (consoleArguments[2] === 'test') {
-            DeathPlanetWorldState.test();
-        }
-    }
-}
-
 module.exports = WorldState;
 
-// Run
-// node worldState.js test
-DeathPlanetWorldState.run();
 
+Util.log(`Bottom of worldState.js...`, `debug`);
+Util.log(typeof WorldState, `debug`);
+Util.log(Object.keys(WorldState), `debug`);
+Util.log(WorldState, `debug`);
 
 
 /* Notes
-
 
 Devise a syntax for distinguishing between child WNodes that introduce a new Action (eg weapons or tools) and child WNodes that modify one or all existing Actions (eg modifications of weapons, training, etc).
 WNodes that provide a new Action can be tagged with 'action'.
