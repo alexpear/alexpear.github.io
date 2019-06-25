@@ -25,10 +25,10 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         worldState.timeline = timeline;
 
-        Util.log(Object.keys(worldState), `debug`);
-        Util.log(Object.keys(worldState.timeline), `debug`);
-        Util.log(Object.keys(worldState.timeline.currentWorldState), `debug`);
-        Util.log(worldState.timeline.currentWorldState === worldState, `debug`);
+        // Util.log(Object.keys(worldState), `debug`);
+        // Util.log(Object.keys(worldState.timeline), `debug`);
+        // Util.log(Object.keys(worldState.timeline.currentWorldState), `debug`);
+        // Util.log(worldState.timeline.currentWorldState === worldState, `debug`);
 
         for (let i = 0; i < 12; i++) {
             // Start with 20 BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()

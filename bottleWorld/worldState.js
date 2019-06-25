@@ -55,7 +55,7 @@ class WorldState {
     }
 
     groupFromTree (nodeTree) {
-        Util.log(`WorldState.groupFromTree(): nodeTree is: \n${nodeTree.toYaml()}`, 'debug');
+        // Util.log(`WorldState.groupFromTree(): nodeTree is: \n${nodeTree.toYaml()}`, 'debug');
 
         const groupTemplate = this.getTemplate(nodeTree.templateName);
         const quantity = groupTemplate.quantity;
@@ -145,10 +145,10 @@ class WorldState {
 module.exports = WorldState;
 
 
-Util.log(`Bottom of worldState.js...`, `debug`);
-Util.log(typeof WorldState, `debug`);
-Util.log(Object.keys(WorldState), `debug`);
-Util.log(WorldState, `debug`);
+// Util.log(`Bottom of worldState.js...`, `debug`);
+// Util.log(typeof WorldState, `debug`);
+// Util.log(Object.keys(WorldState), `debug`);
+// Util.log(WorldState, `debug`);
 
 
 /* Notes
