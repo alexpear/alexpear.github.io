@@ -53,7 +53,9 @@ module.exports = class Timeline {
     computeNextInstant () {
         this.currentWorldState.t += SECONDS_PER_TICK;
 
-        const events = this.getEventsAt(this.now());
+        const events = this.getEventsAt(this.now() - 1);
+
+        // Util.log(`Timeline.computeNextInstant(). events.length is ${events.length}.`, `debug`);
 
         events.forEach(event => {
             this.currentWorldState.resolveEvent(event);
