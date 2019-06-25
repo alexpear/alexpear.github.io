@@ -19,7 +19,7 @@ const Yaml = require('js-yaml');
 class WorldState {
     constructor (timeline, t) {
         this.timeline = timeline;
-        this.now = t || 0;
+        this.t = t || 0;
         this.things = [];
 
         // Later, dont always use this example WGenerator.
@@ -34,8 +34,9 @@ class WorldState {
     }
 
     // Could also name this t(), after the physics notation, or timestamp() or time()
+    // Gotcha: JS does not support a obj having a field and a method with the same name.
     now () {
-        return this.now;
+        return this.t;
     }
 
     // I currently plan for Thing to extend WNode
