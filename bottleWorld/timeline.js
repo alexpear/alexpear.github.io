@@ -82,7 +82,7 @@ module.exports = class Timeline {
     }
 
     debugPrint () {
-        Util.log(this.toDebugString(), 'debug');
+        Util.log('\n' + this.toDebugString(), 'debug');
     }
 
     static example () {

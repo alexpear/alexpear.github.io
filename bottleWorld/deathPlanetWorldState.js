@@ -30,7 +30,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         // Util.log(Object.keys(worldState.timeline.currentWorldState), `debug`);
         // Util.log(worldState.timeline.currentWorldState === worldState, `debug`);
 
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 4; i++) {
             // Start with 20 BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
             // Arrival BEvents have the outcome of causing a AbilityReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
 
@@ -46,13 +46,26 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         Util.log(`Beginning the DeathPlanetWorldState test...`, `debug`);
 
         const worldState = DeathPlanetWorldState.example();
-        worldState.timeline.debugPrint();
+        // worldState.timeline.debugPrint();
         worldState.printThings();
 
         // TODO Have ArrivalEvent.resolve() get called on all BEvents in the now instant.
-        Util.log(`And now we advance to t=${ worldState.now() + 1 }...`, `debug`);
+        // Util.log(`And now we advance to t=${ worldState.now() + 1 }...`, `debug`);
+
         worldState.timeline.computeNextInstant();
-        worldState.timeline.debugPrint();
+        worldState.timeline.computeNextInstant();
+        worldState.timeline.computeNextInstant();
+        worldState.timeline.computeNextInstant();
+        worldState.timeline.computeNextInstant();
+        worldState.timeline.computeNextInstant();
+        worldState.timeline.computeNextInstant();
+        worldState.timeline.computeNextInstant();
+        worldState.timeline.computeNextInstant();
+        worldState.timeline.computeNextInstant();
+        worldState.timeline.computeNextInstant();
+
+        Util.log(`Up to t=${worldState.now()}, the timeline is: \n${worldState.timeline.toDebugString()}`, 'debug');
+        // worldState.timeline.debugPrint();
         worldState.printThings();
     }
 
