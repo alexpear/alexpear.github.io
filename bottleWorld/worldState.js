@@ -12,6 +12,7 @@ const Alignment = require('../dnd/alignment.js');
 const WGenerator = require('../generation/wgenerator.js');
 const Coord = require('../util/coord.js');
 const Util = require('../util/util.js');
+const Thing = require('../wnode/thing.js');
 const WNode = require('../wnode/wnode.js');
 
 const Yaml = require('js-yaml');
@@ -47,7 +48,7 @@ class WorldState {
     }
 
     addThing (thing, coord) {
-        thing.coord = coord;
+        thing.coord = coord || new Coord();
         this.things.push(thing);
     }
 
@@ -106,13 +107,14 @@ class WorldState {
 
     fromTemplateName (templateName) {
         const template = this.getTemplate(templateName);
+
         // Later use the template to customize the fields of the Thing
 
         return new Thing(templateName);
     }
 
     resolveEvent (bEvent) {
-        // Implement later.
+        return bEvent.resolve(this);
     }
 
     thingString () {

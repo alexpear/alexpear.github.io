@@ -1,5 +1,6 @@
 'use strict';
 
+const Coord = require('../util/coord.js');
 const WNode = require('./wnode.js');
 
 module.exports = class Thing extends WNode {
