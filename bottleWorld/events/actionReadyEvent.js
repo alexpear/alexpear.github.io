@@ -15,7 +15,7 @@ module.exports = class ActionReadyEvent extends BEvent {
     }
 
     resolve (worldState) {
-        // Implement later.
+        // TODO Implement.
         // MRB 1: The protagonist takes the action specified by this.actionType
         // Parameters and targets can be determined randomly, perhaps by Thing.chooseActionDetails() or something.
     }

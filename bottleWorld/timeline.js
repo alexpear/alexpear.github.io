@@ -48,6 +48,8 @@ module.exports = class Timeline {
             this.currentWorldState.resolveEvent(event);
         });
 
+        // TODO Implement ActionReadyEvent.resolve()
+        // TODO Implement ActionEvent for actionType === basicAttack, in this case a soldier shooting.
         // TODO Also this.worldState.moveEverything() towards their destinations.
     }
 
