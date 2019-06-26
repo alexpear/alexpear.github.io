@@ -6,6 +6,9 @@ const ArrivalEvent = require('./events/arrivalEvent.js');
 const CreatureTemplate = require('../battle20/creatureTemplate.js');
 const Util = require('../util/util.js');
 
+const Creature = require('../wnode/creature.js');
+const Thing = require('../wnode/thing.js');
+
 class DeathPlanetWorldState extends ContinuousWorldState {
     static proceed () {
         // Iterate over the set of BEvents in the timeline's current instant.

@@ -12,6 +12,7 @@ const Alignment = require('../dnd/alignment.js');
 const WGenerator = require('../generation/wgenerator.js');
 const Coord = require('../util/coord.js');
 const Util = require('../util/util.js');
+const Creature = require('../wnode/creature.js');
 const Thing = require('../wnode/thing.js');
 const WNode = require('../wnode/wnode.js');
 
@@ -108,7 +109,9 @@ class WorldState {
 
         // Later use the template to customize the fields of the Thing
 
-        return new Thing(templateName);
+        return template.constructor.name === 'CreatureTemplate' ?
+            new Creature(templateName) :
+            new Thing(templateName);
     }
 
     resolveEvent (bEvent) {
