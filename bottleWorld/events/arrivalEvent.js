@@ -31,4 +31,4 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     }
 };
 
-ArrivalEvent.ACTION_DELAY = 6;
+ArrivalEvent.ACTION_DELAY = 5;

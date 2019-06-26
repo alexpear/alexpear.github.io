@@ -80,14 +80,6 @@ const BEvent = module.exports = class BEvent {
     //     return new BEvent(BEvent.TYPES.NewDestination, protagonist, undefined, coord);
     // }
 
-    // static actionReady (protagonist, actionType) {
-    //     const event = new BEvent(BEvent.TYPES.ActionReady, protagonist);
-
-    //     event.actionType = actionType;
-
-    //     return event;
-    // }
-
     // static update (protagonist, props) {
     //     const event = new BEvent(BEvent.TYPES.Update, protagonist);
 

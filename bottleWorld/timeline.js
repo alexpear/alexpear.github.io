@@ -47,6 +47,8 @@ module.exports = class Timeline {
         events.forEach(event => {
             this.currentWorldState.resolveEvent(event);
         });
+
+        // TODO Also this.worldState.moveEverything() towards their destinations.
     }
 
     toDebugString () {

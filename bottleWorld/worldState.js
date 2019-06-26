@@ -128,6 +128,26 @@ class WorldState {
         Util.log(output, 'debug');
     }
 
+    // Debug helper func.
+    glossaryTypesString () {
+        return Object.keys(
+            this.glossary
+        )
+        .map(
+            templateName => this.glossary[templateName].constructor.name
+        )
+        .join(', ');
+    }
+
+    // Debug helper func.
+    thingTypesString () {
+        return this.things
+            .map(
+                thing => thing.constructor.name
+            )
+            .join(', ');
+    }
+
     static test () {
         Util.log(`WorldState.test()\n`, 'info');
 

@@ -22,6 +22,12 @@ module.exports = Util.makeEnum([
     'Spirit',
     'Elemental',
 
+    'Warrior',
+    'Soldier',
+    'Farmer',
+
+    'Tech10',
+
     'Blade',
     'Piercing',
     'Impact',
@@ -29,14 +35,21 @@ module.exports = Util.makeEnum([
     'Fire',
     'Cold',
     'Poison',
+    'Bullet',
+    'Explosive',
 
     'Necrotic',
     'Radiant',
     'Electric',
 
+    'RapidFire',
+
     'Action',
     'Attack',
     'Damage',
     'Death',
-    'GroupElimination'
+    'GroupElimination',
+
+    'UNSC',
+    'Covenant'
 ]);

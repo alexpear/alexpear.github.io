@@ -2,11 +2,8 @@
 
 const ContinuousWorldState = require('./continuousWorldState.js');
 const Timeline = require('./timeline.js');
-
 const ArrivalEvent = require('./events/arrivalEvent.js');
-
 const CreatureTemplate = require('../battle20/creatureTemplate.js');
-
 const Util = require('../util/util.js');
 
 class DeathPlanetWorldState extends ContinuousWorldState {
@@ -18,6 +15,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
     static example (timeline) {
         const worldState = new DeathPlanetWorldState();
+
         worldState.glossary['soldier'] = CreatureTemplate.soldierExample();
 
         timeline = timeline || new Timeline(worldState);
@@ -43,19 +41,12 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         const worldState = DeathPlanetWorldState.example();
         worldState.printThings();
 
-        worldState.timeline.computeNextInstant();
-        worldState.timeline.computeNextInstant();
-        worldState.timeline.computeNextInstant();
-        worldState.timeline.computeNextInstant();
-        worldState.timeline.computeNextInstant();
-        worldState.timeline.computeNextInstant();
-        worldState.timeline.computeNextInstant();
-        worldState.timeline.computeNextInstant();
-        worldState.timeline.computeNextInstant();
-        worldState.timeline.computeNextInstant();
-        worldState.timeline.computeNextInstant();
+        for (let t = 0; t < 8; t++) {
+            worldState.timeline.computeNextInstant();
+        }
 
         Util.log(`Up to t=${worldState.now()}, the timeline is: \n${worldState.timeline.toDebugString()}`, 'debug');
+
         worldState.printThings();
     }
 
