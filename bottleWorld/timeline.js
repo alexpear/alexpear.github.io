@@ -12,10 +12,6 @@ const SECONDS_PER_TICK = 1;
 
 module.exports = class Timeline {
     constructor (worldState) {
-        // Util.log(typeof WorldState, `debug`);
-        // Util.log(Object.keys(WorldState), `debug`);
-        // Util.log(WorldState, `debug`);
-
         this.timestamps = {};
         // Later fix a weird bug where new WorldState() throws 'WorldState is not a constructor'.
         this.currentWorldState = worldState || new WorldState(this, 0);
@@ -23,13 +19,6 @@ module.exports = class Timeline {
 
     // returns number
     now () {
-        // Util.log(`Top of Timeline.now()`, `debug`);
-
-        // Util.log(typeof this.currentWorldState, `debug`);
-        // Util.log(Object.keys(this.currentWorldState), `debug`);
-        // Util.log(typeof this.currentWorldState.now, `debug`);
-        // Util.log(this.currentWorldState.now, `debug`);
-
         return this.currentWorldState.now();
     }
 
@@ -54,8 +43,6 @@ module.exports = class Timeline {
         this.currentWorldState.t += SECONDS_PER_TICK;
 
         const events = this.getEventsAt(this.now() - 1);
-
-        // Util.log(`Timeline.computeNextInstant(). events.length is ${events.length}.`, `debug`);
 
         events.forEach(event => {
             this.currentWorldState.resolveEvent(event);

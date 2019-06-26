@@ -16,8 +16,6 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     }
 
     resolve (worldState) {
-        // Util.log(`Top of ArrivalEvent.resolve()`, `debug`);
-
         const arriver = Util.isString(this.protagonist) ?
             worldState.fromTemplateName(this.protagonist) :
             this.protagonist;
