@@ -30,6 +30,14 @@ class ActionTemplate {
         return combinedTemplate;
     }
 
+    isAttack () {
+        return this.damage > 0;
+    }
+
+    isRanged () {
+        return this.range > 1;
+    }
+
     static example () {
         return ActionTemplate.dwarfExample();
     }
