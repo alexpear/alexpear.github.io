@@ -51,6 +51,14 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         Util.log(`Up to t=${worldState.now()}, the timeline is: \n${worldState.timeline.toDebugString()}`, 'debug');
 
         worldState.printThings();
+
+        const sampleActionsStr = JSON.stringify(
+            worldState.things[0].actions(worldState),
+            undefined,
+            '    '
+        );
+
+        Util.log(`The first Thing has the following Actions: ${ sampleActionsStr }`, 'debug');
     }
 
     static run () {
