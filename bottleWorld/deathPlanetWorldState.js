@@ -10,10 +10,19 @@ const Creature = require('../wnode/creature.js');
 const Thing = require('../wnode/thing.js');
 
 class DeathPlanetWorldState extends ContinuousWorldState {
-    static proceed () {
+    proceed () {
         // Iterate over the set of BEvents in the timeline's current instant.
         // Later reconcile this with timeline.computeNextInstant()
         // Also perhaps put proceed() in a new class Transitioner, or Mover, or Director, or Simulator, or Mastermind.
+    }
+
+    moveEverything () {
+        this.things.forEach(
+            thing => {
+                // If it has momentum or is continuing to travel, move it one second further along its path.
+                // Round coords to the nearest cm.
+            }
+        );
     }
 
     static example (timeline) {

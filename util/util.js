@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const commaNumber = require('comma-number');
 const moment = require('moment');
 
@@ -94,6 +95,23 @@ util.randomFromObj = function (obj) {
     const key = util.randomOf(Object.keys(obj));
     return obj[key];
 };
+
+util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
+    if (maxExclusive < minInclusive) {
+        const temp = minInclusive;
+        minInclusive = maxExclusive;
+        maxExclusive = temp;
+    }
+
+    const unrounded = (Math.random() * (maxExclusive - minInclusive))
+        + minInclusive;
+
+    return _.round(unrounded, decimalPlaces);
+};
+
+// util.round = function (x, decimalPlaces) {
+//     return 
+// };
 
 // Returns string
 util.newId = function () {

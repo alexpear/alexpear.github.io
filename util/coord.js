@@ -4,6 +4,7 @@
 var Util = require('./util.js');
 
 class Coord {
+    // Later can have a array of dimensions, instead of r and c props.
     constructor (r,c) {
         this.r = Util.default(r, -1);
         this.c = Util.default(c, -1);
@@ -84,5 +85,8 @@ class Coord {
         return candidateNeighbor;
     }
 };
+
+// Death Planet Fish Tank wants a cm resolution.
+Coord.DECIMAL_PLACES = 2;
 
 module.exports = Coord;

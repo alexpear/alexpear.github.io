@@ -5,31 +5,19 @@ const Util = require('../util/util.js');
 
 // BEvent stands for Bottle World Event
 const BEvent = module.exports = class BEvent {
-    constructor (eventType, protagonist, target, coord) {
+    constructor (eventType, protagonist, target, coord, templateName) {
         this.eventType = eventType;
 
-        // Protagonist could be: a specific Thing, or a string templateName of a CreatureTemplate (used in Arrival BEvents).
-        this.protagonist = protagonist;
-        this.target = target;
+        this.protagonistId = (protagonist && protagonist.id) || protagonist;
+        this.targetId = (target && target.id) || target;
         this.coord = coord;
+        this.templateName = templateName;
         this.props = {};
         this.outcomes = [];  // Array of other BEvent
     }
 
-    serializable () {
-        const smallVersion = Object.assign({}, this);
-
-        // Serialize just the ids of linked objects. Gets rid of circular reference and saves space.
-        smallVersion.protagonist = this.protagonist && this.protagonist.id ?
-            this.protagonist.id :
-            this.protagonist;
-        smallVersion.target = this.target && this.target.id ?
-            this.target.id :
-            this.target;
-        smallVersion.outcomes = this.outcomes.map(event => event.serializable());
-
-        return smallVersion;
-    }
+    // NOTE In 2019 July i decided to have BEvents point to ids of Things rather than to Things in-memory.
+    // The alternative, if id lookups cause too much slowdown, would be to have BEvents point to full Things in-memory and go back to using BEvent.serializable() to convert to id-based non-circular-ref versions for persistence.
 
     // TODO probably make subclasses of BEvent for Arrival, Explosion, etc.
     // Each could probably even have a .resolve() member func.

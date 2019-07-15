@@ -6,26 +6,27 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
-    constructor (protagonist, coord) {
+    constructor (templateName, coord) {
         super(
             BEvent.TYPES.Arrival,
-            protagonist,
             undefined,
-            coord || new Coord()
+            undefined,
+            coord || new Coord(),
+            templateName
         );
     }
 
     resolve (worldState) {
-        const arriver = Util.isString(this.protagonist) ?
-            worldState.fromTemplateName(this.protagonist) :
-            this.protagonist;
+        const arriver = !! this.templateName ?
+            worldState.fromTemplateName(this.templateName) :
+            worldState.fromId(this.protagonistId);
 
         worldState.addThing(arriver, this.coord);
 
         const timeline = worldState.timeline;
 
         timeline.addEvent(
-            new ActionReadyEvent(this.protagonist, 'basicAttack'),
+            new ActionReadyEvent(arriver, 'basicAttack'),
             timeline.now() + ArrivalEvent.ACTION_DELAY
         );
     }
