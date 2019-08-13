@@ -514,8 +514,14 @@ class WGenerator {
         let output;
 
         if (process.argv.length > 2) {
-            const wgen = WGenerator.fromCodex(process.argv[2]);
-            output = wgen.getOutputs();
+            if (! process.argv[2].includes('/')) {
+                console.log(`Usage: node wgenerator.js <codexPath>`);
+                return;
+            }
+            else {
+                const wgen = WGenerator.fromCodex(process.argv[2]);
+                output = wgen.getOutputs();
+            }
         }
         else {
             output = [];
@@ -525,9 +531,10 @@ class WGenerator {
     }
 
     static debugPrint (output) {
-        output.forEach(
+        Util.array(output).forEach(
             node => {
                 console.log(node.toPrettyString());
+
                 // Util.log(`There are ${node.components.length} components. The first one is ${node.components[0] && node.components[0].templateName}.`, 'debug');
             }
         );
