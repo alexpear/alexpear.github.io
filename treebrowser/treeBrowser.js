@@ -6,7 +6,7 @@ const Util = require('../util/util.js');
 
 const Hotkeys = require('hotkeys-js');
 
-//
+// Tree Navigator on alexpear.github.io
 
 const TreeBrowser = module.exports = class TreeBrowser {
     constructor (curNode) {

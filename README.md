@@ -8,3 +8,12 @@ This website include the following prototype projects:
 - See TODOs in timeline.js
 - Add logic so that, on ActionReady events, creatures initiate their (only) Action.
 - Add logic about every creature moving closer to its destination each tick.
+- Waffle Tree fractal mode
+  - Implement logic to handle Partial WNodes
+    - Typically this will mean generating its child nodes on the fly
+    - These children will be generated as status Partial
+  - Implement the check of whether there are more than PRUNE_CEILING stored nodes
+    - Perhaps all generation and dropping can update a counter, storedNodeCount
+  - Implement the walk that drops stored nodes until there are only PRUNE_DOWN_TO nodes
+    - Dropping a stored node includes marking its parent as a Partial
+    - Hmm .. or potentially, instead of dropping the current node, you turn a internal node into a Partial and drop all of its children
