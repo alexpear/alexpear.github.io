@@ -6,8 +6,9 @@ This website include the following prototype projects:
 
 ## To Do:
 - See TODOs in timeline.js
-- Add logic so that, on ActionReady events, creatures initiate their (only) Action.
-- Add logic about every creature moving closer to its destination each tick.
+- Death Planet Fish Tank
+  - Add logic so that, on ActionReady events, creatures initiate their (only) Action.
+  - Add logic about every creature moving closer to its destination each tick.
 - Waffle Tree fractal mode
   - Implement logic to handle Partial WNodes
     - Typically this will mean generating its child nodes on the fly
