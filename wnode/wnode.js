@@ -2,6 +2,7 @@
 
 const Yaml = require('js-yaml');
 
+const StorageModes = require('./storageModes.js');
 const Util = require('../util/util.js');
 
 // Waffle Node
@@ -19,6 +20,9 @@ class WNode {
         }
 
         this.components = [];
+
+        this.storageMode = StorageModes.Partial;
+        this.lastVisited = Date.now();
     }
 
     add (...nodes) {
