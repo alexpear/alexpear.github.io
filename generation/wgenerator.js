@@ -310,6 +310,10 @@ class WGenerator {
         return patrolRaw;
     }
 
+    static exampleGenerator () {
+        return WGenerator.generators['halo/unsc/fleet'];
+    }
+
     // Example input: 'sunlight/warbands/warrior'
     static fromCodex (codexPath) {
         // Warning: dynamic require() calls are incompatible with browserify.
