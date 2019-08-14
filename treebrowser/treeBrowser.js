@@ -101,6 +101,7 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
     goToNode (newNode) {
         this.currentNode = newNode;
+        this.updateCache(newNode);
         this.updateUi(newNode);
     }
 
@@ -124,6 +125,20 @@ const TreeBrowser = module.exports = class TreeBrowser {
         this.goToNode(child);
     }
 
+    updateCache (visitedNode) {
+        if (! visitedNode || ! this.generator) {
+            util.log(`Cannot update tree cache. Not enough information present to generate nodes. Generator is ${this.generator ? 'present, however' : 'absent'}.`, 'error');
+            return;
+        }
+
+        // If visitedNode is of storageMode Partial, generate its missing children.
+
+        // If any nodes were generated, update this.nodeCount & check whether there are too many nodes in the tree.
+        if (this.nodeCount >= TreeBrowser.PRUNE_CEILING) {
+
+        }
+    }
+
     discard () {
         // TODO
         this.updateUi();
@@ -144,6 +159,9 @@ const TreeBrowser = module.exports = class TreeBrowser {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 };
+
+TreeBrowser.PRUNE_CEILING = 10; // 100000000;
+TreeBrowser.PRUNE_DOWN_TO = 5;  // 10000000;
 
 function init () {
     window.treeBrowser = new TreeBrowser();
