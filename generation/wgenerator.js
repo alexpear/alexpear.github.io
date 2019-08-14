@@ -164,20 +164,16 @@ class WGenerator {
         }
     }
 
-    // Might modify node.children
+    // Might modify node.components
     // Returns a WNode
     maybeAddChildren (node) {
         // Later make this case insensitive
         const table = this.childTables[node.templateName];
 
         if (table) {
-            // Util.log(`End of maybeAddChildren(node of '${node.templateName}'). table exists.`, 'debug');
-
             return this.addChildren(node, table);
         }
         else {
-            // Util.log(`End of maybeAddChildren(node of '${node.templateName}'). table not found.`, 'debug');
-
             return node;
         }
     }
