@@ -133,6 +133,9 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
         // TODO flesh this out
         // If visitedNode is of storageMode Partial, generate its missing children.
+        // Opts
+        // Replace visitedNode with this.generator.getOutputs(visitedNode.templateName), both itself and ofc any children
+        // Use something like maybeAddChildren to populate children upon visitedNode without replacing it
 
         // If any nodes were generated, update this.storedNodeCount & check whether there are too many nodes in the tree.
         if (this.storedNodeCount >= TreeBrowser.PRUNE_CEILING) {

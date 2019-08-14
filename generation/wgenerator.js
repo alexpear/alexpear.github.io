@@ -106,6 +106,7 @@ class WGenerator {
         return nodes;
     }
 
+    // Returns ContextString[]
     resolveCommas (inputString) {
         // Util.log(`Top of resolveCommas(), inputString is '${inputString}'`, 'debug');
 
@@ -129,6 +130,8 @@ class WGenerator {
         return nodes;
     }
 
+    // LATER maybe rename ContextString local vars to contextString or contextStr, for reading clarity.
+    // Returns a WNode
     makeSubtree (cString) {
         // Util.log(`Top of makeSubtree( '${cString}' ), this.codexPath is ${this.codexPath}`, 'debug');
 
@@ -137,6 +140,7 @@ class WGenerator {
             WGenerator.makeExternalSubtree(cString);
     }
 
+    // Returns a WNode
     makeLocalSubtree (cString) {
         // Later, read from the templates of the WGenerator specified by cString.path
         const node = new WNode(cString.name);
@@ -147,6 +151,7 @@ class WGenerator {
         return this.maybeAddChildren(node);
     }
 
+    // Returns undefined
     applyTemplate (node, cString) {
         const template = this.glossary[cString.name];
         if (! template) {
@@ -230,6 +235,7 @@ class WGenerator {
         }
     }
 
+    // Returns ContextString[]
     resolveLocalAlias (tableName) {
         // Later make this case insensitive
         const table = this.aliasTables[tableName];
@@ -241,6 +247,7 @@ class WGenerator {
         return table.getOutputAndResolveIt();
     }
 
+    // Returns a string
     makeSomePathsAbsolute (slashStr) {
         return slashStr.split(',')
             .map(
@@ -252,6 +259,7 @@ class WGenerator {
             .join(',');
     }
 
+    // Returns a string
     makePathAbsolute (relativePathStr) {
         if (relativePathStr.startsWith('{')) {
             return this.getAbsoluteAlias(relativePathStr);
@@ -261,6 +269,7 @@ class WGenerator {
         return this.getAbsolutePath(relativePathStr);
     }
 
+    // Returns a string
     getAbsoluteAlias (relativePathAlias) {
         // One duplicate comparison. I dont think this will slow performance appreciably.
         if (relativePathAlias.startsWith('{')) {
@@ -274,6 +283,7 @@ class WGenerator {
         return `{${absolutePath}}`;
     }
 
+    // Returns a string
     // Later i could return ContextString instead of a absolute path.
     getAbsolutePath (relativePathStr) {
         const relativePath = relativePathStr.trim()
@@ -483,6 +493,7 @@ class WGenerator {
         throw new Error(`Could not find a WGenerator for this absolutePath: ${ absolutePath }`);
     }
 
+    // Returns ContextString[]
     static resolveExternalAlias (absolutePath) {
         const findings = WGenerator.findGenAndTable(absolutePath);
         // Later, check if this throwing is redundant.
@@ -493,7 +504,7 @@ class WGenerator {
         return findings.gen.resolveLocalAlias(findings.name);
     }
 
-    // Returns WNode
+    // Returns a WNode
     // References the appropriate WGenerator's ChildTables, templates, etc
     // The path was already made absolute during table construction (both AliasTable and ChildTable rows).
     static makeExternalSubtree (cString) {
@@ -617,6 +628,7 @@ class AliasTable {
         return Util.randomOf(this.outputs);
     }
 
+    // Returns ContextString[]
     getOutputAndResolveIt () {
         const outputStr = this.getOutput();
 
@@ -640,7 +652,7 @@ class AliasTable {
         return t.startsWith('output');
     }
 
-
+    // Returns a string
     static withoutTheStarter (rawString) {
         const s = rawString.trim();
         const sLow = s.toLowerCase();
@@ -683,6 +695,7 @@ class ChildTable {
             );
     }
 
+    // Returns a boolean
     static isAppropriateFor (tableString) {
         const t = tableString.trim()
             .toLowerCase();
@@ -692,6 +705,7 @@ class ChildTable {
         );
     }
 
+    // Returns a string
     static withoutTheStarter (rawString) {
         const s = rawString.trim();
         const sLow = s.toLowerCase();
@@ -713,6 +727,7 @@ ChildTable.STARTERS = [
     // 'childrenOf' is implied by the call to toLowerCase()
 ];
 
+// TODO move to its own file
 // Intermediate representation used during parsing and generation. Represents a name (of a template or of a alias) with a codex path for context.
 // Alternate names: CodexString, PathName, PathString, ContextName, ContextString
 class ContextString {
