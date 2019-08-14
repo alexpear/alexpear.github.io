@@ -11,7 +11,7 @@ const Hotkeys = require('hotkeys-js');
 const TreeBrowser = module.exports = class TreeBrowser {
     constructor (curNode, generator) {
         this.currentNode = curNode || TreeBrowser.exampleRoot();
-        this.nodeCount = this.currentNode.treeSize();
+        this.storedNodeCount = this.currentNode.treeSize();
         this.generator = generator;
 
         this.parentButton = document.getElementById('parentButton');
@@ -131,10 +131,11 @@ const TreeBrowser = module.exports = class TreeBrowser {
             return;
         }
 
+        // TODO flesh this out
         // If visitedNode is of storageMode Partial, generate its missing children.
 
-        // If any nodes were generated, update this.nodeCount & check whether there are too many nodes in the tree.
-        if (this.nodeCount >= TreeBrowser.PRUNE_CEILING) {
+        // If any nodes were generated, update this.storedNodeCount & check whether there are too many nodes in the tree.
+        if (this.storedNodeCount >= TreeBrowser.PRUNE_CEILING) {
 
         }
     }
