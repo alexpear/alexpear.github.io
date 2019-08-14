@@ -199,6 +199,7 @@ class WGenerator {
 
     // Returns ContextString[]
     // No side effects.
+    // Note that this involves randomness.
     maybeResolveAlias (str) {
         str = str.trim();
 
