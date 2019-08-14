@@ -205,6 +205,24 @@ class WNode {
         return Yaml.dump(this);
     }
 
+    root () {
+        return this.parent ?
+            this.parent.root() :
+            this;
+    }
+
+    treeSize () {
+        const root = this.root();
+        return root.subtreeSize();
+    }
+
+    subtreeSize () {
+        return this.components.reduce(
+            (sizeSoFar, component) => sizeSoFar + component.subtreeSize(),
+            1
+        );
+    }
+
     encyclopediaEntry () {
         // Later.
         return `${ Util.capitalized(this.templateName) }: A creature with the following traits: ${ this.components.map(c => c.toString()).join(', ') }.`;
