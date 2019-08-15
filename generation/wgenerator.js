@@ -410,16 +410,10 @@ class WGenerator {
             require('../codices/halo/unsc/item'),
             'halo/unsc/item'
         );
-
-        // Util.log(`Middle of loadHaloCodices(), item is loaded.`, 'debug');
-
         WGenerator.addGenerator(
             require('../codices/halo/unsc/individual'),
             'halo/unsc/individual'
         );
-
-        // Util.log(`Middle of loadHaloCodices(), individual is loaded.`, 'debug');
-
         WGenerator.addGenerator(
             require('../codices/halo/unsc/squad'),
             'halo/unsc/squad'
@@ -582,6 +576,8 @@ class WGenerator {
                 return;
             }
             else {
+                // Later we can add support for references inside codex files, such as halo/forerunner/individual/knight.
+                // This is supported in parsing but not in the CLI yet.
                 const wgen = WGenerator.fromCodex(process.argv[2]);
                 output = wgen.getOutputs();
             }
