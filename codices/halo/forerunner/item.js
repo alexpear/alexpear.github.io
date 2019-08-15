@@ -19,6 +19,7 @@ module.exports = `
 1 barbedLance
 1 dyingStar
 10 sentinelBeam
+1 ultraSentinelBeam
 20 splinterTurret
 20 scattershot
 1 loathsomeThing
@@ -29,9 +30,16 @@ module.exports = `
 10 incinerationCannon
 1 riverOfLight
 1 heartseeker
+10 knightsBlade
 
 * alias grenade
 1 pulseGrenade
 1 splinterGrenade
+
+* alias gear
+4 hardLightShield
+4 autoturret
+4 regenerationField
+4 prometheanVision
 
 `;
