@@ -25,4 +25,9 @@ forerunner/item/boltshot
 * childrenof soldier
 {forerunner/item/anyWeapon}
 
+* childrenof survivor
+{forerunner/item/anyWeapon}
+{forerunner/item/grenade}
+{forerunner/item/gear}
+
 `;
