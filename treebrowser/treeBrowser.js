@@ -11,7 +11,8 @@ const Hotkeys = require('hotkeys-js');
 const TreeBrowser = module.exports = class TreeBrowser {
     constructor (curNode, generator) {
         this.currentNode = curNode || TreeBrowser.exampleRoot();
-        this.storedNodeCount = this.currentNode.treeSize();
+        this.root = this.currentNode.root();
+        this.storedNodeCount = this.root.subtreeSize();
         this.generator = generator;
 
         this.parentButton = document.getElementById('parentButton');
@@ -132,13 +133,35 @@ const TreeBrowser = module.exports = class TreeBrowser {
         }
 
         // TODO flesh this out
-        // If visitedNode is of storageMode Partial, generate its missing children.
-        // Opts
-        // Replace visitedNode with this.generator.getOutputs(visitedNode.templateName), both itself and ofc any children
-        // Use something like maybeAddChildren to populate children upon visitedNode without replacing it
+        // If visitedNode is a Partial, generate any missing children.
+        if (visitedNode.storageMode === StorageModes.Partial) {
+            const existingChildCount = visitedNode.components.length;
 
-        // If any nodes were generated, update this.storedNodeCount & check whether there are too many nodes in the tree.
-        if (this.storedNodeCount >= TreeBrowser.PRUNE_CEILING) {
+            this.generator.maybeAddChildrenOnly(visitedNode);
+
+            // Update total count.
+            const newNodeCount = visitedNode.components.length - existingChildCount;
+            this.storedNodeCount += newNodeCount;
+        }
+
+        // check whether there are too many nodes in the tree.
+        if (this.storedNodeCount >= TreeBrowser.TOO_MANY_NODES) {
+            this.pruneOldest();
+        }
+    }
+
+    pruneOldest () {
+        const toBeRemoved = this.storedNodeCount - TreeBrowser.PRUNE_DOWN_TO;
+
+        // Later, we can make this more efficient.
+        const allNodes = [];
+
+        // First draft: Add all nodes to the allNodes array. Sort them by lastVisited.
+        // Slice off the oldest chunk of allNodes. Iterate over that chunk and drop each node.
+        // Drop in this context means: go to curNode's parent and modify its parent's components array such that curNode is no longer in it.
+        // The root cannot be dropped because it has no parent. Skip it.
+
+        while (toBeRemoved > 0) {
 
         }
     }

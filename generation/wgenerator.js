@@ -8,6 +8,7 @@ const fs = require('fs');
 // TODO perhaps restructure so that WGenerator doesn't import any Battle20 files.
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
+const StorageModes = require('../wnode/storageModes.js');
 const Util = require('../util/util.js');
 const WNode = require('../wnode/wnode.js');
 
@@ -130,6 +131,18 @@ class WGenerator {
         return nodes;
     }
 
+    // Returns WNode[]
+    // Returned nodes have .storageMode === Partial and lack children of their own.
+    // Non-recursive variant of resolveString(), used for fractal tree browsing.
+    resolveStringOnly (inputString) {
+        const nodes = this.resolveCommas(inputString)
+            .map(contextString => this.makePartialNode(contextString));
+
+        // TODO figure out whether sortSubtrees() needs modification when they are not trees
+        WNode.sortSubtrees(nodes);
+        return nodes;
+    }
+
     // LATER maybe rename ContextString local vars to contextString or contextStr, for reading clarity.
     // Returns a WNode
     makeSubtree (cString) {
@@ -194,6 +207,45 @@ class WGenerator {
             }
         );
 
+        return node;
+    }
+
+    // Non recursive variant of maybeAddChildren(), for fractal browsing mode.
+    // Might modify node.components
+    // The child nodes will be status Partial.
+    // This function adds no grandchildren.
+    // Returns a WNode
+    maybeAddChildrenOnly (node) {
+        // Later make this case insensitive
+        const table = this.childTables[node.templateName];
+
+        if (table) {
+            return this.addChildrenOnly(node, table);
+        }
+        else {
+            node.storageMode = StorageModes.Complete;
+            return node;
+        }
+    }
+
+    // Modifies node.components
+    // Returns the modified WNode
+    addChildrenOnly (node, table) {
+        table.children.forEach(
+            childString => {
+                // Note that resolveStringOnly() always returns an array.
+                const children = this.resolveStringOnly(childString);
+                node.components = node.components.concat(children);
+                children.forEach(
+                    child => {
+                        child.parent = node;
+                        child.storageMode = StorageModes.Partial;
+                    }
+                );
+            }
+        );
+
+        node.storageMode = StorageModes.Complete;
         return node;
     }
 
