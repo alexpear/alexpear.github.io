@@ -119,7 +119,8 @@ const TreeBrowser = module.exports = class TreeBrowser {
         const child = this.currentNode.components.find(component => component.id === childId);
 
         if (! child) {
-            // TODO: Friendlier notification.
+            // LATER: Friendlier notification.
+            // TODO: Always hits this error 2019 August 14.
             return alert(`Error: Could not find a child component with id ${ childId }. The number of child components is ${ this.currentNode.components.length }.`);
         }
 

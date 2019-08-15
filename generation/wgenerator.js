@@ -146,8 +146,6 @@ class WGenerator {
     // LATER maybe rename ContextString local vars to contextString or contextStr, for reading clarity.
     // Returns a WNode
     makeSubtree (cString) {
-        // Util.log(`Top of makeSubtree( '${cString}' ), this.codexPath is ${this.codexPath}`, 'debug');
-
         return cString.path === this.codexPath ?
             this.makeLocalSubtree(cString) :
             WGenerator.makeExternalSubtree(cString);
@@ -191,8 +189,9 @@ class WGenerator {
         }
     }
 
-    // Modifies node.children
+    // Modifies node.components
     // Returns the modified WNode
+    // For fractal generation, we want a variant of this where each call to resolveString() returns WNodes of status Partial, each with no children of their own.
     addChildren (node, table) {
         table.children.forEach(
             childString => {
