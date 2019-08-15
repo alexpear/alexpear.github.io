@@ -57,7 +57,7 @@ human
 
 * childrenof officer
 {unsc/item/smallWeapon}
-{unsc/item/commandGear}
+unsc/item/leatherCase
 human
 
 * childrenof odst

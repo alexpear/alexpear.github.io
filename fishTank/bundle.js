@@ -2037,7 +2037,7 @@ human
 
 * childrenof officer
 {unsc/item/smallWeapon}
-{unsc/item/commandGear}
+unsc/item/leatherCase
 human
 
 * childrenof odst
@@ -2201,6 +2201,9 @@ module.exports = `* output
 2 deployableCover
 2 caffeinePills
 1 medkit
+
+* childrenof leatherCase
+{commandGear}
 
 * alias commandGear
 4 targetLocator

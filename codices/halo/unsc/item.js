@@ -112,6 +112,9 @@ module.exports = `* output
 2 caffeinePills
 1 medkit
 
+* childrenof leatherCase
+{commandGear}
+
 * alias commandGear
 4 targetLocator
 4 secureDatapad
