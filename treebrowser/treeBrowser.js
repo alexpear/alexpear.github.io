@@ -139,7 +139,7 @@ const TreeBrowser = module.exports = class TreeBrowser {
         if (visitedNode.storageMode === StorageModes.Partial) {
             const existingChildCount = visitedNode.components.length;
 
-            this.generator.maybeAddChildrenOnly(visitedNode);
+            // this.generator.maybeAddChildrenOnly(visitedNode);
 
             // Update total count.
             const newNodeCount = visitedNode.components.length - existingChildCount;
@@ -148,7 +148,7 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
         // check whether there are too many nodes in the tree.
         if (this.storedNodeCount >= TreeBrowser.TOO_MANY_NODES) {
-            this.pruneOldest();
+            // this.pruneOldest();
         }
     }
 
