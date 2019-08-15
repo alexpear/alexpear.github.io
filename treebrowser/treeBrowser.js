@@ -10,11 +10,11 @@ const Hotkeys = require('hotkeys-js');
 // Tree Navigator on alexpear.github.io
 
 const TreeBrowser = module.exports = class TreeBrowser {
-    constructor (curNode, generator) {
-        this.currentNode = curNode || TreeBrowser.exampleRoot();
-        this.root = this.currentNode.root();
+    constructor (generator, root) {
+        this.generator = generator || WGenerator.exampleGenerator();
+        this.root = root || this.newRoot();
+        this.currentNode = this.root;
         this.storedNodeCount = this.root.subtreeSize();
-        this.generator = generator;
 
         this.parentButton = document.getElementById('parentButton');
 
@@ -175,6 +175,10 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
     loadFile (fileName) {
         // Later
+    }
+
+    newRoot () {
+        return this.generator.getOutputs()[0];
     }
 
     static exampleRoot () {
