@@ -442,6 +442,18 @@ class WGenerator {
             require('../codices/halo/unsc/patrol'),
             'halo/unsc/patrol'
         );
+        WGenerator.addGenerator(
+            require('../codices/halo/forerunner/item'),
+            'halo/forerunner/item'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/forerunner/individual'),
+            'halo/forerunner/individual'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/forerunner/squad'),
+            'halo/forerunner/squad'
+        );
     }
 
     static addGenerator (moduleContents, codexPath) {
