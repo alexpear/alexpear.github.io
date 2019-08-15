@@ -1,8 +1,9 @@
 'use strict';
 
+const StorageModes = require('../wnode/storageModes.js');
+const Util = require('../util/util.js');
 const WGenerator = require('../generation/wgenerator.js');
 const WNode = require('../wnode/wnode.js');
-const Util = require('../util/util.js');
 
 const Hotkeys = require('hotkeys-js');
 
@@ -129,7 +130,7 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
     updateCache (visitedNode) {
         if (! visitedNode || ! this.generator) {
-            util.log(`Cannot update tree cache. Not enough information present to generate nodes. Generator is ${this.generator ? 'present, however' : 'absent'}.`, 'error');
+            Util.log(`Cannot update tree cache. Not enough information present to generate nodes. Generator is ${this.generator ? 'present, however' : 'absent'}.`, 'error');
             return;
         }
 
