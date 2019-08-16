@@ -121,7 +121,6 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
         if (! child) {
             // LATER: Friendlier notification.
-            // TODO: Always hits this error 2019 August 14.
             return alert(`Error: Could not find a child component with id ${ childId }. The number of child components is ${ this.currentNode.components.length }.`);
         }
 
@@ -152,6 +151,7 @@ const TreeBrowser = module.exports = class TreeBrowser {
         }
     }
 
+    // Later perhaps move the pruning logic to a more backendy func. TreeBrowser can be frontend.
     pruneOldest () {
         const toBeRemoved = this.storedNodeCount - TreeBrowser.PRUNE_DOWN_TO;
 
@@ -162,6 +162,9 @@ const TreeBrowser = module.exports = class TreeBrowser {
         // Slice off the oldest chunk of allNodes. Iterate over that chunk and drop each node.
         // Drop in this context means: go to curNode's parent and modify its parent's components array such that curNode is no longer in it.
         // The root cannot be dropped because it has no parent. Skip it.
+
+        // Or, after sorting and finding the set of WNodes to prune, look at the lastVisited timestamp of the newest of that set. Then call wnode.pruneIfOlderThan(timestamp) recursively across the tree.
+        // Aka .pruneIfOld(timestamp)
 
         while (toBeRemoved > 0) {
 
