@@ -240,6 +240,39 @@ class WNode {
         );
     }
 
+    // threshold is in ms of Unix time.
+    // Recursive.
+    pruneIfOld (threshold) {
+        if (
+            this.lastVisited &&
+            this.lastVisited <= threshold
+        ) {
+            // Remove this WNode from the components of the parent.
+            this.parent.components = this.parent.components.filter(
+                component => component.id !== this.id
+            );
+
+            this.parent.storageMode = StorageModes.Partial;
+            return;
+        }
+
+        this.components.forEach(
+            component => component.pruneIfOld()
+        );
+    }
+
+    toArray (arraySoFar) {
+        arraySoFar = arraySoFar || [];
+
+        return this.components.map(
+            c => c.toArray()
+        )
+        .reduce(
+            (a, subtree) => a.concat(subtree),
+            [this]
+        );
+    }
+
     // Myers-Briggs personality category
     updateMbti () {
         if (! this.displayName && this.templateName.toLowerCase() === 'mbti') {
@@ -269,6 +302,7 @@ class WNode {
 
         const aWeight = a.getWeight();
         const bWeight = b.getWeight();
+
         if (aWeight > 0 || bWeight > 0) {
             return bWeight - aWeight;
         }
@@ -276,6 +310,33 @@ class WNode {
         return (a.templateName || '').localeCompare(
             b.templateName || ''
         );
+    }
+
+    static test () {
+        // Unit test for toArray()
+        const root = new WNode('root');
+        const l = new WNode('l');
+        const ll = new WNode('ll');
+        const lr = new WNode('lr');
+        const r = new WNode('r');
+        const rr = new WNode('rr');
+        const rrl = new WNode('rrl');
+        const rrr = new WNode('rrr');
+        root.components = [l, r];
+        l.components = [ll, lr];
+        r.components = [rr];
+        rr.components = [rrl, rrr];
+
+        const output = root.toArray();
+        const expected = [root, l, ll, lr, r, rr, rrl, rrr];
+
+        for (let i = 0; i < output.length; i++) {
+            if (output[i] !== expected[i]) {
+                throw new Error(`WNode.toArray() unit test failed. Output was: ${output.map(n => n.templateName).join(', ')}`);
+            }
+        }
+
+        Util.log(`WNode.toArray() unit test passed :)`, 'debug');
     }
 }
 
