@@ -156,22 +156,25 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
     // Later perhaps move the pruning logic to a more backendy func. TreeBrowser can be frontend only.
     pruneOldest () {
-        const toBeRemoved = this.storedNodeCount - TreeBrowser.PRUNE_DOWN_TO;
-
-        // Later, we can make this more efficient.
-        const allNodes = [];
-
         // First draft: Add all nodes to the allNodes array. Sort them by lastVisited.
         // Slice off the oldest chunk of allNodes. Recursively drop those nodes.
         // After sorting and finding the set of WNodes to prune, look at the lastVisited timestamp of the newest of that set. Then call wnode.pruneIfOlderThan(timestamp) recursively across the tree.
         // Drop in this context means: go to curNode's parent and modify its parent's components array such that curNode is no longer in it.
         // The root cannot be dropped because it has no parent. Skip it.
+        // Later, we can make this more efficient.
 
-        // Or, after sorting and finding the set of WNodes to prune, look at the lastVisited timestamp of the newest of that set. Then call wnode.pruneIfOlderThan(timestamp) recursively across the tree.
-        // Aka .pruneIfOld(timestamp)
+        const allNodes = this.root.toArray();
+        allNodes.sort(sortByOldest);
 
-        while (toBeRemoved > 0) {
+        this.storedNodeCount = allNodes.length;
+        const toBeRemoved = allNodes.length - TreeBrowser.PRUNE_DOWN_TO;
 
+        const threshold = allNodes[threshold].lastVisited;
+
+        this.pruneIfOld(threshold);
+
+        function sortByOldest (aNode, bNode) {
+            return aNode.lastVisited - bNode.lastVisited;
         }
     }
 
