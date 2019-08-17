@@ -127,6 +127,9 @@ const TreeBrowser = module.exports = class TreeBrowser {
         this.goToNode(child);
     }
 
+    // The tree of WNodes stored by TreeBrowser can make use of the storageMode Partial format.
+    // Partial WNodes have incomplete sets of components. These can be generated on the fly.
+    // This algorithm allows very large worlds, for example planets, to be depicted using a rotating 'cache' (tree) of only a billion or so WNodes.
     updateCache (visitedNode) {
         if (! visitedNode || ! this.generator) {
             Util.log(`Cannot update tree cache. Not enough information present to generate nodes. Generator is ${this.generator ? 'present, however' : 'absent'}.`, 'error');
@@ -151,7 +154,7 @@ const TreeBrowser = module.exports = class TreeBrowser {
         }
     }
 
-    // Later perhaps move the pruning logic to a more backendy func. TreeBrowser can be frontend.
+    // Later perhaps move the pruning logic to a more backendy func. TreeBrowser can be frontend only.
     pruneOldest () {
         const toBeRemoved = this.storedNodeCount - TreeBrowser.PRUNE_DOWN_TO;
 
@@ -159,7 +162,8 @@ const TreeBrowser = module.exports = class TreeBrowser {
         const allNodes = [];
 
         // First draft: Add all nodes to the allNodes array. Sort them by lastVisited.
-        // Slice off the oldest chunk of allNodes. Iterate over that chunk and drop each node.
+        // Slice off the oldest chunk of allNodes. Recursively drop those nodes.
+        // After sorting and finding the set of WNodes to prune, look at the lastVisited timestamp of the newest of that set. Then call wnode.pruneIfOlderThan(timestamp) recursively across the tree.
         // Drop in this context means: go to curNode's parent and modify its parent's components array such that curNode is no longer in it.
         // The root cannot be dropped because it has no parent. Skip it.
 
