@@ -24,7 +24,8 @@ module.exports = `
 4 bipedal
 4 repulsorlift
 
-
+* alias hugeGear
+4 hugeMachineGun
 
 
 
