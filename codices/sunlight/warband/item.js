@@ -96,6 +96,7 @@ module.exports = `
 4 poweredAgilityArmor
 4 breacherPowerArmor
 4 heavyPowerArmor
+1 heavyPowerArmor, powerFist
 
 * alias clothing
 4 3pieceSuit
@@ -106,9 +107,26 @@ module.exports = `
 5 leatherJacket&Jeans
 5 tankTop&Shorts
 4 bodysuit
-1 sari
+3 sari
 3 agilityExoskeleton
 3 cqbExoskeleton
+
+
+* alias handwear
+6 {gauntlets}
+5 armShield
+4 weddingRing
+4 wristMountedSword
+4 wristMountedGrapplingHook
+3 wristMountedForcefields
+4 fingerlessGloves
+4 powerGlove
+4 electroGloves
+
+* alias gauntlets
+4 plasteelGauntlets
+4 steelGauntlets
+
 
 * alias headwear
 4 nothing
