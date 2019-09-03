@@ -37,12 +37,14 @@ module.exports = `
 4 assaultRifle
 4 boltActionRifle
 1 halberd
+2 riotShield
 
 * alias 5kgLoadoutItem
 10 longrifle
 1 musket
 6 blunderbuss
 9 sledgehammer
+9 towerShield
 
 
 * alias 2kgLoadoutSet
@@ -65,8 +67,10 @@ module.exports = `
 
 
 * alias outfit
-4 {armor}
-2 {clothing}
+2 {armor}
+2 {armor}, {backwear}
+4 {clothing}, {backwear}
+2 {clothing}, {flightItem}
 
 * alias armor
 4 {plasteelArmor}
@@ -99,24 +103,47 @@ module.exports = `
 1 heavyPowerArmor, powerFist
 
 * alias clothing
-4 3pieceSuit
-3 robes
-4 cocktailDress
-1 littleBlackDress
-5 gi
-5 leatherJacket&Jeans
+6 3pieceSuit
+5 robes
+6 cocktailDress
+3 littleBlackDress
+6 gi
+6 leatherJacket&Jeans
 5 tankTop&Shorts
-4 bodysuit
-3 sari
+6 bodysuit
+4 sari
 3 agilityExoskeleton
 3 cqbExoskeleton
+4 leafsuit
+4 thermopticCamo
+
+* childrenof cocktailDress
+{color}
+
+* childrenof sari
+{color}
+
+
+* alias backwear
+10 nothing
+3 cape
+1 furMantle
+1 spiderArms
+2 mechadendrites
+1 servo-arm
+4 teleportHarness
+
+* alias flightItem
+3 glider
+4 jetpack
+4 bionicWings
 
 
 * alias handwear
 6 {gauntlets}
 5 armShield
 4 weddingRing
-4 wristMountedSword
+4 wristMountedBlade
 4 wristMountedGrapplingHook
 3 wristMountedForcefields
 4 fingerlessGloves

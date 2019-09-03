@@ -392,6 +392,7 @@ class WGenerator {
     static loadCodices () {
         // For now, this is hard coded to one fictional setting.
         WGenerator.loadHaloCodices();
+        WGenerator.loadSunlightCodices();
     }
 
     static loadHaloCodices () {
@@ -453,6 +454,26 @@ class WGenerator {
         WGenerator.addGenerator(
             require('../codices/halo/forerunner/squad'),
             'halo/forerunner/squad'
+        );
+    }
+
+    static loadSunlightCodices () {
+        if (! WGenerator.generators) {
+            WGenerator.generators = {};
+        }
+        else if (Util.exists( WGenerator.generators['sunlight/warband/item'] )) {
+            // WGenerator.generators already looks loaded.
+            return;
+        }
+
+        // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
+        WGenerator.addGenerator(
+            require('../codices/sunlight/warband/item'),
+            'sunlight/warband/item'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/warband/player'),
+            'sunlight/warband/player'
         );
     }
 
