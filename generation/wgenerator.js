@@ -261,6 +261,8 @@ class WGenerator {
                 throw new Error(`WGenerator.maybeResolveAlias(): Error parsing a string: ${ str }`);
             }
 
+            // TODO: Somewhere, possibly here, {}s are being prioritized before commas.
+            // AKA the bug is interpreting {foo}, {bar} as one alias with the name 'foo}, {bar'
             const alias = str.slice(1, str.length - 1)
                 .trim();
 
