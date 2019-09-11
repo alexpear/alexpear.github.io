@@ -101,4 +101,16 @@ spaceFighterSquadron
 {unsc/squad/spaceFighter}
 {unsc/squad/spaceFighter}
 
+* childrenof oniCompany
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+
 `;

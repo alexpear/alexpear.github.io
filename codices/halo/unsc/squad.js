@@ -420,4 +420,22 @@ forklift
 0 {unsc/item/alienWeapon}
 0 {unsc/item/alienGrenade}
 
+* alias oniSquad
+4 {rareInfantrySquad}
+2 scienceTeam
+1 bridgeCrew
+3 irregulars
+6 {vehicleSquad}
+0 Later make them ONI vehicles
+
+* childrenof irregulars
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+
 `;
