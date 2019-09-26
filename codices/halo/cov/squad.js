@@ -14,7 +14,7 @@ module.exports = `
 {lightLanceTroops}
 
 * alias lightLanceLeader
-4 individual/elite
+4 individual/eliteMinor
 0 NOTE: Brutes only lead Brute squads, because this is set before the Great Schism.
 3 individual/jackal
 3 {individual/gruntLeader}
@@ -28,18 +28,19 @@ module.exports = `
 
 * childrenof eliteLance
 {individual/eliteLeader}
-{individual/elite}
-{individual/elite}
-{individual/elite}
-{individual/elite}
-{individual/elite}
-{individual/elite}
-{individual/elite}
-{individual/elite}
-{individual/elite}
-{individual/elite}
-{individual/elite}
-{individual/elite}
-{individual/elite}
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
 
 `;
