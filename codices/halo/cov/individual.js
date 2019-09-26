@@ -1,12 +1,11 @@
 module.exports = `
+
 * output
 4 eliteMinor
-3 {gruntLeader}
-3 {eliteLeader}
-4 {grunt}
-3 jackal
-2 shieldJackal
-1 rifleJackal
+4 gruntMinor
+4 {jackal}
+2 brute
+1 drone
 
 * alias grunt
 4 gruntMinor
@@ -18,6 +17,11 @@ module.exports = `
 3 gruntUltra
 2 gruntDeacon
 2 specOpsGrunt
+
+* alias jackal
+4 shieldJackal
+4 rifleJackal
+1 skirmisher
 
 * alias eliteLeader
 4 eliteMajor
