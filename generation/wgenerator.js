@@ -629,6 +629,12 @@ class WGenerator {
             else {
                 // Later we can add support for references inside codex files, such as halo/forerunner/individual/knight.
                 // This is supported in parsing but not in the CLI yet.
+                // The alg will be:
+                    // Check if the input path is a codex (ie, !!WGenerator.generators[process.argv[2]])
+                    // If so, call its .getOutputs() func
+                    // Else look at the input path minus the final term
+                    // then call wgen.getOutputs(finalTerm)
+                    // or wrap it in brackets if its a alias: `{${finalTerm}}`
                 const wgen = WGenerator.fromCodex(process.argv[2]);
                 output = wgen.getOutputs();
             }
