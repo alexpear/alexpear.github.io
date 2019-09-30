@@ -37,4 +37,8 @@ module.exports = `
 0 eliteHonorGuard
 0 eliteCouncilor
 
+* template eliteMinor
+tags: elite infantry
+weight: 350
+
 `;
