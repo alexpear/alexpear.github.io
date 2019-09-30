@@ -409,6 +409,7 @@ class WGenerator {
         }
 
         // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
+        // GOTCHA: It's important to load the files describing small components first.
         WGenerator.addGenerator(
             require('../codices/halo/unsc/item'),
             'halo/unsc/item'
@@ -446,12 +447,12 @@ class WGenerator {
             'halo/unsc/patrol'
         );
         WGenerator.addGenerator(
-            require('../codices/halo/cov/squad'),
-            'halo/cov/squad'
-        );
-        WGenerator.addGenerator(
             require('../codices/halo/cov/individual'),
             'halo/cov/individual'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/cov/squad'),
+            'halo/cov/squad'
         );
         WGenerator.addGenerator(
             require('../codices/halo/forerunner/item'),
