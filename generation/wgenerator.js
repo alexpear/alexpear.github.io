@@ -489,6 +489,8 @@ class WGenerator {
     }
 
     static addGenerator (moduleContents, codexPath) {
+        // Util.log(`BEACON RHYE Top of addGenerator( contents present? ${!!moduleContents}, ${codexPath} ).`, 'debug');
+
         const gen = new WGenerator(moduleContents, codexPath);
 
         WGenerator.generators[codexPath] = gen;
@@ -534,10 +536,15 @@ class WGenerator {
         const nameIndex = relativePath.length - 1;
 
         // Omit the name
-        // concat() and slice() have no side effects.
+        // Note: concat() and slice() have no side effects.
         const genPath = contextPath.concat(relativePath.slice(0, nameIndex));
         const genPathStr = genPath.join('/');
         const gen = WGenerator.generators[genPathStr];
+
+        // Util.log(
+        //     `In WGenerator.interpretRelativePathAsName( ${relativePath}, ${contextPath} ) before the if. genPath is ${genPath}. genPathStr is ${genPathStr}. gen is ${gen}.`,
+        //     'debug'
+        // );
 
         if (gen) {
             const goalName = relativePath[nameIndex];
