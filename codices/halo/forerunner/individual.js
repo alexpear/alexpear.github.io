@@ -6,6 +6,7 @@ module.exports = `
 30 crawler
 6 watcher
 10 soldier
+1 survivor
 
 * childrenof sentinel
 forerunner/item/sentinelBeam
