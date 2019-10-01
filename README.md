@@ -4,6 +4,10 @@ This website include the following prototype projects:
 - Tree Navigator - A random generator for text-based fiction and a simple UI for examining the output. Currently set up to generate detailed fleets of scifi starships, but the design is very flexible. WIP.
 - Death Planet Fish Tank - A simulated world of endless battle. A top-down view onto this world. WIP.
 
+## How to build:
+- npm start
+- go to localhost:8080 in a browser
+
 ## To Do:
 - See TODOs in timeline.js
 - Death Planet Fish Tank
