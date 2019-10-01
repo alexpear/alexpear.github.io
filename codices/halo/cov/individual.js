@@ -41,4 +41,16 @@ module.exports = `
 tags: elite infantry
 weight: 350
 
+* template shieldJackal
+tags: jackal infantry
+weight: 80
+
+* template rifleJackal
+tags: jackal infantry
+weight: 80
+
+* template skirmisherJackal
+tags: jackal infantry
+weight: 80
+
 `;

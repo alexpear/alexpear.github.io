@@ -1,10 +1,13 @@
 module.exports = `
 * output
-1 {lance}
+5 {lance}
+2 hunterPair
 
 * alias lance
 10 lightLance
-0 eliteLance
+4 eliteLance
+0 {eliteLance}
+0 specOpsLance
 0 bruteLance
 0 skirmisherLance
 0 droneLance
@@ -20,11 +23,11 @@ module.exports = `
 3 {individual/gruntLeader}
 
 * alias lightLanceTroops
-0 13 + 1 = 14
-0 TODO: A 'x13' syntax would be nice here.
-4 {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}
-2 individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal
-1 individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal
+4 {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}, {individual/grunt}
+2 individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal
+1 individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal
+1 individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal
+0 TODO: A 'x6' syntax would be nice here.
 
 * childrenof eliteLance
 {individual/eliteLeader}
@@ -35,12 +38,25 @@ individual/eliteMinor
 individual/eliteMinor
 individual/eliteMinor
 individual/eliteMinor
-individual/eliteMinor
-individual/eliteMinor
-individual/eliteMinor
-individual/eliteMinor
-individual/eliteMinor
-individual/eliteMinor
-individual/eliteMinor
+
+* childrenof phantom
+{cargo10m}
+
+* alias cargo10m
+10 {lance}
+5 hunterPair
+5 {ghost}, {ghost}
+2 chopper
+3 revenant
+6 spectre
+4 sniperPlatform
+6 {wraith}
+
+* childrenof hunterPair
+hunter
+hunter
+
+
+
 
 `;
