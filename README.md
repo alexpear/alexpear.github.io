@@ -14,6 +14,7 @@ This website include the following prototype projects:
   - Add logic so that, on ActionReady events, creatures initiate their (only) Action.
   - Add logic about every creature moving closer to its destination each tick.
 - Waffle Tree fractal mode
+  - Write a codex for a scale test before implementing this feature. It may be unnecessary.
   - Implement logic to handle Partial WNodes
     - Typically this will mean generating its child nodes on the fly
     - These children will be generated as status Partial
