@@ -40,17 +40,37 @@ module.exports = `
 * template eliteMinor
 tags: elite infantry
 weight: 350
+size: 2
+
+* template hunter
+size: 3
+
+* template brute
+tags: brute infantry
+size: 2
 
 * template shieldJackal
 tags: jackal infantry
 weight: 80
+size: 1.5
 
 * template rifleJackal
 tags: jackal infantry
 weight: 80
+size: 1.5
 
 * template skirmisherJackal
 tags: jackal infantry
 weight: 80
+size: 1.5
+
+* template grunt
+size: 1
+
+* template drone
+size: 1.5
+
+* template engineer
+size: 1.5
 
 `;

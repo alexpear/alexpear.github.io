@@ -455,6 +455,10 @@ class WGenerator {
             'halo/cov/squad'
         );
         WGenerator.addGenerator(
+            require('../codices/halo/cov/force'),
+            'halo/cov/force'
+        );
+        WGenerator.addGenerator(
             require('../codices/halo/forerunner/item'),
             'halo/forerunner/item'
         );
