@@ -42,11 +42,22 @@ individual/eliteMinor
 
 * alias vehicle
 10 {dropship}
-0 {ghost}
-2 bansheePair
-0 {wraith}
+7 {ghost}
+2 banshee
+3 {wraith}
 1 revenant
 2 spectre
+1 scarab
+1 lich
+
+* childrenof scarab
+{lance}
+{lance}
+
+* childrenof lich
+{lance}
+{lance}
+{cargo10m}
 
 * alias dropship
 1 phantom
@@ -59,22 +70,32 @@ individual/eliteMinor
 2 {dropship}
 
 * childrenof phantom
+{lance}
 {cargo10m}
 
 * alias cargo10m
-10 {lance}
 5 hunterPair
-0 {ghost}, {ghost}
+6 {ghost}, {ghost}
 2 chopper
 3 revenant
 6 spectre
 4 sniperPlatform
-0 {wraith}
+6 {wraith}
 
 * childrenof hunterPair
 hunter
 hunter
 
+* alias ghost
+10 ghost
+3 ghostUltra
+1 templeGhost
+
+* alias wraith
+10 wraith
+3 aAWraith
+3 wraithUltra
+1 templeWraith
 
 
 

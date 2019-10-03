@@ -31,6 +31,29 @@ module.exports = `
 {mobileCompany}
 {mobileCompany}
 
+* childrenof staticBattalion
+staticCompany
+staticCompany
+staticCompany
+staticCompany
+{company}
+{company}
+{company}
+{company}
+{company}
+{company}
+
+* childrenof bruteBattalion
+bruteCompany
+bruteCompany
+bruteCompany
+bruteCompany
+bruteCompany
+bruteCompany
+bruteFastCompany
+bruteFastCompany
+bruteFastCompany
+bruteFastCompany
 
 * alias company
 1 staticCompany
@@ -60,5 +83,30 @@ module.exports = `
 1 antiarmorCompany
 4 boardingCompany
 4 dropPodCompany
+
+
+
+`;
+
+// Combine these into the above when their prereqs exist
+const drafts = `
+
+* childrenof groundCompany
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+
+* childrenof bruteCompany
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
 
 `;
