@@ -4,10 +4,10 @@ module.exports = `
 4 eliteMinor
 4 gruntMinor
 4 {jackal}
-2 brute
-1 drone
+2 bruteMinor
+1 droneMinor
 
-* alias grunt
+* alias anyGrunt
 4 gruntMinor
 1 gruntMajor
 
@@ -21,7 +21,7 @@ module.exports = `
 * alias jackal
 4 shieldJackal
 4 rifleJackal
-1 skirmisher
+1 skirmisherJackal
 
 * alias eliteLeader
 4 eliteMajor
@@ -45,14 +45,19 @@ size: 2
 * template hunter
 size: 3
 
-* template brute
+* template bruteMinor
 tags: brute infantry
 size: 2
+
+* childrenof bruteMinor
+spikeGrenade
 
 * template shieldJackal
 tags: jackal infantry
 weight: 80
 size: 1.5
+
+* childrenof shieldJackal
 
 * template rifleJackal
 tags: jackal infantry
@@ -64,10 +69,14 @@ tags: jackal infantry
 weight: 80
 size: 1.5
 
-* template grunt
+* template gruntMinor
 size: 1
 
-* template drone
+* childrenof gruntMinor
+{item/gruntWeapon}
+plasmaGrenade
+
+* template droneMinor
 size: 1.5
 
 * template engineer

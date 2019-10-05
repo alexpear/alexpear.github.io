@@ -55,6 +55,24 @@ bruteFastCompany
 bruteFastCompany
 bruteFastCompany
 
+* childrenof bruteCompany
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+
+* childrenof bruteFastCompany
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+
 * alias company
 1 staticCompany
 10 {mobileCompany}
@@ -99,14 +117,5 @@ const drafts = `
 {squad/mobileSquad}
 {squad/mobileSquad}
 {squad/mobileSquad}
-
-* childrenof bruteCompany
-{squad/bruteJurisdictionSquad}
-{squad/bruteJurisdictionSquad}
-{squad/bruteJurisdictionSquad}
-{squad/bruteJurisdictionSquad}
-{squad/bruteJurisdictionSquad}
-{squad/bruteJurisdictionSquad}
-{squad/bruteJurisdictionSquad}
 
 `;
