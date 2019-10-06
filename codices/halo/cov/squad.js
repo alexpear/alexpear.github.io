@@ -8,7 +8,8 @@ module.exports = `
 10 lightLance
 4 eliteLance
 0 {eliteLance}
-1 specOpsLance
+1 specOpsLightLance
+1 specOpsEliteLance
 2 bruteLance
 1 skirmisherLance
 2 droneLance
@@ -40,6 +41,34 @@ individual/eliteMinor
 individual/eliteMinor
 individual/eliteMinor
 
+* alias specOpsSquad
+4 specOpsLightLance
+2 specOpsEliteLance
+3 {vehicle}
+4 dropPodSquad
+
+* childrenof specOpsLightLance
+individual/specOpsElite
+{lightLanceTroops}
+
+* childrenof specOpsEliteLance
+individual/specOpsElite
+individual/specOpsElite
+individual/specOpsElite
+individual/specOpsElite
+individual/specOpsElite
+individual/specOpsElite
+individual/specOpsElite
+
+
+* alias airSquad
+4 banshee, banshee
+4 {dropship}
+1 seraph
+1 lich
+1 vampire
+
+
 * alias vehicle
 10 {dropship}
 7 {anyGhost}
@@ -47,6 +76,7 @@ individual/eliteMinor
 3 {anyWraith}
 1 revenant
 2 spectre
+2 locust
 1 scarab
 1 lich
 
@@ -73,6 +103,7 @@ individual/eliteMinor
 5 bruteLightLance
 3 bruteLance
 2 bruteChieftainSquad
+2 bruteStalkerSquad
 1 droneLance
 1 hunterPair
 0 TODO: modify vehicle to exclude phantoms that contain elites, or anything with elite pilots. Elites refuse to serve under Brutes.
@@ -94,7 +125,7 @@ individual/bruteMinor
 
 * alias fastBruteSquad
 5 phantom
-6 bruteVehicle
+6 {bruteVehicle}
 3 {anyGhost}
 1 revenant
 1 droneLance
@@ -116,6 +147,16 @@ individual/bruteStalker
 individual/bruteStalker
 individual/bruteStalker
 individual/bruteStalker
+
+* childrenof droneLance
+individual/droneMinor
+individual/droneMinor
+individual/droneMinor
+individual/droneMinor
+individual/droneMinor
+individual/droneMinor
+individual/droneMinor
+
 
 
 * childrenof phantom
@@ -186,6 +227,13 @@ individual/eliteMinor
 
 * childrenof wraith
 {individual/eliteLeader}
+
+* alias mobileSquad
+10 {lance}
+10 {vehicle}
+3 {bruteJurisdictionSquad}
+2 hunterPair
+
 
 
 `;

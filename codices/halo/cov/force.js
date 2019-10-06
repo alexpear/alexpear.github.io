@@ -73,23 +73,42 @@ bruteFastCompany
 {squad/fastBruteSquad}
 {squad/fastBruteSquad}
 
+* childrenof airBattalion
+airCompany
+airCompany
+airCompany
+airCompany
+airCompany
+airCompany
+airCompany
+
+
 * alias company
 1 staticCompany
 10 {mobileCompany}
 
 * alias mobileCompany
-10 groundCompany
-5 fastCompany
+20 groundCompany
+8 fastCompany
 5 airCompany
 5 bruteCompany
-3 bruteFastCompany
-2 excavationCompany
+1 bruteFastCompany
+1 excavationCompany
 4 eliteCompany
 2 gruntCompany
-2 specOpsCompany
+1 specOpsCompany
 3 armorCompany
 2 commandCompany
 1 {specialistCompany}
+
+* childrenof groundCompany
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
 
 * alias specialistCompany
 4 droneCompany
@@ -102,20 +121,28 @@ bruteFastCompany
 4 boardingCompany
 4 dropPodCompany
 
+* childrenof specOpsCompany
+squad/specOpsEliteLance
+{squad/specOpsSquad}
+{squad/specOpsSquad}
+{squad/specOpsSquad}
+{squad/specOpsSquad}
+{squad/specOpsSquad}
+{squad/specOpsSquad}
+
+* childrenof airCompany
+{squad/airSquad}
+{squad/airSquad}
+{squad/airSquad}
+{squad/airSquad}
+{squad/airSquad}
+{squad/airSquad}
+{squad/airSquad}
 
 
 `;
 
-// Combine these into the above when their prereqs exist
+// Later: Combine these into the above when their prereqs exist
 const drafts = `
-
-* childrenof groundCompany
-{squad/mobileSquad}
-{squad/mobileSquad}
-{squad/mobileSquad}
-{squad/mobileSquad}
-{squad/mobileSquad}
-{squad/mobileSquad}
-{squad/mobileSquad}
 
 `;
