@@ -9,8 +9,8 @@ module.exports = `
 
 * template human
 individuals: 1
-weight: 70
-size: 2
+weight: 80
+size: 1.7
 speed: 10
 stealth: 10
 

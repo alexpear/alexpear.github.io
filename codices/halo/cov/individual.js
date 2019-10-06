@@ -99,7 +99,8 @@ size: 1.5
 {item/skirmisherWeapon}
 
 * template gruntMinor
-size: 1
+size: 1.5
+weight: 250
 
 * childrenof gruntMinor
 {item/gruntWeapon}
