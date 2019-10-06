@@ -371,7 +371,7 @@ class WGenerator {
     }
 
     static exampleGenerator () {
-        return WGenerator.generators['halo/unsc/fleet'];
+        return WGenerator.generators['halo/presence'];
     }
 
     // Example input: 'sunlight/warbands/warrior'
@@ -473,6 +473,10 @@ class WGenerator {
         WGenerator.addGenerator(
             require('../codices/halo/forerunner/squad'),
             'halo/forerunner/squad'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/presence'),
+            'halo/presence'
         );
     }
 
