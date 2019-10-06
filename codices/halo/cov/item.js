@@ -67,6 +67,10 @@ module.exports = `
 1 beamRifle
 1 focusRifle
 
+* alias skirmisherWeapon
+2 plasmaPistol
+1 {jackalRifle}
+
 * alias droneWeapon
 10 {gruntWeapon}
 2 plasmaRifle
@@ -114,8 +118,13 @@ module.exports = `
 3 plasmaLauncher
 3 hunterCannon
 
-* alias gear
+* alias anyGear
 1 flare
+1 gravLift
+1 regenField
+1 bubbleShield
+1 armorLock
+1 invincibility
 
 
 `;

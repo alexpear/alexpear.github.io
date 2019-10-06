@@ -75,21 +75,22 @@ individual/eliteMinor
 2 bruteChieftainSquad
 1 droneLance
 1 hunterPair
+0 TODO: modify vehicle to exclude phantoms that contain elites, or anything with elite pilots. Elites refuse to serve under Brutes.
 5 {vehicle}
 5 {bruteVehicle}
 
 * childrenof bruteLightLance
-individual/brute
+individual/bruteMinor
 {lightLanceTroops}
 
 * childrenof bruteLance
-individual/brute
-individual/brute
-individual/brute
-individual/brute
-individual/brute
-individual/brute
-individual/brute
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
 
 * alias fastBruteSquad
 5 phantom
@@ -98,11 +99,32 @@ individual/brute
 1 revenant
 1 droneLance
 
+* childrenof bruteChieftainSquad
+individual/bruteChieftain
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+
+* childrenof bruteStalkerSquad
+individual/bruteStalker
+individual/bruteStalker
+individual/bruteStalker
+individual/bruteStalker
+individual/bruteStalker
+individual/bruteStalker
+individual/bruteStalker
+
+
 * childrenof phantom
+individual/gruntMinor
 {lance}
 {cargo10m}
 
 * childrenof spirit
+individual/gruntMinor
 {lance}
 {cargo10m}
 
@@ -114,6 +136,10 @@ individual/brute
 6 spectre
 4 sniperPlatform
 6 {anyWraith}
+
+* childrenof sniperPlatform
+individual/rifleJackal
+item/plasmaCannon
 
 * childrenof hunterPair
 hunter
@@ -130,6 +156,36 @@ hunter
 3 wraithUltra
 1 templeWraith
 
+* childrenof ghost
+{individual/pilot}
+
+* childrenof spectre
+{individual/eliteLeader}
+individual/eliteMajor
+individual/eliteMinor
+individual/eliteMinor
+
+* childrenof banshee
+individual/eliteMinor
+
+* childrenof shadeTurret
+individual/gruntMinor
+
+* childrenof chopper
+individual/bruteMinor
+
+* childrenof prowler
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+
+* childrenof revenant
+{individual/eliteLeader}
+individual/eliteMinor
+
+* childrenof wraith
+{individual/eliteLeader}
 
 
 `;

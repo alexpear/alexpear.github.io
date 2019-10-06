@@ -447,6 +447,10 @@ class WGenerator {
             'halo/unsc/patrol'
         );
         WGenerator.addGenerator(
+            require('../codices/halo/cov/item'),
+            'halo/cov/item'
+        );
+        WGenerator.addGenerator(
             require('../codices/halo/cov/individual'),
             'halo/cov/individual'
         );
