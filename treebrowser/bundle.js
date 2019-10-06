@@ -81,7 +81,7 @@ class ActionTemplate {
 
 module.exports = ActionTemplate;
 
-},{"../codices/tags.js":11,"../util/util.js":50}],2:[function(require,module,exports){
+},{"../codices/tags.js":21,"../util/util.js":60}],2:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
@@ -323,7 +323,819 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":11,"../util/util.js":50,"./actiontemplate.js":1}],3:[function(require,module,exports){
+},{"../codices/tags.js":21,"../util/util.js":60,"./actiontemplate.js":1}],3:[function(require,module,exports){
+module.exports = `
+* output
+1 decade
+
+* childrenof decade
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+
+* alias battalion
+1 airBattalion
+4 groundBattalion
+1 bruteBattalion
+
+* childrenof groundBattalion
+{mobileCompany}
+{mobileCompany}
+{mobileCompany}
+{mobileCompany}
+{mobileCompany}
+{mobileCompany}
+{mobileCompany}
+{mobileCompany}
+{mobileCompany}
+{mobileCompany}
+
+* childrenof staticBattalion
+staticCompany
+staticCompany
+staticCompany
+staticCompany
+{company}
+{company}
+{company}
+{company}
+{company}
+{company}
+
+* childrenof bruteBattalion
+bruteCompany
+bruteCompany
+bruteCompany
+bruteCompany
+bruteCompany
+bruteCompany
+bruteFastCompany
+bruteFastCompany
+bruteFastCompany
+bruteFastCompany
+
+* childrenof bruteCompany
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+{squad/bruteJurisdictionSquad}
+
+* childrenof bruteFastCompany
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+{squad/fastBruteSquad}
+
+* childrenof airBattalion
+airCompany
+airCompany
+airCompany
+airCompany
+airCompany
+airCompany
+airCompany
+
+
+* alias company
+1 staticCompany
+10 {mobileCompany}
+
+* alias mobileCompany
+20 groundCompany
+8 fastCompany
+5 airCompany
+5 bruteCompany
+1 bruteFastCompany
+1 excavationCompany
+4 eliteCompany
+2 gruntCompany
+1 specOpsCompany
+3 armorCompany
+2 commandCompany
+1 {specialistCompany}
+
+* childrenof groundCompany
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+
+* alias specialistCompany
+4 droneCompany
+4 jackalCompany
+1 hunterCompany
+1 demonhunterCompany
+1 antipersonnelCompany
+1 antiAirCompany
+1 antiarmorCompany
+4 boardingCompany
+4 dropPodCompany
+
+* childrenof specOpsCompany
+squad/specOpsEliteLance
+{squad/specOpsSquad}
+{squad/specOpsSquad}
+{squad/specOpsSquad}
+{squad/specOpsSquad}
+{squad/specOpsSquad}
+{squad/specOpsSquad}
+
+* childrenof airCompany
+{squad/airSquad}
+{squad/airSquad}
+{squad/airSquad}
+{squad/airSquad}
+{squad/airSquad}
+{squad/airSquad}
+{squad/airSquad}
+
+
+`;
+
+// Later: Combine these into the above when their prereqs exist
+const drafts = `
+
+`;
+
+},{}],4:[function(require,module,exports){
+module.exports = `
+
+* output
+4 eliteMinor
+4 gruntMinor
+4 {anyJackal}
+2 bruteMinor
+1 droneMinor
+
+* alias anyGrunt
+4 gruntMinor
+1 gruntMajor
+
+* alias gruntLeader
+4 gruntMajor
+4 gruntHeavy
+3 gruntUltra
+2 gruntDeacon
+2 specOpsGrunt
+
+* alias anyJackal
+4 shieldJackal
+4 rifleJackal
+1 skirmisherJackal
+
+* alias eliteLeader
+4 eliteMajor
+2 eliteUltra
+1 {rareElite}
+
+* alias rareElite
+4 specOpsElite
+2 eliteOssoona
+4 eliteZealot
+1 eliteShipmaster
+2 eliteFieldMarshal
+0 eliteHonorGuard
+0 eliteCouncilor
+
+* alias pilot
+4 eliteMinor
+4 gruntMinor
+1 bruteMinor
+
+
+* template eliteMinor
+tags: elite infantry
+weight: 350
+size: 2
+
+* childrenof eliteMinor
+{item/eliteMinorWeapon}
+
+* template hunter
+size: 3
+
+* childrenof hunter
+item/hunterCannon
+item/hunterShield
+
+* template bruteMinor
+tags: brute infantry
+size: 2
+
+* childrenof bruteMinor
+{item/bruteMinorWeapon}
+item/spikeGrenade
+
+* childrenof bruteStalker
+{item/bruteMinorWeapon}
+item/mauler
+item/flameGrenade
+item/activeCamoflage
+
+* template shieldJackal
+tags: jackal infantry
+weight: 80
+size: 1.5
+
+* childrenof shieldJackal
+item/handShield
+item/plasmaPistol
+
+* template rifleJackal
+tags: jackal infantry
+weight: 80
+size: 1.5
+
+* childrenof rifleJackal
+{item/jackalRifle}
+item/plasmaPistol
+
+* template skirmisherJackal
+tags: jackal infantry
+weight: 80
+size: 1.5
+
+* childrenof skirmisherJackal
+{item/skirmisherWeapon}
+
+* template gruntMinor
+size: 1.5
+weight: 250
+
+* childrenof gruntMinor
+{item/gruntWeapon}
+plasmaGrenade
+
+* template droneMinor
+size: 1.5
+
+* childrenof droneMinor
+{item/droneWeapon}
+
+* template engineer
+size: 1.5
+
+* childrenof engineer
+item/bombHarness
+
+`;
+
+},{}],5:[function(require,module,exports){
+module.exports = `
+
+* output
+4 plasmaPistol
+4 plasmaRifle
+4 needler
+
+* alias weapon
+10 {gruntWeapon}
+1 voidsTear
+5 plasmaRifle
+2 plasmaRepeater
+1 stormRifle
+1 concussionRifle
+3 {bruteMadeWeapon}
+4 {anyCarbine}
+2 needleRifle
+2 energySword
+2 beamRifle
+2 focusRifle
+2 plasmaCannon
+2 fuelRodCannon
+2 {anyPlasmaCaster}
+1 plasmaLauncher
+1 hunterCannon
+
+* alias gruntWeapon
+1 plasmaPistol
+1 needler
+
+* alias grenade
+6 plasmaGrenade
+2 spikeGrenade
+1 flameGrenade
+
+* alias bruteMadeWeapon
+5 spiker
+3 brutePlasmaRifle
+1 scaleOfSoiraptPlasmaRifle
+3 bruteShot
+2 mauler
+1 gravityHammer
+
+* alias anyCarbine
+20 carbine
+1 rainOfOblivionCarbine
+1 bloodOfSubanCarbine
+
+* alias anySniper
+1 beamRifle
+1 focusRifle
+
+* alias anyPlasmaCaster
+5 plasmaCaster
+1 scourgeOfFirePlasmaCaster
+1 whiteScarPlasmaCaster
+
+* alias jackalMajorWeapon
+6 plasmaPistol
+1 needler
+1 plasmaRifle
+0 1-handed UNSC weaps from the black market, etc
+
+* alias jackalRifle
+10 {anyCarbine}
+1 needleRifle
+1 beamRifle
+1 focusRifle
+
+* alias skirmisherWeapon
+2 plasmaPistol
+1 {jackalRifle}
+
+* alias droneWeapon
+10 {gruntWeapon}
+2 plasmaRifle
+1 brutePlasmaRifle
+
+* alias eliteMinorWeapon
+20 plasmaRifle
+5 plasmaRifle, plasmaRifle
+2 plasmaRepeater
+1 needleRifle
+1 beamRifle
+1 focusRifle
+1 stormRifle
+1 {anyPlasmaCaster}
+4 needler
+1 needler, needler
+1 plasmaRifle, needler
+1 plasmaPistol
+
+* alias distinguishedEliteWeapon
+10 {eliteMinorWeapon}
+1 concussionRifle
+4 energySword
+2 fuelRodCannon
+1 plasmaLauncher
+
+* alias bruteMinorWeapon
+10 spiker
+5 bruteShot
+5 brutePlasmaRifle
+5 {anyCarbine}
+5 needler
+2 needleRifle
+1 {anySniper}
+1 plasmaPistol
+1 mauler
+
+* alias bruteChieftainWeapon
+5 plasmaCannon
+6 fuelRodCannon
+10 gravityHammer
+1 needler, needler
+2 focusRifle
+2 whiteScarPlasmaCaster
+3 plasmaLauncher
+3 hunterCannon
+
+* alias anyGear
+1 flare
+1 gravLift
+1 regenField
+1 bubbleShield
+1 armorLock
+1 invincibility
+
+
+`;
+
+},{}],6:[function(require,module,exports){
+module.exports = `
+* output
+5 {lance}
+2 hunterPair
+5 {vehicle}
+
+* alias lance
+10 lightLance
+4 eliteLance
+0 {eliteLance}
+1 specOpsLightLance
+1 specOpsEliteLance
+2 bruteLance
+1 skirmisherLance
+2 droneLance
+
+* childrenof lightLance
+{lightLanceLeader}
+{lightLanceTroops}
+
+* alias lightLanceLeader
+4 individual/eliteMinor
+0 NOTE: Brutes only lead Brute squads, because this is set before the Great Schism.
+3 individual/shieldJackal
+3 {individual/gruntLeader}
+
+* alias lightLanceTroops
+4 {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}
+2 individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal
+1 individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal
+1 individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal
+0 TODO: A 'x6' syntax would be nice here.
+
+* childrenof eliteLance
+{individual/eliteLeader}
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+individual/eliteMinor
+
+* alias specOpsSquad
+4 specOpsLightLance
+2 specOpsEliteLance
+3 {vehicle}
+4 dropPodSquad
+
+* childrenof specOpsLightLance
+individual/specOpsElite
+{lightLanceTroops}
+
+* childrenof specOpsEliteLance
+individual/specOpsElite
+individual/specOpsElite
+individual/specOpsElite
+individual/specOpsElite
+individual/specOpsElite
+individual/specOpsElite
+individual/specOpsElite
+
+
+* alias airSquad
+4 banshee, banshee
+4 {dropship}
+1 seraph
+1 lich
+1 vampire
+
+
+* alias vehicle
+10 {dropship}
+7 {anyGhost}
+2 banshee
+3 {anyWraith}
+1 revenant
+2 spectre
+2 locust
+1 scarab
+1 lich
+
+* childrenof scarab
+{lance}
+{lance}
+
+* childrenof lich
+{lance}
+{lance}
+{cargo10m}
+
+* alias dropship
+1 phantom
+1 spirit
+
+* alias bruteVehicle
+2 chopper
+1 prowler
+1 banshee
+2 phantom
+
+* alias bruteJurisdictionSquad
+5 bruteLightLance
+3 bruteLance
+2 bruteChieftainSquad
+2 bruteStalkerSquad
+1 droneLance
+1 hunterPair
+0 TODO: modify vehicle to exclude phantoms that contain elites, or anything with elite pilots. Elites refuse to serve under Brutes.
+5 {vehicle}
+5 {bruteVehicle}
+
+* childrenof bruteLightLance
+individual/bruteMinor
+{lightLanceTroops}
+
+* childrenof bruteLance
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+
+* alias fastBruteSquad
+5 phantom
+6 {bruteVehicle}
+3 {anyGhost}
+1 revenant
+1 droneLance
+
+* childrenof bruteChieftainSquad
+individual/bruteChieftain
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+
+* childrenof bruteStalkerSquad
+individual/bruteStalker
+individual/bruteStalker
+individual/bruteStalker
+individual/bruteStalker
+individual/bruteStalker
+individual/bruteStalker
+individual/bruteStalker
+
+* childrenof droneLance
+individual/droneMinor
+individual/droneMinor
+individual/droneMinor
+individual/droneMinor
+individual/droneMinor
+individual/droneMinor
+individual/droneMinor
+
+
+
+* childrenof phantom
+individual/gruntMinor
+{lance}
+{cargo10m}
+
+* childrenof spirit
+individual/gruntMinor
+{lance}
+{cargo10m}
+
+* alias cargo10m
+5 hunterPair
+6 {anyGhost}, {anyGhost}
+2 chopper
+3 revenant
+6 spectre
+4 sniperPlatform
+6 {anyWraith}
+
+* childrenof sniperPlatform
+individual/rifleJackal
+item/plasmaCannon
+
+* childrenof hunterPair
+hunter
+hunter
+
+* alias anyGhost
+10 ghost
+3 ghostUltra
+1 templeGhost
+
+* alias anyWraith
+10 wraith
+3 aAWraith
+3 wraithUltra
+1 templeWraith
+
+* childrenof ghost
+{individual/pilot}
+
+* childrenof spectre
+{individual/eliteLeader}
+individual/eliteMajor
+individual/eliteMinor
+individual/eliteMinor
+
+* childrenof banshee
+individual/eliteMinor
+
+* childrenof shadeTurret
+individual/gruntMinor
+
+* childrenof chopper
+individual/bruteMinor
+
+* childrenof prowler
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+individual/bruteMinor
+
+* childrenof revenant
+{individual/eliteLeader}
+individual/eliteMinor
+
+* childrenof wraith
+{individual/eliteLeader}
+
+* alias mobileSquad
+10 {lance}
+10 {vehicle}
+3 {bruteJurisdictionSquad}
+2 hunterPair
+
+
+
+`;
+
+},{}],7:[function(require,module,exports){
+module.exports = `
+* output
+50 sentinel
+1 enforcer
+3 knight
+30 crawler
+6 watcher
+10 soldier
+1 survivor
+
+* childrenof sentinel
+forerunner/item/sentinelBeam
+
+* childrenof knight
+forerunner/item/knightsBlade
+{forerunner/item/anyWeapon}
+{forerunner/item/gear}
+{forerunner/item/grenade}
+
+* childrenof crawler
+forerunner/item/boltshot
+
+* childrenof watcher
+forerunner/item/boltshot
+
+* childrenof soldier
+{forerunner/item/anyWeapon}
+
+* childrenof survivor
+{forerunner/item/anyWeapon}
+{forerunner/item/grenade}
+{forerunner/item/gear}
+
+`;
+
+},{}],8:[function(require,module,exports){
+module.exports = `
+* output
+1 {giWeapon}
+
+* alias anyWeapon
+4 {giWeapon}
+4 {specialWeapon}
+
+* alias giWeapon
+4 suppressor
+4 boltshot
+4 lightrifle
+
+* alias specialWeapon
+1 songOfPeace
+1 razorsEdge
+1 closedFist
+1 openHand
+1 barbedLance
+1 dyingStar
+10 sentinelBeam
+1 ultraSentinelBeam
+20 splinterTurret
+20 scattershot
+1 loathsomeThing
+1 didactsSignet
+10 binaryRifle
+1 retinaOfTheMindsEye
+1 twinJewelsOfMaethrillian
+10 incinerationCannon
+1 riverOfLight
+1 heartseeker
+10 knightsBlade
+
+* alias grenade
+1 pulseGrenade
+1 splinterGrenade
+
+* alias gear
+4 hardLightShield
+4 autoturret
+4 regenerationField
+4 prometheanVision
+
+`;
+},{}],9:[function(require,module,exports){
+module.exports = `
+* output
+1 {installationSquad}
+1 {prometheanSquad}
+
+* alias installationSquad
+10 sentinelTeam
+1 enforcerTeam
+
+* alias prometheanSquad
+2 knightPair
+4 knightLance
+4 soldierSquad
+4 crawlerSquad
+1 phaetonTeam
+
+* childrenof sentinelTeam
+individual/sentinel
+individual/sentinel
+individual/sentinel
+individual/sentinel
+individual/sentinel
+individual/sentinel
+individual/sentinel
+
+* childrenof enforcerTeam
+individual/enforcer
+individual/enforcer
+
+* childrenof knightPair
+individual/knight
+individual/knight
+
+* childrenof knightLance
+individual/knight
+individual/watcher
+individual/soldier
+individual/soldier
+
+* childrenof soldierSquad
+individual/soldier
+individual/soldier
+individual/soldier
+individual/soldier
+individual/soldier
+individual/soldier
+individual/soldier
+
+* childrenof crawlerSquad
+individual/crawler
+individual/crawler
+individual/crawler
+individual/crawler
+individual/crawler
+individual/crawler
+individual/crawler
+
+* childrenof phaetonTeam
+phaeton
+individual/watcher
+
+`;
+
+/*
+Sketching about Forerunner armies
+. Battalions of 500 combatants
+. Air battalions
+  . Sentinels, Ultra Sentinels
+  . Enforcers
+  . Triremes of Soldiers
+
+*/
+
+},{}],10:[function(require,module,exports){
+module.exports = `
+* output
+4 {halo/unsc/fleet}
+4 {halo/cov/force}
+2 {halo/forerunner/squad}
+0 {halo/flood/force}
+
+
+`;
+},{}],11:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -406,7 +1218,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],4:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -510,8 +1322,20 @@ spaceFighterSquadron
 {unsc/squad/spaceFighter}
 {unsc/squad/spaceFighter}
 
+* childrenof oniCompany
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+{unsc/squad/oniSquad}
+
 `;
-},{}],5:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -535,7 +1359,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],6:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -547,8 +1371,8 @@ module.exports = `
 
 * template human
 individuals: 1
-weight: 70
-size: 2
+weight: 80
+size: 1.7
 speed: 10
 stealth: 10
 
@@ -595,7 +1419,7 @@ human
 
 * childrenof officer
 {unsc/item/smallWeapon}
-{unsc/item/commandGear}
+unsc/item/leatherCase
 human
 
 * childrenof odst
@@ -645,7 +1469,7 @@ weight: 1000
 
 `;
 
-},{}],7:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = `* output
 15 {anyWeapon}
 20 {anyGear}
@@ -759,6 +1583,9 @@ module.exports = `* output
 2 deployableCover
 2 caffeinePills
 1 medkit
+
+* childrenof leatherCase
+{commandGear}
 
 * alias commandGear
 4 targetLocator
@@ -898,7 +1725,7 @@ damage: 2
 
 `;
 
-},{}],8:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -1220,7 +2047,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],9:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -1350,7 +2177,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],10:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -1773,9 +2600,245 @@ forklift
 0 {unsc/item/alienWeapon}
 0 {unsc/item/alienGrenade}
 
+* alias oniSquad
+4 {rareInfantrySquad}
+2 scienceTeam
+1 bridgeCrew
+3 irregulars
+6 {vehicleSquad}
+0 Later make them ONI vehicles
+
+* childrenof irregulars
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+{unsc/individual/squadLeader}
+
 `;
 
-},{}],11:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
+module.exports = `
+
+* output
+1 gladius
+
+* alias 1kgLoadoutItem
+10 gladius
+10 pistol
+10 fragGrenade
+9 smokeGrenade
+7 tomahawk
+3 handCrossbow
+2 club
+2 sickle
+2 shortbow
+2 javelin
+1 rapier
+
+* alias 2kgLoadoutItem
+10 canteen
+10 heavyPistol
+6 quarterstaff
+5 maul
+2 trenchShovel
+5 broadsword
+
+* alias 3kgLoadoutItem
+10 handShield
+10 smg
+1 compoundLongbow
+8 grenadeLauncher
+10 pulseRifle
+10 combatShotgun
+8 greataxe
+
+* alias 4kgLoadoutItem
+4 assaultRifle
+4 boltActionRifle
+1 halberd
+2 riotShield
+
+* alias 5kgLoadoutItem
+10 longrifle
+1 musket
+6 blunderbuss
+9 sledgehammer
+9 towerShield
+
+
+* alias 2kgLoadoutSet
+1 {2kgLoadoutItem}
+1 {1kgLoadoutItem}, {1kgLoadoutItem}
+
+* alias 3kgLoadoutSet
+1 {3kgLoadoutItem}
+2 {2kgLoadoutSet}, {1kgLoadoutItem}
+
+* alias 4kgLoadoutSet
+1 {4kgLoadoutItem}
+1 {3kgLoadoutSet}, {1kgLoadoutItem}
+1 {2kgLoadoutSet}, {2kgLoadoutSet}
+
+* alias 5kgLoadoutSet
+1 {5kgLoadoutItem}
+1 {4kgLoadoutSet}, {1kgLoadoutItem}
+1 {3kgLoadoutSet}, {3kgLoadoutSet}
+
+
+* alias outfit
+2 {armor}
+2 {armor}, {backwear}
+4 {clothing}, {backwear}
+2 {clothing}, {flightItem}
+
+* alias armor
+4 {plasteelArmor}
+4 {durafiberArmor}
+2 {historicalArmor}
+2 {powerArmor}
+
+* alias plasteelArmor
+4 plasteelBreastplate
+3 plasteelBreastplate, plasteelPauldrons
+2 plasteelBreastplate, plasteelPauldrons, plasteelGreaves
+2 plasteelBreastplate, plasteelPauldrons, plasteelGreaves, plasteelBracers
+4 fullPlasteelArmor
+
+* alias durafiberArmor
+4 durafiberJacket
+4 durafiberBodysuit
+
+* alias historicalArmor
+4 chainShirt
+4 ironBreastplate
+3 ironBreastplate, leatherArmoredSkirt
+4 fullSteelPlate
+4 leatherLightArmor
+
+* alias powerArmor
+4 poweredAgilityArmor
+4 breacherPowerArmor
+4 heavyPowerArmor
+1 heavyPowerArmor, powerFist
+
+* alias clothing
+6 3pieceSuit
+5 robes
+6 cocktailDress
+3 littleBlackDress
+6 gi
+6 leatherJacket&Jeans
+5 tankTop&Shorts
+6 bodysuit
+4 sari
+3 agilityExoskeleton
+3 cqbExoskeleton
+4 leafsuit
+4 thermopticCamo
+
+* childrenof cocktailDress
+{color}
+
+* childrenof sari
+{color}
+
+
+* alias backwear
+10 nothing
+3 cape
+1 furMantle
+1 spiderArms
+2 mechadendrites
+1 servo-arm
+4 teleportHarness
+
+* alias flightItem
+3 glider
+4 jetpack
+4 bionicWings
+
+
+* alias handwear
+6 {gauntlets}
+5 armShield
+4 weddingRing
+4 wristMountedBlade
+4 wristMountedGrapplingHook
+3 wristMountedForcefields
+4 fingerlessGloves
+4 powerGlove
+4 electroGloves
+
+* alias gauntlets
+4 plasteelGauntlets
+4 steelGauntlets
+
+
+* alias headwear
+4 nothing
+4 {hairstyle}
+1 circlet
+4 hood
+4 flowerInHair
+4 faceplate
+4 voidsuitHelmet
+
+* alias hairstyle
+0 TODO: export the following tables to playerTraits.js or similar
+4 baldHead
+4 hairInPonytail
+3 hairInBun
+4 shortHaircut
+4 spikedHair
+4 bobHaircut
+3 pompadourHairstyle
+4 asymmetricHaircut
+4 shoulderLengthHair
+4 longHair
+4 waistLengthHair
+4 frenchBraids
+
+* alias hairColor
+10 black
+4 darkBrown
+3 auburn
+3 blond
+1 platinumBlond
+2 red
+1 {color}
+
+* alias color 
+4 pink
+4 red
+4 orange
+4 yellow
+4 green
+4 blue
+4 violet
+4 white
+4 black
+
+
+`;
+},{}],20:[function(require,module,exports){
+module.exports = `
+
+* output
+1 player
+
+* childrenof player
+{item/headwear}
+{item/outfit}
+{item/handwear}
+{item/5kgLoadoutSet}
+
+
+`;
+},{}],21:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -1832,7 +2895,7 @@ module.exports = Util.makeEnum([
     'Covenant'
 ]);
 
-},{"../util/util.js":50}],12:[function(require,module,exports){
+},{"../util/util.js":60}],22:[function(require,module,exports){
 (function (process,__dirname){
 'use strict';
 
@@ -1844,6 +2907,7 @@ const fs = require('fs');
 // TODO perhaps restructure so that WGenerator doesn't import any Battle20 files.
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
+const StorageModes = require('../wnode/storageModes.js');
 const Util = require('../util/util.js');
 const WNode = require('../wnode/wnode.js');
 
@@ -1942,6 +3006,7 @@ class WGenerator {
         return nodes;
     }
 
+    // Returns ContextString[]
     resolveCommas (inputString) {
         // Util.log(`Top of resolveCommas(), inputString is '${inputString}'`, 'debug');
 
@@ -1965,14 +3030,27 @@ class WGenerator {
         return nodes;
     }
 
-    makeSubtree (cString) {
-        // Util.log(`Top of makeSubtree( '${cString}' ), this.codexPath is ${this.codexPath}`, 'debug');
+    // Returns WNode[]
+    // Returned nodes have .storageMode === Partial and lack children of their own.
+    // Non-recursive variant of resolveString(), used for fractal tree browsing.
+    resolveStringOnly (inputString) {
+        const nodes = this.resolveCommas(inputString)
+            .map(contextString => this.makePartialNode(contextString));
 
+        // TODO figure out whether sortSubtrees() needs modification when they are not trees
+        WNode.sortSubtrees(nodes);
+        return nodes;
+    }
+
+    // LATER maybe rename ContextString local vars to contextString or contextStr, for reading clarity.
+    // Returns a WNode
+    makeSubtree (cString) {
         return cString.path === this.codexPath ?
             this.makeLocalSubtree(cString) :
             WGenerator.makeExternalSubtree(cString);
     }
 
+    // Returns a WNode
     makeLocalSubtree (cString) {
         // Later, read from the templates of the WGenerator specified by cString.path
         const node = new WNode(cString.name);
@@ -1983,6 +3061,7 @@ class WGenerator {
         return this.maybeAddChildren(node);
     }
 
+    // Returns undefined
     applyTemplate (node, cString) {
         const template = this.glossary[cString.name];
         if (! template) {
@@ -1995,26 +3074,23 @@ class WGenerator {
         }
     }
 
-    // Might modify node.children
+    // Might modify node.components
     // Returns a WNode
     maybeAddChildren (node) {
         // Later make this case insensitive
         const table = this.childTables[node.templateName];
 
         if (table) {
-            // Util.log(`End of maybeAddChildren(node of '${node.templateName}'). table exists.`, 'debug');
-
             return this.addChildren(node, table);
         }
         else {
-            // Util.log(`End of maybeAddChildren(node of '${node.templateName}'). table not found.`, 'debug');
-
             return node;
         }
     }
 
-    // Modifies node.children
+    // Modifies node.components
     // Returns the modified WNode
+    // For fractal generation, we want a variant of this where each call to resolveString() returns WNodes of status Partial, each with no children of their own.
     addChildren (node, table) {
         table.children.forEach(
             childString => {
@@ -2032,8 +3108,48 @@ class WGenerator {
         return node;
     }
 
+    // Non recursive variant of maybeAddChildren(), for fractal browsing mode.
+    // Might modify node.components
+    // The child nodes will be status Partial.
+    // This function adds no grandchildren.
+    // Returns a WNode
+    maybeAddChildrenOnly (node) {
+        // Later make this case insensitive
+        const table = this.childTables[node.templateName];
+
+        if (table) {
+            return this.addChildrenOnly(node, table);
+        }
+        else {
+            node.storageMode = StorageModes.Complete;
+            return node;
+        }
+    }
+
+    // Modifies node.components
+    // Returns the modified WNode
+    addChildrenOnly (node, table) {
+        table.children.forEach(
+            childString => {
+                // Note that resolveStringOnly() always returns an array.
+                const children = this.resolveStringOnly(childString);
+                node.components = node.components.concat(children);
+                children.forEach(
+                    child => {
+                        child.parent = node;
+                        child.storageMode = StorageModes.Partial;
+                    }
+                );
+            }
+        );
+
+        node.storageMode = StorageModes.Complete;
+        return node;
+    }
+
     // Returns ContextString[]
     // No side effects.
+    // Note that this involves randomness.
     maybeResolveAlias (str) {
         str = str.trim();
 
@@ -2044,6 +3160,8 @@ class WGenerator {
                 throw new Error(`WGenerator.maybeResolveAlias(): Error parsing a string: ${ str }`);
             }
 
+            // TODO: Somewhere, possibly here, {}s are being prioritized before commas.
+            // AKA the bug is interpreting {foo}, {bar} as one alias with the name 'foo}, {bar'
             const alias = str.slice(1, str.length - 1)
                 .trim();
 
@@ -2066,6 +3184,7 @@ class WGenerator {
         }
     }
 
+    // Returns ContextString[]
     resolveLocalAlias (tableName) {
         // Later make this case insensitive
         const table = this.aliasTables[tableName];
@@ -2077,6 +3196,7 @@ class WGenerator {
         return table.getOutputAndResolveIt();
     }
 
+    // Returns a string
     makeSomePathsAbsolute (slashStr) {
         return slashStr.split(',')
             .map(
@@ -2088,6 +3208,7 @@ class WGenerator {
             .join(',');
     }
 
+    // Returns a string
     makePathAbsolute (relativePathStr) {
         if (relativePathStr.startsWith('{')) {
             return this.getAbsoluteAlias(relativePathStr);
@@ -2097,6 +3218,7 @@ class WGenerator {
         return this.getAbsolutePath(relativePathStr);
     }
 
+    // Returns a string
     getAbsoluteAlias (relativePathAlias) {
         // One duplicate comparison. I dont think this will slow performance appreciably.
         if (relativePathAlias.startsWith('{')) {
@@ -2110,6 +3232,7 @@ class WGenerator {
         return `{${absolutePath}}`;
     }
 
+    // Returns a string
     // Later i could return ContextString instead of a absolute path.
     getAbsolutePath (relativePathStr) {
         const relativePath = relativePathStr.trim()
@@ -2147,7 +3270,7 @@ class WGenerator {
     }
 
     static exampleGenerator () {
-        return WGenerator.generators['halo/unsc/fleet'];
+        return WGenerator.generators['halo/presence'];
     }
 
     // Example input: 'sunlight/warbands/warrior'
@@ -2170,6 +3293,7 @@ class WGenerator {
     static loadCodices () {
         // For now, this is hard coded to one fictional setting.
         WGenerator.loadHaloCodices();
+        WGenerator.loadSunlightCodices();
     }
 
     static loadHaloCodices () {
@@ -2184,20 +3308,15 @@ class WGenerator {
         }
 
         // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
+        // GOTCHA: It's important to load the files describing small components first.
         WGenerator.addGenerator(
             require('../codices/halo/unsc/item'),
             'halo/unsc/item'
         );
-
-        // Util.log(`Middle of loadHaloCodices(), item is loaded.`, 'debug');
-
         WGenerator.addGenerator(
             require('../codices/halo/unsc/individual'),
             'halo/unsc/individual'
         );
-
-        // Util.log(`Middle of loadHaloCodices(), individual is loaded.`, 'debug');
-
         WGenerator.addGenerator(
             require('../codices/halo/unsc/squad'),
             'halo/unsc/squad'
@@ -2226,9 +3345,63 @@ class WGenerator {
             require('../codices/halo/unsc/patrol'),
             'halo/unsc/patrol'
         );
+        WGenerator.addGenerator(
+            require('../codices/halo/cov/item'),
+            'halo/cov/item'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/cov/individual'),
+            'halo/cov/individual'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/cov/squad'),
+            'halo/cov/squad'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/cov/force'),
+            'halo/cov/force'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/forerunner/item'),
+            'halo/forerunner/item'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/forerunner/individual'),
+            'halo/forerunner/individual'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/forerunner/squad'),
+            'halo/forerunner/squad'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/presence'),
+            'halo/presence'
+        );
+    }
+
+    static loadSunlightCodices () {
+        if (! WGenerator.generators) {
+            WGenerator.generators = {};
+        }
+        else if (Util.exists( WGenerator.generators['sunlight/warband/item'] )) {
+            // WGenerator.generators already looks loaded.
+            return;
+        }
+
+        // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
+        WGenerator.addGenerator(
+            require('../codices/sunlight/warband/item'),
+            'sunlight/warband/item'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/warband/player'),
+            'sunlight/warband/player'
+        );
     }
 
     static addGenerator (moduleContents, codexPath) {
+        // Util.log(`BEACON RHYE Top of addGenerator( contents present? ${!!moduleContents}, ${codexPath} ).`, 'debug');
+
         const gen = new WGenerator(moduleContents, codexPath);
 
         WGenerator.generators[codexPath] = gen;
@@ -2274,10 +3447,15 @@ class WGenerator {
         const nameIndex = relativePath.length - 1;
 
         // Omit the name
-        // concat() and slice() have no side effects.
+        // Note: concat() and slice() have no side effects.
         const genPath = contextPath.concat(relativePath.slice(0, nameIndex));
         const genPathStr = genPath.join('/');
         const gen = WGenerator.generators[genPathStr];
+
+        // Util.log(
+        //     `In WGenerator.interpretRelativePathAsName( ${relativePath}, ${contextPath} ) before the if. genPath is ${genPath}. genPathStr is ${genPathStr}. gen is ${gen}.`,
+        //     'debug'
+        // );
 
         if (gen) {
             const goalName = relativePath[nameIndex];
@@ -2319,6 +3497,7 @@ class WGenerator {
         throw new Error(`Could not find a WGenerator for this absolutePath: ${ absolutePath }`);
     }
 
+    // Returns ContextString[]
     static resolveExternalAlias (absolutePath) {
         const findings = WGenerator.findGenAndTable(absolutePath);
         // Later, check if this throwing is redundant.
@@ -2329,7 +3508,7 @@ class WGenerator {
         return findings.gen.resolveLocalAlias(findings.name);
     }
 
-    // Returns WNode
+    // Returns a WNode
     // References the appropriate WGenerator's ChildTables, templates, etc
     // The path was already made absolute during table construction (both AliasTable and ChildTable rows).
     static makeExternalSubtree (cString) {
@@ -2359,6 +3538,14 @@ class WGenerator {
                 return;
             }
             else {
+                // Later we can add support for references inside codex files, such as halo/forerunner/individual/knight.
+                // This is supported in parsing but not in the CLI yet.
+                // The alg will be:
+                    // Check if the input path is a codex (ie, !!WGenerator.generators[process.argv[2]])
+                    // If so, call its .getOutputs() func
+                    // Else look at the input path minus the final term
+                    // then call wgen.getOutputs(finalTerm)
+                    // or wrap it in brackets if its a alias: `{${finalTerm}}`
                 const wgen = WGenerator.fromCodex(process.argv[2]);
                 output = wgen.getOutputs();
             }
@@ -2453,6 +3640,7 @@ class AliasTable {
         return Util.randomOf(this.outputs);
     }
 
+    // Returns ContextString[]
     getOutputAndResolveIt () {
         const outputStr = this.getOutput();
 
@@ -2476,7 +3664,7 @@ class AliasTable {
         return t.startsWith('output');
     }
 
-
+    // Returns a string
     static withoutTheStarter (rawString) {
         const s = rawString.trim();
         const sLow = s.toLowerCase();
@@ -2519,6 +3707,7 @@ class ChildTable {
             );
     }
 
+    // Returns a boolean
     static isAppropriateFor (tableString) {
         const t = tableString.trim()
             .toLowerCase();
@@ -2528,6 +3717,7 @@ class ChildTable {
         );
     }
 
+    // Returns a string
     static withoutTheStarter (rawString) {
         const s = rawString.trim();
         const sLow = s.toLowerCase();
@@ -2549,6 +3739,7 @@ ChildTable.STARTERS = [
     // 'childrenOf' is implied by the call to toLowerCase()
 ];
 
+// TODO move to its own file
 // Intermediate representation used during parsing and generation. Represents a name (of a template or of a alias) with a codex path for context.
 // Alternate names: CodexString, PathName, PathString, ContextName, ContextString
 class ContextString {
@@ -2788,7 +3979,7 @@ halo/unsc/item/externalThing
 */
 
 }).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":2,"../codices/halo/unsc/battalion":3,"../codices/halo/unsc/company":4,"../codices/halo/unsc/fleet":5,"../codices/halo/unsc/individual":6,"../codices/halo/unsc/item":7,"../codices/halo/unsc/patrol":8,"../codices/halo/unsc/patrol.js":8,"../codices/halo/unsc/ship":9,"../codices/halo/unsc/squad":10,"../util/util.js":50,"../wnode/wnode.js":52,"_process":54,"fs":53}],13:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":2,"../codices/halo/cov/force":3,"../codices/halo/cov/individual":4,"../codices/halo/cov/item":5,"../codices/halo/cov/squad":6,"../codices/halo/forerunner/individual":7,"../codices/halo/forerunner/item":8,"../codices/halo/forerunner/squad":9,"../codices/halo/presence":10,"../codices/halo/unsc/battalion":11,"../codices/halo/unsc/company":12,"../codices/halo/unsc/fleet":13,"../codices/halo/unsc/individual":14,"../codices/halo/unsc/item":15,"../codices/halo/unsc/patrol":16,"../codices/halo/unsc/patrol.js":16,"../codices/halo/unsc/ship":17,"../codices/halo/unsc/squad":18,"../codices/sunlight/warband/item":19,"../codices/sunlight/warband/player":20,"../util/util.js":60,"../wnode/storageModes.js":61,"../wnode/wnode.js":62,"_process":64,"fs":63}],23:[function(require,module,exports){
 // return a string with the provided number formatted with commas.
 // can specify either a Number or a String.
 function commaNumber(number, separator, decimalChar) {
@@ -2893,7 +4084,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],14:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /*!
  * hotkeys-js v3.4.4
  * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies.
@@ -3307,10 +4498,10 @@ if (typeof window !== 'undefined') {
 
 module.exports = hotkeys;
 
-},{}],15:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /*! hotkeys-js v3.4.4 | MIT (c) 2019 kenny wong <wowohoo@qq.com> | http://jaywcjlove.github.io/hotkeys */
 "use strict";var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,o,t){e.addEventListener?e.addEventListener(o,t,!1):e.attachEvent&&e.attachEvent("on"+o,function(){t(window.event)})}function getMods(e,o){for(var t=o.slice(0,o.length-1),n=0;n<t.length;n++)t[n]=e[t[n].toLowerCase()];return t}function getKeys(e){e||(e="");for(var o=(e=e.replace(/\s/g,"")).split(","),t=o.lastIndexOf("");0<=t;)o[t-1]+=",",o.splice(t,1),t=o.lastIndexOf("");return o}function compareArray(e,o){for(var t=e.length<o.length?o:e,n=e.length<o.length?e:o,r=!0,s=0;s<t.length;s++)-1===n.indexOf(t[s])&&(r=!1);return r}for(var _keyMap={backspace:8,tab:9,clear:12,enter:13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":isff?224:91,cmd:isff?224:91,command:isff?224:91},_downKeys=[],modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey"},_mods={16:!1,18:!1,17:!1},_handlers={},k=1;k<20;k++)_keyMap["f"+k]=111+k;var _scope="all",isBindElement=_mods[isff?224:91]=!(modifierMap[isff?224:91]="metaKey"),code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function filter(e){var o=e.target||e.srcElement,t=o.tagName;return!("INPUT"===t||"SELECT"===t||"TEXTAREA"===t||o.isContentEditable)}function isPressed(e){return"string"==typeof e&&(e=code(e)),-1!==_downKeys.indexOf(e)}function deleteScope(e,o){var t=void 0,n=void 0;for(var r in e||(e=getScope()),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,r))for(t=_handlers[r],n=0;n<t.length;)t[n].scope===e?t.splice(n,1):n++;getScope()===e&&setScope(o||"all")}function clearModifier(e){var o=e.keyCode||e.which||e.charCode,t=_downKeys.indexOf(o);if(t<0||_downKeys.splice(t,1),93!==o&&224!==o||(o=91),o in _mods)for(var n in _mods[o]=!1,_modifier)_modifier[n]===o&&(hotkeys[n]=!1)}function unbind(e,o,t){var n=getKeys(e),r=void 0,s=[],i=void 0;"function"==typeof o&&(t=o,o="all");for(var d=0;d<n.length;d++){if(1<(r=n[d].split("+")).length&&(s=getMods(_modifier,r)),e="*"===(e=r[r.length-1])?"*":code(e),o||(o=getScope()),!_handlers[e])return;for(var a=0;a<_handlers[e].length;a++){i=_handlers[e][a],(!t||i.method===t)&&i.scope===o&&compareArray(i.mods,s)&&(_handlers[e][a]={})}}}function eventHandler(e,o,t){var n=void 0;if(o.scope===t||"all"===o.scope){for(var r in n=0<o.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(!_mods[r]&&-1<o.mods.indexOf(+r)||_mods[r]&&-1===o.mods.indexOf(+r))&&(n=!1);(0!==o.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!n&&"*"!==o.shortcut||!1===o.method(e,o)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(e){var o=_handlers["*"],t=e.keyCode||e.which||e.charCode;if(-1===_downKeys.indexOf(t)&&_downKeys.push(t),93!==t&&224!==t||(t=91),t in _mods){for(var n in _mods[t]=!0,_modifier)_modifier[n]===t&&(hotkeys[n]=!0);if(!o)return}for(var r in _mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(_mods[r]=e[modifierMap[r]]);if(hotkeys.filter.call(this,e)){var s=getScope();if(o)for(var i=0;i<o.length;i++)o[i].scope===s&&eventHandler(e,o[i],s);if(t in _handlers)for(var d=0;d<_handlers[t].length;d++)eventHandler(e,_handlers[t][d],s)}}function hotkeys(e,o,t){var n=getKeys(e),r=[],s="all",i=document,d=0;for(void 0===t&&"function"==typeof o&&(t=o),"[object Object]"===Object.prototype.toString.call(o)&&(o.scope&&(s=o.scope),o.element&&(i=o.element)),"string"==typeof o&&(s=o);d<n.length;d++)r=[],1<(e=n[d].split("+")).length&&(r=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({scope:s,mods:r,shortcut:n[d],method:t,key:n[d]});void 0===i||isBindElement||(isBindElement=!0,addEvent(i,"keydown",function(e){dispatch(e)}),addEvent(i,"keyup",function(e){clearModifier(e)}))}var _api={setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,unbind:unbind};for(var a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);if("undefined"!=typeof window){var _hotkeys=window.hotkeys;hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys}module.exports=hotkeys;
-},{}],16:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 (function (process){
 
 if (process.env.NODE_ENV === 'production') {
@@ -3320,7 +4511,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this,require('_process'))
-},{"./dist/hotkeys.common.js":14,"./dist/hotkeys.common.min.js":15,"_process":54}],17:[function(require,module,exports){
+},{"./dist/hotkeys.common.js":24,"./dist/hotkeys.common.min.js":25,"_process":64}],27:[function(require,module,exports){
 'use strict';
 
 
@@ -3329,7 +4520,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":18}],18:[function(require,module,exports){
+},{"./lib/js-yaml.js":28}],28:[function(require,module,exports){
 'use strict';
 
 
@@ -3370,7 +4561,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":20,"./js-yaml/exception":21,"./js-yaml/loader":22,"./js-yaml/schema":24,"./js-yaml/schema/core":25,"./js-yaml/schema/default_full":26,"./js-yaml/schema/default_safe":27,"./js-yaml/schema/failsafe":28,"./js-yaml/schema/json":29,"./js-yaml/type":30}],19:[function(require,module,exports){
+},{"./js-yaml/dumper":30,"./js-yaml/exception":31,"./js-yaml/loader":32,"./js-yaml/schema":34,"./js-yaml/schema/core":35,"./js-yaml/schema/default_full":36,"./js-yaml/schema/default_safe":37,"./js-yaml/schema/failsafe":38,"./js-yaml/schema/json":39,"./js-yaml/type":40}],29:[function(require,module,exports){
 'use strict';
 
 
@@ -3431,7 +4622,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],20:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -4260,7 +5451,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":19,"./exception":21,"./schema/default_full":26,"./schema/default_safe":27}],21:[function(require,module,exports){
+},{"./common":29,"./exception":31,"./schema/default_full":36,"./schema/default_safe":37}],31:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -4305,7 +5496,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],22:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -5905,7 +7096,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":19,"./exception":21,"./mark":23,"./schema/default_full":26,"./schema/default_safe":27}],23:[function(require,module,exports){
+},{"./common":29,"./exception":31,"./mark":33,"./schema/default_full":36,"./schema/default_safe":37}],33:[function(require,module,exports){
 'use strict';
 
 
@@ -5983,7 +7174,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":19}],24:[function(require,module,exports){
+},{"./common":29}],34:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -6093,7 +7284,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":19,"./exception":21,"./type":30}],25:[function(require,module,exports){
+},{"./common":29,"./exception":31,"./type":40}],35:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -6113,7 +7304,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":24,"./json":29}],26:[function(require,module,exports){
+},{"../schema":34,"./json":39}],36:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -6140,7 +7331,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":24,"../type/js/function":35,"../type/js/regexp":36,"../type/js/undefined":37,"./default_safe":27}],27:[function(require,module,exports){
+},{"../schema":34,"../type/js/function":45,"../type/js/regexp":46,"../type/js/undefined":47,"./default_safe":37}],37:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -6170,7 +7361,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":24,"../type/binary":31,"../type/merge":39,"../type/omap":41,"../type/pairs":42,"../type/set":44,"../type/timestamp":46,"./core":25}],28:[function(require,module,exports){
+},{"../schema":34,"../type/binary":41,"../type/merge":49,"../type/omap":51,"../type/pairs":52,"../type/set":54,"../type/timestamp":56,"./core":35}],38:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -6189,7 +7380,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":24,"../type/map":38,"../type/seq":43,"../type/str":45}],29:[function(require,module,exports){
+},{"../schema":34,"../type/map":48,"../type/seq":53,"../type/str":55}],39:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -6216,7 +7407,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":24,"../type/bool":32,"../type/float":33,"../type/int":34,"../type/null":40,"./failsafe":28}],30:[function(require,module,exports){
+},{"../schema":34,"../type/bool":42,"../type/float":43,"../type/int":44,"../type/null":50,"./failsafe":38}],40:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -6279,7 +7470,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":21}],31:[function(require,module,exports){
+},{"./exception":31}],41:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -6419,7 +7610,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":30}],32:[function(require,module,exports){
+},{"../type":40}],42:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -6456,7 +7647,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":30}],33:[function(require,module,exports){
+},{"../type":40}],43:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -6574,7 +7765,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":19,"../type":30}],34:[function(require,module,exports){
+},{"../common":29,"../type":40}],44:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -6749,7 +7940,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":19,"../type":30}],35:[function(require,module,exports){
+},{"../common":29,"../type":40}],45:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -6843,7 +8034,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":30}],36:[function(require,module,exports){
+},{"../../type":40}],46:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -6905,7 +8096,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":30}],37:[function(require,module,exports){
+},{"../../type":40}],47:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -6935,7 +8126,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":30}],38:[function(require,module,exports){
+},{"../../type":40}],48:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -6945,7 +8136,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":30}],39:[function(require,module,exports){
+},{"../type":40}],49:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -6959,7 +8150,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":30}],40:[function(require,module,exports){
+},{"../type":40}],50:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -6995,7 +8186,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":30}],41:[function(require,module,exports){
+},{"../type":40}],51:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7041,7 +8232,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":30}],42:[function(require,module,exports){
+},{"../type":40}],52:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7096,7 +8287,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":30}],43:[function(require,module,exports){
+},{"../type":40}],53:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7106,7 +8297,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":30}],44:[function(require,module,exports){
+},{"../type":40}],54:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7137,7 +8328,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":30}],45:[function(require,module,exports){
+},{"../type":40}],55:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7147,7 +8338,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":30}],46:[function(require,module,exports){
+},{"../type":40}],56:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7237,7 +8428,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":30}],47:[function(require,module,exports){
+},{"../type":40}],57:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -24348,7 +25539,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],48:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -28952,22 +30143,24 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],49:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 'use strict';
 
+const StorageModes = require('../wnode/storageModes.js');
+const Util = require('../util/util.js');
 const WGenerator = require('../generation/wgenerator.js');
 const WNode = require('../wnode/wnode.js');
-const Util = require('../util/util.js');
 
 const Hotkeys = require('hotkeys-js');
 
 // Tree Navigator on alexpear.github.io
 
 const TreeBrowser = module.exports = class TreeBrowser {
-    constructor (curNode, generator) {
-        this.currentNode = curNode || TreeBrowser.exampleRoot();
-        this.nodeCount = this.currentNode.treeSize();
-        this.generator = generator;
+    constructor (generator, root) {
+        this.generator = generator || WGenerator.exampleGenerator();
+        this.root = root || this.newRoot();
+        this.currentNode = this.root;
+        this.storedNodeCount = this.root.subtreeSize();
 
         this.parentButton = document.getElementById('parentButton');
 
@@ -29073,24 +30266,61 @@ const TreeBrowser = module.exports = class TreeBrowser {
         const child = this.currentNode.components.find(component => component.id === childId);
 
         if (! child) {
-            // TODO: Friendlier notification.
+            // LATER: Friendlier notification.
             return alert(`Error: Could not find a child component with id ${ childId }. The number of child components is ${ this.currentNode.components.length }.`);
         }
 
         this.goToNode(child);
     }
 
+    // The tree of WNodes stored by TreeBrowser can make use of the storageMode Partial format.
+    // Partial WNodes have incomplete sets of components. These can be generated on the fly.
+    // This algorithm allows very large worlds, for example planets, to be depicted using a rotating 'cache' (tree) of only a billion or so WNodes.
     updateCache (visitedNode) {
         if (! visitedNode || ! this.generator) {
-            util.log(`Cannot update tree cache. Not enough information present to generate nodes. Generator is ${this.generator ? 'present, however' : 'absent'}.`, 'error');
+            Util.log(`Cannot update tree cache. Not enough information present to generate nodes. Generator is ${this.generator ? 'present, however' : 'absent'}.`, 'error');
             return;
         }
 
-        // If visitedNode is of storageMode Partial, generate its missing children.
+        // TODO flesh this out
+        // If visitedNode is a Partial, generate any missing children.
+        if (visitedNode.storageMode === StorageModes.Partial) {
+            const existingChildCount = visitedNode.components.length;
 
-        // If any nodes were generated, update this.nodeCount & check whether there are too many nodes in the tree.
-        if (this.nodeCount >= TreeBrowser.PRUNE_CEILING) {
+            // this.generator.maybeAddChildrenOnly(visitedNode);
 
+            // Update total count.
+            const newNodeCount = visitedNode.components.length - existingChildCount;
+            this.storedNodeCount += newNodeCount;
+        }
+
+        // check whether there are too many nodes in the tree.
+        if (this.storedNodeCount >= TreeBrowser.TOO_MANY_NODES) {
+            // this.pruneOldest();
+        }
+    }
+
+    // Later perhaps move the pruning logic to a more backendy func. TreeBrowser can be frontend only.
+    pruneOldest () {
+        // First draft: Add all nodes to the allNodes array. Sort them by lastVisited.
+        // Slice off the oldest chunk of allNodes. Recursively drop those nodes.
+        // After sorting and finding the set of WNodes to prune, look at the lastVisited timestamp of the newest of that set. Then call wnode.pruneIfOlderThan(timestamp) recursively across the tree.
+        // Drop in this context means: go to curNode's parent and modify its parent's components array such that curNode is no longer in it.
+        // The root cannot be dropped because it has no parent. Skip it.
+        // Later, we can make this more efficient.
+
+        const allNodes = this.root.toArray();
+        allNodes.sort(sortByOldest);
+
+        this.storedNodeCount = allNodes.length;
+        const toBeRemoved = allNodes.length - TreeBrowser.PRUNE_DOWN_TO;
+
+        const threshold = allNodes[threshold].lastVisited;
+
+        this.pruneIfOld(threshold);
+
+        function sortByOldest (aNode, bNode) {
+            return aNode.lastVisited - bNode.lastVisited;
         }
     }
 
@@ -29101,6 +30331,10 @@ const TreeBrowser = module.exports = class TreeBrowser {
 
     loadFile (fileName) {
         // Later
+    }
+
+    newRoot () {
+        return this.generator.getOutputs()[0];
     }
 
     static exampleRoot () {
@@ -29119,7 +30353,6 @@ TreeBrowser.PRUNE_CEILING = 10; // 100000000;
 TreeBrowser.PRUNE_DOWN_TO = 5;  // 10000000;
 
 function init () {
-    // TODO: curnode is undefined. Dependency.
     window.treeBrowser = new TreeBrowser();
 }
 
@@ -29128,7 +30361,7 @@ function init () {
 
 init();
 
-},{"../generation/wgenerator.js":12,"../util/util.js":50,"../wnode/wnode.js":52,"hotkeys-js":16}],50:[function(require,module,exports){
+},{"../generation/wgenerator.js":22,"../util/util.js":60,"../wnode/storageModes.js":61,"../wnode/wnode.js":62,"hotkeys-js":26}],60:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -29576,7 +30809,7 @@ util.mbti = () => {
     .join('');
 };
 
-},{"comma-number":13,"lodash":47,"moment":48}],51:[function(require,module,exports){
+},{"comma-number":23,"lodash":57,"moment":58}],61:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -29587,7 +30820,7 @@ module.exports = Util.makeEnum([
     'Frozen'
 ]);
 
-},{"../util/util.js":50}],52:[function(require,module,exports){
+},{"../util/util.js":60}],62:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -29830,6 +31063,39 @@ class WNode {
         );
     }
 
+    // threshold is in ms of Unix time.
+    // Recursive.
+    pruneIfOld (threshold) {
+        if (
+            this.lastVisited &&
+            this.lastVisited <= threshold
+        ) {
+            // Remove this WNode from the components of the parent.
+            this.parent.components = this.parent.components.filter(
+                component => component.id !== this.id
+            );
+
+            this.parent.storageMode = StorageModes.Partial;
+            return;
+        }
+
+        this.components.forEach(
+            component => component.pruneIfOld()
+        );
+    }
+
+    toArray (arraySoFar) {
+        arraySoFar = arraySoFar || [];
+
+        return this.components.map(
+            c => c.toArray()
+        )
+        .reduce(
+            (a, subtree) => a.concat(subtree),
+            [this]
+        );
+    }
+
     // Myers-Briggs personality category
     updateMbti () {
         if (! this.displayName && this.templateName.toLowerCase() === 'mbti') {
@@ -29859,6 +31125,7 @@ class WNode {
 
         const aWeight = a.getWeight();
         const bWeight = b.getWeight();
+
         if (aWeight > 0 || bWeight > 0) {
             return bWeight - aWeight;
         }
@@ -29867,13 +31134,40 @@ class WNode {
             b.templateName || ''
         );
     }
+
+    static test () {
+        // Unit test for toArray()
+        const root = new WNode('root');
+        const l = new WNode('l');
+        const ll = new WNode('ll');
+        const lr = new WNode('lr');
+        const r = new WNode('r');
+        const rr = new WNode('rr');
+        const rrl = new WNode('rrl');
+        const rrr = new WNode('rrr');
+        root.components = [l, r];
+        l.components = [ll, lr];
+        r.components = [rr];
+        rr.components = [rrl, rrr];
+
+        const output = root.toArray();
+        const expected = [root, l, ll, lr, r, rr, rrl, rrr];
+
+        for (let i = 0; i < output.length; i++) {
+            if (output[i] !== expected[i]) {
+                throw new Error(`WNode.toArray() unit test failed. Output was: ${output.map(n => n.templateName).join(', ')}`);
+            }
+        }
+
+        Util.log(`WNode.toArray() unit test passed :)`, 'debug');
+    }
 }
 
 module.exports = WNode;
 
-},{"../util/util.js":50,"./storageModes.js":51,"js-yaml":17}],53:[function(require,module,exports){
+},{"../util/util.js":60,"./storageModes.js":61,"js-yaml":27}],63:[function(require,module,exports){
 
-},{}],54:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -30059,4 +31353,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[49]);
+},{}]},{},[59]);
