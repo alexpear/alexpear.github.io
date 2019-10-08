@@ -94,21 +94,12 @@ airCompany
 5 bruteCompany
 1 bruteFastCompany
 1 excavationCompany
-4 eliteCompany
+2 eliteCompany
 2 gruntCompany
 1 specOpsCompany
 3 armorCompany
-2 commandCompany
+1 commandCompany
 1 {specialistCompany}
-
-* childrenof groundCompany
-{squad/mobileSquad}
-{squad/mobileSquad}
-{squad/mobileSquad}
-{squad/mobileSquad}
-{squad/mobileSquad}
-{squad/mobileSquad}
-{squad/mobileSquad}
 
 * alias specialistCompany
 4 droneCompany
@@ -120,6 +111,15 @@ airCompany
 1 antiarmorCompany
 4 boardingCompany
 4 dropPodCompany
+
+* childrenof groundCompany
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
 
 * childrenof specOpsCompany
 squad/specOpsEliteLance
@@ -148,6 +148,14 @@ squad/specOpsEliteLance
 {squad/airVehicle}
 {squad/airVehicle}
 
+* childrenof armorCompany
+{squad/armorSquad}
+{squad/armorSquad}
+{squad/armorSquad}
+{squad/armorSquad}
+{squad/armorSquad}
+{squad/armorSquad}
+{squad/armorSquad}
 
 `;
 

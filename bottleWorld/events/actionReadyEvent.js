@@ -23,5 +23,7 @@ module.exports = class ActionReadyEvent extends BEvent {
         // Should we support both string and obj for this protagonist field? When serializing, we will prefer string. Storing as string seems neat enough...
         // (Edge case: Creature has no actions. Maybe throw error, since ActionReady shouldn't have been called.)
         // Parameters and targets can be determined randomly, perhaps by Thing.chooseActionDetails() or something.
+
+        // TODO: Add clearer notes about what type each field is. It's a little confusing currently.
     }
 };

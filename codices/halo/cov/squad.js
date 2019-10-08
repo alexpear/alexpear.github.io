@@ -93,22 +93,62 @@ individual/specOpsElite
 1 phantom
 1 spirit
 
+
+* alias elitesOnlySquad
+10 {elitesOnlyVehicle}
+6 {elitesOnlyLance}
+
+* alias elitesOnlyVehicle
+1 vampire
+1 seraph
+3 revenant
+10 spectre
+15 {anyWraith}
+20 elitesOnlyPhantom
+15 eliteGhost
+10 banshee
+
+* alias elitesOnlyLance
+10 eliteLance
+4 stealthEliteLance
+4 eliteRangerLance
+3 eliteLeadershipLance
+1 specOpsEliteLance
+
+
 * alias bruteVehicle
-2 chopper
-1 prowler
-1 banshee
-2 phantom
+4 chopper
+2 prowler
+2 gruntGhost
+2 bruteBanshee
+4 brutePhantom
+1 bruteRevenant
+2 bruteWraith
 
 * alias bruteJurisdictionSquad
-5 bruteLightLance
-3 bruteLance
+10 {bruteJurisdictionLance}
+10 {bruteVehicle}
+
+* alias bruteJurisdictionLance
+8 bruteLightLance
+6 bruteLance
 2 bruteChieftainSquad
 2 bruteStalkerSquad
 1 droneLance
 1 hunterPair
-0 TODO: modify vehicle to exclude phantoms that contain elites, or anything with elite pilots. Elites refuse to serve under Brutes.
-5 {vehicle}
-5 {bruteVehicle}
+
+* childrenof brutePhantom
+individual/gruntMinor
+{bruteJurisdictionLance}
+{bruteCargo10m}
+
+* alias bruteCargo10m
+6 gruntGhost, gruntGhost
+4 chopper, chopper
+3 prowler
+2 bruteRevenant
+4 sniperPlatform
+6 bruteWraith
 
 * childrenof bruteLightLance
 individual/bruteMinor
@@ -124,11 +164,10 @@ individual/bruteMinor
 individual/bruteMinor
 
 * alias fastBruteSquad
-0 TODO: modify vehicles to exclude anything with elite pilots. Elites refuse to serve under Brutes.
-5 phantom
+5 brutePhantom
 6 {bruteVehicle}
-3 {anyGhost}
-1 revenant
+3 gruntGhost
+1 bruteRevenant
 1 droneLance
 
 * childrenof bruteChieftainSquad
@@ -171,7 +210,6 @@ individual/gruntMinor
 {cargo10m}
 
 * alias cargo10m
-5 hunterPair
 6 {anyGhost}, {anyGhost}
 2 chopper
 3 revenant
@@ -197,6 +235,12 @@ individual/hunter
 3 aAWraith
 3 wraithUltra
 1 templeWraith
+
+* alias armorSquad
+10 {anyWraith}
+5 revenant
+2 scarab
+3 {mobileSquad}
 
 * childrenof ghost
 {individual/pilot}
