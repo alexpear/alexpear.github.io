@@ -26,6 +26,9 @@ module.exports = `
 
 * alias lightLanceTroops
 4 {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}
+4 {6LanceJackals}
+
+* alias 6LanceJackals
 2 individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal
 1 individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal
 1 individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal
@@ -79,6 +82,7 @@ individual/specOpsElite
 3 revenant
 3 locust
 1 scarab
+1 gruntMech
 
 * childrenof scarab
 {lance}
@@ -188,6 +192,21 @@ individual/bruteStalker
 individual/bruteStalker
 individual/bruteStalker
 
+
+* alias jackalSquad
+10 jackalLance
+10 jackalSpirit
+
+* childrenof jackalLance
+individual/rifleJackal
+{6LanceJackals}
+
+* childrenof jackalSpirit
+individual/rifleJackal
+jackalLance
+sniperPlatform
+
+
 * childrenof droneLance
 individual/droneMinor
 individual/droneMinor
@@ -196,7 +215,6 @@ individual/droneMinor
 individual/droneMinor
 individual/droneMinor
 individual/droneMinor
-
 
 
 * childrenof phantom
@@ -226,8 +244,9 @@ individual/hunter
 individual/hunter
 
 * alias anyGhost
-10 ghost
+10 gruntGhost
 3 ghostUltra
+1 swordGhost
 1 templeGhost
 
 * alias anyWraith
@@ -244,6 +263,15 @@ individual/hunter
 
 * childrenof ghost
 {individual/pilot}
+
+* childrenof gruntGhost
+individual/gruntMinor
+
+* childrenof bruteGhost
+individual/bruteMinor
+
+* childrenof ghostUltra
+individual/eliteMajor
 
 * childrenof spectre
 {individual/eliteLeader}
