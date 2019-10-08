@@ -130,14 +130,23 @@ squad/specOpsEliteLance
 {squad/specOpsSquad}
 {squad/specOpsSquad}
 
+* childrenof fastCompany
+{squad/fastVehicle}
+{squad/fastVehicle}
+{squad/fastVehicle}
+{squad/fastVehicle}
+{squad/fastVehicle}
+{squad/fastVehicle}
+{squad/fastVehicle}
+
 * childrenof airCompany
-{squad/airSquad}
-{squad/airSquad}
-{squad/airSquad}
-{squad/airSquad}
-{squad/airSquad}
-{squad/airSquad}
-{squad/airSquad}
+{squad/airVehicle}
+{squad/airVehicle}
+{squad/airVehicle}
+{squad/airVehicle}
+{squad/airVehicle}
+{squad/airVehicle}
+{squad/airVehicle}
 
 
 `;

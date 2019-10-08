@@ -61,24 +61,24 @@ individual/specOpsElite
 individual/specOpsElite
 
 
-* alias airSquad
-4 banshee, banshee
-4 {dropship}
+* alias airVehicle
+4 banshee
+5 {dropship}
 1 seraph
 1 lich
 1 vampire
 
+* alias fastVehicle
+10 {airVehicle}
+7 {anyGhost}
+2 spectre
 
 * alias vehicle
-10 {dropship}
-7 {anyGhost}
-2 banshee
-3 {anyWraith}
-1 revenant
-2 spectre
-2 locust
+30 {fastVehicle}
+10 {anyWraith}
+3 revenant
+3 locust
 1 scarab
-1 lich
 
 * childrenof scarab
 {lance}
@@ -124,6 +124,7 @@ individual/bruteMinor
 individual/bruteMinor
 
 * alias fastBruteSquad
+0 TODO: modify vehicles to exclude anything with elite pilots. Elites refuse to serve under Brutes.
 5 phantom
 6 {bruteVehicle}
 3 {anyGhost}
@@ -183,8 +184,8 @@ individual/rifleJackal
 item/plasmaCannon
 
 * childrenof hunterPair
-hunter
-hunter
+individual/hunter
+individual/hunter
 
 * alias anyGhost
 10 ghost
