@@ -45,14 +45,16 @@ module.exports = `
 
 * template eliteMinor
 tags: elite infantry
-weight: 350
 size: 2
+weight: 350
+individuals: 1
 
 * childrenof eliteMinor
 {item/eliteMinorWeapon}
 
 * template hunter
 size: 3
+individuals: 1
 
 * childrenof hunter
 item/hunterCannon
@@ -61,6 +63,8 @@ item/hunterShield
 * template bruteMinor
 tags: brute infantry
 size: 2
+weight: 600
+individuals: 1
 
 * childrenof bruteMinor
 {item/bruteMinorWeapon}
@@ -76,6 +80,7 @@ item/activeCamoflage
 tags: jackal infantry
 weight: 80
 size: 1.5
+individuals: 1
 
 * childrenof shieldJackal
 item/handShield
@@ -85,6 +90,7 @@ item/plasmaPistol
 tags: jackal infantry
 weight: 80
 size: 1.5
+individuals: 1
 
 * childrenof rifleJackal
 {item/jackalRifle}
@@ -94,6 +100,7 @@ item/plasmaPistol
 tags: jackal infantry
 weight: 80
 size: 1.5
+individuals: 1
 
 * childrenof skirmisherJackal
 {item/skirmisherWeapon}
@@ -101,6 +108,7 @@ size: 1.5
 * template gruntMinor
 size: 1.5
 weight: 250
+individuals: 1
 
 * childrenof gruntMinor
 {item/gruntWeapon}
@@ -108,12 +116,14 @@ plasmaGrenade
 
 * template droneMinor
 size: 1.5
+individuals: 1
 
 * childrenof droneMinor
 {item/droneWeapon}
 
 * template engineer
 size: 1.5
+individuals: 1
 
 * childrenof engineer
 item/bombHarness

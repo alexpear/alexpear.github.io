@@ -127,4 +127,13 @@ module.exports = `
 1 invincibility
 
 
+* template plasmaRifle
+size: 0.6
+weight: 6
+
+* template plasmaPistol
+size: 0.4
+weight: 4
+
+
 `;

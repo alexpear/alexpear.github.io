@@ -15,8 +15,8 @@ module.exports = `
 {battalion}
 
 * alias battalion
-1 airBattalion
-4 groundBattalion
+2 airBattalion
+10 groundBattalion
 1 bruteBattalion
 
 * childrenof groundBattalion
@@ -91,9 +91,8 @@ airCompany
 20 groundCompany
 8 fastCompany
 5 airCompany
-5 bruteCompany
+2 bruteCompany
 1 bruteFastCompany
-1 excavationCompany
 2 eliteCompany
 2 gruntCompany
 1 specOpsCompany
@@ -105,6 +104,7 @@ airCompany
 4 droneCompany
 4 jackalCompany
 1 hunterCompany
+2 excavationCompany
 1 demonhunterCompany
 1 antipersonnelCompany
 1 antiAirCompany
@@ -156,6 +156,24 @@ squad/specOpsEliteLance
 {squad/armorSquad}
 {squad/armorSquad}
 {squad/armorSquad}
+
+* childrenof eliteCompany
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+
+* childrenof excavationCompany
+squad/kraken
+squad/scarab
+squad/scarab
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
 
 `;
 

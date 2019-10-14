@@ -300,6 +300,11 @@ individual/eliteMinor
 
 * childrenof wraith
 {individual/eliteLeader}
+individual/eliteMinor
+
+* childrenof bruteWraith
+individual/bruteMinor
+individual/bruteMinor
 
 * alias mobileSquad
 10 {lance}
