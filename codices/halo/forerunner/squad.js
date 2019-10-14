@@ -4,8 +4,9 @@ module.exports = `
 1 {prometheanSquad}
 
 * alias installationSquad
-10 sentinelTeam
-1 enforcerTeam
+100 sentinelTeam
+10 enforcerTeam
+1 ancilla
 
 * alias prometheanSquad
 2 knightPair

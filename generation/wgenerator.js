@@ -475,6 +475,18 @@ class WGenerator {
             'halo/forerunner/squad'
         );
         WGenerator.addGenerator(
+            require('../codices/halo/forerunner/company'),
+            'halo/forerunner/company'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/flood/individual'),
+            'halo/flood/individual'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/flood/squad'),
+            'halo/flood/squad'
+        );
+        WGenerator.addGenerator(
             require('../codices/halo/presence'),
             'halo/presence'
         );
