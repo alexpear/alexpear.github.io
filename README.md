@@ -13,6 +13,9 @@ This website include the following prototype projects:
 - Death Planet Fish Tank
   - Add logic so that, on ActionReady events, creatures initiate their (only) Action.
   - Add logic about every creature moving closer to its destination each tick.
+  - Standardize types in BEvent props
+    - I think protagonist and target should point to full objects. .serialize() should output a object that has ids. a load() func can do the reverse.
+    - This means you translate when entering and leaving the DB, but not anywhere else. This sounds to me like the scheme that requires translation most rarely. (2019 October 14)
 - Waffle Tree fractal mode
   - Write a codex for a scale test before implementing this feature. It may be unnecessary.
   - Implement logic to handle Partial WNodes
