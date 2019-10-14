@@ -81,7 +81,7 @@ class ActionTemplate {
 
 module.exports = ActionTemplate;
 
-},{"../codices/tags.js":21,"../util/util.js":60}],2:[function(require,module,exports){
+},{"../codices/tags.js":24,"../util/util.js":63}],2:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
@@ -323,7 +323,7 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":21,"../util/util.js":60,"./actiontemplate.js":1}],3:[function(require,module,exports){
+},{"../codices/tags.js":24,"../util/util.js":63,"./actiontemplate.js":1}],3:[function(require,module,exports){
 module.exports = `
 * output
 1 decade
@@ -341,8 +341,8 @@ module.exports = `
 {battalion}
 
 * alias battalion
-1 airBattalion
-4 groundBattalion
+2 airBattalion
+10 groundBattalion
 1 bruteBattalion
 
 * childrenof groundBattalion
@@ -417,15 +417,26 @@ airCompany
 20 groundCompany
 8 fastCompany
 5 airCompany
-5 bruteCompany
+2 bruteCompany
 1 bruteFastCompany
-1 excavationCompany
-4 eliteCompany
+2 eliteCompany
 2 gruntCompany
 1 specOpsCompany
 3 armorCompany
-2 commandCompany
+1 commandCompany
 1 {specialistCompany}
+
+* alias specialistCompany
+4 droneCompany
+4 jackalCompany
+1 hunterCompany
+2 excavationCompany
+1 demonhunterCompany
+1 antipersonnelCompany
+1 antiAirCompany
+1 antiarmorCompany
+4 boardingCompany
+4 dropPodCompany
 
 * childrenof groundCompany
 {squad/mobileSquad}
@@ -436,17 +447,6 @@ airCompany
 {squad/mobileSquad}
 {squad/mobileSquad}
 
-* alias specialistCompany
-4 droneCompany
-4 jackalCompany
-1 hunterCompany
-1 demonhunterCompany
-1 antipersonnelCompany
-1 antiAirCompany
-1 antiarmorCompany
-4 boardingCompany
-4 dropPodCompany
-
 * childrenof specOpsCompany
 squad/specOpsEliteLance
 {squad/specOpsSquad}
@@ -456,15 +456,50 @@ squad/specOpsEliteLance
 {squad/specOpsSquad}
 {squad/specOpsSquad}
 
-* childrenof airCompany
-{squad/airSquad}
-{squad/airSquad}
-{squad/airSquad}
-{squad/airSquad}
-{squad/airSquad}
-{squad/airSquad}
-{squad/airSquad}
+* childrenof fastCompany
+{squad/fastVehicle}
+{squad/fastVehicle}
+{squad/fastVehicle}
+{squad/fastVehicle}
+{squad/fastVehicle}
+{squad/fastVehicle}
+{squad/fastVehicle}
 
+* childrenof airCompany
+{squad/airVehicle}
+{squad/airVehicle}
+{squad/airVehicle}
+{squad/airVehicle}
+{squad/airVehicle}
+{squad/airVehicle}
+{squad/airVehicle}
+
+* childrenof armorCompany
+{squad/armorSquad}
+{squad/armorSquad}
+{squad/armorSquad}
+{squad/armorSquad}
+{squad/armorSquad}
+{squad/armorSquad}
+{squad/armorSquad}
+
+* childrenof eliteCompany
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+{squad/elitesOnlySquad}
+
+* childrenof excavationCompany
+squad/kraken
+squad/scarab
+squad/scarab
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
+{squad/mobileSquad}
 
 `;
 
@@ -521,14 +556,16 @@ module.exports = `
 
 * template eliteMinor
 tags: elite infantry
-weight: 350
 size: 2
+weight: 350
+individuals: 1
 
 * childrenof eliteMinor
 {item/eliteMinorWeapon}
 
 * template hunter
 size: 3
+individuals: 1
 
 * childrenof hunter
 item/hunterCannon
@@ -537,6 +574,8 @@ item/hunterShield
 * template bruteMinor
 tags: brute infantry
 size: 2
+weight: 600
+individuals: 1
 
 * childrenof bruteMinor
 {item/bruteMinorWeapon}
@@ -552,6 +591,7 @@ item/activeCamoflage
 tags: jackal infantry
 weight: 80
 size: 1.5
+individuals: 1
 
 * childrenof shieldJackal
 item/handShield
@@ -561,6 +601,7 @@ item/plasmaPistol
 tags: jackal infantry
 weight: 80
 size: 1.5
+individuals: 1
 
 * childrenof rifleJackal
 {item/jackalRifle}
@@ -570,6 +611,7 @@ item/plasmaPistol
 tags: jackal infantry
 weight: 80
 size: 1.5
+individuals: 1
 
 * childrenof skirmisherJackal
 {item/skirmisherWeapon}
@@ -577,6 +619,7 @@ size: 1.5
 * template gruntMinor
 size: 1.5
 weight: 250
+individuals: 1
 
 * childrenof gruntMinor
 {item/gruntWeapon}
@@ -584,12 +627,14 @@ plasmaGrenade
 
 * template droneMinor
 size: 1.5
+individuals: 1
 
 * childrenof droneMinor
 {item/droneWeapon}
 
 * template engineer
 size: 1.5
+individuals: 1
 
 * childrenof engineer
 item/bombHarness
@@ -726,6 +771,15 @@ module.exports = `
 1 invincibility
 
 
+* template plasmaRifle
+size: 0.6
+weight: 6
+
+* template plasmaPistol
+size: 0.4
+weight: 4
+
+
 `;
 
 },{}],6:[function(require,module,exports){
@@ -757,6 +811,9 @@ module.exports = `
 
 * alias lightLanceTroops
 4 {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}, {individual/anyGrunt}
+4 {6LanceJackals}
+
+* alias 6LanceJackals
 2 individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal, individual/shieldJackal
 1 individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal, individual/rifleJackal
 1 individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal, individual/skirmisherJackal
@@ -792,24 +849,25 @@ individual/specOpsElite
 individual/specOpsElite
 
 
-* alias airSquad
-4 banshee, banshee
-4 {dropship}
+* alias airVehicle
+4 banshee
+5 {dropship}
 1 seraph
 1 lich
 1 vampire
 
+* alias fastVehicle
+10 {airVehicle}
+7 {anyGhost}
+2 spectre
 
 * alias vehicle
-10 {dropship}
-7 {anyGhost}
-2 banshee
-3 {anyWraith}
-1 revenant
-2 spectre
-2 locust
+30 {fastVehicle}
+10 {anyWraith}
+3 revenant
+3 locust
 1 scarab
-1 lich
+1 gruntMech
 
 * childrenof scarab
 {lance}
@@ -824,22 +882,62 @@ individual/specOpsElite
 1 phantom
 1 spirit
 
+
+* alias elitesOnlySquad
+10 {elitesOnlyVehicle}
+6 {elitesOnlyLance}
+
+* alias elitesOnlyVehicle
+1 vampire
+1 seraph
+3 revenant
+10 spectre
+15 {anyWraith}
+20 elitesOnlyPhantom
+15 eliteGhost
+10 banshee
+
+* alias elitesOnlyLance
+10 eliteLance
+4 stealthEliteLance
+4 eliteRangerLance
+3 eliteLeadershipLance
+1 specOpsEliteLance
+
+
 * alias bruteVehicle
-2 chopper
-1 prowler
-1 banshee
-2 phantom
+4 chopper
+2 prowler
+2 gruntGhost
+2 bruteBanshee
+4 brutePhantom
+1 bruteRevenant
+2 bruteWraith
 
 * alias bruteJurisdictionSquad
-5 bruteLightLance
-3 bruteLance
+10 {bruteJurisdictionLance}
+10 {bruteVehicle}
+
+* alias bruteJurisdictionLance
+8 bruteLightLance
+6 bruteLance
 2 bruteChieftainSquad
 2 bruteStalkerSquad
 1 droneLance
 1 hunterPair
-0 TODO: modify vehicle to exclude phantoms that contain elites, or anything with elite pilots. Elites refuse to serve under Brutes.
-5 {vehicle}
-5 {bruteVehicle}
+
+* childrenof brutePhantom
+individual/gruntMinor
+{bruteJurisdictionLance}
+{bruteCargo10m}
+
+* alias bruteCargo10m
+6 gruntGhost, gruntGhost
+4 chopper, chopper
+3 prowler
+2 bruteRevenant
+4 sniperPlatform
+6 bruteWraith
 
 * childrenof bruteLightLance
 individual/bruteMinor
@@ -855,10 +953,10 @@ individual/bruteMinor
 individual/bruteMinor
 
 * alias fastBruteSquad
-5 phantom
+5 brutePhantom
 6 {bruteVehicle}
-3 {anyGhost}
-1 revenant
+3 gruntGhost
+1 bruteRevenant
 1 droneLance
 
 * childrenof bruteChieftainSquad
@@ -879,6 +977,21 @@ individual/bruteStalker
 individual/bruteStalker
 individual/bruteStalker
 
+
+* alias jackalSquad
+10 jackalLance
+10 jackalSpirit
+
+* childrenof jackalLance
+individual/rifleJackal
+{6LanceJackals}
+
+* childrenof jackalSpirit
+individual/rifleJackal
+jackalLance
+sniperPlatform
+
+
 * childrenof droneLance
 individual/droneMinor
 individual/droneMinor
@@ -887,7 +1000,6 @@ individual/droneMinor
 individual/droneMinor
 individual/droneMinor
 individual/droneMinor
-
 
 
 * childrenof phantom
@@ -901,7 +1013,6 @@ individual/gruntMinor
 {cargo10m}
 
 * alias cargo10m
-5 hunterPair
 6 {anyGhost}, {anyGhost}
 2 chopper
 3 revenant
@@ -914,12 +1025,13 @@ individual/rifleJackal
 item/plasmaCannon
 
 * childrenof hunterPair
-hunter
-hunter
+individual/hunter
+individual/hunter
 
 * alias anyGhost
-10 ghost
+10 gruntGhost
 3 ghostUltra
+1 swordGhost
 1 templeGhost
 
 * alias anyWraith
@@ -928,8 +1040,23 @@ hunter
 3 wraithUltra
 1 templeWraith
 
+* alias armorSquad
+10 {anyWraith}
+5 revenant
+2 scarab
+3 {mobileSquad}
+
 * childrenof ghost
 {individual/pilot}
+
+* childrenof gruntGhost
+individual/gruntMinor
+
+* childrenof bruteGhost
+individual/bruteMinor
+
+* childrenof ghostUltra
+individual/eliteMajor
 
 * childrenof spectre
 {individual/eliteLeader}
@@ -958,6 +1085,11 @@ individual/eliteMinor
 
 * childrenof wraith
 {individual/eliteLeader}
+individual/eliteMinor
+
+* childrenof bruteWraith
+individual/bruteMinor
+individual/bruteMinor
 
 * alias mobileSquad
 10 {lance}
@@ -970,6 +1102,128 @@ individual/eliteMinor
 `;
 
 },{}],7:[function(require,module,exports){
+module.exports = `
+* output
+100 pod
+40 {combatForm}
+20 carrierForm
+10 {pureForm}
+10 brainForm
+1 giantTentacle
+
+* alias combatForm
+4 infectedHuman
+3 infectedElite
+1 infectedBrute
+
+* alias pureForm
+4 pureQuadriped
+4 pureThrower
+4 pureTank
+
+* childrenof infectedHuman
+{halo/unsc/item}
+
+* childrenof infectedElite
+{halo/cov/item}
+
+* childrenof infectedBrute
+{halo/cov/item}
+
+`;
+
+},{}],8:[function(require,module,exports){
+module.exports = `
+* output
+150 {infantryPack}
+30 {vehicle}
+
+* alias infantryPack
+100 podSwarm
+40 combatPack
+20 carrierPack
+5 purePack
+
+* alias vehicle
+10 pelican
+5 warthog
+3 scorpion
+10 phantom
+7 ghost
+2 wraith
+1 banshee
+
+* childrenof podSwarm
+individual/pod
+individual/pod
+individual/pod
+individual/pod
+individual/pod
+individual/pod
+individual/pod
+individual/pod
+individual/pod
+individual/pod
+individual/pod
+individual/pod
+individual/pod
+
+* childrenof combatPack
+{individual/combatForm}
+{individual/combatForm}
+{individual/combatForm}
+{individual/combatForm}
+{individual/combatForm}
+
+* childrenof carrierPack
+individual/carrierForm
+individual/carrierForm
+individual/carrierForm
+
+* childrenof purePack
+{individual/pureForm}
+{individual/pureForm}
+{individual/pureForm}
+{individual/pureForm}
+{individual/pureForm}
+{individual/pureForm}
+{individual/pureForm}
+
+* childrenof pelican
+individual/brainForm
+{infantryPack}
+
+* childrenof phantom
+individual/brainForm
+{infantryPack}
+
+`;
+
+},{}],9:[function(require,module,exports){
+module.exports = `
+* output
+1 installationCompany
+1 prometheanCompany
+
+* childrenof installationCompany
+{squad/installationSquad}
+{squad/installationSquad}
+{squad/installationSquad}
+{squad/installationSquad}
+{squad/installationSquad}
+{squad/installationSquad}
+
+* childrenof prometheanCompany
+{forerunner/squad}
+{forerunner/squad}
+{forerunner/squad}
+{forerunner/squad}
+{forerunner/squad}
+{forerunner/squad}
+
+`;
+
+},{}],10:[function(require,module,exports){
 module.exports = `
 * output
 50 sentinel
@@ -1005,7 +1259,7 @@ forerunner/item/boltshot
 
 `;
 
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = `
 * output
 1 {giWeapon}
@@ -1051,15 +1305,16 @@ module.exports = `
 4 prometheanVision
 
 `;
-},{}],9:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = `
 * output
 1 {installationSquad}
 1 {prometheanSquad}
 
 * alias installationSquad
-10 sentinelTeam
-1 enforcerTeam
+100 sentinelTeam
+10 enforcerTeam
+1 ancilla
 
 * alias prometheanSquad
 2 knightPair
@@ -1125,17 +1380,17 @@ Sketching about Forerunner armies
 
 */
 
-},{}],10:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = `
 * output
 4 {halo/unsc/fleet}
 4 {halo/cov/force}
-2 {halo/forerunner/squad}
-0 {halo/flood/force}
-
+2 {halo/forerunner/company}
+2 {halo/flood/squad}
 
 `;
-},{}],11:[function(require,module,exports){
+
+},{}],14:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -1218,7 +1473,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],12:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -1335,7 +1590,7 @@ spaceFighterSquadron
 {unsc/squad/oniSquad}
 
 `;
-},{}],13:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -1359,7 +1614,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -1469,7 +1724,7 @@ weight: 1000
 
 `;
 
-},{}],15:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = `* output
 15 {anyWeapon}
 20 {anyGear}
@@ -1725,7 +1980,7 @@ damage: 2
 
 `;
 
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -2047,7 +2302,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],17:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -2177,7 +2432,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],18:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -2620,7 +2875,7 @@ forklift
 
 `;
 
-},{}],19:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -2824,7 +3079,7 @@ module.exports = `
 
 
 `;
-},{}],20:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -2838,7 +3093,7 @@ module.exports = `
 
 
 `;
-},{}],21:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -2895,7 +3150,7 @@ module.exports = Util.makeEnum([
     'Covenant'
 ]);
 
-},{"../util/util.js":60}],22:[function(require,module,exports){
+},{"../util/util.js":63}],25:[function(require,module,exports){
 (function (process,__dirname){
 'use strict';
 
@@ -3372,6 +3627,18 @@ class WGenerator {
         WGenerator.addGenerator(
             require('../codices/halo/forerunner/squad'),
             'halo/forerunner/squad'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/forerunner/company'),
+            'halo/forerunner/company'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/flood/individual'),
+            'halo/flood/individual'
+        );
+        WGenerator.addGenerator(
+            require('../codices/halo/flood/squad'),
+            'halo/flood/squad'
         );
         WGenerator.addGenerator(
             require('../codices/halo/presence'),
@@ -3979,7 +4246,7 @@ halo/unsc/item/externalThing
 */
 
 }).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":2,"../codices/halo/cov/force":3,"../codices/halo/cov/individual":4,"../codices/halo/cov/item":5,"../codices/halo/cov/squad":6,"../codices/halo/forerunner/individual":7,"../codices/halo/forerunner/item":8,"../codices/halo/forerunner/squad":9,"../codices/halo/presence":10,"../codices/halo/unsc/battalion":11,"../codices/halo/unsc/company":12,"../codices/halo/unsc/fleet":13,"../codices/halo/unsc/individual":14,"../codices/halo/unsc/item":15,"../codices/halo/unsc/patrol":16,"../codices/halo/unsc/patrol.js":16,"../codices/halo/unsc/ship":17,"../codices/halo/unsc/squad":18,"../codices/sunlight/warband/item":19,"../codices/sunlight/warband/player":20,"../util/util.js":60,"../wnode/storageModes.js":61,"../wnode/wnode.js":62,"_process":64,"fs":63}],23:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":2,"../codices/halo/cov/force":3,"../codices/halo/cov/individual":4,"../codices/halo/cov/item":5,"../codices/halo/cov/squad":6,"../codices/halo/flood/individual":7,"../codices/halo/flood/squad":8,"../codices/halo/forerunner/company":9,"../codices/halo/forerunner/individual":10,"../codices/halo/forerunner/item":11,"../codices/halo/forerunner/squad":12,"../codices/halo/presence":13,"../codices/halo/unsc/battalion":14,"../codices/halo/unsc/company":15,"../codices/halo/unsc/fleet":16,"../codices/halo/unsc/individual":17,"../codices/halo/unsc/item":18,"../codices/halo/unsc/patrol":19,"../codices/halo/unsc/patrol.js":19,"../codices/halo/unsc/ship":20,"../codices/halo/unsc/squad":21,"../codices/sunlight/warband/item":22,"../codices/sunlight/warband/player":23,"../util/util.js":63,"../wnode/storageModes.js":64,"../wnode/wnode.js":65,"_process":67,"fs":66}],26:[function(require,module,exports){
 // return a string with the provided number formatted with commas.
 // can specify either a Number or a String.
 function commaNumber(number, separator, decimalChar) {
@@ -4084,7 +4351,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],24:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /*!
  * hotkeys-js v3.4.4
  * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies.
@@ -4498,10 +4765,10 @@ if (typeof window !== 'undefined') {
 
 module.exports = hotkeys;
 
-},{}],25:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /*! hotkeys-js v3.4.4 | MIT (c) 2019 kenny wong <wowohoo@qq.com> | http://jaywcjlove.github.io/hotkeys */
 "use strict";var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,o,t){e.addEventListener?e.addEventListener(o,t,!1):e.attachEvent&&e.attachEvent("on"+o,function(){t(window.event)})}function getMods(e,o){for(var t=o.slice(0,o.length-1),n=0;n<t.length;n++)t[n]=e[t[n].toLowerCase()];return t}function getKeys(e){e||(e="");for(var o=(e=e.replace(/\s/g,"")).split(","),t=o.lastIndexOf("");0<=t;)o[t-1]+=",",o.splice(t,1),t=o.lastIndexOf("");return o}function compareArray(e,o){for(var t=e.length<o.length?o:e,n=e.length<o.length?e:o,r=!0,s=0;s<t.length;s++)-1===n.indexOf(t[s])&&(r=!1);return r}for(var _keyMap={backspace:8,tab:9,clear:12,enter:13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":isff?224:91,cmd:isff?224:91,command:isff?224:91},_downKeys=[],modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey"},_mods={16:!1,18:!1,17:!1},_handlers={},k=1;k<20;k++)_keyMap["f"+k]=111+k;var _scope="all",isBindElement=_mods[isff?224:91]=!(modifierMap[isff?224:91]="metaKey"),code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function filter(e){var o=e.target||e.srcElement,t=o.tagName;return!("INPUT"===t||"SELECT"===t||"TEXTAREA"===t||o.isContentEditable)}function isPressed(e){return"string"==typeof e&&(e=code(e)),-1!==_downKeys.indexOf(e)}function deleteScope(e,o){var t=void 0,n=void 0;for(var r in e||(e=getScope()),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,r))for(t=_handlers[r],n=0;n<t.length;)t[n].scope===e?t.splice(n,1):n++;getScope()===e&&setScope(o||"all")}function clearModifier(e){var o=e.keyCode||e.which||e.charCode,t=_downKeys.indexOf(o);if(t<0||_downKeys.splice(t,1),93!==o&&224!==o||(o=91),o in _mods)for(var n in _mods[o]=!1,_modifier)_modifier[n]===o&&(hotkeys[n]=!1)}function unbind(e,o,t){var n=getKeys(e),r=void 0,s=[],i=void 0;"function"==typeof o&&(t=o,o="all");for(var d=0;d<n.length;d++){if(1<(r=n[d].split("+")).length&&(s=getMods(_modifier,r)),e="*"===(e=r[r.length-1])?"*":code(e),o||(o=getScope()),!_handlers[e])return;for(var a=0;a<_handlers[e].length;a++){i=_handlers[e][a],(!t||i.method===t)&&i.scope===o&&compareArray(i.mods,s)&&(_handlers[e][a]={})}}}function eventHandler(e,o,t){var n=void 0;if(o.scope===t||"all"===o.scope){for(var r in n=0<o.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(!_mods[r]&&-1<o.mods.indexOf(+r)||_mods[r]&&-1===o.mods.indexOf(+r))&&(n=!1);(0!==o.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!n&&"*"!==o.shortcut||!1===o.method(e,o)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(e){var o=_handlers["*"],t=e.keyCode||e.which||e.charCode;if(-1===_downKeys.indexOf(t)&&_downKeys.push(t),93!==t&&224!==t||(t=91),t in _mods){for(var n in _mods[t]=!0,_modifier)_modifier[n]===t&&(hotkeys[n]=!0);if(!o)return}for(var r in _mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(_mods[r]=e[modifierMap[r]]);if(hotkeys.filter.call(this,e)){var s=getScope();if(o)for(var i=0;i<o.length;i++)o[i].scope===s&&eventHandler(e,o[i],s);if(t in _handlers)for(var d=0;d<_handlers[t].length;d++)eventHandler(e,_handlers[t][d],s)}}function hotkeys(e,o,t){var n=getKeys(e),r=[],s="all",i=document,d=0;for(void 0===t&&"function"==typeof o&&(t=o),"[object Object]"===Object.prototype.toString.call(o)&&(o.scope&&(s=o.scope),o.element&&(i=o.element)),"string"==typeof o&&(s=o);d<n.length;d++)r=[],1<(e=n[d].split("+")).length&&(r=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({scope:s,mods:r,shortcut:n[d],method:t,key:n[d]});void 0===i||isBindElement||(isBindElement=!0,addEvent(i,"keydown",function(e){dispatch(e)}),addEvent(i,"keyup",function(e){clearModifier(e)}))}var _api={setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,unbind:unbind};for(var a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);if("undefined"!=typeof window){var _hotkeys=window.hotkeys;hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys}module.exports=hotkeys;
-},{}],26:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 (function (process){
 
 if (process.env.NODE_ENV === 'production') {
@@ -4511,7 +4778,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this,require('_process'))
-},{"./dist/hotkeys.common.js":24,"./dist/hotkeys.common.min.js":25,"_process":64}],27:[function(require,module,exports){
+},{"./dist/hotkeys.common.js":27,"./dist/hotkeys.common.min.js":28,"_process":67}],30:[function(require,module,exports){
 'use strict';
 
 
@@ -4520,7 +4787,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":28}],28:[function(require,module,exports){
+},{"./lib/js-yaml.js":31}],31:[function(require,module,exports){
 'use strict';
 
 
@@ -4561,7 +4828,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":30,"./js-yaml/exception":31,"./js-yaml/loader":32,"./js-yaml/schema":34,"./js-yaml/schema/core":35,"./js-yaml/schema/default_full":36,"./js-yaml/schema/default_safe":37,"./js-yaml/schema/failsafe":38,"./js-yaml/schema/json":39,"./js-yaml/type":40}],29:[function(require,module,exports){
+},{"./js-yaml/dumper":33,"./js-yaml/exception":34,"./js-yaml/loader":35,"./js-yaml/schema":37,"./js-yaml/schema/core":38,"./js-yaml/schema/default_full":39,"./js-yaml/schema/default_safe":40,"./js-yaml/schema/failsafe":41,"./js-yaml/schema/json":42,"./js-yaml/type":43}],32:[function(require,module,exports){
 'use strict';
 
 
@@ -4622,7 +4889,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],30:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -5451,7 +5718,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":29,"./exception":31,"./schema/default_full":36,"./schema/default_safe":37}],31:[function(require,module,exports){
+},{"./common":32,"./exception":34,"./schema/default_full":39,"./schema/default_safe":40}],34:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -5496,7 +5763,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],32:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -7096,7 +7363,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":29,"./exception":31,"./mark":33,"./schema/default_full":36,"./schema/default_safe":37}],33:[function(require,module,exports){
+},{"./common":32,"./exception":34,"./mark":36,"./schema/default_full":39,"./schema/default_safe":40}],36:[function(require,module,exports){
 'use strict';
 
 
@@ -7174,7 +7441,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":29}],34:[function(require,module,exports){
+},{"./common":32}],37:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -7284,7 +7551,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":29,"./exception":31,"./type":40}],35:[function(require,module,exports){
+},{"./common":32,"./exception":34,"./type":43}],38:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -7304,7 +7571,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":34,"./json":39}],36:[function(require,module,exports){
+},{"../schema":37,"./json":42}],39:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -7331,7 +7598,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":34,"../type/js/function":45,"../type/js/regexp":46,"../type/js/undefined":47,"./default_safe":37}],37:[function(require,module,exports){
+},{"../schema":37,"../type/js/function":48,"../type/js/regexp":49,"../type/js/undefined":50,"./default_safe":40}],40:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -7361,7 +7628,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":34,"../type/binary":41,"../type/merge":49,"../type/omap":51,"../type/pairs":52,"../type/set":54,"../type/timestamp":56,"./core":35}],38:[function(require,module,exports){
+},{"../schema":37,"../type/binary":44,"../type/merge":52,"../type/omap":54,"../type/pairs":55,"../type/set":57,"../type/timestamp":59,"./core":38}],41:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -7380,7 +7647,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":34,"../type/map":48,"../type/seq":53,"../type/str":55}],39:[function(require,module,exports){
+},{"../schema":37,"../type/map":51,"../type/seq":56,"../type/str":58}],42:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -7407,7 +7674,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":34,"../type/bool":42,"../type/float":43,"../type/int":44,"../type/null":50,"./failsafe":38}],40:[function(require,module,exports){
+},{"../schema":37,"../type/bool":45,"../type/float":46,"../type/int":47,"../type/null":53,"./failsafe":41}],43:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -7470,7 +7737,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":31}],41:[function(require,module,exports){
+},{"./exception":34}],44:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -7610,7 +7877,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":40}],42:[function(require,module,exports){
+},{"../type":43}],45:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7647,7 +7914,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":40}],43:[function(require,module,exports){
+},{"../type":43}],46:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -7765,7 +8032,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":29,"../type":40}],44:[function(require,module,exports){
+},{"../common":32,"../type":43}],47:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -7940,7 +8207,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":29,"../type":40}],45:[function(require,module,exports){
+},{"../common":32,"../type":43}],48:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -8034,7 +8301,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":40}],46:[function(require,module,exports){
+},{"../../type":43}],49:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -8096,7 +8363,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":40}],47:[function(require,module,exports){
+},{"../../type":43}],50:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -8126,7 +8393,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":40}],48:[function(require,module,exports){
+},{"../../type":43}],51:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8136,7 +8403,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":40}],49:[function(require,module,exports){
+},{"../type":43}],52:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8150,7 +8417,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":40}],50:[function(require,module,exports){
+},{"../type":43}],53:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8186,7 +8453,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":40}],51:[function(require,module,exports){
+},{"../type":43}],54:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8232,7 +8499,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":40}],52:[function(require,module,exports){
+},{"../type":43}],55:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8287,7 +8554,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":40}],53:[function(require,module,exports){
+},{"../type":43}],56:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8297,7 +8564,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":40}],54:[function(require,module,exports){
+},{"../type":43}],57:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8328,7 +8595,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":40}],55:[function(require,module,exports){
+},{"../type":43}],58:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8338,7 +8605,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":40}],56:[function(require,module,exports){
+},{"../type":43}],59:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8428,7 +8695,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":40}],57:[function(require,module,exports){
+},{"../type":43}],60:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -25539,7 +25806,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],58:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -30143,7 +30410,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],59:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 'use strict';
 
 const StorageModes = require('../wnode/storageModes.js');
@@ -30361,7 +30628,7 @@ function init () {
 
 init();
 
-},{"../generation/wgenerator.js":22,"../util/util.js":60,"../wnode/storageModes.js":61,"../wnode/wnode.js":62,"hotkeys-js":26}],60:[function(require,module,exports){
+},{"../generation/wgenerator.js":25,"../util/util.js":63,"../wnode/storageModes.js":64,"../wnode/wnode.js":65,"hotkeys-js":29}],63:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -30809,7 +31076,7 @@ util.mbti = () => {
     .join('');
 };
 
-},{"comma-number":23,"lodash":57,"moment":58}],61:[function(require,module,exports){
+},{"comma-number":26,"lodash":60,"moment":61}],64:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -30820,7 +31087,7 @@ module.exports = Util.makeEnum([
     'Frozen'
 ]);
 
-},{"../util/util.js":60}],62:[function(require,module,exports){
+},{"../util/util.js":63}],65:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -31165,9 +31432,9 @@ class WNode {
 
 module.exports = WNode;
 
-},{"../util/util.js":60,"./storageModes.js":61,"js-yaml":27}],63:[function(require,module,exports){
+},{"../util/util.js":63,"./storageModes.js":64,"js-yaml":30}],66:[function(require,module,exports){
 
-},{}],64:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -31353,4 +31620,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[59]);
+},{}]},{},[62]);
