@@ -8,6 +8,7 @@ const BEvent = module.exports = class BEvent {
     constructor (eventType, protagonist, target, coord, templateName) {
         this.eventType = eventType;
 
+        // TODO refactor this prop to be type obj, not type string
         this.protagonistId = (protagonist && protagonist.id) || protagonist;
         this.targetId = (target && target.id) || target;
         this.coord = coord;
