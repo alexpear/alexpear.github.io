@@ -176,6 +176,7 @@ module.exports = `* output
 
 * template mjolnirArmor
 weight: 454
+sp: 40
 
 * alias armorMod
 4 armorLock
@@ -217,38 +218,40 @@ weight: 454
 1 covenantAi
 
 * template flakArmor
-defense: 6
-resistance: fire 1, piercing 1
+sp: 20
+resistance: fire 1, piercing 1, impact 1
 tags: armor
+comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
 
 * template smg
 tags: action bullet fullAuto
 range: 20
 hit: 3
-damage: 1
+damage: 7
 
 * template assaultRifle
 tags: action bullet fullAuto
-range: 30
+range: 40
 hit: 3
-damage: 1
+damage: 8
 
 * template battleRifle
 tags: action bullet
-range: 50
+range: 80
 hit: 3
-damage: 1
+damage: 9
 
 * template dmr
 tags: action bullet
-range: 60
+range: 100
 hit: 3
-damage: 1
+damage: 10
 
 * template shotgun
 tags: action bullet
-range: 5
+range: 9
 hit: 5
-damage: 2
+damage: 80
+attackDelay: 2
 
 `;

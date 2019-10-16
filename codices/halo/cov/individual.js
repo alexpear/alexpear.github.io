@@ -48,6 +48,10 @@ tags: elite infantry
 size: 2
 weight: 350
 individuals: 1
+maxSp: 100
+damage: 65
+attackDelay: 2
+speed: 4
 
 * childrenof eliteMinor
 {item/eliteMinorWeapon}
@@ -109,6 +113,10 @@ individuals: 1
 size: 1.5
 weight: 250
 individuals: 1
+maxSp: 20
+damage: 1
+attackDelay: 2
+speed: 2
 
 * childrenof gruntMinor
 {item/gruntWeapon}

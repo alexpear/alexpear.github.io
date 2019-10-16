@@ -11,8 +11,10 @@ module.exports = `
 individuals: 1
 weight: 80
 size: 1.7
-speed: 10
+speed: 3
 stealth: 10
+maxSp: 10
+damage: 2
 
 * childrenof human
 {gender}
