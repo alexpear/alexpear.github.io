@@ -19,6 +19,8 @@ const SIZE = {
     Colossal: 6
 };
 
+// TODO Write a comment with a clear example of how a '* template' block in a codex becomes a CreatureTemplate, and what ends up in CreatureTemplate.props, if anything.
+
 // Note that currently this is confusingly used for intermediate representations
 // when transforming trees of WNodes to Groups.
 class CreatureTemplate extends NodeTemplate {

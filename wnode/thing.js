@@ -9,14 +9,25 @@ module.exports = class Thing extends WNode {
 
         this.coord = coord || new Coord();
 
-        // Unit: meters of longest dimension when in storage.
-        this.size = this.template && this.template.size;
-
-        // Unit: kg on Earth's surface.
-        this.weight = this.template && this.template.weight;
-
         // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
         this.active = true;
+    }
+
+    // NOTE: There is currently some mild confusion. The size getter reads from the template, but the size is also copied to the WNode. I may remove that caching later for performance. ToW 2019 Oct 18.
+
+    // Unit: meters of longest dimension when in storage.
+    size () {
+        return this.template && this.template.size;
+    }
+
+    // Unit: kg on Earth's surface.
+    subtreeWeight () {
+        const localWeight = this.template && this.template.weight;
+
+        return this.components.reduce(
+            (sum, component) => sum + component.subtreeWeight(),
+            localWeight
+        );
     }
 };
 

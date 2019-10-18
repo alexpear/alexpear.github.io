@@ -29,6 +29,8 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
             new ActionReadyEvent(arriver, arriver.actions()[0].id),
             timeline.now() + ArrivalEvent.ACTION_DELAY
         );
+
+        // Later ignore that ACTION_DELAY placeholder in favor of information found in codex templates.
     }
 };
 

@@ -59,6 +59,7 @@ class WNode {
         return ``;
     }
 
+    // Later, it may be performant to reference this.template[propStr], instead of storing those props on every WNode instance of the template.
     traitSum (propStr) {
         return (this[propStr] || 0) +
             Util.sum(
