@@ -14,7 +14,8 @@ module.exports = class Creature extends Thing {
     }
 
     actions (worldState) {
-        const template = worldState.glossary[this.templateName];
+        const template = this.template ||
+            (worldState && worldState.glossary[this.templateName]);
 
         return template ?
             template.actions :
