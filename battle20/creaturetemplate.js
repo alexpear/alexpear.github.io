@@ -190,7 +190,7 @@ class CreatureTemplate extends NodeTemplate {
         ];
 
         template.size = SIZE.Medium;
-        template.hp = 3;
+        template.sp = 30;
         template.defense = 16;
         template.actions = [
             ActionTemplate.soldierExample()
@@ -215,7 +215,7 @@ class CreatureTemplate extends NodeTemplate {
         ];
 
         template.size = SIZE.Small;
-        template.hp = 3;
+        template.sp = 20;
         template.defense = 17;
         template.actions = [
             ActionTemplate.example()

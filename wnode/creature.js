@@ -9,12 +9,8 @@ module.exports = class Creature extends Thing {
     constructor (template, coord) {
         super(template, coord);
 
-        // TODO Take worldState or template as a param, and read the template to init this.hp
-
-        if (! Util.exists(this.hp)) {
-            // LATER rename to sp, Stamina Points.
-            this.hp = 1;
-        }
+        // Init stamina points
+        this.sp = this.template && this.template.maxSp || 1;
     }
 
     actions (worldState) {

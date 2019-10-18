@@ -31,10 +31,10 @@ class Group {
 
         this.alignment = this.template.alignment || new Alignment('NN');
 
-        this.baselineHp = quantity * this.getStats().hp;
+        this.baselineSp = quantity * this.getStats().sp;
 
-        // HP is stored as a total to make saving group state in replay and Encounter objs simpler.
-        this.totalHp = this.baselineHp;
+        // SP is stored as a total to make saving group state in replay and Encounter objs simpler.
+        this.totalSp = this.baselineSp;
 
         // 2d or 3d position in meters.
         // For spaceless simulations (JRPG style), just use a 1x1 grid.
@@ -59,23 +59,23 @@ class Group {
 
     getQuantity () {
         const quantity = Math.ceil(
-            this.getTotalHp() / this.getStats().hp
+            this.getTotalSp() / this.getStats().sp
         );
 
         return Math.max(quantity, 0);
 
-        // Later, figure out how to handle effects like 'Buff: +1 HP'.
+        // Later, figure out how to handle effects like 'Buff: +1 SP'.
     }
 
-    getTotalHp () {
-        return this.totalHp;
+    getTotalSp () {
+        return this.totalSp;
     }
 
-    getWeakestCreatureHp () {
-        const maxHp = this.getStats().hp;
-        const modulo = this.getTotalHp() % maxHp;
-        const creatureHp = modulo || maxHp;
-        return Math.max(creatureHp, 0);
+    getWeakestCreatureSp () {
+        const maxSp = this.getStats().sp;
+        const modulo = this.getTotalSp() % maxSp;
+        const creatureSp = modulo || maxSp;
+        return Math.max(creatureSp, 0);
     }
 
     isActive () {
@@ -329,16 +329,16 @@ class Group {
     }
 
     takeDamage (n) {
-        this.totalHp -= n;
+        this.totalSp -= n;
 
         const FLEE_THRESHOLD = 0.3;
 
-        if (this.totalHp <= 0) {
-            // Negative HP represents less possibility of recovery from injuries.
+        if (this.totalSp <= 0) {
+            // Negative SP represents less possibility of recovery from injuries.
             this.status = 'eliminated';
             Util.log(`Group ${ this.toPrettyString() } has been eliminated.`, 'debug');
         }
-        else if (this.totalHp <= this.baselineHp * FLEE_THRESHOLD) {
+        else if (this.totalSp <= this.baselineSp * FLEE_THRESHOLD) {
             this.status = 'retreated';
             Util.log(`Group ${ this.toPrettyString() } has retreated.`, 'debug');
         }
@@ -362,9 +362,9 @@ class Group {
         const locationStr = `, location ${ this.coord.toString() }`;
         const idStr = '';  // `, id ${ this.id }`;
 
-        const baseHp = this.getStats().hp;
+        const baseSp = this.getStats().sp;
 
-        const baselineQuantity = Math.ceil(this.baselineHp / baseHp);
+        const baselineQuantity = Math.ceil(this.baselineSp / baseSp);
         const casualties = baselineQuantity - this.getQuantity();
         const deadRatio = Math.round(casualties / baselineQuantity * 100);
 
@@ -372,11 +372,11 @@ class Group {
             `, ${ casualties } casualties (${ deadRatio }%)` :
             '';
 
-        const curHp = this.getWeakestCreatureHp();
+        const curSp = this.getWeakestCreatureSp();
 
-        const injuryStr = curHp === baseHp ?
+        const injuryStr = curSp === baseSp ?
             '' :
-            `, individual w/ ${ curHp }/${ baseHp } HP`;
+            `, individual w/ ${ curSp }/${ baseSp } SP`;
 
         return `${ this.toPrettyString() }${ locationStr }${ idStr }${ casualtiesStr }${ injuryStr }`;
     }
@@ -387,7 +387,7 @@ class Group {
 
         copy.alignment = Util.default(copy.alignment, new Alignment('NN'));
         copy.size = Util.default(copy.size, 1);
-        copy.hp = Util.default(copy.hp, 1);
+        copy.sp = Util.default(copy.sp, 1);
         copy.defense = Util.default(copy.defense, 10);
         copy.actions = Util.default(copy.actions, []);
         copy.tags = Util.default(copy.tags, []);
@@ -561,7 +561,7 @@ function attackEvent (groupA, groupB, random, resolution) {
         }
 
         event.changes[groupB.id] = {
-            totalHp: groupB.getTotalHp()
+            totalSp: groupB.getTotalSp()
         };
     }
     else {
@@ -708,7 +708,7 @@ The intuitive place would be more entries in a .txt codex.
 quantity: 10
 
 * template marine
-hp: 2
+sp: 2
 defense: 11
 tags: human soldier tech10 unsc
 
