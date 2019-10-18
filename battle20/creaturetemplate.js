@@ -123,7 +123,8 @@ class CreatureTemplate extends NodeTemplate {
             // Remove the 'action' tag.
             this.tags.splice(actionTagIndex, 1);
 
-            const action = new ActionTemplate(this.range, this.hit, this.damage);
+            // Later, can put a name from the codex in the name param, instead of newId()
+            const action = new ActionTemplate(Util.newId(), this.range, this.hit, this.damage);
             action.tags = Util.arrayCopy(this.tags);
             this.tags = [];
             this.actions.push(action);

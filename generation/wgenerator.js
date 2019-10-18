@@ -88,7 +88,7 @@ class WGenerator {
 
     addTemplate (tableRaw) {
         const templateObj = parseTemplate(tableRaw);
-        const key = templateObj.templateName;
+        const key = templateObj.name;
 
         if (key in this.glossary) {
             throw new Error(`template key '${ key }' appears twice`);
@@ -883,7 +883,7 @@ class ContextString {
 // TODO put this in class Template and template.js or something.
 // Later likely rename to class TraitsTable and '* traits foo', for clarity.
 // This will probably become or call a constructor
-// and store the first line in this.templateName
+// and store the first line in this.name
 function parseTemplate (tableRaw) {
     const templateObj = new CreatureTemplate();
 
@@ -908,7 +908,7 @@ function parseTemplate (tableRaw) {
         );
 
     // templateObj.key = templateKey(tableRaw);
-    templateObj.templateName = templateKey(tableRaw);
+    templateObj.name = templateKey(tableRaw);
     templateObj.setUpAction();
 
     // Later: at some point, detect whether it is a ActionTemplate or CreatureTemplate.

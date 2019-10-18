@@ -5,8 +5,8 @@ const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
 class ActionTemplate extends NodeTemplate {
-    constructor (range, hit, damage) {
-        super();
+    constructor (name, range, hit, damage) {
+        super(name);
 
         this.id = Util.newId();
         this.tags = [];
@@ -47,7 +47,7 @@ class ActionTemplate extends NodeTemplate {
     }
 
     static dwarfExample () {
-        const template = new ActionTemplate();
+        const template = new ActionTemplate('throwingAxe');
 
         // Range is in meters. It is okay to round it heavily.
         template.range = 10;
@@ -65,7 +65,7 @@ class ActionTemplate extends NodeTemplate {
     }
 
     static soldierExample () {
-        const template = new ActionTemplate();
+        const template = new ActionTemplate('assaultRifle');
 
         // Range is in meters. It is okay to round it heavily.
         template.range = 40;
