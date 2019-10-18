@@ -15,6 +15,7 @@ class WNode {
         // Later: Safety checks, logging
         this.id = Util.newId();
 
+        // TODO add a additional prop named .template. It can be a pointer to class NodeTemplate (not yet written). WNode() can accept a param called template of type string|NodeTemplate.
         if (templateName) {
             this.templateName = templateName;
         }
