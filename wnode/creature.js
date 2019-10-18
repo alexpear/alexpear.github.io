@@ -21,5 +21,11 @@ module.exports = class Creature extends Thing {
             template.actions :
             [];
     }
+
+    actionFromId (id) {
+        return this.actions().find(
+            action => action.id === id
+        );
+    }
 };
 

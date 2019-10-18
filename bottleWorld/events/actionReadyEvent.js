@@ -5,14 +5,13 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 module.exports = class ActionReadyEvent extends BEvent {
-    constructor (protagonist, actionType) {
+    constructor (protagonist, actionId) {
         super(
             BEvent.TYPES.ActionReady,
             protagonist
         );
 
-        // TODO should this event store string actionType or string actionId?
-        this.actionType = actionType;
+        this.actionId = actionId;
     }
 
     resolve (worldState) {

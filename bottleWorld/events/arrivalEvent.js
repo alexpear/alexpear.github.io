@@ -26,7 +26,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
         const timeline = worldState.timeline;
 
         timeline.addEvent(
-            new ActionReadyEvent(arriver, 'basicAttack'),
+            new ActionReadyEvent(arriver, arriver.actions()[0].id),
             timeline.now() + ArrivalEvent.ACTION_DELAY
         );
     }
