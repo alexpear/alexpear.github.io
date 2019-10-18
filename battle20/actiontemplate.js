@@ -15,6 +15,7 @@ class ActionTemplate extends NodeTemplate {
         this.damage = damage || 0;
     }
 
+    // Later make a superclass version of this func.
     deepCopy () {
         const copy = Object.assign(new ActionTemplate(), this);
 

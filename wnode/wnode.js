@@ -11,13 +11,19 @@ const Util = require('../util/util.js');
 // by a WNode or a tree of WNodes.
 
 class WNode {
-    constructor (templateName) {
+    constructor (template) {
         // Later: Safety checks, logging
         this.id = Util.newId();
 
         // TODO add a additional prop named .template. It can be a pointer to class NodeTemplate (not yet written). WNode() can accept a param called template of type string|NodeTemplate.
-        if (templateName) {
-            this.templateName = templateName;
+        if (template) {
+            if (template.name) {
+                this.templateName = template.name;
+                this.template = template;
+            }
+            else if (Util.isString(template)) {
+                this.templateName = template;
+            }
         }
 
         this.components = [];
