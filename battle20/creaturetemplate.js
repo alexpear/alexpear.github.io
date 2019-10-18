@@ -169,13 +169,9 @@ class CreatureTemplate extends NodeTemplate {
         );
     }
 
-    static isCreatureTemplate (template) {
-        return template instanceof CreatureTemplate;
-    }
-
-    static isActionTemplate (template) {
-        return template instanceof ActionTemplate;
-    }
+    // static isCreatureTemplate (template) {
+    //     return template instanceof CreatureTemplate;
+    // }
 
     static example () {
         return CreatureTemplate.dwarfExample();
