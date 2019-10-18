@@ -24,8 +24,8 @@ const SIZE = {
 // Note that currently this is confusingly used for intermediate representations
 // when transforming trees of WNodes to Groups.
 class CreatureTemplate extends NodeTemplate {
-    constructor () {
-        super();
+    constructor (name) {
+        super(name);
 
         this.tags = [];
         this.actions = [];
