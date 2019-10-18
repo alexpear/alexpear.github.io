@@ -1,18 +1,6 @@
 module.exports = `
 * output
-1 decade
-
-* childrenof decade
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
+1 {battalion}
 
 * alias battalion
 2 airBattalion
@@ -174,6 +162,83 @@ squad/scarab
 {squad/mobileSquad}
 {squad/mobileSquad}
 {squad/mobileSquad}
+
+
+* childrenof milade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+
+* childrenof hectakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+
+* childrenof dekakilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+
+* alias notes
+0 hectade works fine, but even kilade hit a JS out of memory error in the CLI.
+
+* childrenof kilade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+
+* childrenof hectade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+
+* childrenof decade
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+
 
 `;
 
