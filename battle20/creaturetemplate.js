@@ -4,6 +4,7 @@
 // Later, may want to merge this with WNode classes.
 
 const ActionTemplate = require('./actiontemplate.js');
+const NodeTemplate = require('./nodeTemplate.js');
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
@@ -18,11 +19,12 @@ const SIZE = {
     Colossal: 6
 };
 
-// Later possibly rename to just Template
-// since it is use for intermediate representations
+// Note that currently this is confusingly used for intermediate representations
 // when transforming trees of WNodes to Groups.
-class CreatureTemplate {
+class CreatureTemplate extends NodeTemplate {
     constructor () {
+        super();
+
         this.tags = [];
         this.actions = [];
         this.resistance = {};

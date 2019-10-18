@@ -1,10 +1,14 @@
 'use strict';
 
+const NodeTemplate = require('./nodeTemplate.js');
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
-class ActionTemplate {
+class ActionTemplate extends NodeTemplate {
     constructor (range, hit, damage) {
+        super();
+
+        this.id = Util.newId();
         this.tags = [];
         this.range = range || 1;
         this.hit = hit || 0;
