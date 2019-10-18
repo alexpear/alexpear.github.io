@@ -8,7 +8,11 @@ module.exports = class Thing extends WNode {
         super(templateName);
 
         this.coord = coord || new Coord();
+
+        // Unit: meters of longest dimension when in storage.
         this.size = undefined;
+
+        // Unit: kg on Earth's surface.
         this.weight = undefined;
 
         // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.

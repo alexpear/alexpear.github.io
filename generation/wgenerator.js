@@ -25,7 +25,8 @@ class WGenerator {
         this.aliasTables = {};
         this.childTables = {};
         // Later, make this a pointer to a Glossary instance.
-        // usage: glossary.getTemplate('naga');
+        // usage will be: glossary.getTemplate('naga');
+        // Currently, glossary is indexed by templateNames and contains CreatureTemplates.
         this.glossary = {};
 
         // TODO: Add support for ignorable comments in codex files

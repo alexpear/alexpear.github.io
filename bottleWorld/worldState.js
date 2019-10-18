@@ -41,6 +41,14 @@ class WorldState {
         return this.t;
     }
 
+    fromId (id) {
+        return this.things.find(
+            thing => thing.id === id
+        );
+
+        // Later i can cache a id-to-thing mapping if i run into performance concerns.
+    }
+
     // I currently plan for Thing to extend WNode
     thingsAt (coord) {
         return this.things.filter(
