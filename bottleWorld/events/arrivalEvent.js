@@ -23,10 +23,14 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
         worldState.addThing(arriver, this.coord);
 
+        const actionReadyEvent = new ActionReadyEvent(arriver, arriver.actions()[0].id);
+
+        this.outcomes.push(actionReadyEvent);
+
         const timeline = worldState.timeline;
 
         timeline.addEvent(
-            new ActionReadyEvent(arriver, arriver.actions()[0].id),
+            actionReadyEvent,
             timeline.now() + ArrivalEvent.ACTION_DELAY
         );
 

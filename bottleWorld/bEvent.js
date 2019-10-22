@@ -5,7 +5,7 @@ const Util = require('../util/util.js');
 
 // BEvent stands for Bottle World Event
 const BEvent = module.exports = class BEvent {
-    constructor (eventType, protagonist, target, coord, templateName) {
+    constructor (eventType, protagonist, target, coord, templateName, time) {
 
         // type string
         this.eventType = eventType;
@@ -21,6 +21,9 @@ const BEvent = module.exports = class BEvent {
 
         // type string
         this.templateName = templateName;
+
+        // type number
+        this.t = time;
 
         // type object
         this.props = {};
@@ -46,7 +49,7 @@ const BEvent = module.exports = class BEvent {
     //     const event = new BEvent(BEvent.TYPES.Action, protagonist, target, coord);
     //     event.actionType = actionType;
     //     return event;
-    //     // Outcome information is to be stored in a separate Update event.
+    //     // Outcome information could be stored in this.outcomes or in a separate Update event.
     // }
 
     // // Builds a chain of BEvent of length up to 3

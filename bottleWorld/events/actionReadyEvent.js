@@ -1,10 +1,12 @@
 'use strict';
 
+const ActionEvent = require('./actionEvent.js');
 const BEvent = require('../bEvent.js');
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 module.exports = class ActionReadyEvent extends BEvent {
+    // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
     constructor (protagonist, actionId) {
         super(
             BEvent.TYPES.ActionReady,
@@ -17,13 +19,30 @@ module.exports = class ActionReadyEvent extends BEvent {
     resolve (worldState) {
         const protagonist = worldState.fromId(this.protagonistId);
 
-        // TODO Implement.
-        // MRB 1: The protagonist takes the action specified by this.actionType
-        // Or, as a fallback, creature.actions()[0]
-        // This may entail converting from string to Creature if .protagonist is a string.
-        // (Reminder: Creature extends Thing extends WNode)
+        // Later could relax the requirement that protagonist.template be populated, if that seems unnecessary.
+        if (
+            ! protagonist.actions ||
+            protagonist.actions().length === 0 ||
+            ! protagonist.template
+        ) {
+            throw new Error(`ActionReadyEvent found a strange protagonist (type ${protagonist.constructor.name}) in WorldState.things. { id: ${protagonist.id}, actions(): ${protagonist.actions ? protagonist.actions() : 'undefined'}, template: ${protagonist.template}, templateName: ${protagonist.templateName} }`);
+        }
 
-        // (Edge case: Creature has no actions. Maybe throw error, since ActionReady shouldn't have been called.)
-        // Parameters and targets can be determined randomly, perhaps by Thing.chooseActionDetails() or something.
+        const actions = protagonist.actions();
+
+        const action = actions.find(
+            a => a.id === this.actionId
+        ) || actions[0];
+
+        // const target = protagonist.chooseTarget(worldState, action);
+
+        const actionEvent = new ActionEvent(protagonist, /*target*/ undefined, undefined, this.actionId);
+
+        this.outcomes.push(actionEvent);
+
+        timeline.addEvent(
+            actionEvent,
+            timeline.now()
+        );
     }
 };

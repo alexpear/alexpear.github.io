@@ -30,6 +30,8 @@ module.exports = class Timeline {
     addEvent (bEvent, time) {
         time = Util.exists(time) ? time : this.now();
 
+        bEvent.t = time;
+
         const existingEvents = this.timestamps[time];
         if (existingEvents) {
             existingEvents.push(bEvent);
