@@ -94,7 +94,13 @@ class WGenerator {
             throw new Error(`template key '${ key }' appears twice`);
         }
 
-        return this.glossary[key] = templateObj;
+        this.glossary[key] = templateObj;
+
+        templateObj.actions.forEach(
+            actionTemplate => {
+                this.glossary[actionTemplate.id] = actionTemplate;
+            }
+        );
     }
 
     // Returns WNode[]
@@ -885,7 +891,7 @@ class ContextString {
 // This will probably become or call a constructor
 // and store the first line in this.name
 function parseTemplate (tableRaw) {
-    const templateObj = new CreatureTemplate();
+    const creatureTemplate = new CreatureTemplate();
 
     tableRaw.split('\n')
         .slice(1)
@@ -895,26 +901,26 @@ function parseTemplate (tableRaw) {
                 const key = parsed.key;
 
                 if (
-                    key in templateObj &&
+                    key in creatureTemplate &&
                     ! ['tags', 'actions', 'resistance'].includes(key)
                 ) {
                     throw new Error(`parseTemplate(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
                 }
 
-                templateObj[key] = parsed.value;
+                creatureTemplate[key] = parsed.value;
 
                 // Util.log(`in parseTemplate(). Just wrote key/value pair {${key}: ${parsed.value}}`, 'debug');
             }
         );
 
-    // templateObj.key = templateKey(tableRaw);
-    templateObj.name = templateKey(tableRaw);
-    templateObj.setUpAction();
+    // creatureTemplate.key = templateKey(tableRaw);
+    creatureTemplate.name = templateKey(tableRaw);
+    creatureTemplate.setUpAction();
 
     // Later: at some point, detect whether it is a ActionTemplate or CreatureTemplate.
-    // Probably mark templateObj.type, or instantiate the appropriate class, or something.
+    // Probably mark creatureTemplate.type, or instantiate the appropriate class, or something.
 
-    return templateObj;
+    return creatureTemplate;
 }
 
 function parseTemplateLine (line) {

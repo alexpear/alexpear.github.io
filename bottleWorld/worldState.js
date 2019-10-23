@@ -42,9 +42,16 @@ class WorldState {
     }
 
     fromId (id) {
-        return this.things.find(
+        const thingWithId = this.things.find(
             thing => thing.id === id
         );
+
+        if (thingWithId) {
+            return thingWithId;
+        }
+
+        // If it is not a Thing ID, try the glossary.
+        return this.glossary[id];
 
         // Later i can cache a id-to-thing mapping if i run into performance concerns.
     }
