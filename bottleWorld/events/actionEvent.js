@@ -18,23 +18,15 @@ module.exports = class ActionEvent extends BEvent {
     }
 
     resolve (worldState) {
-        // const protagonist = worldState.fromId(this.protagonistId);
+        const protagonist = worldState.fromId(this.protagonistId);
+        const target = worldState.fromId(this.targetId);
+        const actionTemplate = worldState.fromId(this.actionId);
 
-        // // Later could relax the requirement that protagonist.template be populated, if that seems unnecessary.
-        // if (
-        //     ! protagonist.actions ||
-        //     protagonist.actions().length === 0 ||
-        //     ! protagonist.template
-        // ) {
-        //     throw new Error(`ActionReadyEvent found a strange protagonist (type ${protagonist.constructor.name}) in WorldState.things. { id: ${protagonist.id}, actions(): ${protagonist.actions ? protagonist.actions() : 'undefined'}, template: ${protagonist.template}, templateName: ${protagonist.templateName} }`);
-        // }
+        // TODO Call a shoot function to figure out what happens. Perhaps in Battle20.
+        // Store representations of what happens either here or in a UpdateEvent.
+        // Give that BEvent a func that outputs a logging string, with a pretty and a verbose mode.
 
-        // const actions = protagonist.actions();
+        // Then replace the shoot logic in fishtank/src/fishTank.js
 
-        // const action = actions.find(
-        //     a => a.id === this.actionId
-        // ) || actions[0];
-
-        // const actionEvent = new ActionEvent();
     }
 };

@@ -34,15 +34,15 @@ module.exports = class ActionReadyEvent extends BEvent {
             a => a.id === this.actionId
         ) || actions[0];
 
-        // const target = protagonist.chooseTarget(worldState, action);
+        const target = protagonist.chooseTarget(worldState, action);
 
-        const actionEvent = new ActionEvent(protagonist, /*target*/ undefined, undefined, this.actionId);
+        const actionEvent = new ActionEvent(protagonist, target, undefined, this.actionId);
 
         this.outcomes.push(actionEvent);
 
         timeline.addEvent(
             actionEvent,
-            timeline.now()
+            this.t
         );
     }
 };
