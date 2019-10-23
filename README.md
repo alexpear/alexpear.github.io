@@ -11,13 +11,16 @@ This website include the following prototype projects:
 ## To Do:
 - See TODOs in timeline.js
 - Death Planet Fish Tank
-  - Add logic so that, on ActionReady events, creatures initiate their (only) Action.
+  - ActionEvent.resolve()
+    - Call or create a attack() func
+    - Persist all details of what happens into one or more BEvents.
   - Add logic about every creature moving closer to its destination each tick.
   - Standardize types in BEvent props
     - I think protagonist and target should point to full objects. .serialize() should output a object that has ids. a load() func can do the reverse.
     - This means you translate when entering and leaving the DB, but not anywhere else. This sounds to me like the scheme that requires translation most rarely. (2019 October 14)
 - Waffle Tree fractal mode
-  - Write a codex for a scale test before implementing this feature. It may be unnecessary.
+  - Scale test result: JS stack limit exceeded. Could test with larger limit.
+    - Or could debug whether this large runtime stack is desirable.
   - Implement logic to handle Partial WNodes
     - Typically this will mean generating its child nodes on the fly
     - These children will be generated as status Partial
