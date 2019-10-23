@@ -44,9 +44,9 @@ class WGenerator {
                     return this.addChildTable(tableRaw);
                 }
 
-                // Later, this could be neater and not involve a string literal.
+                // Later, this could be neater and not involve a string literal. 'template ' could be a const.
                 if (tableRaw.startsWith('template ')) {
-                    return this.addTemplate(tableRaw);
+                    this.addTemplate(tableRaw);
                 }
 
                 // Default case.

@@ -63,6 +63,39 @@ class WorldState {
         );
     }
 
+    thingsWith (criteria, shouldFlip) {
+        shouldFlip = shouldFlip || false;
+
+        const props = Object.keys(criteria);
+
+        return this.things.filter(
+            thing => {
+                for (let i = 0; i < props.length; i++) {
+                    const prop = props[i];
+
+                    if (! shouldFlip) {
+                        // In the normal mode, criteria describes a set of mandatory traits.
+                        if (thing[prop] != criteria[prop]) {
+                            return false;
+                        }
+                    }
+                    else {
+                        // In the flipped mode, criteria describes a set of undesirable traits.
+                        if (thing[prop] == criteria[prop]) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+        );
+    }
+
+    thingsWithout (criteria) {
+        return this.thingsWith(criteria, true);
+    }
+
     addThing (thing, coord) {
         thing.coord = coord || new Coord();
         this.things.push(thing);
