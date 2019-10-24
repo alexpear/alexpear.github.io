@@ -177,7 +177,7 @@ class CreatureTemplate extends NodeTemplate {
     // }
 
     static example () {
-        return CreatureTemplate.dwarfExample();
+        return CreatureTemplate.soldierExample();
     }
 
     static soldierExample () {
