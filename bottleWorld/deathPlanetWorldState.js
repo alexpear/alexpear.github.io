@@ -67,7 +67,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
             '    '
         );
 
-        Util.log(`The first Thing has the following Actions: ${ sampleActionsStr }`, 'debug');
+        // Util.log(`The first Thing has the following Actions: ${ sampleActionsStr }`, 'debug');
     }
 
     static run () {

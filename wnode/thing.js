@@ -1,11 +1,14 @@
 'use strict';
 
 const Coord = require('../util/coord.js');
+const Util = require('../util/util.js');
 const WNode = require('./wnode.js');
 
 module.exports = class Thing extends WNode {
     constructor (template, coord) {
         super(template);
+
+        // Util.logDebug(`Thing constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
 
         this.coord = coord || new Coord();
 

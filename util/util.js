@@ -425,6 +425,14 @@ util.log = function (input, tag) {
     console.log(`  ${tagStr} (${ dateTime }) ${ info }\n`);
 };
 
+util.logDebug = function (input) {
+    util.log(input, 'debug');
+}
+
+util.logError = function (input) {
+    util.log(input, 'error');
+}
+
 util.makeEnum = (vals) => {
     const dict = {};
     for (let val of vals) {

@@ -9,6 +9,8 @@ module.exports = class Creature extends Thing {
     constructor (template, coord, alignment) {
         super(template, coord);
 
+        // Util.logDebug(`Creature constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
+
         // Init stamina points
         this.sp = this.template && this.template.maxSp || 1;
 

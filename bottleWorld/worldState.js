@@ -155,7 +155,8 @@ class WorldState {
     fromTemplateName (templateName) {
         const template = this.getTemplate(templateName);
 
-        // Later use the template to customize the fields of the Thing
+        // Util.logDebug(`The following is the value of local var 'template' inside a call to WorldState.fromTemplateName('${templateName}'):`);
+        // Util.logDebug(template);
 
         return template.constructor.name === 'CreatureTemplate' ?
             new Creature(templateName) :

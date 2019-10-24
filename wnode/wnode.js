@@ -15,6 +15,8 @@ class WNode {
         this.id = Util.newId();
 
         if (template) {
+            // Util.logDebug(`In WNode constructor. typeof template is ${typeof template}. template.name is ${template.name}`);
+
             if (template.name) {
                 this.templateName = template.name;
                 this.template = template;
