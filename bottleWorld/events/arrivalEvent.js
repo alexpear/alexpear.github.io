@@ -23,6 +23,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
         worldState.addThing(arriver, this.coord);
 
+        // TODO bug where arriver has no actions (2019 Oct 24)
         const actionReadyEvent = new ActionReadyEvent(arriver, arriver.actions()[0].id);
 
         this.outcomes.push(actionReadyEvent);

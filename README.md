@@ -11,6 +11,8 @@ This website include the following prototype projects:
 ## To Do:
 - See TODOs in timeline.js
 - Death Planet Fish Tank
+  - Howto test via CLI:
+    - node bottleWorld/deathPlanetWorldState.js test
   - ActionEvent.resolve()
     - Call or create a attack() func
     - Persist all details of what happens into one or more BEvents.
