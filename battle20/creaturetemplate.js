@@ -182,6 +182,7 @@ class CreatureTemplate extends NodeTemplate {
 
     static soldierExample () {
         const template = new CreatureTemplate();
+        template.name = 'soldier';
 
         // UNSC Marine (Halo)
         template.tags = [
@@ -208,6 +209,7 @@ class CreatureTemplate extends NodeTemplate {
 
     static dwarfExample () {
         const template = new CreatureTemplate();
+        template.name = 'dwarfAxeThrower';
 
         // Dwarf Axe Thrower
         template.tags = [
