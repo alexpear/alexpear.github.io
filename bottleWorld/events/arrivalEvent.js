@@ -17,7 +17,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const arriver = !! this.templateName ?
+        const arriver = this.templateName ?
             worldState.fromTemplateName(this.templateName) :
             worldState.fromId(this.protagonistId);
 
