@@ -40,7 +40,7 @@ module.exports = class ActionReadyEvent extends BEvent {
 
         this.outcomes.push(actionEvent);
 
-        timeline.addEvent(
+        worldState.timeline.addEvent(
             actionEvent,
             this.t
         );
