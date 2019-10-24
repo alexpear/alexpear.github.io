@@ -19,7 +19,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
     moveEverything () {
         this.things.forEach(
             thing => {
-                // If it has momentum or is continuing to travel, move it one second further along its path.
+                // LATER If it has momentum or is continuing to travel, move it one second further along its path.
                 // Round coords to the nearest cm.
             }
         );
