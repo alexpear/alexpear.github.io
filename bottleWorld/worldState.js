@@ -159,8 +159,8 @@ class WorldState {
         // Util.logDebug(template);
 
         return template.constructor.name === 'CreatureTemplate' ?
-            new Creature(templateName) :
-            new Thing(templateName);
+            new Creature(template) :
+            new Thing(template);
     }
 
     resolveEvent (bEvent) {
