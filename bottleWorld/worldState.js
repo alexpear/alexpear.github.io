@@ -169,7 +169,7 @@ class WorldState {
 
     thingString () {
         return this.things.map(
-            t => Util.capitalized(t.templateName)
+            t => Util.capitalized(t.toSimpleString())
         )
         .join(', ') || `[Only the tireless void]`;
     }

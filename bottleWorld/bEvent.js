@@ -30,6 +30,9 @@ const BEvent = module.exports = class BEvent {
 
         // type BEvent[]
         this.outcomes = [];  // Array of other BEvent
+
+        // type string
+        this.id = Util.newId();
     }
 
     // NOTE In 2019 July i decided to have BEvents point to ids of Things rather than to Things in-memory.

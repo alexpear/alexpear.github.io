@@ -128,6 +128,13 @@ util.newId = function () {
     return id;
 };
 
+// Returns string
+util.shortId = function (id) {
+    return id ?
+        `${id.slice(0, 3)}` :
+        '';
+};
+
 util.repeat = function (str, n) {
     let outStr = '';
     for (let i = 0; i < n; i++) {

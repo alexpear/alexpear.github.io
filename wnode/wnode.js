@@ -124,13 +124,13 @@ class WNode {
     toSimpleString () {
         const tName = this.templateName ?
             Util.fromCamelCase(this.templateName) :
-            `<WNode with no template>`;
+            `<WNode with no templateName>`;
 
         if (this.displayName) {
             return `${this.displayName} (${tName})`;
         }
         else {
-            return tName;
+            return `${tName} (${this.shortId()})`;
         }
     }
 
@@ -191,6 +191,11 @@ class WNode {
                 Util.repeat(' ', indent) + text + '\n' :
                 '';
         }
+    }
+
+    // Returns a abbreviation of the ID.
+    shortId () {
+        return `${Util.shortId(this.id)}`;
     }
 
     getPropSummary () {
