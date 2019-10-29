@@ -13,6 +13,7 @@ This website include the following prototype projects:
 - Death Planet Fish Tank
   - Howto test via CLI:
     - node bottleWorld/deathPlanetWorldState.js test
+    - TODO: Add a memorable script for testing Death Planet to package.json
   - ActionEvent.resolve()
     - Call or create a attack() func
     - Persist all details of what happens into one or more BEvents.

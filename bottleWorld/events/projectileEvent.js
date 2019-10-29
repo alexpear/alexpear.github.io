@@ -17,6 +17,7 @@ module.exports = class ProjectileEvent extends BEvent {
         this.actionId = actionId;
     }
 
+    // TODO: See Timeline.computeNextInstant(). Need to decide how to compute Events that create Events in the same second.
     resolve (worldState) {
         const protagonist = worldState.fromId(this.protagonistId);
         const target = worldState.fromId(this.targetId);
