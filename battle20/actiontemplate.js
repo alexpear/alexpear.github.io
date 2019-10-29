@@ -68,6 +68,7 @@ class ActionTemplate extends NodeTemplate {
     static soldierExample () {
         const template = new ActionTemplate('assaultRifle');
 
+        template.shotsPerSecond = 10;
         // Range is in meters. It is okay to round it heavily.
         template.range = 40;
         template.hit = 3;
