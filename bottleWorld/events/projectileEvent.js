@@ -51,5 +51,19 @@ module.exports = class ProjectileEvent extends BEvent {
         //   Less important: Info about reasons why damage was zero/low, such as whether it hit cover and/or armor, or missed
         //   Even less: info about that cover
 
+        // Detailed scheme:
+        // Whenever a projectile impacts anything (cover or a Creature), model this with a ImpactEvent
+        // This could be useful later if we want things to trigger based on loud noises, or a spark being struck and igniting a room full of flammable material.
+        // (Well ... i guess those 2 things might just be caused by the ProjectileEvent directly, since they would happen even if the shot misses.)
+        // For armored creatures, we could have just one ImpactEvent, and have a prop that indicates whether the armor mitigated the damage.
+        // This is mildly at odds with the low-res nature of SP ... but whatever. MRB 1, right?
+
+        // Summary of current scheme
+        // ArrivalEvents create Creatures and set them up with starting ActionReadyEvents.
+        // AREs entail choosing the details/parameters/target of a action and creating a ActionEvent. (You can think of them as 'Choose Action Events')
+        // ActionEvents entail creating some consequential other event, such as 1 or more ProjectileEvents. They also place another ActionReadyEvent into the future.
+        // ProjectileEvents may or may not hit their targets. If they do hit, they cause a ImpactEvent (or ExplosionEvent, for explosive weapons etc).
+        // ImpactEvent.resolve() includes determining whether the attack does damage. If so, the target.sp prop is updated and this is persisted in the ImpactEvent. This can cause a CasualtyEvent if the target is out of action.
+
     }
 };

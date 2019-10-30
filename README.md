@@ -16,6 +16,7 @@ This website include the following prototype projects:
     - TODO: Add a memorable script for testing Death Planet to package.json
   - ProjectileEvent.resolve()
     - Persist all details of what happens into one or more BEvents.
+    - Draw up a MRB scheme for what info to persist in ProjectileEvent fields, and whether to use ImpactEvent, DamageEvent, UpdateEvent, etc
   - Add logic about every creature moving closer to its destination each tick.
   - Standardize types in BEvent props
     - I think protagonist and target should point to full objects. .serialize() should output a object that has ids. a load() func can do the reverse.
