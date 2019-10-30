@@ -14,8 +14,7 @@ This website include the following prototype projects:
   - Howto test via CLI:
     - node bottleWorld/deathPlanetWorldState.js test
     - TODO: Add a memorable script for testing Death Planet to package.json
-  - ActionEvent.resolve()
-    - Call or create a attack() func
+  - ProjectileEvent.resolve()
     - Persist all details of what happens into one or more BEvents.
   - Add logic about every creature moving closer to its destination each tick.
   - Standardize types in BEvent props

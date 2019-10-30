@@ -23,6 +23,8 @@ module.exports = class ActionEvent extends BEvent {
         const target = worldState.fromId(this.targetId);
         const actionTemplate = worldState.fromId(this.actionId);
 
+        // Util.logDebug(`this.actionId is ${this.actionId}. worldState.glossary[this.actionId] is ${worldState.glossary[this.actionId]}`);
+
         // Then replace the shoot logic in fishtank/src/fishTank.js
 
         const shotsPerSecond = (actionTemplate && actionTemplate.shotsPerSecond) || 1;
