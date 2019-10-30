@@ -42,19 +42,19 @@ module.exports = class Timeline {
     }
 
     computeNextInstant () {
-        // TODO: What is the best way to compute events that create events in the same second?
-        // Opts:
-        //   Recursion. resolveEvent() can call resolveEvent()
-
         this.currentWorldState.t += SECONDS_PER_TICK;
 
         const events = this.getEventsAt(this.now() - 1);
 
-        events.forEach(event => {
-            this.currentWorldState.resolveEvent(event);
-        });
+        let i = 0;
+        while (events[i]) {
+            // Note that resolveEvent() sometimes pushes new BEvents onto the current second's events array.
+            this.currentWorldState.resolveEvent(events[i]);
 
-        // TODO Implement this.worldState.moveEverything(), moving all moving Things towards their destinations.
+            i++;
+        }
+
+        // this.worldState.moveEverything(); // TODO implement this func, which moves all moving Things towards their destinations.
     }
 
     toDebugString () {

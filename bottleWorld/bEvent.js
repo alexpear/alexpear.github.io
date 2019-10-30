@@ -35,6 +35,14 @@ const BEvent = module.exports = class BEvent {
         this.id = Util.newId();
     }
 
+    prettyString () {
+
+    }
+
+    verboseString () {
+
+    }
+
     // NOTE In 2019 July i decided to have BEvents point to ids of Things rather than to Things in-memory.
     // The alternative, if id lookups cause too much slowdown, would be to have BEvents point to full Things in-memory and go back to using BEvent.serializable() to convert to id-based non-circular-ref versions for persistence.
 
@@ -138,6 +146,7 @@ BEvent.TYPES = Util.makeEnum([
     'NewDestination',
     'ActionReady',
     'Update',
+    'Projectile',
     'Explosion',
     'Effect',
     'UniversalUpdate'

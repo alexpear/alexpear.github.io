@@ -8,7 +8,7 @@ module.exports = class ProjectileEvent extends BEvent {
     // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
     constructor (protagonist, target, coord, actionId) {
         super(
-            BEvent.TYPES.Action,
+            BEvent.TYPES.Projectile,
             protagonist,
             target,
             coord

@@ -25,24 +25,18 @@ module.exports = class ActionEvent extends BEvent {
 
         // Then replace the shoot logic in fishtank/src/fishTank.js
 
-        const shotsPerSecond = actionTemplate.shotsPerSecond || 1;
+        const shotsPerSecond = (actionTemplate && actionTemplate.shotsPerSecond) || 1;
 
         for (let i = 0; i < shotsPerSecond; i++) {
-            const shot = new ProjectileEvent(actionTemplate, target, coord);
+            const shot = new ProjectileEvent(actionTemplate, target, this.coord);
             this.outcomes.push(shot);
+
+            // Util.logDebug(`In ActionEvent.resolve(), about to call timeline.addEvent(ProjectileEvent, t)`);
 
             worldState.timeline.addEvent(
                 shot,
                 this.t
             );
         }
-    }
-
-    prettyString () {
-
-    }
-
-    verboseString () {
-
     }
 };
