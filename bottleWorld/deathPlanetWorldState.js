@@ -30,6 +30,9 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         worldState.glossary['soldier'] = CreatureTemplate.soldierExample();
 
+        const gunAction = worldState.glossary.soldier.actions[0];
+        worldState.glossary[gunAction.id] = gunAction;
+
         timeline = timeline || new Timeline(worldState);
         timeline.currentWorldState = worldState;
 

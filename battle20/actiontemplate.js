@@ -66,18 +66,18 @@ class ActionTemplate extends NodeTemplate {
     }
 
     static soldierExample () {
-        const template = new ActionTemplate('assaultRifle');
+        const template = new ActionTemplate('dmr');
 
-        template.shotsPerSecond = 10;
+        template.shotsPerSecond = 2;
         // Range is in meters. It is okay to round it heavily.
-        template.range = 40;
-        template.hit = 3;
-        template.damage = 2;
+        template.range = 80;
+        template.hit = 5;
+        template.damage = 24;
 
-        // UNSC assault rifle
+        // UNSC designated mark rifle
         template.tags = [
             TAG.Bullet,
-            TAG.RapidFire
+            TAG.Firearm
         ];
 
         return template;
