@@ -40,6 +40,8 @@ module.exports = class ActionReadyEvent extends BEvent {
 
         this.outcomes.push(actionEvent);
 
+        // Util.logDebug(`In ActionReadyEvent.resolve(), about to call timeline.addEvent(actionEvent, t)`);
+
         worldState.timeline.addEvent(
             actionEvent,
             this.t

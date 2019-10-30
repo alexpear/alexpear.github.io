@@ -30,6 +30,8 @@ module.exports = class Timeline {
     addEvent (bEvent, time) {
         time = Util.exists(time) ? time : this.now();
 
+        // Util.logDebug(`In Timeline.addEvent(${bEvent.eventType}, ${time}), near the top.`);
+
         bEvent.t = time;
 
         const existingEvents = this.timestamps[time];
