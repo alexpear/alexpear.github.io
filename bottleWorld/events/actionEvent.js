@@ -20,25 +20,29 @@ module.exports = class ActionEvent extends BEvent {
 
     resolve (worldState) {
         const protagonist = worldState.fromId(this.protagonistId);
+
+        if (! protagonist.active) {
+            return;
+        }
+
         const target = worldState.fromId(this.targetId);
         const actionTemplate = worldState.fromId(this.actionId);
 
         // Util.logDebug(`this.actionId is ${this.actionId}. worldState.glossary[this.actionId] is ${worldState.glossary[this.actionId]}`);
 
-        // Then replace the shoot logic in fishtank/src/fishTank.js
-
+        // In this early build, we currently assume that all actions are projectile attacks.
         const shotsPerSecond = (actionTemplate && actionTemplate.shotsPerSecond) || 1;
 
         for (let i = 0; i < shotsPerSecond; i++) {
             const shot = new ProjectileEvent(actionTemplate, target, this.coord);
-            this.outcomes.push(shot);
-
-            // Util.logDebug(`In ActionEvent.resolve(), about to call timeline.addEvent(ProjectileEvent, t)`);
-
-            worldState.timeline.addEvent(
-                shot,
-                this.t
-            );
+            this.addOutcome(shot, worldState);
         }
+
+        const actionReady = new ActionReadyEvent(protagonist, this.actionId);
+        this.addOutcome(
+            actionReady,
+            worldState,
+            this.t + actionTemplate.secondsUntilNextAction()
+        );
     }
 };

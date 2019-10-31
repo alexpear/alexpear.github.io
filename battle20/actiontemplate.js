@@ -43,6 +43,20 @@ class ActionTemplate extends NodeTemplate {
         return this.range > 1;
     }
 
+    secondsUntilNextAction () {
+        if (
+            ! Util.exists(this.shotsPerSecond) ||
+            this.shotsPerSecond <= 1
+        ) {
+            return 1;
+        }
+
+        // Yes, this is approximate. It's okay for now that a rate of 0.9 is treated the same as 0.5.
+        return Math.ceil(
+            1 / this.shotsPerSecond
+        );
+    }
+
     static example () {
         return ActionTemplate.dwarfExample();
     }
@@ -50,7 +64,6 @@ class ActionTemplate extends NodeTemplate {
     static dwarfExample () {
         const template = new ActionTemplate('throwingAxe');
 
-        // Range is in meters. It is okay to round it heavily.
         template.range = 10;
         template.hit = 4;
         template.damage = 1;
@@ -68,7 +81,10 @@ class ActionTemplate extends NodeTemplate {
     static soldierExample () {
         const template = new ActionTemplate('dmr');
 
+        // Later maybe rename to a more generic phrase like 'rate'.
+        // Can be less than 1:
         template.shotsPerSecond = 2;
+
         // Range is in meters. It is okay to round it heavily.
         template.range = 80;
         template.hit = 5;

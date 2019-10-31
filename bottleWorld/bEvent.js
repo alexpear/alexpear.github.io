@@ -43,6 +43,19 @@ const BEvent = module.exports = class BEvent {
 
     }
 
+    addOutcome (event, worldState, time) {
+        if (! Util.exists(time)) {
+            time = this.t;
+        }
+
+        this.outcomes.push(event);
+
+        worldState.timeline.addEvent(
+            event,
+            time
+        );
+    }
+
     // NOTE In 2019 July i decided to have BEvents point to ids of Things rather than to Things in-memory.
     // The alternative, if id lookups cause too much slowdown, would be to have BEvents point to full Things in-memory and go back to using BEvent.serializable() to convert to id-based non-circular-ref versions for persistence.
 
