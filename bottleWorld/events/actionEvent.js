@@ -38,11 +38,10 @@ module.exports = class ActionEvent extends BEvent {
             this.addOutcome(shot, worldState);
         }
 
-        const actionReady = new ActionReadyEvent(protagonist, this.actionId);
-        this.addOutcome(
-            actionReady,
-            worldState,
-            this.t + actionTemplate.secondsUntilNextAction()
+        worldState.setUpNextAction(
+            protagonist,
+            actionTemplate,
+            this
         );
     }
 };

@@ -4,6 +4,7 @@
 
 const Timeline = require('./timeline.js');
 const ArrivalEvent = require('./events/arrivalEvent.js');
+const ActionReadyEvent = require('./events/actionReadyEvent.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const Group = require('../battle20/group.js');
 const BEvent = require('../bottleWorld/bEvent.js');
@@ -198,6 +199,17 @@ class WorldState {
                 thing => thing.constructor.name
             )
             .join(', ');
+    }
+
+    // This is a slightly hacky workaround for a circular dependency between ActionEvent and ActionReadyEvent
+    setUpNextAction (protagonist, actionTemplate, actionEvent) {
+        const actionReady = new ActionReadyEvent(protagonist, actionEvent.actionId);
+
+        actionEvent.addOutcome(
+            actionReady,
+            this,
+            actionEvent.t + actionTemplate.secondsUntilNextAction()
+        );
     }
 
     static test () {
