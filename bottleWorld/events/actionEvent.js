@@ -34,7 +34,7 @@ module.exports = class ActionEvent extends BEvent {
         const shotsPerSecond = (actionTemplate && actionTemplate.shotsPerSecond) || 1;
 
         for (let i = 0; i < shotsPerSecond; i++) {
-            const shot = new ProjectileEvent(actionTemplate, target, this.coord);
+            const shot = new ProjectileEvent(protagonist, target, this.coord, actionTemplate);
             this.addOutcome(shot, worldState);
         }
 
