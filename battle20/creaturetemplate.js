@@ -195,6 +195,7 @@ class CreatureTemplate extends NodeTemplate {
         template.size = SIZE.Medium;
         template.sp = 30;
         template.defense = 16;
+        template.alignment = 'UNSC';
         template.actions = [
             ActionTemplate.soldierExample()
         ];
@@ -221,6 +222,7 @@ class CreatureTemplate extends NodeTemplate {
         template.size = SIZE.Small;
         template.sp = 20;
         template.defense = 17;
+        tepmlate.alignment = 'CG';
         template.actions = [
             ActionTemplate.example()
         ];

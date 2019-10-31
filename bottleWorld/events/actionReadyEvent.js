@@ -28,6 +28,10 @@ module.exports = class ActionReadyEvent extends BEvent {
             throw new Error(`ActionReadyEvent found a strange protagonist (type ${protagonist.constructor.name}) in WorldState.things. { id: ${protagonist.id}, actions(): ${protagonist.actions ? protagonist.actions() : 'undefined'}, template: ${protagonist.template}, templateName: ${protagonist.templateName} }`);
         }
 
+        if (! protagonist.active) {
+            return;
+        }
+
         const actions = protagonist.actions();
 
         const action = actions.find(
@@ -35,6 +39,10 @@ module.exports = class ActionReadyEvent extends BEvent {
         ) || actions[0];
 
         const target = protagonist.chooseTarget(worldState, action);
+
+        if (! target) {
+            return;
+        }
 
         const actionEvent = new ActionEvent(protagonist, target, undefined, this.actionId);
 

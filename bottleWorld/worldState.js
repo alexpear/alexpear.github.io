@@ -176,7 +176,7 @@ class WorldState {
     }
 
     printThings () {
-        const output = `At t=${ this.now() }, this world contains: ${ this.thingString() }`;
+        const output = `At t=${ this.now() }, this world contains: ${ this.thingString() } (${this.alignmentCensusString()})`;
 
         Util.log(output, 'debug');
     }
@@ -210,6 +210,40 @@ class WorldState {
             this,
             actionEvent.t + actionTemplate.secondsUntilNextAction()
         );
+    }
+
+    alignmentCensusObj () {
+        const population = {};
+
+        this.things.forEach(
+            thing => {
+                if (! thing.active) {
+                    return;
+                }
+
+                if (population[thing.alignment]) {
+                    population[thing.alignment] += 1;
+                }
+                else {
+                    population[thing.alignment] = 1;
+                }
+            }
+        );
+
+        return population;
+    }
+
+    alignmentCensusString () {
+        const census = this.alignmentCensusObj();
+        const alignments = Object.keys(census);
+
+        if (alignments.length === 0) {
+            return 'Everything is dead!';
+        }
+
+        return alignments
+            .map(alignment => `${alignment}: ${census[alignment]}`)
+            .join(', ');
     }
 
     static test () {

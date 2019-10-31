@@ -126,11 +126,15 @@ class WNode {
             Util.fromCamelCase(this.templateName) :
             `<WNode with no templateName>`;
 
+        const active = this.active ?
+            'Active' :
+            'Disabled';
+
         if (this.displayName) {
             return `${this.displayName} (${tName})`;
         }
         else {
-            return `${tName} (${this.shortId()})`;
+            return `${tName} (${this.shortId()}, ${this.alignment}, ${active})`;
         }
     }
 

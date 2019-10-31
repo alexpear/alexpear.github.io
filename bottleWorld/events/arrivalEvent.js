@@ -6,7 +6,7 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
-    constructor (templateName, coord) {
+    constructor (templateName, coord, arrivalType) {
         super(
             BEvent.TYPES.Arrival,
             undefined,
@@ -14,12 +14,18 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
             coord || new Coord(),
             templateName
         );
+
+        this.arrivalType = arrivalType;
     }
 
     resolve (worldState) {
         const arriver = this.templateName ?
             worldState.fromTemplateName(this.templateName) :
             worldState.fromId(this.protagonistId);
+
+        if (this.arrivalType === 'randomAlignment') {
+            arriver.alignment = Util.randomOf(worldState.allAlignments());
+        }
 
         worldState.addThing(arriver, this.coord);
 

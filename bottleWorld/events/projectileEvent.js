@@ -6,7 +6,7 @@ const Util = require('../../util/util.js');
 
 module.exports = class ProjectileEvent extends BEvent {
     // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
-    constructor (protagonist, target, coord, actionId) {
+    constructor (protagonist, target, coord, action) {
         super(
             BEvent.TYPES.Projectile,
             protagonist,
@@ -14,10 +14,11 @@ module.exports = class ProjectileEvent extends BEvent {
             coord
         );
 
-        this.actionId = actionId;
+        this.actionId = action.id || action;
+        this.hitTarget;
+        this.resultantTargetSp;
     }
 
-    // TODO: See Timeline.computeNextInstant(). Need to decide how to compute Events that create Events in the same second.
     resolve (worldState) {
         const protagonist = worldState.fromId(this.protagonistId);
         const target = worldState.fromId(this.targetId);
@@ -82,5 +83,29 @@ module.exports = class ProjectileEvent extends BEvent {
         // If SP is now 0 or less, set target.active = false
         // (For MRB 2, note that 10 Projectiles might hit a target in one second, the first bringing the SP to 0, and the rest being redundant. Later check for this scenario here. For now it's fine to just keep decrementing the SP negative and setting false to false.)
 
+        // Later can persist more detailed outcomes, such as the projectile bursting thru cover into target, or critical hits.
+        this.hitTarget = this.doesItHit(protagonist, actionTemplate, target, worldState);
+
+        if (! this.hitTarget) {
+            Util.logDebug(`In ProjectileEvent, targetId is ${this.targetId}`);
+
+            this.resultantTargetSp = target.sp;
+            return;
+        }
+
+        Util.logDebug(`In ProjectileEvent, actionId is ${this.actionId}`);
+
+        target.sp -= actionTemplate.damage;
+        this.resultantTargetSp = target.sp;
+
+        if (target.sp <= 0) {
+            target.active = false;
+        }
+    }
+
+    doesItHit (protagonist, actionTemplate, target, worldState) {
+        // TODO Replace this func with any hit-roll alg.
+        // return Util.randomOf([true, false, false]);
+        return true;
     }
 };

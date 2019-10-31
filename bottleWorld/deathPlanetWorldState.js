@@ -25,6 +25,15 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         );
     }
 
+    allAlignments () {
+        // Yes, this capitalization is inconsistent with the camelcase style used by templateNames. Standardize stuff later.
+        return [
+            'UNSC',
+            // 'Covenant'
+            'Insurrection'
+        ];
+    }
+
     static example (timeline) {
         const worldState = new DeathPlanetWorldState();
 
@@ -39,11 +48,11 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         worldState.timeline = timeline;
 
         for (let i = 0; i < 4; i++) {
-            // Start with 20 BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
-            // Arrival BEvents have the outcome of causing a AbilityReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Ability (ActionTemplate) of the arriving creature.
+            // Start with n BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
+            // Arrival BEvents have the outcome of causing a ActionReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Action (ActionTemplate) of the arriving creature.
 
             worldState.timeline.addEvent(
-                new ArrivalEvent('soldier')
+                new ArrivalEvent('soldier', undefined, 'randomAlignment')
             );
         }
 
@@ -56,7 +65,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         const worldState = DeathPlanetWorldState.example();
         worldState.printThings();
 
-        for (let t = 0; t < 8; t++) {
+        for (let t = 0; t < 12; t++) {
             worldState.timeline.computeNextInstant();
         }
 
