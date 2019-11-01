@@ -11,6 +11,7 @@ This website include the following prototype projects:
 ## To Do:
 - See TODOs in timeline.js
 - Death Planet Fish Tank
+  - Edit fishTank.js to base its graphics upon a backend consisting of DeathPlanetWorldState.example(), instead of upon its current hacky internal Phaser funcs.
   - Howto test via CLI:
     - node bottleWorld/deathPlanetWorldState.js test
     - TODO: Add a memorable script for testing Death Planet to package.json
