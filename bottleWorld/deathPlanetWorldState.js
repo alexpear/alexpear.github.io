@@ -47,7 +47,12 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         worldState.timeline = timeline;
 
-        for (let i = 0; i < 4; i++) {
+        // Scale test notes, 2019 Nov 1
+        // 40000 soldiers with DMRs have a lot of trouble computing shooting. Didnt see one tick of shooting finish after several minutes.
+        // 10000 is fine. First shooting tick takes < 60 sec.
+        // 4000 works well.
+
+        for (let i = 0; i < 1000; i++) {
             // Start with n BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
             // Arrival BEvents have the outcome of causing a ActionReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Action (ActionTemplate) of the arriving creature.
 
@@ -65,7 +70,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         const worldState = DeathPlanetWorldState.example();
         worldState.printThings();
 
-        for (let t = 0; t < 12; t++) {
+        for (let t = 0; t < 200; t++) {
             worldState.timeline.computeNextInstant();
         }
 

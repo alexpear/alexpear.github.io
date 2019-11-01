@@ -46,6 +46,9 @@ module.exports = class Timeline {
     computeNextInstant () {
         this.currentWorldState.t += SECONDS_PER_TICK;
 
+        // Later it would be delightful if this func would check the real-world timestamp on when the tick number was last logged out, and only log iff that was a little while ago. (And then update the timestamp.)
+        Util.logDebug(`Starting to compute second #${this.currentWorldState.t}...`);
+
         const events = this.getEventsAt(this.now() - 1);
 
         let i = 0;

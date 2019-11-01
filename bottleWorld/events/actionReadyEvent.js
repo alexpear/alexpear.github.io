@@ -40,6 +40,7 @@ module.exports = class ActionReadyEvent extends BEvent {
 
         const target = protagonist.chooseTarget(worldState, action);
 
+        // TODO: See logs. There's a bug where ProjectileEvents keep appearing even after no targets are active anymore.
         if (! target) {
             return;
         }
