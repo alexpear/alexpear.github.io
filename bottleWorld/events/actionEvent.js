@@ -28,7 +28,7 @@ module.exports = class ActionEvent extends BEvent {
         const target = worldState.fromId(this.targetId);
         const actionTemplate = worldState.fromId(this.actionId);
 
-        Util.logDebug(`In ActionEvent, this.actionId is ${this.actionId}. worldState.glossary[this.actionId] is ${worldState.glossary[this.actionId]}, actionTemplate is ${actionTemplate}, target is ${target}.`);
+        // Util.logDebug(`In ActionEvent, this.actionId is ${this.actionId}. worldState.glossary[this.actionId] is ${worldState.glossary[this.actionId]}, actionTemplate is ${actionTemplate}, target is ${target}.`);
 
         // In this early build, we currently assume that all actions are projectile attacks.
         const shotsPerSecond = (actionTemplate && actionTemplate.shotsPerSecond) || 1;

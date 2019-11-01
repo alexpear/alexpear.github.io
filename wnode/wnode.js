@@ -127,14 +127,14 @@ class WNode {
             `<WNode with no templateName>`;
 
         const active = this.active ?
-            'Active' :
-            'Disabled';
+            'Up' :
+            'KO';
 
         if (this.displayName) {
             return `${this.displayName} (${tName})`;
         }
         else {
-            return `${tName} (${this.shortId()}, ${this.alignment}, ${active})`;
+            return `${tName} (${this.shortId()}, ${active}, ${this.alignment})`;
         }
     }
 

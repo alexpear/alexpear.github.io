@@ -87,13 +87,13 @@ module.exports = class ProjectileEvent extends BEvent {
         this.hitTarget = this.doesItHit(protagonist, actionTemplate, target, worldState);
 
         if (! this.hitTarget) {
-            Util.logDebug(`In ProjectileEvent, targetId is ${this.targetId}`);
+            // Util.logDebug(`In ProjectileEvent, targetId is ${this.targetId}`);
 
             this.resultantTargetSp = target.sp;
             return;
         }
 
-        Util.logDebug(`In ProjectileEvent, actionId is ${this.actionId}`);
+        // Util.logDebug(`In ProjectileEvent, actionId is ${this.actionId}`);
 
         target.sp -= actionTemplate.damage;
         this.resultantTargetSp = target.sp;

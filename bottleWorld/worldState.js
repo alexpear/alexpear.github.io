@@ -170,13 +170,13 @@ class WorldState {
 
     thingString () {
         return this.things.map(
-            t => Util.capitalized(t.toSimpleString())
+            t => `\n    ${Util.capitalized(t.toSimpleString())}`
         )
-        .join(', ') || `[Only the tireless void]`;
+        .join('') || `\n    [Only the tireless void]`;
     }
 
     printThings () {
-        const output = `At t=${ this.now() }, this world contains: ${ this.thingString() } (${this.alignmentCensusString()})`;
+        const output = `At t=${ this.now() }, this world contains: ${ this.thingString() }\n    (${this.alignmentCensusString()})`;
 
         Util.log(output, 'debug');
     }
@@ -238,7 +238,7 @@ class WorldState {
         const alignments = Object.keys(census);
 
         if (alignments.length === 0) {
-            return 'Everything is dead!';
+            return 'Everyone is dead!';
         }
 
         return alignments
