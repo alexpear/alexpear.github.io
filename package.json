@@ -19,7 +19,9 @@
     "buildTreeBrowser": "browserify treebrowser/treeBrowser.js -o treebrowser/bundle.js",
     "buildFishTank": "browserify fishTank/src/*.js -o fishTank/bundle.js",
     "server": "http-server",
-    "test": "node generation/WGenerator.js"
+    "test": "npm run testDeathPlanet",
+    "testWGenerator": "node generation/WGenerator.js",
+    "testDeathPlanet": "node bottleWorld/DeathPlanetWorldState.js test"
   },
   "repository": {
     "type": "git",

@@ -13,8 +13,7 @@ This website include the following prototype projects:
 - Death Planet Fish Tank
   - Edit fishTank.js to base its graphics upon a backend consisting of DeathPlanetWorldState.example(), instead of upon its current hacky internal Phaser funcs.
   - Howto test via CLI:
-    - node bottleWorld/deathPlanetWorldState.js test
-    - TODO: Add a memorable script for testing Death Planet to package.json
+    - npm run test
   - ProjectileEvent.resolve()
     - Persist all details of what happens into one or more BEvents.
     - Draw up a MRB scheme for what info to persist in ProjectileEvent fields, and whether to use ImpactEvent, DamageEvent, UpdateEvent, etc
