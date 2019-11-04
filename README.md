@@ -12,6 +12,11 @@ This website include the following prototype projects:
 - See TODOs in timeline.js
 - Death Planet Fish Tank
   - Edit fishTank.js to base its graphics upon a backend consisting of DeathPlanetWorldState.example(), instead of upon its current hacky internal Phaser funcs.
+    - First make sure the WorldState instance in that file is a DeathPlanetWorldState
+    - In the loop that instantiates 100 Phaser objects, add a ArrivalEvent in that loop.
+    - Then refactor the loop such that computeNextInstant -> ArrivalEvent.resolve() -> create Phaser object for that Thing (at that moment or later)
+    - Sync Timeline.now() and real time in seconds, shown in Phaser display
+    - Then make the Phaser object display representations of what's going on with its Thing 
   - Howto test via CLI:
     - npm run test
   - ProjectileEvent.resolve()
