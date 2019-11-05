@@ -14,6 +14,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "npm i && npm run refresh",
+    "firstTimeSetup": "npm install -g browserify && npm install -g http-server && npm start",
     "refresh": "npm run buildAll && npm run server",
     "buildAll": "npm run buildTreeBrowser && npm run buildFishTank",
     "buildTreeBrowser": "browserify treebrowser/treeBrowser.js -o treebrowser/bundle.js",
@@ -21,7 +22,7 @@
     "server": "http-server",
     "test": "npm run testDeathPlanet",
     "testWGenerator": "node generation/WGenerator.js",
-    "testDeathPlanet": "node bottleWorld/DeathPlanetWorldState.js test"
+    "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test"
   },
   "repository": {
     "type": "git",
