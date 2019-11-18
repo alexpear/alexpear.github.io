@@ -26,6 +26,10 @@ This website include the following prototype projects:
   - Standardize types in BEvent props
     - I think protagonist and target should point to full objects. .serialize() should output a object that has ids. a load() func can do the reverse.
     - This means you translate when entering and leaving the DB, but not anywhere else. This sounds to me like the scheme that requires translation most rarely. (2019 October 14)
+  - Read the 'soldier' template from a '* template' table in a codex file
+  - Add Spartans - rare, durable.
+    - Function to log the Spartan count
+
 - Waffle Tree fractal mode
   - Scale test result: JS stack limit exceeded. Could test with larger limit.
     - Or could debug whether this large runtime stack is desirable.

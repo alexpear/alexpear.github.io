@@ -27,8 +27,8 @@ class WorldState {
 
         // Later, dont always use this example WGenerator.
         this.wanderingGenerator = new WGenerator(
-            require('../codices/battle20/halo/unsc/group.js'),
-            'battle20/halo/unsc/group'
+            require('../codices/halo/unsc/squad.js'),
+            'halo/unsc/squad'
         );
 
         // Contrary to a popular misconception, the W in WGenerator does not stand for Wandering.
@@ -52,7 +52,7 @@ class WorldState {
         }
 
         // If it is not a Thing ID, try the glossary.
-        return this.glossary[id];
+        return this.getTemplate(id);
 
         // Later i can cache a id-to-thing mapping if i run into performance concerns.
     }
@@ -124,6 +124,7 @@ class WorldState {
     }
 
     getTemplate (templateName) {
+        // TODO call a WGenerator static getter. Look at all of WGenerator.generators, not just this.wanderingGenerator.
         if (templateName in this.glossary) {
             const template = this.glossary[templateName];
 

@@ -177,12 +177,12 @@ class CreatureTemplate extends NodeTemplate {
     // }
 
     static example () {
-        return CreatureTemplate.soldierExample();
+        return CreatureTemplate.marineExample();
     }
 
-    static soldierExample () {
+    static marineExample () {
         const template = new CreatureTemplate();
-        template.name = 'soldier';
+        template.name = 'marinePrivate';
 
         // UNSC Marine (Halo)
         template.tags = [
@@ -197,7 +197,7 @@ class CreatureTemplate extends NodeTemplate {
         template.defense = 16;
         template.alignment = 'UNSC';
         template.actions = [
-            ActionTemplate.soldierExample()
+            ActionTemplate.gunExample()
         ];
 
         template.resistance = {};

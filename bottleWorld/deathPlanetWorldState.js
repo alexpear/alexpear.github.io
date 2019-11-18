@@ -37,9 +37,9 @@ class DeathPlanetWorldState extends ContinuousWorldState {
     static example (timeline) {
         const worldState = new DeathPlanetWorldState();
 
-        worldState.glossary['soldier'] = CreatureTemplate.soldierExample();
+        worldState.glossary.marinePrivate = CreatureTemplate.marineExample();
 
-        const gunAction = worldState.glossary.soldier.actions[0];
+        const gunAction = worldState.glossary.marinePrivate.actions[0];
         worldState.glossary[gunAction.id] = gunAction;
 
         timeline = timeline || new Timeline(worldState);
@@ -57,7 +57,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
             // Arrival BEvents have the outcome of causing a ActionReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Action (ActionTemplate) of the arriving creature.
 
             worldState.timeline.addEvent(
-                new ArrivalEvent('soldier', undefined, 'randomAlignment')
+                new ArrivalEvent('marinePrivate', undefined, 'randomAlignment')
             );
         }
 

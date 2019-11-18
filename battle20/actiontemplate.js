@@ -78,7 +78,7 @@ class ActionTemplate extends NodeTemplate {
         return template;
     }
 
-    static soldierExample () {
+    static gunExample () {
         const template = new ActionTemplate('dmr');
 
         // Later maybe rename to a more generic phrase like 'rate'.
