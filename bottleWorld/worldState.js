@@ -169,7 +169,9 @@ class WorldState {
     }
 
     thingString () {
-        return this.things.map(
+        return this.things.filter(
+            t => t.active
+        ).map(
             t => `\n    ${Util.capitalized(t.toSimpleString())}`
         )
         .join('') || `\n    [Only the tireless void]`;
@@ -212,25 +214,43 @@ class WorldState {
         );
     }
 
+    // Example:
+    // {
+    //     LG: {
+    //         total: 6,
+    //         active: 2
+    //     },
+    //     LE: {
+    //         total: 80,
+    //         active: 0
+    //     }
+    // }
     alignmentCensusObj () {
-        const population = {};
+        const alignments = {};
 
         this.things.forEach(
             thing => {
-                if (! thing.active) {
+                const existingEntry = alignments[thing.alignment];
+
+                if (existingEntry) {
+                    existingEntry.total += 1;
+
+                    if (thing.active) {
+                        existingEntry.active += 1;
+                    }
+
                     return;
                 }
 
-                if (population[thing.alignment]) {
-                    population[thing.alignment] += 1;
-                }
-                else {
-                    population[thing.alignment] = 1;
-                }
+                alignments[thing.alignment] = { total: 1 };
+
+                alignments[thing.alignment].active = thing.active ?
+                    1 :
+                    0;
             }
         );
 
-        return population;
+        return alignments;
     }
 
     alignmentCensusString () {
@@ -242,8 +262,51 @@ class WorldState {
         }
 
         return alignments
-            .map(alignment => `${alignment}: ${census[alignment]}`)
+            .map(alignment => `${alignment}: ${census[alignment].active}/${census[alignment].total}`)
             .join(', ');
+    }
+
+    // Returns string[]
+    alignments () {
+        const alignments = {};
+
+        this.things.forEach(
+            thing => {
+                if (! thing.active) {
+                    return;
+                }
+
+                alignments[thing.alignment] = true;
+            }
+        );
+
+        return Object.keys(alignments);
+    }
+
+    // Returns true iff multiple factions exist among living beings.
+    conflictExists () {
+        if (! this.things || this.things.length <= 1) {
+            return false;
+        }
+
+        const alignments = {};
+
+        for (let i = 0; i < this.things.length; i++) {
+            const ti = this.things[i];
+
+            if (! ti.active) {
+                continue;
+            }
+
+            // If another faction exists, then conflict exists.
+            if (! alignments[ti.alignment] && Object.keys(alignments).length >= 1) {
+                return true;
+            }
+
+            alignments[ti.alignment] = true;
+        }
+
+        return false;
     }
 
     static test () {

@@ -70,7 +70,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         const worldState = DeathPlanetWorldState.example();
         worldState.printThings();
 
-        for (let t = 0; t < 200; t++) {
+        while (worldState.now() < 10 || worldState.conflictExists()) {
             worldState.timeline.computeNextInstant();
         }
 
@@ -78,12 +78,12 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         worldState.printThings();
 
-        const sampleActionsStr = JSON.stringify(
-            worldState.things[0].actions(worldState),
-            undefined,
-            '    '
-        );
-
+        // const arbitraryThing = worldState.things[0];
+        // const sampleActionsStr = JSON.stringify(
+        //     arbitraryThing && arbitraryThing.actions(worldState),
+        //     undefined,
+        //     '    '
+        // );
         // Util.log(`The first Thing has the following Actions: ${ sampleActionsStr }`, 'debug');
     }
 
