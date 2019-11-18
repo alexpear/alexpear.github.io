@@ -183,6 +183,12 @@ class WorldState {
         Util.log(output, 'debug');
     }
 
+    printCensus () {
+        const output = `At t=${ this.now() }, this world contains: (${this.alignmentCensusString()})`;
+
+        Util.log(output, 'debug');
+    }
+
     // Debug helper func.
     glossaryTypesString () {
         return Object.keys(
@@ -263,6 +269,7 @@ class WorldState {
 
         return alignments
             .map(alignment => `${alignment}: ${census[alignment].active}/${census[alignment].total}`)
+            .sort()
             .join(', ');
     }
 

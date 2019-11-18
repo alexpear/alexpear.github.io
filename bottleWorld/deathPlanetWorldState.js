@@ -76,7 +76,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         Util.log(`Up to t=${worldState.now()}, the timeline is: \n${worldState.timeline.toDebugString()}`, 'debug');
 
-        worldState.printThings();
+        worldState.printCensus();
 
         // const arbitraryThing = worldState.things[0];
         // const sampleActionsStr = JSON.stringify(
