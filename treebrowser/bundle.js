@@ -1,17 +1,210 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+
+},{}],2:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
+const NodeTemplate = require('./nodeTemplate.js');
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
-class ActionTemplate {
-    constructor (range, hit, damage) {
+class ActionTemplate extends NodeTemplate {
+    constructor (name, range, hit, damage) {
+        super(name);
+
+        this.id = Util.newId();
         this.tags = [];
         this.range = range || 1;
         this.hit = hit || 0;
         this.damage = damage || 0;
     }
 
+    // Later make a superclass version of this func.
     deepCopy () {
         const copy = Object.assign(new ActionTemplate(), this);
 
@@ -39,14 +232,27 @@ class ActionTemplate {
         return this.range > 1;
     }
 
+    secondsUntilNextAction () {
+        if (
+            ! Util.exists(this.shotsPerSecond) ||
+            this.shotsPerSecond <= 1
+        ) {
+            return 1;
+        }
+
+        // Yes, this is approximate. It's okay for now that a rate of 0.9 is treated the same as 0.5.
+        return Math.ceil(
+            1 / this.shotsPerSecond
+        );
+    }
+
     static example () {
         return ActionTemplate.dwarfExample();
     }
 
     static dwarfExample () {
-        const template = new ActionTemplate();
+        const template = new ActionTemplate('throwingAxe');
 
-        // Range is in meters. It is okay to round it heavily.
         template.range = 10;
         template.hit = 4;
         template.damage = 1;
@@ -62,17 +268,21 @@ class ActionTemplate {
     }
 
     static soldierExample () {
-        const template = new ActionTemplate();
+        const template = new ActionTemplate('dmr');
+
+        // Later maybe rename to a more generic phrase like 'rate'.
+        // Can be less than 1:
+        template.shotsPerSecond = 2;
 
         // Range is in meters. It is okay to round it heavily.
-        template.range = 40;
-        template.hit = 3;
-        template.damage = 2;
+        template.range = 80;
+        template.hit = 5;
+        template.damage = 24;
 
-        // UNSC assault rifle
+        // UNSC designated mark rifle
         template.tags = [
             TAG.Bullet,
-            TAG.RapidFire
+            TAG.Firearm
         ];
 
         return template;
@@ -81,13 +291,14 @@ class ActionTemplate {
 
 module.exports = ActionTemplate;
 
-},{"../codices/tags.js":24,"../util/util.js":63}],2:[function(require,module,exports){
+},{"../codices/tags.js":27,"../util/util.js":66,"./nodeTemplate.js":5}],4:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
 // Later, may want to merge this with WNode classes.
 
 const ActionTemplate = require('./actiontemplate.js');
+const NodeTemplate = require('./nodeTemplate.js');
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
@@ -102,11 +313,14 @@ const SIZE = {
     Colossal: 6
 };
 
-// Later possibly rename to just Template
-// since it is use for intermediate representations
+// TODO Write a comment with a clear example of how a '* template' block in a codex becomes a CreatureTemplate, and what ends up in CreatureTemplate.props, if anything.
+
+// Note that currently this is confusingly used for intermediate representations
 // when transforming trees of WNodes to Groups.
-class CreatureTemplate {
-    constructor () {
+class CreatureTemplate extends NodeTemplate {
+    constructor (name) {
+        super(name);
+
         this.tags = [];
         this.actions = [];
         this.resistance = {};
@@ -205,7 +419,8 @@ class CreatureTemplate {
             // Remove the 'action' tag.
             this.tags.splice(actionTagIndex, 1);
 
-            const action = new ActionTemplate(this.range, this.hit, this.damage);
+            // Later, can put a name from the codex in the name param, instead of newId()
+            const action = new ActionTemplate(Util.newId(), this.range, this.hit, this.damage);
             action.tags = Util.arrayCopy(this.tags);
             this.tags = [];
             this.actions.push(action);
@@ -251,20 +466,17 @@ class CreatureTemplate {
         );
     }
 
-    static isCreatureTemplate (template) {
-        return template instanceof CreatureTemplate;
-    }
-
-    static isActionTemplate (template) {
-        return template instanceof ActionTemplate;
-    }
+    // static isCreatureTemplate (template) {
+    //     return template instanceof CreatureTemplate;
+    // }
 
     static example () {
-        return CreatureTemplate.dwarfExample();
+        return CreatureTemplate.soldierExample();
     }
 
     static soldierExample () {
         const template = new CreatureTemplate();
+        template.name = 'soldier';
 
         // UNSC Marine (Halo)
         template.tags = [
@@ -275,8 +487,9 @@ class CreatureTemplate {
         ];
 
         template.size = SIZE.Medium;
-        template.hp = 3;
+        template.sp = 30;
         template.defense = 16;
+        template.alignment = 'UNSC';
         template.actions = [
             ActionTemplate.soldierExample()
         ];
@@ -291,6 +504,7 @@ class CreatureTemplate {
 
     static dwarfExample () {
         const template = new CreatureTemplate();
+        template.name = 'dwarfAxeThrower';
 
         // Dwarf Axe Thrower
         template.tags = [
@@ -300,8 +514,9 @@ class CreatureTemplate {
         ];
 
         template.size = SIZE.Small;
-        template.hp = 3;
+        template.sp = 20;
         template.defense = 17;
+        tepmlate.alignment = 'CG';
         template.actions = [
             ActionTemplate.example()
         ];
@@ -323,22 +538,22 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":24,"../util/util.js":63,"./actiontemplate.js":1}],3:[function(require,module,exports){
+},{"../codices/tags.js":27,"../util/util.js":66,"./actiontemplate.js":3,"./nodeTemplate.js":5}],5:[function(require,module,exports){
+'use strict';
+
+const TAG = require('../codices/tags.js');
+
+module.exports = class NodeTemplate {
+    constructor (name) {
+        this.name = name;
+        this.tags = [];
+    }
+}
+
+},{"../codices/tags.js":27}],6:[function(require,module,exports){
 module.exports = `
 * output
-1 decade
-
-* childrenof decade
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
+1 {battalion}
 
 * alias battalion
 2 airBattalion
@@ -501,6 +716,83 @@ squad/scarab
 {squad/mobileSquad}
 {squad/mobileSquad}
 
+
+* childrenof milade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+
+* childrenof hectakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+
+* childrenof dekakilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+
+* alias notes
+0 hectade works fine, but even kilade hit a JS out of memory error in the CLI.
+
+* childrenof kilade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+
+* childrenof hectade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+
+* childrenof decade
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+
+
 `;
 
 // Later: Combine these into the above when their prereqs exist
@@ -508,7 +800,7 @@ const drafts = `
 
 `;
 
-},{}],4:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -559,6 +851,10 @@ tags: elite infantry
 size: 2
 weight: 350
 individuals: 1
+maxSp: 100
+damage: 65
+attackDelay: 2
+speed: 4
 
 * childrenof eliteMinor
 {item/eliteMinorWeapon}
@@ -620,6 +916,10 @@ individuals: 1
 size: 1.5
 weight: 250
 individuals: 1
+maxSp: 20
+damage: 1
+attackDelay: 2
+speed: 2
 
 * childrenof gruntMinor
 {item/gruntWeapon}
@@ -641,7 +941,7 @@ item/bombHarness
 
 `;
 
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -782,7 +1082,7 @@ weight: 4
 
 `;
 
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = `
 * output
 5 {lance}
@@ -1101,7 +1401,7 @@ individual/bruteMinor
 
 `;
 
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = `
 * output
 100 pod
@@ -1132,7 +1432,7 @@ module.exports = `
 
 `;
 
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = `
 * output
 150 {infantryPack}
@@ -1199,7 +1499,7 @@ individual/brainForm
 
 `;
 
-},{}],9:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = `
 * output
 1 installationCompany
@@ -1223,7 +1523,7 @@ module.exports = `
 
 `;
 
-},{}],10:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = `
 * output
 50 sentinel
@@ -1259,7 +1559,7 @@ forerunner/item/boltshot
 
 `;
 
-},{}],11:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = `
 * output
 1 {giWeapon}
@@ -1305,7 +1605,7 @@ module.exports = `
 4 prometheanVision
 
 `;
-},{}],12:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = `
 * output
 1 {installationSquad}
@@ -1380,7 +1680,7 @@ Sketching about Forerunner armies
 
 */
 
-},{}],13:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = `
 * output
 4 {halo/unsc/fleet}
@@ -1390,7 +1690,7 @@ module.exports = `
 
 `;
 
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -1473,7 +1773,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],15:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -1590,7 +1890,7 @@ spaceFighterSquadron
 {unsc/squad/oniSquad}
 
 `;
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -1614,7 +1914,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],17:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -1628,8 +1928,10 @@ module.exports = `
 individuals: 1
 weight: 80
 size: 1.7
-speed: 10
+speed: 3
 stealth: 10
+maxSp: 10
+damage: 2
 
 * childrenof human
 {gender}
@@ -1724,7 +2026,7 @@ weight: 1000
 
 `;
 
-},{}],18:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = `* output
 15 {anyWeapon}
 20 {anyGear}
@@ -1903,6 +2205,7 @@ module.exports = `* output
 
 * template mjolnirArmor
 weight: 454
+sp: 40
 
 * alias armorMod
 4 armorLock
@@ -1944,43 +2247,45 @@ weight: 454
 1 covenantAi
 
 * template flakArmor
-defense: 6
-resistance: fire 1, piercing 1
+sp: 20
+resistance: fire 1, piercing 1, impact 1
 tags: armor
+comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
 
 * template smg
 tags: action bullet fullAuto
 range: 20
 hit: 3
-damage: 1
+damage: 7
 
 * template assaultRifle
 tags: action bullet fullAuto
-range: 30
+range: 40
 hit: 3
-damage: 1
+damage: 8
 
 * template battleRifle
 tags: action bullet
-range: 50
+range: 80
 hit: 3
-damage: 1
+damage: 9
 
 * template dmr
 tags: action bullet
-range: 60
+range: 100
 hit: 3
-damage: 1
+damage: 10
 
 * template shotgun
 tags: action bullet
-range: 5
+range: 9
 hit: 5
-damage: 2
+damage: 80
+attackDelay: 2
 
 `;
 
-},{}],19:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -2302,7 +2607,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],20:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -2432,7 +2737,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],21:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -2875,7 +3180,7 @@ forklift
 
 `;
 
-},{}],22:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -3079,7 +3384,7 @@ module.exports = `
 
 
 `;
-},{}],23:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -3093,7 +3398,7 @@ module.exports = `
 
 
 `;
-},{}],24:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -3150,7 +3455,7 @@ module.exports = Util.makeEnum([
     'Covenant'
 ]);
 
-},{"../util/util.js":63}],25:[function(require,module,exports){
+},{"../util/util.js":66}],28:[function(require,module,exports){
 (function (process,__dirname){
 'use strict';
 
@@ -3179,7 +3484,8 @@ class WGenerator {
         this.aliasTables = {};
         this.childTables = {};
         // Later, make this a pointer to a Glossary instance.
-        // usage: glossary.getTemplate('naga');
+        // usage will be: glossary.getTemplate('naga');
+        // Currently, glossary is indexed by templateNames and contains CreatureTemplates.
         this.glossary = {};
 
         // TODO: Add support for ignorable comments in codex files
@@ -3197,9 +3503,9 @@ class WGenerator {
                     return this.addChildTable(tableRaw);
                 }
 
-                // Later, this could be neater and not involve a string literal.
+                // Later, this could be neater and not involve a string literal. 'template ' could be a const.
                 if (tableRaw.startsWith('template ')) {
-                    return this.addTemplate(tableRaw);
+                    this.addTemplate(tableRaw);
                 }
 
                 // Default case.
@@ -3241,13 +3547,19 @@ class WGenerator {
 
     addTemplate (tableRaw) {
         const templateObj = parseTemplate(tableRaw);
-        const key = templateObj.templateName;
+        const key = templateObj.name;
 
         if (key in this.glossary) {
             throw new Error(`template key '${ key }' appears twice`);
         }
 
-        return this.glossary[key] = templateObj;
+        this.glossary[key] = templateObj;
+
+        templateObj.actions.forEach(
+            actionTemplate => {
+                this.glossary[actionTemplate.id] = actionTemplate;
+            }
+        );
     }
 
     // Returns WNode[]
@@ -4036,9 +4348,9 @@ class ContextString {
 // TODO put this in class Template and template.js or something.
 // Later likely rename to class TraitsTable and '* traits foo', for clarity.
 // This will probably become or call a constructor
-// and store the first line in this.templateName
+// and store the first line in this.name
 function parseTemplate (tableRaw) {
-    const templateObj = new CreatureTemplate();
+    const creatureTemplate = new CreatureTemplate();
 
     tableRaw.split('\n')
         .slice(1)
@@ -4048,26 +4360,26 @@ function parseTemplate (tableRaw) {
                 const key = parsed.key;
 
                 if (
-                    key in templateObj &&
+                    key in creatureTemplate &&
                     ! ['tags', 'actions', 'resistance'].includes(key)
                 ) {
                     throw new Error(`parseTemplate(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
                 }
 
-                templateObj[key] = parsed.value;
+                creatureTemplate[key] = parsed.value;
 
                 // Util.log(`in parseTemplate(). Just wrote key/value pair {${key}: ${parsed.value}}`, 'debug');
             }
         );
 
-    // templateObj.key = templateKey(tableRaw);
-    templateObj.templateName = templateKey(tableRaw);
-    templateObj.setUpAction();
+    // creatureTemplate.key = templateKey(tableRaw);
+    creatureTemplate.name = templateKey(tableRaw);
+    creatureTemplate.setUpAction();
 
     // Later: at some point, detect whether it is a ActionTemplate or CreatureTemplate.
-    // Probably mark templateObj.type, or instantiate the appropriate class, or something.
+    // Probably mark creatureTemplate.type, or instantiate the appropriate class, or something.
 
-    return templateObj;
+    return creatureTemplate;
 }
 
 function parseTemplateLine (line) {
@@ -4246,21 +4558,24 @@ halo/unsc/item/externalThing
 */
 
 }).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":2,"../codices/halo/cov/force":3,"../codices/halo/cov/individual":4,"../codices/halo/cov/item":5,"../codices/halo/cov/squad":6,"../codices/halo/flood/individual":7,"../codices/halo/flood/squad":8,"../codices/halo/forerunner/company":9,"../codices/halo/forerunner/individual":10,"../codices/halo/forerunner/item":11,"../codices/halo/forerunner/squad":12,"../codices/halo/presence":13,"../codices/halo/unsc/battalion":14,"../codices/halo/unsc/company":15,"../codices/halo/unsc/fleet":16,"../codices/halo/unsc/individual":17,"../codices/halo/unsc/item":18,"../codices/halo/unsc/patrol":19,"../codices/halo/unsc/patrol.js":19,"../codices/halo/unsc/ship":20,"../codices/halo/unsc/squad":21,"../codices/sunlight/warband/item":22,"../codices/sunlight/warband/player":23,"../util/util.js":63,"../wnode/storageModes.js":64,"../wnode/wnode.js":65,"_process":67,"fs":66}],26:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":4,"../codices/halo/cov/force":6,"../codices/halo/cov/individual":7,"../codices/halo/cov/item":8,"../codices/halo/cov/squad":9,"../codices/halo/flood/individual":10,"../codices/halo/flood/squad":11,"../codices/halo/forerunner/company":12,"../codices/halo/forerunner/individual":13,"../codices/halo/forerunner/item":14,"../codices/halo/forerunner/squad":15,"../codices/halo/presence":16,"../codices/halo/unsc/battalion":17,"../codices/halo/unsc/company":18,"../codices/halo/unsc/fleet":19,"../codices/halo/unsc/individual":20,"../codices/halo/unsc/item":21,"../codices/halo/unsc/patrol":22,"../codices/halo/unsc/patrol.js":22,"../codices/halo/unsc/ship":23,"../codices/halo/unsc/squad":24,"../codices/sunlight/warband/item":25,"../codices/sunlight/warband/player":26,"../util/util.js":66,"../wnode/storageModes.js":67,"../wnode/wnode.js":68,"_process":2,"fs":1}],29:[function(require,module,exports){
+'use strict'
+
 // return a string with the provided number formatted with commas.
 // can specify either a Number or a String.
-function commaNumber(number, separator, decimalChar) {
+function commaNumber(inputNumber, optionalSeparator, optionalDecimalChar) {
 
   // we'll strip off and hold the decimal value to reattach later.
   // we'll hold both the `number` value and `stringNumber` value.
-  var decimal, stringNumber
+  let number, stringNumber, decimal
 
   // default `separator` is a comma
-  separator   = separator   || ','
-  // default `decimalChar` is a period
-  decimalChar = decimalChar || '.'
+  const separator = optionalSeparator   || ','
 
-  switch (typeof number) {
+  // default `decimalChar` is a period
+  const decimalChar = optionalDecimalChar || '.'
+
+  switch (typeof inputNumber) {
 
     case 'string':
 
@@ -4268,26 +4583,29 @@ function commaNumber(number, separator, decimalChar) {
       // NOTE: some numbers which are too small will get passed this
       //       when they have decimal values which make them too long here.
       //       but, the number value check after this switch will catch it.
-      if (number.length < (number[0] === '-' ? 5 : 4)) {
-        return number
+      if (inputNumber.length < (inputNumber[0] === '-' ? 5 : 4)) {
+        return inputNumber
       }
 
       // remember it as a string in `stringNumber` and convert to a Number
-      stringNumber = number
+      stringNumber = inputNumber
 
       // if they're not using the Node standard decimal char then replace it
       // before converting.
-      number = decimalChar !== '.' ? Number(number.replace(decimalChar, '.'))
-                                   : Number(number)
+      number = decimalChar !== '.' ? Number(stringNumber.replace(decimalChar, '.'))
+                                   : Number(stringNumber)
       break
 
     // convert to a string.
     // NOTE: don't check if the number is too small before converting
     //       because we'll need to return `stringNumber` anyway.
-    case 'number': stringNumber = String(number) ; break
+    case 'number':
+      stringNumber = String(inputNumber)
+      number       = inputNumber
+      break
 
     // return invalid type as-is
-    default: return number
+    default: return inputNumber
   }
 
   // when it doesn't need a separator or isn't a number then return it
@@ -4296,21 +4614,23 @@ function commaNumber(number, separator, decimalChar) {
   }
 
   // strip off decimal value to append to the final result at the bottom
-  decimal = stringNumber.lastIndexOf(decimalChar)
+  let decimalIndex = stringNumber.lastIndexOf(decimalChar)
 
-  if (decimal > -1) {
-    decimal = stringNumber.slice(decimal)
+  if (decimalIndex > -1) {
+    decimal = stringNumber.slice(decimalIndex)
     stringNumber = stringNumber.slice(0, -decimal.length)
-  } else {
-    decimal = null
   }
+
+  // else {
+  //   decimal = null
+  // }
 
   // finally, parse the string and add in separators
   stringNumber = parse(stringNumber, separator)
 
   // if there's a decimal value add it back on the end.
   // NOTE: we sliced() it off including the decimalChar, so it's good.
-  return (decimal != null) ? stringNumber + decimal : stringNumber
+  return decimal ? stringNumber + decimal : stringNumber
 
 }
 
@@ -4319,15 +4639,14 @@ function parse(stringNumber, separator) {
 
   // below here we split the number at spots to add a separator.
   // then, combine it with the separator and add decimal value (if exists)
-  var count, i, start, strings
 
-  start = stringNumber[0] === '-' ? 1 : 0  // start after minus sign
-  count = stringNumber.length - start - 1  // count digits after first
-  strings = []                             // hold string parts
-  i = (count % 3) + 1 + start              // index for first separator
-
-  // grab string content before where the first separator belongs
-  strings.push(stringNumber.slice(0, i))
+  const start = stringNumber[0] === '-' ? 1 : 0  // start after minus sign
+  const count = stringNumber.length - start - 1  // count digits after first
+  let i = (count % 3) + 1 + start                // index for first separator
+  const strings = [                              // hold string parts
+    // grab string content before where the first separator belongs
+    stringNumber.slice(0, i)
+  ]
 
   // split remaining string in groups of 3 where a separator belongs
   while (i < stringNumber.length) {
@@ -4341,7 +4660,7 @@ function parse(stringNumber, separator) {
 
 
 // convenience function for currying style:
-//   var format = commaNumber.bindWith(',', '.')
+//   const format = commaNumber.bindWith(',', '.')
 function bindWith(separator, decimalChar) {
   return function(number) {
     return commaNumber(number, separator, decimalChar)
@@ -4351,9 +4670,9 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],27:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /*!
- * hotkeys-js v3.4.4
+ * hotkeys-js v3.7.2
  * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies.
  * 
  * Copyright (c) 2019 kenny wong <wowohoo@qq.com>
@@ -4364,36 +4683,52 @@ module.exports.bindWith = bindWith
 
 'use strict';
 
-var isff = typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase().indexOf('firefox') > 0 : false;
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
 
-// 绑定事件
+  return _typeof(obj);
+}
+
+var isff = typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase().indexOf('firefox') > 0 : false; // 绑定事件
+
 function addEvent(object, event, method) {
   if (object.addEventListener) {
     object.addEventListener(event, method, false);
   } else if (object.attachEvent) {
-    object.attachEvent('on' + event, function () {
+    object.attachEvent("on".concat(event), function () {
       method(window.event);
     });
   }
-}
+} // 修饰键转换成对应的键码
 
-// 修饰键转换成对应的键码
+
 function getMods(modifier, key) {
   var mods = key.slice(0, key.length - 1);
+
   for (var i = 0; i < mods.length; i++) {
     mods[i] = modifier[mods[i].toLowerCase()];
-  }return mods;
-}
+  }
 
-// 处理传的key字符串转换成数组
+  return mods;
+} // 处理传的key字符串转换成数组
+
+
 function getKeys(key) {
-  if (!key) key = '';
-
+  if (typeof key !== 'string') key = '';
   key = key.replace(/\s/g, ''); // 匹配任何空白字符,包括空格、制表符、换页符等等
-  var keys = key.split(','); // 同时设置多个快捷键，以','分割
-  var index = keys.lastIndexOf('');
 
-  // 快捷键可能包含','，需特殊处理
+  var keys = key.split(','); // 同时设置多个快捷键，以','分割
+
+  var index = keys.lastIndexOf(''); // 快捷键可能包含','，需特殊处理
+
   for (; index >= 0;) {
     keys[index - 1] += ',';
     keys.splice(index, 1);
@@ -4401,9 +4736,9 @@ function getKeys(key) {
   }
 
   return keys;
-}
+} // 比较修饰键的数组
 
-// 比较修饰键的数组
+
 function compareArray(a1, a2) {
   var arr1 = a1.length >= a2.length ? a1 : a2;
   var arr2 = a1.length >= a2.length ? a2 : a1;
@@ -4412,15 +4747,16 @@ function compareArray(a1, a2) {
   for (var i = 0; i < arr1.length; i++) {
     if (arr2.indexOf(arr1[i]) === -1) isIndex = false;
   }
+
   return isIndex;
 }
 
-var _keyMap = { // 特殊键
+var _keyMap = {
   backspace: 8,
   tab: 9,
   clear: 12,
   enter: 13,
-  return: 13,
+  "return": 13,
   esc: 27,
   escape: 27,
   space: 32,
@@ -4429,7 +4765,7 @@ var _keyMap = { // 特殊键
   right: 39,
   down: 40,
   del: 46,
-  delete: 46,
+  "delete": 46,
   ins: 45,
   insert: 45,
   home: 36,
@@ -4449,179 +4785,230 @@ var _keyMap = { // 特殊键
   '[': 219,
   ']': 221,
   '\\': 220
-};
+}; // Modifier Keys
 
-var _modifier = { // 修饰键
+var _modifier = {
+  // shiftKey
   '⇧': 16,
   shift: 16,
+  // altKey
   '⌥': 18,
   alt: 18,
   option: 18,
+  // ctrlKey
   '⌃': 17,
   ctrl: 17,
   control: 17,
-  '⌘': isff ? 224 : 91,
-  cmd: isff ? 224 : 91,
-  command: isff ? 224 : 91
+  // metaKey
+  '⌘': 91,
+  cmd: 91,
+  command: 91
 };
-var _downKeys = []; // 记录摁下的绑定键
 var modifierMap = {
   16: 'shiftKey',
   18: 'altKey',
-  17: 'ctrlKey'
+  17: 'ctrlKey',
+  91: 'metaKey',
+  shiftKey: 16,
+  ctrlKey: 17,
+  altKey: 18,
+  metaKey: 91
 };
-var _mods = { 16: false, 18: false, 17: false };
-var _handlers = {};
+var _mods = {
+  16: false,
+  18: false,
+  17: false,
+  91: false
+};
+var _handlers = {}; // F1~F12 special key
 
-// F1~F12 特殊键
 for (var k = 1; k < 20; k++) {
-  _keyMap['f' + k] = 111 + k;
+  _keyMap["f".concat(k)] = 111 + k;
 }
 
-// 兼容Firefox处理
-modifierMap[isff ? 224 : 91] = 'metaKey';
-_mods[isff ? 224 : 91] = false;
+var _downKeys = []; // 记录摁下的绑定键
 
 var _scope = 'all'; // 默认热键范围
-var isBindElement = false; // 是否绑定节点
 
+var elementHasBindEvent = []; // 已绑定事件的节点记录
 // 返回键码
+
 var code = function code(x) {
   return _keyMap[x.toLowerCase()] || _modifier[x.toLowerCase()] || x.toUpperCase().charCodeAt(0);
-};
+}; // 设置获取当前范围（默认为'所有'）
 
-// 设置获取当前范围（默认为'所有'）
+
 function setScope(scope) {
   _scope = scope || 'all';
-}
-// 获取当前范围
+} // 获取当前范围
+
+
 function getScope() {
   return _scope || 'all';
-}
-// 获取摁下绑定键的键值
+} // 获取摁下绑定键的键值
+
+
 function getPressedKeyCodes() {
   return _downKeys.slice(0);
-}
+} // 表单控件控件判断 返回 Boolean
+// hotkey is effective only when filter return true
 
-// 表单控件控件判断 返回 Boolean
+
 function filter(event) {
   var target = event.target || event.srcElement;
   var tagName = target.tagName;
-  // 忽略这些情况下快捷键无效
+  var flag = true; // ignore: isContentEditable === 'true', <input> and <textarea> when readOnly state is false, <select>
 
-  return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' || target.isContentEditable);
-}
+  if (target.isContentEditable || tagName === 'TEXTAREA' || (tagName === 'INPUT' || tagName === 'TEXTAREA') && !target.readOnly) {
+    flag = false;
+  }
 
-// 判断摁下的键是否为某个键，返回true或者false
+  return flag;
+} // 判断摁下的键是否为某个键，返回true或者false
+
+
 function isPressed(keyCode) {
   if (typeof keyCode === 'string') {
     keyCode = code(keyCode); // 转换成键码
   }
+
   return _downKeys.indexOf(keyCode) !== -1;
-}
+} // 循环删除handlers中的所有 scope(范围)
 
-// 循环删除handlers中的所有 scope(范围)
+
 function deleteScope(scope, newScope) {
-  var handlers = void 0;
-  var i = void 0;
+  var handlers;
+  var i; // 没有指定scope，获取scope
 
-  // 没有指定scope，获取scope
   if (!scope) scope = getScope();
 
   for (var key in _handlers) {
     if (Object.prototype.hasOwnProperty.call(_handlers, key)) {
       handlers = _handlers[key];
+
       for (i = 0; i < handlers.length;) {
         if (handlers[i].scope === scope) handlers.splice(i, 1);else i++;
       }
     }
-  }
+  } // 如果scope被删除，将scope重置为all
 
-  // 如果scope被删除，将scope重置为all
+
   if (getScope() === scope) setScope(newScope || 'all');
-}
+} // 清除修饰键
 
-// 清除修饰键
+
 function clearModifier(event) {
   var key = event.keyCode || event.which || event.charCode;
-  var i = _downKeys.indexOf(key);
 
-  // 从列表中清除按压过的键
-  if (i >= 0) _downKeys.splice(i, 1);
+  var i = _downKeys.indexOf(key); // 从列表中清除按压过的键
 
-  // 修饰键 shiftKey altKey ctrlKey (command||metaKey) 清除
+
+  if (i >= 0) {
+    _downKeys.splice(i, 1);
+  } // 特殊处理 cmmand 键，在 cmmand 组合快捷键 keyup 只执行一次的问题
+
+
+  if (event.key && event.key.toLowerCase() === 'meta') {
+    _downKeys.splice(0, _downKeys.length);
+  } // 修饰键 shiftKey altKey ctrlKey (command||metaKey) 清除
+
+
   if (key === 93 || key === 224) key = 91;
-  if (key in _mods) {
-    _mods[key] = false;
 
-    // 将修饰键重置为false
+  if (key in _mods) {
+    _mods[key] = false; // 将修饰键重置为false
+
     for (var k in _modifier) {
       if (_modifier[k] === key) hotkeys[k] = false;
     }
   }
 }
 
-// 解除绑定某个范围的快捷键
-function unbind(key, scope, method) {
-  var multipleKeys = getKeys(key);
-  var keys = void 0;
-  var mods = [];
-  var obj = void 0;
-  // 通过函数判断，是否解除绑定
-  // https://github.com/jaywcjlove/hotkeys/issues/44
-  if (typeof scope === 'function') {
-    method = scope;
-    scope = 'all';
-  }
-
-  for (var i = 0; i < multipleKeys.length; i++) {
-    // 将组合快捷键拆分为数组
-    keys = multipleKeys[i].split('+');
-
-    // 记录每个组合键中的修饰键的键码 返回数组
-    if (keys.length > 1) mods = getMods(_modifier, keys);
-
-    // 获取除修饰键外的键值key
-    key = keys[keys.length - 1];
-    key = key === '*' ? '*' : code(key);
-
-    // 判断是否传入范围，没有就获取范围
-    if (!scope) scope = getScope();
-
-    // 如何key不在 _handlers 中返回不做处理
-    if (!_handlers[key]) return;
-
-    // 清空 handlers 中数据，
-    // 让触发快捷键键之后没有事件执行到达解除快捷键绑定的目的
-    for (var r = 0; r < _handlers[key].length; r++) {
-      obj = _handlers[key][r];
-      // 通过函数判断，是否解除绑定，函数相等直接返回
-      var isMatchingMethod = method ? obj.method === method : true;
-
-      // 判断是否在范围内并且键值相同
-      if (isMatchingMethod && obj.scope === scope && compareArray(obj.mods, mods)) {
-        _handlers[key][r] = {};
-      }
+function unbind(keysInfo) {
+  // unbind(), unbind all keys
+  if (!keysInfo) {
+    Object.keys(_handlers).forEach(function (key) {
+      return delete _handlers[key];
+    });
+  } else if (Array.isArray(keysInfo)) {
+    // support like : unbind([{key: 'ctrl+a', scope: 's1'}, {key: 'ctrl-a', scope: 's2', splitKey: '-'}])
+    keysInfo.forEach(function (info) {
+      if (info.key) eachUnbind(info);
+    });
+  } else if (_typeof(keysInfo) === 'object') {
+    // support like unbind({key: 'ctrl+a, ctrl+b', scope:'abc'})
+    if (keysInfo.key) eachUnbind(keysInfo);
+  } else if (typeof keysInfo === 'string') {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
     }
+
+    // support old method
+    // eslint-disable-line
+    var scope = args[0],
+        method = args[1];
+
+    if (typeof scope === 'function') {
+      method = scope;
+      scope = '';
+    }
+
+    eachUnbind({
+      key: keysInfo,
+      scope: scope,
+      method: method,
+      splitKey: '+'
+    });
   }
-}
+} // 解除绑定某个范围的快捷键
 
-// 对监听对应快捷键的回调函数进行处理
+
+var eachUnbind = function eachUnbind(_ref) {
+  var key = _ref.key,
+      scope = _ref.scope,
+      method = _ref.method,
+      _ref$splitKey = _ref.splitKey,
+      splitKey = _ref$splitKey === void 0 ? '+' : _ref$splitKey;
+  var multipleKeys = getKeys(key);
+  multipleKeys.forEach(function (originKey) {
+    var unbindKeys = originKey.split(splitKey);
+    var len = unbindKeys.length;
+    var lastKey = unbindKeys[len - 1];
+    var keyCode = lastKey === '*' ? '*' : code(lastKey);
+    if (!_handlers[keyCode]) return; // 判断是否传入范围，没有就获取范围
+
+    if (!scope) scope = getScope();
+    var mods = len > 1 ? getMods(_modifier, unbindKeys) : [];
+    _handlers[keyCode] = _handlers[keyCode].map(function (record) {
+      // 通过函数判断，是否解除绑定，函数相等直接返回
+      var isMatchingMethod = method ? record.method === method : true;
+
+      if (isMatchingMethod && record.scope === scope && compareArray(record.mods, mods)) {
+        return {};
+      }
+
+      return record;
+    });
+  });
+}; // 对监听对应快捷键的回调函数进行处理
+
+
 function eventHandler(event, handler, scope) {
-  var modifiersMatch = void 0;
+  var modifiersMatch; // 看它是否在当前范围
 
-  // 看它是否在当前范围
   if (handler.scope === scope || handler.scope === 'all') {
     // 检查是否匹配修饰符（如果有返回true）
     modifiersMatch = handler.mods.length > 0;
 
     for (var y in _mods) {
       if (Object.prototype.hasOwnProperty.call(_mods, y)) {
-        if (!_mods[y] && handler.mods.indexOf(+y) > -1 || _mods[y] && handler.mods.indexOf(+y) === -1) modifiersMatch = false;
+        if (!_mods[y] && handler.mods.indexOf(+y) > -1 || _mods[y] && handler.mods.indexOf(+y) === -1) {
+          modifiersMatch = false;
+        }
       }
-    }
+    } // 调用处理程序，如果是修饰键不做处理
 
-    // 调用处理程序，如果是修饰键不做处理
+
     if (handler.mods.length === 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91] || modifiersMatch || handler.shortcut === '*') {
       if (handler.method(event, handler) === false) {
         if (event.preventDefault) event.preventDefault();else event.returnValue = false;
@@ -4630,108 +5017,168 @@ function eventHandler(event, handler, scope) {
       }
     }
   }
-}
+} // 处理keydown事件
 
-// 处理keydown事件
+
 function dispatch(event) {
   var asterisk = _handlers['*'];
-  var key = event.keyCode || event.which || event.charCode;
+  var key = event.keyCode || event.which || event.charCode; // 表单控件过滤 默认表单控件不触发快捷键
 
-  // 搜集绑定的键
-  if (_downKeys.indexOf(key) === -1) _downKeys.push(key);
+  if (!hotkeys.filter.call(this, event)) return; // Gecko(Firefox)的command键值224，在Webkit(Chrome)中保持一致
+  // Webkit左右 command 键值不一样
 
-  // Gecko(Firefox)的command键值224，在Webkit(Chrome)中保持一致
-  // Webkit左右command键值不一样
   if (key === 93 || key === 224) key = 91;
+  /**
+   * Collect bound keys
+   * If an Input Method Editor is processing key input and the event is keydown, return 229.
+   * https://stackoverflow.com/questions/25043934/is-it-ok-to-ignore-keydown-events-with-keycode-229
+   * http://lists.w3.org/Archives/Public/www-dom/2010JulSep/att-0182/keyCode-spec.html
+   */
+
+  if (_downKeys.indexOf(key) === -1 && key !== 229) _downKeys.push(key);
+  /**
+   * Jest test cases are required.
+   * ===============================
+   */
+
+  ['ctrlKey', 'altKey', 'shiftKey', 'metaKey'].forEach(function (keyName) {
+    var keyNum = modifierMap[keyName];
+
+    if (event[keyName] && _downKeys.indexOf(keyNum) === -1) {
+      _downKeys.push(keyNum);
+    } else if (!event[keyName] && _downKeys.indexOf(keyNum) > -1) {
+      _downKeys.splice(_downKeys.indexOf(keyNum), 1);
+    }
+  });
+  /**
+   * -------------------------------
+   */
 
   if (key in _mods) {
-    _mods[key] = true;
+    _mods[key] = true; // 将特殊字符的key注册到 hotkeys 上
 
-    // 将特殊字符的key注册到 hotkeys 上
     for (var k in _modifier) {
       if (_modifier[k] === key) hotkeys[k] = true;
     }
 
     if (!asterisk) return;
-  }
+  } // 将 modifierMap 里面的修饰键绑定到 event 中
 
-  // 将modifierMap里面的修饰键绑定到event中
+
   for (var e in _mods) {
     if (Object.prototype.hasOwnProperty.call(_mods, e)) {
       _mods[e] = event[modifierMap[e]];
     }
-  }
+  } // 获取范围 默认为 `all`
 
-  // 表单控件过滤 默认表单控件不触发快捷键
-  if (!hotkeys.filter.call(this, event)) return;
 
-  // 获取范围 默认为all
-  var scope = getScope();
+  var scope = getScope(); // 对任何快捷键都需要做的处理
 
-  // 对任何快捷键都需要做的处理
   if (asterisk) {
     for (var i = 0; i < asterisk.length; i++) {
-      if (asterisk[i].scope === scope) eventHandler(event, asterisk[i], scope);
+      if (asterisk[i].scope === scope && (event.type === 'keydown' && asterisk[i].keydown || event.type === 'keyup' && asterisk[i].keyup)) {
+        eventHandler(event, asterisk[i], scope);
+      }
     }
-  }
-  // key 不在_handlers中返回
+  } // key 不在 _handlers 中返回
+
+
   if (!(key in _handlers)) return;
 
   for (var _i = 0; _i < _handlers[key].length; _i++) {
-    // 找到处理内容
-    eventHandler(event, _handlers[key][_i], scope);
+    if (event.type === 'keydown' && _handlers[key][_i].keydown || event.type === 'keyup' && _handlers[key][_i].keyup) {
+      if (_handlers[key][_i].key) {
+        var record = _handlers[key][_i];
+        var splitKey = record.splitKey;
+        var keyShortcut = record.key.split(splitKey);
+        var _downKeysCurrent = []; // 记录当前按键键值
+
+        for (var a = 0; a < keyShortcut.length; a++) {
+          _downKeysCurrent.push(code(keyShortcut[a]));
+        }
+
+        if (_downKeysCurrent.sort().join('') === _downKeys.sort().join('')) {
+          // 找到处理内容
+          eventHandler(event, record, scope);
+        }
+      }
+    }
   }
+} // 判断 element 是否已经绑定事件
+
+
+function isElementBind(element) {
+  return elementHasBindEvent.indexOf(element) > -1;
 }
 
 function hotkeys(key, option, method) {
+  _downKeys = [];
   var keys = getKeys(key); // 需要处理的快捷键列表
+
   var mods = [];
   var scope = 'all'; // scope默认为all，所有范围都有效
-  var element = document; // 快捷键事件绑定节点
-  var i = 0;
 
-  // 对为设定范围的判断
+  var element = document; // 快捷键事件绑定节点
+
+  var i = 0;
+  var keyup = false;
+  var keydown = true;
+  var splitKey = '+'; // 对为设定范围的判断
+
   if (method === undefined && typeof option === 'function') {
     method = option;
   }
 
   if (Object.prototype.toString.call(option) === '[object Object]') {
     if (option.scope) scope = option.scope; // eslint-disable-line
+
     if (option.element) element = option.element; // eslint-disable-line
+
+    if (option.keyup) keyup = option.keyup; // eslint-disable-line
+
+    if (option.keydown !== undefined) keydown = option.keydown; // eslint-disable-line
+
+    if (typeof option.splitKey === 'string') splitKey = option.splitKey; // eslint-disable-line
   }
 
-  if (typeof option === 'string') scope = option;
+  if (typeof option === 'string') scope = option; // 对于每个快捷键进行处理
 
-  // 对于每个快捷键进行处理
   for (; i < keys.length; i++) {
-    key = keys[i].split('+'); // 按键列表
-    mods = [];
+    key = keys[i].split(splitKey); // 按键列表
 
-    // 如果是组合快捷键取得组合快捷键
-    if (key.length > 1) mods = getMods(_modifier, key);
+    mods = []; // 如果是组合快捷键取得组合快捷键
 
-    // 将非修饰键转化为键码
+    if (key.length > 1) mods = getMods(_modifier, key); // 将非修饰键转化为键码
+
     key = key[key.length - 1];
     key = key === '*' ? '*' : code(key); // *表示匹配所有快捷键
-
     // 判断key是否在_handlers中，不在就赋一个空数组
+
     if (!(key in _handlers)) _handlers[key] = [];
 
     _handlers[key].push({
+      keyup: keyup,
+      keydown: keydown,
       scope: scope,
       mods: mods,
       shortcut: keys[i],
       method: method,
-      key: keys[i]
+      key: keys[i],
+      splitKey: splitKey
     });
-  }
-  // 在全局document上设置快捷键
-  if (typeof element !== 'undefined' && !isBindElement) {
-    isBindElement = true;
+  } // 在全局document上设置快捷键
+
+
+  if (typeof element !== 'undefined' && !isElementBind(element) && window) {
+    elementHasBindEvent.push(element);
     addEvent(element, 'keydown', function (e) {
       dispatch(e);
     });
+    addEvent(window, 'focus', function () {
+      _downKeys = [];
+    });
     addEvent(element, 'keyup', function (e) {
+      dispatch(e);
       clearModifier(e);
     });
   }
@@ -4746,6 +5193,7 @@ var _api = {
   filter: filter,
   unbind: unbind
 };
+
 for (var a in _api) {
   if (Object.prototype.hasOwnProperty.call(_api, a)) {
     hotkeys[a] = _api[a];
@@ -4754,21 +5202,24 @@ for (var a in _api) {
 
 if (typeof window !== 'undefined') {
   var _hotkeys = window.hotkeys;
+
   hotkeys.noConflict = function (deep) {
     if (deep && window.hotkeys === hotkeys) {
       window.hotkeys = _hotkeys;
     }
+
     return hotkeys;
   };
+
   window.hotkeys = hotkeys;
 }
 
 module.exports = hotkeys;
 
-},{}],28:[function(require,module,exports){
-/*! hotkeys-js v3.4.4 | MIT (c) 2019 kenny wong <wowohoo@qq.com> | http://jaywcjlove.github.io/hotkeys */
-"use strict";var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,o,t){e.addEventListener?e.addEventListener(o,t,!1):e.attachEvent&&e.attachEvent("on"+o,function(){t(window.event)})}function getMods(e,o){for(var t=o.slice(0,o.length-1),n=0;n<t.length;n++)t[n]=e[t[n].toLowerCase()];return t}function getKeys(e){e||(e="");for(var o=(e=e.replace(/\s/g,"")).split(","),t=o.lastIndexOf("");0<=t;)o[t-1]+=",",o.splice(t,1),t=o.lastIndexOf("");return o}function compareArray(e,o){for(var t=e.length<o.length?o:e,n=e.length<o.length?e:o,r=!0,s=0;s<t.length;s++)-1===n.indexOf(t[s])&&(r=!1);return r}for(var _keyMap={backspace:8,tab:9,clear:12,enter:13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":isff?224:91,cmd:isff?224:91,command:isff?224:91},_downKeys=[],modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey"},_mods={16:!1,18:!1,17:!1},_handlers={},k=1;k<20;k++)_keyMap["f"+k]=111+k;var _scope="all",isBindElement=_mods[isff?224:91]=!(modifierMap[isff?224:91]="metaKey"),code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function filter(e){var o=e.target||e.srcElement,t=o.tagName;return!("INPUT"===t||"SELECT"===t||"TEXTAREA"===t||o.isContentEditable)}function isPressed(e){return"string"==typeof e&&(e=code(e)),-1!==_downKeys.indexOf(e)}function deleteScope(e,o){var t=void 0,n=void 0;for(var r in e||(e=getScope()),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,r))for(t=_handlers[r],n=0;n<t.length;)t[n].scope===e?t.splice(n,1):n++;getScope()===e&&setScope(o||"all")}function clearModifier(e){var o=e.keyCode||e.which||e.charCode,t=_downKeys.indexOf(o);if(t<0||_downKeys.splice(t,1),93!==o&&224!==o||(o=91),o in _mods)for(var n in _mods[o]=!1,_modifier)_modifier[n]===o&&(hotkeys[n]=!1)}function unbind(e,o,t){var n=getKeys(e),r=void 0,s=[],i=void 0;"function"==typeof o&&(t=o,o="all");for(var d=0;d<n.length;d++){if(1<(r=n[d].split("+")).length&&(s=getMods(_modifier,r)),e="*"===(e=r[r.length-1])?"*":code(e),o||(o=getScope()),!_handlers[e])return;for(var a=0;a<_handlers[e].length;a++){i=_handlers[e][a],(!t||i.method===t)&&i.scope===o&&compareArray(i.mods,s)&&(_handlers[e][a]={})}}}function eventHandler(e,o,t){var n=void 0;if(o.scope===t||"all"===o.scope){for(var r in n=0<o.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(!_mods[r]&&-1<o.mods.indexOf(+r)||_mods[r]&&-1===o.mods.indexOf(+r))&&(n=!1);(0!==o.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!n&&"*"!==o.shortcut||!1===o.method(e,o)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(e){var o=_handlers["*"],t=e.keyCode||e.which||e.charCode;if(-1===_downKeys.indexOf(t)&&_downKeys.push(t),93!==t&&224!==t||(t=91),t in _mods){for(var n in _mods[t]=!0,_modifier)_modifier[n]===t&&(hotkeys[n]=!0);if(!o)return}for(var r in _mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(_mods[r]=e[modifierMap[r]]);if(hotkeys.filter.call(this,e)){var s=getScope();if(o)for(var i=0;i<o.length;i++)o[i].scope===s&&eventHandler(e,o[i],s);if(t in _handlers)for(var d=0;d<_handlers[t].length;d++)eventHandler(e,_handlers[t][d],s)}}function hotkeys(e,o,t){var n=getKeys(e),r=[],s="all",i=document,d=0;for(void 0===t&&"function"==typeof o&&(t=o),"[object Object]"===Object.prototype.toString.call(o)&&(o.scope&&(s=o.scope),o.element&&(i=o.element)),"string"==typeof o&&(s=o);d<n.length;d++)r=[],1<(e=n[d].split("+")).length&&(r=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({scope:s,mods:r,shortcut:n[d],method:t,key:n[d]});void 0===i||isBindElement||(isBindElement=!0,addEvent(i,"keydown",function(e){dispatch(e)}),addEvent(i,"keyup",function(e){clearModifier(e)}))}var _api={setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,unbind:unbind};for(var a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);if("undefined"!=typeof window){var _hotkeys=window.hotkeys;hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys}module.exports=hotkeys;
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
+/*! hotkeys-js v3.7.2 | MIT (c) 2019 kenny wong <wowohoo@qq.com> | http://jaywcjlove.github.io/hotkeys */
+"use strict";function _typeof(e){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(e)}var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,o,t){e.addEventListener?e.addEventListener(o,t,!1):e.attachEvent&&e.attachEvent("on".concat(o),function(){t(window.event)})}function getMods(e,o){for(var t=o.slice(0,o.length-1),n=0;n<t.length;n++)t[n]=e[t[n].toLowerCase()];return t}function getKeys(e){"string"!=typeof e&&(e="");for(var o=(e=e.replace(/\s/g,"")).split(","),t=o.lastIndexOf("");0<=t;)o[t-1]+=",",o.splice(t,1),t=o.lastIndexOf("");return o}function compareArray(e,o){for(var t=e.length<o.length?o:e,n=e.length<o.length?e:o,r=!0,s=0;s<t.length;s++)~n.indexOf(t[s])||(r=!1);return r}for(var _keyMap={backspace:8,tab:9,clear:12,enter:13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":91,cmd:91,command:91},modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey",91:"metaKey",shiftKey:16,ctrlKey:17,altKey:18,metaKey:91},_mods={16:!1,18:!1,17:!1,91:!1},_handlers={},k=1;k<20;k++)_keyMap["f".concat(k)]=111+k;var _downKeys=[],_scope="all",elementHasBindEvent=[],code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function filter(e){var o=e.target||e.srcElement,t=o.tagName,n=!0;return!o.isContentEditable&&"TEXTAREA"!==t&&("INPUT"!==t&&"TEXTAREA"!==t||o.readOnly)||(n=!1),n}function isPressed(e){return"string"==typeof e&&(e=code(e)),!!~_downKeys.indexOf(e)}function deleteScope(e,o){var t,n;for(var r in e||(e=getScope()),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,r))for(t=_handlers[r],n=0;n<t.length;)t[n].scope===e?t.splice(n,1):n++;getScope()===e&&setScope(o||"all")}function clearModifier(e){var o=e.keyCode||e.which||e.charCode,t=_downKeys.indexOf(o);if(t<0||_downKeys.splice(t,1),e.key&&"meta"==e.key.toLowerCase()&&_downKeys.splice(0,_downKeys.length),93!==o&&224!==o||(o=91),o in _mods)for(var n in _mods[o]=!1,_modifier)_modifier[n]===o&&(hotkeys[n]=!1)}function unbind(e){if(e){if(Array.isArray(e))e.forEach(function(e){e.key&&eachUnbind(e)});else if("object"===_typeof(e))e.key&&eachUnbind(e);else if("string"==typeof e){for(var o=arguments.length,t=Array(1<o?o-1:0),n=1;n<o;n++)t[n-1]=arguments[n];var r=t[0],s=t[1];"function"==typeof r&&(s=r,r=""),eachUnbind({key:e,scope:r,method:s,splitKey:"+"})}}else Object.keys(_handlers).forEach(function(e){return delete _handlers[e]})}var eachUnbind=function(e){var i=e.scope,d=e.method,o=e.splitKey,a=void 0===o?"+":o;getKeys(e.key).forEach(function(e){var o=e.split(a),t=o.length,n=o[t-1],r="*"===n?"*":code(n);if(_handlers[r]){i||(i=getScope());var s=1<t?getMods(_modifier,o):[];_handlers[r]=_handlers[r].map(function(e){return(!d||e.method===d)&&e.scope===i&&compareArray(e.mods,s)?{}:e})}})};function eventHandler(e,o,t){var n;if(o.scope===t||"all"===o.scope){for(var r in n=0<o.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(!_mods[r]&&-1<o.mods.indexOf(+r)||_mods[r]&&!~o.mods.indexOf(+r))&&(n=!1);(0!==o.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!n&&"*"!==o.shortcut||!1===o.method(e,o)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(t){var e=_handlers["*"],o=t.keyCode||t.which||t.charCode;if(hotkeys.filter.call(this,t)){if(93!==o&&224!==o||(o=91),~_downKeys.indexOf(o)||229===o||_downKeys.push(o),["ctrlKey","altKey","shiftKey","metaKey"].forEach(function(e){var o=modifierMap[e];t[e]&&!~_downKeys.indexOf(o)?_downKeys.push(o):!t[e]&&-1<_downKeys.indexOf(o)&&_downKeys.splice(_downKeys.indexOf(o),1)}),o in _mods){for(var n in _mods[o]=!0,_modifier)_modifier[n]===o&&(hotkeys[n]=!0);if(!e)return}for(var r in _mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(_mods[r]=t[modifierMap[r]]);var s=getScope();if(e)for(var i=0;i<e.length;i++)e[i].scope===s&&("keydown"===t.type&&e[i].keydown||"keyup"===t.type&&e[i].keyup)&&eventHandler(t,e[i],s);if(o in _handlers)for(var d=0;d<_handlers[o].length;d++)if(("keydown"===t.type&&_handlers[o][d].keydown||"keyup"===t.type&&_handlers[o][d].keyup)&&_handlers[o][d].key){for(var a=_handlers[o][d],c=a.key.split(a.splitKey),f=[],l=0;l<c.length;l++)f.push(code(c[l]));f.sort().join("")===_downKeys.sort().join("")&&eventHandler(t,a,s)}}}function isElementBind(e){return-1<elementHasBindEvent.indexOf(e)}function hotkeys(e,o,t){_downKeys=[];var n=getKeys(e),r=[],s="all",i=document,d=0,a=!1,c=!0,f="+";for(void 0===t&&"function"==typeof o&&(t=o),"[object Object]"===Object.prototype.toString.call(o)&&(o.scope&&(s=o.scope),o.element&&(i=o.element),o.keyup&&(a=o.keyup),void 0!==o.keydown&&(c=o.keydown),"string"==typeof o.splitKey&&(f=o.splitKey)),"string"==typeof o&&(s=o);d<n.length;d++)r=[],1<(e=n[d].split(f)).length&&(r=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({keyup:a,keydown:c,scope:s,mods:r,shortcut:n[d],method:t,key:n[d],splitKey:f});void 0!==i&&!isElementBind(i)&&window&&(elementHasBindEvent.push(i),addEvent(i,"keydown",function(e){dispatch(e)}),addEvent(window,"focus",function(){_downKeys=[]}),addEvent(i,"keyup",function(e){dispatch(e),clearModifier(e)}))}var _api={setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,unbind:unbind};for(var a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);if("undefined"!=typeof window){var _hotkeys=window.hotkeys;hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys}module.exports=hotkeys;
+},{}],32:[function(require,module,exports){
 (function (process){
 
 if (process.env.NODE_ENV === 'production') {
@@ -4778,7 +5229,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this,require('_process'))
-},{"./dist/hotkeys.common.js":27,"./dist/hotkeys.common.min.js":28,"_process":67}],30:[function(require,module,exports){
+},{"./dist/hotkeys.common.js":30,"./dist/hotkeys.common.min.js":31,"_process":2}],33:[function(require,module,exports){
 'use strict';
 
 
@@ -4787,7 +5238,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":31}],31:[function(require,module,exports){
+},{"./lib/js-yaml.js":34}],34:[function(require,module,exports){
 'use strict';
 
 
@@ -4828,7 +5279,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":33,"./js-yaml/exception":34,"./js-yaml/loader":35,"./js-yaml/schema":37,"./js-yaml/schema/core":38,"./js-yaml/schema/default_full":39,"./js-yaml/schema/default_safe":40,"./js-yaml/schema/failsafe":41,"./js-yaml/schema/json":42,"./js-yaml/type":43}],32:[function(require,module,exports){
+},{"./js-yaml/dumper":36,"./js-yaml/exception":37,"./js-yaml/loader":38,"./js-yaml/schema":40,"./js-yaml/schema/core":41,"./js-yaml/schema/default_full":42,"./js-yaml/schema/default_safe":43,"./js-yaml/schema/failsafe":44,"./js-yaml/schema/json":45,"./js-yaml/type":46}],35:[function(require,module,exports){
 'use strict';
 
 
@@ -4889,7 +5340,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],33:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -5718,7 +6169,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":32,"./exception":34,"./schema/default_full":39,"./schema/default_safe":40}],34:[function(require,module,exports){
+},{"./common":35,"./exception":37,"./schema/default_full":42,"./schema/default_safe":43}],37:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -5763,7 +6214,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],35:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -5795,6 +6246,8 @@ var PATTERN_FLOW_INDICATORS       = /[,\[\]\{\}]/;
 var PATTERN_TAG_HANDLE            = /^(?:!|!!|![a-z\-]+!)$/i;
 var PATTERN_TAG_URI               = /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i;
 
+
+function _class(obj) { return Object.prototype.toString.call(obj); }
 
 function is_EOL(c) {
   return (c === 0x0A/* LF */) || (c === 0x0D/* CR */);
@@ -6050,6 +6503,31 @@ function mergeMappings(state, destination, source, overridableKeys) {
 
 function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, startLine, startPos) {
   var index, quantity;
+
+  // The output is a plain object here, so keys can only be strings.
+  // We need to convert keyNode to a string, but doing so can hang the process
+  // (deeply nested arrays that explode exponentially using aliases).
+  if (Array.isArray(keyNode)) {
+    keyNode = Array.prototype.slice.call(keyNode);
+
+    for (index = 0, quantity = keyNode.length; index < quantity; index += 1) {
+      if (Array.isArray(keyNode[index])) {
+        throwError(state, 'nested arrays are not supported inside keys');
+      }
+
+      if (typeof keyNode === 'object' && _class(keyNode[index]) === '[object Object]') {
+        keyNode[index] = '[object Object]';
+      }
+    }
+  }
+
+  // Avoid code execution in load() via toString property
+  // (still use its own toString for arrays, timestamps,
+  // and whatever user schema extensions happen to have @@toStringTag)
+  if (typeof keyNode === 'object' && _class(keyNode) === '[object Object]') {
+    keyNode = '[object Object]';
+  }
+
 
   keyNode = String(keyNode);
 
@@ -7363,7 +7841,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":32,"./exception":34,"./mark":36,"./schema/default_full":39,"./schema/default_safe":40}],36:[function(require,module,exports){
+},{"./common":35,"./exception":37,"./mark":39,"./schema/default_full":42,"./schema/default_safe":43}],39:[function(require,module,exports){
 'use strict';
 
 
@@ -7441,7 +7919,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":32}],37:[function(require,module,exports){
+},{"./common":35}],40:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -7551,7 +8029,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":32,"./exception":34,"./type":43}],38:[function(require,module,exports){
+},{"./common":35,"./exception":37,"./type":46}],41:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -7571,7 +8049,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":37,"./json":42}],39:[function(require,module,exports){
+},{"../schema":40,"./json":45}],42:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -7598,7 +8076,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":37,"../type/js/function":48,"../type/js/regexp":49,"../type/js/undefined":50,"./default_safe":40}],40:[function(require,module,exports){
+},{"../schema":40,"../type/js/function":51,"../type/js/regexp":52,"../type/js/undefined":53,"./default_safe":43}],43:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -7628,7 +8106,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":37,"../type/binary":44,"../type/merge":52,"../type/omap":54,"../type/pairs":55,"../type/set":57,"../type/timestamp":59,"./core":38}],41:[function(require,module,exports){
+},{"../schema":40,"../type/binary":47,"../type/merge":55,"../type/omap":57,"../type/pairs":58,"../type/set":60,"../type/timestamp":62,"./core":41}],44:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -7647,7 +8125,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":37,"../type/map":51,"../type/seq":56,"../type/str":58}],42:[function(require,module,exports){
+},{"../schema":40,"../type/map":54,"../type/seq":59,"../type/str":61}],45:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -7674,7 +8152,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":37,"../type/bool":45,"../type/float":46,"../type/int":47,"../type/null":53,"./failsafe":41}],43:[function(require,module,exports){
+},{"../schema":40,"../type/bool":48,"../type/float":49,"../type/int":50,"../type/null":56,"./failsafe":44}],46:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -7737,7 +8215,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":34}],44:[function(require,module,exports){
+},{"./exception":37}],47:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -7877,7 +8355,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":43}],45:[function(require,module,exports){
+},{"../type":46}],48:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -7914,7 +8392,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":43}],46:[function(require,module,exports){
+},{"../type":46}],49:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -8032,7 +8510,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":32,"../type":43}],47:[function(require,module,exports){
+},{"../common":35,"../type":46}],50:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -8207,7 +8685,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":32,"../type":43}],48:[function(require,module,exports){
+},{"../common":35,"../type":46}],51:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -8301,7 +8779,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":43}],49:[function(require,module,exports){
+},{"../../type":46}],52:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -8363,7 +8841,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":43}],50:[function(require,module,exports){
+},{"../../type":46}],53:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -8393,7 +8871,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":43}],51:[function(require,module,exports){
+},{"../../type":46}],54:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8403,7 +8881,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":43}],52:[function(require,module,exports){
+},{"../type":46}],55:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8417,7 +8895,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":43}],53:[function(require,module,exports){
+},{"../type":46}],56:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8453,7 +8931,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":43}],54:[function(require,module,exports){
+},{"../type":46}],57:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8499,7 +8977,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":43}],55:[function(require,module,exports){
+},{"../type":46}],58:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8554,7 +9032,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":43}],56:[function(require,module,exports){
+},{"../type":46}],59:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8564,7 +9042,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":43}],57:[function(require,module,exports){
+},{"../type":46}],60:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8595,7 +9073,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":43}],58:[function(require,module,exports){
+},{"../type":46}],61:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8605,7 +9083,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":43}],59:[function(require,module,exports){
+},{"../type":46}],62:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8695,12 +9173,12 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":43}],60:[function(require,module,exports){
+},{"../type":46}],63:[function(require,module,exports){
 (function (global){
 /**
  * @license
  * Lodash <https://lodash.com/>
- * Copyright JS Foundation and other contributors <https://js.foundation/>
+ * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -8711,7 +9189,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.11';
+  var VERSION = '4.17.15';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -11370,16 +11848,10 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
         value.forEach(function(subValue) {
           result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
         });
-
-        return result;
-      }
-
-      if (isMap(value)) {
+      } else if (isMap(value)) {
         value.forEach(function(subValue, key) {
           result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
         });
-
-        return result;
       }
 
       var keysFunc = isFull
@@ -12303,8 +12775,8 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
         return;
       }
       baseFor(source, function(srcValue, key) {
+        stack || (stack = new Stack);
         if (isObject(srcValue)) {
-          stack || (stack = new Stack);
           baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
         }
         else {
@@ -14121,7 +14593,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
       return function(number, precision) {
         number = toNumber(number);
         precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
-        if (precision) {
+        if (precision && nativeIsFinite(number)) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
           var pair = (toString(number) + 'e').split('e'),
@@ -15304,7 +15776,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
     }
 
     /**
-     * Gets the value at `key`, unless `key` is "__proto__".
+     * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
      *
      * @private
      * @param {Object} object The object to query.
@@ -15312,6 +15784,10 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
      * @returns {*} Returns the property value.
      */
     function safeGet(object, key) {
+      if (key === 'constructor' && typeof object[key] === 'function') {
+        return;
+      }
+
       if (key == '__proto__') {
         return;
       }
@@ -19112,6 +19588,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
           }
           if (maxing) {
             // Handle invocations in a tight loop.
+            clearTimeout(timerId);
             timerId = setTimeout(timerExpired, wait);
             return invokeFunc(lastCallTime);
           }
@@ -23498,9 +23975,12 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
       , 'g');
 
       // Use a sourceURL for easier debugging.
+      // The sourceURL gets injected into the source that's eval-ed, so be careful
+      // with lookup (in case of e.g. prototype pollution), and strip newlines if any.
+      // A newline wouldn't be a valid sourceURL anyway, and it'd enable code injection.
       var sourceURL = '//# sourceURL=' +
-        ('sourceURL' in options
-          ? options.sourceURL
+        (hasOwnProperty.call(options, 'sourceURL')
+          ? (options.sourceURL + '').replace(/[\r\n]/g, ' ')
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -23533,7 +24013,9 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      var variable = options.variable;
+      // Like with sourceURL, we take care to not check the option's prototype,
+      // as this configuration is a code injection vector.
+      var variable = hasOwnProperty.call(options, 'variable') && options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
@@ -25738,10 +26220,11 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
     baseForOwn(LazyWrapper.prototype, function(func, methodName) {
       var lodashFunc = lodash[methodName];
       if (lodashFunc) {
-        var key = (lodashFunc.name + ''),
-            names = realNames[key] || (realNames[key] = []);
-
-        names.push({ 'name': methodName, 'func': lodashFunc });
+        var key = lodashFunc.name + '';
+        if (!hasOwnProperty.call(realNames, key)) {
+          realNames[key] = [];
+        }
+        realNames[key].push({ 'name': methodName, 'func': lodashFunc });
       }
     });
 
@@ -25806,7 +26289,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],61:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -30410,7 +30893,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],62:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 'use strict';
 
 const StorageModes = require('../wnode/storageModes.js');
@@ -30628,7 +31111,7 @@ function init () {
 
 init();
 
-},{"../generation/wgenerator.js":25,"../util/util.js":63,"../wnode/storageModes.js":64,"../wnode/wnode.js":65,"hotkeys-js":29}],63:[function(require,module,exports){
+},{"../generation/wgenerator.js":28,"../util/util.js":66,"../wnode/storageModes.js":67,"../wnode/wnode.js":68,"hotkeys-js":32}],66:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -30757,6 +31240,13 @@ util.newId = function () {
     }
 
     return id;
+};
+
+// Returns string
+util.shortId = function (id) {
+    return id ?
+        `${id.slice(0, 3)}` :
+        '';
 };
 
 util.repeat = function (str, n) {
@@ -31056,6 +31546,14 @@ util.log = function (input, tag) {
     console.log(`  ${tagStr} (${ dateTime }) ${ info }\n`);
 };
 
+util.logDebug = function (input) {
+    util.log(input, 'debug');
+}
+
+util.logError = function (input) {
+    util.log(input, 'error');
+}
+
 util.makeEnum = (vals) => {
     const dict = {};
     for (let val of vals) {
@@ -31076,7 +31574,7 @@ util.mbti = () => {
     .join('');
 };
 
-},{"comma-number":26,"lodash":60,"moment":61}],64:[function(require,module,exports){
+},{"comma-number":29,"lodash":63,"moment":64}],67:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -31087,7 +31585,7 @@ module.exports = Util.makeEnum([
     'Frozen'
 ]);
 
-},{"../util/util.js":63}],65:[function(require,module,exports){
+},{"../util/util.js":66}],68:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -31097,16 +31595,23 @@ const Util = require('../util/util.js');
 
 // Waffle Node
 // WAFFLE is a game engine related to the novel 'You' by Austen Grossman.
-// A person, creature, component, or thing is represented here
-// by a WNode or a tree of WNodes.
+// A person, creature, component, or thing is represented here by a WNode or a tree of WNodes.
 
 class WNode {
-    constructor (templateName) {
+    constructor (template) {
         // Later: Safety checks, logging
         this.id = Util.newId();
 
-        if (templateName) {
-            this.templateName = templateName;
+        if (template) {
+            // Util.logDebug(`In WNode constructor. typeof template is ${typeof template}. template.name is ${template.name}`);
+
+            if (template.name) {
+                this.templateName = template.name;
+                this.template = template;
+            }
+            else if (Util.isString(template)) {
+                this.templateName = template;
+            }
         }
 
         this.components = [];
@@ -31144,6 +31649,7 @@ class WNode {
         return ``;
     }
 
+    // Later, it may be performant to reference this.template[propStr], instead of storing those props on every WNode instance of the template.
     traitSum (propStr) {
         return (this[propStr] || 0) +
             Util.sum(
@@ -31206,13 +31712,17 @@ class WNode {
     toSimpleString () {
         const tName = this.templateName ?
             Util.fromCamelCase(this.templateName) :
-            `<WNode with no template>`;
+            `<WNode with no templateName>`;
+
+        const active = this.active ?
+            'Up' :
+            'KO';
 
         if (this.displayName) {
             return `${this.displayName} (${tName})`;
         }
         else {
-            return tName;
+            return `${tName} (${this.shortId()}, ${active}, ${this.alignment})`;
         }
     }
 
@@ -31273,6 +31783,11 @@ class WNode {
                 Util.repeat(' ', indent) + text + '\n' :
                 '';
         }
+    }
+
+    // Returns a abbreviation of the ID.
+    shortId () {
+        return `${Util.shortId(this.id)}`;
     }
 
     getPropSummary () {
@@ -31432,192 +31947,4 @@ class WNode {
 
 module.exports = WNode;
 
-},{"../util/util.js":63,"./storageModes.js":64,"js-yaml":30}],66:[function(require,module,exports){
-
-},{}],67:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}]},{},[62]);
+},{"../util/util.js":66,"./storageModes.js":67,"js-yaml":33}]},{},[65]);
