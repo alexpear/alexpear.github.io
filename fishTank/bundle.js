@@ -1,17 +1,210 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+
+},{}],2:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
+const NodeTemplate = require('./nodeTemplate.js');
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
-class ActionTemplate {
-    constructor (range, hit, damage) {
+class ActionTemplate extends NodeTemplate {
+    constructor (name, range, hit, damage) {
+        super(name);
+
+        this.id = Util.newId();
         this.tags = [];
         this.range = range || 1;
         this.hit = hit || 0;
         this.damage = damage || 0;
     }
 
+    // Later make a superclass version of this func.
     deepCopy () {
         const copy = Object.assign(new ActionTemplate(), this);
 
@@ -39,14 +232,27 @@ class ActionTemplate {
         return this.range > 1;
     }
 
+    secondsUntilNextAction () {
+        if (
+            ! Util.exists(this.shotsPerSecond) ||
+            this.shotsPerSecond <= 1
+        ) {
+            return 1;
+        }
+
+        // Yes, this is approximate. It's okay for now that a rate of 0.9 is treated the same as 0.5.
+        return Math.ceil(
+            1 / this.shotsPerSecond
+        );
+    }
+
     static example () {
         return ActionTemplate.dwarfExample();
     }
 
     static dwarfExample () {
-        const template = new ActionTemplate();
+        const template = new ActionTemplate('throwingAxe');
 
-        // Range is in meters. It is okay to round it heavily.
         template.range = 10;
         template.hit = 4;
         template.damage = 1;
@@ -62,17 +268,21 @@ class ActionTemplate {
     }
 
     static soldierExample () {
-        const template = new ActionTemplate();
+        const template = new ActionTemplate('dmr');
+
+        // Later maybe rename to a more generic phrase like 'rate'.
+        // Can be less than 1:
+        template.shotsPerSecond = 2;
 
         // Range is in meters. It is okay to round it heavily.
-        template.range = 40;
-        template.hit = 3;
-        template.damage = 2;
+        template.range = 80;
+        template.hit = 5;
+        template.damage = 24;
 
-        // UNSC assault rifle
+        // UNSC designated mark rifle
         template.tags = [
             TAG.Bullet,
-            TAG.RapidFire
+            TAG.Firearm
         ];
 
         return template;
@@ -81,13 +291,14 @@ class ActionTemplate {
 
 module.exports = ActionTemplate;
 
-},{"../codices/tags.js":32,"../util/util.js":72}],2:[function(require,module,exports){
+},{"../codices/tags.js":37,"../util/util.js":77,"./nodeTemplate.js":7}],4:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
 // Later, may want to merge this with WNode classes.
 
 const ActionTemplate = require('./actiontemplate.js');
+const NodeTemplate = require('./nodeTemplate.js');
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
@@ -102,11 +313,14 @@ const SIZE = {
     Colossal: 6
 };
 
-// Later possibly rename to just Template
-// since it is use for intermediate representations
+// TODO Write a comment with a clear example of how a '* template' block in a codex becomes a CreatureTemplate, and what ends up in CreatureTemplate.props, if anything.
+
+// Note that currently this is confusingly used for intermediate representations
 // when transforming trees of WNodes to Groups.
-class CreatureTemplate {
-    constructor () {
+class CreatureTemplate extends NodeTemplate {
+    constructor (name) {
+        super(name);
+
         this.tags = [];
         this.actions = [];
         this.resistance = {};
@@ -205,7 +419,8 @@ class CreatureTemplate {
             // Remove the 'action' tag.
             this.tags.splice(actionTagIndex, 1);
 
-            const action = new ActionTemplate(this.range, this.hit, this.damage);
+            // Later, can put a name from the codex in the name param, instead of newId()
+            const action = new ActionTemplate(Util.newId(), this.range, this.hit, this.damage);
             action.tags = Util.arrayCopy(this.tags);
             this.tags = [];
             this.actions.push(action);
@@ -251,20 +466,17 @@ class CreatureTemplate {
         );
     }
 
-    static isCreatureTemplate (template) {
-        return template instanceof CreatureTemplate;
-    }
-
-    static isActionTemplate (template) {
-        return template instanceof ActionTemplate;
-    }
+    // static isCreatureTemplate (template) {
+    //     return template instanceof CreatureTemplate;
+    // }
 
     static example () {
-        return CreatureTemplate.dwarfExample();
+        return CreatureTemplate.soldierExample();
     }
 
     static soldierExample () {
         const template = new CreatureTemplate();
+        template.name = 'soldier';
 
         // UNSC Marine (Halo)
         template.tags = [
@@ -275,8 +487,9 @@ class CreatureTemplate {
         ];
 
         template.size = SIZE.Medium;
-        template.hp = 3;
+        template.sp = 30;
         template.defense = 16;
+        template.alignment = 'UNSC';
         template.actions = [
             ActionTemplate.soldierExample()
         ];
@@ -291,6 +504,7 @@ class CreatureTemplate {
 
     static dwarfExample () {
         const template = new CreatureTemplate();
+        template.name = 'dwarfAxeThrower';
 
         // Dwarf Axe Thrower
         template.tags = [
@@ -300,8 +514,9 @@ class CreatureTemplate {
         ];
 
         template.size = SIZE.Small;
-        template.hp = 3;
+        template.sp = 20;
         template.defense = 17;
+        tepmlate.alignment = 'CG';
         template.actions = [
             ActionTemplate.example()
         ];
@@ -323,7 +538,7 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":32,"../util/util.js":72,"./actiontemplate.js":1}],3:[function(require,module,exports){
+},{"../codices/tags.js":37,"../util/util.js":77,"./actiontemplate.js":3,"./nodeTemplate.js":7}],5:[function(require,module,exports){
 'use strict';
 
 const util = require('../util/util.js');
@@ -364,7 +579,7 @@ class Event {
 
 module.exports = Event;
 
-},{"../util/util.js":72}],4:[function(require,module,exports){
+},{"../util/util.js":77}],6:[function(require,module,exports){
 'use strict';
 
 // A group of creatures in a bottle world.
@@ -398,10 +613,10 @@ class Group {
 
         this.alignment = this.template.alignment || new Alignment('NN');
 
-        this.baselineHp = quantity * this.getStats().hp;
+        this.baselineSp = quantity * this.getStats().sp;
 
-        // HP is stored as a total to make saving group state in replay and Encounter objs simpler.
-        this.totalHp = this.baselineHp;
+        // SP is stored as a total to make saving group state in replay and Encounter objs simpler.
+        this.totalSp = this.baselineSp;
 
         // 2d or 3d position in meters.
         // For spaceless simulations (JRPG style), just use a 1x1 grid.
@@ -426,23 +641,23 @@ class Group {
 
     getQuantity () {
         const quantity = Math.ceil(
-            this.getTotalHp() / this.getStats().hp
+            this.getTotalSp() / this.getStats().sp
         );
 
         return Math.max(quantity, 0);
 
-        // Later, figure out how to handle effects like 'Buff: +1 HP'.
+        // Later, figure out how to handle effects like 'Buff: +1 SP'.
     }
 
-    getTotalHp () {
-        return this.totalHp;
+    getTotalSp () {
+        return this.totalSp;
     }
 
-    getWeakestCreatureHp () {
-        const maxHp = this.getStats().hp;
-        const modulo = this.getTotalHp() % maxHp;
-        const creatureHp = modulo || maxHp;
-        return Math.max(creatureHp, 0);
+    getWeakestCreatureSp () {
+        const maxSp = this.getStats().sp;
+        const modulo = this.getTotalSp() % maxSp;
+        const creatureSp = modulo || maxSp;
+        return Math.max(creatureSp, 0);
     }
 
     isActive () {
@@ -696,16 +911,16 @@ class Group {
     }
 
     takeDamage (n) {
-        this.totalHp -= n;
+        this.totalSp -= n;
 
         const FLEE_THRESHOLD = 0.3;
 
-        if (this.totalHp <= 0) {
-            // Negative HP represents less possibility of recovery from injuries.
+        if (this.totalSp <= 0) {
+            // Negative SP represents less possibility of recovery from injuries.
             this.status = 'eliminated';
             Util.log(`Group ${ this.toPrettyString() } has been eliminated.`, 'debug');
         }
-        else if (this.totalHp <= this.baselineHp * FLEE_THRESHOLD) {
+        else if (this.totalSp <= this.baselineSp * FLEE_THRESHOLD) {
             this.status = 'retreated';
             Util.log(`Group ${ this.toPrettyString() } has retreated.`, 'debug');
         }
@@ -729,9 +944,9 @@ class Group {
         const locationStr = `, location ${ this.coord.toString() }`;
         const idStr = '';  // `, id ${ this.id }`;
 
-        const baseHp = this.getStats().hp;
+        const baseSp = this.getStats().sp;
 
-        const baselineQuantity = Math.ceil(this.baselineHp / baseHp);
+        const baselineQuantity = Math.ceil(this.baselineSp / baseSp);
         const casualties = baselineQuantity - this.getQuantity();
         const deadRatio = Math.round(casualties / baselineQuantity * 100);
 
@@ -739,11 +954,11 @@ class Group {
             `, ${ casualties } casualties (${ deadRatio }%)` :
             '';
 
-        const curHp = this.getWeakestCreatureHp();
+        const curSp = this.getWeakestCreatureSp();
 
-        const injuryStr = curHp === baseHp ?
+        const injuryStr = curSp === baseSp ?
             '' :
-            `, individual w/ ${ curHp }/${ baseHp } HP`;
+            `, individual w/ ${ curSp }/${ baseSp } SP`;
 
         return `${ this.toPrettyString() }${ locationStr }${ idStr }${ casualtiesStr }${ injuryStr }`;
     }
@@ -754,7 +969,7 @@ class Group {
 
         copy.alignment = Util.default(copy.alignment, new Alignment('NN'));
         copy.size = Util.default(copy.size, 1);
-        copy.hp = Util.default(copy.hp, 1);
+        copy.sp = Util.default(copy.sp, 1);
         copy.defense = Util.default(copy.defense, 10);
         copy.actions = Util.default(copy.actions, []);
         copy.tags = Util.default(copy.tags, []);
@@ -928,7 +1143,7 @@ function attackEvent (groupA, groupB, random, resolution) {
         }
 
         event.changes[groupB.id] = {
-            totalHp: groupB.getTotalHp()
+            totalSp: groupB.getTotalSp()
         };
     }
     else {
@@ -1075,7 +1290,7 @@ The intuitive place would be more entries in a .txt codex.
 quantity: 10
 
 * template marine
-hp: 2
+sp: 2
 defense: 11
 tags: human soldier tech10 unsc
 
@@ -1102,7 +1317,19 @@ damage: 1
 
 
 
-},{"../codices/tags.js":32,"../dnd/alignment.js":33,"../util/coord.js":71,"../util/util.js":72,"./creaturetemplate.js":2,"./event.js":3}],5:[function(require,module,exports){
+},{"../codices/tags.js":37,"../dnd/alignment.js":38,"../util/coord.js":76,"../util/util.js":77,"./creaturetemplate.js":4,"./event.js":5}],7:[function(require,module,exports){
+'use strict';
+
+const TAG = require('../codices/tags.js');
+
+module.exports = class NodeTemplate {
+    constructor (name) {
+        this.name = name;
+        this.tags = [];
+    }
+}
+
+},{"../codices/tags.js":37}],8:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -1110,20 +1337,61 @@ const Util = require('../util/util.js');
 
 // BEvent stands for Bottle World Event
 const BEvent = module.exports = class BEvent {
-    constructor (eventType, protagonist, target, coord, templateName) {
+    constructor (eventType, protagonist, target, coord, templateName, time) {
+
+        // type string
         this.eventType = eventType;
 
-        // TODO refactor this prop to be type obj, not type string
+        // type string
         this.protagonistId = (protagonist && protagonist.id) || protagonist;
+
+        // type string
         this.targetId = (target && target.id) || target;
+
+        // type Coord
         this.coord = coord;
+
+        // type string
         this.templateName = templateName;
+
+        // type number
+        this.t = time;
+
+        // type object
         this.props = {};
+
+        // type BEvent[]
         this.outcomes = [];  // Array of other BEvent
+
+        // type string
+        this.id = Util.newId();
+    }
+
+    prettyString () {
+
+    }
+
+    verboseString () {
+
+    }
+
+    addOutcome (event, worldState, time) {
+        if (! Util.exists(time)) {
+            time = this.t;
+        }
+
+        this.outcomes.push(event);
+
+        worldState.timeline.addEvent(
+            event,
+            time
+        );
     }
 
     // NOTE In 2019 July i decided to have BEvents point to ids of Things rather than to Things in-memory.
     // The alternative, if id lookups cause too much slowdown, would be to have BEvents point to full Things in-memory and go back to using BEvent.serializable() to convert to id-based non-circular-ref versions for persistence.
+
+    // TODO (ToW 2019 Oct 17) i desire to reverse this decision. The way i see it now (2019 Oct) i can either translate between string and object once, upon persisting and loading, or i can do it many times (whenever i interact with a BEvent in-memory). But reversing it is not a priority right this minute.
 
     // TODO probably make subclasses of BEvent for Arrival, Explosion, etc.
     // Each could probably even have a .resolve() member func.
@@ -1137,7 +1405,7 @@ const BEvent = module.exports = class BEvent {
     //     const event = new BEvent(BEvent.TYPES.Action, protagonist, target, coord);
     //     event.actionType = actionType;
     //     return event;
-    //     // Outcome information is to be stored in a separate Update event.
+    //     // Outcome information could be stored in this.outcomes or in a separate Update event.
     // }
 
     // // Builds a chain of BEvent of length up to 3
@@ -1223,43 +1491,123 @@ BEvent.TYPES = Util.makeEnum([
     'NewDestination',
     'ActionReady',
     'Update',
+    'Projectile',
     'Explosion',
     'Effect',
     'UniversalUpdate'
 ]);
 
-},{"../util/coord.js":71,"../util/util.js":72}],6:[function(require,module,exports){
+},{"../util/coord.js":76,"../util/util.js":77}],9:[function(require,module,exports){
 'use strict';
 
+const BEvent = require('../bEvent.js');
+const Coord = require('../../util/coord.js');
+const ProjectileEvent = require('./projectileEvent.js');
+const Util = require('../../util/util.js');
+
+module.exports = class ActionEvent extends BEvent {
+    // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
+    constructor (protagonist, target, coord, actionId) {
+        super(
+            BEvent.TYPES.Action,
+            protagonist,
+            target,
+            coord
+        );
+
+        this.actionId = actionId;
+    }
+
+    resolve (worldState) {
+        const protagonist = worldState.fromId(this.protagonistId);
+
+        if (! protagonist.active) {
+            return;
+        }
+
+        const target = worldState.fromId(this.targetId);
+        const actionTemplate = worldState.fromId(this.actionId);
+
+        // Util.logDebug(`In ActionEvent, this.actionId is ${this.actionId}. worldState.glossary[this.actionId] is ${worldState.glossary[this.actionId]}, actionTemplate is ${actionTemplate}, target is ${target}.`);
+
+        // In this early build, we currently assume that all actions are projectile attacks.
+        const shotsPerSecond = (actionTemplate && actionTemplate.shotsPerSecond) || 1;
+
+        for (let i = 0; i < shotsPerSecond; i++) {
+            const shot = new ProjectileEvent(protagonist, target, this.coord, actionTemplate);
+            this.addOutcome(shot, worldState);
+        }
+
+        worldState.setUpNextAction(
+            protagonist,
+            actionTemplate,
+            this
+        );
+    }
+};
+
+},{"../../util/coord.js":76,"../../util/util.js":77,"../bEvent.js":8,"./projectileEvent.js":12}],10:[function(require,module,exports){
+'use strict';
+
+const ActionEvent = require('./actionEvent.js');
 const BEvent = require('../bEvent.js');
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 module.exports = class ActionReadyEvent extends BEvent {
-    constructor (protagonist, actionType) {
+    // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
+    constructor (protagonist, actionId) {
         super(
             BEvent.TYPES.ActionReady,
             protagonist
         );
 
-        // TODO should this event store string actionType or string actionId?
-        this.actionType = actionType;
+        this.actionId = actionId;
     }
 
     resolve (worldState) {
-        // TODO Implement.
-        // MRB 1: The protagonist takes the action specified by this.actionType
-        // Or, as a fallback, creature.actions()[0]
-        // This may entail converting from string to CreatureTemplate if protagonist is a string.
-        // Should we support both string and obj for this protagonist field? When serializing, we will prefer string. Storing as string seems neat enough...
-        // (Edge case: Creature has no actions. Maybe throw error, since ActionReady shouldn't have been called.)
-        // Parameters and targets can be determined randomly, perhaps by Thing.chooseActionDetails() or something.
+        const protagonist = worldState.fromId(this.protagonistId);
 
-        // TODO: Add clearer notes about what type each field is. It's a little confusing currently.
+        // Later could relax the requirement that protagonist.template be populated, if that seems unnecessary.
+        if (
+            ! protagonist.actions ||
+            protagonist.actions().length === 0 ||
+            ! protagonist.template
+        ) {
+            throw new Error(`ActionReadyEvent found a strange protagonist (type ${protagonist.constructor.name}) in WorldState.things. { id: ${protagonist.id}, actions(): ${protagonist.actions ? protagonist.actions() : 'undefined'}, template: ${protagonist.template}, templateName: ${protagonist.templateName} }`);
+        }
+
+        if (! protagonist.active) {
+            return;
+        }
+
+        const actions = protagonist.actions();
+
+        const action = actions.find(
+            a => a.id === this.actionId
+        ) || actions[0];
+
+        const target = protagonist.chooseTarget(worldState, action);
+
+        // TODO: See logs. There's a bug where ProjectileEvents keep appearing even after no targets are active anymore.
+        if (! target) {
+            return;
+        }
+
+        const actionEvent = new ActionEvent(protagonist, target, undefined, this.actionId);
+
+        this.outcomes.push(actionEvent);
+
+        // Util.logDebug(`In ActionReadyEvent.resolve(), about to call timeline.addEvent(actionEvent, t)`);
+
+        worldState.timeline.addEvent(
+            actionEvent,
+            this.t
+        );
     }
 };
 
-},{"../../util/coord.js":71,"../../util/util.js":72,"../bEvent.js":5}],7:[function(require,module,exports){
+},{"../../util/coord.js":76,"../../util/util.js":77,"../bEvent.js":8,"./actionEvent.js":9}],11:[function(require,module,exports){
 'use strict';
 
 const ActionReadyEvent = require('./actionReadyEvent.js');
@@ -1268,7 +1616,7 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
-    constructor (templateName, coord) {
+    constructor (templateName, coord, arrivalType) {
         super(
             BEvent.TYPES.Arrival,
             undefined,
@@ -1276,27 +1624,158 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
             coord || new Coord(),
             templateName
         );
+
+        this.arrivalType = arrivalType;
     }
 
     resolve (worldState) {
-        const arriver = !! this.templateName ?
+        const arriver = this.templateName ?
             worldState.fromTemplateName(this.templateName) :
             worldState.fromId(this.protagonistId);
 
+        if (this.arrivalType === 'randomAlignment') {
+            arriver.alignment = Util.randomOf(worldState.allAlignments());
+        }
+
         worldState.addThing(arriver, this.coord);
 
-        const timeline = worldState.timeline;
+        const firstAction = arriver.actions()[0];
 
-        timeline.addEvent(
-            new ActionReadyEvent(arriver, 'basicAttack'),
-            timeline.now() + ArrivalEvent.ACTION_DELAY
+        // Util.logDebug(`arriver.templateName: ${arriver.templateName}, arriver.template: ${arriver.template}, arriver.constructor.name: ${arriver.constructor.name}, firstAction: ${firstAction}, worldState.glossary.soldier.actions.length: ${worldState.glossary.soldier.actions.length}`);
+
+        if (! firstAction) {
+            return;
+        }
+
+        const actionReadyEvent = new ActionReadyEvent(arriver, firstAction.id);
+
+        this.outcomes.push(actionReadyEvent);
+
+        worldState.timeline.addEvent(
+            actionReadyEvent,
+            this.t + ArrivalEvent.ACTION_DELAY
         );
+
+        // Later ignore that ACTION_DELAY placeholder in favor of information found in codex templates.
     }
 };
 
 ArrivalEvent.ACTION_DELAY = 5;
 
-},{"../../util/coord.js":71,"../../util/util.js":72,"../bEvent.js":5,"./actionReadyEvent.js":6}],8:[function(require,module,exports){
+},{"../../util/coord.js":76,"../../util/util.js":77,"../bEvent.js":8,"./actionReadyEvent.js":10}],12:[function(require,module,exports){
+'use strict';
+
+const BEvent = require('../bEvent.js');
+const Coord = require('../../util/coord.js');
+const Util = require('../../util/util.js');
+
+module.exports = class ProjectileEvent extends BEvent {
+    // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
+    constructor (protagonist, target, coord, action) {
+        super(
+            BEvent.TYPES.Projectile,
+            protagonist,
+            target,
+            coord
+        );
+
+        this.actionId = action.id || action;
+        this.hitTarget;
+        this.resultantTargetSp;
+    }
+
+    resolve (worldState) {
+        const protagonist = worldState.fromId(this.protagonistId);
+        const target = worldState.fromId(this.targetId);
+        const actionTemplate = worldState.fromId(this.actionId);
+
+        // Information to be persisted:
+        // For every attack (shot), what happens to it
+        // Could fail to fire (weapon jam, weapon explodes)
+        // Could miss
+        // Could hit cover and be stopped
+        // Nonfinal outcome: Could hit cover and continue anyway
+        // Could hit armor and be stopped
+        // Nonfinal outcome: Could hit armor and continue anyway
+        // Could hit target (and some combination of cover and/or armor) and do X damage to SP
+        // Later, could do things besides damage too.
+        // There could also be AoE (splash) damage
+        // TLDR: Misfire, Miss, HitCover, HitArmor, Effect <- values of ShotOutcome enum
+        // ShotEvent has a prop of type ShotOutcome[]
+        // Or AttackEvent and AttackOutcome, or ProjectileEvent and ProjectileOutcome
+        // AreaEvent or AoEEvent <- for explosions, AoEs, etc
+        // AreaEvent can have a duration prop, default value 1 (seconds)
+        // Except ... also need to record how much damage the cover or armor absorbs.
+        // ImpactEvent? HitEvent?
+        // Should i also persist info about the cover? (coord, cover rating(s), id)
+        // Should i also persist the coords of the origin and the target of the projectile?
+        // What is a MRB 1 way to model this?
+        // What are the most important things to persist?
+        //   How much damage is done to target?
+        //   Identity of target (especially if protag shoots at a squad and hits a random member of squad)
+        //   .outcomes[] array, which could have AreaEvents for any resulting explosions
+        //   Less important: Info about reasons why damage was zero/low, such as whether it hit cover and/or armor, or missed
+        //   Even less: info about that cover
+
+        // Detailed scheme:
+        // Whenever a projectile impacts anything (cover or a Creature), model this with a ImpactEvent
+        // This could be useful later if we want things to trigger based on loud noises, or a spark being struck and igniting a room full of flammable material.
+        // (Well ... i guess those 2 things might just be caused by the ProjectileEvent directly, since they would happen even if the shot misses.)
+        // For armored creatures, we could have just one ImpactEvent, and have a prop that indicates whether the armor mitigated the damage.
+        // This is mildly at odds with the low-res nature of SP ... but whatever. MRB 1, right?
+
+        // Summary of current scheme
+        // ArrivalEvents create Creatures and set them up with starting ActionReadyEvents.
+        // AREs entail choosing the details/parameters/target of a action and creating a ActionEvent. (You can think of them as 'Choose Action Events')
+        // ActionEvents entail creating some consequential other event, such as 1 or more ProjectileEvents. They also place another ActionReadyEvent into the future.
+        // ProjectileEvents may or may not hit their targets. If they do hit, they deal damage, mitigated by armor. The details of this outcome is persisted in the ProjectileEvent. Suggestion: They store a number describing the resultant SP of the target.
+        // Hits by explosive weapons or on explosive objects can cause a ExplosionEvent. Grenades cause a delayed ExplosionEvent regardless of whether they hit. Certain machines also cause EEs when eliminated.
+        // Other consequences that could be modeled in the ProjectileEvent: Injury effects (MRB 2), morale effects from the hit (probably a separate Event that looks back retrospectively? MRB 2 regardless.), probably a specific EliminationEvent or CasualtyEvent.
+        // But for now i could just include the creature-removal logic (upon 0 SP) in ProjectileEvent.resolve()
+
+        // Old:
+        // If they do hit, they cause a ImpactEvent (or ExplosionEvent, for explosive weapons etc).
+        // ImpactEvent.resolve() includes determining whether the attack does damage. If so, the target.sp prop is updated and this is persisted in the ImpactEvent. This can cause a CasualtyEvent if the target is out of action.
+        // ^ Old ^
+
+        // Summary of current combat algorithm:
+        // When attacking, attacker selects a random active (ie not eliminated) creature of a different faction.
+        // MRB 1: Totally ignore range. Ignore all concerns of space for now.
+        // The ProjectileEvent rolls to hit. Undecided whether to use WCW ballistics or Battle20 d20 roll. Just do something MRB 1 and quick, and make it modular so i can change the func later. Computationally fast is good too.
+        // MRB 1: Ignore the concept of cover for now.
+        // If hit, apply damage.
+        // MRB 1: Ignore armor and/or resistance for now.
+        // If SP is now 0 or less, set target.active = false
+        // (For MRB 2, note that 10 Projectiles might hit a target in one second, the first bringing the SP to 0, and the rest being redundant. Later check for this scenario here. For now it's fine to just keep decrementing the SP negative and setting false to false.)
+
+        // Later can persist more detailed outcomes, such as the projectile bursting thru cover into target, or critical hits.
+        this.hitTarget = this.doesItHit(protagonist, actionTemplate, target, worldState);
+
+        if (! this.hitTarget) {
+            // Util.logDebug(`In ProjectileEvent, targetId is ${this.targetId}`);
+
+            this.resultantTargetSp = target.sp;
+            return;
+        }
+
+        // Util.logDebug(`In ProjectileEvent, actionId is ${this.actionId}`);
+
+        target.sp -= actionTemplate.damage;
+        this.resultantTargetSp = target.sp;
+
+        if (target.sp <= 0) {
+            target.active = false;
+        }
+    }
+
+    doesItHit (protagonist, actionTemplate, target, worldState) {
+        // TODO Replace this func with any hit-roll alg.
+        // return Util.randomOf([true, false, false]);
+        return true;
+    }
+};
+
+},{"../../util/coord.js":76,"../../util/util.js":77,"../bEvent.js":8}],13:[function(require,module,exports){
 'use strict';
 
 // Hashmap ({}) of sets of Events
@@ -1329,6 +1808,10 @@ module.exports = class Timeline {
     addEvent (bEvent, time) {
         time = Util.exists(time) ? time : this.now();
 
+        // Util.logDebug(`In Timeline.addEvent(${bEvent.eventType}, ${time}), near the top.`);
+
+        bEvent.t = time;
+
         const existingEvents = this.timestamps[time];
         if (existingEvents) {
             existingEvents.push(bEvent);
@@ -1341,15 +1824,20 @@ module.exports = class Timeline {
     computeNextInstant () {
         this.currentWorldState.t += SECONDS_PER_TICK;
 
+        // Later it would be delightful if this func would check the real-world timestamp on when the tick number was last logged out, and only log iff that was a little while ago. (And then update the timestamp.)
+        Util.logDebug(`Starting to compute second #${this.currentWorldState.t}...`);
+
         const events = this.getEventsAt(this.now() - 1);
 
-        events.forEach(event => {
-            this.currentWorldState.resolveEvent(event);
-        });
+        let i = 0;
+        while (events[i]) {
+            // Note that resolveEvent() sometimes pushes new BEvents onto the current second's events array.
+            this.currentWorldState.resolveEvent(events[i]);
 
-        // TODO Implement ActionReadyEvent.resolve()
-        // TODO Implement ActionEvent for actionType === basicAttack, in this case a soldier shooting.
-        // TODO Also this.worldState.moveEverything() towards their destinations.
+            i++;
+        }
+
+        // this.worldState.moveEverything(); // TODO implement this func, which moves all moving Things towards their destinations.
     }
 
     toDebugString () {
@@ -1358,7 +1846,7 @@ module.exports = class Timeline {
         for (let t = 0; t <= this.now(); t++) {
             if (this.timestamps[t]) {
                 const eventsSummary = this.getEventsAt(t)
-                    .map(e => e.eventType)
+                    .map(e => Util.capitalized(e.eventType))
                     .join(', ');
 
                 lines.push(`${t}: ${eventsSummary}`);
@@ -1391,13 +1879,14 @@ module.exports = class Timeline {
     }
 };
 
-},{"../util/util.js":72,"./bEvent.js":5,"./worldState.js":9}],9:[function(require,module,exports){
+},{"../util/util.js":77,"./bEvent.js":8,"./worldState.js":14}],14:[function(require,module,exports){
 'use strict';
 
 // Represents the world in a Bottle World at one moment.
 
 const Timeline = require('./timeline.js');
 const ArrivalEvent = require('./events/arrivalEvent.js');
+const ActionReadyEvent = require('./events/actionReadyEvent.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const Group = require('../battle20/group.js');
 const BEvent = require('../bottleWorld/bEvent.js');
@@ -1435,11 +1924,59 @@ class WorldState {
         return this.t;
     }
 
+    fromId (id) {
+        const thingWithId = this.things.find(
+            thing => thing.id === id
+        );
+
+        if (thingWithId) {
+            return thingWithId;
+        }
+
+        // If it is not a Thing ID, try the glossary.
+        return this.glossary[id];
+
+        // Later i can cache a id-to-thing mapping if i run into performance concerns.
+    }
+
     // I currently plan for Thing to extend WNode
     thingsAt (coord) {
         return this.things.filter(
             t => t.coord && t.coord.equals(coord)
         );
+    }
+
+    thingsWith (criteria, shouldFlip) {
+        shouldFlip = shouldFlip || false;
+
+        const props = Object.keys(criteria);
+
+        return this.things.filter(
+            thing => {
+                for (let i = 0; i < props.length; i++) {
+                    const prop = props[i];
+
+                    if (! shouldFlip) {
+                        // In the normal mode, criteria describes a set of mandatory traits.
+                        if (thing[prop] != criteria[prop]) {
+                            return false;
+                        }
+                    }
+                    else {
+                        // In the flipped mode, criteria describes a set of undesirable traits.
+                        if (thing[prop] == criteria[prop]) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+        );
+    }
+
+    thingsWithout (criteria) {
+        return this.thingsWith(criteria, true);
     }
 
     addThing (thing, coord) {
@@ -1501,11 +2038,12 @@ class WorldState {
     fromTemplateName (templateName) {
         const template = this.getTemplate(templateName);
 
-        // Later use the template to customize the fields of the Thing
+        // Util.logDebug(`The following is the value of local var 'template' inside a call to WorldState.fromTemplateName('${templateName}'):`);
+        // Util.logDebug(template);
 
         return template.constructor.name === 'CreatureTemplate' ?
-            new Creature(templateName) :
-            new Thing(templateName);
+            new Creature(template) :
+            new Thing(template);
     }
 
     resolveEvent (bEvent) {
@@ -1514,13 +2052,13 @@ class WorldState {
 
     thingString () {
         return this.things.map(
-            t => t.templateName
+            t => `\n    ${Util.capitalized(t.toSimpleString())}`
         )
-        .join(', ') || `[Only the tireless void]`;
+        .join('') || `\n    [Only the tireless void]`;
     }
 
     printThings () {
-        const output = `At t=${ this.now() }, this world contains: ${ this.thingString() }`;
+        const output = `At t=${ this.now() }, this world contains: ${ this.thingString() }\n    (${this.alignmentCensusString()})`;
 
         Util.log(output, 'debug');
     }
@@ -1542,6 +2080,51 @@ class WorldState {
             .map(
                 thing => thing.constructor.name
             )
+            .join(', ');
+    }
+
+    // This is a slightly hacky workaround for a circular dependency between ActionEvent and ActionReadyEvent
+    setUpNextAction (protagonist, actionTemplate, actionEvent) {
+        const actionReady = new ActionReadyEvent(protagonist, actionEvent.actionId);
+
+        actionEvent.addOutcome(
+            actionReady,
+            this,
+            actionEvent.t + actionTemplate.secondsUntilNextAction()
+        );
+    }
+
+    alignmentCensusObj () {
+        const population = {};
+
+        this.things.forEach(
+            thing => {
+                if (! thing.active) {
+                    return;
+                }
+
+                if (population[thing.alignment]) {
+                    population[thing.alignment] += 1;
+                }
+                else {
+                    population[thing.alignment] = 1;
+                }
+            }
+        );
+
+        return population;
+    }
+
+    alignmentCensusString () {
+        const census = this.alignmentCensusObj();
+        const alignments = Object.keys(census);
+
+        if (alignments.length === 0) {
+            return 'Everyone is dead!';
+        }
+
+        return alignments
+            .map(alignment => `${alignment}: ${census[alignment]}`)
             .join(', ');
     }
 
@@ -1697,7 +2280,7 @@ If you want to represent the presence of a extra soldier, special soldier, or ar
 
 */
 
-},{"../battle20/creaturetemplate.js":2,"../battle20/group.js":4,"../bottleWorld/bEvent.js":5,"../codices/battle20/halo/unsc/group.js":10,"../codices/tags.js":32,"../dnd/alignment.js":33,"../generation/wgenerator.js":37,"../util/coord.js":71,"../util/util.js":72,"../wnode/creature.js":73,"../wnode/thing.js":75,"../wnode/wnode.js":76,"./events/arrivalEvent.js":7,"./timeline.js":8,"js-yaml":39}],10:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":4,"../battle20/group.js":6,"../bottleWorld/bEvent.js":8,"../codices/battle20/halo/unsc/group.js":15,"../codices/tags.js":37,"../dnd/alignment.js":38,"../generation/wgenerator.js":42,"../util/coord.js":76,"../util/util.js":77,"../wnode/creature.js":78,"../wnode/thing.js":80,"../wnode/wnode.js":81,"./events/actionReadyEvent.js":10,"./events/arrivalEvent.js":11,"./timeline.js":13,"js-yaml":44}],15:[function(require,module,exports){
 module.exports = `
 * output
 4 {squad}
@@ -1768,22 +2351,10 @@ damage: 2
 
 `;
 
-},{}],11:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = `
 * output
-1 decade
-
-* childrenof decade
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
-{battalion}
+1 {battalion}
 
 * alias battalion
 2 airBattalion
@@ -1946,6 +2517,83 @@ squad/scarab
 {squad/mobileSquad}
 {squad/mobileSquad}
 
+
+* childrenof milade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+hectakilade
+
+* childrenof hectakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+dekakilade
+
+* childrenof dekakilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+kilade
+
+* alias notes
+0 hectade works fine, but even kilade hit a JS out of memory error in the CLI.
+
+* childrenof kilade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+hectade
+
+* childrenof hectade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+decade
+
+* childrenof decade
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+{battalion}
+
+
 `;
 
 // Later: Combine these into the above when their prereqs exist
@@ -1953,7 +2601,7 @@ const drafts = `
 
 `;
 
-},{}],12:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -2004,6 +2652,10 @@ tags: elite infantry
 size: 2
 weight: 350
 individuals: 1
+maxSp: 100
+damage: 65
+attackDelay: 2
+speed: 4
 
 * childrenof eliteMinor
 {item/eliteMinorWeapon}
@@ -2065,6 +2717,10 @@ individuals: 1
 size: 1.5
 weight: 250
 individuals: 1
+maxSp: 20
+damage: 1
+attackDelay: 2
+speed: 2
 
 * childrenof gruntMinor
 {item/gruntWeapon}
@@ -2086,7 +2742,7 @@ item/bombHarness
 
 `;
 
-},{}],13:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -2227,7 +2883,7 @@ weight: 4
 
 `;
 
-},{}],14:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = `
 * output
 5 {lance}
@@ -2546,7 +3202,7 @@ individual/bruteMinor
 
 `;
 
-},{}],15:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = `
 * output
 100 pod
@@ -2577,7 +3233,7 @@ module.exports = `
 
 `;
 
-},{}],16:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = `
 * output
 150 {infantryPack}
@@ -2644,7 +3300,7 @@ individual/brainForm
 
 `;
 
-},{}],17:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = `
 * output
 1 installationCompany
@@ -2668,7 +3324,7 @@ module.exports = `
 
 `;
 
-},{}],18:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = `
 * output
 50 sentinel
@@ -2704,7 +3360,7 @@ forerunner/item/boltshot
 
 `;
 
-},{}],19:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = `
 * output
 1 {giWeapon}
@@ -2750,7 +3406,7 @@ module.exports = `
 4 prometheanVision
 
 `;
-},{}],20:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = `
 * output
 1 {installationSquad}
@@ -2825,7 +3481,7 @@ Sketching about Forerunner armies
 
 */
 
-},{}],21:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = `
 * output
 4 {halo/unsc/fleet}
@@ -2835,7 +3491,7 @@ module.exports = `
 
 `;
 
-},{}],22:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -2918,7 +3574,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],23:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -3035,7 +3691,7 @@ spaceFighterSquadron
 {unsc/squad/oniSquad}
 
 `;
-},{}],24:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -3059,7 +3715,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],25:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -3073,8 +3729,10 @@ module.exports = `
 individuals: 1
 weight: 80
 size: 1.7
-speed: 10
+speed: 3
 stealth: 10
+maxSp: 10
+damage: 2
 
 * childrenof human
 {gender}
@@ -3169,7 +3827,7 @@ weight: 1000
 
 `;
 
-},{}],26:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = `* output
 15 {anyWeapon}
 20 {anyGear}
@@ -3348,6 +4006,7 @@ module.exports = `* output
 
 * template mjolnirArmor
 weight: 454
+sp: 40
 
 * alias armorMod
 4 armorLock
@@ -3389,43 +4048,45 @@ weight: 454
 1 covenantAi
 
 * template flakArmor
-defense: 6
-resistance: fire 1, piercing 1
+sp: 20
+resistance: fire 1, piercing 1, impact 1
 tags: armor
+comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
 
 * template smg
 tags: action bullet fullAuto
 range: 20
 hit: 3
-damage: 1
+damage: 7
 
 * template assaultRifle
 tags: action bullet fullAuto
-range: 30
+range: 40
 hit: 3
-damage: 1
+damage: 8
 
 * template battleRifle
 tags: action bullet
-range: 50
+range: 80
 hit: 3
-damage: 1
+damage: 9
 
 * template dmr
 tags: action bullet
-range: 60
+range: 100
 hit: 3
-damage: 1
+damage: 10
 
 * template shotgun
 tags: action bullet
-range: 5
+range: 9
 hit: 5
-damage: 2
+damage: 80
+attackDelay: 2
 
 `;
 
-},{}],27:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -3747,7 +4408,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],28:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -3877,7 +4538,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],29:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -4320,7 +4981,7 @@ forklift
 
 `;
 
-},{}],30:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -4524,7 +5185,7 @@ module.exports = `
 
 
 `;
-},{}],31:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -4538,7 +5199,7 @@ module.exports = `
 
 
 `;
-},{}],32:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -4595,7 +5256,7 @@ module.exports = Util.makeEnum([
     'Covenant'
 ]);
 
-},{"../util/util.js":72}],33:[function(require,module,exports){
+},{"../util/util.js":77}],38:[function(require,module,exports){
 'use strict';
 
 // similar to alignment.js in hobby/ git repo.
@@ -4636,7 +5297,7 @@ class Alignment {
 
 module.exports = Alignment;
 
-},{}],34:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 // A Blip is the front-end visual representation of 1 or more objects or warriors in the FishTank world.
@@ -4679,7 +5340,7 @@ module.exports = Blip;
 
 // Blip.run();
 
-},{"../../util/coord.js":71,"../../util/util.js":72,"../../wnode/wnode.js":76}],35:[function(require,module,exports){
+},{"../../util/coord.js":76,"../../util/util.js":77,"../../wnode/wnode.js":81}],40:[function(require,module,exports){
 'use strict';
 
 // A EffectVisual is the front-end visual representation of a action or effect in the game world.
@@ -4744,7 +5405,7 @@ module.exports = EffectVisual;
 
 // EffectVisual.run();
 
-},{"../../util/coord.js":71,"../../util/util.js":72,"../../wnode/wnode.js":76}],36:[function(require,module,exports){
+},{"../../util/coord.js":76,"../../util/util.js":77,"../../wnode/wnode.js":81}],41:[function(require,module,exports){
 'use strict';
 
 const Timeline = require('../../bottleWorld/timeline.js');
@@ -4985,7 +5646,7 @@ function randomFromFaction (faction, notThisOne) {
     return undefined;
 }
 
-},{"../../bottleWorld/timeline.js":8,"../../bottleWorld/worldState.js":9,"../../util/util.js":72}],37:[function(require,module,exports){
+},{"../../bottleWorld/timeline.js":13,"../../bottleWorld/worldState.js":14,"../../util/util.js":77}],42:[function(require,module,exports){
 (function (process,__dirname){
 'use strict';
 
@@ -5014,7 +5675,8 @@ class WGenerator {
         this.aliasTables = {};
         this.childTables = {};
         // Later, make this a pointer to a Glossary instance.
-        // usage: glossary.getTemplate('naga');
+        // usage will be: glossary.getTemplate('naga');
+        // Currently, glossary is indexed by templateNames and contains CreatureTemplates.
         this.glossary = {};
 
         // TODO: Add support for ignorable comments in codex files
@@ -5032,9 +5694,9 @@ class WGenerator {
                     return this.addChildTable(tableRaw);
                 }
 
-                // Later, this could be neater and not involve a string literal.
+                // Later, this could be neater and not involve a string literal. 'template ' could be a const.
                 if (tableRaw.startsWith('template ')) {
-                    return this.addTemplate(tableRaw);
+                    this.addTemplate(tableRaw);
                 }
 
                 // Default case.
@@ -5076,13 +5738,19 @@ class WGenerator {
 
     addTemplate (tableRaw) {
         const templateObj = parseTemplate(tableRaw);
-        const key = templateObj.templateName;
+        const key = templateObj.name;
 
         if (key in this.glossary) {
             throw new Error(`template key '${ key }' appears twice`);
         }
 
-        return this.glossary[key] = templateObj;
+        this.glossary[key] = templateObj;
+
+        templateObj.actions.forEach(
+            actionTemplate => {
+                this.glossary[actionTemplate.id] = actionTemplate;
+            }
+        );
     }
 
     // Returns WNode[]
@@ -5871,9 +6539,9 @@ class ContextString {
 // TODO put this in class Template and template.js or something.
 // Later likely rename to class TraitsTable and '* traits foo', for clarity.
 // This will probably become or call a constructor
-// and store the first line in this.templateName
+// and store the first line in this.name
 function parseTemplate (tableRaw) {
-    const templateObj = new CreatureTemplate();
+    const creatureTemplate = new CreatureTemplate();
 
     tableRaw.split('\n')
         .slice(1)
@@ -5883,26 +6551,26 @@ function parseTemplate (tableRaw) {
                 const key = parsed.key;
 
                 if (
-                    key in templateObj &&
+                    key in creatureTemplate &&
                     ! ['tags', 'actions', 'resistance'].includes(key)
                 ) {
                     throw new Error(`parseTemplate(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
                 }
 
-                templateObj[key] = parsed.value;
+                creatureTemplate[key] = parsed.value;
 
                 // Util.log(`in parseTemplate(). Just wrote key/value pair {${key}: ${parsed.value}}`, 'debug');
             }
         );
 
-    // templateObj.key = templateKey(tableRaw);
-    templateObj.templateName = templateKey(tableRaw);
-    templateObj.setUpAction();
+    // creatureTemplate.key = templateKey(tableRaw);
+    creatureTemplate.name = templateKey(tableRaw);
+    creatureTemplate.setUpAction();
 
     // Later: at some point, detect whether it is a ActionTemplate or CreatureTemplate.
-    // Probably mark templateObj.type, or instantiate the appropriate class, or something.
+    // Probably mark creatureTemplate.type, or instantiate the appropriate class, or something.
 
-    return templateObj;
+    return creatureTemplate;
 }
 
 function parseTemplateLine (line) {
@@ -6081,21 +6749,24 @@ halo/unsc/item/externalThing
 */
 
 }).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":2,"../codices/halo/cov/force":11,"../codices/halo/cov/individual":12,"../codices/halo/cov/item":13,"../codices/halo/cov/squad":14,"../codices/halo/flood/individual":15,"../codices/halo/flood/squad":16,"../codices/halo/forerunner/company":17,"../codices/halo/forerunner/individual":18,"../codices/halo/forerunner/item":19,"../codices/halo/forerunner/squad":20,"../codices/halo/presence":21,"../codices/halo/unsc/battalion":22,"../codices/halo/unsc/company":23,"../codices/halo/unsc/fleet":24,"../codices/halo/unsc/individual":25,"../codices/halo/unsc/item":26,"../codices/halo/unsc/patrol":27,"../codices/halo/unsc/patrol.js":27,"../codices/halo/unsc/ship":28,"../codices/halo/unsc/squad":29,"../codices/sunlight/warband/item":30,"../codices/sunlight/warband/player":31,"../util/util.js":72,"../wnode/storageModes.js":74,"../wnode/wnode.js":76,"_process":78,"fs":77}],38:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":4,"../codices/halo/cov/force":16,"../codices/halo/cov/individual":17,"../codices/halo/cov/item":18,"../codices/halo/cov/squad":19,"../codices/halo/flood/individual":20,"../codices/halo/flood/squad":21,"../codices/halo/forerunner/company":22,"../codices/halo/forerunner/individual":23,"../codices/halo/forerunner/item":24,"../codices/halo/forerunner/squad":25,"../codices/halo/presence":26,"../codices/halo/unsc/battalion":27,"../codices/halo/unsc/company":28,"../codices/halo/unsc/fleet":29,"../codices/halo/unsc/individual":30,"../codices/halo/unsc/item":31,"../codices/halo/unsc/patrol":32,"../codices/halo/unsc/patrol.js":32,"../codices/halo/unsc/ship":33,"../codices/halo/unsc/squad":34,"../codices/sunlight/warband/item":35,"../codices/sunlight/warband/player":36,"../util/util.js":77,"../wnode/storageModes.js":79,"../wnode/wnode.js":81,"_process":2,"fs":1}],43:[function(require,module,exports){
+'use strict'
+
 // return a string with the provided number formatted with commas.
 // can specify either a Number or a String.
-function commaNumber(number, separator, decimalChar) {
+function commaNumber(inputNumber, optionalSeparator, optionalDecimalChar) {
 
   // we'll strip off and hold the decimal value to reattach later.
   // we'll hold both the `number` value and `stringNumber` value.
-  var decimal, stringNumber
+  let number, stringNumber, decimal
 
   // default `separator` is a comma
-  separator   = separator   || ','
-  // default `decimalChar` is a period
-  decimalChar = decimalChar || '.'
+  const separator = optionalSeparator   || ','
 
-  switch (typeof number) {
+  // default `decimalChar` is a period
+  const decimalChar = optionalDecimalChar || '.'
+
+  switch (typeof inputNumber) {
 
     case 'string':
 
@@ -6103,26 +6774,29 @@ function commaNumber(number, separator, decimalChar) {
       // NOTE: some numbers which are too small will get passed this
       //       when they have decimal values which make them too long here.
       //       but, the number value check after this switch will catch it.
-      if (number.length < (number[0] === '-' ? 5 : 4)) {
-        return number
+      if (inputNumber.length < (inputNumber[0] === '-' ? 5 : 4)) {
+        return inputNumber
       }
 
       // remember it as a string in `stringNumber` and convert to a Number
-      stringNumber = number
+      stringNumber = inputNumber
 
       // if they're not using the Node standard decimal char then replace it
       // before converting.
-      number = decimalChar !== '.' ? Number(number.replace(decimalChar, '.'))
-                                   : Number(number)
+      number = decimalChar !== '.' ? Number(stringNumber.replace(decimalChar, '.'))
+                                   : Number(stringNumber)
       break
 
     // convert to a string.
     // NOTE: don't check if the number is too small before converting
     //       because we'll need to return `stringNumber` anyway.
-    case 'number': stringNumber = String(number) ; break
+    case 'number':
+      stringNumber = String(inputNumber)
+      number       = inputNumber
+      break
 
     // return invalid type as-is
-    default: return number
+    default: return inputNumber
   }
 
   // when it doesn't need a separator or isn't a number then return it
@@ -6131,21 +6805,23 @@ function commaNumber(number, separator, decimalChar) {
   }
 
   // strip off decimal value to append to the final result at the bottom
-  decimal = stringNumber.lastIndexOf(decimalChar)
+  let decimalIndex = stringNumber.lastIndexOf(decimalChar)
 
-  if (decimal > -1) {
-    decimal = stringNumber.slice(decimal)
+  if (decimalIndex > -1) {
+    decimal = stringNumber.slice(decimalIndex)
     stringNumber = stringNumber.slice(0, -decimal.length)
-  } else {
-    decimal = null
   }
+
+  // else {
+  //   decimal = null
+  // }
 
   // finally, parse the string and add in separators
   stringNumber = parse(stringNumber, separator)
 
   // if there's a decimal value add it back on the end.
   // NOTE: we sliced() it off including the decimalChar, so it's good.
-  return (decimal != null) ? stringNumber + decimal : stringNumber
+  return decimal ? stringNumber + decimal : stringNumber
 
 }
 
@@ -6154,15 +6830,14 @@ function parse(stringNumber, separator) {
 
   // below here we split the number at spots to add a separator.
   // then, combine it with the separator and add decimal value (if exists)
-  var count, i, start, strings
 
-  start = stringNumber[0] === '-' ? 1 : 0  // start after minus sign
-  count = stringNumber.length - start - 1  // count digits after first
-  strings = []                             // hold string parts
-  i = (count % 3) + 1 + start              // index for first separator
-
-  // grab string content before where the first separator belongs
-  strings.push(stringNumber.slice(0, i))
+  const start = stringNumber[0] === '-' ? 1 : 0  // start after minus sign
+  const count = stringNumber.length - start - 1  // count digits after first
+  let i = (count % 3) + 1 + start                // index for first separator
+  const strings = [                              // hold string parts
+    // grab string content before where the first separator belongs
+    stringNumber.slice(0, i)
+  ]
 
   // split remaining string in groups of 3 where a separator belongs
   while (i < stringNumber.length) {
@@ -6176,7 +6851,7 @@ function parse(stringNumber, separator) {
 
 
 // convenience function for currying style:
-//   var format = commaNumber.bindWith(',', '.')
+//   const format = commaNumber.bindWith(',', '.')
 function bindWith(separator, decimalChar) {
   return function(number) {
     return commaNumber(number, separator, decimalChar)
@@ -6186,7 +6861,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],39:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict';
 
 
@@ -6195,7 +6870,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":40}],40:[function(require,module,exports){
+},{"./lib/js-yaml.js":45}],45:[function(require,module,exports){
 'use strict';
 
 
@@ -6236,7 +6911,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":42,"./js-yaml/exception":43,"./js-yaml/loader":44,"./js-yaml/schema":46,"./js-yaml/schema/core":47,"./js-yaml/schema/default_full":48,"./js-yaml/schema/default_safe":49,"./js-yaml/schema/failsafe":50,"./js-yaml/schema/json":51,"./js-yaml/type":52}],41:[function(require,module,exports){
+},{"./js-yaml/dumper":47,"./js-yaml/exception":48,"./js-yaml/loader":49,"./js-yaml/schema":51,"./js-yaml/schema/core":52,"./js-yaml/schema/default_full":53,"./js-yaml/schema/default_safe":54,"./js-yaml/schema/failsafe":55,"./js-yaml/schema/json":56,"./js-yaml/type":57}],46:[function(require,module,exports){
 'use strict';
 
 
@@ -6297,7 +6972,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],42:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -7126,7 +7801,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":41,"./exception":43,"./schema/default_full":48,"./schema/default_safe":49}],43:[function(require,module,exports){
+},{"./common":46,"./exception":48,"./schema/default_full":53,"./schema/default_safe":54}],48:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -7171,7 +7846,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],44:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -7203,6 +7878,8 @@ var PATTERN_FLOW_INDICATORS       = /[,\[\]\{\}]/;
 var PATTERN_TAG_HANDLE            = /^(?:!|!!|![a-z\-]+!)$/i;
 var PATTERN_TAG_URI               = /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i;
 
+
+function _class(obj) { return Object.prototype.toString.call(obj); }
 
 function is_EOL(c) {
   return (c === 0x0A/* LF */) || (c === 0x0D/* CR */);
@@ -7458,6 +8135,31 @@ function mergeMappings(state, destination, source, overridableKeys) {
 
 function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, startLine, startPos) {
   var index, quantity;
+
+  // The output is a plain object here, so keys can only be strings.
+  // We need to convert keyNode to a string, but doing so can hang the process
+  // (deeply nested arrays that explode exponentially using aliases).
+  if (Array.isArray(keyNode)) {
+    keyNode = Array.prototype.slice.call(keyNode);
+
+    for (index = 0, quantity = keyNode.length; index < quantity; index += 1) {
+      if (Array.isArray(keyNode[index])) {
+        throwError(state, 'nested arrays are not supported inside keys');
+      }
+
+      if (typeof keyNode === 'object' && _class(keyNode[index]) === '[object Object]') {
+        keyNode[index] = '[object Object]';
+      }
+    }
+  }
+
+  // Avoid code execution in load() via toString property
+  // (still use its own toString for arrays, timestamps,
+  // and whatever user schema extensions happen to have @@toStringTag)
+  if (typeof keyNode === 'object' && _class(keyNode) === '[object Object]') {
+    keyNode = '[object Object]';
+  }
+
 
   keyNode = String(keyNode);
 
@@ -8771,7 +9473,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":41,"./exception":43,"./mark":45,"./schema/default_full":48,"./schema/default_safe":49}],45:[function(require,module,exports){
+},{"./common":46,"./exception":48,"./mark":50,"./schema/default_full":53,"./schema/default_safe":54}],50:[function(require,module,exports){
 'use strict';
 
 
@@ -8849,7 +9551,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":41}],46:[function(require,module,exports){
+},{"./common":46}],51:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -8959,7 +9661,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":41,"./exception":43,"./type":52}],47:[function(require,module,exports){
+},{"./common":46,"./exception":48,"./type":57}],52:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -8979,7 +9681,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":46,"./json":51}],48:[function(require,module,exports){
+},{"../schema":51,"./json":56}],53:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -9006,7 +9708,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":46,"../type/js/function":57,"../type/js/regexp":58,"../type/js/undefined":59,"./default_safe":49}],49:[function(require,module,exports){
+},{"../schema":51,"../type/js/function":62,"../type/js/regexp":63,"../type/js/undefined":64,"./default_safe":54}],54:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -9036,7 +9738,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":46,"../type/binary":53,"../type/merge":61,"../type/omap":63,"../type/pairs":64,"../type/set":66,"../type/timestamp":68,"./core":47}],50:[function(require,module,exports){
+},{"../schema":51,"../type/binary":58,"../type/merge":66,"../type/omap":68,"../type/pairs":69,"../type/set":71,"../type/timestamp":73,"./core":52}],55:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -9055,7 +9757,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":46,"../type/map":60,"../type/seq":65,"../type/str":67}],51:[function(require,module,exports){
+},{"../schema":51,"../type/map":65,"../type/seq":70,"../type/str":72}],56:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -9082,7 +9784,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":46,"../type/bool":54,"../type/float":55,"../type/int":56,"../type/null":62,"./failsafe":50}],52:[function(require,module,exports){
+},{"../schema":51,"../type/bool":59,"../type/float":60,"../type/int":61,"../type/null":67,"./failsafe":55}],57:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -9145,7 +9847,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":43}],53:[function(require,module,exports){
+},{"./exception":48}],58:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -9285,7 +9987,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":52}],54:[function(require,module,exports){
+},{"../type":57}],59:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9322,7 +10024,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":52}],55:[function(require,module,exports){
+},{"../type":57}],60:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -9440,7 +10142,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":41,"../type":52}],56:[function(require,module,exports){
+},{"../common":46,"../type":57}],61:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -9615,7 +10317,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":41,"../type":52}],57:[function(require,module,exports){
+},{"../common":46,"../type":57}],62:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -9709,7 +10411,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":52}],58:[function(require,module,exports){
+},{"../../type":57}],63:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -9771,7 +10473,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":52}],59:[function(require,module,exports){
+},{"../../type":57}],64:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -9801,7 +10503,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":52}],60:[function(require,module,exports){
+},{"../../type":57}],65:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9811,7 +10513,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":52}],61:[function(require,module,exports){
+},{"../type":57}],66:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9825,7 +10527,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":52}],62:[function(require,module,exports){
+},{"../type":57}],67:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9861,7 +10563,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":52}],63:[function(require,module,exports){
+},{"../type":57}],68:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9907,7 +10609,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":52}],64:[function(require,module,exports){
+},{"../type":57}],69:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9962,7 +10664,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":52}],65:[function(require,module,exports){
+},{"../type":57}],70:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9972,7 +10674,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":52}],66:[function(require,module,exports){
+},{"../type":57}],71:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10003,7 +10705,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":52}],67:[function(require,module,exports){
+},{"../type":57}],72:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10013,7 +10715,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":52}],68:[function(require,module,exports){
+},{"../type":57}],73:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10103,12 +10805,12 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":52}],69:[function(require,module,exports){
+},{"../type":57}],74:[function(require,module,exports){
 (function (global){
 /**
  * @license
  * Lodash <https://lodash.com/>
- * Copyright JS Foundation and other contributors <https://js.foundation/>
+ * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -10119,7 +10821,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.11';
+  var VERSION = '4.17.15';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -12778,16 +13480,10 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
         value.forEach(function(subValue) {
           result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
         });
-
-        return result;
-      }
-
-      if (isMap(value)) {
+      } else if (isMap(value)) {
         value.forEach(function(subValue, key) {
           result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
         });
-
-        return result;
       }
 
       var keysFunc = isFull
@@ -13711,8 +14407,8 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
         return;
       }
       baseFor(source, function(srcValue, key) {
+        stack || (stack = new Stack);
         if (isObject(srcValue)) {
-          stack || (stack = new Stack);
           baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
         }
         else {
@@ -15529,7 +16225,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
       return function(number, precision) {
         number = toNumber(number);
         precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
-        if (precision) {
+        if (precision && nativeIsFinite(number)) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
           var pair = (toString(number) + 'e').split('e'),
@@ -16712,7 +17408,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
     }
 
     /**
-     * Gets the value at `key`, unless `key` is "__proto__".
+     * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
      *
      * @private
      * @param {Object} object The object to query.
@@ -16720,6 +17416,10 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
      * @returns {*} Returns the property value.
      */
     function safeGet(object, key) {
+      if (key === 'constructor' && typeof object[key] === 'function') {
+        return;
+      }
+
       if (key == '__proto__') {
         return;
       }
@@ -20520,6 +21220,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
           }
           if (maxing) {
             // Handle invocations in a tight loop.
+            clearTimeout(timerId);
             timerId = setTimeout(timerExpired, wait);
             return invokeFunc(lastCallTime);
           }
@@ -24906,9 +25607,12 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
       , 'g');
 
       // Use a sourceURL for easier debugging.
+      // The sourceURL gets injected into the source that's eval-ed, so be careful
+      // with lookup (in case of e.g. prototype pollution), and strip newlines if any.
+      // A newline wouldn't be a valid sourceURL anyway, and it'd enable code injection.
       var sourceURL = '//# sourceURL=' +
-        ('sourceURL' in options
-          ? options.sourceURL
+        (hasOwnProperty.call(options, 'sourceURL')
+          ? (options.sourceURL + '').replace(/[\r\n]/g, ' ')
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -24941,7 +25645,9 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      var variable = options.variable;
+      // Like with sourceURL, we take care to not check the option's prototype,
+      // as this configuration is a code injection vector.
+      var variable = hasOwnProperty.call(options, 'variable') && options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
@@ -27146,10 +27852,11 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
     baseForOwn(LazyWrapper.prototype, function(func, methodName) {
       var lodashFunc = lodash[methodName];
       if (lodashFunc) {
-        var key = (lodashFunc.name + ''),
-            names = realNames[key] || (realNames[key] = []);
-
-        names.push({ 'name': methodName, 'func': lodashFunc });
+        var key = lodashFunc.name + '';
+        if (!hasOwnProperty.call(realNames, key)) {
+          realNames[key] = [];
+        }
+        realNames[key].push({ 'name': methodName, 'func': lodashFunc });
       }
     });
 
@@ -27214,7 +27921,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],70:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -31818,7 +32525,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],71:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 'use strict';
 
 // TODO make this name lowercase.
@@ -31911,7 +32618,7 @@ class Coord {
 Coord.DECIMAL_PLACES = 2;
 
 module.exports = Coord;
-},{"./util.js":72}],72:[function(require,module,exports){
+},{"./util.js":77}],77:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -32040,6 +32747,13 @@ util.newId = function () {
     }
 
     return id;
+};
+
+// Returns string
+util.shortId = function (id) {
+    return id ?
+        `${id.slice(0, 3)}` :
+        '';
 };
 
 util.repeat = function (str, n) {
@@ -32339,6 +33053,14 @@ util.log = function (input, tag) {
     console.log(`  ${tagStr} (${ dateTime }) ${ info }\n`);
 };
 
+util.logDebug = function (input) {
+    util.log(input, 'debug');
+}
+
+util.logError = function (input) {
+    util.log(input, 'error');
+}
+
 util.makeEnum = (vals) => {
     const dict = {};
     for (let val of vals) {
@@ -32359,34 +33081,54 @@ util.mbti = () => {
     .join('');
 };
 
-},{"comma-number":38,"lodash":69,"moment":70}],73:[function(require,module,exports){
+},{"comma-number":43,"lodash":74,"moment":75}],78:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
 const Util = require('../util/util.js');
 const Thing = require('./thing.js');
 
+// Later i may decide to move this class into the bottleWorld/ dir, if it doesnt feel generic enough for the wnode/ dir.
 module.exports = class Creature extends Thing {
-    constructor (templateName, coord) {
-        super(templateName, coord);
+    constructor (template, coord, alignment) {
+        super(template, coord);
 
-        // TODO Take worldState or template as a param, and read the template to init this.hp
-        if (! Util.exists(this.hp)) {
-            this.hp = 1;
-        }
+        // Util.logDebug(`Creature constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
+
+        // Init stamina points
+        this.sp = this.template && this.template.maxSp || 1;
+
+        // Faction or temperament
+        this.alignment = alignment;
     }
 
     actions (worldState) {
-        const template = worldState.glossary[this.templateName];
+        const template = this.template ||
+            (worldState && worldState.glossary[this.templateName]);
 
         return template ?
             template.actions :
             [];
     }
+
+    actionFromId (id) {
+        return this.actions().find(
+            action => action.id === id
+        );
+    }
+
+    chooseTarget (worldState, actionTemplate) {
+        const nonAllies = worldState.thingsWithout(
+            {
+                alignment: this.alignment
+            }
+        );
+
+        return Util.randomOf(nonAllies);
+    }
 };
 
-
-},{"../util/coord.js":71,"../util/util.js":72,"./thing.js":75}],74:[function(require,module,exports){
+},{"../util/coord.js":76,"../util/util.js":77,"./thing.js":80}],79:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -32397,27 +33139,45 @@ module.exports = Util.makeEnum([
     'Frozen'
 ]);
 
-},{"../util/util.js":72}],75:[function(require,module,exports){
+},{"../util/util.js":77}],80:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
+const Util = require('../util/util.js');
 const WNode = require('./wnode.js');
 
 module.exports = class Thing extends WNode {
-    constructor (templateName, coord) {
-        super(templateName);
+    constructor (template, coord) {
+        super(template);
+
+        // Util.logDebug(`Thing constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
 
         this.coord = coord || new Coord();
-        this.size = undefined;
-        this.weight = undefined;
 
         // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
         this.active = true;
     }
+
+    // NOTE: There is currently some mild confusion. The size getter reads from the template, but the size is also copied to the WNode. I may remove that caching later for performance. ToW 2019 Oct 18.
+
+    // Unit: meters of longest dimension when in storage.
+    size () {
+        return this.template && this.template.size;
+    }
+
+    // Unit: kg on Earth's surface.
+    subtreeWeight () {
+        const localWeight = this.template && this.template.weight;
+
+        return this.components.reduce(
+            (sum, component) => sum + component.subtreeWeight(),
+            localWeight
+        );
+    }
 };
 
 
-},{"../util/coord.js":71,"./wnode.js":76}],76:[function(require,module,exports){
+},{"../util/coord.js":76,"../util/util.js":77,"./wnode.js":81}],81:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -32427,16 +33187,23 @@ const Util = require('../util/util.js');
 
 // Waffle Node
 // WAFFLE is a game engine related to the novel 'You' by Austen Grossman.
-// A person, creature, component, or thing is represented here
-// by a WNode or a tree of WNodes.
+// A person, creature, component, or thing is represented here by a WNode or a tree of WNodes.
 
 class WNode {
-    constructor (templateName) {
+    constructor (template) {
         // Later: Safety checks, logging
         this.id = Util.newId();
 
-        if (templateName) {
-            this.templateName = templateName;
+        if (template) {
+            // Util.logDebug(`In WNode constructor. typeof template is ${typeof template}. template.name is ${template.name}`);
+
+            if (template.name) {
+                this.templateName = template.name;
+                this.template = template;
+            }
+            else if (Util.isString(template)) {
+                this.templateName = template;
+            }
         }
 
         this.components = [];
@@ -32474,6 +33241,7 @@ class WNode {
         return ``;
     }
 
+    // Later, it may be performant to reference this.template[propStr], instead of storing those props on every WNode instance of the template.
     traitSum (propStr) {
         return (this[propStr] || 0) +
             Util.sum(
@@ -32536,13 +33304,17 @@ class WNode {
     toSimpleString () {
         const tName = this.templateName ?
             Util.fromCamelCase(this.templateName) :
-            `<WNode with no template>`;
+            `<WNode with no templateName>`;
+
+        const active = this.active ?
+            'Up' :
+            'KO';
 
         if (this.displayName) {
             return `${this.displayName} (${tName})`;
         }
         else {
-            return tName;
+            return `${tName} (${this.shortId()}, ${active}, ${this.alignment})`;
         }
     }
 
@@ -32603,6 +33375,11 @@ class WNode {
                 Util.repeat(' ', indent) + text + '\n' :
                 '';
         }
+    }
+
+    // Returns a abbreviation of the ID.
+    shortId () {
+        return `${Util.shortId(this.id)}`;
     }
 
     getPropSummary () {
@@ -32762,192 +33539,4 @@ class WNode {
 
 module.exports = WNode;
 
-},{"../util/util.js":72,"./storageModes.js":74,"js-yaml":39}],77:[function(require,module,exports){
-
-},{}],78:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}]},{},[34,35,36]);
+},{"../util/util.js":77,"./storageModes.js":79,"js-yaml":44}]},{},[39,40,41]);

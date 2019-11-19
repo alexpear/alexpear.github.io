@@ -3,7 +3,7 @@
 const ContinuousWorldState = require('./continuousWorldState.js');
 const Timeline = require('./timeline.js');
 const ArrivalEvent = require('./events/arrivalEvent.js');
-const CreatureTemplate = require('../battle20/creatureTemplate.js');
+const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const Util = require('../util/util.js');
 
 const Creature = require('../wnode/creature.js');
@@ -47,12 +47,16 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         worldState.timeline = timeline;
 
-        // Scale test notes, 2019 Nov 1
-        // 40000 soldiers with DMRs have a lot of trouble computing shooting. Didnt see one tick of shooting finish after several minutes.
-        // 10000 is fine. First shooting tick takes < 60 sec.
-        // 4000 works well.
+        // Scale test notes, 2019 Nov 1, Moloch laptop
+        // 40,000 soldiers with DMRs have a lot of trouble computing shooting. Didnt see one tick of shooting finish after several minutes.
+        // 10,000 is fine. First shooting tick takes < 60 sec.
+        // 4,000 works well.
+        // 2019 Nov 4, Baal desktop can handle 5,000 with only a few seconds delay.
+        // Baal with 20,000 is around 2min for the 1st second, then accelerating.
 
-        for (let i = 0; i < 1000; i++) {
+        const TEST_POPULATION = 20000;
+
+        for (let i = 0; i < TEST_POPULATION; i++) {
             // Start with n BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
             // Arrival BEvents have the outcome of causing a ActionReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Action (ActionTemplate) of the arriving creature.
 
