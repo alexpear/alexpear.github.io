@@ -28,6 +28,8 @@ This website include the following prototype projects:
     - This means you translate when entering and leaving the DB, but not anywhere else. This sounds to me like the scheme that requires translation most rarely. (2019 October 14)
   - Read the 'soldier' template from a '* template' table in a codex file
     - Devise a scheme that allows the codex file to say '* template human' (where a MarinePrivate WNode has a Human child WNode) and nevertheless getTemplate('marinePrivate') returns a object that includes stats that are listed on the human table in the file.
+      - Scheme: WorldState.getAggregatedTemplate(subtree)
+      - For ArrivalEvents, simply give WGenerator 'marinePrivate' and get a subtree. Then can call getAggregatedTemplate() on that subtree.
   - Add Spartans - rare, durable.
     - Function to log the Spartan count
 
