@@ -123,16 +123,13 @@ class WorldState {
         return group;
     }
 
+    // Returns a parsed template obj
     getTemplate (templateName) {
-        // TODO call a WGenerator static getter. Look at all of WGenerator.generators, not just this.wanderingGenerator.
-        if (templateName in this.glossary) {
-            const template = this.glossary[templateName];
+        // TODO still working out the kinks of this version. Util.logDebug() in here.
+        const fullPath = this.wanderingGenerator.getAbsolutePath(templateName);
+        const listing = WGenerator.findGenAndTable(fullPath);
 
-            return template;
-        }
-        else {
-            throw new Error(`Could not find template '${ templateName }' in WorldState's glossary.`);
-        }
+        return listing.gen.glossary[listing.name];
     }
 
     // Get templates of all component nodes recursively
