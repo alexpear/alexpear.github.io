@@ -49,10 +49,14 @@ class WorldState {
             return thingWithId;
         }
 
-        // If it is not a Thing ID, try the glossary.
-        return this.getTemplate(id);
+        const fromGenerator = WGenerator.ids[id];
 
-        // Later i can cache a id-to-thing mapping if i run into performance concerns.
+        if (fromGenerator) {
+            return fromGenerator;
+        }
+
+        // TODO Uncertain about this. Maybe fall back to generateNodes() instead.
+        return this.getTemplate(id);
     }
 
     // I currently plan for Thing to extend WNode
@@ -132,12 +136,29 @@ class WorldState {
     }
 
     // Returns a parsed template obj
-    getTemplate (templateName) {
-        // TODO still working out the kinks of this version. Util.logDebug() in here.
-        const fullPath = this.wanderingGenerator.getAbsolutePath(templateName);
+    getTemplate (inputString) {
+        // TODO still working out the kinks of this version.
+
+        const localTemplate = this.wanderingGenerator.glossary[inputString];
+
+        if (localTemplate) {
+            return localTemplate;
+        }
+
+        const fullPath = this.wanderingGenerator.getAbsolutePath(inputString);
+        // Util.logDebug(`In worldState.getTemplate('${inputString}'), fullPath is ${fullPath}.`);
+
         const listing = WGenerator.findGenAndTable(fullPath);
 
-        return listing.gen.glossary[listing.name];
+        Util.logDebug(`In worldState.getTemplate('${inputString}'), listing.gen.codexPath is ${listing.gen.codexPath}. listing.name is ${listing.name}. listing.gen is the following:`);
+        Util.logDebug(listing.gen.toJson());
+
+        const template = listing.gen.glossary[listing.name];
+
+        // Util.logDebug(`In worldState.getTemplate('${inputString}'), template is the following:`);
+        // Util.logDebug(template);
+
+        return template;
     }
 
     // Get templates of all component nodes recursively
