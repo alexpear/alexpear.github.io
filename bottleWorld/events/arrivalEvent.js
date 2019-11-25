@@ -29,15 +29,39 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
         worldState.addThing(arriver, this.coord);
 
-        const firstAction = arriver.actions()[0];
+        // Util.logDebug(worldState.wanderingGenerator.toJson());
 
-        // Util.logDebug(`arriver.templateName: ${arriver.templateName}, arriver.template: ${arriver.template}, arriver.constructor.name: ${arriver.constructor.name}, firstAction: ${firstAction}, worldState.glossary.soldier.actions.length: ${worldState.glossary.soldier.actions.length}`);
+        // Util.logDebug(`arriver.templateName: ${arriver.templateName}, arriver.template: ${arriver.template}, arriver.constructor.name: ${arriver.constructor.name}, typeof arriver.actions: ${typeof arriver.actions}, typeof arriver.deepCopy: ${typeof arriver.deepCopy}`);
 
-        if (! firstAction) {
+        const actions = Util.isFunction(arriver.getActions) && arriver.getActions();
+
+        if (! actions || actions.length === 0) {
+            Util.logDebug(`In ArrivalEvent,
+    arriver.templateName: ${arriver.templateName},
+    arriver.template: ${arriver.template},
+    arriver.constructor.name: ${arriver.constructor.name},
+    typeof arriver.getActions: ${typeof arriver.getActions},
+    typeof arriver.actions: ${typeof arriver.actions},
+    arriver.template.actions.length: ${arriver.template.actions.length},
+    typeof arriver.deepCopy: ${typeof arriver.deepCopy},
+    arriver.components[0].templateName: ${arriver.components[0] && arriver.components[0].templateName},
+    arriver.components[1].templateName: ${arriver.components[1] && arriver.components[1].templateName},
+    arriver.components[1].constructor.name: ${arriver.components[1] && arriver.components[1].constructor.name},
+    arriver.components[1].template.constructor.name: ${arriver.components[1] && arriver.components[1].template.constructor.name},
+    arriver.toJson() is the following:
+    `);
+            Util.logDebug(arriver.toJson());
+
+            throw new Error(`Debug throwing to figure out why ArrivalEvent receives something with no actions.`)
+
             return;
         }
 
-        const actionReadyEvent = new ActionReadyEvent(arriver, firstAction.id);
+        // LATER, remove this preference for homogenous actions
+        const preferredAction = actions.find(a => a.name === 'dmr');
+        const chosenAction = preferredAction || actions[0];
+
+        const actionReadyEvent = new ActionReadyEvent(arriver, chosenAction.id);
 
         this.outcomes.push(actionReadyEvent);
 
