@@ -5,8 +5,9 @@
 
 const fs = require('fs');
 
-// TODO perhaps restructure so that WGenerator doesn't import any Battle20 files.
+// LATER perhaps restructure so that WGenerator doesn't import any Battle20 files.
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
+const Creature = require('../wnode/creature.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const StorageModes = require('../wnode/storageModes.js');
 const Util = require('../util/util.js');
@@ -173,8 +174,10 @@ class WGenerator {
 
     // Returns a WNode
     makeLocalSubtree (cString) {
-        // Later, read from the templates of the WGenerator specified by cString.path
-        const node = new WNode(cString.name);
+        const gen = WGenerator.generators[cString.path];
+        const template = gen.glossary[cString.name];
+
+        const node = gen.makeNode(template, cString.name);
 
         // Util.log(`Middle of makeLocalSubtree(${cString}). Expression node.templateName is ${node.templateName}`, 'debug');
 
@@ -193,6 +196,27 @@ class WGenerator {
             // Later there might be some properties that shouldn't be overwritten.
             node[prop] = template[prop];
         }
+    }
+
+    makeNode (template, templateName) {
+        // if (template && template.name === 'marinePrivate' || templateName === 'marinePrivate') {
+            // Util.logDebug(`In WGenerator.makeNode(), input involved marinePrivate. template.isCreature() returns ${template && template.isCreature()}`);
+        // }
+
+        if (! template) {
+            return new WNode(templateName);
+        }
+
+        if (template.isCreature()) {
+            return new Creature(template);
+        }
+
+        if (template.isThing()) {
+            return new Thing(template);
+        }
+
+        // Fallback case
+        return new WNode(template);
     }
 
     // Might modify node.components
