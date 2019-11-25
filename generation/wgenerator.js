@@ -47,6 +47,7 @@ class WGenerator {
                 // Later, this could be neater and not involve a string literal. 'template ' could be a const.
                 if (tableRaw.startsWith('template ')) {
                     this.addTemplate(tableRaw);
+                    return;
                 }
 
                 // Default case.
@@ -108,9 +109,11 @@ class WGenerator {
 
         templateObj.actions.forEach(
             actionTemplate => {
-                this.glossary[actionTemplate.id] = actionTemplate;
+                WGenerator.ids[actionTemplate.id] = actionTemplate;
             }
         );
+
+        Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}`);
     }
 
     // Returns WNode[]

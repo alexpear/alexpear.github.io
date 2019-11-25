@@ -8,6 +8,7 @@ module.exports = `
 1 spartan
 
 * template human
+tags: creature animal biped terrestrial biological
 individuals: 1
 weight: 80
 size: 1.7
@@ -36,8 +37,12 @@ human
 4 civilian
 1 {output}
 
+* template marinePrivate
+tags: creature
+comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily.
+
 * childrenof marinePrivate
-{unsc/item/giWeapon}
+unsc/item/dmr
 {unsc/item}
 unsc/item/flakHelmet
 unsc/item/flakArmor
@@ -96,6 +101,7 @@ human
 1 spartan
 
 * template dropPod
+tags: thing vehicle
 weight: 1000
 
 * childrenof dropPod

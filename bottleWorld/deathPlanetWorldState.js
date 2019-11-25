@@ -83,7 +83,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         const worldState = DeathPlanetWorldState.example();
         worldState.printThings();
 
-        while (worldState.now() < 10 || worldState.conflictExists()) {
+        while (worldState.worthContinuing()) {
             worldState.timeline.computeNextInstant();
         }
 

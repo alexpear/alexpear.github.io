@@ -104,8 +104,7 @@ module.exports = class ProjectileEvent extends BEvent {
     }
 
     doesItHit (protagonist, actionTemplate, target, worldState) {
-        // TODO Replace this func with any hit-roll alg.
-        // return Util.randomOf([true, false, false]);
-        return true;
+        // TODO Improve this
+        return Util.randomOf([true, false, false, false, false, false]);
     }
 };

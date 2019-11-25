@@ -23,13 +23,11 @@ class WorldState {
     constructor (timeline, t) {
         this.timeline = timeline;
         this.t = t || 0;
+        // TODO make this a obj, keyed by thing.id, for performance
         this.things = [];
 
-        // Later, dont always use this example WGenerator.
-        this.wanderingGenerator = new WGenerator(
-            require('../codices/halo/unsc/squad.js'),
-            'halo/unsc/squad'
-        );
+        // Later, probably template lookups should be looking across all generators.
+        this.wanderingGenerator = WGenerator.generators['halo/unsc/individual'];
 
         // Contrary to a popular misconception, the W in WGenerator does not stand for Wandering.
         // It stands for WAFFLE.
@@ -71,6 +69,10 @@ class WorldState {
 
         return this.things.filter(
             thing => {
+                if (! thing.active) {
+                    return false;
+                }
+
                 for (let i = 0; i < props.length; i++) {
                     const prop = props[i];
 
@@ -178,7 +180,7 @@ class WorldState {
         ).map(
             t => `\n    ${Util.capitalized(t.toSimpleString())}`
         )
-        .join('') || `\n    [Only the tireless void]`;
+        .join('') || `\n    Only the tireless void`;
     }
 
     printThings () {

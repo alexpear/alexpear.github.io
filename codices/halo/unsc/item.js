@@ -224,7 +224,7 @@ tags: armor
 comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
 
 * template smg
-tags: action bullet fullAuto
+tags: action bullet firearm fullAuto
 range: 20
 hit: 3
 damage: 7
@@ -242,8 +242,9 @@ hit: 3
 damage: 9
 
 * template dmr
-tags: action bullet
+tags: action bullet firearm optics
 range: 100
+shotsPerSecond: 2
 hit: 3
 damage: 10
 

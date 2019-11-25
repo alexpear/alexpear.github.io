@@ -67,9 +67,10 @@ module.exports = class Timeline {
 
         for (let t = 0; t <= this.now(); t++) {
             if (this.timestamps[t]) {
-                const eventsSummary = this.getEventsAt(t)
-                    .map(e => Util.capitalized(e.eventType))
-                    .join(', ');
+                const events = this.getEventsAt(t)
+                    .map(e => Util.capitalized(e.eventType));
+
+                const eventsSummary = Util.arraySummary(events);
 
                 lines.push(`${t}: ${eventsSummary}`);
             }
