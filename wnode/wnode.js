@@ -49,6 +49,7 @@ class WNode {
         Object.assign(clone, this);
         clone.id = Util.newId();
 
+        // HMMM: Does this break now that we have parent pointers? Self reference.
         clone.components = this.components.map(component => component.deepCopy());
         return clone;
     }
@@ -65,9 +66,12 @@ class WNode {
         return ``;
     }
 
-    // Later, it may be performant to reference this.template[propStr], instead of storing those props on every WNode instance of the template.
+    getTrait (key) {
+        return this[key] || (this.template && this.template[key]);
+    }
+
     traitSum (propStr) {
-        return (this[propStr] || 0) +
+        return (this.getTrait(propStr) || 0) +
             Util.sum(
                 this.components.map(
                     c => c.traitSum(propStr)
@@ -76,7 +80,7 @@ class WNode {
     }
 
     traitMax (propStr) {
-        const localTrait = this[propStr] || 0;
+        const localTrait = this.getTrait(propStr) || 0;
         const max = this.components.reduce(
             (soFar, component) => Math.max(soFar, component.traitMax(propStr)),
             localTrait
@@ -86,7 +90,7 @@ class WNode {
     }
 
     traitMin (propStr) {
-        const localTrait = this[propStr];
+        const localTrait = this.getTrait(propStr);
         const min = this.components.reduce(
             (soFar, component) => Math.min(soFar, component.traitMin(propStr)),
             localTrait || Infinity
