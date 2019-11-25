@@ -226,6 +226,28 @@ class WNode {
         .join('<br>');
     }
 
+    toJson () {
+        const serialized = {};
+
+        Object.keys(this)
+            .forEach(
+                key => {
+                    if (Util.contains(['components', 'parent'], key)) {
+                        return;
+                    }
+
+                    serialized[key] = Util.toJson(this[key]);
+                }
+            );
+
+        serialized.components = this.components.map(
+            c => c.toJson()
+        );
+
+        return serialized;
+    }
+
+    // HMMM: Does this break now that we have parent pointers? Self reference.
     toYaml () {
         return Yaml.dump(this);
     }
