@@ -24,10 +24,14 @@ class WNode {
             else if (Util.isString(template)) {
                 this.templateName = template;
             }
+            else {
+                throw new Error(`Cant instantiate WNode with unknown input of type ${typeof template}.`);
+            }
         }
 
         this.components = [];
 
+        // Partial means that dynamic 'fractal' storage could append components to this when its zoomed in on. IE, not guaranteed to be a leaf.
         this.storageMode = StorageModes.Partial;
         this.lastVisited = Date.now();
     }

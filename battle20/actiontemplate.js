@@ -5,7 +5,7 @@ const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
 class ActionTemplate extends NodeTemplate {
-    constructor (name, range, hit, damage) {
+    constructor (name, range, hit, damage, shotsPerSecond) {
         super(name);
 
         this.id = Util.newId();
@@ -13,6 +13,7 @@ class ActionTemplate extends NodeTemplate {
         this.range = range || 1;
         this.hit = hit || 0;
         this.damage = damage || 0;
+        this.shotsPerSecond = shotsPerSecond || 1;
     }
 
     // Later make a superclass version of this func.

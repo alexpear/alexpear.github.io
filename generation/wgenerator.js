@@ -297,7 +297,7 @@ class WGenerator {
             return [];
         }
         else {
-            const cString = new ContextString(str, this.codexPath);
+            const cString = this.contextString(str);
             return [cString];
         }
     }
@@ -724,7 +724,11 @@ class WGenerator {
     }
 }
 
+// Universal dict for codex-related objects keyed by ID. Used for ActionTemplates so far.
+WGenerator.ids = {};
 
+
+// TODO move to its own file
 class AliasTable {
     constructor (rawString, generator) {
         // The parent pointer is used when resolving slash path aliases.
@@ -912,16 +916,17 @@ class ContextString {
     //     name: 'civilian',
     //     codexPath: 'halo/unsc/individual'
     // }
-    constructor (name, path) {
+    constructor (name, absolutePath) {
         if (Util.contains(name, '/')) {
+            // NOTE: We currently do not support the name param being a relative path.
             const findings = WGenerator.findGenAndTable(name);
             this.name = findings.name;
             this.path = findings.gen.codexPath;
         }
         else {
             this.name = name;
-            // TODO: guarantee that this is always a absolute path.
-            this.path = path;
+            // LATER: guarantee that this is always a absolute path.
+            this.path = absolutePath;
         }
     }
 

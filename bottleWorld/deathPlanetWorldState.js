@@ -63,7 +63,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         // 2019 Nov 4, Baal desktop can handle 5,000 with only a few seconds delay.
         // Baal with 20,000 is around 2min for the 1st second, then accelerating.
 
-        const TEST_POPULATION = 20000;
+        const TEST_POPULATION = 2000;
 
         for (let i = 0; i < TEST_POPULATION; i++) {
             // Start with n BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()

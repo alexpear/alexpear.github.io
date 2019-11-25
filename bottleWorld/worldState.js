@@ -102,8 +102,14 @@ class WorldState {
         this.things.push(thing);
     }
 
+    // Probably deprecated and removable
     randomTrees () {
-        return this.wanderingGenerator.getOutputs();
+        return this.generateNodes();
+    }
+
+    // Returns WNode[], or array of various subclasses of WNode
+    generateNodes (path) {
+        return this.wanderingGenerator.getOutputs(path);
     }
 
     groupFromTree (nodeTree) {

@@ -24,10 +24,10 @@ const SIZE = {
 // Note that currently this is confusingly used for intermediate representations
 // when transforming trees of WNodes to Groups.
 class CreatureTemplate extends NodeTemplate {
-    constructor (name) {
+    constructor (name, tags) {
         super(name);
 
-        this.tags = [];
+        this.tags = tags || [];
         this.actions = [];
         this.resistance = {};
     }
@@ -125,8 +125,8 @@ class CreatureTemplate extends NodeTemplate {
             // Remove the 'action' tag.
             this.tags.splice(actionTagIndex, 1);
 
-            // Later, can put a name from the codex in the name param, instead of newId()
-            const action = new ActionTemplate(Util.newId(), this.range, this.hit, this.damage);
+            const action = new ActionTemplate(this.name, this.range, this.hit, this.damage, this.shotsPerSecond);
+
             action.tags = Util.arrayCopy(this.tags);
             this.tags = [];
             this.actions.push(action);
@@ -134,6 +134,7 @@ class CreatureTemplate extends NodeTemplate {
             delete this.range;
             delete this.hit;
             delete this.damage;
+            delete this.shotsPerSecond;
         }
     }
 
