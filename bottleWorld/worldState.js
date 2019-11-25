@@ -162,8 +162,8 @@ class WorldState {
     fromTemplateName (templateName) {
         const template = this.getTemplate(templateName);
 
-        // Util.logDebug(`The following is the value of local var 'template' inside a call to WorldState.fromTemplateName('${templateName}'):`);
-        // Util.logDebug(template);
+        Util.logDebug(`The following is the value of local var 'template' inside a call to WorldState.fromTemplateName('${templateName}'):`);
+        Util.logDebug(template);
 
         return template.constructor.name === 'CreatureTemplate' ?
             new Creature(template) :

@@ -55,5 +55,8 @@ module.exports = class ActionReadyEvent extends BEvent {
             actionEvent,
             this.t
         );
+
+        // Util.logDebug(`Bottom of ActionReadyEvent.resolve(). Set up a future Action with range: ${action.range}.`);
+
     }
 };
