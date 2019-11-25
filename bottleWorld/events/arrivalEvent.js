@@ -20,7 +20,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
     resolve (worldState) {
         const arriver = this.templateName ?
-            worldState.fromTemplateName(this.templateName) :
+            worldState.generateNodes(this.templateName)[0] :
             worldState.fromId(this.protagonistId);
 
         if (this.arrivalType === 'randomAlignment') {
