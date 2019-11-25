@@ -22,9 +22,18 @@ module.exports = class Creature extends Thing {
         const template = this.template ||
             (worldState && worldState.glossary[this.templateName]);
 
-        return template ?
-            template.actions :
+        const localActions = template ?
+            (template.actions || []) :
             [];
+
+        return this.components.reduce(
+            (actions, wnode) => actions.concat(
+                Util.isFunction(wnode.getActions) ?
+                    wnode.getActions() :
+                    []
+            ),
+            localActions
+        );
     }
 
     actionFromId (id) {
