@@ -162,6 +162,105 @@ class CreatureTemplate extends NodeTemplate {
         }
     }
 
+    toJson () {
+        return this;
+    }
+
+    static fromRaw (tableRaw) {
+        const creatureTemplate = new CreatureTemplate();
+
+        tableRaw.split('\n')
+            .slice(1)
+            .map(
+                line => {
+                    const parsed = CreatureTemplate.parseTemplateLine(line);
+                    const key = parsed.key;
+
+                    if (
+                        key in creatureTemplate &&
+                        ! ['tags', 'actions', 'resistance'].includes(key)
+                    ) {
+                        throw new Error(`fromRaw(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
+                    }
+
+                    creatureTemplate[key] = parsed.value;
+
+                    // Util.log(`in parseTemplate(). Just wrote key/value pair {${key}: ${parsed.value}}`, 'debug');
+                }
+            );
+
+        creatureTemplate.name = CreatureTemplate.templateKey(tableRaw);
+        creatureTemplate.setUpAction();
+
+        return creatureTemplate;
+    }
+
+    static parseTemplateLine (line) {
+        line = line.trim();
+
+        const colonIndex = line.indexOf(':');
+
+        if (colonIndex < 0) {
+            throw new Error(`parseTemplateLine(): No colon found in ${ line }`);
+        }
+
+        const key = line.slice(0, colonIndex)
+            .trim();
+        const rest = line.slice(colonIndex + 1)
+            .trim();
+
+        let value;
+        if (key === 'tags') {
+            value = rest.split(/\s/);
+        }
+        else if (key === 'resistance') {
+            value = {};
+
+            const entries = rest.split(',');
+
+            entries.forEach(
+                e => {
+                    const parts = e.trim()
+                        .split(/\s/);
+                    const resistanceKey = parts[0];
+                    const modifier = Number(parts[1]);
+
+                    value[resistanceKey] = modifier;
+                }
+            );
+        }
+        else if (rest === 'true') {
+            value = true;
+        }
+        else if (rest === 'false') {
+            value = false;
+        }
+        else {
+            // number case.
+            const parsed = Number(rest);
+
+            value = Util.exists(parsed) ?
+                parsed :
+                rest;
+
+            // Util.log(`in parseTemplateLine( '${line}' ). value is ${value}.`, 'debug');
+        }
+
+        return {
+            key: key,
+            value: value
+        };
+    }
+
+    static templateKey (tableRaw) {
+        const START = 'template ';
+        const startIndex = tableRaw.indexOf(START);
+        const endIndex = tableRaw.indexOf('\n');
+
+        return tableRaw.slice(startIndex + START.length, endIndex)
+            .trim();
+    }
+
     static mergeResistances (a, b) {
         const keys = Util.union(Object.keys(a), Object.keys(b));
         return keys.reduce(
