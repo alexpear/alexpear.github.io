@@ -61,6 +61,16 @@ class WGenerator {
         }
     }
 
+    toJson () {
+        return {
+            codexPath: this.codexPath,
+            rawString: this.rawString,
+            aliasTables: Util.dictToJson(this.aliasTables),
+            childTables: Util.dictToJson(this.childTables),
+            glossary: Util.dictToJson(this.glossary)
+        };
+    }
+
     addChildTable (tableRaw) {
         const childTable = new ChildTable(tableRaw, this);
         // TODO replace terminology: key -> templateName
@@ -302,6 +312,24 @@ class WGenerator {
         }
 
         return table.getOutputAndResolveIt();
+    }
+
+    // Converts a more arbitrary string into a ContextString object.
+    contextString (stringWithoutCommas) {
+        if (Util.contains(stringWithoutCommas, '/')) {
+            const path = this.makePathAbsolute(stringWithoutCommas);
+            const findings = WGenerator.findGenAndTable(path);
+
+            return new ContextString(
+                findings.name,
+                findings.gen.codexPath
+            );
+        }
+
+        return new ContextString(
+            stringWithoutCommas,
+            this.codexPath
+        );
     }
 
     // Returns a string
@@ -767,6 +795,14 @@ class AliasTable {
         return this.generator.resolveCommas(outputStr);
     }
 
+    toJson () {
+        return {
+            generatorPath: this.generator.codexPath,
+            templateName: this.templateName,
+            outputs: this.outputs
+        };
+    }
+
     // TODO this logic is needed by ChildTable too. Move it to WGenerator (ie parent).
 
     static isAppropriateFor (tableString) {
@@ -825,6 +861,14 @@ class ChildTable {
                     return line;
                 }
             );
+    }
+
+    toJson () {
+        return {
+            generatorPath: this.generator.codexPath,
+            templateName: this.templateName,
+            children: this.children
+        };
     }
 
     // Returns a boolean

@@ -56,6 +56,16 @@ util.contains = function (array, fugitive) {
     return array.indexOf(fugitive) >= 0;
 };
 
+util.hasOverlap = function (arrayA, arrayB) {
+    for (let i = 0; i < arrayA.length; i++) {
+        if (util.contains(arrayB, arrayA[i])) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
 util.sum = function (array) {
     return util.array(array).reduce(
         (sumSoFar, element) => {
@@ -133,6 +143,30 @@ util.shortId = function (id) {
     return id ?
         `${id.slice(0, 3)}` :
         '';
+};
+
+// Input string[]
+// Returns string summarizing redundancies
+util.arraySummary = (a) => {
+    const dict = {};
+
+    a.forEach(
+        s => {
+            if (dict[s]) {
+                dict[s]++;
+            }
+            else {
+                dict[s] = 1;
+            }
+        }
+    );
+
+    const archetypes = Object.keys(dict)
+        .map(
+            s => `${s} x${dict[s]}`
+        );
+
+    return archetypes.join(', ');
 };
 
 util.repeat = function (str, n) {
@@ -304,6 +338,10 @@ util.isObject = function (x) {
         x !== null;
 };
 
+util.isFunction = function (x) {
+    return typeof x === 'function';
+};
+
 util.isArray = function (x) {
     // Later make this more sophisticated, or use a library.
     return x &&
@@ -434,11 +472,11 @@ util.log = function (input, tag) {
 
 util.logDebug = function (input) {
     util.log(input, 'debug');
-}
+};
 
 util.logError = function (input) {
     util.log(input, 'error');
-}
+};
 
 util.makeEnum = (vals) => {
     const dict = {};
@@ -447,6 +485,30 @@ util.makeEnum = (vals) => {
     }
 
     return dict;
+};
+
+util.toJson = (x) => {
+    return x && util.isFunction(x.toJson) ?
+        x.toJson() :
+        x;
+}
+
+// Useful for dicts of objects like wGenerator.aliasTables
+util.dictToJson = (dict) => {
+    const serialized = {};
+
+    Object.keys(dict)
+        .forEach(
+            key => {
+                const value = dict[key];
+
+                serialized[key] = (value && value.toJson) ?
+                    value.toJson() :
+                    value;
+            }
+        );
+
+    return serialized;
 };
 
 // Myers-Briggs Type Indicator (personality category)
