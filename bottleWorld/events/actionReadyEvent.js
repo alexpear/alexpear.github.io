@@ -21,18 +21,18 @@ module.exports = class ActionReadyEvent extends BEvent {
 
         // Later could relax the requirement that protagonist.template be populated, if that seems unnecessary.
         if (
-            ! protagonist.actions ||
-            protagonist.actions().length === 0 ||
+            ! protagonist.getActions ||
+            protagonist.getActions().length === 0 ||
             ! protagonist.template
         ) {
-            throw new Error(`ActionReadyEvent found a strange protagonist (type ${protagonist.constructor.name}) in WorldState.things. { id: ${protagonist.id}, actions(): ${protagonist.actions ? protagonist.actions() : 'undefined'}, template: ${protagonist.template}, templateName: ${protagonist.templateName} }`);
+            throw new Error(`ActionReadyEvent found a strange protagonist (type ${protagonist.constructor.name}) in WorldState.things. { id: ${protagonist.id}, getActions(): ${protagonist.getActions ? protagonist.getActions() : 'undefined'}, template: ${protagonist.template}, templateName: ${protagonist.templateName} }`);
         }
 
         if (! protagonist.active) {
             return;
         }
 
-        const actions = protagonist.actions();
+        const actions = protagonist.getActions();
 
         const action = actions.find(
             a => a.id === this.actionId

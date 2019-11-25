@@ -18,7 +18,7 @@ module.exports = class Creature extends Thing {
         this.alignment = alignment;
     }
 
-    actions (worldState) {
+    getActions (worldState) {
         const template = this.template ||
             (worldState && worldState.glossary[this.templateName]);
 
@@ -28,7 +28,7 @@ module.exports = class Creature extends Thing {
     }
 
     actionFromId (id) {
-        return this.actions().find(
+        return this.getActions().find(
             action => action.id === id
         );
     }
