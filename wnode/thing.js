@@ -16,7 +16,11 @@ module.exports = class Thing extends WNode {
         this.active = true;
     }
 
-    // NOTE: There is currently some mild confusion. The size getter reads from the template, but the size is also copied to the WNode. I may remove that caching later for performance. ToW 2019 Oct 18.
+    distanceTo (target) {
+        const targetCoord = target.coord || target;
+
+        return this.coord.manhattanDistanceTo(targetCoord);
+    }
 
     // Unit: meters of longest dimension when in storage.
     size () {

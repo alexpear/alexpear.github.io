@@ -11,7 +11,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
             BEvent.TYPES.Arrival,
             undefined,
             undefined,
-            coord || new Coord(),
+            coord || Coord.randomOnScreen(),
             templateName
         );
 

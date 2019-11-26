@@ -37,6 +37,30 @@ class Coord {
         );
     }
 
+    manhattanDistanceTo (other) {
+        const horizontal = Math.abs(this.r - other.r);
+        const vertical = Math.abs(this.c - other.c);
+
+        return horizontal + vertical;
+    }
+
+    // LATER confirm how much faster this is than distanceTo, using whatever sort of speed test.
+    approximateDistanceTo (other) {
+        // 1 - (1 / sqrt(2))
+        const MAX_ADJUSTMENT = 0.29289321881345254;
+
+        const horizontal = Math.abs(this.r - other.r);
+        const vertical = Math.abs(this.c - other.c);
+
+        // 0 means 45°, 1 means 0° or 90°
+        const orthagonalness = Math.abs(horizontal - vertical) / Math.max(horizontal, vertical);
+
+        // adjustment is supposed to vary between around 1/sqrt(2) and 1
+        const adjustment = 1 - (MAX_ADJUSTMENT * orthagonalness);
+
+        return (horizontal + vertical) * adjustment;
+    }
+
     magnitude () {
         return this.distanceTo(new Coord(0,0));
     }
