@@ -70,7 +70,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
             // Arrival BEvents have the outcome of causing a ActionReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Action (ActionTemplate) of the arriving creature.
 
             worldState.timeline.addEvent(
-                new ArrivalEvent('individual/marinePrivate', undefined, 'randomAlignment')
+                new ArrivalEvent('halo/unsc/individual/marinePrivate', undefined, 'randomAlignment')
             );
         }
 
