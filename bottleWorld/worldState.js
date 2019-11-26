@@ -207,13 +207,13 @@ class WorldState {
     printThings () {
         const output = `At t=${ this.now() }, this world contains: ${ this.thingString() }\n    (${this.alignmentCensusString()})`;
 
-        Util.log(output, 'debug');
+        Util.log(output, 'info');
     }
 
     printCensus () {
         const output = `At t=${ this.now() }, this world contains: (${this.alignmentCensusString()})`;
 
-        Util.log(output, 'debug');
+        Util.log(output, 'info');
     }
 
     // Debug helper func.
@@ -245,6 +245,14 @@ class WorldState {
             this,
             actionEvent.t + actionTemplate.secondsUntilNextAction()
         );
+    }
+
+    // Example:
+    // {
+
+    // }
+    censusObjByTemplateName (templateName) {
+        // TODO
     }
 
     // Example:

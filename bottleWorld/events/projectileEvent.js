@@ -118,14 +118,14 @@ module.exports = class ProjectileEvent extends BEvent {
         const distance = protagonist.distanceTo(target);
         const hitChance = advantage / (advantage + distance + 1);
 
-        Util.logDebug({
-            context: 'ProjectileEvent.doesItHit()',
-            size: target.getSize(),
-            hit: actionTemplate.hit,
-            advantage,
-            distance,
-            hitChance: hitChance.toFixed(2)
-        });
+        // Util.logDebug({
+        //     context: 'ProjectileEvent.doesItHit()',
+        //     size: target.getSize(),
+        //     hit: actionTemplate.hit,
+        //     advantage,
+        //     distance,
+        //     hitChance: hitChance.toFixed(2)
+        // });
 
         return Math.random() < hitChance;
     }
