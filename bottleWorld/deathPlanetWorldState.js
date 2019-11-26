@@ -121,3 +121,12 @@ module.exports = DeathPlanetWorldState;
 // node deathPlanetWorldState.js test
 
 DeathPlanetWorldState.run();
+
+
+/* Wishlist
+. Ability to set a specific Thing or a templateName to detailed biography mode, and then see detailed entries for each one in the logs
+. Thing.eliminatedBy field or getter. Stores who KOed it.
+. Thing.eliminated field (Thing[]) or getter. Also useful for 'axe counts' like Legolas and Gimli have.
+
+
+*/
