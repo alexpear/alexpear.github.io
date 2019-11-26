@@ -27,11 +27,14 @@ This website include the following prototype projects:
     - I think protagonist and target should point to full objects. .serialize() should output a object that has ids. a load() func can do the reverse.
     - This means you translate when entering and leaving the DB, but not anywhere else. This sounds to me like the scheme that requires translation most rarely. (2019 October 14)
   - Devise a scheme that allows the codex file to say '* template human' (where a MarinePrivate WNode has a Human child WNode) and nevertheless getTemplate('marinePrivate') returns a object that includes stats that are listed on the human table in the file.
-      - Scheme: WorldState.getAggregatedTemplate(subtree)
+    - Scheme: WorldState.getAggregatedTemplate(subtree)
       - For ArrivalEvents, simply give WGenerator 'marinePrivate' and get a subtree. Then can call getAggregatedTemplate() on that subtree.
   - Move all in-file classes to their own files
   - Add Spartans to Death Planet example() func. Rare, durable.
     - Function to log the Spartan count.
+    - To support making them durable, perhaps expand ProjectileEvent.doesItHit() into a extremely simple func based on .hit and .sp, etc
+      - Debugging confirmed actionTemplate.hit is loaded correctly. target.sp is loaded more buggily. .resistance is buried in the template of the armor wnode in .components.
+      - Fix .sp initialization in Creature.js constructor
 
 - Waffle Tree fractal mode
   - Scale test result: JS stack limit exceeded. Could test with larger limit.
