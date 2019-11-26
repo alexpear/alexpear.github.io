@@ -77,7 +77,7 @@ util.sum = function (array) {
 };
 
 util.randomIntBetween = function (minInclusive, maxExclusive) {
-    if (!minInclusive || !maxExclusive) {
+    if (! util.exists(minInclusive) || ! util.exists(maxExclusive)) {
         console.log('error: util.randomIntBetween() called with missing parameters.');
         return -1;
     } else if (maxExclusive <= minInclusive) {

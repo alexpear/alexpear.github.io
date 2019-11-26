@@ -73,8 +73,20 @@ class Coord {
         ];
     }
 
+    // Designed for discrete 2d grids.
     static randomDirection () {
         return Util.randomOf(Coord.relatives);
+    }
+
+    // Returns random position in a distribution that is convenient to display on one screen.
+    static randomOnScreen () {
+        const WIDTH = 40;
+        const HEIGHT = 20;
+
+        return new Coord(
+            Util.randomUpTo(WIDTH),
+            Util.randomUpTo(HEIGHT)
+        );
     }
 
     randomAdjacent () {

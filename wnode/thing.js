@@ -10,7 +10,7 @@ module.exports = class Thing extends WNode {
 
         // Util.logDebug(`Thing constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
 
-        this.coord = coord || new Coord();
+        this.coord = coord || Coord.randomOnScreen();
 
         // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
         this.active = true;
