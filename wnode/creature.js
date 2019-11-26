@@ -12,7 +12,7 @@ module.exports = class Creature extends Thing {
         // Util.logDebug(`Creature constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
 
         // Init stamina points
-        this.sp = this.template && this.template.maxSp || 1;
+        this.sp = this.findTrait('maxSp') || 1;
 
         // Faction or temperament
         this.alignment = alignment;

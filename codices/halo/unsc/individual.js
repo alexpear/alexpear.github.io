@@ -84,8 +84,17 @@ unsc/item/jetpack
 100 odst
 1 spartan
 
+* template spartan
+tags: creature cyborg
+size: 2
+weight: 120
+maxSp: 20
+damage: 4
+speed: 5
+stealth: 12
+
 * childrenof spartan
-{unsc/item/anyWeapon}
+unsc/item/dmr
 {unsc/item/anyWeapon}
 {unsc/item/anyGear}
 unsc/item/fragGrenade
