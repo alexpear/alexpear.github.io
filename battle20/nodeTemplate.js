@@ -23,4 +23,9 @@ module.exports = class NodeTemplate {
         return Util.hasOverlap(this.tags, ['creature', 'person', 'character', 'combatant', 'being']) ||
             Util.isArray(this.actions);
     }
+
+    toJson () {
+        // Already free of circular reference.
+        return this;
+    }
 }

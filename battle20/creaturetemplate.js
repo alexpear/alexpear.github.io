@@ -162,10 +162,6 @@ class CreatureTemplate extends NodeTemplate {
         }
     }
 
-    toJson () {
-        return this;
-    }
-
     static fromRaw (tableRaw) {
         const creatureTemplate = new CreatureTemplate();
 
