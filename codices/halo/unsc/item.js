@@ -177,6 +177,8 @@ module.exports = `* output
 * template mjolnirArmor
 weight: 454
 sp: 40
+resistance: fire 4, piercing 4, impact 3, vacuum 10
+tags: armor
 
 * alias armorMod
 4 armorLock

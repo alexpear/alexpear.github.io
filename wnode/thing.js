@@ -36,5 +36,31 @@ module.exports = class Thing extends WNode {
             localWeight
         );
     }
+
+    // Returns number
+    resistanceTo (tags) {
+        // LATER it's probably more performant to recursively gather a net resistance obj here, instead of multiple times in resistanceToTag()
+        return Util.sum(
+            tags.map(
+                tag => this.resistanceToTag(tag)
+            )
+        );
+    }
+
+    // Returns number
+    resistanceToTag (tag) {
+        const localResistance = (this.template &&
+            this.template.resistance &&
+            this.template.resistance[tag]) ||
+            0;
+
+        return this.components.reduce(
+            (overallResistance, component) => {
+                return localResistance +
+                    (component.resistanceTo && component.resistanceToTag(tag) || 0);
+            },
+            localResistance
+        );
+    }
 };
 

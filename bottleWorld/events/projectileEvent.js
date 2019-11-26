@@ -93,7 +93,12 @@ module.exports = class ProjectileEvent extends BEvent {
             return;
         }
 
-        // Util.logDebug(`In ProjectileEvent, actionId is ${this.actionId}`);
+        let damage = actionTemplate.damage - target.resistanceTo(actionTemplate.tags);
+
+        // Minimum damage per projectile.
+        if (damage < 1) {
+            damage = 1;
+        }
 
         target.sp -= actionTemplate.damage;
         this.resultantTargetSp = target.sp;
