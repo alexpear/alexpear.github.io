@@ -52,6 +52,14 @@ class Coord {
         return '[' + this.r + ',' + this.c + ']';
     }
 
+    randomAdjacent () {
+        do {
+            var candidateNeighbor = Coord.randomDirection().plus(this);
+        } while (! candidateNeighbor.isInBounds());
+
+        return candidateNeighbor;
+    }
+
     static random (rCount, cCount) {
         if (!rCount || !cCount) {
             console.log('ERROR: Coord.random() called without arguments');
@@ -80,6 +88,7 @@ class Coord {
 
     // Returns random position in a distribution that is convenient to display on one screen.
     static randomOnScreen () {
+        // Unit: meters
         const WIDTH = 40;
         const HEIGHT = 20;
 
@@ -87,14 +96,6 @@ class Coord {
             Util.randomUpTo(WIDTH),
             Util.randomUpTo(HEIGHT)
         );
-    }
-
-    randomAdjacent () {
-        do {
-            var candidateNeighbor = Coord.randomDirection().plus(this);
-        } while (! candidateNeighbor.isInBounds());
-
-        return candidateNeighbor;
     }
 };
 
