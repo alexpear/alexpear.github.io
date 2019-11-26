@@ -109,7 +109,46 @@ module.exports = class ProjectileEvent extends BEvent {
     }
 
     doesItHit (protagonist, actionTemplate, target, worldState) {
-        // TODO Improve this
-        return Util.randomOf([true, false, false, false, false, false]);
+        // Algorithm comes from WCW in hobby/warband/gameState.js
+        const AIM_FUDGE = 1;
+
+        // LATER gather modifiers of hit, including from creatures like spartan, instead of just base hit stat.
+        const advantage = target.getSize() * actionTemplate.hit / AIM_FUDGE;
+
+        const distance = protagonist.distanceTo(target);
+        const hitChance = advantage / (advantage + distance + 1);
+
+        Util.logDebug({
+            context: 'ProjectileEvent.doesItHit()',
+            size: target.getSize(),
+            hit: actionTemplate.hit,
+            advantage,
+            distance,
+            hitChance: hitChance.toFixed(2)
+        });
+
+        return Math.random() < hitChance;
     }
 };
+
+// Old funcs from battle20 group.js:
+// Actually originally from hobby/warband/gameState.js
+// function hits (distance, targetArea, accuracy) {
+//     // SCALING calibrates which accuracy stats are normal.
+//     const SCALING = 100;
+//     const advantage = targetArea * accuracy / SCALING;
+//     const shotProbability = advantage / (advantage + distance + 1);
+
+//     return Math.random() < shotProbability;
+// }
+
+// function damages (shot, victim) {
+//     // Damage for now means the individual (victim) is converted from a combatant to a casualty.
+//     const damageDiff = shot.damage - victim.durability; // + getDamageModifier(shot, victim);
+//     const SCALING = 0.5; // To make the probabilities feel right
+
+//     // quasi sigmoid probability curve between 0 and 1.
+//     const exponentiated = Math.pow(2, SCALING * damageDiff);
+//     const damageChance = exponentiated / (exponentiated + 1);
+//     return Math.random() < damageChance;
+// }

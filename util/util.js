@@ -66,6 +66,8 @@ util.hasOverlap = function (arrayA, arrayB) {
     return false;
 };
 
+// Returns number
+// Default 0
 util.sum = function (array) {
     return util.array(array).reduce(
         (sumSoFar, element) => {

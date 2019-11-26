@@ -23,8 +23,8 @@ module.exports = class Thing extends WNode {
     }
 
     // Unit: meters of longest dimension when in storage.
-    size () {
-        return this.template && this.template.size;
+    getSize () {
+        return this.traitMax('size');
     }
 
     // Unit: kg on Earth's surface.
