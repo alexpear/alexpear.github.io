@@ -108,6 +108,7 @@ util.randomFromObj = function (obj) {
     return obj[key];
 };
 
+// decimalPlaces param is optional and lodash defaults it to 0.
 util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
     if (maxExclusive < minInclusive) {
         const temp = minInclusive;
