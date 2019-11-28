@@ -15,6 +15,7 @@ This website include the following prototype projects:
     - First make sure the WorldState instance in that file is a DeathPlanetWorldState
     - In the loop that instantiates 100 Phaser objects, add a ArrivalEvent in that loop.
     - Then refactor the loop such that computeNextInstant -> ArrivalEvent.resolve() -> create Phaser object for that Thing (at that moment or later)
+    - Add a func in FishTank that, given a WorldState, for each Thing, displays a soldier at its Coord
     - Sync Timeline.now() and real time in seconds, shown in Phaser display
     - Then make the Phaser object display representations of what's going on with its Thing 
   - Howto test via CLI:
