@@ -63,23 +63,19 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         // 2019 Nov 4, Baal desktop can handle 5,000 with only a few seconds delay.
         // Baal with 20,000 is around 2min for the 1st second, then accelerating.
 
-        const MARINE_POPULATION = 10000;
-        const SPARTAN_POPULATATION = 300;
+        const context = 'halo/unsc/individual';
 
-        for (let i = 0; i < MARINE_POPULATION; i++) {
-            // Start with n BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
-            // Arrival BEvents have the outcome of causing a ActionReady BEvent to appear within [0 to cooldown] seconds of the Arrival, for each Action (ActionTemplate) of the arriving creature.
+        const startingThings = {
+            UNSC: {
+                marinePrivate: 300,
+                spartan: 300
+            },
+            Insurrection: {
+                marinePrivate: 700
+            }
+        };
 
-            worldState.timeline.addEvent(
-                new ArrivalEvent('halo/unsc/individual/marinePrivate')
-            );
-        }
-
-        for (let i = 0; i < SPARTAN_POPULATATION; i++) {
-            worldState.timeline.addEvent(
-                new ArrivalEvent('halo/unsc/individual/spartan', undefined, worldState.allAlignments()[0])
-            );
-        }
+        worldState.addThingsByAlignment(startingThings, context);
 
         return worldState;
     }

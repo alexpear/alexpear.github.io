@@ -196,6 +196,20 @@ class WorldState {
         return bEvent.resolve(this);
     }
 
+    addThingsByAlignment (newcomers, contextPath) {
+        Object.keys(newcomers).forEach(alignment => {
+            const teammates = newcomers[alignment];
+
+            Object.keys(teammates).forEach(templateName => {
+                for (let i = 0; i < teammates[templateName]; i++) {
+                    this.timeline.addEvent(
+                        new ArrivalEvent(contextPath + '/' + templateName, undefined, alignment)
+                    );
+                }
+            })
+        });
+    }
+
     thingString () {
         return this.things.filter(
             t => t.active
