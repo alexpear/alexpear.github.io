@@ -20,8 +20,13 @@ module.exports = class ProjectileEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const protagonist = worldState.fromId(this.protagonistId);
         const target = worldState.fromId(this.targetId);
+        if (! target.active) {
+            // Do not bother to calculate. (LATER we could, if interesting.)
+            return;
+        }
+
+        const protagonist = worldState.fromId(this.protagonistId);
         const actionTemplate = worldState.fromId(this.actionId);
 
         // Information to be persisted:
