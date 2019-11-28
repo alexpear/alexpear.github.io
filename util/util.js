@@ -165,7 +165,7 @@ util.arraySummary = (a) => {
 
     const archetypes = Object.keys(dict)
         .map(
-            s => `${s} x${dict[s]}`
+            s => `${s} x${util.abbrvNumber(dict[s])}`
         );
 
     return archetypes.join(', ');
@@ -374,6 +374,34 @@ util.arrayCopy = (a) => {
 
 util.commaNumber = (n) =>
     commaNumber(n);
+
+util.abbrvNumber = (n) => {
+    let output = '';
+    const pos = Math.abs(n);
+
+    if (pos < 1000) {
+        output = pos.toString();
+    }
+    else if (pos < 1e6) {
+        output = _.round(pos / 1000)
+            .toFixed(0)
+            + 'k';
+    }
+    else if (pos < 1e9) {
+        output = _.round(pos / 1e6)
+            .toFixed(0)
+            + 'mn';
+    }
+    else {
+        output = _.round(pos / 1e9)
+            .toFixed(0)
+            + 'tn';
+    }
+
+    return n >= 0 ?
+        output :
+        `-${output}`;
+};
 
 util.sigFigsOf = (n) => {
     if (! util.isNumber(n)) {

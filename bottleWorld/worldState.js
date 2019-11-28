@@ -212,7 +212,7 @@ class WorldState {
     }
 
     printCensus () {
-        const output = `At t=${ this.now() }, this world contains: (${this.alignmentCensusString()})`;
+        const output = `At t=${ this.now() }, this world contains:\n${this.templateCensusString()}`;
 
         Util.log(output, 'info');
     }
@@ -248,12 +248,112 @@ class WorldState {
         );
     }
 
+    // returns a dict<Thing[]>
+    // {
+    //     'foo': [a, b, c],
+    //     'bar': [d, e, f]
+    // }
+    dictByProp (prop, things) {
+        things = things || this.things;
+
+        const dict = {};
+
+        things.forEach(
+            thing => {
+                const value = thing[prop];
+
+                if (dict[value]) {
+                    dict[value].push(thing);
+                }
+                else {
+                    dict[value] = [thing];
+                }
+            }
+        );
+
+        return dict;
+    }
+
     // Example:
     // {
-
+        // LG: {
+        //     dragon: {
+        //         total: 7,
+        //         active: 1
+        //     },
+        //     human: {
+        //         total: 1000000,
+        //         active: 800000
+        //     }
+        // },
+        // LE: {
+        //     dragon: {
+        //         total: 7,
+        //         active: 0
+        //     },
+        //     human: {
+        //         total: 100000,
+        //         active: 70000
+        //     }
+        // }
     // }
-    censusObjByTemplateName (templateName) {
-        // TODO
+    templateCensusObj () {
+        const census = {};
+        const thingsByAlignment = this.dictByProp('alignment');
+
+        Object.keys(thingsByAlignment).forEach(alignment => {
+            // Partition each alignment further, by template.
+            thingsByAlignment[alignment] = this.dictByProp('templateName', thingsByAlignment[alignment]);
+
+
+            census[alignment] = {};
+            const friends = thingsByAlignment[alignment];
+
+            Object.keys(friends).forEach(templateName => {
+                const kin = friends[templateName];
+
+                census[alignment][templateName] = {
+                    total: kin.length,
+                    active: kin.filter(
+                        t => t.active
+                    ).length
+                };
+            });
+        });
+
+        return census;
+    }
+
+    // LG:
+    //   dragon 1/7
+    //   human 800000/1000000
+    // LE:
+    //   dragon 0/7
+    //   human 70000/100000
+    templateCensusString () {
+        const census = this.templateCensusObj();
+        const alignments = Object.keys(census);
+
+        if (alignments.length === 0) {
+            return 'Everyone is dead!';
+        }
+
+        return alignments
+            .map(alignment => {
+                const templates = Object.keys(census[alignment]).map(
+                    template => {
+                        const kin = census[alignment][template];
+
+                        return `  ${ template }\t${ kin.active }/${ kin.total }`;
+                    }
+                )
+                .sort();
+
+                return `${ alignment }:\n${ templates.join('\n') }`;
+            })
+            .sort()
+            .join('\n');
+
     }
 
     // Example:
@@ -304,7 +404,7 @@ class WorldState {
         }
 
         return alignments
-            .map(alignment => `${alignment}: ${census[alignment].active}/${census[alignment].total}`)
+            .map(alignment => `${alignment}: ${Util.abbrvNumber(census[alignment].active)}/${Util.abbrvNumber(census[alignment].total)}`)
             .sort()
             .join(', ');
     }
