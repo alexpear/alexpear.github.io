@@ -121,6 +121,13 @@ class Coord {
             Util.randomUpTo(HEIGHT)
         );
     }
+
+    static randomInSquare (minVal, maxValExclusive) {
+        return new Coord(
+            Util.randomRange(minVal, maxValExclusive),
+            Util.randomRange(minVal, maxValExclusive)
+        );
+    }
 };
 
 // Death Planet Fish Tank wants a cm resolution.
