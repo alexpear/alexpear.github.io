@@ -66,12 +66,13 @@ class WorldState {
         );
     }
 
-    thingsWith (criteria, shouldFlip) {
+    thingsWith (criteria, shouldFlip, things) {
         shouldFlip = shouldFlip || false;
+        things = things || this.things;
 
         const props = Object.keys(criteria);
 
-        return this.things.filter(
+        return things.filter(
             thing => {
                 if (! thing.active) {
                     return false;
