@@ -64,7 +64,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         // Baal with 20,000 is around 2min for the 1st second, then accelerating.
 
         const MARINE_POPULATION = 10000;
-        const SPARTAN_POPULATATION = 2;
+        const SPARTAN_POPULATATION = 300;
 
         for (let i = 0; i < MARINE_POPULATION; i++) {
             // Start with n BEvents of type Arrival. They can be resolved in the first call to worldState.proceed()
@@ -127,6 +127,8 @@ DeathPlanetWorldState.run();
 . Ability to set a specific Thing or a templateName to detailed biography mode, and then see detailed entries for each one in the logs
 . Thing.eliminatedBy field or getter. Stores who KOed it.
 . Thing.eliminated field (Thing[]) or getter. Also useful for 'axe counts' like Legolas and Gimli have.
+. Ability to see the population of a interesting group (eg, number of dragons) at each timestep in a timeline
+. Ability to see a timeline with 'LG dragon dies' events marked on it.
 
 
 */
