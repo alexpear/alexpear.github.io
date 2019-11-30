@@ -67,13 +67,19 @@ const Individual = new Phaser.Class({
         this.xSpeed = 0;
         this.ySpeed = 0;
 
-        this.faction = this.thing.template.alignment;
+        this.faction = this.thing.alignment;
+
+        if (this.faction !== Constants.factions.unsc) {
+            console.log(`in initialize(), faction is ${this.faction}`);
+            this.setTint(0x7777FF);
+        }
 
         this.target = Constants.objective;
 
         this.setBlendMode(0);
     },
 
+    // TODO the timing of the animations is a little out of sync with the back end. Learn more about what is happening.
     // Updates the position each cycle
     update: function (time, delta) {
         maybeClearGraphics(time);
