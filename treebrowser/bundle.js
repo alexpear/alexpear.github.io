@@ -30985,19 +30985,21 @@ class Coord {
     // Returns random position in a distribution that is convenient to display on one screen.
     static randomOnScreen () {
         // Unit: meters
-        const WIDTH = 40;
-        const HEIGHT = 20;
+        const WIDTH = 23;
+        const HEIGHT = 13;
 
         return new Coord(
-            Util.randomUpTo(WIDTH),
-            Util.randomUpTo(HEIGHT)
+            // 2 decimal places (centimeter precision)
+            Util.randomRange(0.5, WIDTH, 2),
+            Util.randomRange(0.5, HEIGHT, 2)
         );
     }
 
     static randomInSquare (minVal, maxValExclusive) {
         return new Coord(
-            Util.randomRange(minVal, maxValExclusive),
-            Util.randomRange(minVal, maxValExclusive)
+            // 2 decimal places (centimeter precision)
+            Util.randomRange(minVal, maxValExclusive, 2),
+            Util.randomRange(minVal, maxValExclusive, 2)
         );
     }
 };
@@ -31064,6 +31066,8 @@ util.default = function (input, defaultValue) {
 util.contains = function (array, fugitive) {
     return array.indexOf(fugitive) >= 0;
 };
+
+util.includes = util.contains;
 
 util.hasOverlap = function (arrayA, arrayB) {
     for (let i = 0; i < arrayA.length; i++) {
@@ -31576,14 +31580,10 @@ module.exports = class Creature extends Thing {
 
         // Util.logDebug(`Creature constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
 
-        // Init stamina points
-        this.sp = this.findTrait('maxSp') || 1;
-
-        // Unit: timestamp in seconds
-        this.lastDamaged = -Infinity;
-
         // Faction or temperament
         this.alignment = alignment;
+
+        this.lastAction = undefined;
     }
 
     getActions (worldState) {
@@ -31638,6 +31638,8 @@ module.exports = class Creature extends Thing {
     }
 
     chooseTarget (worldState, actionTemplate) {
+        // Later, actionTemplate can inform whether some targets are a bad idea for that action.
+
         const nonAllies = worldState.thingsWithout(
             {
                 alignment: this.alignment
@@ -31676,6 +31678,15 @@ module.exports = class Thing extends WNode {
 
         // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
         this.active = true;
+
+        // Init stamina points
+        this.sp = this.findTrait('maxSp') || 1;
+
+        // Unit: timestamp in seconds
+        this.lastDamaged = -Infinity;
+
+        // Object that represents it in the display area.
+        this.blip = undefined;
     }
 
     distanceTo (target) {
@@ -31962,7 +31973,7 @@ class WNode {
         Object.keys(this)
             .forEach(
                 key => {
-                    if (Util.contains(['components', 'parent'], key)) {
+                    if (Util.contains(['components', 'parent', 'blip'], key)) {
                         return;
                     }
 

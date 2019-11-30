@@ -1272,11 +1272,11 @@ const BEvent = module.exports = class BEvent {
         // type string
         this.eventType = eventType;
 
-        // type string
-        this.protagonistId = (protagonist && protagonist.id) || protagonist;
+        // type WNode
+        this.protagonist = protagonist;
 
-        // type string
-        this.targetId = (target && target.id) || target;
+        // type WNode
+        this.target = target;
 
         // type Coord
         this.coord = coord;
@@ -1292,6 +1292,9 @@ const BEvent = module.exports = class BEvent {
 
         // type BEvent[]
         this.outcomes = [];  // Array of other BEvent
+
+        // type boolean
+        this.happened = true;
 
         // type string
         this.id = Util.newId();
@@ -1318,24 +1321,25 @@ const BEvent = module.exports = class BEvent {
         );
     }
 
-    // NOTE In 2019 July i decided to have BEvents point to ids of Things rather than to Things in-memory.
-    // The alternative, if id lookups cause too much slowdown, would be to have BEvents point to full Things in-memory and go back to using BEvent.serializable() to convert to id-based non-circular-ref versions for persistence.
+    // This func replaces pointers with id strings, for serialization / storage.
+    toJson () {
+        const serialized = {};
 
-    // TODO (ToW 2019 Oct 17) i desire to reverse this decision. The way i see it now (2019 Oct) i can either translate between string and object once, upon persisting and loading, or i can do it many times (whenever i interact with a BEvent in-memory). But reversing it is not a priority right this minute.
+        Object.keys(this).forEach(
+            key => {
+                const originalValue = this[key];
 
-    // TODO probably make subclasses of BEvent for Arrival, Explosion, etc.
-    // Each could probably even have a .resolve() member func.
+                serialized[key] = originalValue ?
+                    (originalValue.id || Util.toJson(originalValue)) :
+                    originalValue;
+            }
+        );
+
+        return serialized;
+    }
 
     // static departure (protagonist) {
     //     return new BEvent(BEvent.TYPES.Departure, protagonist);
-    // }
-
-    // // Might later revise this. Maybe some actions can be performed with a parameter.
-    // static action (protagonist, target, coord, actionType) {
-    //     const event = new BEvent(BEvent.TYPES.Action, protagonist, target, coord);
-    //     event.actionType = actionType;
-    //     return event;
-    //     // Outcome information could be stored in this.outcomes or in a separate Update event.
     // }
 
     // // Builds a chain of BEvent of length up to 3
@@ -1581,7 +1585,7 @@ const ProjectileEvent = require('./projectileEvent.js');
 const Util = require('../../util/util.js');
 
 module.exports = class ActionEvent extends BEvent {
-    // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
+    // protagonist is a input param of type Thing.
     constructor (protagonist, target, coord, actionId) {
         super(
             BEvent.TYPES.Action,
@@ -1594,13 +1598,13 @@ module.exports = class ActionEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const protagonist = worldState.fromId(this.protagonistId);
+        const protagonist = this.protagonist;
 
         if (! protagonist.active) {
             return;
         }
 
-        const target = worldState.fromId(this.targetId);
+        const target = this.target;
         const actionTemplate = worldState.fromId(this.actionId);
 
         // Util.logDebug(`In ActionEvent, this.actionId is ${this.actionId}. worldState.glossary[this.actionId] is ${worldState.glossary[this.actionId]}, actionTemplate is ${actionTemplate}, target is ${target}.`);
@@ -1630,7 +1634,7 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 module.exports = class ActionReadyEvent extends BEvent {
-    // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
+    // protagonist is a input param of type Thing.
     constructor (protagonist, actionId) {
         super(
             BEvent.TYPES.ActionReady,
@@ -1641,7 +1645,7 @@ module.exports = class ActionReadyEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const protagonist = worldState.fromId(this.protagonistId);
+        const protagonist = this.protagonist;
 
         // Later could relax the requirement that protagonist.template be populated, if that seems unnecessary.
         if (
@@ -1653,18 +1657,14 @@ module.exports = class ActionReadyEvent extends BEvent {
         }
 
         if (! protagonist.active) {
-            return;
+            return this.happened = false;
         }
 
-        const actions = protagonist.getActions();
+        // Doesn't confirm that the protagonist's template has that action, but that's fine.
+        // Action-specific target decisions arent implemented anyway.
+        // const actionTemplate = worldState.fromId(this.actionId);
+        const target = protagonist.chooseTarget(worldState);
 
-        const action = actions.find(
-            a => a.id === this.actionId
-        ) || actions[0];
-
-        const target = protagonist.chooseTarget(worldState, action);
-
-        // TODO: See logs. There's a bug where ProjectileEvents keep appearing even after no targets are active anymore.
         if (! target) {
             return;
         }
@@ -1672,6 +1672,9 @@ module.exports = class ActionReadyEvent extends BEvent {
         const actionEvent = new ActionEvent(protagonist, target, undefined, this.actionId);
 
         this.outcomes.push(actionEvent);
+
+        // For graphics
+        protagonist.lastAction = actionEvent;
 
         // Util.logDebug(`In ActionReadyEvent.resolve(), about to call timeline.addEvent(actionEvent, t)`);
 
@@ -1709,7 +1712,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     resolve (worldState) {
         const arriver = this.templateName ?
             worldState.generateNodes(this.templateName)[0] :
-            worldState.fromId(this.protagonistId);
+            worldState.fromId(this.templateName);
 
         arriver.alignment = this.alignment || Util.randomOf(worldState.allAlignments());
 
@@ -1760,7 +1763,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     }
 };
 
-ArrivalEvent.ACTION_DELAY = 5;
+ArrivalEvent.ACTION_DELAY = 1;
 
 },{"../../util/coord.js":75,"../../util/util.js":76,"../bEvent.js":6,"./actionReadyEvent.js":10}],12:[function(require,module,exports){
 'use strict';
@@ -1770,7 +1773,7 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 module.exports = class ProjectileEvent extends BEvent {
-    // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
+    // protagonist is a input param of type Thing.
     constructor (protagonist, target, coord, action) {
         super(
             BEvent.TYPES.Projectile,
@@ -1785,13 +1788,13 @@ module.exports = class ProjectileEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const target = worldState.fromId(this.targetId);
+        const target = this.target;
         if (! target.active) {
-            // Do not bother to calculate. (LATER we could, if interesting.)
+            // Do not bother to calculate the effect of this projectile. (LATER we could, if interesting, or if misses can affect others nearby.)
             return;
         }
 
-        const protagonist = worldState.fromId(this.protagonistId);
+        const protagonist = this.protagonist;
         const actionTemplate = worldState.fromId(this.actionId);
 
         // Information to be persisted:
@@ -1994,6 +1997,7 @@ module.exports = class Timeline {
 
         for (let t = 0; t <= this.now(); t++) {
             if (this.timestamps[t]) {
+                // We do indeed include events where e.happened = false, for the sake of Timeline internal debugging.
                 const events = this.getEventsAt(t)
                     .map(e => Util.capitalized(e.eventType));
 
@@ -5791,21 +5795,26 @@ const Individual = new Phaser.Class({
         Phaser.GameObjects.Image.call(this, scene, x, y, spriteName);
 
         this.thing = thing;
+        thing.blip = this;
 
         this.speed = this.thing.template.speed || 1;
 
         this.xSpeed = 0;
         this.ySpeed = 0;
 
-        // Later Phaser GameObjects should be the view that portrays the underlying WorldState model.
-        this.faction = this.thing.template.alignment || Util.randomFromObj(Constants.factions);
+        this.faction = this.thing.alignment;
 
-        // BTW the first to be created sees empty children arrays.
-        this.target = this.randomEnemy() || Constants.objective;
+        if (this.faction !== Constants.factions.unsc) {
+            console.log(`in initialize(), faction is ${this.faction}`);
+            this.setTint(0x7777FF);
+        }
+
+        this.target = Constants.objective;
 
         this.setBlendMode(0);
     },
 
+    // TODO the timing of the animations is a little out of sync with the back end. Learn more about what is happening.
     // Updates the position each cycle
     update: function (time, delta) {
         maybeClearGraphics(time);
@@ -5817,6 +5826,8 @@ const Individual = new Phaser.Class({
             return;
         }
 
+        // TODO: Find what ActionEvent(s) this Individual is performing this second. MRB2: Draw a line to the target.
+
         this.orient();
 
         const pixelPosition = coordToPixel(this.thing.coord);
@@ -5825,52 +5836,35 @@ const Individual = new Phaser.Class({
         this.y = pixelPosition.y;
     },
 
-    // shoot: function (target) {
-    //     target = target || this.target || Constants.objective;
+    drawBullets: function () {
+        const trajectory = new Phaser.Geom.Line(
+            this.x,
+            this.y,
+            this.target.x,
+            this.target.y
+        );
 
-    //     const trajectory = new Phaser.Geom.Line(this.x, this.y, target.x, target.y);
-    //     fishTank.graphics.strokeLineShape(trajectory);
-
-    //     if (target.visible) {
-    //         target.setActive(false);
-    //         target.setVisible(false);
-    //     }
-    // },
+        fishTank.graphics.strokeLineShape(trajectory);
+    },
 
     // Sets xSpeed and ySpeed correctly
     orient: function () {
-        if (! (this.target && this.target.active)) {
-            this.target = this.randomEnemy() || Constants.objective;
+        if (this.thing.lastAction) {
+            this.target = this.thing.lastAction.target.blip;
+
+            if (this.thing.lastAction.t >= fishTank.worldState.now() - 1) {
+                this.drawBullets();
+            }
+        }
+
+        if (! this.target) {
+            return;
         }
 
         const dest = this.target;
 
-        // If at destination, stop and relax.
-        if (Math.abs(dest.x - this.x) <= 2 && Math.abs(dest.y - this.y) <= 2) {
-            this.xSpeed = 0;
-            this.ySpeed = 0;
-            return;
-        }
-
-        this.direction = Math.atan( (dest.x - this.x) / (dest.y - this.y) );
-
-        if (dest.y >= this.y) {
-            this.xSpeed = this.speed * Math.sin(this.direction);
-            this.ySpeed = this.speed * Math.cos(this.direction);
-        }
-        else {
-            this.xSpeed = -this.speed * Math.sin(this.direction);
-            this.ySpeed = -this.speed * Math.cos(this.direction);
-        }
-
         this.rotation = Phaser.Math.Angle.Between(this.x, this.y, dest.x, dest.y) + (Math.PI / 2);
     },
-
-    randomEnemy: function () {
-        return randomFromFaction(
-            enemyOfFaction(this.faction)
-        );
-    }
 });
 
 const game = new Phaser.Game(config);
@@ -5879,6 +5873,7 @@ let fishTank;
 // TODO make these nomadic functions into member functions of a class FishTankView.
 function preload () {
     this.load.path = 'sprites/';
+    // TODO load and display a 2nd sprite for the other alignment
     this.load.image('soldier', 'fishTankSoldier.png');
 }
 
@@ -5922,7 +5917,7 @@ function depictThings () {
 function create () {
     console.log('Top of FishTank create()');
 
-    const worldState = DeathPlanetWorldState.test();
+    const worldState = DeathPlanetWorldState.example();
 
     console.log('FishTank create() after DeathPlanetWorldState instantiated');
 
@@ -5934,7 +5929,8 @@ function create () {
                 color: 0xaaaa00
             }
         }),
-        graphicsLastCleared: 0,
+        lastSynced: -1, // Unit: in-universe seconds
+        graphicsLastCleared: 0, // Unit: out-of-universe milliseconds
         text: undefined,
         timeline: worldState.timeline,
         worldState: worldState
@@ -5967,10 +5963,17 @@ function create () {
 }
 
 function update (time, delta) {
-    // Later
-    // fishTank.worldState.computeNextInstant();
+    if ((time - this.lastSynced) < 1000) {
+        return;
+    }
+
+    console.log(`In FishTank's update(), time is ${time}`);
+
+    fishTank.worldState.timeline.computeNextInstant();
 
     fishTank.text.setText(`Death Planet, Population ${(fishTank.worldState.squads.unsc.countActive() + fishTank.worldState.squads.covenant.countActive()) || 'You'}`);
+
+    this.lastSynced = time;
 }
 
 function coordToPixel (coord) {
@@ -5993,37 +5996,10 @@ function maybeClearGraphics (time) {
     }
 }
 
-
 function enemyOfFaction (goodGuys) {
     return goodGuys === Constants.factions.unsc ?
         Constants.factions.covenant :
         Constants.factions.unsc;
-}
-
-// Later implement notThisOne exclusion functionality.
-function randomFromFaction (faction, notThisOne) {
-    const group = fishTank.worldState.squads[faction];
-
-    if (! group) {
-        return undefined;
-    }
-
-    const squads = group.getChildren();
-    let offset = Util.randomBelow(squads.length);
-
-    // BTW, this has a slight bias towards active squads that are preceded by multiple inactive squads.
-    // This could be made less biased by calling Math.random() in a while loop.
-    // This would be slightly less performant.
-    for (let k = 0; k < squads.length; k++) {
-        const i = (k + offset) % squads.length;
-        const candidate = squads[i];
-        if (candidate.active && candidate !== notThisOne) {
-            return candidate;
-        }
-    }
-
-    // Case where whole faction is not active:
-    return undefined;
 }
 
 },{"../../bottleWorld/deathPlanetWorldState.js":8,"../../bottleWorld/timeline.js":13,"../../util/coord.js":75,"../../util/util.js":76}],41:[function(require,module,exports){
@@ -32963,19 +32939,21 @@ class Coord {
     // Returns random position in a distribution that is convenient to display on one screen.
     static randomOnScreen () {
         // Unit: meters
-        const WIDTH = 40;
-        const HEIGHT = 20;
+        const WIDTH = 23;
+        const HEIGHT = 13;
 
         return new Coord(
-            Util.randomUpTo(WIDTH),
-            Util.randomUpTo(HEIGHT)
+            // 2 decimal places (centimeter precision)
+            Util.randomRange(0.5, WIDTH, 2),
+            Util.randomRange(0.5, HEIGHT, 2)
         );
     }
 
     static randomInSquare (minVal, maxValExclusive) {
         return new Coord(
-            Util.randomRange(minVal, maxValExclusive),
-            Util.randomRange(minVal, maxValExclusive)
+            // 2 decimal places (centimeter precision)
+            Util.randomRange(minVal, maxValExclusive, 2),
+            Util.randomRange(minVal, maxValExclusive, 2)
         );
     }
 };
@@ -33042,6 +33020,8 @@ util.default = function (input, defaultValue) {
 util.contains = function (array, fugitive) {
     return array.indexOf(fugitive) >= 0;
 };
+
+util.includes = util.contains;
 
 util.hasOverlap = function (arrayA, arrayB) {
     for (let i = 0; i < arrayA.length; i++) {
@@ -33554,14 +33534,10 @@ module.exports = class Creature extends Thing {
 
         // Util.logDebug(`Creature constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
 
-        // Init stamina points
-        this.sp = this.findTrait('maxSp') || 1;
-
-        // Unit: timestamp in seconds
-        this.lastDamaged = -Infinity;
-
         // Faction or temperament
         this.alignment = alignment;
+
+        this.lastAction = undefined;
     }
 
     getActions (worldState) {
@@ -33616,6 +33592,8 @@ module.exports = class Creature extends Thing {
     }
 
     chooseTarget (worldState, actionTemplate) {
+        // Later, actionTemplate can inform whether some targets are a bad idea for that action.
+
         const nonAllies = worldState.thingsWithout(
             {
                 alignment: this.alignment
@@ -33654,6 +33632,15 @@ module.exports = class Thing extends WNode {
 
         // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
         this.active = true;
+
+        // Init stamina points
+        this.sp = this.findTrait('maxSp') || 1;
+
+        // Unit: timestamp in seconds
+        this.lastDamaged = -Infinity;
+
+        // Object that represents it in the display area.
+        this.blip = undefined;
     }
 
     distanceTo (target) {
@@ -33940,7 +33927,7 @@ class WNode {
         Object.keys(this)
             .forEach(
                 key => {
-                    if (Util.contains(['components', 'parent'], key)) {
+                    if (Util.contains(['components', 'parent', 'blip'], key)) {
                         return;
                     }
 
