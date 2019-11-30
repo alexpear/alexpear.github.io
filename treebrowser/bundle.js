@@ -31870,7 +31870,7 @@ class WNode {
         return this.traitMin('stealth');
     }
 
-    toSimpleString () {
+    toAlignmentString () {
         const tName = this.templateName ?
             Util.fromCamelCase(this.templateName) :
             `<WNode with no templateName>`;
@@ -31884,6 +31884,19 @@ class WNode {
         }
         else {
             return `${tName} (${this.shortId()}, ${active}, ${this.alignment})`;
+        }
+    }
+
+    toSimpleString () {
+        const tName = this.templateName ?
+            Util.fromCamelCase(this.templateName) :
+            `<WNode with no templateName>`;
+
+        if (this.displayName) {
+            return `${this.displayName} (${tName})`;
+        }
+        else {
+            return tName;
         }
     }
 
