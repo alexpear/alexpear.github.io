@@ -10,6 +10,15 @@ class Coord {
         this.c = Util.default(c, -1);
     }
 
+    get x () {
+        // TODO is mapping r to x totally wrong, even in the short term?
+        return this.r;
+    }
+
+    get y () {
+        return this.c;
+    }
+
     equals (other) {
         return this.r === other.r && this.c === other.c;
     }

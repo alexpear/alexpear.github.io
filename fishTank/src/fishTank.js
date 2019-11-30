@@ -156,6 +156,21 @@ function deploySquads (faction) {
     }
 }
 
+function depictThings () {
+    console.log(`Top of depictThings()`);
+
+    const individuals = fishTank.worldState.activeThings()
+        .map(thing => {
+                const pixelPosition = coordToPixel(thing.coord);
+                const individual = fishTank.worldState.squads.unsc.create(pixelPosition.x, pixelPosition.y, 'soldier', thing);
+
+                // console.log(`depictThings(), just called create()`);
+
+                return individual;
+            }
+        );
+}
+
 function create () {
     fishTank = window.fishTank = {
         game: game,

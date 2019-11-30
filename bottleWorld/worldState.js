@@ -104,6 +104,12 @@ class WorldState {
         return this.thingsWith(criteria, true);
     }
 
+    activeThings (things) {
+        things = things || this.things;
+
+        return this.thingsWith({}, false, things);
+    }
+
     addThing (thing, coord) {
         thing.coord = coord || new Coord();
         this.things.push(thing);
