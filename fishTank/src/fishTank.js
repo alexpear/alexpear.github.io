@@ -86,7 +86,7 @@ const Individual = new Phaser.Class({
             return;
         }
 
-        // TODO: Find what ActionEvent(s) this Individual is performing this second. Orient towards that target. MRB2: Draw a line to the target.
+        // TODO: Find what ActionEvent(s) this Individual is performing this second. MRB2: Draw a line to the target.
 
         this.orient();
 
@@ -110,29 +110,16 @@ const Individual = new Phaser.Class({
 
     // Sets xSpeed and ySpeed correctly
     orient: function () {
-        if (! (this.target && this.target.active)) {
-            this.target = this.randomEnemy() || Constants.objective;
+        if (this.thing.lastAction) {
+            // TODO ActionEvent has .targetId, not .target
+            // this.target = this.thing.lastAction.target.blip;
         }
 
-        const dest = this.target;
-
-        // If at destination, stop and relax.
-        if (Math.abs(dest.x - this.x) <= 2 && Math.abs(dest.y - this.y) <= 2) {
-            this.xSpeed = 0;
-            this.ySpeed = 0;
+        if (! (this.target && this.target.active)) {
             return;
         }
 
-        this.direction = Math.atan( (dest.x - this.x) / (dest.y - this.y) );
-
-        if (dest.y >= this.y) {
-            this.xSpeed = this.speed * Math.sin(this.direction);
-            this.ySpeed = this.speed * Math.cos(this.direction);
-        }
-        else {
-            this.xSpeed = -this.speed * Math.sin(this.direction);
-            this.ySpeed = -this.speed * Math.cos(this.direction);
-        }
+        const dest = this.target;
 
         this.rotation = Phaser.Math.Angle.Between(this.x, this.y, dest.x, dest.y) + (Math.PI / 2);
     },
