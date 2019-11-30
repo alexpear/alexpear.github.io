@@ -72,4 +72,4 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     }
 };
 
-ArrivalEvent.ACTION_DELAY = 5;
+ArrivalEvent.ACTION_DELAY = 1;
