@@ -56,6 +56,8 @@ util.contains = function (array, fugitive) {
     return array.indexOf(fugitive) >= 0;
 };
 
+util.includes = util.contains;
+
 util.hasOverlap = function (arrayA, arrayB) {
     for (let i = 0; i < arrayA.length; i++) {
         if (util.contains(arrayB, arrayA[i])) {

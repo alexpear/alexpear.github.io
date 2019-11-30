@@ -11,14 +11,10 @@ module.exports = class Creature extends Thing {
 
         // Util.logDebug(`Creature constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
 
-        // Init stamina points
-        this.sp = this.findTrait('maxSp') || 1;
-
-        // Unit: timestamp in seconds
-        this.lastDamaged = -Infinity;
-
         // Faction or temperament
         this.alignment = alignment;
+
+        this.lastAction = undefined;
     }
 
     getActions (worldState) {
@@ -73,6 +69,8 @@ module.exports = class Creature extends Thing {
     }
 
     chooseTarget (worldState, actionTemplate) {
+        // Later, actionTemplate can inform whether some targets are a bad idea for that action.
+
         const nonAllies = worldState.thingsWithout(
             {
                 alignment: this.alignment

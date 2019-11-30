@@ -22,7 +22,7 @@ module.exports = class ProjectileEvent extends BEvent {
     resolve (worldState) {
         const target = this.target;
         if (! target.active) {
-            // Do not bother to calculate. (LATER we could, if interesting.)
+            // Do not bother to calculate the effect of this projectile. (LATER we could, if interesting, or if misses can affect others nearby.)
             return;
         }
 

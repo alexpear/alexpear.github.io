@@ -15,6 +15,12 @@ module.exports = class Thing extends WNode {
         // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
         this.active = true;
 
+        // Init stamina points
+        this.sp = this.findTrait('maxSp') || 1;
+
+        // Unit: timestamp in seconds
+        this.lastDamaged = -Infinity;
+
         // Object that represents it in the display area.
         this.blip = undefined;
     }
