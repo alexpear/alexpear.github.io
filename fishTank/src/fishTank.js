@@ -101,26 +101,28 @@ const Individual = new Phaser.Class({
         this.y = pixelPosition.y;
     },
 
-    // shoot: function (target) {
-    //     target = target || this.target || Constants.objective;
+    drawBullets: function () {
+        const trajectory = new Phaser.Geom.Line(
+            this.x,
+            this.y,
+            this.target.x,
+            this.target.y
+        );
 
-    //     const trajectory = new Phaser.Geom.Line(this.x, this.y, target.x, target.y);
-    //     fishTank.graphics.strokeLineShape(trajectory);
-
-    //     if (target.visible) {
-    //         target.setActive(false);
-    //         target.setVisible(false);
-    //     }
-    // },
+        fishTank.graphics.strokeLineShape(trajectory);
+    },
 
     // Sets xSpeed and ySpeed correctly
     orient: function () {
         if (this.thing.lastAction) {
-            // TODO ActionEvent has .targetId, not .target
-            // this.target = this.thing.lastAction.target.blip;
+            this.target = this.thing.lastAction.target.blip;
+
+            if (this.thing.lastAction.t >= fishTank.worldState.now() - 1) {
+                this.drawBullets();
+            }
         }
 
-        if (! (this.target && this.target.active)) {
+        if (! this.target) {
             return;
         }
 
