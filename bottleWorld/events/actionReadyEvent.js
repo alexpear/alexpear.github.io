@@ -29,7 +29,7 @@ module.exports = class ActionReadyEvent extends BEvent {
         }
 
         if (! protagonist.active) {
-            return;
+            return this.happened = false;
         }
 
         const actions = protagonist.getActions();

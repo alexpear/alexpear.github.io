@@ -67,6 +67,7 @@ module.exports = class Timeline {
 
         for (let t = 0; t <= this.now(); t++) {
             if (this.timestamps[t]) {
+                // We do indeed include events where e.happened = false, for the sake of Timeline internal debugging.
                 const events = this.getEventsAt(t)
                     .map(e => Util.capitalized(e.eventType));
 

@@ -31,6 +31,9 @@ const BEvent = module.exports = class BEvent {
         // type BEvent[]
         this.outcomes = [];  // Array of other BEvent
 
+        // type boolean
+        this.happened = true;
+
         // type string
         this.id = Util.newId();
     }
