@@ -14,6 +14,9 @@ module.exports = class Thing extends WNode {
 
         // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
         this.active = true;
+
+        // Object that represents it in the display area.
+        this.blip = undefined;
     }
 
     distanceTo (target) {
