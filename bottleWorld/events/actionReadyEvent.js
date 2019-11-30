@@ -32,15 +32,11 @@ module.exports = class ActionReadyEvent extends BEvent {
             return this.happened = false;
         }
 
-        const actions = protagonist.getActions();
+        // Doesn't confirm that the protagonist's template has that action, but that's fine.
+        // Action-specific target decisions arent implemented anyway.
+        // const actionTemplate = worldState.fromId(this.actionId);
+        const target = protagonist.chooseTarget(worldState);
 
-        const action = actions.find(
-            a => a.id === this.actionId
-        ) || actions[0];
-
-        const target = protagonist.chooseTarget(worldState, action);
-
-        // TODO: See logs. There's a bug where ProjectileEvents keep appearing even after no targets are active anymore.
         if (! target) {
             return;
         }
