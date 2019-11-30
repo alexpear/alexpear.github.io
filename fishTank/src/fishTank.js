@@ -86,6 +86,8 @@ const Individual = new Phaser.Class({
             return;
         }
 
+        // TODO: Find what ActionEvent(s) this Individual is performing this second. Orient towards that target. MRB2: Draw a line to the target.
+
         this.orient();
 
         const pixelPosition = coordToPixel(this.thing.coord);
@@ -148,6 +150,7 @@ let fishTank;
 // TODO make these nomadic functions into member functions of a class FishTankView.
 function preload () {
     this.load.path = 'sprites/';
+    // TODO load and display a 2nd sprite for the other alignment
     this.load.image('soldier', 'fishTankSoldier.png');
 }
 

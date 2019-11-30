@@ -122,19 +122,21 @@ class Coord {
     // Returns random position in a distribution that is convenient to display on one screen.
     static randomOnScreen () {
         // Unit: meters
-        const WIDTH = 40;
-        const HEIGHT = 20;
+        const WIDTH = 23;
+        const HEIGHT = 13;
 
         return new Coord(
-            Util.randomUpTo(WIDTH),
-            Util.randomUpTo(HEIGHT)
+            // 2 decimal places (centimeter precision)
+            Util.randomRange(0.5, WIDTH, 2),
+            Util.randomRange(0.5, HEIGHT, 2)
         );
     }
 
     static randomInSquare (minVal, maxValExclusive) {
         return new Coord(
-            Util.randomRange(minVal, maxValExclusive),
-            Util.randomRange(minVal, maxValExclusive)
+            // 2 decimal places (centimeter precision)
+            Util.randomRange(minVal, maxValExclusive, 2),
+            Util.randomRange(minVal, maxValExclusive, 2)
         );
     }
 };
