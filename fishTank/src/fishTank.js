@@ -60,17 +60,16 @@ const Individual = new Phaser.Class({
         Phaser.GameObjects.Image.call(this, scene, x, y, spriteName);
 
         this.thing = thing;
+        thing.blip = this;
 
         this.speed = this.thing.template.speed || 1;
 
         this.xSpeed = 0;
         this.ySpeed = 0;
 
-        // Later Phaser GameObjects should be the view that portrays the underlying WorldState model.
-        this.faction = this.thing.template.alignment || Util.randomFromObj(Constants.factions);
+        this.faction = this.thing.template.alignment;
 
-        // BTW the first to be created sees empty children arrays.
-        this.target = this.randomEnemy() || Constants.objective;
+        this.target = Constants.objective;
 
         this.setBlendMode(0);
     },
@@ -123,12 +122,6 @@ const Individual = new Phaser.Class({
 
         this.rotation = Phaser.Math.Angle.Between(this.x, this.y, dest.x, dest.y) + (Math.PI / 2);
     },
-
-    randomEnemy: function () {
-        return randomFromFaction(
-            enemyOfFaction(this.faction)
-        );
-    }
 });
 
 const game = new Phaser.Game(config);
@@ -260,35 +253,8 @@ function maybeClearGraphics (time) {
     }
 }
 
-
 function enemyOfFaction (goodGuys) {
     return goodGuys === Constants.factions.unsc ?
         Constants.factions.covenant :
         Constants.factions.unsc;
-}
-
-// Later implement notThisOne exclusion functionality.
-function randomFromFaction (faction, notThisOne) {
-    const group = fishTank.worldState.squads[faction];
-
-    if (! group) {
-        return undefined;
-    }
-
-    const squads = group.getChildren();
-    let offset = Util.randomBelow(squads.length);
-
-    // BTW, this has a slight bias towards active squads that are preceded by multiple inactive squads.
-    // This could be made less biased by calling Math.random() in a while loop.
-    // This would be slightly less performant.
-    for (let k = 0; k < squads.length; k++) {
-        const i = (k + offset) % squads.length;
-        const candidate = squads[i];
-        if (candidate.active && candidate !== notThisOne) {
-            return candidate;
-        }
-    }
-
-    // Case where whole faction is not active:
-    return undefined;
 }
