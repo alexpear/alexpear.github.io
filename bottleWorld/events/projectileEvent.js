@@ -5,7 +5,7 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 module.exports = class ProjectileEvent extends BEvent {
-    // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
+    // protagonist is a input param of type Thing.
     constructor (protagonist, target, coord, action) {
         super(
             BEvent.TYPES.Projectile,
@@ -20,13 +20,13 @@ module.exports = class ProjectileEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const target = worldState.fromId(this.targetId);
+        const target = this.target;
         if (! target.active) {
             // Do not bother to calculate. (LATER we could, if interesting.)
             return;
         }
 
-        const protagonist = worldState.fromId(this.protagonistId);
+        const protagonist = this.protagonist;
         const actionTemplate = worldState.fromId(this.actionId);
 
         // Information to be persisted:

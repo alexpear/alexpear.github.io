@@ -6,7 +6,7 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 module.exports = class ActionReadyEvent extends BEvent {
-    // protagonist is a input param of type Thing|string. It will be used to populate the appropriate field of BEvent.
+    // protagonist is a input param of type Thing.
     constructor (protagonist, actionId) {
         super(
             BEvent.TYPES.ActionReady,
@@ -17,7 +17,7 @@ module.exports = class ActionReadyEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const protagonist = worldState.fromId(this.protagonistId);
+        const protagonist = this.protagonist;
 
         // Later could relax the requirement that protagonist.template be populated, if that seems unnecessary.
         if (

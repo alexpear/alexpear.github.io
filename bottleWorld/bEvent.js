@@ -10,11 +10,11 @@ const BEvent = module.exports = class BEvent {
         // type string
         this.eventType = eventType;
 
-        // type string
-        this.protagonistId = (protagonist && protagonist.id) || protagonist;
+        // type WNode
+        this.protagonist = protagonist;
 
-        // type string
-        this.targetId = (target && target.id) || target;
+        // type WNode
+        this.target = target;
 
         // type Coord
         this.coord = coord;
@@ -56,24 +56,25 @@ const BEvent = module.exports = class BEvent {
         );
     }
 
-    // NOTE In 2019 July i decided to have BEvents point to ids of Things rather than to Things in-memory.
-    // The alternative, if id lookups cause too much slowdown, would be to have BEvents point to full Things in-memory and go back to using BEvent.serializable() to convert to id-based non-circular-ref versions for persistence.
+    // This func replaces pointers with id strings, for serialization / storage.
+    toJson () {
+        const serialized = {};
 
-    // TODO (ToW 2019 Oct 17) i desire to reverse this decision. The way i see it now (2019 Oct) i can either translate between string and object once, upon persisting and loading, or i can do it many times (whenever i interact with a BEvent in-memory). But reversing it is not a priority right this minute.
+        Object.keys(this).forEach(
+            key => {
+                const originalValue = this[key];
 
-    // TODO probably make subclasses of BEvent for Arrival, Explosion, etc.
-    // Each could probably even have a .resolve() member func.
+                serialized[key] = originalValue ?
+                    (originalValue.id || Util.toJson(originalValue)) :
+                    originalValue;
+            }
+        );
+
+        return serialized;
+    }
 
     // static departure (protagonist) {
     //     return new BEvent(BEvent.TYPES.Departure, protagonist);
-    // }
-
-    // // Might later revise this. Maybe some actions can be performed with a parameter.
-    // static action (protagonist, target, coord, actionType) {
-    //     const event = new BEvent(BEvent.TYPES.Action, protagonist, target, coord);
-    //     event.actionType = actionType;
-    //     return event;
-    //     // Outcome information could be stored in this.outcomes or in a separate Update event.
     // }
 
     // // Builds a chain of BEvent of length up to 3

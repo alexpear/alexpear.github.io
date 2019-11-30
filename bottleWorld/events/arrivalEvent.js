@@ -21,7 +21,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     resolve (worldState) {
         const arriver = this.templateName ?
             worldState.generateNodes(this.templateName)[0] :
-            worldState.fromId(this.protagonistId);
+            worldState.fromId(this.templateName);
 
         arriver.alignment = this.alignment || Util.randomOf(worldState.allAlignments());
 

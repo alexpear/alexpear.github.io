@@ -232,7 +232,7 @@ class WNode {
         Object.keys(this)
             .forEach(
                 key => {
-                    if (Util.contains(['components', 'parent'], key)) {
+                    if (Util.contains(['components', 'parent', 'blip'], key)) {
                         return;
                     }
 
