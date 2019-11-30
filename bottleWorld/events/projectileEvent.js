@@ -106,6 +106,7 @@ module.exports = class ProjectileEvent extends BEvent {
         }
 
         target.sp -= actionTemplate.damage;
+        target.lastDamaged = worldState.now();
         this.resultantTargetSp = target.sp;
 
         if (target.sp <= 0) {

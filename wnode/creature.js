@@ -14,6 +14,9 @@ module.exports = class Creature extends Thing {
         // Init stamina points
         this.sp = this.findTrait('maxSp') || 1;
 
+        // Unit: timestamp in seconds
+        this.lastDamaged = -Infinity;
+
         // Faction or temperament
         this.alignment = alignment;
     }
