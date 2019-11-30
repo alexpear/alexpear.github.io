@@ -220,7 +220,7 @@ class WorldState {
         return this.things.filter(
             t => t.active
         ).map(
-            t => `\n    ${Util.capitalized(t.toSimpleString())}`
+            t => `\n    ${Util.capitalized(t.toAlignmentString())}`
         )
         .join('') || `\n    Only the tireless void`;
     }
