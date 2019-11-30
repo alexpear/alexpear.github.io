@@ -1,192 +1,4 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-
-},{}],2:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],3:[function(require,module,exports){
 'use strict';
 
 const NodeTemplate = require('./nodeTemplate.js');
@@ -194,7 +6,7 @@ const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
 class ActionTemplate extends NodeTemplate {
-    constructor (name, range, hit, damage) {
+    constructor (name, range, hit, damage, shotsPerSecond) {
         super(name);
 
         this.id = Util.newId();
@@ -202,6 +14,7 @@ class ActionTemplate extends NodeTemplate {
         this.range = range || 1;
         this.hit = hit || 0;
         this.damage = damage || 0;
+        this.shotsPerSecond = shotsPerSecond || 1;
     }
 
     // Later make a superclass version of this func.
@@ -267,7 +80,7 @@ class ActionTemplate extends NodeTemplate {
         return template;
     }
 
-    static soldierExample () {
+    static gunExample () {
         const template = new ActionTemplate('dmr');
 
         // Later maybe rename to a more generic phrase like 'rate'.
@@ -291,7 +104,7 @@ class ActionTemplate extends NodeTemplate {
 
 module.exports = ActionTemplate;
 
-},{"../codices/tags.js":27,"../util/util.js":66,"./nodeTemplate.js":5}],4:[function(require,module,exports){
+},{"../codices/tags.js":25,"../util/util.js":65,"./nodeTemplate.js":3}],2:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
@@ -318,10 +131,10 @@ const SIZE = {
 // Note that currently this is confusingly used for intermediate representations
 // when transforming trees of WNodes to Groups.
 class CreatureTemplate extends NodeTemplate {
-    constructor (name) {
+    constructor (name, tags) {
         super(name);
 
-        this.tags = [];
+        this.tags = tags || [];
         this.actions = [];
         this.resistance = {};
     }
@@ -419,8 +232,8 @@ class CreatureTemplate extends NodeTemplate {
             // Remove the 'action' tag.
             this.tags.splice(actionTagIndex, 1);
 
-            // Later, can put a name from the codex in the name param, instead of newId()
-            const action = new ActionTemplate(Util.newId(), this.range, this.hit, this.damage);
+            const action = new ActionTemplate(this.name, this.range, this.hit, this.damage, this.shotsPerSecond);
+
             action.tags = Util.arrayCopy(this.tags);
             this.tags = [];
             this.actions.push(action);
@@ -428,6 +241,7 @@ class CreatureTemplate extends NodeTemplate {
             delete this.range;
             delete this.hit;
             delete this.damage;
+            delete this.shotsPerSecond;
         }
     }
 
@@ -455,6 +269,101 @@ class CreatureTemplate extends NodeTemplate {
         }
     }
 
+    static fromRaw (tableRaw) {
+        const creatureTemplate = new CreatureTemplate();
+
+        tableRaw.split('\n')
+            .slice(1)
+            .map(
+                line => {
+                    const parsed = CreatureTemplate.parseTemplateLine(line);
+                    const key = parsed.key;
+
+                    if (
+                        key in creatureTemplate &&
+                        ! ['tags', 'actions', 'resistance'].includes(key)
+                    ) {
+                        throw new Error(`fromRaw(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
+                    }
+
+                    creatureTemplate[key] = parsed.value;
+
+                    // Util.log(`in parseTemplate(). Just wrote key/value pair {${key}: ${parsed.value}}`, 'debug');
+                }
+            );
+
+        creatureTemplate.name = CreatureTemplate.templateKey(tableRaw);
+        creatureTemplate.setUpAction();
+
+        return creatureTemplate;
+    }
+
+    static parseTemplateLine (line) {
+        line = line.trim();
+
+        const colonIndex = line.indexOf(':');
+
+        if (colonIndex < 0) {
+            throw new Error(`parseTemplateLine(): No colon found in ${ line }`);
+        }
+
+        const key = line.slice(0, colonIndex)
+            .trim();
+        const rest = line.slice(colonIndex + 1)
+            .trim();
+
+        let value;
+        if (key === 'tags') {
+            value = rest.split(/\s/);
+        }
+        else if (key === 'resistance') {
+            value = {};
+
+            const entries = rest.split(',');
+
+            entries.forEach(
+                e => {
+                    const parts = e.trim()
+                        .split(/\s/);
+                    const resistanceKey = parts[0];
+                    const modifier = Number(parts[1]);
+
+                    value[resistanceKey] = modifier;
+                }
+            );
+        }
+        else if (rest === 'true') {
+            value = true;
+        }
+        else if (rest === 'false') {
+            value = false;
+        }
+        else {
+            // number case.
+            const parsed = Number(rest);
+
+            value = Util.exists(parsed) ?
+                parsed :
+                rest;
+
+            // Util.log(`in parseTemplateLine( '${line}' ). value is ${value}.`, 'debug');
+        }
+
+        return {
+            key: key,
+            value: value
+        };
+    }
+
+    static templateKey (tableRaw) {
+        const START = 'template ';
+        const startIndex = tableRaw.indexOf(START);
+        const endIndex = tableRaw.indexOf('\n');
+
+        return tableRaw.slice(startIndex + START.length, endIndex)
+            .trim();
+    }
+
     static mergeResistances (a, b) {
         const keys = Util.union(Object.keys(a), Object.keys(b));
         return keys.reduce(
@@ -471,12 +380,12 @@ class CreatureTemplate extends NodeTemplate {
     // }
 
     static example () {
-        return CreatureTemplate.soldierExample();
+        return CreatureTemplate.marineExample();
     }
 
-    static soldierExample () {
+    static marineExample () {
         const template = new CreatureTemplate();
-        template.name = 'soldier';
+        template.name = 'marinePrivate';
 
         // UNSC Marine (Halo)
         template.tags = [
@@ -491,7 +400,7 @@ class CreatureTemplate extends NodeTemplate {
         template.defense = 16;
         template.alignment = 'UNSC';
         template.actions = [
-            ActionTemplate.soldierExample()
+            ActionTemplate.gunExample()
         ];
 
         template.resistance = {};
@@ -538,19 +447,40 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":27,"../util/util.js":66,"./actiontemplate.js":3,"./nodeTemplate.js":5}],5:[function(require,module,exports){
+},{"../codices/tags.js":25,"../util/util.js":65,"./actiontemplate.js":1,"./nodeTemplate.js":3}],3:[function(require,module,exports){
 'use strict';
 
 const TAG = require('../codices/tags.js');
+const Util = require('../util/util.js');
 
 module.exports = class NodeTemplate {
     constructor (name) {
         this.name = name;
         this.tags = [];
     }
+
+    isThing () {
+        // Later, a tag inheritance tree can make this smoother.
+        return Util.hasOverlap(this.tags, ['thing', 'item', 'weapon', 'gear']) ||
+            this.size ||
+            this.weight ||
+            this.coord ||
+            Util.exists(this.sp) ||
+            Util.exists(this.active);
+    }
+
+    isCreature () {
+        return Util.hasOverlap(this.tags, ['creature', 'person', 'character', 'combatant', 'being']) ||
+            Util.isArray(this.actions);
+    }
+
+    toJson () {
+        // Already free of circular reference.
+        return this;
+    }
 }
 
-},{"../codices/tags.js":27}],6:[function(require,module,exports){
+},{"../codices/tags.js":25,"../util/util.js":65}],4:[function(require,module,exports){
 module.exports = `
 * output
 1 {battalion}
@@ -800,7 +730,7 @@ const drafts = `
 
 `;
 
-},{}],7:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -941,7 +871,7 @@ item/bombHarness
 
 `;
 
-},{}],8:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -1082,7 +1012,7 @@ weight: 4
 
 `;
 
-},{}],9:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = `
 * output
 5 {lance}
@@ -1401,7 +1331,7 @@ individual/bruteMinor
 
 `;
 
-},{}],10:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = `
 * output
 100 pod
@@ -1432,7 +1362,7 @@ module.exports = `
 
 `;
 
-},{}],11:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = `
 * output
 150 {infantryPack}
@@ -1499,7 +1429,7 @@ individual/brainForm
 
 `;
 
-},{}],12:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = `
 * output
 1 installationCompany
@@ -1523,7 +1453,7 @@ module.exports = `
 
 `;
 
-},{}],13:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = `
 * output
 50 sentinel
@@ -1559,7 +1489,7 @@ forerunner/item/boltshot
 
 `;
 
-},{}],14:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = `
 * output
 1 {giWeapon}
@@ -1605,7 +1535,7 @@ module.exports = `
 4 prometheanVision
 
 `;
-},{}],15:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = `
 * output
 1 {installationSquad}
@@ -1680,7 +1610,7 @@ Sketching about Forerunner armies
 
 */
 
-},{}],16:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = `
 * output
 4 {halo/unsc/fleet}
@@ -1690,7 +1620,7 @@ module.exports = `
 
 `;
 
-},{}],17:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -1773,7 +1703,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],18:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -1890,7 +1820,7 @@ spaceFighterSquadron
 {unsc/squad/oniSquad}
 
 `;
-},{}],19:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -1914,7 +1844,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],20:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -1925,6 +1855,7 @@ module.exports = `
 1 spartan
 
 * template human
+tags: creature animal biped terrestrial biological
 individuals: 1
 weight: 80
 size: 1.7
@@ -1953,8 +1884,12 @@ human
 4 civilian
 1 {output}
 
+* template marinePrivate
+tags: creature
+comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily.
+
 * childrenof marinePrivate
-{unsc/item/giWeapon}
+unsc/item/dmr
 {unsc/item}
 unsc/item/flakHelmet
 unsc/item/flakArmor
@@ -1996,8 +1931,17 @@ unsc/item/jetpack
 100 odst
 1 spartan
 
+* template spartan
+tags: creature cyborg
+size: 2
+weight: 120
+maxSp: 20
+damage: 4
+speed: 5
+stealth: 12
+
 * childrenof spartan
-{unsc/item/anyWeapon}
+unsc/item/dmr
 {unsc/item/anyWeapon}
 {unsc/item/anyGear}
 unsc/item/fragGrenade
@@ -2013,6 +1957,7 @@ human
 1 spartan
 
 * template dropPod
+tags: thing vehicle
 weight: 1000
 
 * childrenof dropPod
@@ -2026,7 +1971,7 @@ weight: 1000
 
 `;
 
-},{}],21:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = `* output
 15 {anyWeapon}
 20 {anyGear}
@@ -2206,6 +2151,8 @@ module.exports = `* output
 * template mjolnirArmor
 weight: 454
 sp: 40
+resistance: fire 4, piercing 4, impact 3, vacuum 10
+tags: armor
 
 * alias armorMod
 4 armorLock
@@ -2253,7 +2200,7 @@ tags: armor
 comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
 
 * template smg
-tags: action bullet fullAuto
+tags: action bullet firearm fullAuto
 range: 20
 hit: 3
 damage: 7
@@ -2271,8 +2218,9 @@ hit: 3
 damage: 9
 
 * template dmr
-tags: action bullet
+tags: action bullet firearm optics
 range: 100
+shotsPerSecond: 2
 hit: 3
 damage: 10
 
@@ -2285,7 +2233,7 @@ attackDelay: 2
 
 `;
 
-},{}],22:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -2607,7 +2555,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],23:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -2737,7 +2685,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],24:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -3180,7 +3128,7 @@ forklift
 
 `;
 
-},{}],25:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -3384,7 +3332,7 @@ module.exports = `
 
 
 `;
-},{}],26:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -3398,7 +3346,7 @@ module.exports = `
 
 
 `;
-},{}],27:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -3455,7 +3403,7 @@ module.exports = Util.makeEnum([
     'Covenant'
 ]);
 
-},{"../util/util.js":66}],28:[function(require,module,exports){
+},{"../util/util.js":65}],26:[function(require,module,exports){
 (function (process,__dirname){
 'use strict';
 
@@ -3464,8 +3412,9 @@ module.exports = Util.makeEnum([
 
 const fs = require('fs');
 
-// TODO perhaps restructure so that WGenerator doesn't import any Battle20 files.
+// LATER perhaps restructure so that WGenerator doesn't import any Battle20 files.
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
+const Creature = require('../wnode/creature.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const StorageModes = require('../wnode/storageModes.js');
 const Util = require('../util/util.js');
@@ -3506,6 +3455,7 @@ class WGenerator {
                 // Later, this could be neater and not involve a string literal. 'template ' could be a const.
                 if (tableRaw.startsWith('template ')) {
                     this.addTemplate(tableRaw);
+                    return;
                 }
 
                 // Default case.
@@ -3518,6 +3468,16 @@ class WGenerator {
         if (! this.aliasTables.output) {
             throw new Error(`WGenerator constructor: output table not found. Object.keys(this.aliasTables).length is ${ Object.keys(this.aliasTables).length }`);
         }
+    }
+
+    toJson () {
+        return {
+            codexPath: this.codexPath,
+            rawString: this.rawString,
+            aliasTables: Util.dictToJson(this.aliasTables),
+            childTables: Util.dictToJson(this.childTables),
+            glossary: Util.dictToJson(this.glossary)
+        };
     }
 
     addChildTable (tableRaw) {
@@ -3546,7 +3506,7 @@ class WGenerator {
     }
 
     addTemplate (tableRaw) {
-        const templateObj = parseTemplate(tableRaw);
+        const templateObj = CreatureTemplate.fromRaw(tableRaw);
         const key = templateObj.name;
 
         if (key in this.glossary) {
@@ -3557,9 +3517,11 @@ class WGenerator {
 
         templateObj.actions.forEach(
             actionTemplate => {
-                this.glossary[actionTemplate.id] = actionTemplate;
+                WGenerator.ids[actionTemplate.id] = actionTemplate;
             }
         );
+
+        Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}`);
     }
 
     // Returns WNode[]
@@ -3619,18 +3581,19 @@ class WGenerator {
 
     // Returns a WNode
     makeLocalSubtree (cString) {
-        // Later, read from the templates of the WGenerator specified by cString.path
-        const node = new WNode(cString.name);
+        const gen = WGenerator.generators[cString.path];
+        const template = gen.glossary[cString.name];
+
+        const node = gen.makeNode(template, cString.name);
 
         // Util.log(`Middle of makeLocalSubtree(${cString}). Expression node.templateName is ${node.templateName}`, 'debug');
 
-        this.applyTemplate(node, cString);
+        // this.applyTemplate(node, template);
         return this.maybeAddChildren(node);
     }
 
     // Returns undefined
-    applyTemplate (node, cString) {
-        const template = this.glossary[cString.name];
+    applyTemplate (node, template) {
         if (! template) {
             return;
         }
@@ -3639,6 +3602,27 @@ class WGenerator {
             // Later there might be some properties that shouldn't be overwritten.
             node[prop] = template[prop];
         }
+    }
+
+    makeNode (template, templateName) {
+        // if (template && template.name === 'marinePrivate' || templateName === 'marinePrivate') {
+            // Util.logDebug(`In WGenerator.makeNode(), input involved marinePrivate. template.isCreature() returns ${template && template.isCreature()}`);
+        // }
+
+        if (! template) {
+            return new WNode(templateName);
+        }
+
+        if (template.isCreature()) {
+            return new Creature(template);
+        }
+
+        if (template.isThing()) {
+            return new Thing(template);
+        }
+
+        // Fallback case
+        return new WNode(template);
     }
 
     // Might modify node.components
@@ -3746,7 +3730,7 @@ class WGenerator {
             return [];
         }
         else {
-            const cString = new ContextString(str, this.codexPath);
+            const cString = this.contextString(str);
             return [cString];
         }
     }
@@ -3761,6 +3745,24 @@ class WGenerator {
         }
 
         return table.getOutputAndResolveIt();
+    }
+
+    // Converts a more arbitrary string into a ContextString object.
+    contextString (stringWithoutCommas) {
+        if (Util.contains(stringWithoutCommas, '/')) {
+            const path = this.makePathAbsolute(stringWithoutCommas);
+            const findings = WGenerator.findGenAndTable(path);
+
+            return new ContextString(
+                findings.name,
+                findings.gen.codexPath
+            );
+        }
+
+        return new ContextString(
+            stringWithoutCommas,
+            this.codexPath
+        );
     }
 
     // Returns a string
@@ -4155,7 +4157,11 @@ class WGenerator {
     }
 }
 
+// Universal dict for codex-related objects keyed by ID. Used for ActionTemplates so far.
+WGenerator.ids = {};
 
+
+// TODO move to its own file
 class AliasTable {
     constructor (rawString, generator) {
         // The parent pointer is used when resolving slash path aliases.
@@ -4226,6 +4232,14 @@ class AliasTable {
         return this.generator.resolveCommas(outputStr);
     }
 
+    toJson () {
+        return {
+            generatorPath: this.generator.codexPath,
+            templateName: this.templateName,
+            outputs: this.outputs
+        };
+    }
+
     // TODO this logic is needed by ChildTable too. Move it to WGenerator (ie parent).
 
     static isAppropriateFor (tableString) {
@@ -4286,6 +4300,14 @@ class ChildTable {
             );
     }
 
+    toJson () {
+        return {
+            generatorPath: this.generator.codexPath,
+            templateName: this.templateName,
+            children: this.children
+        };
+    }
+
     // Returns a boolean
     static isAppropriateFor (tableString) {
         const t = tableString.trim()
@@ -4327,125 +4349,23 @@ class ContextString {
     //     name: 'civilian',
     //     codexPath: 'halo/unsc/individual'
     // }
-    constructor (name, path) {
+    constructor (name, absolutePath) {
         if (Util.contains(name, '/')) {
+            // NOTE: We currently do not support the name param being a relative path.
             const findings = WGenerator.findGenAndTable(name);
             this.name = findings.name;
             this.path = findings.gen.codexPath;
         }
         else {
             this.name = name;
-            // TODO: guarantee that this is always a absolute path.
-            this.path = path;
+            // LATER: guarantee that this is always a absolute path.
+            this.path = absolutePath;
         }
     }
 
     toString () {
         return `{name:${this.name}, path:${this.path}}`;
     }
-}
-
-// TODO put this in class Template and template.js or something.
-// Later likely rename to class TraitsTable and '* traits foo', for clarity.
-// This will probably become or call a constructor
-// and store the first line in this.name
-function parseTemplate (tableRaw) {
-    const creatureTemplate = new CreatureTemplate();
-
-    tableRaw.split('\n')
-        .slice(1)
-        .map(
-            line => {
-                const parsed = parseTemplateLine(line);
-                const key = parsed.key;
-
-                if (
-                    key in creatureTemplate &&
-                    ! ['tags', 'actions', 'resistance'].includes(key)
-                ) {
-                    throw new Error(`parseTemplate(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
-                }
-
-                creatureTemplate[key] = parsed.value;
-
-                // Util.log(`in parseTemplate(). Just wrote key/value pair {${key}: ${parsed.value}}`, 'debug');
-            }
-        );
-
-    // creatureTemplate.key = templateKey(tableRaw);
-    creatureTemplate.name = templateKey(tableRaw);
-    creatureTemplate.setUpAction();
-
-    // Later: at some point, detect whether it is a ActionTemplate or CreatureTemplate.
-    // Probably mark creatureTemplate.type, or instantiate the appropriate class, or something.
-
-    return creatureTemplate;
-}
-
-function parseTemplateLine (line) {
-    line = line.trim();
-
-    const colonIndex = line.indexOf(':');
-
-    if (colonIndex < 0) {
-        throw new Error(`parseTemplateLine(): No colon found in ${ line }`);
-    }
-
-    const key = line.slice(0, colonIndex)
-        .trim();
-    const rest = line.slice(colonIndex + 1)
-        .trim();
-
-    let value;
-    if (key === 'tags') {
-        value = rest.split(/\s/);
-    }
-    else if (key === 'resistance') {
-        value = {};
-
-        const entries = rest.split(',');
-
-        entries.forEach(
-            e => {
-                const parts = e.trim()
-                    .split(/\s/);
-                const resistanceKey = parts[0];
-                const modifier = Number(parts[1]);
-
-                value[resistanceKey] = modifier;
-            }
-        );
-    }
-    else if (rest === 'true') {
-        value = true;
-    }
-    else if (rest === 'false') {
-        value = false;
-    }
-    else {
-        // number case.
-        const parsed = Number(rest);
-
-        value = Util.exists(parsed) ?
-            parsed :
-            rest;
-
-        // Util.log(`in parseTemplateLine( '${line}' ). value is ${value}.`, 'debug');
-    }
-
-    return {
-        key: key,
-        value: value
-    };
-}
-
-function templateKey (tableRaw) {
-    const START = 'template ';
-    const startIndex = tableRaw.indexOf(START);
-    const endIndex = tableRaw.indexOf('\n');
-
-    return tableRaw.slice(startIndex + START.length, endIndex)
-        .trim();
 }
 
 module.exports = WGenerator;
@@ -4558,24 +4478,21 @@ halo/unsc/item/externalThing
 */
 
 }).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":4,"../codices/halo/cov/force":6,"../codices/halo/cov/individual":7,"../codices/halo/cov/item":8,"../codices/halo/cov/squad":9,"../codices/halo/flood/individual":10,"../codices/halo/flood/squad":11,"../codices/halo/forerunner/company":12,"../codices/halo/forerunner/individual":13,"../codices/halo/forerunner/item":14,"../codices/halo/forerunner/squad":15,"../codices/halo/presence":16,"../codices/halo/unsc/battalion":17,"../codices/halo/unsc/company":18,"../codices/halo/unsc/fleet":19,"../codices/halo/unsc/individual":20,"../codices/halo/unsc/item":21,"../codices/halo/unsc/patrol":22,"../codices/halo/unsc/patrol.js":22,"../codices/halo/unsc/ship":23,"../codices/halo/unsc/squad":24,"../codices/sunlight/warband/item":25,"../codices/sunlight/warband/player":26,"../util/util.js":66,"../wnode/storageModes.js":67,"../wnode/wnode.js":68,"_process":2,"fs":1}],29:[function(require,module,exports){
-'use strict'
-
+},{"../battle20/creaturetemplate.js":2,"../codices/halo/cov/force":4,"../codices/halo/cov/individual":5,"../codices/halo/cov/item":6,"../codices/halo/cov/squad":7,"../codices/halo/flood/individual":8,"../codices/halo/flood/squad":9,"../codices/halo/forerunner/company":10,"../codices/halo/forerunner/individual":11,"../codices/halo/forerunner/item":12,"../codices/halo/forerunner/squad":13,"../codices/halo/presence":14,"../codices/halo/unsc/battalion":15,"../codices/halo/unsc/company":16,"../codices/halo/unsc/fleet":17,"../codices/halo/unsc/individual":18,"../codices/halo/unsc/item":19,"../codices/halo/unsc/patrol":20,"../codices/halo/unsc/patrol.js":20,"../codices/halo/unsc/ship":21,"../codices/halo/unsc/squad":22,"../codices/sunlight/warband/item":23,"../codices/sunlight/warband/player":24,"../util/util.js":65,"../wnode/creature.js":66,"../wnode/storageModes.js":67,"../wnode/wnode.js":69,"_process":71,"fs":70}],27:[function(require,module,exports){
 // return a string with the provided number formatted with commas.
 // can specify either a Number or a String.
-function commaNumber(inputNumber, optionalSeparator, optionalDecimalChar) {
+function commaNumber(number, separator, decimalChar) {
 
   // we'll strip off and hold the decimal value to reattach later.
   // we'll hold both the `number` value and `stringNumber` value.
-  let number, stringNumber, decimal
+  var decimal, stringNumber
 
   // default `separator` is a comma
-  const separator = optionalSeparator   || ','
-
+  separator   = separator   || ','
   // default `decimalChar` is a period
-  const decimalChar = optionalDecimalChar || '.'
+  decimalChar = decimalChar || '.'
 
-  switch (typeof inputNumber) {
+  switch (typeof number) {
 
     case 'string':
 
@@ -4583,29 +4500,26 @@ function commaNumber(inputNumber, optionalSeparator, optionalDecimalChar) {
       // NOTE: some numbers which are too small will get passed this
       //       when they have decimal values which make them too long here.
       //       but, the number value check after this switch will catch it.
-      if (inputNumber.length < (inputNumber[0] === '-' ? 5 : 4)) {
-        return inputNumber
+      if (number.length < (number[0] === '-' ? 5 : 4)) {
+        return number
       }
 
       // remember it as a string in `stringNumber` and convert to a Number
-      stringNumber = inputNumber
+      stringNumber = number
 
       // if they're not using the Node standard decimal char then replace it
       // before converting.
-      number = decimalChar !== '.' ? Number(stringNumber.replace(decimalChar, '.'))
-                                   : Number(stringNumber)
+      number = decimalChar !== '.' ? Number(number.replace(decimalChar, '.'))
+                                   : Number(number)
       break
 
     // convert to a string.
     // NOTE: don't check if the number is too small before converting
     //       because we'll need to return `stringNumber` anyway.
-    case 'number':
-      stringNumber = String(inputNumber)
-      number       = inputNumber
-      break
+    case 'number': stringNumber = String(number) ; break
 
     // return invalid type as-is
-    default: return inputNumber
+    default: return number
   }
 
   // when it doesn't need a separator or isn't a number then return it
@@ -4614,23 +4528,21 @@ function commaNumber(inputNumber, optionalSeparator, optionalDecimalChar) {
   }
 
   // strip off decimal value to append to the final result at the bottom
-  let decimalIndex = stringNumber.lastIndexOf(decimalChar)
+  decimal = stringNumber.lastIndexOf(decimalChar)
 
-  if (decimalIndex > -1) {
-    decimal = stringNumber.slice(decimalIndex)
+  if (decimal > -1) {
+    decimal = stringNumber.slice(decimal)
     stringNumber = stringNumber.slice(0, -decimal.length)
+  } else {
+    decimal = null
   }
-
-  // else {
-  //   decimal = null
-  // }
 
   // finally, parse the string and add in separators
   stringNumber = parse(stringNumber, separator)
 
   // if there's a decimal value add it back on the end.
   // NOTE: we sliced() it off including the decimalChar, so it's good.
-  return decimal ? stringNumber + decimal : stringNumber
+  return (decimal != null) ? stringNumber + decimal : stringNumber
 
 }
 
@@ -4639,14 +4551,15 @@ function parse(stringNumber, separator) {
 
   // below here we split the number at spots to add a separator.
   // then, combine it with the separator and add decimal value (if exists)
+  var count, i, start, strings
 
-  const start = stringNumber[0] === '-' ? 1 : 0  // start after minus sign
-  const count = stringNumber.length - start - 1  // count digits after first
-  let i = (count % 3) + 1 + start                // index for first separator
-  const strings = [                              // hold string parts
-    // grab string content before where the first separator belongs
-    stringNumber.slice(0, i)
-  ]
+  start = stringNumber[0] === '-' ? 1 : 0  // start after minus sign
+  count = stringNumber.length - start - 1  // count digits after first
+  strings = []                             // hold string parts
+  i = (count % 3) + 1 + start              // index for first separator
+
+  // grab string content before where the first separator belongs
+  strings.push(stringNumber.slice(0, i))
 
   // split remaining string in groups of 3 where a separator belongs
   while (i < stringNumber.length) {
@@ -4660,7 +4573,7 @@ function parse(stringNumber, separator) {
 
 
 // convenience function for currying style:
-//   const format = commaNumber.bindWith(',', '.')
+//   var format = commaNumber.bindWith(',', '.')
 function bindWith(separator, decimalChar) {
   return function(number) {
     return commaNumber(number, separator, decimalChar)
@@ -4670,9 +4583,9 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],30:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /*!
- * hotkeys-js v3.7.2
+ * hotkeys-js v3.4.4
  * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies.
  * 
  * Copyright (c) 2019 kenny wong <wowohoo@qq.com>
@@ -4683,52 +4596,36 @@ module.exports.bindWith = bindWith
 
 'use strict';
 
-function _typeof(obj) {
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function (obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
+var isff = typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase().indexOf('firefox') > 0 : false;
 
-  return _typeof(obj);
-}
-
-var isff = typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase().indexOf('firefox') > 0 : false; // 绑定事件
-
+// 绑定事件
 function addEvent(object, event, method) {
   if (object.addEventListener) {
     object.addEventListener(event, method, false);
   } else if (object.attachEvent) {
-    object.attachEvent("on".concat(event), function () {
+    object.attachEvent('on' + event, function () {
       method(window.event);
     });
   }
-} // 修饰键转换成对应的键码
+}
 
-
+// 修饰键转换成对应的键码
 function getMods(modifier, key) {
   var mods = key.slice(0, key.length - 1);
-
   for (var i = 0; i < mods.length; i++) {
     mods[i] = modifier[mods[i].toLowerCase()];
-  }
+  }return mods;
+}
 
-  return mods;
-} // 处理传的key字符串转换成数组
-
-
+// 处理传的key字符串转换成数组
 function getKeys(key) {
-  if (typeof key !== 'string') key = '';
+  if (!key) key = '';
+
   key = key.replace(/\s/g, ''); // 匹配任何空白字符,包括空格、制表符、换页符等等
-
   var keys = key.split(','); // 同时设置多个快捷键，以','分割
+  var index = keys.lastIndexOf('');
 
-  var index = keys.lastIndexOf(''); // 快捷键可能包含','，需特殊处理
-
+  // 快捷键可能包含','，需特殊处理
   for (; index >= 0;) {
     keys[index - 1] += ',';
     keys.splice(index, 1);
@@ -4736,9 +4633,9 @@ function getKeys(key) {
   }
 
   return keys;
-} // 比较修饰键的数组
+}
 
-
+// 比较修饰键的数组
 function compareArray(a1, a2) {
   var arr1 = a1.length >= a2.length ? a1 : a2;
   var arr2 = a1.length >= a2.length ? a2 : a1;
@@ -4747,16 +4644,15 @@ function compareArray(a1, a2) {
   for (var i = 0; i < arr1.length; i++) {
     if (arr2.indexOf(arr1[i]) === -1) isIndex = false;
   }
-
   return isIndex;
 }
 
-var _keyMap = {
+var _keyMap = { // 特殊键
   backspace: 8,
   tab: 9,
   clear: 12,
   enter: 13,
-  "return": 13,
+  return: 13,
   esc: 27,
   escape: 27,
   space: 32,
@@ -4765,7 +4661,7 @@ var _keyMap = {
   right: 39,
   down: 40,
   del: 46,
-  "delete": 46,
+  delete: 46,
   ins: 45,
   insert: 45,
   home: 36,
@@ -4785,230 +4681,179 @@ var _keyMap = {
   '[': 219,
   ']': 221,
   '\\': 220
-}; // Modifier Keys
+};
 
-var _modifier = {
-  // shiftKey
+var _modifier = { // 修饰键
   '⇧': 16,
   shift: 16,
-  // altKey
   '⌥': 18,
   alt: 18,
   option: 18,
-  // ctrlKey
   '⌃': 17,
   ctrl: 17,
   control: 17,
-  // metaKey
-  '⌘': 91,
-  cmd: 91,
-  command: 91
+  '⌘': isff ? 224 : 91,
+  cmd: isff ? 224 : 91,
+  command: isff ? 224 : 91
 };
+var _downKeys = []; // 记录摁下的绑定键
 var modifierMap = {
   16: 'shiftKey',
   18: 'altKey',
-  17: 'ctrlKey',
-  91: 'metaKey',
-  shiftKey: 16,
-  ctrlKey: 17,
-  altKey: 18,
-  metaKey: 91
+  17: 'ctrlKey'
 };
-var _mods = {
-  16: false,
-  18: false,
-  17: false,
-  91: false
-};
-var _handlers = {}; // F1~F12 special key
+var _mods = { 16: false, 18: false, 17: false };
+var _handlers = {};
 
+// F1~F12 特殊键
 for (var k = 1; k < 20; k++) {
-  _keyMap["f".concat(k)] = 111 + k;
+  _keyMap['f' + k] = 111 + k;
 }
 
-var _downKeys = []; // 记录摁下的绑定键
+// 兼容Firefox处理
+modifierMap[isff ? 224 : 91] = 'metaKey';
+_mods[isff ? 224 : 91] = false;
 
 var _scope = 'all'; // 默认热键范围
+var isBindElement = false; // 是否绑定节点
 
-var elementHasBindEvent = []; // 已绑定事件的节点记录
 // 返回键码
-
 var code = function code(x) {
   return _keyMap[x.toLowerCase()] || _modifier[x.toLowerCase()] || x.toUpperCase().charCodeAt(0);
-}; // 设置获取当前范围（默认为'所有'）
+};
 
-
+// 设置获取当前范围（默认为'所有'）
 function setScope(scope) {
   _scope = scope || 'all';
-} // 获取当前范围
-
-
+}
+// 获取当前范围
 function getScope() {
   return _scope || 'all';
-} // 获取摁下绑定键的键值
-
-
+}
+// 获取摁下绑定键的键值
 function getPressedKeyCodes() {
   return _downKeys.slice(0);
-} // 表单控件控件判断 返回 Boolean
-// hotkey is effective only when filter return true
+}
 
-
+// 表单控件控件判断 返回 Boolean
 function filter(event) {
   var target = event.target || event.srcElement;
   var tagName = target.tagName;
-  var flag = true; // ignore: isContentEditable === 'true', <input> and <textarea> when readOnly state is false, <select>
+  // 忽略这些情况下快捷键无效
 
-  if (target.isContentEditable || tagName === 'TEXTAREA' || (tagName === 'INPUT' || tagName === 'TEXTAREA') && !target.readOnly) {
-    flag = false;
-  }
+  return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' || target.isContentEditable);
+}
 
-  return flag;
-} // 判断摁下的键是否为某个键，返回true或者false
-
-
+// 判断摁下的键是否为某个键，返回true或者false
 function isPressed(keyCode) {
   if (typeof keyCode === 'string') {
     keyCode = code(keyCode); // 转换成键码
   }
-
   return _downKeys.indexOf(keyCode) !== -1;
-} // 循环删除handlers中的所有 scope(范围)
+}
 
-
+// 循环删除handlers中的所有 scope(范围)
 function deleteScope(scope, newScope) {
-  var handlers;
-  var i; // 没有指定scope，获取scope
+  var handlers = void 0;
+  var i = void 0;
 
+  // 没有指定scope，获取scope
   if (!scope) scope = getScope();
 
   for (var key in _handlers) {
     if (Object.prototype.hasOwnProperty.call(_handlers, key)) {
       handlers = _handlers[key];
-
       for (i = 0; i < handlers.length;) {
         if (handlers[i].scope === scope) handlers.splice(i, 1);else i++;
       }
     }
-  } // 如果scope被删除，将scope重置为all
+  }
 
-
+  // 如果scope被删除，将scope重置为all
   if (getScope() === scope) setScope(newScope || 'all');
-} // 清除修饰键
+}
 
-
+// 清除修饰键
 function clearModifier(event) {
   var key = event.keyCode || event.which || event.charCode;
+  var i = _downKeys.indexOf(key);
 
-  var i = _downKeys.indexOf(key); // 从列表中清除按压过的键
+  // 从列表中清除按压过的键
+  if (i >= 0) _downKeys.splice(i, 1);
 
-
-  if (i >= 0) {
-    _downKeys.splice(i, 1);
-  } // 特殊处理 cmmand 键，在 cmmand 组合快捷键 keyup 只执行一次的问题
-
-
-  if (event.key && event.key.toLowerCase() === 'meta') {
-    _downKeys.splice(0, _downKeys.length);
-  } // 修饰键 shiftKey altKey ctrlKey (command||metaKey) 清除
-
-
+  // 修饰键 shiftKey altKey ctrlKey (command||metaKey) 清除
   if (key === 93 || key === 224) key = 91;
-
   if (key in _mods) {
-    _mods[key] = false; // 将修饰键重置为false
+    _mods[key] = false;
 
+    // 将修饰键重置为false
     for (var k in _modifier) {
       if (_modifier[k] === key) hotkeys[k] = false;
     }
   }
 }
 
-function unbind(keysInfo) {
-  // unbind(), unbind all keys
-  if (!keysInfo) {
-    Object.keys(_handlers).forEach(function (key) {
-      return delete _handlers[key];
-    });
-  } else if (Array.isArray(keysInfo)) {
-    // support like : unbind([{key: 'ctrl+a', scope: 's1'}, {key: 'ctrl-a', scope: 's2', splitKey: '-'}])
-    keysInfo.forEach(function (info) {
-      if (info.key) eachUnbind(info);
-    });
-  } else if (_typeof(keysInfo) === 'object') {
-    // support like unbind({key: 'ctrl+a, ctrl+b', scope:'abc'})
-    if (keysInfo.key) eachUnbind(keysInfo);
-  } else if (typeof keysInfo === 'string') {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    // support old method
-    // eslint-disable-line
-    var scope = args[0],
-        method = args[1];
-
-    if (typeof scope === 'function') {
-      method = scope;
-      scope = '';
-    }
-
-    eachUnbind({
-      key: keysInfo,
-      scope: scope,
-      method: method,
-      splitKey: '+'
-    });
-  }
-} // 解除绑定某个范围的快捷键
-
-
-var eachUnbind = function eachUnbind(_ref) {
-  var key = _ref.key,
-      scope = _ref.scope,
-      method = _ref.method,
-      _ref$splitKey = _ref.splitKey,
-      splitKey = _ref$splitKey === void 0 ? '+' : _ref$splitKey;
+// 解除绑定某个范围的快捷键
+function unbind(key, scope, method) {
   var multipleKeys = getKeys(key);
-  multipleKeys.forEach(function (originKey) {
-    var unbindKeys = originKey.split(splitKey);
-    var len = unbindKeys.length;
-    var lastKey = unbindKeys[len - 1];
-    var keyCode = lastKey === '*' ? '*' : code(lastKey);
-    if (!_handlers[keyCode]) return; // 判断是否传入范围，没有就获取范围
+  var keys = void 0;
+  var mods = [];
+  var obj = void 0;
+  // 通过函数判断，是否解除绑定
+  // https://github.com/jaywcjlove/hotkeys/issues/44
+  if (typeof scope === 'function') {
+    method = scope;
+    scope = 'all';
+  }
 
+  for (var i = 0; i < multipleKeys.length; i++) {
+    // 将组合快捷键拆分为数组
+    keys = multipleKeys[i].split('+');
+
+    // 记录每个组合键中的修饰键的键码 返回数组
+    if (keys.length > 1) mods = getMods(_modifier, keys);
+
+    // 获取除修饰键外的键值key
+    key = keys[keys.length - 1];
+    key = key === '*' ? '*' : code(key);
+
+    // 判断是否传入范围，没有就获取范围
     if (!scope) scope = getScope();
-    var mods = len > 1 ? getMods(_modifier, unbindKeys) : [];
-    _handlers[keyCode] = _handlers[keyCode].map(function (record) {
+
+    // 如何key不在 _handlers 中返回不做处理
+    if (!_handlers[key]) return;
+
+    // 清空 handlers 中数据，
+    // 让触发快捷键键之后没有事件执行到达解除快捷键绑定的目的
+    for (var r = 0; r < _handlers[key].length; r++) {
+      obj = _handlers[key][r];
       // 通过函数判断，是否解除绑定，函数相等直接返回
-      var isMatchingMethod = method ? record.method === method : true;
+      var isMatchingMethod = method ? obj.method === method : true;
 
-      if (isMatchingMethod && record.scope === scope && compareArray(record.mods, mods)) {
-        return {};
+      // 判断是否在范围内并且键值相同
+      if (isMatchingMethod && obj.scope === scope && compareArray(obj.mods, mods)) {
+        _handlers[key][r] = {};
       }
+    }
+  }
+}
 
-      return record;
-    });
-  });
-}; // 对监听对应快捷键的回调函数进行处理
-
-
+// 对监听对应快捷键的回调函数进行处理
 function eventHandler(event, handler, scope) {
-  var modifiersMatch; // 看它是否在当前范围
+  var modifiersMatch = void 0;
 
+  // 看它是否在当前范围
   if (handler.scope === scope || handler.scope === 'all') {
     // 检查是否匹配修饰符（如果有返回true）
     modifiersMatch = handler.mods.length > 0;
 
     for (var y in _mods) {
       if (Object.prototype.hasOwnProperty.call(_mods, y)) {
-        if (!_mods[y] && handler.mods.indexOf(+y) > -1 || _mods[y] && handler.mods.indexOf(+y) === -1) {
-          modifiersMatch = false;
-        }
+        if (!_mods[y] && handler.mods.indexOf(+y) > -1 || _mods[y] && handler.mods.indexOf(+y) === -1) modifiersMatch = false;
       }
-    } // 调用处理程序，如果是修饰键不做处理
+    }
 
-
+    // 调用处理程序，如果是修饰键不做处理
     if (handler.mods.length === 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91] || modifiersMatch || handler.shortcut === '*') {
       if (handler.method(event, handler) === false) {
         if (event.preventDefault) event.preventDefault();else event.returnValue = false;
@@ -5017,168 +4862,108 @@ function eventHandler(event, handler, scope) {
       }
     }
   }
-} // 处理keydown事件
+}
 
-
+// 处理keydown事件
 function dispatch(event) {
   var asterisk = _handlers['*'];
-  var key = event.keyCode || event.which || event.charCode; // 表单控件过滤 默认表单控件不触发快捷键
+  var key = event.keyCode || event.which || event.charCode;
 
-  if (!hotkeys.filter.call(this, event)) return; // Gecko(Firefox)的command键值224，在Webkit(Chrome)中保持一致
-  // Webkit左右 command 键值不一样
+  // 搜集绑定的键
+  if (_downKeys.indexOf(key) === -1) _downKeys.push(key);
 
+  // Gecko(Firefox)的command键值224，在Webkit(Chrome)中保持一致
+  // Webkit左右command键值不一样
   if (key === 93 || key === 224) key = 91;
-  /**
-   * Collect bound keys
-   * If an Input Method Editor is processing key input and the event is keydown, return 229.
-   * https://stackoverflow.com/questions/25043934/is-it-ok-to-ignore-keydown-events-with-keycode-229
-   * http://lists.w3.org/Archives/Public/www-dom/2010JulSep/att-0182/keyCode-spec.html
-   */
-
-  if (_downKeys.indexOf(key) === -1 && key !== 229) _downKeys.push(key);
-  /**
-   * Jest test cases are required.
-   * ===============================
-   */
-
-  ['ctrlKey', 'altKey', 'shiftKey', 'metaKey'].forEach(function (keyName) {
-    var keyNum = modifierMap[keyName];
-
-    if (event[keyName] && _downKeys.indexOf(keyNum) === -1) {
-      _downKeys.push(keyNum);
-    } else if (!event[keyName] && _downKeys.indexOf(keyNum) > -1) {
-      _downKeys.splice(_downKeys.indexOf(keyNum), 1);
-    }
-  });
-  /**
-   * -------------------------------
-   */
 
   if (key in _mods) {
-    _mods[key] = true; // 将特殊字符的key注册到 hotkeys 上
+    _mods[key] = true;
 
+    // 将特殊字符的key注册到 hotkeys 上
     for (var k in _modifier) {
       if (_modifier[k] === key) hotkeys[k] = true;
     }
 
     if (!asterisk) return;
-  } // 将 modifierMap 里面的修饰键绑定到 event 中
+  }
 
-
+  // 将modifierMap里面的修饰键绑定到event中
   for (var e in _mods) {
     if (Object.prototype.hasOwnProperty.call(_mods, e)) {
       _mods[e] = event[modifierMap[e]];
     }
-  } // 获取范围 默认为 `all`
+  }
 
+  // 表单控件过滤 默认表单控件不触发快捷键
+  if (!hotkeys.filter.call(this, event)) return;
 
-  var scope = getScope(); // 对任何快捷键都需要做的处理
+  // 获取范围 默认为all
+  var scope = getScope();
 
+  // 对任何快捷键都需要做的处理
   if (asterisk) {
     for (var i = 0; i < asterisk.length; i++) {
-      if (asterisk[i].scope === scope && (event.type === 'keydown' && asterisk[i].keydown || event.type === 'keyup' && asterisk[i].keyup)) {
-        eventHandler(event, asterisk[i], scope);
-      }
+      if (asterisk[i].scope === scope) eventHandler(event, asterisk[i], scope);
     }
-  } // key 不在 _handlers 中返回
-
-
+  }
+  // key 不在_handlers中返回
   if (!(key in _handlers)) return;
 
   for (var _i = 0; _i < _handlers[key].length; _i++) {
-    if (event.type === 'keydown' && _handlers[key][_i].keydown || event.type === 'keyup' && _handlers[key][_i].keyup) {
-      if (_handlers[key][_i].key) {
-        var record = _handlers[key][_i];
-        var splitKey = record.splitKey;
-        var keyShortcut = record.key.split(splitKey);
-        var _downKeysCurrent = []; // 记录当前按键键值
-
-        for (var a = 0; a < keyShortcut.length; a++) {
-          _downKeysCurrent.push(code(keyShortcut[a]));
-        }
-
-        if (_downKeysCurrent.sort().join('') === _downKeys.sort().join('')) {
-          // 找到处理内容
-          eventHandler(event, record, scope);
-        }
-      }
-    }
+    // 找到处理内容
+    eventHandler(event, _handlers[key][_i], scope);
   }
-} // 判断 element 是否已经绑定事件
-
-
-function isElementBind(element) {
-  return elementHasBindEvent.indexOf(element) > -1;
 }
 
 function hotkeys(key, option, method) {
-  _downKeys = [];
   var keys = getKeys(key); // 需要处理的快捷键列表
-
   var mods = [];
   var scope = 'all'; // scope默认为all，所有范围都有效
-
   var element = document; // 快捷键事件绑定节点
-
   var i = 0;
-  var keyup = false;
-  var keydown = true;
-  var splitKey = '+'; // 对为设定范围的判断
 
+  // 对为设定范围的判断
   if (method === undefined && typeof option === 'function') {
     method = option;
   }
 
   if (Object.prototype.toString.call(option) === '[object Object]') {
     if (option.scope) scope = option.scope; // eslint-disable-line
-
     if (option.element) element = option.element; // eslint-disable-line
-
-    if (option.keyup) keyup = option.keyup; // eslint-disable-line
-
-    if (option.keydown !== undefined) keydown = option.keydown; // eslint-disable-line
-
-    if (typeof option.splitKey === 'string') splitKey = option.splitKey; // eslint-disable-line
   }
 
-  if (typeof option === 'string') scope = option; // 对于每个快捷键进行处理
+  if (typeof option === 'string') scope = option;
 
+  // 对于每个快捷键进行处理
   for (; i < keys.length; i++) {
-    key = keys[i].split(splitKey); // 按键列表
+    key = keys[i].split('+'); // 按键列表
+    mods = [];
 
-    mods = []; // 如果是组合快捷键取得组合快捷键
+    // 如果是组合快捷键取得组合快捷键
+    if (key.length > 1) mods = getMods(_modifier, key);
 
-    if (key.length > 1) mods = getMods(_modifier, key); // 将非修饰键转化为键码
-
+    // 将非修饰键转化为键码
     key = key[key.length - 1];
     key = key === '*' ? '*' : code(key); // *表示匹配所有快捷键
-    // 判断key是否在_handlers中，不在就赋一个空数组
 
+    // 判断key是否在_handlers中，不在就赋一个空数组
     if (!(key in _handlers)) _handlers[key] = [];
 
     _handlers[key].push({
-      keyup: keyup,
-      keydown: keydown,
       scope: scope,
       mods: mods,
       shortcut: keys[i],
       method: method,
-      key: keys[i],
-      splitKey: splitKey
+      key: keys[i]
     });
-  } // 在全局document上设置快捷键
-
-
-  if (typeof element !== 'undefined' && !isElementBind(element) && window) {
-    elementHasBindEvent.push(element);
+  }
+  // 在全局document上设置快捷键
+  if (typeof element !== 'undefined' && !isBindElement) {
+    isBindElement = true;
     addEvent(element, 'keydown', function (e) {
       dispatch(e);
     });
-    addEvent(window, 'focus', function () {
-      _downKeys = [];
-    });
     addEvent(element, 'keyup', function (e) {
-      dispatch(e);
       clearModifier(e);
     });
   }
@@ -5193,7 +4978,6 @@ var _api = {
   filter: filter,
   unbind: unbind
 };
-
 for (var a in _api) {
   if (Object.prototype.hasOwnProperty.call(_api, a)) {
     hotkeys[a] = _api[a];
@@ -5202,24 +4986,21 @@ for (var a in _api) {
 
 if (typeof window !== 'undefined') {
   var _hotkeys = window.hotkeys;
-
   hotkeys.noConflict = function (deep) {
     if (deep && window.hotkeys === hotkeys) {
       window.hotkeys = _hotkeys;
     }
-
     return hotkeys;
   };
-
   window.hotkeys = hotkeys;
 }
 
 module.exports = hotkeys;
 
-},{}],31:[function(require,module,exports){
-/*! hotkeys-js v3.7.2 | MIT (c) 2019 kenny wong <wowohoo@qq.com> | http://jaywcjlove.github.io/hotkeys */
-"use strict";function _typeof(e){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(e)}var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,o,t){e.addEventListener?e.addEventListener(o,t,!1):e.attachEvent&&e.attachEvent("on".concat(o),function(){t(window.event)})}function getMods(e,o){for(var t=o.slice(0,o.length-1),n=0;n<t.length;n++)t[n]=e[t[n].toLowerCase()];return t}function getKeys(e){"string"!=typeof e&&(e="");for(var o=(e=e.replace(/\s/g,"")).split(","),t=o.lastIndexOf("");0<=t;)o[t-1]+=",",o.splice(t,1),t=o.lastIndexOf("");return o}function compareArray(e,o){for(var t=e.length<o.length?o:e,n=e.length<o.length?e:o,r=!0,s=0;s<t.length;s++)~n.indexOf(t[s])||(r=!1);return r}for(var _keyMap={backspace:8,tab:9,clear:12,enter:13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":91,cmd:91,command:91},modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey",91:"metaKey",shiftKey:16,ctrlKey:17,altKey:18,metaKey:91},_mods={16:!1,18:!1,17:!1,91:!1},_handlers={},k=1;k<20;k++)_keyMap["f".concat(k)]=111+k;var _downKeys=[],_scope="all",elementHasBindEvent=[],code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function filter(e){var o=e.target||e.srcElement,t=o.tagName,n=!0;return!o.isContentEditable&&"TEXTAREA"!==t&&("INPUT"!==t&&"TEXTAREA"!==t||o.readOnly)||(n=!1),n}function isPressed(e){return"string"==typeof e&&(e=code(e)),!!~_downKeys.indexOf(e)}function deleteScope(e,o){var t,n;for(var r in e||(e=getScope()),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,r))for(t=_handlers[r],n=0;n<t.length;)t[n].scope===e?t.splice(n,1):n++;getScope()===e&&setScope(o||"all")}function clearModifier(e){var o=e.keyCode||e.which||e.charCode,t=_downKeys.indexOf(o);if(t<0||_downKeys.splice(t,1),e.key&&"meta"==e.key.toLowerCase()&&_downKeys.splice(0,_downKeys.length),93!==o&&224!==o||(o=91),o in _mods)for(var n in _mods[o]=!1,_modifier)_modifier[n]===o&&(hotkeys[n]=!1)}function unbind(e){if(e){if(Array.isArray(e))e.forEach(function(e){e.key&&eachUnbind(e)});else if("object"===_typeof(e))e.key&&eachUnbind(e);else if("string"==typeof e){for(var o=arguments.length,t=Array(1<o?o-1:0),n=1;n<o;n++)t[n-1]=arguments[n];var r=t[0],s=t[1];"function"==typeof r&&(s=r,r=""),eachUnbind({key:e,scope:r,method:s,splitKey:"+"})}}else Object.keys(_handlers).forEach(function(e){return delete _handlers[e]})}var eachUnbind=function(e){var i=e.scope,d=e.method,o=e.splitKey,a=void 0===o?"+":o;getKeys(e.key).forEach(function(e){var o=e.split(a),t=o.length,n=o[t-1],r="*"===n?"*":code(n);if(_handlers[r]){i||(i=getScope());var s=1<t?getMods(_modifier,o):[];_handlers[r]=_handlers[r].map(function(e){return(!d||e.method===d)&&e.scope===i&&compareArray(e.mods,s)?{}:e})}})};function eventHandler(e,o,t){var n;if(o.scope===t||"all"===o.scope){for(var r in n=0<o.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(!_mods[r]&&-1<o.mods.indexOf(+r)||_mods[r]&&!~o.mods.indexOf(+r))&&(n=!1);(0!==o.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!n&&"*"!==o.shortcut||!1===o.method(e,o)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(t){var e=_handlers["*"],o=t.keyCode||t.which||t.charCode;if(hotkeys.filter.call(this,t)){if(93!==o&&224!==o||(o=91),~_downKeys.indexOf(o)||229===o||_downKeys.push(o),["ctrlKey","altKey","shiftKey","metaKey"].forEach(function(e){var o=modifierMap[e];t[e]&&!~_downKeys.indexOf(o)?_downKeys.push(o):!t[e]&&-1<_downKeys.indexOf(o)&&_downKeys.splice(_downKeys.indexOf(o),1)}),o in _mods){for(var n in _mods[o]=!0,_modifier)_modifier[n]===o&&(hotkeys[n]=!0);if(!e)return}for(var r in _mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(_mods[r]=t[modifierMap[r]]);var s=getScope();if(e)for(var i=0;i<e.length;i++)e[i].scope===s&&("keydown"===t.type&&e[i].keydown||"keyup"===t.type&&e[i].keyup)&&eventHandler(t,e[i],s);if(o in _handlers)for(var d=0;d<_handlers[o].length;d++)if(("keydown"===t.type&&_handlers[o][d].keydown||"keyup"===t.type&&_handlers[o][d].keyup)&&_handlers[o][d].key){for(var a=_handlers[o][d],c=a.key.split(a.splitKey),f=[],l=0;l<c.length;l++)f.push(code(c[l]));f.sort().join("")===_downKeys.sort().join("")&&eventHandler(t,a,s)}}}function isElementBind(e){return-1<elementHasBindEvent.indexOf(e)}function hotkeys(e,o,t){_downKeys=[];var n=getKeys(e),r=[],s="all",i=document,d=0,a=!1,c=!0,f="+";for(void 0===t&&"function"==typeof o&&(t=o),"[object Object]"===Object.prototype.toString.call(o)&&(o.scope&&(s=o.scope),o.element&&(i=o.element),o.keyup&&(a=o.keyup),void 0!==o.keydown&&(c=o.keydown),"string"==typeof o.splitKey&&(f=o.splitKey)),"string"==typeof o&&(s=o);d<n.length;d++)r=[],1<(e=n[d].split(f)).length&&(r=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({keyup:a,keydown:c,scope:s,mods:r,shortcut:n[d],method:t,key:n[d],splitKey:f});void 0!==i&&!isElementBind(i)&&window&&(elementHasBindEvent.push(i),addEvent(i,"keydown",function(e){dispatch(e)}),addEvent(window,"focus",function(){_downKeys=[]}),addEvent(i,"keyup",function(e){dispatch(e),clearModifier(e)}))}var _api={setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,unbind:unbind};for(var a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);if("undefined"!=typeof window){var _hotkeys=window.hotkeys;hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys}module.exports=hotkeys;
-},{}],32:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
+/*! hotkeys-js v3.4.4 | MIT (c) 2019 kenny wong <wowohoo@qq.com> | http://jaywcjlove.github.io/hotkeys */
+"use strict";var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,o,t){e.addEventListener?e.addEventListener(o,t,!1):e.attachEvent&&e.attachEvent("on"+o,function(){t(window.event)})}function getMods(e,o){for(var t=o.slice(0,o.length-1),n=0;n<t.length;n++)t[n]=e[t[n].toLowerCase()];return t}function getKeys(e){e||(e="");for(var o=(e=e.replace(/\s/g,"")).split(","),t=o.lastIndexOf("");0<=t;)o[t-1]+=",",o.splice(t,1),t=o.lastIndexOf("");return o}function compareArray(e,o){for(var t=e.length<o.length?o:e,n=e.length<o.length?e:o,r=!0,s=0;s<t.length;s++)-1===n.indexOf(t[s])&&(r=!1);return r}for(var _keyMap={backspace:8,tab:9,clear:12,enter:13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":isff?224:91,cmd:isff?224:91,command:isff?224:91},_downKeys=[],modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey"},_mods={16:!1,18:!1,17:!1},_handlers={},k=1;k<20;k++)_keyMap["f"+k]=111+k;var _scope="all",isBindElement=_mods[isff?224:91]=!(modifierMap[isff?224:91]="metaKey"),code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function filter(e){var o=e.target||e.srcElement,t=o.tagName;return!("INPUT"===t||"SELECT"===t||"TEXTAREA"===t||o.isContentEditable)}function isPressed(e){return"string"==typeof e&&(e=code(e)),-1!==_downKeys.indexOf(e)}function deleteScope(e,o){var t=void 0,n=void 0;for(var r in e||(e=getScope()),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,r))for(t=_handlers[r],n=0;n<t.length;)t[n].scope===e?t.splice(n,1):n++;getScope()===e&&setScope(o||"all")}function clearModifier(e){var o=e.keyCode||e.which||e.charCode,t=_downKeys.indexOf(o);if(t<0||_downKeys.splice(t,1),93!==o&&224!==o||(o=91),o in _mods)for(var n in _mods[o]=!1,_modifier)_modifier[n]===o&&(hotkeys[n]=!1)}function unbind(e,o,t){var n=getKeys(e),r=void 0,s=[],i=void 0;"function"==typeof o&&(t=o,o="all");for(var d=0;d<n.length;d++){if(1<(r=n[d].split("+")).length&&(s=getMods(_modifier,r)),e="*"===(e=r[r.length-1])?"*":code(e),o||(o=getScope()),!_handlers[e])return;for(var a=0;a<_handlers[e].length;a++){i=_handlers[e][a],(!t||i.method===t)&&i.scope===o&&compareArray(i.mods,s)&&(_handlers[e][a]={})}}}function eventHandler(e,o,t){var n=void 0;if(o.scope===t||"all"===o.scope){for(var r in n=0<o.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(!_mods[r]&&-1<o.mods.indexOf(+r)||_mods[r]&&-1===o.mods.indexOf(+r))&&(n=!1);(0!==o.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!n&&"*"!==o.shortcut||!1===o.method(e,o)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(e){var o=_handlers["*"],t=e.keyCode||e.which||e.charCode;if(-1===_downKeys.indexOf(t)&&_downKeys.push(t),93!==t&&224!==t||(t=91),t in _mods){for(var n in _mods[t]=!0,_modifier)_modifier[n]===t&&(hotkeys[n]=!0);if(!o)return}for(var r in _mods)Object.prototype.hasOwnProperty.call(_mods,r)&&(_mods[r]=e[modifierMap[r]]);if(hotkeys.filter.call(this,e)){var s=getScope();if(o)for(var i=0;i<o.length;i++)o[i].scope===s&&eventHandler(e,o[i],s);if(t in _handlers)for(var d=0;d<_handlers[t].length;d++)eventHandler(e,_handlers[t][d],s)}}function hotkeys(e,o,t){var n=getKeys(e),r=[],s="all",i=document,d=0;for(void 0===t&&"function"==typeof o&&(t=o),"[object Object]"===Object.prototype.toString.call(o)&&(o.scope&&(s=o.scope),o.element&&(i=o.element)),"string"==typeof o&&(s=o);d<n.length;d++)r=[],1<(e=n[d].split("+")).length&&(r=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({scope:s,mods:r,shortcut:n[d],method:t,key:n[d]});void 0===i||isBindElement||(isBindElement=!0,addEvent(i,"keydown",function(e){dispatch(e)}),addEvent(i,"keyup",function(e){clearModifier(e)}))}var _api={setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,unbind:unbind};for(var a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);if("undefined"!=typeof window){var _hotkeys=window.hotkeys;hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys}module.exports=hotkeys;
+},{}],30:[function(require,module,exports){
 (function (process){
 
 if (process.env.NODE_ENV === 'production') {
@@ -5229,7 +5010,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this,require('_process'))
-},{"./dist/hotkeys.common.js":30,"./dist/hotkeys.common.min.js":31,"_process":2}],33:[function(require,module,exports){
+},{"./dist/hotkeys.common.js":28,"./dist/hotkeys.common.min.js":29,"_process":71}],31:[function(require,module,exports){
 'use strict';
 
 
@@ -5238,7 +5019,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":34}],34:[function(require,module,exports){
+},{"./lib/js-yaml.js":32}],32:[function(require,module,exports){
 'use strict';
 
 
@@ -5279,7 +5060,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":36,"./js-yaml/exception":37,"./js-yaml/loader":38,"./js-yaml/schema":40,"./js-yaml/schema/core":41,"./js-yaml/schema/default_full":42,"./js-yaml/schema/default_safe":43,"./js-yaml/schema/failsafe":44,"./js-yaml/schema/json":45,"./js-yaml/type":46}],35:[function(require,module,exports){
+},{"./js-yaml/dumper":34,"./js-yaml/exception":35,"./js-yaml/loader":36,"./js-yaml/schema":38,"./js-yaml/schema/core":39,"./js-yaml/schema/default_full":40,"./js-yaml/schema/default_safe":41,"./js-yaml/schema/failsafe":42,"./js-yaml/schema/json":43,"./js-yaml/type":44}],33:[function(require,module,exports){
 'use strict';
 
 
@@ -5340,7 +5121,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],36:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -6169,7 +5950,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":35,"./exception":37,"./schema/default_full":42,"./schema/default_safe":43}],37:[function(require,module,exports){
+},{"./common":33,"./exception":35,"./schema/default_full":40,"./schema/default_safe":41}],35:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -6214,7 +5995,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],38:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -6246,8 +6027,6 @@ var PATTERN_FLOW_INDICATORS       = /[,\[\]\{\}]/;
 var PATTERN_TAG_HANDLE            = /^(?:!|!!|![a-z\-]+!)$/i;
 var PATTERN_TAG_URI               = /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i;
 
-
-function _class(obj) { return Object.prototype.toString.call(obj); }
 
 function is_EOL(c) {
   return (c === 0x0A/* LF */) || (c === 0x0D/* CR */);
@@ -6503,31 +6282,6 @@ function mergeMappings(state, destination, source, overridableKeys) {
 
 function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, startLine, startPos) {
   var index, quantity;
-
-  // The output is a plain object here, so keys can only be strings.
-  // We need to convert keyNode to a string, but doing so can hang the process
-  // (deeply nested arrays that explode exponentially using aliases).
-  if (Array.isArray(keyNode)) {
-    keyNode = Array.prototype.slice.call(keyNode);
-
-    for (index = 0, quantity = keyNode.length; index < quantity; index += 1) {
-      if (Array.isArray(keyNode[index])) {
-        throwError(state, 'nested arrays are not supported inside keys');
-      }
-
-      if (typeof keyNode === 'object' && _class(keyNode[index]) === '[object Object]') {
-        keyNode[index] = '[object Object]';
-      }
-    }
-  }
-
-  // Avoid code execution in load() via toString property
-  // (still use its own toString for arrays, timestamps,
-  // and whatever user schema extensions happen to have @@toStringTag)
-  if (typeof keyNode === 'object' && _class(keyNode) === '[object Object]') {
-    keyNode = '[object Object]';
-  }
-
 
   keyNode = String(keyNode);
 
@@ -7841,7 +7595,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":35,"./exception":37,"./mark":39,"./schema/default_full":42,"./schema/default_safe":43}],39:[function(require,module,exports){
+},{"./common":33,"./exception":35,"./mark":37,"./schema/default_full":40,"./schema/default_safe":41}],37:[function(require,module,exports){
 'use strict';
 
 
@@ -7919,7 +7673,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":35}],40:[function(require,module,exports){
+},{"./common":33}],38:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -8029,7 +7783,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":35,"./exception":37,"./type":46}],41:[function(require,module,exports){
+},{"./common":33,"./exception":35,"./type":44}],39:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -8049,7 +7803,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":40,"./json":45}],42:[function(require,module,exports){
+},{"../schema":38,"./json":43}],40:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -8076,7 +7830,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":40,"../type/js/function":51,"../type/js/regexp":52,"../type/js/undefined":53,"./default_safe":43}],43:[function(require,module,exports){
+},{"../schema":38,"../type/js/function":49,"../type/js/regexp":50,"../type/js/undefined":51,"./default_safe":41}],41:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -8106,7 +7860,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":40,"../type/binary":47,"../type/merge":55,"../type/omap":57,"../type/pairs":58,"../type/set":60,"../type/timestamp":62,"./core":41}],44:[function(require,module,exports){
+},{"../schema":38,"../type/binary":45,"../type/merge":53,"../type/omap":55,"../type/pairs":56,"../type/set":58,"../type/timestamp":60,"./core":39}],42:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -8125,7 +7879,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":40,"../type/map":54,"../type/seq":59,"../type/str":61}],45:[function(require,module,exports){
+},{"../schema":38,"../type/map":52,"../type/seq":57,"../type/str":59}],43:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -8152,7 +7906,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":40,"../type/bool":48,"../type/float":49,"../type/int":50,"../type/null":56,"./failsafe":44}],46:[function(require,module,exports){
+},{"../schema":38,"../type/bool":46,"../type/float":47,"../type/int":48,"../type/null":54,"./failsafe":42}],44:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -8215,7 +7969,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":37}],47:[function(require,module,exports){
+},{"./exception":35}],45:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -8355,7 +8109,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":46}],48:[function(require,module,exports){
+},{"../type":44}],46:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8392,7 +8146,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":46}],49:[function(require,module,exports){
+},{"../type":44}],47:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -8510,7 +8264,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":35,"../type":46}],50:[function(require,module,exports){
+},{"../common":33,"../type":44}],48:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -8685,7 +8439,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":35,"../type":46}],51:[function(require,module,exports){
+},{"../common":33,"../type":44}],49:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -8779,7 +8533,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":46}],52:[function(require,module,exports){
+},{"../../type":44}],50:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -8841,7 +8595,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":46}],53:[function(require,module,exports){
+},{"../../type":44}],51:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -8871,7 +8625,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":46}],54:[function(require,module,exports){
+},{"../../type":44}],52:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8881,7 +8635,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":46}],55:[function(require,module,exports){
+},{"../type":44}],53:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8895,7 +8649,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":46}],56:[function(require,module,exports){
+},{"../type":44}],54:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8931,7 +8685,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":46}],57:[function(require,module,exports){
+},{"../type":44}],55:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -8977,7 +8731,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":46}],58:[function(require,module,exports){
+},{"../type":44}],56:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9032,7 +8786,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":46}],59:[function(require,module,exports){
+},{"../type":44}],57:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9042,7 +8796,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":46}],60:[function(require,module,exports){
+},{"../type":44}],58:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9073,7 +8827,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":46}],61:[function(require,module,exports){
+},{"../type":44}],59:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9083,7 +8837,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":46}],62:[function(require,module,exports){
+},{"../type":44}],60:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9173,12 +8927,12 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":46}],63:[function(require,module,exports){
+},{"../type":44}],61:[function(require,module,exports){
 (function (global){
 /**
  * @license
  * Lodash <https://lodash.com/>
- * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
+ * Copyright JS Foundation and other contributors <https://js.foundation/>
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -9189,7 +8943,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.15';
+  var VERSION = '4.17.11';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -11848,10 +11602,16 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
         value.forEach(function(subValue) {
           result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
         });
-      } else if (isMap(value)) {
+
+        return result;
+      }
+
+      if (isMap(value)) {
         value.forEach(function(subValue, key) {
           result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
         });
+
+        return result;
       }
 
       var keysFunc = isFull
@@ -12775,8 +12535,8 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
         return;
       }
       baseFor(source, function(srcValue, key) {
-        stack || (stack = new Stack);
         if (isObject(srcValue)) {
+          stack || (stack = new Stack);
           baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
         }
         else {
@@ -14593,7 +14353,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
       return function(number, precision) {
         number = toNumber(number);
         precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
-        if (precision && nativeIsFinite(number)) {
+        if (precision) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
           var pair = (toString(number) + 'e').split('e'),
@@ -15776,7 +15536,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
     }
 
     /**
-     * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
+     * Gets the value at `key`, unless `key` is "__proto__".
      *
      * @private
      * @param {Object} object The object to query.
@@ -15784,10 +15544,6 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
      * @returns {*} Returns the property value.
      */
     function safeGet(object, key) {
-      if (key === 'constructor' && typeof object[key] === 'function') {
-        return;
-      }
-
       if (key == '__proto__') {
         return;
       }
@@ -19588,7 +19344,6 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
           }
           if (maxing) {
             // Handle invocations in a tight loop.
-            clearTimeout(timerId);
             timerId = setTimeout(timerExpired, wait);
             return invokeFunc(lastCallTime);
           }
@@ -23975,12 +23730,9 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
       , 'g');
 
       // Use a sourceURL for easier debugging.
-      // The sourceURL gets injected into the source that's eval-ed, so be careful
-      // with lookup (in case of e.g. prototype pollution), and strip newlines if any.
-      // A newline wouldn't be a valid sourceURL anyway, and it'd enable code injection.
       var sourceURL = '//# sourceURL=' +
-        (hasOwnProperty.call(options, 'sourceURL')
-          ? (options.sourceURL + '').replace(/[\r\n]/g, ' ')
+        ('sourceURL' in options
+          ? options.sourceURL
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -24013,9 +23765,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      // Like with sourceURL, we take care to not check the option's prototype,
-      // as this configuration is a code injection vector.
-      var variable = hasOwnProperty.call(options, 'variable') && options.variable;
+      var variable = options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
@@ -26220,11 +25970,10 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
     baseForOwn(LazyWrapper.prototype, function(func, methodName) {
       var lodashFunc = lodash[methodName];
       if (lodashFunc) {
-        var key = lodashFunc.name + '';
-        if (!hasOwnProperty.call(realNames, key)) {
-          realNames[key] = [];
-        }
-        realNames[key].push({ 'name': methodName, 'func': lodashFunc });
+        var key = (lodashFunc.name + ''),
+            names = realNames[key] || (realNames[key] = []);
+
+        names.push({ 'name': methodName, 'func': lodashFunc });
       }
     });
 
@@ -26289,7 +26038,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],64:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -30893,7 +30642,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],65:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 'use strict';
 
 const StorageModes = require('../wnode/storageModes.js');
@@ -31111,7 +30860,153 @@ function init () {
 
 init();
 
-},{"../generation/wgenerator.js":28,"../util/util.js":66,"../wnode/storageModes.js":67,"../wnode/wnode.js":68,"hotkeys-js":32}],66:[function(require,module,exports){
+},{"../generation/wgenerator.js":26,"../util/util.js":65,"../wnode/storageModes.js":67,"../wnode/wnode.js":69,"hotkeys-js":30}],64:[function(require,module,exports){
+'use strict';
+
+// TODO make this name lowercase.
+var Util = require('./util.js');
+
+class Coord {
+    // Later can have a array of dimensions, instead of r and c props.
+    constructor (r,c) {
+        this.r = Util.default(r, -1);
+        this.c = Util.default(c, -1);
+    }
+
+    get x () {
+        // TODO is mapping r to x totally wrong, even in the short term?
+        return this.r;
+    }
+
+    get y () {
+        return this.c;
+    }
+
+    equals (other) {
+        return this.r === other.r && this.c === other.c;
+    }
+
+    is (other) { return this.equals(other); }
+
+    plus (other) {
+        return new Coord(
+            this.r + other.r,
+            this.c + other.c
+        );
+    }
+
+    minus (other) {
+        return new Coord(
+            this.r - other.r,
+            this.c - other.c
+        );
+    }
+
+    distanceTo (other) {
+        return Math.sqrt(
+            Math.pow(this.r - other.r, 2) +
+            Math.pow(this.c - other.c, 2)
+        );
+    }
+
+    manhattanDistanceTo (other) {
+        const horizontal = Math.abs(this.r - other.r);
+        const vertical = Math.abs(this.c - other.c);
+
+        return horizontal + vertical;
+    }
+
+    // LATER confirm how much faster this is than distanceTo, using whatever sort of speed test.
+    approximateDistanceTo (other) {
+        // 1 - (1 / sqrt(2))
+        const MAX_ADJUSTMENT = 0.29289321881345254;
+
+        const horizontal = Math.abs(this.r - other.r);
+        const vertical = Math.abs(this.c - other.c);
+
+        // 0 means 45°, 1 means 0° or 90°
+        const orthagonalness = Math.abs(horizontal - vertical) / Math.max(horizontal, vertical);
+
+        // adjustment is supposed to vary between around 1/sqrt(2) and 1
+        const adjustment = 1 - (MAX_ADJUSTMENT * orthagonalness);
+
+        return (horizontal + vertical) * adjustment;
+    }
+
+    magnitude () {
+        return this.distanceTo(new Coord(0,0));
+    }
+
+    isAdjacentTo (other) {
+        var distance = this.distanceTo(other);
+
+        // ODDITY: i made the bounds approximate for some reason.
+        return 0.9 < distance && distance < 1.5;
+    }
+
+    toString () {
+        return '[' + this.r + ',' + this.c + ']';
+    }
+
+    randomAdjacent () {
+        do {
+            var candidateNeighbor = Coord.randomDirection().plus(this);
+        } while (! candidateNeighbor.isInBounds());
+
+        return candidateNeighbor;
+    }
+
+    static random (rCount, cCount) {
+        if (!rCount || !cCount) {
+            console.log('ERROR: Coord.random() called without arguments');
+            return new Coord(-1,-1);
+            // TODO throw exception, make supervisor reboot, et cetera.
+        }
+
+        return new Coord(
+            Util.randomUpTo(rCount-1),
+            Util.randomUpTo(cCount-1)
+        );
+    }
+
+    static get relatives () {
+        return [
+            new Coord(-1,-1), new Coord(-1,0), new Coord(-1,1),
+            new Coord( 0,-1),                  new Coord( 0,1),
+            new Coord( 1,-1), new Coord( 1,0), new Coord( 1,1)
+        ];
+    }
+
+    // Designed for discrete 2d grids.
+    static randomDirection () {
+        return Util.randomOf(Coord.relatives);
+    }
+
+    // Returns random position in a distribution that is convenient to display on one screen.
+    static randomOnScreen () {
+        // Unit: meters
+        const WIDTH = 40;
+        const HEIGHT = 20;
+
+        return new Coord(
+            Util.randomUpTo(WIDTH),
+            Util.randomUpTo(HEIGHT)
+        );
+    }
+
+    static randomInSquare (minVal, maxValExclusive) {
+        return new Coord(
+            Util.randomRange(minVal, maxValExclusive),
+            Util.randomRange(minVal, maxValExclusive)
+        );
+    }
+};
+
+// Death Planet Fish Tank wants a cm resolution.
+Coord.DECIMAL_PLACES = 2;
+
+module.exports = Coord;
+},{"./util.js":65}],65:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -31170,6 +31065,18 @@ util.contains = function (array, fugitive) {
     return array.indexOf(fugitive) >= 0;
 };
 
+util.hasOverlap = function (arrayA, arrayB) {
+    for (let i = 0; i < arrayA.length; i++) {
+        if (util.contains(arrayB, arrayA[i])) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+// Returns number
+// Default 0
 util.sum = function (array) {
     return util.array(array).reduce(
         (sumSoFar, element) => {
@@ -31181,7 +31088,7 @@ util.sum = function (array) {
 };
 
 util.randomIntBetween = function (minInclusive, maxExclusive) {
-    if (!minInclusive || !maxExclusive) {
+    if (! util.exists(minInclusive) || ! util.exists(maxExclusive)) {
         console.log('error: util.randomIntBetween() called with missing parameters.');
         return -1;
     } else if (maxExclusive <= minInclusive) {
@@ -31210,6 +31117,7 @@ util.randomFromObj = function (obj) {
     return obj[key];
 };
 
+// decimalPlaces param is optional and lodash defaults it to 0.
 util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
     if (maxExclusive < minInclusive) {
         const temp = minInclusive;
@@ -31247,6 +31155,30 @@ util.shortId = function (id) {
     return id ?
         `${id.slice(0, 3)}` :
         '';
+};
+
+// Input string[]
+// Returns string summarizing redundancies
+util.arraySummary = (a) => {
+    const dict = {};
+
+    a.forEach(
+        s => {
+            if (dict[s]) {
+                dict[s]++;
+            }
+            else {
+                dict[s] = 1;
+            }
+        }
+    );
+
+    const archetypes = Object.keys(dict)
+        .map(
+            s => `${s} x${util.abbrvNumber(dict[s])}`
+        );
+
+    return archetypes.join(', ');
 };
 
 util.repeat = function (str, n) {
@@ -31418,6 +31350,10 @@ util.isObject = function (x) {
         x !== null;
 };
 
+util.isFunction = function (x) {
+    return typeof x === 'function';
+};
+
 util.isArray = function (x) {
     // Later make this more sophisticated, or use a library.
     return x &&
@@ -31448,6 +31384,34 @@ util.arrayCopy = (a) => {
 
 util.commaNumber = (n) =>
     commaNumber(n);
+
+util.abbrvNumber = (n) => {
+    let output = '';
+    const pos = Math.abs(n);
+
+    if (pos < 1000) {
+        output = pos.toString();
+    }
+    else if (pos < 1e6) {
+        output = _.round(pos / 1000)
+            .toFixed(0)
+            + 'k';
+    }
+    else if (pos < 1e9) {
+        output = _.round(pos / 1e6)
+            .toFixed(0)
+            + 'mn';
+    }
+    else {
+        output = _.round(pos / 1e9)
+            .toFixed(0)
+            + 'tn';
+    }
+
+    return n >= 0 ?
+        output :
+        `-${output}`;
+};
 
 util.sigFigsOf = (n) => {
     if (! util.isNumber(n)) {
@@ -31548,11 +31512,11 @@ util.log = function (input, tag) {
 
 util.logDebug = function (input) {
     util.log(input, 'debug');
-}
+};
 
 util.logError = function (input) {
     util.log(input, 'error');
-}
+};
 
 util.makeEnum = (vals) => {
     const dict = {};
@@ -31561,6 +31525,30 @@ util.makeEnum = (vals) => {
     }
 
     return dict;
+};
+
+util.toJson = (x) => {
+    return x && util.isFunction(x.toJson) ?
+        x.toJson() :
+        x;
+}
+
+// Useful for dicts of objects like wGenerator.aliasTables
+util.dictToJson = (dict) => {
+    const serialized = {};
+
+    Object.keys(dict)
+        .forEach(
+            key => {
+                const value = dict[key];
+
+                serialized[key] = (value && value.toJson) ?
+                    value.toJson() :
+                    value;
+            }
+        );
+
+    return serialized;
 };
 
 // Myers-Briggs Type Indicator (personality category)
@@ -31574,7 +31562,93 @@ util.mbti = () => {
     .join('');
 };
 
-},{"comma-number":29,"lodash":63,"moment":64}],67:[function(require,module,exports){
+},{"comma-number":27,"lodash":61,"moment":62}],66:[function(require,module,exports){
+'use strict';
+
+const Coord = require('../util/coord.js');
+const Util = require('../util/util.js');
+const Thing = require('./thing.js');
+
+// Later i may decide to move this class into the bottleWorld/ dir, if it doesnt feel generic enough for the wnode/ dir.
+module.exports = class Creature extends Thing {
+    constructor (template, coord, alignment) {
+        super(template, coord);
+
+        // Util.logDebug(`Creature constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
+
+        // Init stamina points
+        this.sp = this.findTrait('maxSp') || 1;
+
+        // Unit: timestamp in seconds
+        this.lastDamaged = -Infinity;
+
+        // Faction or temperament
+        this.alignment = alignment;
+    }
+
+    getActions (worldState) {
+        const template = this.template ||
+            (worldState && worldState.glossary[this.templateName]);
+
+        const localActions = template ?
+            (template.actions || []) :
+            [];
+
+        return this.components.reduce(
+            (actions, wnode) => actions.concat(
+                Util.isFunction(wnode.getActions) ?
+                    wnode.getActions() :
+                    []
+            ),
+            localActions
+        );
+    }
+
+    actionFromId (id) {
+        return this.getActions().find(
+            action => action.id === id
+        );
+    }
+
+    // Recursion is necessary when base chassis traits are stored in a component WNode
+    findTrait (trait) {
+        if (this.template && this.template[trait]) {
+            return this.template[trait];
+        }
+
+        for (let i = 0; i < this.components.length; i++) {
+            const child = this.components[i];
+
+            // We dont want the stat from a item, or a modifier stat for example. We want something applicable to creatures.
+            if (child.constructor.name !== 'Creature') {
+                continue;
+            }
+
+            const childTrait = this.components[i].template &&
+                this.components[i].template[trait];
+
+            if (Util.exists(childTrait)) {
+                return childTrait;
+
+                // Note that if this trait is present on multiple components, this returns a arbitrary one.
+            }
+        }
+
+        return undefined;
+    }
+
+    chooseTarget (worldState, actionTemplate) {
+        const nonAllies = worldState.thingsWithout(
+            {
+                alignment: this.alignment
+            }
+        );
+
+        return Util.randomOf(nonAllies);
+    }
+};
+
+},{"../util/coord.js":64,"../util/util.js":65,"./thing.js":68}],67:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -31585,7 +31659,75 @@ module.exports = Util.makeEnum([
     'Frozen'
 ]);
 
-},{"../util/util.js":66}],68:[function(require,module,exports){
+},{"../util/util.js":65}],68:[function(require,module,exports){
+'use strict';
+
+const Coord = require('../util/coord.js');
+const Util = require('../util/util.js');
+const WNode = require('./wnode.js');
+
+module.exports = class Thing extends WNode {
+    constructor (template, coord) {
+        super(template);
+
+        // Util.logDebug(`Thing constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
+
+        this.coord = coord || Coord.randomOnScreen();
+
+        // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
+        this.active = true;
+    }
+
+    distanceTo (target) {
+        const targetCoord = target.coord || target;
+
+        return this.coord.manhattanDistanceTo(targetCoord);
+    }
+
+    // Unit: meters of longest dimension when in storage.
+    getSize () {
+        return this.traitMax('size');
+    }
+
+    // Unit: kg on Earth's surface.
+    subtreeWeight () {
+        const localWeight = this.template && this.template.weight;
+
+        return this.components.reduce(
+            (sum, component) => sum + component.subtreeWeight(),
+            localWeight
+        );
+    }
+
+    // Returns number
+    resistanceTo (tags) {
+        // LATER it's probably more performant to recursively gather a net resistance obj here, instead of multiple times in resistanceToTag()
+        return Util.sum(
+            tags.map(
+                tag => this.resistanceToTag(tag)
+            )
+        );
+    }
+
+    // Returns number
+    resistanceToTag (tag) {
+        const localResistance = (this.template &&
+            this.template.resistance &&
+            this.template.resistance[tag]) ||
+            0;
+
+        return this.components.reduce(
+            (overallResistance, component) => {
+                return localResistance +
+                    (component.resistanceTo && component.resistanceToTag(tag) || 0);
+            },
+            localResistance
+        );
+    }
+};
+
+
+},{"../util/coord.js":64,"../util/util.js":65,"./wnode.js":69}],69:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -31612,10 +31754,14 @@ class WNode {
             else if (Util.isString(template)) {
                 this.templateName = template;
             }
+            else {
+                throw new Error(`Cant instantiate WNode with unknown input of type ${typeof template}.`);
+            }
         }
 
         this.components = [];
 
+        // Partial means that dynamic 'fractal' storage could append components to this when its zoomed in on. IE, not guaranteed to be a leaf.
         this.storageMode = StorageModes.Partial;
         this.lastVisited = Date.now();
     }
@@ -31633,6 +31779,7 @@ class WNode {
         Object.assign(clone, this);
         clone.id = Util.newId();
 
+        // HMMM: Does this break now that we have parent pointers? Self reference.
         clone.components = this.components.map(component => component.deepCopy());
         return clone;
     }
@@ -31649,9 +31796,12 @@ class WNode {
         return ``;
     }
 
-    // Later, it may be performant to reference this.template[propStr], instead of storing those props on every WNode instance of the template.
+    getTrait (key) {
+        return this[key] || (this.template && this.template[key]);
+    }
+
     traitSum (propStr) {
-        return (this[propStr] || 0) +
+        return (this.getTrait(propStr) || 0) +
             Util.sum(
                 this.components.map(
                     c => c.traitSum(propStr)
@@ -31660,7 +31810,7 @@ class WNode {
     }
 
     traitMax (propStr) {
-        const localTrait = this[propStr] || 0;
+        const localTrait = this.getTrait(propStr) || 0;
         const max = this.components.reduce(
             (soFar, component) => Math.max(soFar, component.traitMax(propStr)),
             localTrait
@@ -31670,7 +31820,7 @@ class WNode {
     }
 
     traitMin (propStr) {
-        const localTrait = this[propStr];
+        const localTrait = this.getTrait(propStr);
         const min = this.components.reduce(
             (soFar, component) => Math.min(soFar, component.traitMin(propStr)),
             localTrait || Infinity
@@ -31806,6 +31956,28 @@ class WNode {
         .join('<br>');
     }
 
+    toJson () {
+        const serialized = {};
+
+        Object.keys(this)
+            .forEach(
+                key => {
+                    if (Util.contains(['components', 'parent'], key)) {
+                        return;
+                    }
+
+                    serialized[key] = Util.toJson(this[key]);
+                }
+            );
+
+        serialized.components = this.components.map(
+            c => c.toJson()
+        );
+
+        return serialized;
+    }
+
+    // HMMM: Does this break now that we have parent pointers? Self reference.
     toYaml () {
         return Yaml.dump(this);
     }
@@ -31947,4 +32119,192 @@ class WNode {
 
 module.exports = WNode;
 
-},{"../util/util.js":66,"./storageModes.js":67,"js-yaml":33}]},{},[65]);
+},{"../util/util.js":65,"./storageModes.js":67,"js-yaml":31}],70:[function(require,module,exports){
+
+},{}],71:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}]},{},[63]);

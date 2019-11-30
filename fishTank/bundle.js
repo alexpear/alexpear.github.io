@@ -1,192 +1,4 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-
-},{}],2:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],3:[function(require,module,exports){
 'use strict';
 
 const NodeTemplate = require('./nodeTemplate.js');
@@ -194,7 +6,7 @@ const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
 class ActionTemplate extends NodeTemplate {
-    constructor (name, range, hit, damage) {
+    constructor (name, range, hit, damage, shotsPerSecond) {
         super(name);
 
         this.id = Util.newId();
@@ -202,6 +14,7 @@ class ActionTemplate extends NodeTemplate {
         this.range = range || 1;
         this.hit = hit || 0;
         this.damage = damage || 0;
+        this.shotsPerSecond = shotsPerSecond || 1;
     }
 
     // Later make a superclass version of this func.
@@ -267,7 +80,7 @@ class ActionTemplate extends NodeTemplate {
         return template;
     }
 
-    static soldierExample () {
+    static gunExample () {
         const template = new ActionTemplate('dmr');
 
         // Later maybe rename to a more generic phrase like 'rate'.
@@ -291,7 +104,7 @@ class ActionTemplate extends NodeTemplate {
 
 module.exports = ActionTemplate;
 
-},{"../codices/tags.js":37,"../util/util.js":77,"./nodeTemplate.js":7}],4:[function(require,module,exports){
+},{"../codices/tags.js":36,"../util/util.js":76,"./nodeTemplate.js":5}],2:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
@@ -318,10 +131,10 @@ const SIZE = {
 // Note that currently this is confusingly used for intermediate representations
 // when transforming trees of WNodes to Groups.
 class CreatureTemplate extends NodeTemplate {
-    constructor (name) {
+    constructor (name, tags) {
         super(name);
 
-        this.tags = [];
+        this.tags = tags || [];
         this.actions = [];
         this.resistance = {};
     }
@@ -419,8 +232,8 @@ class CreatureTemplate extends NodeTemplate {
             // Remove the 'action' tag.
             this.tags.splice(actionTagIndex, 1);
 
-            // Later, can put a name from the codex in the name param, instead of newId()
-            const action = new ActionTemplate(Util.newId(), this.range, this.hit, this.damage);
+            const action = new ActionTemplate(this.name, this.range, this.hit, this.damage, this.shotsPerSecond);
+
             action.tags = Util.arrayCopy(this.tags);
             this.tags = [];
             this.actions.push(action);
@@ -428,6 +241,7 @@ class CreatureTemplate extends NodeTemplate {
             delete this.range;
             delete this.hit;
             delete this.damage;
+            delete this.shotsPerSecond;
         }
     }
 
@@ -455,6 +269,101 @@ class CreatureTemplate extends NodeTemplate {
         }
     }
 
+    static fromRaw (tableRaw) {
+        const creatureTemplate = new CreatureTemplate();
+
+        tableRaw.split('\n')
+            .slice(1)
+            .map(
+                line => {
+                    const parsed = CreatureTemplate.parseTemplateLine(line);
+                    const key = parsed.key;
+
+                    if (
+                        key in creatureTemplate &&
+                        ! ['tags', 'actions', 'resistance'].includes(key)
+                    ) {
+                        throw new Error(`fromRaw(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
+                    }
+
+                    creatureTemplate[key] = parsed.value;
+
+                    // Util.log(`in parseTemplate(). Just wrote key/value pair {${key}: ${parsed.value}}`, 'debug');
+                }
+            );
+
+        creatureTemplate.name = CreatureTemplate.templateKey(tableRaw);
+        creatureTemplate.setUpAction();
+
+        return creatureTemplate;
+    }
+
+    static parseTemplateLine (line) {
+        line = line.trim();
+
+        const colonIndex = line.indexOf(':');
+
+        if (colonIndex < 0) {
+            throw new Error(`parseTemplateLine(): No colon found in ${ line }`);
+        }
+
+        const key = line.slice(0, colonIndex)
+            .trim();
+        const rest = line.slice(colonIndex + 1)
+            .trim();
+
+        let value;
+        if (key === 'tags') {
+            value = rest.split(/\s/);
+        }
+        else if (key === 'resistance') {
+            value = {};
+
+            const entries = rest.split(',');
+
+            entries.forEach(
+                e => {
+                    const parts = e.trim()
+                        .split(/\s/);
+                    const resistanceKey = parts[0];
+                    const modifier = Number(parts[1]);
+
+                    value[resistanceKey] = modifier;
+                }
+            );
+        }
+        else if (rest === 'true') {
+            value = true;
+        }
+        else if (rest === 'false') {
+            value = false;
+        }
+        else {
+            // number case.
+            const parsed = Number(rest);
+
+            value = Util.exists(parsed) ?
+                parsed :
+                rest;
+
+            // Util.log(`in parseTemplateLine( '${line}' ). value is ${value}.`, 'debug');
+        }
+
+        return {
+            key: key,
+            value: value
+        };
+    }
+
+    static templateKey (tableRaw) {
+        const START = 'template ';
+        const startIndex = tableRaw.indexOf(START);
+        const endIndex = tableRaw.indexOf('\n');
+
+        return tableRaw.slice(startIndex + START.length, endIndex)
+            .trim();
+    }
+
     static mergeResistances (a, b) {
         const keys = Util.union(Object.keys(a), Object.keys(b));
         return keys.reduce(
@@ -471,12 +380,12 @@ class CreatureTemplate extends NodeTemplate {
     // }
 
     static example () {
-        return CreatureTemplate.soldierExample();
+        return CreatureTemplate.marineExample();
     }
 
-    static soldierExample () {
+    static marineExample () {
         const template = new CreatureTemplate();
-        template.name = 'soldier';
+        template.name = 'marinePrivate';
 
         // UNSC Marine (Halo)
         template.tags = [
@@ -491,7 +400,7 @@ class CreatureTemplate extends NodeTemplate {
         template.defense = 16;
         template.alignment = 'UNSC';
         template.actions = [
-            ActionTemplate.soldierExample()
+            ActionTemplate.gunExample()
         ];
 
         template.resistance = {};
@@ -538,7 +447,7 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":37,"../util/util.js":77,"./actiontemplate.js":3,"./nodeTemplate.js":7}],5:[function(require,module,exports){
+},{"../codices/tags.js":36,"../util/util.js":76,"./actiontemplate.js":1,"./nodeTemplate.js":5}],3:[function(require,module,exports){
 'use strict';
 
 const util = require('../util/util.js');
@@ -579,7 +488,7 @@ class Event {
 
 module.exports = Event;
 
-},{"../util/util.js":77}],6:[function(require,module,exports){
+},{"../util/util.js":76}],4:[function(require,module,exports){
 'use strict';
 
 // A group of creatures in a bottle world.
@@ -1317,19 +1226,40 @@ damage: 1
 
 
 
-},{"../codices/tags.js":37,"../dnd/alignment.js":38,"../util/coord.js":76,"../util/util.js":77,"./creaturetemplate.js":4,"./event.js":5}],7:[function(require,module,exports){
+},{"../codices/tags.js":36,"../dnd/alignment.js":37,"../util/coord.js":75,"../util/util.js":76,"./creaturetemplate.js":2,"./event.js":3}],5:[function(require,module,exports){
 'use strict';
 
 const TAG = require('../codices/tags.js');
+const Util = require('../util/util.js');
 
 module.exports = class NodeTemplate {
     constructor (name) {
         this.name = name;
         this.tags = [];
     }
+
+    isThing () {
+        // Later, a tag inheritance tree can make this smoother.
+        return Util.hasOverlap(this.tags, ['thing', 'item', 'weapon', 'gear']) ||
+            this.size ||
+            this.weight ||
+            this.coord ||
+            Util.exists(this.sp) ||
+            Util.exists(this.active);
+    }
+
+    isCreature () {
+        return Util.hasOverlap(this.tags, ['creature', 'person', 'character', 'combatant', 'being']) ||
+            Util.isArray(this.actions);
+    }
+
+    toJson () {
+        // Already free of circular reference.
+        return this;
+    }
 }
 
-},{"../codices/tags.js":37}],8:[function(require,module,exports){
+},{"../codices/tags.js":36,"../util/util.js":76}],6:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -1497,7 +1427,152 @@ BEvent.TYPES = Util.makeEnum([
     'UniversalUpdate'
 ]);
 
-},{"../util/coord.js":76,"../util/util.js":77}],9:[function(require,module,exports){
+},{"../util/coord.js":75,"../util/util.js":76}],7:[function(require,module,exports){
+'use strict';
+
+const WorldState = require('./worldState.js');
+
+// Continuous-space environments, as opposed to grids or graphs.
+class ContinuousWorldState extends WorldState {}
+
+module.exports = ContinuousWorldState;
+
+},{"./worldState.js":14}],8:[function(require,module,exports){
+(function (process){
+'use strict';
+
+const ContinuousWorldState = require('./continuousWorldState.js');
+const Timeline = require('./timeline.js');
+const ArrivalEvent = require('./events/arrivalEvent.js');
+const CreatureTemplate = require('../battle20/creaturetemplate.js');
+const Util = require('../util/util.js');
+
+const Creature = require('../wnode/creature.js');
+const Thing = require('../wnode/thing.js');
+
+class DeathPlanetWorldState extends ContinuousWorldState {
+    proceed () {
+        // Iterate over the set of BEvents in the timeline's current instant.
+        // Later reconcile this with timeline.computeNextInstant()
+        // Also perhaps put proceed() in a new class Transitioner, or Mover, or Director, or Simulator, or Mastermind.
+    }
+
+    moveEverything () {
+        this.things.forEach(
+            thing => {
+                // LATER If it has momentum or is continuing to travel, move it one second further along its path.
+                // Round coords to the nearest cm.
+            }
+        );
+    }
+
+    allAlignments () {
+        // Yes, this capitalization is inconsistent with the camelcase style used by templateNames. Standardize stuff later.
+        return [
+            'UNSC',
+            // 'Covenant'
+            'Insurrection'
+        ];
+    }
+
+    worthContinuing () {
+        const inSetup = this.now() <= 10;
+        const conflictExists = this.conflictExists();
+        const probablyNotStuck = this.now() <= 500000;
+
+        return inSetup ||
+            (conflictExists && probablyNotStuck);
+    }
+
+    static example (timeline) {
+        const worldState = new DeathPlanetWorldState();
+
+        // worldState.glossary.marinePrivate = CreatureTemplate.marineExample();
+
+        // const gunAction = worldState.glossary.marinePrivate.actions[0];
+        // worldState.glossary[gunAction.id] = gunAction;
+
+        timeline = timeline || new Timeline(worldState);
+        timeline.currentWorldState = worldState;
+
+        worldState.timeline = timeline;
+
+        // Scale test notes, 2019 Nov 1, Moloch laptop
+        // 40,000 soldiers with DMRs have a lot of trouble computing shooting. Didnt see one tick of shooting finish after several minutes.
+        // 10,000 is fine. First shooting tick takes < 60 sec.
+        // 4,000 works well.
+        // 2019 Nov 4, Baal desktop can handle 5,000 with only a few seconds delay.
+        // Baal with 20,000 is around 2min for the 1st second, then accelerating.
+
+        const context = 'halo/unsc/individual';
+
+        const startingThings = {
+            UNSC: {
+                marinePrivate: 300,
+                spartan: 300
+            },
+            Insurrection: {
+                marinePrivate: 700
+            }
+        };
+
+        worldState.addThingsByAlignment(startingThings, context);
+
+        return worldState;
+    }
+
+    static test () {
+        Util.log(`Beginning the DeathPlanetWorldState test...`, `debug`);
+
+        const worldState = DeathPlanetWorldState.example();
+        worldState.printThings();
+
+        while (worldState.worthContinuing()) {
+            worldState.timeline.computeNextInstant();
+        }
+
+        Util.log(`Up to t=${worldState.now()}, the timeline is: \n${worldState.timeline.toDebugString()}`, 'debug');
+
+        worldState.printCensus();
+
+        return worldState;
+
+        // const arbitraryThing = worldState.things[0];
+        // const sampleActionsStr = JSON.stringify(
+        //     arbitraryThing && arbitraryThing.actions(worldState),
+        //     undefined,
+        //     '    '
+        // );
+        // Util.log(`The first Thing has the following Actions: ${ sampleActionsStr }`, 'debug');
+    }
+
+    static run () {
+        const consoleArguments = process.argv;
+        if (consoleArguments[2] === 'test') {
+            DeathPlanetWorldState.test();
+        }
+    }
+}
+
+module.exports = DeathPlanetWorldState;
+
+// Run with the following CLI command:
+// node deathPlanetWorldState.js test
+
+DeathPlanetWorldState.run();
+
+
+/* Wishlist
+. Ability to set a specific Thing or a templateName to detailed biography mode, and then see detailed entries for each one in the logs
+. Thing.eliminatedBy field or getter. Stores who KOed it.
+. Thing.eliminated field (Thing[]) or getter. Also useful for 'axe counts' like Legolas and Gimli have.
+. Ability to see the population of a interesting group (eg, number of dragons) at each timestep in a timeline
+. Ability to see a timeline with 'LG dragon dies' events marked on it.
+
+
+*/
+}).call(this,require('_process'))
+},{"../battle20/creaturetemplate.js":2,"../util/util.js":76,"../wnode/creature.js":77,"../wnode/thing.js":79,"./continuousWorldState.js":7,"./events/arrivalEvent.js":11,"./timeline.js":13,"_process":82}],9:[function(require,module,exports){
 'use strict';
 
 const BEvent = require('../bEvent.js');
@@ -1546,7 +1621,7 @@ module.exports = class ActionEvent extends BEvent {
     }
 };
 
-},{"../../util/coord.js":76,"../../util/util.js":77,"../bEvent.js":8,"./projectileEvent.js":12}],10:[function(require,module,exports){
+},{"../../util/coord.js":75,"../../util/util.js":76,"../bEvent.js":6,"./projectileEvent.js":12}],10:[function(require,module,exports){
 'use strict';
 
 const ActionEvent = require('./actionEvent.js');
@@ -1570,18 +1645,18 @@ module.exports = class ActionReadyEvent extends BEvent {
 
         // Later could relax the requirement that protagonist.template be populated, if that seems unnecessary.
         if (
-            ! protagonist.actions ||
-            protagonist.actions().length === 0 ||
+            ! protagonist.getActions ||
+            protagonist.getActions().length === 0 ||
             ! protagonist.template
         ) {
-            throw new Error(`ActionReadyEvent found a strange protagonist (type ${protagonist.constructor.name}) in WorldState.things. { id: ${protagonist.id}, actions(): ${protagonist.actions ? protagonist.actions() : 'undefined'}, template: ${protagonist.template}, templateName: ${protagonist.templateName} }`);
+            throw new Error(`ActionReadyEvent found a strange protagonist (type ${protagonist.constructor.name}) in WorldState.things. { id: ${protagonist.id}, getActions(): ${protagonist.getActions ? protagonist.getActions() : 'undefined'}, template: ${protagonist.template}, templateName: ${protagonist.templateName} }`);
         }
 
         if (! protagonist.active) {
             return;
         }
 
-        const actions = protagonist.actions();
+        const actions = protagonist.getActions();
 
         const action = actions.find(
             a => a.id === this.actionId
@@ -1604,10 +1679,13 @@ module.exports = class ActionReadyEvent extends BEvent {
             actionEvent,
             this.t
         );
+
+        // Util.logDebug(`Bottom of ActionReadyEvent.resolve(). Set up a future Action with range: ${action.range}.`);
+
     }
 };
 
-},{"../../util/coord.js":76,"../../util/util.js":77,"../bEvent.js":8,"./actionEvent.js":9}],11:[function(require,module,exports){
+},{"../../util/coord.js":75,"../../util/util.js":76,"../bEvent.js":6,"./actionEvent.js":9}],11:[function(require,module,exports){
 'use strict';
 
 const ActionReadyEvent = require('./actionReadyEvent.js');
@@ -1616,38 +1694,60 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
-    constructor (templateName, coord, arrivalType) {
+    constructor (templateName, coord, alignment) {
         super(
             BEvent.TYPES.Arrival,
             undefined,
             undefined,
-            coord || new Coord(),
+            coord || Coord.randomOnScreen(),
             templateName
         );
 
-        this.arrivalType = arrivalType;
+        this.alignment = alignment;
     }
 
     resolve (worldState) {
         const arriver = this.templateName ?
-            worldState.fromTemplateName(this.templateName) :
+            worldState.generateNodes(this.templateName)[0] :
             worldState.fromId(this.protagonistId);
 
-        if (this.arrivalType === 'randomAlignment') {
-            arriver.alignment = Util.randomOf(worldState.allAlignments());
-        }
+        arriver.alignment = this.alignment || Util.randomOf(worldState.allAlignments());
 
         worldState.addThing(arriver, this.coord);
 
-        const firstAction = arriver.actions()[0];
+        // Util.logDebug(worldState.wanderingGenerator.toJson());
 
-        // Util.logDebug(`arriver.templateName: ${arriver.templateName}, arriver.template: ${arriver.template}, arriver.constructor.name: ${arriver.constructor.name}, firstAction: ${firstAction}, worldState.glossary.soldier.actions.length: ${worldState.glossary.soldier.actions.length}`);
+        // Util.logDebug(`arriver.templateName: ${arriver.templateName}, arriver.template: ${arriver.template}, arriver.constructor.name: ${arriver.constructor.name}, typeof arriver.actions: ${typeof arriver.actions}, typeof arriver.deepCopy: ${typeof arriver.deepCopy}`);
 
-        if (! firstAction) {
+        const actions = Util.isFunction(arriver.getActions) && arriver.getActions();
+
+        if (! actions || actions.length === 0) {
+            Util.logDebug(`In ArrivalEvent,
+    arriver.templateName: ${arriver.templateName},
+    arriver.template: ${arriver.template},
+    arriver.constructor.name: ${arriver.constructor.name},
+    typeof arriver.getActions: ${typeof arriver.getActions},
+    typeof arriver.actions: ${typeof arriver.actions},
+    arriver.template.actions.length: ${arriver.template.actions.length},
+    typeof arriver.deepCopy: ${typeof arriver.deepCopy},
+    arriver.components[0].templateName: ${arriver.components[0] && arriver.components[0].templateName},
+    arriver.components[1].templateName: ${arriver.components[1] && arriver.components[1].templateName},
+    arriver.components[1].constructor.name: ${arriver.components[1] && arriver.components[1].constructor.name},
+    arriver.components[1].template.constructor.name: ${arriver.components[1] && arriver.components[1].template.constructor.name},
+    arriver.toJson() is the following:
+    `);
+            Util.logDebug(arriver.toJson());
+
+            throw new Error(`Debug throwing to figure out why ArrivalEvent receives something with no actions.`)
+
             return;
         }
 
-        const actionReadyEvent = new ActionReadyEvent(arriver, firstAction.id);
+        // LATER, remove this preference for homogenous actions
+        const preferredAction = actions.find(a => a.name === 'dmr');
+        const chosenAction = preferredAction || actions[0];
+
+        const actionReadyEvent = new ActionReadyEvent(arriver, chosenAction.id);
 
         this.outcomes.push(actionReadyEvent);
 
@@ -1662,7 +1762,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
 ArrivalEvent.ACTION_DELAY = 5;
 
-},{"../../util/coord.js":76,"../../util/util.js":77,"../bEvent.js":8,"./actionReadyEvent.js":10}],12:[function(require,module,exports){
+},{"../../util/coord.js":75,"../../util/util.js":76,"../bEvent.js":6,"./actionReadyEvent.js":10}],12:[function(require,module,exports){
 'use strict';
 
 const BEvent = require('../bEvent.js');
@@ -1685,8 +1785,13 @@ module.exports = class ProjectileEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const protagonist = worldState.fromId(this.protagonistId);
         const target = worldState.fromId(this.targetId);
+        if (! target.active) {
+            // Do not bother to calculate. (LATER we could, if interesting.)
+            return;
+        }
+
+        const protagonist = worldState.fromId(this.protagonistId);
         const actionTemplate = worldState.fromId(this.actionId);
 
         // Information to be persisted:
@@ -1758,9 +1863,15 @@ module.exports = class ProjectileEvent extends BEvent {
             return;
         }
 
-        // Util.logDebug(`In ProjectileEvent, actionId is ${this.actionId}`);
+        let damage = actionTemplate.damage - target.resistanceTo(actionTemplate.tags);
+
+        // Minimum damage per projectile.
+        if (damage < 1) {
+            damage = 1;
+        }
 
         target.sp -= actionTemplate.damage;
+        target.lastDamaged = worldState.now();
         this.resultantTargetSp = target.sp;
 
         if (target.sp <= 0) {
@@ -1769,13 +1880,51 @@ module.exports = class ProjectileEvent extends BEvent {
     }
 
     doesItHit (protagonist, actionTemplate, target, worldState) {
-        // TODO Replace this func with any hit-roll alg.
-        // return Util.randomOf([true, false, false]);
-        return true;
+        // Algorithm comes from WCW in hobby/warband/gameState.js
+        const AIM_FUDGE = 1;
+
+        // LATER gather modifiers of hit, including from creatures like spartan, instead of just base hit stat.
+        const advantage = target.getSize() * actionTemplate.hit / AIM_FUDGE;
+
+        const distance = protagonist.distanceTo(target);
+        const hitChance = advantage / (advantage + distance + 1);
+
+        // Util.logDebug({
+        //     context: 'ProjectileEvent.doesItHit()',
+        //     size: target.getSize(),
+        //     hit: actionTemplate.hit,
+        //     advantage,
+        //     distance,
+        //     hitChance: hitChance.toFixed(2)
+        // });
+
+        return Math.random() < hitChance;
     }
 };
 
-},{"../../util/coord.js":76,"../../util/util.js":77,"../bEvent.js":8}],13:[function(require,module,exports){
+// Old funcs from battle20 group.js:
+// Actually originally from hobby/warband/gameState.js
+// function hits (distance, targetArea, accuracy) {
+//     // SCALING calibrates which accuracy stats are normal.
+//     const SCALING = 100;
+//     const advantage = targetArea * accuracy / SCALING;
+//     const shotProbability = advantage / (advantage + distance + 1);
+
+//     return Math.random() < shotProbability;
+// }
+
+// function damages (shot, victim) {
+//     // Damage for now means the individual (victim) is converted from a combatant to a casualty.
+//     const damageDiff = shot.damage - victim.durability; // + getDamageModifier(shot, victim);
+//     const SCALING = 0.5; // To make the probabilities feel right
+
+//     // quasi sigmoid probability curve between 0 and 1.
+//     const exponentiated = Math.pow(2, SCALING * damageDiff);
+//     const damageChance = exponentiated / (exponentiated + 1);
+//     return Math.random() < damageChance;
+// }
+
+},{"../../util/coord.js":75,"../../util/util.js":76,"../bEvent.js":6}],13:[function(require,module,exports){
 'use strict';
 
 // Hashmap ({}) of sets of Events
@@ -1845,9 +1994,10 @@ module.exports = class Timeline {
 
         for (let t = 0; t <= this.now(); t++) {
             if (this.timestamps[t]) {
-                const eventsSummary = this.getEventsAt(t)
-                    .map(e => Util.capitalized(e.eventType))
-                    .join(', ');
+                const events = this.getEventsAt(t)
+                    .map(e => Util.capitalized(e.eventType));
+
+                const eventsSummary = Util.arraySummary(events);
 
                 lines.push(`${t}: ${eventsSummary}`);
             }
@@ -1879,7 +2029,7 @@ module.exports = class Timeline {
     }
 };
 
-},{"../util/util.js":77,"./bEvent.js":8,"./worldState.js":14}],14:[function(require,module,exports){
+},{"../util/util.js":76,"./bEvent.js":6,"./worldState.js":14}],14:[function(require,module,exports){
 'use strict';
 
 // Represents the world in a Bottle World at one moment.
@@ -1905,13 +2055,11 @@ class WorldState {
     constructor (timeline, t) {
         this.timeline = timeline;
         this.t = t || 0;
+        // TODO make this a obj, keyed by thing.id, for performance
         this.things = [];
 
-        // Later, dont always use this example WGenerator.
-        this.wanderingGenerator = new WGenerator(
-            require('../codices/battle20/halo/unsc/group.js'),
-            'battle20/halo/unsc/group'
-        );
+        // Later, probably template lookups should be looking across all generators.
+        this.wanderingGenerator = WGenerator.generators['halo/unsc/individual'];
 
         // Contrary to a popular misconception, the W in WGenerator does not stand for Wandering.
         // It stands for WAFFLE.
@@ -1933,10 +2081,14 @@ class WorldState {
             return thingWithId;
         }
 
-        // If it is not a Thing ID, try the glossary.
-        return this.glossary[id];
+        const fromGenerator = WGenerator.ids[id];
 
-        // Later i can cache a id-to-thing mapping if i run into performance concerns.
+        if (fromGenerator) {
+            return fromGenerator;
+        }
+
+        // TODO Uncertain about this. Maybe fall back to generateNodes() instead.
+        return this.getTemplate(id);
     }
 
     // I currently plan for Thing to extend WNode
@@ -1946,13 +2098,18 @@ class WorldState {
         );
     }
 
-    thingsWith (criteria, shouldFlip) {
+    thingsWith (criteria, shouldFlip, things) {
         shouldFlip = shouldFlip || false;
+        things = things || this.things;
 
         const props = Object.keys(criteria);
 
-        return this.things.filter(
+        return things.filter(
             thing => {
+                if (! thing.active) {
+                    return false;
+                }
+
                 for (let i = 0; i < props.length; i++) {
                     const prop = props[i];
 
@@ -1979,13 +2136,25 @@ class WorldState {
         return this.thingsWith(criteria, true);
     }
 
+    activeThings (things) {
+        things = things || this.things;
+
+        return this.thingsWith({}, false, things);
+    }
+
     addThing (thing, coord) {
         thing.coord = coord || new Coord();
         this.things.push(thing);
     }
 
+    // Probably deprecated and removable
     randomTrees () {
-        return this.wanderingGenerator.getOutputs();
+        return this.generateNodes();
+    }
+
+    // Returns WNode[], or array of various subclasses of WNode
+    generateNodes (path) {
+        return this.wanderingGenerator.getOutputs(path);
     }
 
     groupFromTree (nodeTree) {
@@ -2005,15 +2174,30 @@ class WorldState {
         return group;
     }
 
-    getTemplate (templateName) {
-        if (templateName in this.glossary) {
-            const template = this.glossary[templateName];
+    // Returns a parsed template obj
+    getTemplate (inputString) {
+        // TODO still working out the kinks of this version.
 
-            return template;
+        const localTemplate = this.wanderingGenerator.glossary[inputString];
+
+        if (localTemplate) {
+            return localTemplate;
         }
-        else {
-            throw new Error(`Could not find template '${ templateName }' in WorldState's glossary.`);
-        }
+
+        const fullPath = this.wanderingGenerator.getAbsolutePath(inputString);
+        // Util.logDebug(`In worldState.getTemplate('${inputString}'), fullPath is ${fullPath}.`);
+
+        const listing = WGenerator.findGenAndTable(fullPath);
+
+        Util.logDebug(`In worldState.getTemplate('${inputString}'), listing.gen.codexPath is ${listing.gen.codexPath}. listing.name is ${listing.name}. listing.gen is the following:`);
+        Util.logDebug(listing.gen.toJson());
+
+        const template = listing.gen.glossary[listing.name];
+
+        // Util.logDebug(`In worldState.getTemplate('${inputString}'), template is the following:`);
+        // Util.logDebug(template);
+
+        return template;
     }
 
     // Get templates of all component nodes recursively
@@ -2038,8 +2222,8 @@ class WorldState {
     fromTemplateName (templateName) {
         const template = this.getTemplate(templateName);
 
-        // Util.logDebug(`The following is the value of local var 'template' inside a call to WorldState.fromTemplateName('${templateName}'):`);
-        // Util.logDebug(template);
+        Util.logDebug(`The following is the value of local var 'template' inside a call to WorldState.fromTemplateName('${templateName}'):`);
+        Util.logDebug(template);
 
         return template.constructor.name === 'CreatureTemplate' ?
             new Creature(template) :
@@ -2050,17 +2234,39 @@ class WorldState {
         return bEvent.resolve(this);
     }
 
+    addThingsByAlignment (newcomers, contextPath) {
+        Object.keys(newcomers).forEach(alignment => {
+            const teammates = newcomers[alignment];
+
+            Object.keys(teammates).forEach(templateName => {
+                for (let i = 0; i < teammates[templateName]; i++) {
+                    this.timeline.addEvent(
+                        new ArrivalEvent(contextPath + '/' + templateName, undefined, alignment)
+                    );
+                }
+            })
+        });
+    }
+
     thingString () {
-        return this.things.map(
+        return this.things.filter(
+            t => t.active
+        ).map(
             t => `\n    ${Util.capitalized(t.toSimpleString())}`
         )
-        .join('') || `\n    [Only the tireless void]`;
+        .join('') || `\n    Only the tireless void`;
     }
 
     printThings () {
         const output = `At t=${ this.now() }, this world contains: ${ this.thingString() }\n    (${this.alignmentCensusString()})`;
 
-        Util.log(output, 'debug');
+        Util.log(output, 'info');
+    }
+
+    printCensus () {
+        const output = `At t=${ this.now() }, this world contains:\n${this.templateCensusString()}`;
+
+        Util.log(output, 'info');
     }
 
     // Debug helper func.
@@ -2094,25 +2300,151 @@ class WorldState {
         );
     }
 
-    alignmentCensusObj () {
-        const population = {};
+    // returns a dict<Thing[]>
+    // {
+    //     'foo': [a, b, c],
+    //     'bar': [d, e, f]
+    // }
+    dictByProp (prop, things) {
+        things = things || this.things;
 
-        this.things.forEach(
+        const dict = {};
+
+        things.forEach(
             thing => {
-                if (! thing.active) {
-                    return;
-                }
+                const value = thing[prop];
 
-                if (population[thing.alignment]) {
-                    population[thing.alignment] += 1;
+                if (dict[value]) {
+                    dict[value].push(thing);
                 }
                 else {
-                    population[thing.alignment] = 1;
+                    dict[value] = [thing];
                 }
             }
         );
 
-        return population;
+        return dict;
+    }
+
+    // Example:
+    // {
+        // LG: {
+        //     dragon: {
+        //         total: 7,
+        //         active: 1
+        //     },
+        //     human: {
+        //         total: 1000000,
+        //         active: 800000
+        //     }
+        // },
+        // LE: {
+        //     dragon: {
+        //         total: 7,
+        //         active: 0
+        //     },
+        //     human: {
+        //         total: 100000,
+        //         active: 70000
+        //     }
+        // }
+    // }
+    templateCensusObj () {
+        const census = {};
+        const thingsByAlignment = this.dictByProp('alignment');
+
+        Object.keys(thingsByAlignment).forEach(alignment => {
+            // Partition each alignment further, by template.
+            thingsByAlignment[alignment] = this.dictByProp('templateName', thingsByAlignment[alignment]);
+
+
+            census[alignment] = {};
+            const friends = thingsByAlignment[alignment];
+
+            Object.keys(friends).forEach(templateName => {
+                const kin = friends[templateName];
+
+                census[alignment][templateName] = {
+                    total: kin.length,
+                    active: kin.filter(
+                        t => t.active
+                    ).length
+                };
+            });
+        });
+
+        return census;
+    }
+
+    // LG:
+    //   dragon 1/7
+    //   human 800000/1000000
+    // LE:
+    //   dragon 0/7
+    //   human 70000/100000
+    templateCensusString () {
+        const census = this.templateCensusObj();
+        const alignments = Object.keys(census);
+
+        if (alignments.length === 0) {
+            return 'Everyone is dead!';
+        }
+
+        return alignments
+            .map(alignment => {
+                const templates = Object.keys(census[alignment]).map(
+                    template => {
+                        const kin = census[alignment][template];
+
+                        return `  ${ template }\t${ kin.active }/${ kin.total }`;
+                    }
+                )
+                .sort();
+
+                return `${ alignment }:\n${ templates.join('\n') }`;
+            })
+            .sort()
+            .join('\n');
+
+    }
+
+    // Example:
+    // {
+    //     LG: {
+    //         total: 6,
+    //         active: 2
+    //     },
+    //     LE: {
+    //         total: 80,
+    //         active: 0
+    //     }
+    // }
+    alignmentCensusObj () {
+        const alignments = {};
+
+        this.things.forEach(
+            thing => {
+                const existingEntry = alignments[thing.alignment];
+
+                if (existingEntry) {
+                    existingEntry.total += 1;
+
+                    if (thing.active) {
+                        existingEntry.active += 1;
+                    }
+
+                    return;
+                }
+
+                alignments[thing.alignment] = { total: 1 };
+
+                alignments[thing.alignment].active = thing.active ?
+                    1 :
+                    0;
+            }
+        );
+
+        return alignments;
     }
 
     alignmentCensusString () {
@@ -2124,8 +2456,52 @@ class WorldState {
         }
 
         return alignments
-            .map(alignment => `${alignment}: ${census[alignment]}`)
+            .map(alignment => `${alignment}: ${Util.abbrvNumber(census[alignment].active)}/${Util.abbrvNumber(census[alignment].total)}`)
+            .sort()
             .join(', ');
+    }
+
+    // Returns string[]
+    alignments () {
+        const alignments = {};
+
+        this.things.forEach(
+            thing => {
+                if (! thing.active) {
+                    return;
+                }
+
+                alignments[thing.alignment] = true;
+            }
+        );
+
+        return Object.keys(alignments);
+    }
+
+    // Returns true iff multiple factions exist among living beings.
+    conflictExists () {
+        if (! this.things || this.things.length <= 1) {
+            return false;
+        }
+
+        const alignments = {};
+
+        for (let i = 0; i < this.things.length; i++) {
+            const ti = this.things[i];
+
+            if (! ti.active) {
+                continue;
+            }
+
+            // If another faction exists, then conflict exists.
+            if (! alignments[ti.alignment] && Object.keys(alignments).length >= 1) {
+                return true;
+            }
+
+            alignments[ti.alignment] = true;
+        }
+
+        return false;
     }
 
     static test () {
@@ -2280,78 +2656,7 @@ If you want to represent the presence of a extra soldier, special soldier, or ar
 
 */
 
-},{"../battle20/creaturetemplate.js":4,"../battle20/group.js":6,"../bottleWorld/bEvent.js":8,"../codices/battle20/halo/unsc/group.js":15,"../codices/tags.js":37,"../dnd/alignment.js":38,"../generation/wgenerator.js":42,"../util/coord.js":76,"../util/util.js":77,"../wnode/creature.js":78,"../wnode/thing.js":80,"../wnode/wnode.js":81,"./events/actionReadyEvent.js":10,"./events/arrivalEvent.js":11,"./timeline.js":13,"js-yaml":44}],15:[function(require,module,exports){
-module.exports = `
-* output
-4 {squad}
-
-* alias squad
-4 {infantrySquad}
-
-* alias infantrySquad
-4 marineSquad
-
-* template marineSquad
-quantity: 10
-
-* children of marineSquad
-marine
-
-* template marine
-hp: 2
-defense: 11
-alignment: LG
-tags: human soldier tech10 unsc
-
-* children of marine
-{basicWeapon}
-flakArmor
-
-* template flakArmor
-defense: 6
-resistance: fire 1, piercing 1
-tags: armor
-
-* alias basicWeapon
-4 smg
-4 assaultRifle
-4 battleRifle
-3 dmr
-1 shotgun
-
-* template smg
-tags: action bullet fullAuto
-range: 20
-hit: 3
-damage: 1
-
-* template assaultRifle
-tags: action bullet fullAuto
-range: 30
-hit: 3
-damage: 1
-
-* template battleRifle
-tags: action bullet
-range: 50
-hit: 3
-damage: 1
-
-* template dmr
-tags: action bullet
-range: 60
-hit: 3
-damage: 1
-
-* template shotgun
-tags: action bullet
-range: 5
-hit: 5
-damage: 2
-
-`;
-
-},{}],16:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":2,"../battle20/group.js":4,"../bottleWorld/bEvent.js":6,"../codices/tags.js":36,"../dnd/alignment.js":37,"../generation/wgenerator.js":41,"../util/coord.js":75,"../util/util.js":76,"../wnode/creature.js":77,"../wnode/thing.js":79,"../wnode/wnode.js":80,"./events/actionReadyEvent.js":10,"./events/arrivalEvent.js":11,"./timeline.js":13,"js-yaml":43}],15:[function(require,module,exports){
 module.exports = `
 * output
 1 {battalion}
@@ -2601,7 +2906,7 @@ const drafts = `
 
 `;
 
-},{}],17:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -2742,7 +3047,7 @@ item/bombHarness
 
 `;
 
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -2883,7 +3188,7 @@ weight: 4
 
 `;
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = `
 * output
 5 {lance}
@@ -3202,7 +3507,7 @@ individual/bruteMinor
 
 `;
 
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = `
 * output
 100 pod
@@ -3233,7 +3538,7 @@ module.exports = `
 
 `;
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = `
 * output
 150 {infantryPack}
@@ -3300,7 +3605,7 @@ individual/brainForm
 
 `;
 
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = `
 * output
 1 installationCompany
@@ -3324,7 +3629,7 @@ module.exports = `
 
 `;
 
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = `
 * output
 50 sentinel
@@ -3360,7 +3665,7 @@ forerunner/item/boltshot
 
 `;
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = `
 * output
 1 {giWeapon}
@@ -3406,7 +3711,7 @@ module.exports = `
 4 prometheanVision
 
 `;
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = `
 * output
 1 {installationSquad}
@@ -3481,7 +3786,7 @@ Sketching about Forerunner armies
 
 */
 
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = `
 * output
 4 {halo/unsc/fleet}
@@ -3491,7 +3796,7 @@ module.exports = `
 
 `;
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -3574,7 +3879,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],28:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -3691,7 +3996,7 @@ spaceFighterSquadron
 {unsc/squad/oniSquad}
 
 `;
-},{}],29:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -3715,7 +4020,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -3726,6 +4031,7 @@ module.exports = `
 1 spartan
 
 * template human
+tags: creature animal biped terrestrial biological
 individuals: 1
 weight: 80
 size: 1.7
@@ -3754,8 +4060,12 @@ human
 4 civilian
 1 {output}
 
+* template marinePrivate
+tags: creature
+comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily.
+
 * childrenof marinePrivate
-{unsc/item/giWeapon}
+unsc/item/dmr
 {unsc/item}
 unsc/item/flakHelmet
 unsc/item/flakArmor
@@ -3797,8 +4107,17 @@ unsc/item/jetpack
 100 odst
 1 spartan
 
+* template spartan
+tags: creature cyborg
+size: 2
+weight: 120
+maxSp: 20
+damage: 4
+speed: 5
+stealth: 12
+
 * childrenof spartan
-{unsc/item/anyWeapon}
+unsc/item/dmr
 {unsc/item/anyWeapon}
 {unsc/item/anyGear}
 unsc/item/fragGrenade
@@ -3814,6 +4133,7 @@ human
 1 spartan
 
 * template dropPod
+tags: thing vehicle
 weight: 1000
 
 * childrenof dropPod
@@ -3827,7 +4147,7 @@ weight: 1000
 
 `;
 
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = `* output
 15 {anyWeapon}
 20 {anyGear}
@@ -4007,6 +4327,8 @@ module.exports = `* output
 * template mjolnirArmor
 weight: 454
 sp: 40
+resistance: fire 4, piercing 4, impact 3, vacuum 10
+tags: armor
 
 * alias armorMod
 4 armorLock
@@ -4054,7 +4376,7 @@ tags: armor
 comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
 
 * template smg
-tags: action bullet fullAuto
+tags: action bullet firearm fullAuto
 range: 20
 hit: 3
 damage: 7
@@ -4072,8 +4394,9 @@ hit: 3
 damage: 9
 
 * template dmr
-tags: action bullet
+tags: action bullet firearm optics
 range: 100
+shotsPerSecond: 2
 hit: 3
 damage: 10
 
@@ -4086,7 +4409,7 @@ attackDelay: 2
 
 `;
 
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -4408,7 +4731,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -4538,7 +4861,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -4981,7 +5304,7 @@ forklift
 
 `;
 
-},{}],35:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -5185,7 +5508,7 @@ module.exports = `
 
 
 `;
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -5199,7 +5522,7 @@ module.exports = `
 
 
 `;
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -5256,7 +5579,7 @@ module.exports = Util.makeEnum([
     'Covenant'
 ]);
 
-},{"../util/util.js":77}],38:[function(require,module,exports){
+},{"../util/util.js":76}],37:[function(require,module,exports){
 'use strict';
 
 // similar to alignment.js in hobby/ git repo.
@@ -5297,7 +5620,7 @@ class Alignment {
 
 module.exports = Alignment;
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 // A Blip is the front-end visual representation of 1 or more objects or warriors in the FishTank world.
@@ -5340,7 +5663,7 @@ module.exports = Blip;
 
 // Blip.run();
 
-},{"../../util/coord.js":76,"../../util/util.js":77,"../../wnode/wnode.js":81}],40:[function(require,module,exports){
+},{"../../util/coord.js":75,"../../util/util.js":76,"../../wnode/wnode.js":80}],39:[function(require,module,exports){
 'use strict';
 
 // A EffectVisual is the front-end visual representation of a action or effect in the game world.
@@ -5405,22 +5728,30 @@ module.exports = EffectVisual;
 
 // EffectVisual.run();
 
-},{"../../util/coord.js":76,"../../util/util.js":77,"../../wnode/wnode.js":81}],41:[function(require,module,exports){
+},{"../../util/coord.js":75,"../../util/util.js":76,"../../wnode/wnode.js":80}],40:[function(require,module,exports){
 'use strict';
 
+const Coord = require('../../util/coord.js');
 const Timeline = require('../../bottleWorld/timeline.js');
 const Util = require('../../util/util.js');
-const WorldState = require('../../bottleWorld/worldState.js');
+const DeathPlanetWorldState = require('../../bottleWorld/deathPlanetWorldState.js');
 
+// Unit: Pixels
+// These describe the width and height in pixels of the display area
 const WIDTH = 1200;
 const HEIGHT = 700;
+
+// Pixel (0,0) is the top left corner of the display area
+// This is the Coord represented by pixel (0,0)
+const originCoord = new Coord(0,0);
+const metersPerPixel = 1 / 50;
 
 const Constants = {
     width: WIDTH,
     height: HEIGHT,
     factions: {
-        unsc: 'unsc',
-        covenant: 'covenant'
+        unsc: 'UNSC',
+        covenant: 'Covenant'
     },
     objective: {
         x: WIDTH / 2,
@@ -5449,18 +5780,25 @@ const config = {
     }
 };
 
+// Analogous to Blip, in that it is a front-end representation of a Thing
 const Individual = new Phaser.Class({
     Extends: Phaser.GameObjects.Image,
 
-    // Constructor
-    initialize: function Individual (scene, x, y, spriteName, faction) {
+    // Constructor, called by create()
+    initialize: function Individual (scene, x, y, spriteName, thing) {
+        // console.log(`Individual.initialize(), at position ${x}, ${y}.`);
+
         Phaser.GameObjects.Image.call(this, scene, x, y, spriteName);
+
+        this.thing = thing;
+
+        this.speed = this.thing.template.speed || 1;
 
         this.xSpeed = 0;
         this.ySpeed = 0;
 
         // Later Phaser GameObjects should be the view that portrays the underlying WorldState model.
-        this.faction = faction || Util.randomFromObj(Constants.factions);
+        this.faction = this.thing.template.alignment || Util.randomFromObj(Constants.factions);
 
         // BTW the first to be created sees empty children arrays.
         this.target = this.randomEnemy() || Constants.objective;
@@ -5472,32 +5810,32 @@ const Individual = new Phaser.Class({
     update: function (time, delta) {
         maybeClearGraphics(time);
 
+        if (! this.thing.active) {
+            this.setActive(false);
+            this.setVisible(false);
+
+            return;
+        }
+
         this.orient();
-        // TODO Implement simple soldier functionality in Timeline and WorldState.
-        // Then make blip.update() simply read from the coord position of this Thing in WorldState.
-        this.maybeShoot();
 
-        this.x += this.xSpeed * delta;
-        this.y += this.ySpeed * delta;
+        const pixelPosition = coordToPixel(this.thing.coord);
+
+        this.x = pixelPosition.x;
+        this.y = pixelPosition.y;
     },
 
-    maybeShoot: function () {
-        if (this.target && this.target.active && Math.random() <= Constants.shootChance) {
-            this.shoot();
-        }
-    },
+    // shoot: function (target) {
+    //     target = target || this.target || Constants.objective;
 
-    shoot: function (target) {
-        target = target || this.target || Constants.objective;
+    //     const trajectory = new Phaser.Geom.Line(this.x, this.y, target.x, target.y);
+    //     fishTank.graphics.strokeLineShape(trajectory);
 
-        const trajectory = new Phaser.Geom.Line(this.x, this.y, target.x, target.y);
-        fishTank.graphics.strokeLineShape(trajectory);
-
-        if (target.visible) {
-            target.setActive(false);
-            target.setVisible(false);
-        }
-    },
+    //     if (target.visible) {
+    //         target.setActive(false);
+    //         target.setVisible(false);
+    //     }
+    // },
 
     // Sets xSpeed and ySpeed correctly
     orient: function () {
@@ -5546,22 +5884,48 @@ function preload () {
 
 function deploySquads (faction) {
     for (let i = 0; i < 100; i++) {
-        const faction = Util.randomFromObj(Constants.factions);
+        const template = {
+            faction: Util.randomFromObj(Constants.factions)
+        };
+
         const start = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
         let squad;
 
-        if (faction === Constants.factions.unsc) {
-            squad = fishTank.worldState.squads.unsc.create(1000, start.y, 'soldier', faction);
-            squad.speed = 0.1;
+        if (template.faction === Constants.factions.unsc) {
+            template.speed = 0.1;
+
+            // Call the Individual constructor
+            squad = fishTank.worldState.squads.unsc.create(1000, start.y, 'soldier', template);
         }
         else {
-            squad = fishTank.worldState.squads.covenant.create(100, start.y, 'soldier', faction);
-            squad.speed = 0.15;
+            template.speed = 0.15;
+            squad = fishTank.worldState.squads.covenant.create(100, start.y, 'soldier', template);
         }
     }
 }
 
+function depictThings () {
+    console.log(`Top of depictThings()`);
+
+    const individuals = fishTank.worldState.activeThings()
+        .map(thing => {
+                const pixelPosition = coordToPixel(thing.coord);
+                const individual = fishTank.worldState.squads.unsc.create(pixelPosition.x, pixelPosition.y, 'soldier', thing);
+
+                // console.log(`depictThings(), just called create()`);
+
+                return individual;
+            }
+        );
+}
+
 function create () {
+    console.log('Top of FishTank create()');
+
+    const worldState = DeathPlanetWorldState.test();
+
+    console.log('FishTank create() after DeathPlanetWorldState instantiated');
+
     fishTank = window.fishTank = {
         game: game,
         graphics: this.add.graphics({
@@ -5572,8 +5936,8 @@ function create () {
         }),
         graphicsLastCleared: 0,
         text: undefined,
-        timeline: new Timeline(),
-        worldState: new WorldState()
+        timeline: worldState.timeline,
+        worldState: worldState
     };
 
     this.physics.world.setBounds(0, 0, Constants.width, Constants.height);
@@ -5592,11 +5956,14 @@ function create () {
     };
 
     // Yikes, looks like im lucky it bound 'this' for me.
-    this.time.addEvent({ delay: 500, callback: deploySquads, callbackScope: this});
+    // this.time.addEvent({ delay: 500, callback: deploySquads, callbackScope: this});
+    this.time.addEvent({ delay: 500, callback: depictThings.bind(this, fishTank.worldState), callbackScope: this});
 
     // Later probably have the soldiers collide with each other.
 
     fishTank.text = this.add.text(10, 10, 'Total: 0', { font: '16px Courier', fill: '#ffffff' });
+
+    console.log(`Bottom of FishTank create()`);
 }
 
 function update (time, delta) {
@@ -5604,6 +5971,15 @@ function update (time, delta) {
     // fishTank.worldState.computeNextInstant();
 
     fishTank.text.setText(`Death Planet, Population ${(fishTank.worldState.squads.unsc.countActive() + fishTank.worldState.squads.covenant.countActive()) || 'You'}`);
+}
+
+function coordToPixel (coord) {
+    // Coords are in meters.
+    // LATER subtract originCoord from coord
+    return {
+        x: coord.x / metersPerPixel,
+        y: coord.y / metersPerPixel
+    };
 }
 
 function maybeReinforce (time) {
@@ -5628,6 +6004,10 @@ function enemyOfFaction (goodGuys) {
 function randomFromFaction (faction, notThisOne) {
     const group = fishTank.worldState.squads[faction];
 
+    if (! group) {
+        return undefined;
+    }
+
     const squads = group.getChildren();
     let offset = Util.randomBelow(squads.length);
 
@@ -5646,7 +6026,7 @@ function randomFromFaction (faction, notThisOne) {
     return undefined;
 }
 
-},{"../../bottleWorld/timeline.js":13,"../../bottleWorld/worldState.js":14,"../../util/util.js":77}],42:[function(require,module,exports){
+},{"../../bottleWorld/deathPlanetWorldState.js":8,"../../bottleWorld/timeline.js":13,"../../util/coord.js":75,"../../util/util.js":76}],41:[function(require,module,exports){
 (function (process,__dirname){
 'use strict';
 
@@ -5655,8 +6035,9 @@ function randomFromFaction (faction, notThisOne) {
 
 const fs = require('fs');
 
-// TODO perhaps restructure so that WGenerator doesn't import any Battle20 files.
+// LATER perhaps restructure so that WGenerator doesn't import any Battle20 files.
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
+const Creature = require('../wnode/creature.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const StorageModes = require('../wnode/storageModes.js');
 const Util = require('../util/util.js');
@@ -5697,6 +6078,7 @@ class WGenerator {
                 // Later, this could be neater and not involve a string literal. 'template ' could be a const.
                 if (tableRaw.startsWith('template ')) {
                     this.addTemplate(tableRaw);
+                    return;
                 }
 
                 // Default case.
@@ -5709,6 +6091,16 @@ class WGenerator {
         if (! this.aliasTables.output) {
             throw new Error(`WGenerator constructor: output table not found. Object.keys(this.aliasTables).length is ${ Object.keys(this.aliasTables).length }`);
         }
+    }
+
+    toJson () {
+        return {
+            codexPath: this.codexPath,
+            rawString: this.rawString,
+            aliasTables: Util.dictToJson(this.aliasTables),
+            childTables: Util.dictToJson(this.childTables),
+            glossary: Util.dictToJson(this.glossary)
+        };
     }
 
     addChildTable (tableRaw) {
@@ -5737,7 +6129,7 @@ class WGenerator {
     }
 
     addTemplate (tableRaw) {
-        const templateObj = parseTemplate(tableRaw);
+        const templateObj = CreatureTemplate.fromRaw(tableRaw);
         const key = templateObj.name;
 
         if (key in this.glossary) {
@@ -5748,9 +6140,11 @@ class WGenerator {
 
         templateObj.actions.forEach(
             actionTemplate => {
-                this.glossary[actionTemplate.id] = actionTemplate;
+                WGenerator.ids[actionTemplate.id] = actionTemplate;
             }
         );
+
+        Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}`);
     }
 
     // Returns WNode[]
@@ -5810,18 +6204,19 @@ class WGenerator {
 
     // Returns a WNode
     makeLocalSubtree (cString) {
-        // Later, read from the templates of the WGenerator specified by cString.path
-        const node = new WNode(cString.name);
+        const gen = WGenerator.generators[cString.path];
+        const template = gen.glossary[cString.name];
+
+        const node = gen.makeNode(template, cString.name);
 
         // Util.log(`Middle of makeLocalSubtree(${cString}). Expression node.templateName is ${node.templateName}`, 'debug');
 
-        this.applyTemplate(node, cString);
+        // this.applyTemplate(node, template);
         return this.maybeAddChildren(node);
     }
 
     // Returns undefined
-    applyTemplate (node, cString) {
-        const template = this.glossary[cString.name];
+    applyTemplate (node, template) {
         if (! template) {
             return;
         }
@@ -5830,6 +6225,27 @@ class WGenerator {
             // Later there might be some properties that shouldn't be overwritten.
             node[prop] = template[prop];
         }
+    }
+
+    makeNode (template, templateName) {
+        // if (template && template.name === 'marinePrivate' || templateName === 'marinePrivate') {
+            // Util.logDebug(`In WGenerator.makeNode(), input involved marinePrivate. template.isCreature() returns ${template && template.isCreature()}`);
+        // }
+
+        if (! template) {
+            return new WNode(templateName);
+        }
+
+        if (template.isCreature()) {
+            return new Creature(template);
+        }
+
+        if (template.isThing()) {
+            return new Thing(template);
+        }
+
+        // Fallback case
+        return new WNode(template);
     }
 
     // Might modify node.components
@@ -5937,7 +6353,7 @@ class WGenerator {
             return [];
         }
         else {
-            const cString = new ContextString(str, this.codexPath);
+            const cString = this.contextString(str);
             return [cString];
         }
     }
@@ -5952,6 +6368,24 @@ class WGenerator {
         }
 
         return table.getOutputAndResolveIt();
+    }
+
+    // Converts a more arbitrary string into a ContextString object.
+    contextString (stringWithoutCommas) {
+        if (Util.contains(stringWithoutCommas, '/')) {
+            const path = this.makePathAbsolute(stringWithoutCommas);
+            const findings = WGenerator.findGenAndTable(path);
+
+            return new ContextString(
+                findings.name,
+                findings.gen.codexPath
+            );
+        }
+
+        return new ContextString(
+            stringWithoutCommas,
+            this.codexPath
+        );
     }
 
     // Returns a string
@@ -6346,7 +6780,11 @@ class WGenerator {
     }
 }
 
+// Universal dict for codex-related objects keyed by ID. Used for ActionTemplates so far.
+WGenerator.ids = {};
 
+
+// TODO move to its own file
 class AliasTable {
     constructor (rawString, generator) {
         // The parent pointer is used when resolving slash path aliases.
@@ -6417,6 +6855,14 @@ class AliasTable {
         return this.generator.resolveCommas(outputStr);
     }
 
+    toJson () {
+        return {
+            generatorPath: this.generator.codexPath,
+            templateName: this.templateName,
+            outputs: this.outputs
+        };
+    }
+
     // TODO this logic is needed by ChildTable too. Move it to WGenerator (ie parent).
 
     static isAppropriateFor (tableString) {
@@ -6477,6 +6923,14 @@ class ChildTable {
             );
     }
 
+    toJson () {
+        return {
+            generatorPath: this.generator.codexPath,
+            templateName: this.templateName,
+            children: this.children
+        };
+    }
+
     // Returns a boolean
     static isAppropriateFor (tableString) {
         const t = tableString.trim()
@@ -6518,125 +6972,23 @@ class ContextString {
     //     name: 'civilian',
     //     codexPath: 'halo/unsc/individual'
     // }
-    constructor (name, path) {
+    constructor (name, absolutePath) {
         if (Util.contains(name, '/')) {
+            // NOTE: We currently do not support the name param being a relative path.
             const findings = WGenerator.findGenAndTable(name);
             this.name = findings.name;
             this.path = findings.gen.codexPath;
         }
         else {
             this.name = name;
-            // TODO: guarantee that this is always a absolute path.
-            this.path = path;
+            // LATER: guarantee that this is always a absolute path.
+            this.path = absolutePath;
         }
     }
 
     toString () {
         return `{name:${this.name}, path:${this.path}}`;
     }
-}
-
-// TODO put this in class Template and template.js or something.
-// Later likely rename to class TraitsTable and '* traits foo', for clarity.
-// This will probably become or call a constructor
-// and store the first line in this.name
-function parseTemplate (tableRaw) {
-    const creatureTemplate = new CreatureTemplate();
-
-    tableRaw.split('\n')
-        .slice(1)
-        .map(
-            line => {
-                const parsed = parseTemplateLine(line);
-                const key = parsed.key;
-
-                if (
-                    key in creatureTemplate &&
-                    ! ['tags', 'actions', 'resistance'].includes(key)
-                ) {
-                    throw new Error(`parseTemplate(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
-                }
-
-                creatureTemplate[key] = parsed.value;
-
-                // Util.log(`in parseTemplate(). Just wrote key/value pair {${key}: ${parsed.value}}`, 'debug');
-            }
-        );
-
-    // creatureTemplate.key = templateKey(tableRaw);
-    creatureTemplate.name = templateKey(tableRaw);
-    creatureTemplate.setUpAction();
-
-    // Later: at some point, detect whether it is a ActionTemplate or CreatureTemplate.
-    // Probably mark creatureTemplate.type, or instantiate the appropriate class, or something.
-
-    return creatureTemplate;
-}
-
-function parseTemplateLine (line) {
-    line = line.trim();
-
-    const colonIndex = line.indexOf(':');
-
-    if (colonIndex < 0) {
-        throw new Error(`parseTemplateLine(): No colon found in ${ line }`);
-    }
-
-    const key = line.slice(0, colonIndex)
-        .trim();
-    const rest = line.slice(colonIndex + 1)
-        .trim();
-
-    let value;
-    if (key === 'tags') {
-        value = rest.split(/\s/);
-    }
-    else if (key === 'resistance') {
-        value = {};
-
-        const entries = rest.split(',');
-
-        entries.forEach(
-            e => {
-                const parts = e.trim()
-                    .split(/\s/);
-                const resistanceKey = parts[0];
-                const modifier = Number(parts[1]);
-
-                value[resistanceKey] = modifier;
-            }
-        );
-    }
-    else if (rest === 'true') {
-        value = true;
-    }
-    else if (rest === 'false') {
-        value = false;
-    }
-    else {
-        // number case.
-        const parsed = Number(rest);
-
-        value = Util.exists(parsed) ?
-            parsed :
-            rest;
-
-        // Util.log(`in parseTemplateLine( '${line}' ). value is ${value}.`, 'debug');
-    }
-
-    return {
-        key: key,
-        value: value
-    };
-}
-
-function templateKey (tableRaw) {
-    const START = 'template ';
-    const startIndex = tableRaw.indexOf(START);
-    const endIndex = tableRaw.indexOf('\n');
-
-    return tableRaw.slice(startIndex + START.length, endIndex)
-        .trim();
 }
 
 module.exports = WGenerator;
@@ -6749,24 +7101,21 @@ halo/unsc/item/externalThing
 */
 
 }).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":4,"../codices/halo/cov/force":16,"../codices/halo/cov/individual":17,"../codices/halo/cov/item":18,"../codices/halo/cov/squad":19,"../codices/halo/flood/individual":20,"../codices/halo/flood/squad":21,"../codices/halo/forerunner/company":22,"../codices/halo/forerunner/individual":23,"../codices/halo/forerunner/item":24,"../codices/halo/forerunner/squad":25,"../codices/halo/presence":26,"../codices/halo/unsc/battalion":27,"../codices/halo/unsc/company":28,"../codices/halo/unsc/fleet":29,"../codices/halo/unsc/individual":30,"../codices/halo/unsc/item":31,"../codices/halo/unsc/patrol":32,"../codices/halo/unsc/patrol.js":32,"../codices/halo/unsc/ship":33,"../codices/halo/unsc/squad":34,"../codices/sunlight/warband/item":35,"../codices/sunlight/warband/player":36,"../util/util.js":77,"../wnode/storageModes.js":79,"../wnode/wnode.js":81,"_process":2,"fs":1}],43:[function(require,module,exports){
-'use strict'
-
+},{"../battle20/creaturetemplate.js":2,"../codices/halo/cov/force":15,"../codices/halo/cov/individual":16,"../codices/halo/cov/item":17,"../codices/halo/cov/squad":18,"../codices/halo/flood/individual":19,"../codices/halo/flood/squad":20,"../codices/halo/forerunner/company":21,"../codices/halo/forerunner/individual":22,"../codices/halo/forerunner/item":23,"../codices/halo/forerunner/squad":24,"../codices/halo/presence":25,"../codices/halo/unsc/battalion":26,"../codices/halo/unsc/company":27,"../codices/halo/unsc/fleet":28,"../codices/halo/unsc/individual":29,"../codices/halo/unsc/item":30,"../codices/halo/unsc/patrol":31,"../codices/halo/unsc/patrol.js":31,"../codices/halo/unsc/ship":32,"../codices/halo/unsc/squad":33,"../codices/sunlight/warband/item":34,"../codices/sunlight/warband/player":35,"../util/util.js":76,"../wnode/creature.js":77,"../wnode/storageModes.js":78,"../wnode/wnode.js":80,"_process":82,"fs":81}],42:[function(require,module,exports){
 // return a string with the provided number formatted with commas.
 // can specify either a Number or a String.
-function commaNumber(inputNumber, optionalSeparator, optionalDecimalChar) {
+function commaNumber(number, separator, decimalChar) {
 
   // we'll strip off and hold the decimal value to reattach later.
   // we'll hold both the `number` value and `stringNumber` value.
-  let number, stringNumber, decimal
+  var decimal, stringNumber
 
   // default `separator` is a comma
-  const separator = optionalSeparator   || ','
-
+  separator   = separator   || ','
   // default `decimalChar` is a period
-  const decimalChar = optionalDecimalChar || '.'
+  decimalChar = decimalChar || '.'
 
-  switch (typeof inputNumber) {
+  switch (typeof number) {
 
     case 'string':
 
@@ -6774,29 +7123,26 @@ function commaNumber(inputNumber, optionalSeparator, optionalDecimalChar) {
       // NOTE: some numbers which are too small will get passed this
       //       when they have decimal values which make them too long here.
       //       but, the number value check after this switch will catch it.
-      if (inputNumber.length < (inputNumber[0] === '-' ? 5 : 4)) {
-        return inputNumber
+      if (number.length < (number[0] === '-' ? 5 : 4)) {
+        return number
       }
 
       // remember it as a string in `stringNumber` and convert to a Number
-      stringNumber = inputNumber
+      stringNumber = number
 
       // if they're not using the Node standard decimal char then replace it
       // before converting.
-      number = decimalChar !== '.' ? Number(stringNumber.replace(decimalChar, '.'))
-                                   : Number(stringNumber)
+      number = decimalChar !== '.' ? Number(number.replace(decimalChar, '.'))
+                                   : Number(number)
       break
 
     // convert to a string.
     // NOTE: don't check if the number is too small before converting
     //       because we'll need to return `stringNumber` anyway.
-    case 'number':
-      stringNumber = String(inputNumber)
-      number       = inputNumber
-      break
+    case 'number': stringNumber = String(number) ; break
 
     // return invalid type as-is
-    default: return inputNumber
+    default: return number
   }
 
   // when it doesn't need a separator or isn't a number then return it
@@ -6805,23 +7151,21 @@ function commaNumber(inputNumber, optionalSeparator, optionalDecimalChar) {
   }
 
   // strip off decimal value to append to the final result at the bottom
-  let decimalIndex = stringNumber.lastIndexOf(decimalChar)
+  decimal = stringNumber.lastIndexOf(decimalChar)
 
-  if (decimalIndex > -1) {
-    decimal = stringNumber.slice(decimalIndex)
+  if (decimal > -1) {
+    decimal = stringNumber.slice(decimal)
     stringNumber = stringNumber.slice(0, -decimal.length)
+  } else {
+    decimal = null
   }
-
-  // else {
-  //   decimal = null
-  // }
 
   // finally, parse the string and add in separators
   stringNumber = parse(stringNumber, separator)
 
   // if there's a decimal value add it back on the end.
   // NOTE: we sliced() it off including the decimalChar, so it's good.
-  return decimal ? stringNumber + decimal : stringNumber
+  return (decimal != null) ? stringNumber + decimal : stringNumber
 
 }
 
@@ -6830,14 +7174,15 @@ function parse(stringNumber, separator) {
 
   // below here we split the number at spots to add a separator.
   // then, combine it with the separator and add decimal value (if exists)
+  var count, i, start, strings
 
-  const start = stringNumber[0] === '-' ? 1 : 0  // start after minus sign
-  const count = stringNumber.length - start - 1  // count digits after first
-  let i = (count % 3) + 1 + start                // index for first separator
-  const strings = [                              // hold string parts
-    // grab string content before where the first separator belongs
-    stringNumber.slice(0, i)
-  ]
+  start = stringNumber[0] === '-' ? 1 : 0  // start after minus sign
+  count = stringNumber.length - start - 1  // count digits after first
+  strings = []                             // hold string parts
+  i = (count % 3) + 1 + start              // index for first separator
+
+  // grab string content before where the first separator belongs
+  strings.push(stringNumber.slice(0, i))
 
   // split remaining string in groups of 3 where a separator belongs
   while (i < stringNumber.length) {
@@ -6851,7 +7196,7 @@ function parse(stringNumber, separator) {
 
 
 // convenience function for currying style:
-//   const format = commaNumber.bindWith(',', '.')
+//   var format = commaNumber.bindWith(',', '.')
 function bindWith(separator, decimalChar) {
   return function(number) {
     return commaNumber(number, separator, decimalChar)
@@ -6861,7 +7206,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 
@@ -6870,7 +7215,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":45}],45:[function(require,module,exports){
+},{"./lib/js-yaml.js":44}],44:[function(require,module,exports){
 'use strict';
 
 
@@ -6911,7 +7256,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":47,"./js-yaml/exception":48,"./js-yaml/loader":49,"./js-yaml/schema":51,"./js-yaml/schema/core":52,"./js-yaml/schema/default_full":53,"./js-yaml/schema/default_safe":54,"./js-yaml/schema/failsafe":55,"./js-yaml/schema/json":56,"./js-yaml/type":57}],46:[function(require,module,exports){
+},{"./js-yaml/dumper":46,"./js-yaml/exception":47,"./js-yaml/loader":48,"./js-yaml/schema":50,"./js-yaml/schema/core":51,"./js-yaml/schema/default_full":52,"./js-yaml/schema/default_safe":53,"./js-yaml/schema/failsafe":54,"./js-yaml/schema/json":55,"./js-yaml/type":56}],45:[function(require,module,exports){
 'use strict';
 
 
@@ -6972,7 +7317,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],47:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -7801,7 +8146,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":46,"./exception":48,"./schema/default_full":53,"./schema/default_safe":54}],48:[function(require,module,exports){
+},{"./common":45,"./exception":47,"./schema/default_full":52,"./schema/default_safe":53}],47:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -7846,7 +8191,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -7878,8 +8223,6 @@ var PATTERN_FLOW_INDICATORS       = /[,\[\]\{\}]/;
 var PATTERN_TAG_HANDLE            = /^(?:!|!!|![a-z\-]+!)$/i;
 var PATTERN_TAG_URI               = /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i;
 
-
-function _class(obj) { return Object.prototype.toString.call(obj); }
 
 function is_EOL(c) {
   return (c === 0x0A/* LF */) || (c === 0x0D/* CR */);
@@ -8135,31 +8478,6 @@ function mergeMappings(state, destination, source, overridableKeys) {
 
 function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, startLine, startPos) {
   var index, quantity;
-
-  // The output is a plain object here, so keys can only be strings.
-  // We need to convert keyNode to a string, but doing so can hang the process
-  // (deeply nested arrays that explode exponentially using aliases).
-  if (Array.isArray(keyNode)) {
-    keyNode = Array.prototype.slice.call(keyNode);
-
-    for (index = 0, quantity = keyNode.length; index < quantity; index += 1) {
-      if (Array.isArray(keyNode[index])) {
-        throwError(state, 'nested arrays are not supported inside keys');
-      }
-
-      if (typeof keyNode === 'object' && _class(keyNode[index]) === '[object Object]') {
-        keyNode[index] = '[object Object]';
-      }
-    }
-  }
-
-  // Avoid code execution in load() via toString property
-  // (still use its own toString for arrays, timestamps,
-  // and whatever user schema extensions happen to have @@toStringTag)
-  if (typeof keyNode === 'object' && _class(keyNode) === '[object Object]') {
-    keyNode = '[object Object]';
-  }
-
 
   keyNode = String(keyNode);
 
@@ -9473,7 +9791,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":46,"./exception":48,"./mark":50,"./schema/default_full":53,"./schema/default_safe":54}],50:[function(require,module,exports){
+},{"./common":45,"./exception":47,"./mark":49,"./schema/default_full":52,"./schema/default_safe":53}],49:[function(require,module,exports){
 'use strict';
 
 
@@ -9551,7 +9869,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":46}],51:[function(require,module,exports){
+},{"./common":45}],50:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -9661,7 +9979,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":46,"./exception":48,"./type":57}],52:[function(require,module,exports){
+},{"./common":45,"./exception":47,"./type":56}],51:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -9681,7 +9999,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":51,"./json":56}],53:[function(require,module,exports){
+},{"../schema":50,"./json":55}],52:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -9708,7 +10026,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":51,"../type/js/function":62,"../type/js/regexp":63,"../type/js/undefined":64,"./default_safe":54}],54:[function(require,module,exports){
+},{"../schema":50,"../type/js/function":61,"../type/js/regexp":62,"../type/js/undefined":63,"./default_safe":53}],53:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -9738,7 +10056,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":51,"../type/binary":58,"../type/merge":66,"../type/omap":68,"../type/pairs":69,"../type/set":71,"../type/timestamp":73,"./core":52}],55:[function(require,module,exports){
+},{"../schema":50,"../type/binary":57,"../type/merge":65,"../type/omap":67,"../type/pairs":68,"../type/set":70,"../type/timestamp":72,"./core":51}],54:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -9757,7 +10075,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":51,"../type/map":65,"../type/seq":70,"../type/str":72}],56:[function(require,module,exports){
+},{"../schema":50,"../type/map":64,"../type/seq":69,"../type/str":71}],55:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -9784,7 +10102,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":51,"../type/bool":59,"../type/float":60,"../type/int":61,"../type/null":67,"./failsafe":55}],57:[function(require,module,exports){
+},{"../schema":50,"../type/bool":58,"../type/float":59,"../type/int":60,"../type/null":66,"./failsafe":54}],56:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -9847,7 +10165,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":48}],58:[function(require,module,exports){
+},{"./exception":47}],57:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -9987,7 +10305,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":57}],59:[function(require,module,exports){
+},{"../type":56}],58:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10024,7 +10342,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":57}],60:[function(require,module,exports){
+},{"../type":56}],59:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -10142,7 +10460,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":46,"../type":57}],61:[function(require,module,exports){
+},{"../common":45,"../type":56}],60:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -10317,7 +10635,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":46,"../type":57}],62:[function(require,module,exports){
+},{"../common":45,"../type":56}],61:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -10411,7 +10729,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":57}],63:[function(require,module,exports){
+},{"../../type":56}],62:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -10473,7 +10791,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":57}],64:[function(require,module,exports){
+},{"../../type":56}],63:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -10503,7 +10821,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":57}],65:[function(require,module,exports){
+},{"../../type":56}],64:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10513,7 +10831,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":57}],66:[function(require,module,exports){
+},{"../type":56}],65:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10527,7 +10845,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":57}],67:[function(require,module,exports){
+},{"../type":56}],66:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10563,7 +10881,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":57}],68:[function(require,module,exports){
+},{"../type":56}],67:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10609,7 +10927,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":57}],69:[function(require,module,exports){
+},{"../type":56}],68:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10664,7 +10982,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":57}],70:[function(require,module,exports){
+},{"../type":56}],69:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10674,7 +10992,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":57}],71:[function(require,module,exports){
+},{"../type":56}],70:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10705,7 +11023,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":57}],72:[function(require,module,exports){
+},{"../type":56}],71:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10715,7 +11033,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":57}],73:[function(require,module,exports){
+},{"../type":56}],72:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10805,12 +11123,12 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":57}],74:[function(require,module,exports){
+},{"../type":56}],73:[function(require,module,exports){
 (function (global){
 /**
  * @license
  * Lodash <https://lodash.com/>
- * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
+ * Copyright JS Foundation and other contributors <https://js.foundation/>
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -10821,7 +11139,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.15';
+  var VERSION = '4.17.11';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -13480,10 +13798,16 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
         value.forEach(function(subValue) {
           result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
         });
-      } else if (isMap(value)) {
+
+        return result;
+      }
+
+      if (isMap(value)) {
         value.forEach(function(subValue, key) {
           result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
         });
+
+        return result;
       }
 
       var keysFunc = isFull
@@ -14407,8 +14731,8 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
         return;
       }
       baseFor(source, function(srcValue, key) {
-        stack || (stack = new Stack);
         if (isObject(srcValue)) {
+          stack || (stack = new Stack);
           baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
         }
         else {
@@ -16225,7 +16549,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
       return function(number, precision) {
         number = toNumber(number);
         precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
-        if (precision && nativeIsFinite(number)) {
+        if (precision) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
           var pair = (toString(number) + 'e').split('e'),
@@ -17408,7 +17732,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
     }
 
     /**
-     * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
+     * Gets the value at `key`, unless `key` is "__proto__".
      *
      * @private
      * @param {Object} object The object to query.
@@ -17416,10 +17740,6 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
      * @returns {*} Returns the property value.
      */
     function safeGet(object, key) {
-      if (key === 'constructor' && typeof object[key] === 'function') {
-        return;
-      }
-
       if (key == '__proto__') {
         return;
       }
@@ -21220,7 +21540,6 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
           }
           if (maxing) {
             // Handle invocations in a tight loop.
-            clearTimeout(timerId);
             timerId = setTimeout(timerExpired, wait);
             return invokeFunc(lastCallTime);
           }
@@ -25607,12 +25926,9 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
       , 'g');
 
       // Use a sourceURL for easier debugging.
-      // The sourceURL gets injected into the source that's eval-ed, so be careful
-      // with lookup (in case of e.g. prototype pollution), and strip newlines if any.
-      // A newline wouldn't be a valid sourceURL anyway, and it'd enable code injection.
       var sourceURL = '//# sourceURL=' +
-        (hasOwnProperty.call(options, 'sourceURL')
-          ? (options.sourceURL + '').replace(/[\r\n]/g, ' ')
+        ('sourceURL' in options
+          ? options.sourceURL
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -25645,9 +25961,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      // Like with sourceURL, we take care to not check the option's prototype,
-      // as this configuration is a code injection vector.
-      var variable = hasOwnProperty.call(options, 'variable') && options.variable;
+      var variable = options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
@@ -27852,11 +28166,10 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
     baseForOwn(LazyWrapper.prototype, function(func, methodName) {
       var lodashFunc = lodash[methodName];
       if (lodashFunc) {
-        var key = lodashFunc.name + '';
-        if (!hasOwnProperty.call(realNames, key)) {
-          realNames[key] = [];
-        }
-        realNames[key].push({ 'name': methodName, 'func': lodashFunc });
+        var key = (lodashFunc.name + ''),
+            names = realNames[key] || (realNames[key] = []);
+
+        names.push({ 'name': methodName, 'func': lodashFunc });
       }
     });
 
@@ -27921,7 +28234,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],75:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -32525,7 +32838,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],76:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 'use strict';
 
 // TODO make this name lowercase.
@@ -32536,6 +32849,15 @@ class Coord {
     constructor (r,c) {
         this.r = Util.default(r, -1);
         this.c = Util.default(c, -1);
+    }
+
+    get x () {
+        // TODO is mapping r to x totally wrong, even in the short term?
+        return this.r;
+    }
+
+    get y () {
+        return this.c;
     }
 
     equals (other) {
@@ -32565,6 +32887,30 @@ class Coord {
         );
     }
 
+    manhattanDistanceTo (other) {
+        const horizontal = Math.abs(this.r - other.r);
+        const vertical = Math.abs(this.c - other.c);
+
+        return horizontal + vertical;
+    }
+
+    // LATER confirm how much faster this is than distanceTo, using whatever sort of speed test.
+    approximateDistanceTo (other) {
+        // 1 - (1 / sqrt(2))
+        const MAX_ADJUSTMENT = 0.29289321881345254;
+
+        const horizontal = Math.abs(this.r - other.r);
+        const vertical = Math.abs(this.c - other.c);
+
+        // 0 means 45°, 1 means 0° or 90°
+        const orthagonalness = Math.abs(horizontal - vertical) / Math.max(horizontal, vertical);
+
+        // adjustment is supposed to vary between around 1/sqrt(2) and 1
+        const adjustment = 1 - (MAX_ADJUSTMENT * orthagonalness);
+
+        return (horizontal + vertical) * adjustment;
+    }
+
     magnitude () {
         return this.distanceTo(new Coord(0,0));
     }
@@ -32578,6 +32924,14 @@ class Coord {
 
     toString () {
         return '[' + this.r + ',' + this.c + ']';
+    }
+
+    randomAdjacent () {
+        do {
+            var candidateNeighbor = Coord.randomDirection().plus(this);
+        } while (! candidateNeighbor.isInBounds());
+
+        return candidateNeighbor;
     }
 
     static random (rCount, cCount) {
@@ -32601,16 +32955,28 @@ class Coord {
         ];
     }
 
+    // Designed for discrete 2d grids.
     static randomDirection () {
         return Util.randomOf(Coord.relatives);
     }
 
-    randomAdjacent () {
-        do {
-            var candidateNeighbor = Coord.randomDirection().plus(this);
-        } while (! candidateNeighbor.isInBounds());
+    // Returns random position in a distribution that is convenient to display on one screen.
+    static randomOnScreen () {
+        // Unit: meters
+        const WIDTH = 40;
+        const HEIGHT = 20;
 
-        return candidateNeighbor;
+        return new Coord(
+            Util.randomUpTo(WIDTH),
+            Util.randomUpTo(HEIGHT)
+        );
+    }
+
+    static randomInSquare (minVal, maxValExclusive) {
+        return new Coord(
+            Util.randomRange(minVal, maxValExclusive),
+            Util.randomRange(minVal, maxValExclusive)
+        );
     }
 };
 
@@ -32618,7 +32984,7 @@ class Coord {
 Coord.DECIMAL_PLACES = 2;
 
 module.exports = Coord;
-},{"./util.js":77}],77:[function(require,module,exports){
+},{"./util.js":76}],76:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -32677,6 +33043,18 @@ util.contains = function (array, fugitive) {
     return array.indexOf(fugitive) >= 0;
 };
 
+util.hasOverlap = function (arrayA, arrayB) {
+    for (let i = 0; i < arrayA.length; i++) {
+        if (util.contains(arrayB, arrayA[i])) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+// Returns number
+// Default 0
 util.sum = function (array) {
     return util.array(array).reduce(
         (sumSoFar, element) => {
@@ -32688,7 +33066,7 @@ util.sum = function (array) {
 };
 
 util.randomIntBetween = function (minInclusive, maxExclusive) {
-    if (!minInclusive || !maxExclusive) {
+    if (! util.exists(minInclusive) || ! util.exists(maxExclusive)) {
         console.log('error: util.randomIntBetween() called with missing parameters.');
         return -1;
     } else if (maxExclusive <= minInclusive) {
@@ -32717,6 +33095,7 @@ util.randomFromObj = function (obj) {
     return obj[key];
 };
 
+// decimalPlaces param is optional and lodash defaults it to 0.
 util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
     if (maxExclusive < minInclusive) {
         const temp = minInclusive;
@@ -32754,6 +33133,30 @@ util.shortId = function (id) {
     return id ?
         `${id.slice(0, 3)}` :
         '';
+};
+
+// Input string[]
+// Returns string summarizing redundancies
+util.arraySummary = (a) => {
+    const dict = {};
+
+    a.forEach(
+        s => {
+            if (dict[s]) {
+                dict[s]++;
+            }
+            else {
+                dict[s] = 1;
+            }
+        }
+    );
+
+    const archetypes = Object.keys(dict)
+        .map(
+            s => `${s} x${util.abbrvNumber(dict[s])}`
+        );
+
+    return archetypes.join(', ');
 };
 
 util.repeat = function (str, n) {
@@ -32925,6 +33328,10 @@ util.isObject = function (x) {
         x !== null;
 };
 
+util.isFunction = function (x) {
+    return typeof x === 'function';
+};
+
 util.isArray = function (x) {
     // Later make this more sophisticated, or use a library.
     return x &&
@@ -32955,6 +33362,34 @@ util.arrayCopy = (a) => {
 
 util.commaNumber = (n) =>
     commaNumber(n);
+
+util.abbrvNumber = (n) => {
+    let output = '';
+    const pos = Math.abs(n);
+
+    if (pos < 1000) {
+        output = pos.toString();
+    }
+    else if (pos < 1e6) {
+        output = _.round(pos / 1000)
+            .toFixed(0)
+            + 'k';
+    }
+    else if (pos < 1e9) {
+        output = _.round(pos / 1e6)
+            .toFixed(0)
+            + 'mn';
+    }
+    else {
+        output = _.round(pos / 1e9)
+            .toFixed(0)
+            + 'tn';
+    }
+
+    return n >= 0 ?
+        output :
+        `-${output}`;
+};
 
 util.sigFigsOf = (n) => {
     if (! util.isNumber(n)) {
@@ -33055,11 +33490,11 @@ util.log = function (input, tag) {
 
 util.logDebug = function (input) {
     util.log(input, 'debug');
-}
+};
 
 util.logError = function (input) {
     util.log(input, 'error');
-}
+};
 
 util.makeEnum = (vals) => {
     const dict = {};
@@ -33068,6 +33503,30 @@ util.makeEnum = (vals) => {
     }
 
     return dict;
+};
+
+util.toJson = (x) => {
+    return x && util.isFunction(x.toJson) ?
+        x.toJson() :
+        x;
+}
+
+// Useful for dicts of objects like wGenerator.aliasTables
+util.dictToJson = (dict) => {
+    const serialized = {};
+
+    Object.keys(dict)
+        .forEach(
+            key => {
+                const value = dict[key];
+
+                serialized[key] = (value && value.toJson) ?
+                    value.toJson() :
+                    value;
+            }
+        );
+
+    return serialized;
 };
 
 // Myers-Briggs Type Indicator (personality category)
@@ -33081,7 +33540,7 @@ util.mbti = () => {
     .join('');
 };
 
-},{"comma-number":43,"lodash":74,"moment":75}],78:[function(require,module,exports){
+},{"comma-number":42,"lodash":73,"moment":74}],77:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -33096,25 +33555,64 @@ module.exports = class Creature extends Thing {
         // Util.logDebug(`Creature constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
 
         // Init stamina points
-        this.sp = this.template && this.template.maxSp || 1;
+        this.sp = this.findTrait('maxSp') || 1;
+
+        // Unit: timestamp in seconds
+        this.lastDamaged = -Infinity;
 
         // Faction or temperament
         this.alignment = alignment;
     }
 
-    actions (worldState) {
+    getActions (worldState) {
         const template = this.template ||
             (worldState && worldState.glossary[this.templateName]);
 
-        return template ?
-            template.actions :
+        const localActions = template ?
+            (template.actions || []) :
             [];
+
+        return this.components.reduce(
+            (actions, wnode) => actions.concat(
+                Util.isFunction(wnode.getActions) ?
+                    wnode.getActions() :
+                    []
+            ),
+            localActions
+        );
     }
 
     actionFromId (id) {
-        return this.actions().find(
+        return this.getActions().find(
             action => action.id === id
         );
+    }
+
+    // Recursion is necessary when base chassis traits are stored in a component WNode
+    findTrait (trait) {
+        if (this.template && this.template[trait]) {
+            return this.template[trait];
+        }
+
+        for (let i = 0; i < this.components.length; i++) {
+            const child = this.components[i];
+
+            // We dont want the stat from a item, or a modifier stat for example. We want something applicable to creatures.
+            if (child.constructor.name !== 'Creature') {
+                continue;
+            }
+
+            const childTrait = this.components[i].template &&
+                this.components[i].template[trait];
+
+            if (Util.exists(childTrait)) {
+                return childTrait;
+
+                // Note that if this trait is present on multiple components, this returns a arbitrary one.
+            }
+        }
+
+        return undefined;
     }
 
     chooseTarget (worldState, actionTemplate) {
@@ -33128,7 +33626,7 @@ module.exports = class Creature extends Thing {
     }
 };
 
-},{"../util/coord.js":76,"../util/util.js":77,"./thing.js":80}],79:[function(require,module,exports){
+},{"../util/coord.js":75,"../util/util.js":76,"./thing.js":79}],78:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -33139,7 +33637,7 @@ module.exports = Util.makeEnum([
     'Frozen'
 ]);
 
-},{"../util/util.js":77}],80:[function(require,module,exports){
+},{"../util/util.js":76}],79:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -33152,17 +33650,21 @@ module.exports = class Thing extends WNode {
 
         // Util.logDebug(`Thing constructor, after super(). template param is ${template}. this.template.actions.length is ${this.template && this.template.actions.length}`);
 
-        this.coord = coord || new Coord();
+        this.coord = coord || Coord.randomOnScreen();
 
         // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
         this.active = true;
     }
 
-    // NOTE: There is currently some mild confusion. The size getter reads from the template, but the size is also copied to the WNode. I may remove that caching later for performance. ToW 2019 Oct 18.
+    distanceTo (target) {
+        const targetCoord = target.coord || target;
+
+        return this.coord.manhattanDistanceTo(targetCoord);
+    }
 
     // Unit: meters of longest dimension when in storage.
-    size () {
-        return this.template && this.template.size;
+    getSize () {
+        return this.traitMax('size');
     }
 
     // Unit: kg on Earth's surface.
@@ -33174,10 +33676,36 @@ module.exports = class Thing extends WNode {
             localWeight
         );
     }
+
+    // Returns number
+    resistanceTo (tags) {
+        // LATER it's probably more performant to recursively gather a net resistance obj here, instead of multiple times in resistanceToTag()
+        return Util.sum(
+            tags.map(
+                tag => this.resistanceToTag(tag)
+            )
+        );
+    }
+
+    // Returns number
+    resistanceToTag (tag) {
+        const localResistance = (this.template &&
+            this.template.resistance &&
+            this.template.resistance[tag]) ||
+            0;
+
+        return this.components.reduce(
+            (overallResistance, component) => {
+                return localResistance +
+                    (component.resistanceTo && component.resistanceToTag(tag) || 0);
+            },
+            localResistance
+        );
+    }
 };
 
 
-},{"../util/coord.js":76,"../util/util.js":77,"./wnode.js":81}],81:[function(require,module,exports){
+},{"../util/coord.js":75,"../util/util.js":76,"./wnode.js":80}],80:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -33204,10 +33732,14 @@ class WNode {
             else if (Util.isString(template)) {
                 this.templateName = template;
             }
+            else {
+                throw new Error(`Cant instantiate WNode with unknown input of type ${typeof template}.`);
+            }
         }
 
         this.components = [];
 
+        // Partial means that dynamic 'fractal' storage could append components to this when its zoomed in on. IE, not guaranteed to be a leaf.
         this.storageMode = StorageModes.Partial;
         this.lastVisited = Date.now();
     }
@@ -33225,6 +33757,7 @@ class WNode {
         Object.assign(clone, this);
         clone.id = Util.newId();
 
+        // HMMM: Does this break now that we have parent pointers? Self reference.
         clone.components = this.components.map(component => component.deepCopy());
         return clone;
     }
@@ -33241,9 +33774,12 @@ class WNode {
         return ``;
     }
 
-    // Later, it may be performant to reference this.template[propStr], instead of storing those props on every WNode instance of the template.
+    getTrait (key) {
+        return this[key] || (this.template && this.template[key]);
+    }
+
     traitSum (propStr) {
-        return (this[propStr] || 0) +
+        return (this.getTrait(propStr) || 0) +
             Util.sum(
                 this.components.map(
                     c => c.traitSum(propStr)
@@ -33252,7 +33788,7 @@ class WNode {
     }
 
     traitMax (propStr) {
-        const localTrait = this[propStr] || 0;
+        const localTrait = this.getTrait(propStr) || 0;
         const max = this.components.reduce(
             (soFar, component) => Math.max(soFar, component.traitMax(propStr)),
             localTrait
@@ -33262,7 +33798,7 @@ class WNode {
     }
 
     traitMin (propStr) {
-        const localTrait = this[propStr];
+        const localTrait = this.getTrait(propStr);
         const min = this.components.reduce(
             (soFar, component) => Math.min(soFar, component.traitMin(propStr)),
             localTrait || Infinity
@@ -33398,6 +33934,28 @@ class WNode {
         .join('<br>');
     }
 
+    toJson () {
+        const serialized = {};
+
+        Object.keys(this)
+            .forEach(
+                key => {
+                    if (Util.contains(['components', 'parent'], key)) {
+                        return;
+                    }
+
+                    serialized[key] = Util.toJson(this[key]);
+                }
+            );
+
+        serialized.components = this.components.map(
+            c => c.toJson()
+        );
+
+        return serialized;
+    }
+
+    // HMMM: Does this break now that we have parent pointers? Self reference.
     toYaml () {
         return Yaml.dump(this);
     }
@@ -33539,4 +34097,192 @@ class WNode {
 
 module.exports = WNode;
 
-},{"../util/util.js":77,"./storageModes.js":79,"js-yaml":44}]},{},[39,40,41]);
+},{"../util/util.js":76,"./storageModes.js":78,"js-yaml":43}],81:[function(require,module,exports){
+
+},{}],82:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}]},{},[38,39,40]);
