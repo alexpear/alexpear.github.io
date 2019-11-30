@@ -3,12 +3,17 @@
 const Coord = require('../../util/coord.js');
 const Timeline = require('../../bottleWorld/timeline.js');
 const Util = require('../../util/util.js');
-const WorldState = require('../../bottleWorld/worldState.js');
+const DeathPlanetWorldState = require('../../bottleWorld/deathPlanetWorldState.js');
 
 // Unit: Pixels
 // These describe the width and height in pixels of the display area
 const WIDTH = 1200;
 const HEIGHT = 700;
+
+// Pixel (0,0) is the top left corner of the display area
+// This is the Coord represented by pixel (0,0)
+const originCoord = new Coord(0,0);
+const metersPerPixel = 1 / 50;
 
 const Constants = {
     width: WIDTH,
@@ -44,18 +49,25 @@ const config = {
     }
 };
 
+// Analogous to Blip, in that it is a front-end representation of a Thing
 const Individual = new Phaser.Class({
     Extends: Phaser.GameObjects.Image,
 
-    // Constructor
-    initialize: function Individual (scene, x, y, spriteName, faction) {
+    // Constructor, called by create()
+    initialize: function Individual (scene, x, y, spriteName, thing) {
+        // console.log(`Individual.initialize(), at position ${x}, ${y}.`);
+
         Phaser.GameObjects.Image.call(this, scene, x, y, spriteName);
+
+        this.thing = thing;
+
+        this.speed = this.thing.template.speed || 1;
 
         this.xSpeed = 0;
         this.ySpeed = 0;
 
         // Later Phaser GameObjects should be the view that portrays the underlying WorldState model.
-        this.faction = faction || Util.randomFromObj(Constants.factions);
+        this.faction = this.thing.template.alignment || Util.randomFromObj(Constants.factions);
 
         // BTW the first to be created sees empty children arrays.
         this.target = this.randomEnemy() || Constants.objective;
@@ -67,32 +79,32 @@ const Individual = new Phaser.Class({
     update: function (time, delta) {
         maybeClearGraphics(time);
 
+        if (! this.thing.active) {
+            this.setActive(false);
+            this.setVisible(false);
+
+            return;
+        }
+
         this.orient();
-        // TODO Implement simple soldier functionality in Timeline and WorldState.
-        // Then make blip.update() simply read from the coord position of this Thing in WorldState.
-        this.maybeShoot();
 
-        this.x += this.xSpeed * delta;
-        this.y += this.ySpeed * delta;
+        const pixelPosition = coordToPixel(this.thing.coord);
+
+        this.x = pixelPosition.x;
+        this.y = pixelPosition.y;
     },
 
-    maybeShoot: function () {
-        if (this.target && this.target.active && Math.random() <= Constants.shootChance) {
-            this.shoot();
-        }
-    },
+    // shoot: function (target) {
+    //     target = target || this.target || Constants.objective;
 
-    shoot: function (target) {
-        target = target || this.target || Constants.objective;
+    //     const trajectory = new Phaser.Geom.Line(this.x, this.y, target.x, target.y);
+    //     fishTank.graphics.strokeLineShape(trajectory);
 
-        const trajectory = new Phaser.Geom.Line(this.x, this.y, target.x, target.y);
-        fishTank.graphics.strokeLineShape(trajectory);
-
-        if (target.visible) {
-            target.setActive(false);
-            target.setVisible(false);
-        }
-    },
+    //     if (target.visible) {
+    //         target.setActive(false);
+    //         target.setVisible(false);
+    //     }
+    // },
 
     // Sets xSpeed and ySpeed correctly
     orient: function () {
@@ -141,17 +153,22 @@ function preload () {
 
 function deploySquads (faction) {
     for (let i = 0; i < 100; i++) {
-        const faction = Util.randomFromObj(Constants.factions);
+        const template = {
+            faction: Util.randomFromObj(Constants.factions)
+        };
+
         const start = Phaser.Geom.Rectangle.Random(this.physics.world.bounds);
         let squad;
 
-        if (faction === Constants.factions.unsc) {
-            squad = fishTank.worldState.squads.unsc.create(1000, start.y, 'soldier', faction);
-            squad.speed = 0.1;
+        if (template.faction === Constants.factions.unsc) {
+            template.speed = 0.1;
+
+            // Call the Individual constructor
+            squad = fishTank.worldState.squads.unsc.create(1000, start.y, 'soldier', template);
         }
         else {
-            squad = fishTank.worldState.squads.covenant.create(100, start.y, 'soldier', faction);
-            squad.speed = 0.15;
+            template.speed = 0.15;
+            squad = fishTank.worldState.squads.covenant.create(100, start.y, 'soldier', template);
         }
     }
 }
@@ -172,6 +189,12 @@ function depictThings () {
 }
 
 function create () {
+    console.log('Top of FishTank create()');
+
+    const worldState = DeathPlanetWorldState.test();
+
+    console.log('FishTank create() after DeathPlanetWorldState instantiated');
+
     fishTank = window.fishTank = {
         game: game,
         graphics: this.add.graphics({
@@ -182,8 +205,8 @@ function create () {
         }),
         graphicsLastCleared: 0,
         text: undefined,
-        timeline: new Timeline(),
-        worldState: new WorldState()
+        timeline: worldState.timeline,
+        worldState: worldState
     };
 
     this.physics.world.setBounds(0, 0, Constants.width, Constants.height);
@@ -202,11 +225,14 @@ function create () {
     };
 
     // Yikes, looks like im lucky it bound 'this' for me.
-    this.time.addEvent({ delay: 500, callback: deploySquads, callbackScope: this});
+    // this.time.addEvent({ delay: 500, callback: deploySquads, callbackScope: this});
+    this.time.addEvent({ delay: 500, callback: depictThings.bind(this, fishTank.worldState), callbackScope: this});
 
     // Later probably have the soldiers collide with each other.
 
     fishTank.text = this.add.text(10, 10, 'Total: 0', { font: '16px Courier', fill: '#ffffff' });
+
+    console.log(`Bottom of FishTank create()`);
 }
 
 function update (time, delta) {
