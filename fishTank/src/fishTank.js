@@ -1,9 +1,12 @@
 'use strict';
 
+const Coord = require('../../util/coord.js');
 const Timeline = require('../../bottleWorld/timeline.js');
 const Util = require('../../util/util.js');
 const WorldState = require('../../bottleWorld/worldState.js');
 
+// Unit: Pixels
+// These describe the width and height in pixels of the display area
 const WIDTH = 1200;
 const HEIGHT = 700;
 
@@ -11,8 +14,8 @@ const Constants = {
     width: WIDTH,
     height: HEIGHT,
     factions: {
-        unsc: 'unsc',
-        covenant: 'covenant'
+        unsc: 'UNSC',
+        covenant: 'Covenant'
     },
     objective: {
         x: WIDTH / 2,
@@ -198,6 +201,15 @@ function update (time, delta) {
     fishTank.text.setText(`Death Planet, Population ${(fishTank.worldState.squads.unsc.countActive() + fishTank.worldState.squads.covenant.countActive()) || 'You'}`);
 }
 
+function coordToPixel (coord) {
+    // Coords are in meters.
+    // LATER subtract originCoord from coord
+    return {
+        x: coord.x / metersPerPixel,
+        y: coord.y / metersPerPixel
+    };
+}
+
 function maybeReinforce (time) {
     // This may be easier to do later, after integrating Timeline as the model for what happens
 }
@@ -219,6 +231,10 @@ function enemyOfFaction (goodGuys) {
 // Later implement notThisOne exclusion functionality.
 function randomFromFaction (faction, notThisOne) {
     const group = fishTank.worldState.squads[faction];
+
+    if (! group) {
+        return undefined;
+    }
 
     const squads = group.getChildren();
     let offset = Util.randomBelow(squads.length);

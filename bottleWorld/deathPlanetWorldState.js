@@ -94,6 +94,8 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         worldState.printCensus();
 
+        return worldState;
+
         // const arbitraryThing = worldState.things[0];
         // const sampleActionsStr = JSON.stringify(
         //     arbitraryThing && arbitraryThing.actions(worldState),
