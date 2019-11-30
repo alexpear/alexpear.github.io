@@ -191,7 +191,7 @@ function depictThings () {
 function create () {
     console.log('Top of FishTank create()');
 
-    const worldState = DeathPlanetWorldState.test();
+    const worldState = DeathPlanetWorldState.example();
 
     console.log('FishTank create() after DeathPlanetWorldState instantiated');
 
@@ -203,7 +203,8 @@ function create () {
                 color: 0xaaaa00
             }
         }),
-        graphicsLastCleared: 0,
+        lastSynced: -1, // Unit: in-universe seconds
+        graphicsLastCleared: 0, // Unit: out-of-universe milliseconds
         text: undefined,
         timeline: worldState.timeline,
         worldState: worldState
@@ -236,10 +237,17 @@ function create () {
 }
 
 function update (time, delta) {
-    // Later
-    // fishTank.worldState.computeNextInstant();
+    if ((time - this.lastSynced) < 1000) {
+        return;
+    }
+
+    console.log(`In FishTank's update(), time is ${time}`);
+
+    fishTank.worldState.timeline.computeNextInstant();
 
     fishTank.text.setText(`Death Planet, Population ${(fishTank.worldState.squads.unsc.countActive() + fishTank.worldState.squads.covenant.countActive()) || 'You'}`);
+
+    this.lastSynced = time;
 }
 
 function coordToPixel (coord) {
