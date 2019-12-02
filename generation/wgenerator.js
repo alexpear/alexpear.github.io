@@ -8,6 +8,7 @@ const fs = require('fs');
 // LATER perhaps restructure so that WGenerator doesn't import any Battle20 files.
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
 const AliasTable = require('./aliasTable.js');
+const ChildTable = require('./childTable.js');
 const Creature = require('../wnode/creature.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const StorageModes = require('../wnode/storageModes.js');
@@ -754,69 +755,6 @@ class WGenerator {
 // Universal dict for codex-related objects keyed by ID. Used for ActionTemplates so far.
 WGenerator.ids = {};
 
-
-class ChildTable {
-    constructor (rawString, generator) {
-        this.generator = generator;
-
-        const lines = rawString.trim()
-            .split('\n')
-            .map(child => child.trim());
-
-        this.templateName = ChildTable.withoutTheStarter(lines[0]);
-        this.children = lines.slice(1)
-            .map(
-                line => {
-                    if (Util.contains(line, '/')) {
-                        // Util.log(`In ChildTable constructor. line is ${line}`, 'debug');
-
-                        line = this.generator.makePathAbsolute(line);
-                    }
-
-                    return line;
-                }
-            );
-    }
-
-    toJson () {
-        return {
-            generatorPath: this.generator.codexPath,
-            templateName: this.templateName,
-            children: this.children
-        };
-    }
-
-    // Returns a boolean
-    static isAppropriateFor (tableString) {
-        const t = tableString.trim()
-            .toLowerCase();
-
-        return ChildTable.STARTERS.some(
-            starter => t.startsWith(starter)
-        );
-    }
-
-    // Returns a string
-    static withoutTheStarter (rawString) {
-        const s = rawString.trim();
-        const sLow = s.toLowerCase();
-
-        for (let starter of ChildTable.STARTERS) {
-            if (sLow.startsWith(starter)) {
-                return s.slice(starter.length)
-                    .trim();
-            }
-        }
-
-        return s;
-    }
-}
-
-ChildTable.STARTERS = [
-    'children of',
-    'childrenof'
-    // 'childrenOf' is implied by the call to toLowerCase()
-];
 
 // TODO move to its own file
 // Intermediate representation used during parsing and generation. Represents a name (of a template or of a alias) with a codex path for context.
