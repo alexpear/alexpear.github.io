@@ -9,6 +9,7 @@ const fs = require('fs');
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
 const AliasTable = require('./aliasTable.js');
 const ChildTable = require('./childTable.js');
+const ContextString = require('./contextString.js');
 const Creature = require('../wnode/creature.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const StorageModes = require('../wnode/storageModes.js');
@@ -754,35 +755,6 @@ class WGenerator {
 
 // Universal dict for codex-related objects keyed by ID. Used for ActionTemplates so far.
 WGenerator.ids = {};
-
-
-// TODO move to its own file
-// Intermediate representation used during parsing and generation. Represents a name (of a template or of a alias) with a codex path for context.
-// Alternate names: CodexString, PathName, PathString, ContextName, ContextString
-class ContextString {
-    // Example:
-    // {
-    //     name: 'civilian',
-    //     codexPath: 'halo/unsc/individual'
-    // }
-    constructor (name, absolutePath) {
-        if (Util.contains(name, '/')) {
-            // NOTE: We currently do not support the name param being a relative path.
-            const findings = WGenerator.findGenAndTable(name);
-            this.name = findings.name;
-            this.path = findings.gen.codexPath;
-        }
-        else {
-            this.name = name;
-            // LATER: guarantee that this is always a absolute path.
-            this.path = absolutePath;
-        }
-    }
-
-    toString () {
-        return `{name:${this.name}, path:${this.path}}`;
-    }
-}
 
 module.exports = WGenerator;
 
