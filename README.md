@@ -14,7 +14,6 @@ This website include the following prototype projects:
 - See TODOs in timeline.js
 - Death Planet Fish Tank
   - Add logic about every creature moving closer to its destination each tick.
-  - Move all in-file classes to their own files
   - Maybe increase frame rate. 0.1 seconds per tick.
     - In theory this should not increase the computational needs much, nor the quantity of BEvents
 
