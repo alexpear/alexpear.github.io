@@ -16,6 +16,10 @@ This website include the following prototype projects:
   - Add logic about every creature moving closer to its destination each tick.
   - Maybe increase frame rate. 0.1 seconds per tick.
     - In theory this should not increase the computational needs much, nor the quantity of BEvents
+  - Replay functionality
+    - Given a timeline, be able to reconstruct the WorldState at each tick
+    - Alternatively, cache a WorldState at every tick. Whichever seems more useful in terms of performance.
+    - Base Death Planet upon a replay, not a live-running sim
 
 - Waffle Tree fractal mode
   - Scale test result: JS stack limit exceeded. Could test with larger limit.
