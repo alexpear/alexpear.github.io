@@ -67,11 +67,11 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         const startingThings = {
             UNSC: {
-                marinePrivate: 300,
-                spartan: 300
+                marinePrivate: 30,
+                spartan: 30
             },
             Insurrection: {
-                marinePrivate: 700
+                marinePrivate: 70
             }
         };
 
