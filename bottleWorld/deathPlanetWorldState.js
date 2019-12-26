@@ -94,15 +94,15 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         worldState.printCensus();
 
-        return worldState;
+        // Type: object
+        const timelineJson = worldState.timeline.toJson();
 
-        // const arbitraryThing = worldState.things[0];
-        // const sampleActionsStr = JSON.stringify(
-        //     arbitraryThing && arbitraryThing.actions(worldState),
-        //     undefined,
-        //     '    '
-        // );
-        // Util.log(`The first Thing has the following Actions: ${ sampleActionsStr }`, 'debug');
+        // Type: string
+        const timelineJsonStr = JSON.stringify(timelineJson);
+
+        Util.log(`The json version of the timeline is ${timelineJsonStr.length} characters long.`);
+
+        return worldState;
     }
 
     static run () {
