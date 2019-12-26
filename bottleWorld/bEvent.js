@@ -93,9 +93,7 @@ const BEvent = module.exports = class BEvent {
                     return;
                 }
 
-                serialized[key] = originalValue ?
-                    (originalValue.id || Util.toJson(originalValue)) :
-                    originalValue;
+                serialized[key] = originalValue.id || Util.toJson(originalValue);
             }
         );
 
