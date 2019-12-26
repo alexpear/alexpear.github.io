@@ -99,8 +99,11 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         // Type: string
         const timelineJsonStr = JSON.stringify(timelineJson);
+        const timelineJsonStrWhitespace = JSON.stringify(timelineJson, undefined, '    ');
 
-        Util.log(`The json version of the timeline is ${timelineJsonStr.length} characters long.`);
+        Util.log(`The json version of the timeline is ${timelineJsonStr.length} characters long (no whitespace).`);
+
+        // Util.log(timelineJsonStr);
 
         return worldState;
     }
