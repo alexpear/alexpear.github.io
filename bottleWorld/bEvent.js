@@ -90,6 +90,27 @@ const BEvent = module.exports = class BEvent {
         return serialized;
     }
 
+    testSerialization () {
+        const json = this.toJson();
+
+        try {
+            JSON.stringify(json);
+        } catch (e) {
+            const keys = Object.keys(json);
+
+            Util.log(`In BEvent.testSerialization(), constructor.name is ${this.constructor.name}.`);
+
+            keys.forEach(
+                key => {
+                    Util.log(`key: ${key}`);
+
+                    JSON.stringify(json[key]);
+                }
+            );
+
+        }
+    }
+
     // static departure (protagonist) {
     //     return new BEvent(BEvent.TYPES.Departure, protagonist);
     // }
