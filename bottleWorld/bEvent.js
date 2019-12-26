@@ -81,7 +81,7 @@ const BEvent = module.exports = class BEvent {
 
                 if (key === 'outcomes') {
                     serialized[key] = originalValue.map(
-                        outcome => outcome.toJson()
+                        outcome => outcome.id
                     );
 
                     return;
