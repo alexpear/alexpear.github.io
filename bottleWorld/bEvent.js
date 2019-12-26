@@ -70,6 +70,15 @@ const BEvent = module.exports = class BEvent {
             key => {
                 const originalValue = this[key];
 
+                // Dont persist blanks
+                if (
+                    ! Util.exists(originalValue) ||
+                    Util.isArray(originalValue) && originalValue.length === 0 ||
+                    typeof originalValue === 'object' && Object.keys(originalValue).length === 0
+                ) {
+                    return;
+                }
+
                 if (key === 'outcomes') {
                     serialized[key] = originalValue.map(
                         outcome => outcome.toJson()
