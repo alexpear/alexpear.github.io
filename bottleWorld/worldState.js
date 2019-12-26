@@ -472,6 +472,20 @@ class WorldState {
         return false;
     }
 
+    toJson () {
+        const serializedThings = this.things.map(
+            thing => thing.toJson()
+        );
+
+        return {
+            t: this.t,
+            things: serializedThings,
+            wanderingGenerator: this.wanderingGenerator.toJson()
+        };
+
+        // Omitted props: timeline, glossary
+    }
+
     static test () {
         Util.log(`WorldState.test()\n`, 'info');
 

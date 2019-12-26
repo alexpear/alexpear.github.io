@@ -67,6 +67,20 @@ const BEvent = module.exports = class BEvent {
             key => {
                 const originalValue = this[key];
 
+                if (key === 'outcomes') {
+                    serialized[key] = originalValue.map(
+                        outcome => outcome.toJson()
+                    );
+
+                    return;
+                }
+
+                if (key === 'coord') {
+                    // The coord might be stored nowhere else except in this event, so must be persisted fully.
+                    serialized[key] = originalValue;
+                    return;
+                }
+
                 serialized[key] = originalValue ?
                     (originalValue.id || Util.toJson(originalValue)) :
                     originalValue;

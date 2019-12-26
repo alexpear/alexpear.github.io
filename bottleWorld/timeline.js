@@ -62,6 +62,33 @@ module.exports = class Timeline {
         // this.worldState.moveEverything(); // TODO implement this func, which moves all moving Things towards their destinations.
     }
 
+    toJson () {
+        const serializedEvents = {};
+
+        Object.keys(this.timestamps).forEach(
+            t => {
+                serializedEvents[t] = this.timestamps[t].map(
+                    event => event.toJson()
+                );
+            }
+        );
+
+        return {
+            timestamps: serializedEvents,
+            currentWorldState: this.currentWorldState.toJson()
+        };
+    }
+
+    testSerialization () {
+        Object.keys(this.timestamps).forEach(
+            t => {
+                this.timestamps[t].forEach(
+                    event => event.testSerialization()
+                );
+            }
+        );
+    }
+
     toDebugString () {
         let lines = [];
 
