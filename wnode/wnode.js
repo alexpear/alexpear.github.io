@@ -242,19 +242,31 @@ class WNode {
     toJson () {
         const serialized = {};
 
-        Object.keys(this)
-            .forEach(
-                key => {
-                    if (Util.contains(['components', 'parent', 'blip'], key)) {
-                        return;
+        Object.keys(this).forEach(
+            key => {
+                if (Util.contains(['template', 'parent', 'blip'], key)) {
+                    return;
+                }
+
+                if ('components' === key) {
+                    serialized.components = this.components.map(
+                        c => c.toJson()
+                    );
+
+                    return;
+                }
+
+                // No need to re-persist these BEvents in full
+                if ('lastAction' === key) {
+                    if (this.lastAction) {
+                        serialized.lastAction = this.lastAction.id;
                     }
 
-                    serialized[key] = Util.toJson(this[key]);
+                    return;
                 }
-            );
 
-        serialized.components = this.components.map(
-            c => c.toJson()
+                serialized[key] = Util.toJson(this[key]);
+            }
         );
 
         return serialized;
