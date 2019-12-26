@@ -61,12 +61,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
         const actionReadyEvent = new ActionReadyEvent(arriver, chosenAction.id);
 
-        this.outcomes.push(actionReadyEvent);
-
-        worldState.timeline.addEvent(
-            actionReadyEvent,
-            this.t + ArrivalEvent.ACTION_DELAY
-        );
+        this.addOutcome(actionReadyEvent, worldState, this.t + ArrivalEvent.ACTION_DELAY);
 
         // Later ignore that ACTION_DELAY placeholder in favor of information found in codex templates.
     }

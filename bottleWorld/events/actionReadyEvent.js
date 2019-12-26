@@ -43,18 +43,12 @@ module.exports = class ActionReadyEvent extends BEvent {
 
         const actionEvent = new ActionEvent(protagonist, target, undefined, this.actionId);
 
-        this.outcomes.push(actionEvent);
+        this.addOutcome(actionEvent, worldState);
 
         // For graphics
         protagonist.lastAction = actionEvent;
 
         // Util.logDebug(`In ActionReadyEvent.resolve(), about to call timeline.addEvent(actionEvent, t)`);
-
-        worldState.timeline.addEvent(
-            actionEvent,
-            this.t
-        );
-
         // Util.logDebug(`Bottom of ActionReadyEvent.resolve(). Set up a future Action with range: ${action.range}.`);
 
     }
