@@ -20,6 +20,13 @@ This website include the following prototype projects:
     - Given a timeline, be able to reconstruct the WorldState at each tick
     - Alternatively, cache a WorldState at every tick. Whichever seems more useful in terms of performance.
     - Base Death Planet upon a replay, not a live-running sim
+  - Timeline.toJson() and WorldState.toJson(). The former probably calls the latter, not vice versa.
+    - In DeathPlanetWorldState.example(), store the json of the timeline as a local variable. Log the length of that string. Write it to a file or to console.
+
+- Halo Ring Bottle
+  - Force/Banner based. Creatures of a faction always move in clumps. Nearby clumps join up.
+  - Display with CLI log function that buckets the 1-dimensional space into 30-50 sectors, and lists what is there.
+  - All human marines for MRB 1
 
 - Waffle Tree fractal mode
   - Scale test result: JS stack limit exceeded. Could test with larger limit.
