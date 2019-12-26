@@ -6,6 +6,10 @@ const Util = require('../util/util.js');
 module.exports = class NodeTemplate {
     constructor (name) {
         this.name = name;
+
+        // TODO: Also should store codex path, to make the name more clear in case of collisions. Shouldnt require much memory since there should be < 300 templates.
+
+        this.id = Util.newId();
         this.tags = [];
     }
 
