@@ -79,6 +79,7 @@ module.exports = class Timeline {
         };
     }
 
+    // Helps debug circular reference
     testSerialization () {
         Object.keys(this.timestamps).forEach(
             t => {

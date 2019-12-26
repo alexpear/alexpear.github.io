@@ -22,6 +22,9 @@ This website include the following prototype projects:
     - Base Death Planet upon a replay, not a live-running sim
   - Timeline.toJson() and WorldState.toJson(). The former probably calls the latter, not vice versa.
     - In DeathPlanetWorldState.example(), store the json of the timeline as a local variable. Log the length of that string. Write it to a file or to console.
+  - Minor bug: flakArmor and dmr WNodes have coords, sometimes with inaccurate values.
+  - Minor bug: WNodes are showing up with storage mode partial when i thought it should be 'full detail'/'nonfractal' mode.
+    - Also, maybe we could omit that prop in whichever case is more common.
 
 - Halo Ring Bottle
   - Force/Banner based. Creatures of a faction always move in clumps. Nearby clumps join up.

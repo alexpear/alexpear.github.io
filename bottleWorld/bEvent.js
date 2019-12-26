@@ -60,6 +60,9 @@ const BEvent = module.exports = class BEvent {
     }
 
     // This func replaces pointers with id strings, for serialization / storage.
+    // LATER, could save memory by not persisting BEvents that will be obvious to the reconstructor, such as ActionEvent, because that one involves no random rolls. It's predictable.
+    // Could also LATER look into whether it saves storage to omit BEvents where .happened is false. Or to limit those to just id, type, and happened: false. That would cut out the protagonist and actionId ids, which saves a little space.
+    // Could also omit the t (tick) number from every BEvent persisted. But that only saves this may characters: "t":96, which isnt a ton.
     toJson () {
         const serialized = {};
 
@@ -90,6 +93,7 @@ const BEvent = module.exports = class BEvent {
         return serialized;
     }
 
+    // Helps debug circular reference
     testSerialization () {
         const json = this.toJson();
 
