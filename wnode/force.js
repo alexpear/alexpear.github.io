@@ -20,7 +20,7 @@ module.exports = class Force extends WNode {
 
         this.components = members;
 
-        this.coord = coord || Coord.randomOnScreen();
+        this.coord = coord || new Coord();
     }
 
     // TODO start with example () func.
