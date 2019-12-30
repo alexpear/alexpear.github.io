@@ -5,6 +5,11 @@ const NodeTemplate = require('../battle20/nodeTemplate.js');
 const Util = require('../util/util.js');
 const WNode = require('./wnode.js');
 
+// TODO actually i may instead want Group extends WNode
+// Can be very similar to Group from Battle20 / dndBottle
+// .quantity, .template (CreatureTemplate), maybe some a prop for the SP of the sole wounded member.
+// .getWeight(), .getMaxSize(), .getSizeTotal(), .getSpeed() <- only different from template if there is some status condition effect, etc
+
 // A Force is a ad-hoc organization: 1 or more Creatures in the same location with the same alignment and task.
 // Similar to the concept of a 'banner' or 'stack' or 'army' in large-scale map-based wargames.
 module.exports = class Force extends WNode {
@@ -17,6 +22,8 @@ module.exports = class Force extends WNode {
 
         this.coord = coord || Coord.randomOnScreen();
     }
+
+    // TODO start with example () func.
 
     // distanceTo (target) {
     //     const targetCoord = target.coord || target;
