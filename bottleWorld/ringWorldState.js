@@ -3,14 +3,14 @@
 const ForceWorldState = require('./worldState.js');
 
 // Forces on a thin circular world.
-class RingWorldState extends ForceWorldState {
-    constructor (startingForces, circumference) {
+class RingWorldState extends GroupWorldState {
+    constructor (startingGroups, circumference) {
         super();
-        
-        // Alternately, could rename WorldState.things to .wnodes or .entities
+
+        // TODO Alternately, could rename WorldState.things to .wnodes or .entities
         // And could put the array of extant Forces in there.
         // (Force does not extend Thing, it only extends WNode)
-        this.forces = [];
+        this.forces = startingGroups || [];
     }
 
     allAlignments () {

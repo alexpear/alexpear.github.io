@@ -24,6 +24,8 @@ class WorldState {
         this.timeline = timeline;
         this.t = t || 0;
         // TODO make this a obj, keyed by thing.id, for performance
+        // TODO rename to .wnodes, because Group does not extend Thing
+        // or alternately make Thing.sp into a getter, which Group can override. Group can then extend Thing or Creature
         this.things = [];
 
         // Later, probably template lookups should be looking across all generators.
