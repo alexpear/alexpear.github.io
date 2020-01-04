@@ -1,4 +1,192 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+
+},{}],2:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
 const NodeTemplate = require('./nodeTemplate.js');
@@ -104,7 +292,7 @@ class ActionTemplate extends NodeTemplate {
 
 module.exports = ActionTemplate;
 
-},{"../codices/tags.js":36,"../util/util.js":76,"./nodeTemplate.js":5}],2:[function(require,module,exports){
+},{"../codices/tags.js":38,"../util/util.js":81,"./nodeTemplate.js":7}],4:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
@@ -447,7 +635,7 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":36,"../util/util.js":76,"./actiontemplate.js":1,"./nodeTemplate.js":5}],3:[function(require,module,exports){
+},{"../codices/tags.js":38,"../util/util.js":81,"./actiontemplate.js":3,"./nodeTemplate.js":7}],5:[function(require,module,exports){
 'use strict';
 
 const util = require('../util/util.js');
@@ -488,7 +676,7 @@ class Event {
 
 module.exports = Event;
 
-},{"../util/util.js":76}],4:[function(require,module,exports){
+},{"../util/util.js":81}],6:[function(require,module,exports){
 'use strict';
 
 // A group of creatures in a bottle world.
@@ -1226,7 +1414,7 @@ damage: 1
 
 
 
-},{"../codices/tags.js":36,"../dnd/alignment.js":37,"../util/coord.js":75,"../util/util.js":76,"./creaturetemplate.js":2,"./event.js":3}],5:[function(require,module,exports){
+},{"../codices/tags.js":38,"../dnd/alignment.js":39,"../util/coord.js":80,"../util/util.js":81,"./creaturetemplate.js":4,"./event.js":5}],7:[function(require,module,exports){
 'use strict';
 
 const TAG = require('../codices/tags.js');
@@ -1259,7 +1447,7 @@ module.exports = class NodeTemplate {
     }
 }
 
-},{"../codices/tags.js":36,"../util/util.js":76}],6:[function(require,module,exports){
+},{"../codices/tags.js":38,"../util/util.js":81}],8:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -1431,7 +1619,7 @@ BEvent.TYPES = Util.makeEnum([
     'UniversalUpdate'
 ]);
 
-},{"../util/coord.js":75,"../util/util.js":76}],7:[function(require,module,exports){
+},{"../util/coord.js":80,"../util/util.js":81}],9:[function(require,module,exports){
 'use strict';
 
 const WorldState = require('./worldState.js');
@@ -1441,7 +1629,7 @@ class ContinuousWorldState extends WorldState {}
 
 module.exports = ContinuousWorldState;
 
-},{"./worldState.js":14}],8:[function(require,module,exports){
+},{"./worldState.js":16}],10:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1512,11 +1700,11 @@ class DeathPlanetWorldState extends ContinuousWorldState {
 
         const startingThings = {
             UNSC: {
-                marinePrivate: 300,
-                spartan: 300
+                marinePrivate: 30,
+                spartan: 30
             },
             Insurrection: {
-                marinePrivate: 700
+                marinePrivate: 70
             }
         };
 
@@ -1576,7 +1764,7 @@ DeathPlanetWorldState.run();
 
 */
 }).call(this,require('_process'))
-},{"../battle20/creaturetemplate.js":2,"../util/util.js":76,"../wnode/creature.js":77,"../wnode/thing.js":79,"./continuousWorldState.js":7,"./events/arrivalEvent.js":11,"./timeline.js":13,"_process":82}],9:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":4,"../util/util.js":81,"../wnode/creature.js":82,"../wnode/thing.js":84,"./continuousWorldState.js":9,"./events/arrivalEvent.js":13,"./timeline.js":15,"_process":2}],11:[function(require,module,exports){
 'use strict';
 
 const BEvent = require('../bEvent.js');
@@ -1625,7 +1813,7 @@ module.exports = class ActionEvent extends BEvent {
     }
 };
 
-},{"../../util/coord.js":75,"../../util/util.js":76,"../bEvent.js":6,"./projectileEvent.js":12}],10:[function(require,module,exports){
+},{"../../util/coord.js":80,"../../util/util.js":81,"../bEvent.js":8,"./projectileEvent.js":14}],12:[function(require,module,exports){
 'use strict';
 
 const ActionEvent = require('./actionEvent.js');
@@ -1688,7 +1876,7 @@ module.exports = class ActionReadyEvent extends BEvent {
     }
 };
 
-},{"../../util/coord.js":75,"../../util/util.js":76,"../bEvent.js":6,"./actionEvent.js":9}],11:[function(require,module,exports){
+},{"../../util/coord.js":80,"../../util/util.js":81,"../bEvent.js":8,"./actionEvent.js":11}],13:[function(require,module,exports){
 'use strict';
 
 const ActionReadyEvent = require('./actionReadyEvent.js');
@@ -1765,7 +1953,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
 ArrivalEvent.ACTION_DELAY = 1;
 
-},{"../../util/coord.js":75,"../../util/util.js":76,"../bEvent.js":6,"./actionReadyEvent.js":10}],12:[function(require,module,exports){
+},{"../../util/coord.js":80,"../../util/util.js":81,"../bEvent.js":8,"./actionReadyEvent.js":12}],14:[function(require,module,exports){
 'use strict';
 
 const BEvent = require('../bEvent.js');
@@ -1927,7 +2115,7 @@ module.exports = class ProjectileEvent extends BEvent {
 //     return Math.random() < damageChance;
 // }
 
-},{"../../util/coord.js":75,"../../util/util.js":76,"../bEvent.js":6}],13:[function(require,module,exports){
+},{"../../util/coord.js":80,"../../util/util.js":81,"../bEvent.js":8}],15:[function(require,module,exports){
 'use strict';
 
 // Hashmap ({}) of sets of Events
@@ -2033,7 +2221,7 @@ module.exports = class Timeline {
     }
 };
 
-},{"../util/util.js":76,"./bEvent.js":6,"./worldState.js":14}],14:[function(require,module,exports){
+},{"../util/util.js":81,"./bEvent.js":8,"./worldState.js":16}],16:[function(require,module,exports){
 'use strict';
 
 // Represents the world in a Bottle World at one moment.
@@ -2660,7 +2848,7 @@ If you want to represent the presence of a extra soldier, special soldier, or ar
 
 */
 
-},{"../battle20/creaturetemplate.js":2,"../battle20/group.js":4,"../bottleWorld/bEvent.js":6,"../codices/tags.js":36,"../dnd/alignment.js":37,"../generation/wgenerator.js":41,"../util/coord.js":75,"../util/util.js":76,"../wnode/creature.js":77,"../wnode/thing.js":79,"../wnode/wnode.js":80,"./events/actionReadyEvent.js":10,"./events/arrivalEvent.js":11,"./timeline.js":13,"js-yaml":43}],15:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":4,"../battle20/group.js":6,"../bottleWorld/bEvent.js":8,"../codices/tags.js":38,"../dnd/alignment.js":39,"../generation/wgenerator.js":46,"../util/coord.js":80,"../util/util.js":81,"../wnode/creature.js":82,"../wnode/thing.js":84,"../wnode/wnode.js":85,"./events/actionReadyEvent.js":12,"./events/arrivalEvent.js":13,"./timeline.js":15,"js-yaml":48}],17:[function(require,module,exports){
 module.exports = `
 * output
 1 {battalion}
@@ -2910,7 +3098,7 @@ const drafts = `
 
 `;
 
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -3051,7 +3239,7 @@ item/bombHarness
 
 `;
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -3192,7 +3380,7 @@ weight: 4
 
 `;
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = `
 * output
 5 {lance}
@@ -3511,7 +3699,7 @@ individual/bruteMinor
 
 `;
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = `
 * output
 100 pod
@@ -3542,7 +3730,7 @@ module.exports = `
 
 `;
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = `
 * output
 150 {infantryPack}
@@ -3609,7 +3797,7 @@ individual/brainForm
 
 `;
 
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = `
 * output
 1 installationCompany
@@ -3633,7 +3821,7 @@ module.exports = `
 
 `;
 
-},{}],22:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = `
 * output
 50 sentinel
@@ -3669,7 +3857,7 @@ forerunner/item/boltshot
 
 `;
 
-},{}],23:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = `
 * output
 1 {giWeapon}
@@ -3715,7 +3903,7 @@ module.exports = `
 4 prometheanVision
 
 `;
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = `
 * output
 1 {installationSquad}
@@ -3790,7 +3978,7 @@ Sketching about Forerunner armies
 
 */
 
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = `
 * output
 4 {halo/unsc/fleet}
@@ -3800,7 +3988,7 @@ module.exports = `
 
 `;
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -3883,7 +4071,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -4000,7 +4188,7 @@ spaceFighterSquadron
 {unsc/squad/oniSquad}
 
 `;
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -4024,7 +4212,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -4151,7 +4339,7 @@ weight: 1000
 
 `;
 
-},{}],30:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = `* output
 15 {anyWeapon}
 20 {anyGear}
@@ -4413,7 +4601,7 @@ attackDelay: 2
 
 `;
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -4735,7 +4923,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -4865,7 +5053,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -5308,7 +5496,7 @@ forklift
 
 `;
 
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -5512,7 +5700,7 @@ module.exports = `
 
 
 `;
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -5526,7 +5714,7 @@ module.exports = `
 
 
 `;
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -5583,7 +5771,7 @@ module.exports = Util.makeEnum([
     'Covenant'
 ]);
 
-},{"../util/util.js":76}],37:[function(require,module,exports){
+},{"../util/util.js":81}],39:[function(require,module,exports){
 'use strict';
 
 // similar to alignment.js in hobby/ git repo.
@@ -5624,7 +5812,7 @@ class Alignment {
 
 module.exports = Alignment;
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 // A Blip is the front-end visual representation of 1 or more objects or warriors in the FishTank world.
@@ -5667,7 +5855,7 @@ module.exports = Blip;
 
 // Blip.run();
 
-},{"../../util/coord.js":75,"../../util/util.js":76,"../../wnode/wnode.js":80}],39:[function(require,module,exports){
+},{"../../util/coord.js":80,"../../util/util.js":81,"../../wnode/wnode.js":85}],41:[function(require,module,exports){
 'use strict';
 
 // A EffectVisual is the front-end visual representation of a action or effect in the game world.
@@ -5732,7 +5920,7 @@ module.exports = EffectVisual;
 
 // EffectVisual.run();
 
-},{"../../util/coord.js":75,"../../util/util.js":76,"../../wnode/wnode.js":80}],40:[function(require,module,exports){
+},{"../../util/coord.js":80,"../../util/util.js":81,"../../wnode/wnode.js":85}],42:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../../util/coord.js');
@@ -6002,7 +6190,234 @@ function enemyOfFaction (goodGuys) {
         Constants.factions.unsc;
 }
 
-},{"../../bottleWorld/deathPlanetWorldState.js":8,"../../bottleWorld/timeline.js":13,"../../util/coord.js":75,"../../util/util.js":76}],41:[function(require,module,exports){
+},{"../../bottleWorld/deathPlanetWorldState.js":10,"../../bottleWorld/timeline.js":15,"../../util/coord.js":80,"../../util/util.js":81}],43:[function(require,module,exports){
+'use strict';
+
+const Util = require('../util/util.js');
+
+class AliasTable {
+    constructor (rawString, generator) {
+        // The parent pointer is used when resolving slash path aliases.
+        this.generator = generator;
+        this.outputs = [];
+
+        const lines = rawString.trim()
+            .split('\n')
+            .map(line => line.trim());
+
+        // Later we could complain if the first line's name contains whitespace.
+        this.templateName = AliasTable.withoutTheStarter(lines[0]);
+
+        for (let li = 1; li < lines.length; li++) {
+            // Later probably functionize this part.
+            const line = lines[li];
+
+            // Util.log(`in AliasTable() constructor, parsing line '${line}'`, 'debug');
+
+            if (line === '') {
+                continue;
+            }
+
+            const parts = line.split(/\s/);
+
+            // Later i want to also support some sort of simple no-weights format, like Perchance does.
+            if (parts.length <= 1) {
+                throw new Error(`AliasTable could not parse line: ${parts.join(' ')}`);
+            }
+
+            const weightStr = parts[0];
+            const weight = parseInt(weightStr);
+
+            if (weight === 0) {
+                continue;
+            }
+            else if (typeof weight !== 'number') {
+                throw new Error(`AliasTable could not parse weight: ${ weightStr }`);
+            }
+
+            // Everything after the weight prefix.
+            let alias = line.slice(weightStr.length)
+                .trim();
+
+            // During WGenerator construction, Interpret keys with slashes as external pointers.
+            if (Util.contains(alias, '/')) {
+                // Note that 'alias' could be a comma-separated set of names
+                // {halo/unsc/item/dualWieldable}, {halo/unsc/item/dualWieldable}
+                alias = this.generator.makeSomePathsAbsolute(alias);
+            }
+
+            // Replicated outputs. We assume memory is plentiful but time is scarce.
+            for (let wi = 0; wi < weight; wi++) {
+                this.outputs.push(alias);
+            }
+        }
+    }
+
+    // Returns string
+    getOutput () {
+        return Util.randomOf(this.outputs);
+    }
+
+    // Returns ContextString[]
+    getOutputAndResolveIt () {
+        const outputStr = this.getOutput();
+
+        return this.generator.resolveCommas(outputStr);
+    }
+
+    toJson () {
+        return {
+            generatorPath: this.generator.codexPath,
+            templateName: this.templateName,
+            outputs: this.outputs
+        };
+    }
+
+    // TODO this logic is needed by ChildTable too. Move it to WGenerator (ie parent).
+
+    static isAppropriateFor (tableString) {
+        const t = tableString.trim()
+            .toLowerCase();
+
+        if (
+            AliasTable.STARTERS.some(
+                starter => t.startsWith(starter)
+            )
+        ) {
+            return true;
+        }
+
+        return t.startsWith('output');
+    }
+
+    // Returns a string
+    static withoutTheStarter (rawString) {
+        const s = rawString.trim();
+        const sLow = s.toLowerCase();
+
+        for (let starter of AliasTable.STARTERS) {
+            if (sLow.startsWith(starter)) {
+                return s.slice(starter.length)
+                    .trim();
+            }
+        }
+
+        return s;
+    }
+}
+
+AliasTable.STARTERS = [
+    'alias'
+];
+
+module.exports = AliasTable;
+
+},{"../util/util.js":81}],44:[function(require,module,exports){
+'use strict';
+
+const Util = require('../util/util.js');
+
+class ChildTable {
+    constructor (rawString, generator) {
+        this.generator = generator;
+
+        const lines = rawString.trim()
+            .split('\n')
+            .map(child => child.trim());
+
+        this.templateName = ChildTable.withoutTheStarter(lines[0]);
+        this.children = lines.slice(1)
+            .map(
+                line => {
+                    if (Util.contains(line, '/')) {
+                        // Util.log(`In ChildTable constructor. line is ${line}`, 'debug');
+
+                        line = this.generator.makePathAbsolute(line);
+                    }
+
+                    return line;
+                }
+            );
+    }
+
+    toJson () {
+        return {
+            generatorPath: this.generator.codexPath,
+            templateName: this.templateName,
+            children: this.children
+        };
+    }
+
+    // Returns a boolean
+    static isAppropriateFor (tableString) {
+        const t = tableString.trim()
+            .toLowerCase();
+
+        return ChildTable.STARTERS.some(
+            starter => t.startsWith(starter)
+        );
+    }
+
+    // Returns a string
+    static withoutTheStarter (rawString) {
+        const s = rawString.trim();
+        const sLow = s.toLowerCase();
+
+        for (let starter of ChildTable.STARTERS) {
+            if (sLow.startsWith(starter)) {
+                return s.slice(starter.length)
+                    .trim();
+            }
+        }
+
+        return s;
+    }
+}
+
+ChildTable.STARTERS = [
+    'children of',
+    'childrenof'
+    // 'childrenOf' is implied by the call to toLowerCase()
+];
+
+module.exports = ChildTable;
+
+},{"../util/util.js":81}],45:[function(require,module,exports){
+'use strict';
+
+const Util = require('../util/util.js');
+const WGenerator = require('./wgenerator.js');
+
+// Intermediate representation used during parsing and generation. Represents a name (of a template or of a alias) with a codex path for context.
+// Alternate names: CodexString, PathName, PathString, ContextName, ContextString
+class ContextString {
+    // Example:
+    // {
+    //     name: 'civilian',
+    //     codexPath: 'halo/unsc/individual'
+    // }
+    constructor (name, absolutePath) {
+        if (Util.contains(name, '/')) {
+            // NOTE: We currently do not support the name param being a relative path.
+            const findings = WGenerator.findGenAndTable(name);
+            this.name = findings.name;
+            this.path = findings.gen.codexPath;
+        }
+        else {
+            this.name = name;
+            // LATER: guarantee that this is always a absolute path.
+            this.path = absolutePath;
+        }
+    }
+
+    toString () {
+        return `{name:${this.name}, path:${this.path}}`;
+    }
+}
+
+module.exports = ContextString;
+
+},{"../util/util.js":81,"./wgenerator.js":46}],46:[function(require,module,exports){
 (function (process,__dirname){
 'use strict';
 
@@ -6013,6 +6428,9 @@ const fs = require('fs');
 
 // LATER perhaps restructure so that WGenerator doesn't import any Battle20 files.
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
+const AliasTable = require('./aliasTable.js');
+const ChildTable = require('./childTable.js');
+const ContextString = require('./contextString.js');
 const Creature = require('../wnode/creature.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
 const StorageModes = require('../wnode/storageModes.js');
@@ -6759,214 +7177,6 @@ class WGenerator {
 // Universal dict for codex-related objects keyed by ID. Used for ActionTemplates so far.
 WGenerator.ids = {};
 
-
-// TODO move to its own file
-class AliasTable {
-    constructor (rawString, generator) {
-        // The parent pointer is used when resolving slash path aliases.
-        this.generator = generator;
-        this.outputs = [];
-
-        const lines = rawString.trim()
-            .split('\n')
-            .map(line => line.trim());
-
-        // Later we could complain if the first line's name contains whitespace.
-        this.templateName = AliasTable.withoutTheStarter(lines[0]);
-
-        for (let li = 1; li < lines.length; li++) {
-            // Later probably functionize this part.
-            const line = lines[li];
-
-            // Util.log(`in AliasTable() constructor, parsing line '${line}'`, 'debug');
-
-            if (line === '') {
-                continue;
-            }
-
-            const parts = line.split(/\s/);
-
-            // Later i want to also support some sort of simple no-weights format, like Perchance does.
-            if (parts.length <= 1) {
-                throw new Error(`AliasTable could not parse line: ${parts.join(' ')}`);
-            }
-
-            const weightStr = parts[0];
-            const weight = parseInt(weightStr);
-
-            if (weight === 0) {
-                continue;
-            }
-            else if (typeof weight !== 'number') {
-                throw new Error(`AliasTable could not parse weight: ${ weightStr }`);
-            }
-
-            // Everything after the weight prefix.
-            let alias = line.slice(weightStr.length)
-                .trim();
-
-            // During WGenerator construction, Interpret keys with slashes as external pointers.
-            if (Util.contains(alias, '/')) {
-                // Note that 'alias' could be a comma-separated set of names
-                // {halo/unsc/item/dualWieldable}, {halo/unsc/item/dualWieldable}
-                alias = this.generator.makeSomePathsAbsolute(alias);
-            }
-
-            // Replicated outputs. We assume memory is plentiful but time is scarce.
-            for (let wi = 0; wi < weight; wi++) {
-                this.outputs.push(alias);
-            }
-        }
-    }
-
-    // Returns string
-    getOutput () {
-        return Util.randomOf(this.outputs);
-    }
-
-    // Returns ContextString[]
-    getOutputAndResolveIt () {
-        const outputStr = this.getOutput();
-
-        return this.generator.resolveCommas(outputStr);
-    }
-
-    toJson () {
-        return {
-            generatorPath: this.generator.codexPath,
-            templateName: this.templateName,
-            outputs: this.outputs
-        };
-    }
-
-    // TODO this logic is needed by ChildTable too. Move it to WGenerator (ie parent).
-
-    static isAppropriateFor (tableString) {
-        const t = tableString.trim()
-            .toLowerCase();
-
-        if (
-            AliasTable.STARTERS.some(
-                starter => t.startsWith(starter)
-            )
-        ) {
-            return true;
-        }
-
-        return t.startsWith('output');
-    }
-
-    // Returns a string
-    static withoutTheStarter (rawString) {
-        const s = rawString.trim();
-        const sLow = s.toLowerCase();
-
-        for (let starter of AliasTable.STARTERS) {
-            if (sLow.startsWith(starter)) {
-                return s.slice(starter.length)
-                    .trim();
-            }
-        }
-
-        return s;
-    }
-}
-
-AliasTable.STARTERS = [
-    'alias'
-];
-
-class ChildTable {
-    constructor (rawString, generator) {
-        this.generator = generator;
-
-        const lines = rawString.trim()
-            .split('\n')
-            .map(child => child.trim());
-
-        this.templateName = ChildTable.withoutTheStarter(lines[0]);
-        this.children = lines.slice(1)
-            .map(
-                line => {
-                    if (Util.contains(line, '/')) {
-                        // Util.log(`In ChildTable constructor. line is ${line}`, 'debug');
-
-                        line = this.generator.makePathAbsolute(line);
-                    }
-
-                    return line;
-                }
-            );
-    }
-
-    toJson () {
-        return {
-            generatorPath: this.generator.codexPath,
-            templateName: this.templateName,
-            children: this.children
-        };
-    }
-
-    // Returns a boolean
-    static isAppropriateFor (tableString) {
-        const t = tableString.trim()
-            .toLowerCase();
-
-        return ChildTable.STARTERS.some(
-            starter => t.startsWith(starter)
-        );
-    }
-
-    // Returns a string
-    static withoutTheStarter (rawString) {
-        const s = rawString.trim();
-        const sLow = s.toLowerCase();
-
-        for (let starter of ChildTable.STARTERS) {
-            if (sLow.startsWith(starter)) {
-                return s.slice(starter.length)
-                    .trim();
-            }
-        }
-
-        return s;
-    }
-}
-
-ChildTable.STARTERS = [
-    'children of',
-    'childrenof'
-    // 'childrenOf' is implied by the call to toLowerCase()
-];
-
-// TODO move to its own file
-// Intermediate representation used during parsing and generation. Represents a name (of a template or of a alias) with a codex path for context.
-// Alternate names: CodexString, PathName, PathString, ContextName, ContextString
-class ContextString {
-    // Example:
-    // {
-    //     name: 'civilian',
-    //     codexPath: 'halo/unsc/individual'
-    // }
-    constructor (name, absolutePath) {
-        if (Util.contains(name, '/')) {
-            // NOTE: We currently do not support the name param being a relative path.
-            const findings = WGenerator.findGenAndTable(name);
-            this.name = findings.name;
-            this.path = findings.gen.codexPath;
-        }
-        else {
-            this.name = name;
-            // LATER: guarantee that this is always a absolute path.
-            this.path = absolutePath;
-        }
-    }
-
-    toString () {
-        return `{name:${this.name}, path:${this.path}}`;
-    }
-}
-
 module.exports = WGenerator;
 
 
@@ -7077,21 +7287,24 @@ halo/unsc/item/externalThing
 */
 
 }).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":2,"../codices/halo/cov/force":15,"../codices/halo/cov/individual":16,"../codices/halo/cov/item":17,"../codices/halo/cov/squad":18,"../codices/halo/flood/individual":19,"../codices/halo/flood/squad":20,"../codices/halo/forerunner/company":21,"../codices/halo/forerunner/individual":22,"../codices/halo/forerunner/item":23,"../codices/halo/forerunner/squad":24,"../codices/halo/presence":25,"../codices/halo/unsc/battalion":26,"../codices/halo/unsc/company":27,"../codices/halo/unsc/fleet":28,"../codices/halo/unsc/individual":29,"../codices/halo/unsc/item":30,"../codices/halo/unsc/patrol":31,"../codices/halo/unsc/patrol.js":31,"../codices/halo/unsc/ship":32,"../codices/halo/unsc/squad":33,"../codices/sunlight/warband/item":34,"../codices/sunlight/warband/player":35,"../util/util.js":76,"../wnode/creature.js":77,"../wnode/storageModes.js":78,"../wnode/wnode.js":80,"_process":82,"fs":81}],42:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":4,"../codices/halo/cov/force":17,"../codices/halo/cov/individual":18,"../codices/halo/cov/item":19,"../codices/halo/cov/squad":20,"../codices/halo/flood/individual":21,"../codices/halo/flood/squad":22,"../codices/halo/forerunner/company":23,"../codices/halo/forerunner/individual":24,"../codices/halo/forerunner/item":25,"../codices/halo/forerunner/squad":26,"../codices/halo/presence":27,"../codices/halo/unsc/battalion":28,"../codices/halo/unsc/company":29,"../codices/halo/unsc/fleet":30,"../codices/halo/unsc/individual":31,"../codices/halo/unsc/item":32,"../codices/halo/unsc/patrol":33,"../codices/halo/unsc/patrol.js":33,"../codices/halo/unsc/ship":34,"../codices/halo/unsc/squad":35,"../codices/sunlight/warband/item":36,"../codices/sunlight/warband/player":37,"../util/util.js":81,"../wnode/creature.js":82,"../wnode/storageModes.js":83,"../wnode/wnode.js":85,"./aliasTable.js":43,"./childTable.js":44,"./contextString.js":45,"_process":2,"fs":1}],47:[function(require,module,exports){
+'use strict'
+
 // return a string with the provided number formatted with commas.
 // can specify either a Number or a String.
-function commaNumber(number, separator, decimalChar) {
+function commaNumber(inputNumber, optionalSeparator, optionalDecimalChar) {
 
   // we'll strip off and hold the decimal value to reattach later.
   // we'll hold both the `number` value and `stringNumber` value.
-  var decimal, stringNumber
+  let number, stringNumber, decimal
 
   // default `separator` is a comma
-  separator   = separator   || ','
-  // default `decimalChar` is a period
-  decimalChar = decimalChar || '.'
+  const separator = optionalSeparator   || ','
 
-  switch (typeof number) {
+  // default `decimalChar` is a period
+  const decimalChar = optionalDecimalChar || '.'
+
+  switch (typeof inputNumber) {
 
     case 'string':
 
@@ -7099,26 +7312,29 @@ function commaNumber(number, separator, decimalChar) {
       // NOTE: some numbers which are too small will get passed this
       //       when they have decimal values which make them too long here.
       //       but, the number value check after this switch will catch it.
-      if (number.length < (number[0] === '-' ? 5 : 4)) {
-        return number
+      if (inputNumber.length < (inputNumber[0] === '-' ? 5 : 4)) {
+        return inputNumber
       }
 
       // remember it as a string in `stringNumber` and convert to a Number
-      stringNumber = number
+      stringNumber = inputNumber
 
       // if they're not using the Node standard decimal char then replace it
       // before converting.
-      number = decimalChar !== '.' ? Number(number.replace(decimalChar, '.'))
-                                   : Number(number)
+      number = decimalChar !== '.' ? Number(stringNumber.replace(decimalChar, '.'))
+                                   : Number(stringNumber)
       break
 
     // convert to a string.
     // NOTE: don't check if the number is too small before converting
     //       because we'll need to return `stringNumber` anyway.
-    case 'number': stringNumber = String(number) ; break
+    case 'number':
+      stringNumber = String(inputNumber)
+      number       = inputNumber
+      break
 
     // return invalid type as-is
-    default: return number
+    default: return inputNumber
   }
 
   // when it doesn't need a separator or isn't a number then return it
@@ -7127,21 +7343,23 @@ function commaNumber(number, separator, decimalChar) {
   }
 
   // strip off decimal value to append to the final result at the bottom
-  decimal = stringNumber.lastIndexOf(decimalChar)
+  let decimalIndex = stringNumber.lastIndexOf(decimalChar)
 
-  if (decimal > -1) {
-    decimal = stringNumber.slice(decimal)
+  if (decimalIndex > -1) {
+    decimal = stringNumber.slice(decimalIndex)
     stringNumber = stringNumber.slice(0, -decimal.length)
-  } else {
-    decimal = null
   }
+
+  // else {
+  //   decimal = null
+  // }
 
   // finally, parse the string and add in separators
   stringNumber = parse(stringNumber, separator)
 
   // if there's a decimal value add it back on the end.
   // NOTE: we sliced() it off including the decimalChar, so it's good.
-  return (decimal != null) ? stringNumber + decimal : stringNumber
+  return decimal ? stringNumber + decimal : stringNumber
 
 }
 
@@ -7150,15 +7368,14 @@ function parse(stringNumber, separator) {
 
   // below here we split the number at spots to add a separator.
   // then, combine it with the separator and add decimal value (if exists)
-  var count, i, start, strings
 
-  start = stringNumber[0] === '-' ? 1 : 0  // start after minus sign
-  count = stringNumber.length - start - 1  // count digits after first
-  strings = []                             // hold string parts
-  i = (count % 3) + 1 + start              // index for first separator
-
-  // grab string content before where the first separator belongs
-  strings.push(stringNumber.slice(0, i))
+  const start = stringNumber[0] === '-' ? 1 : 0  // start after minus sign
+  const count = stringNumber.length - start - 1  // count digits after first
+  let i = (count % 3) + 1 + start                // index for first separator
+  const strings = [                              // hold string parts
+    // grab string content before where the first separator belongs
+    stringNumber.slice(0, i)
+  ]
 
   // split remaining string in groups of 3 where a separator belongs
   while (i < stringNumber.length) {
@@ -7172,7 +7389,7 @@ function parse(stringNumber, separator) {
 
 
 // convenience function for currying style:
-//   var format = commaNumber.bindWith(',', '.')
+//   const format = commaNumber.bindWith(',', '.')
 function bindWith(separator, decimalChar) {
   return function(number) {
     return commaNumber(number, separator, decimalChar)
@@ -7182,7 +7399,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],43:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 
@@ -7191,7 +7408,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":44}],44:[function(require,module,exports){
+},{"./lib/js-yaml.js":49}],49:[function(require,module,exports){
 'use strict';
 
 
@@ -7232,7 +7449,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":46,"./js-yaml/exception":47,"./js-yaml/loader":48,"./js-yaml/schema":50,"./js-yaml/schema/core":51,"./js-yaml/schema/default_full":52,"./js-yaml/schema/default_safe":53,"./js-yaml/schema/failsafe":54,"./js-yaml/schema/json":55,"./js-yaml/type":56}],45:[function(require,module,exports){
+},{"./js-yaml/dumper":51,"./js-yaml/exception":52,"./js-yaml/loader":53,"./js-yaml/schema":55,"./js-yaml/schema/core":56,"./js-yaml/schema/default_full":57,"./js-yaml/schema/default_safe":58,"./js-yaml/schema/failsafe":59,"./js-yaml/schema/json":60,"./js-yaml/type":61}],50:[function(require,module,exports){
 'use strict';
 
 
@@ -7293,7 +7510,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],46:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -8122,7 +8339,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":45,"./exception":47,"./schema/default_full":52,"./schema/default_safe":53}],47:[function(require,module,exports){
+},{"./common":50,"./exception":52,"./schema/default_full":57,"./schema/default_safe":58}],52:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -8167,7 +8384,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],48:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -8199,6 +8416,8 @@ var PATTERN_FLOW_INDICATORS       = /[,\[\]\{\}]/;
 var PATTERN_TAG_HANDLE            = /^(?:!|!!|![a-z\-]+!)$/i;
 var PATTERN_TAG_URI               = /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i;
 
+
+function _class(obj) { return Object.prototype.toString.call(obj); }
 
 function is_EOL(c) {
   return (c === 0x0A/* LF */) || (c === 0x0D/* CR */);
@@ -8454,6 +8673,31 @@ function mergeMappings(state, destination, source, overridableKeys) {
 
 function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, startLine, startPos) {
   var index, quantity;
+
+  // The output is a plain object here, so keys can only be strings.
+  // We need to convert keyNode to a string, but doing so can hang the process
+  // (deeply nested arrays that explode exponentially using aliases).
+  if (Array.isArray(keyNode)) {
+    keyNode = Array.prototype.slice.call(keyNode);
+
+    for (index = 0, quantity = keyNode.length; index < quantity; index += 1) {
+      if (Array.isArray(keyNode[index])) {
+        throwError(state, 'nested arrays are not supported inside keys');
+      }
+
+      if (typeof keyNode === 'object' && _class(keyNode[index]) === '[object Object]') {
+        keyNode[index] = '[object Object]';
+      }
+    }
+  }
+
+  // Avoid code execution in load() via toString property
+  // (still use its own toString for arrays, timestamps,
+  // and whatever user schema extensions happen to have @@toStringTag)
+  if (typeof keyNode === 'object' && _class(keyNode) === '[object Object]') {
+    keyNode = '[object Object]';
+  }
+
 
   keyNode = String(keyNode);
 
@@ -9767,7 +10011,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":45,"./exception":47,"./mark":49,"./schema/default_full":52,"./schema/default_safe":53}],49:[function(require,module,exports){
+},{"./common":50,"./exception":52,"./mark":54,"./schema/default_full":57,"./schema/default_safe":58}],54:[function(require,module,exports){
 'use strict';
 
 
@@ -9845,7 +10089,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":45}],50:[function(require,module,exports){
+},{"./common":50}],55:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -9955,7 +10199,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":45,"./exception":47,"./type":56}],51:[function(require,module,exports){
+},{"./common":50,"./exception":52,"./type":61}],56:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -9975,7 +10219,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":50,"./json":55}],52:[function(require,module,exports){
+},{"../schema":55,"./json":60}],57:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -10002,7 +10246,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":50,"../type/js/function":61,"../type/js/regexp":62,"../type/js/undefined":63,"./default_safe":53}],53:[function(require,module,exports){
+},{"../schema":55,"../type/js/function":66,"../type/js/regexp":67,"../type/js/undefined":68,"./default_safe":58}],58:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -10032,7 +10276,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":50,"../type/binary":57,"../type/merge":65,"../type/omap":67,"../type/pairs":68,"../type/set":70,"../type/timestamp":72,"./core":51}],54:[function(require,module,exports){
+},{"../schema":55,"../type/binary":62,"../type/merge":70,"../type/omap":72,"../type/pairs":73,"../type/set":75,"../type/timestamp":77,"./core":56}],59:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -10051,7 +10295,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":50,"../type/map":64,"../type/seq":69,"../type/str":71}],55:[function(require,module,exports){
+},{"../schema":55,"../type/map":69,"../type/seq":74,"../type/str":76}],60:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -10078,7 +10322,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":50,"../type/bool":58,"../type/float":59,"../type/int":60,"../type/null":66,"./failsafe":54}],56:[function(require,module,exports){
+},{"../schema":55,"../type/bool":63,"../type/float":64,"../type/int":65,"../type/null":71,"./failsafe":59}],61:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -10141,7 +10385,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":47}],57:[function(require,module,exports){
+},{"./exception":52}],62:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -10281,7 +10525,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":56}],58:[function(require,module,exports){
+},{"../type":61}],63:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10318,7 +10562,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":56}],59:[function(require,module,exports){
+},{"../type":61}],64:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -10436,7 +10680,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":45,"../type":56}],60:[function(require,module,exports){
+},{"../common":50,"../type":61}],65:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -10611,7 +10855,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":45,"../type":56}],61:[function(require,module,exports){
+},{"../common":50,"../type":61}],66:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -10705,7 +10949,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":56}],62:[function(require,module,exports){
+},{"../../type":61}],67:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -10767,7 +11011,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":56}],63:[function(require,module,exports){
+},{"../../type":61}],68:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -10797,7 +11041,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":56}],64:[function(require,module,exports){
+},{"../../type":61}],69:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10807,7 +11051,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":56}],65:[function(require,module,exports){
+},{"../type":61}],70:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10821,7 +11065,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":56}],66:[function(require,module,exports){
+},{"../type":61}],71:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10857,7 +11101,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":56}],67:[function(require,module,exports){
+},{"../type":61}],72:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10903,7 +11147,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":56}],68:[function(require,module,exports){
+},{"../type":61}],73:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10958,7 +11202,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":56}],69:[function(require,module,exports){
+},{"../type":61}],74:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10968,7 +11212,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":56}],70:[function(require,module,exports){
+},{"../type":61}],75:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10999,7 +11243,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":56}],71:[function(require,module,exports){
+},{"../type":61}],76:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -11009,7 +11253,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":56}],72:[function(require,module,exports){
+},{"../type":61}],77:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -11099,12 +11343,12 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":56}],73:[function(require,module,exports){
+},{"../type":61}],78:[function(require,module,exports){
 (function (global){
 /**
  * @license
  * Lodash <https://lodash.com/>
- * Copyright JS Foundation and other contributors <https://js.foundation/>
+ * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -11115,7 +11359,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.11';
+  var VERSION = '4.17.15';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -13774,16 +14018,10 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
         value.forEach(function(subValue) {
           result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
         });
-
-        return result;
-      }
-
-      if (isMap(value)) {
+      } else if (isMap(value)) {
         value.forEach(function(subValue, key) {
           result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
         });
-
-        return result;
       }
 
       var keysFunc = isFull
@@ -14707,8 +14945,8 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
         return;
       }
       baseFor(source, function(srcValue, key) {
+        stack || (stack = new Stack);
         if (isObject(srcValue)) {
-          stack || (stack = new Stack);
           baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
         }
         else {
@@ -16525,7 +16763,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
       return function(number, precision) {
         number = toNumber(number);
         precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
-        if (precision) {
+        if (precision && nativeIsFinite(number)) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
           var pair = (toString(number) + 'e').split('e'),
@@ -17708,7 +17946,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
     }
 
     /**
-     * Gets the value at `key`, unless `key` is "__proto__".
+     * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
      *
      * @private
      * @param {Object} object The object to query.
@@ -17716,6 +17954,10 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
      * @returns {*} Returns the property value.
      */
     function safeGet(object, key) {
+      if (key === 'constructor' && typeof object[key] === 'function') {
+        return;
+      }
+
       if (key == '__proto__') {
         return;
       }
@@ -21516,6 +21758,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
           }
           if (maxing) {
             // Handle invocations in a tight loop.
+            clearTimeout(timerId);
             timerId = setTimeout(timerExpired, wait);
             return invokeFunc(lastCallTime);
           }
@@ -25902,9 +26145,12 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
       , 'g');
 
       // Use a sourceURL for easier debugging.
+      // The sourceURL gets injected into the source that's eval-ed, so be careful
+      // with lookup (in case of e.g. prototype pollution), and strip newlines if any.
+      // A newline wouldn't be a valid sourceURL anyway, and it'd enable code injection.
       var sourceURL = '//# sourceURL=' +
-        ('sourceURL' in options
-          ? options.sourceURL
+        (hasOwnProperty.call(options, 'sourceURL')
+          ? (options.sourceURL + '').replace(/[\r\n]/g, ' ')
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -25937,7 +26183,9 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      var variable = options.variable;
+      // Like with sourceURL, we take care to not check the option's prototype,
+      // as this configuration is a code injection vector.
+      var variable = hasOwnProperty.call(options, 'variable') && options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
@@ -28142,10 +28390,11 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
     baseForOwn(LazyWrapper.prototype, function(func, methodName) {
       var lodashFunc = lodash[methodName];
       if (lodashFunc) {
-        var key = (lodashFunc.name + ''),
-            names = realNames[key] || (realNames[key] = []);
-
-        names.push({ 'name': methodName, 'func': lodashFunc });
+        var key = lodashFunc.name + '';
+        if (!hasOwnProperty.call(realNames, key)) {
+          realNames[key] = [];
+        }
+        realNames[key].push({ 'name': methodName, 'func': lodashFunc });
       }
     });
 
@@ -28210,7 +28459,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],74:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -32814,7 +33063,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],75:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 'use strict';
 
 // TODO make this name lowercase.
@@ -32962,7 +33211,7 @@ class Coord {
 Coord.DECIMAL_PLACES = 2;
 
 module.exports = Coord;
-},{"./util.js":76}],76:[function(require,module,exports){
+},{"./util.js":81}],81:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -33520,7 +33769,7 @@ util.mbti = () => {
     .join('');
 };
 
-},{"comma-number":42,"lodash":73,"moment":74}],77:[function(require,module,exports){
+},{"comma-number":47,"lodash":78,"moment":79}],82:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -33604,7 +33853,7 @@ module.exports = class Creature extends Thing {
     }
 };
 
-},{"../util/coord.js":75,"../util/util.js":76,"./thing.js":79}],78:[function(require,module,exports){
+},{"../util/coord.js":80,"../util/util.js":81,"./thing.js":84}],83:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -33615,7 +33864,7 @@ module.exports = Util.makeEnum([
     'Frozen'
 ]);
 
-},{"../util/util.js":76}],79:[function(require,module,exports){
+},{"../util/util.js":81}],84:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -33692,7 +33941,7 @@ module.exports = class Thing extends WNode {
 };
 
 
-},{"../util/coord.js":75,"../util/util.js":76,"./wnode.js":80}],80:[function(require,module,exports){
+},{"../util/coord.js":80,"../util/util.js":81,"./wnode.js":85}],85:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -34097,192 +34346,4 @@ class WNode {
 
 module.exports = WNode;
 
-},{"../util/util.js":76,"./storageModes.js":78,"js-yaml":43}],81:[function(require,module,exports){
-
-},{}],82:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}]},{},[38,39,40]);
+},{"../util/util.js":81,"./storageModes.js":83,"js-yaml":48}]},{},[40,41,42]);
