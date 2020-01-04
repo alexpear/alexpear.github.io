@@ -121,14 +121,10 @@ class Coord {
 
     // Returns random position in a distribution that is convenient to display on one screen.
     static randomOnScreen () {
-        // Unit: meters
-        const WIDTH = 23;
-        const HEIGHT = 13;
-
         return new Coord(
             // 2 decimal places (centimeter precision)
-            Util.randomRange(0.5, WIDTH, 2),
-            Util.randomRange(0.5, HEIGHT, 2)
+            Util.randomRange(0.5, Coord.SCREEN_WIDTH, 2),
+            Util.randomRange(0.5, Coord.SCREEN_HEIGHT, 2)
         );
     }
 
@@ -140,6 +136,10 @@ class Coord {
         );
     }
 };
+
+// Unit: meters
+Coord.SCREEN_WIDTH = 23;
+Coord.SCREEN_HEIGHT = 13;
 
 // Death Planet Fish Tank wants a cm resolution.
 Coord.DECIMAL_PLACES = 2;
