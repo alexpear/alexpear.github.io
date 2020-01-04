@@ -17,5 +17,17 @@ module.exports = class Box {
             Util.randomRange(this.cornerA.c, this.cornerB.c, Coord.DECIMAL_PLACES)
         );
     }
+
+    // Input: number[], in meters
+    // corner A will be the origin 0,0
+    static ofDimensions(dimensions) {
+        dimensions = dimensions || [Coord.SCREEN_WIDTH, Coord.SCREEN_HEIGHT];
+
+        // Later can add support for flexible number of dimensions
+        return new Box(
+            new Coord(0,0),
+            new Coord(dimensions[0], dimensions[1])
+        );
+    }
 };
 

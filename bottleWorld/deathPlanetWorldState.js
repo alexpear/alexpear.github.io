@@ -3,13 +3,20 @@
 const ContinuousWorldState = require('./continuousWorldState.js');
 const Timeline = require('./timeline.js');
 const ArrivalEvent = require('./events/arrivalEvent.js');
-const CreatureTemplate = require('../battle20/creaturetemplate.js');
-const Util = require('../util/util.js');
 
+const CreatureTemplate = require('../battle20/creaturetemplate.js');
+const Box = require('../util/box.js');
+const Util = require('../util/util.js');
 const Creature = require('../wnode/creature.js');
 const Thing = require('../wnode/thing.js');
 
 class DeathPlanetWorldState extends ContinuousWorldState {
+	constructor () {
+		super();
+
+		this.box = Box.ofDimensions();
+	}
+
     proceed () {
         // Iterate over the set of BEvents in the timeline's current instant.
         // Later reconcile this with timeline.computeNextInstant()
