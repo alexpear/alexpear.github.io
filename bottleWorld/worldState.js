@@ -23,10 +23,9 @@ class WorldState {
     constructor (timeline, t) {
         this.timeline = timeline;
         this.t = t || 0;
-        // TODO make this a obj, keyed by thing.id, for performance
-        // TODO rename to .wnodes, because Group does not extend Thing
-        // or alternately make Thing.sp into a getter, which Group can override. Group can then extend Thing or Creature
-        this.things = [];
+
+        // Maybe we should make Thing.sp into a getter, which Group can override. Group can then extend Thing or Creature
+        this.nodes = [];
 
         // Later, probably template lookups should be looking across all generators.
         this.wanderingGenerator = WGenerator.generators['halo/unsc/individual'];
@@ -43,12 +42,12 @@ class WorldState {
     }
 
     fromId (id) {
-        const thingWithId = this.things.find(
-            thing => thing.id === id
+        const nodeWithId = this.nodes.find(
+            node => node.id === id
         );
 
-        if (thingWithId) {
-            return thingWithId;
+        if (nodeWithId) {
+            return nodeWithId;
         }
 
         const fromGenerator = WGenerator.ids[id];
@@ -61,22 +60,21 @@ class WorldState {
         return this.getTemplate(id);
     }
 
-    // I currently plan for Thing to extend WNode
-    thingsAt (coord) {
-        return this.things.filter(
+    nodesAt (coord) {
+        return this.nodes.filter(
             t => t.coord && t.coord.equals(coord)
         );
     }
 
-    thingsWith (criteria, shouldFlip, things) {
+    nodesWith (criteria, shouldFlip, nodes) {
         shouldFlip = shouldFlip || false;
-        things = things || this.things;
+        nodes = nodes || this.nodes;
 
         const props = Object.keys(criteria);
 
-        return things.filter(
-            thing => {
-                if (! thing.active) {
+        return nodes.filter(
+            node => {
+                if (! node.active) {
                     return false;
                 }
 
@@ -85,13 +83,13 @@ class WorldState {
 
                     if (! shouldFlip) {
                         // In the normal mode, criteria describes a set of mandatory traits.
-                        if (thing[prop] != criteria[prop]) {
+                        if (node[prop] != criteria[prop]) {
                             return false;
                         }
                     }
                     else {
                         // In the flipped mode, criteria describes a set of undesirable traits.
-                        if (thing[prop] == criteria[prop]) {
+                        if (node[prop] == criteria[prop]) {
                             return false;
                         }
                     }
@@ -102,19 +100,19 @@ class WorldState {
         );
     }
 
-    thingsWithout (criteria) {
-        return this.thingsWith(criteria, true);
+    nodesWithout (criteria) {
+        return this.nodesWith(criteria, true);
     }
 
-    activeThings (things) {
-        things = things || this.things;
+    activeNodes (nodes) {
+        nodes = nodes || this.nodes;
 
-        return this.thingsWith({}, false, things);
+        return this.nodesWith({}, false, nodes);
     }
 
-    addThing (thing, coord) {
-        thing.coord = coord || new Coord();
-        this.things.push(thing);
+    addNode (node, coord) {
+        node.coord = coord || new Coord();
+        this.nodes.push(node);
     }
 
     // Probably deprecated and removable
@@ -204,7 +202,7 @@ class WorldState {
         return bEvent.resolve(this);
     }
 
-    addThingsByAlignment (newcomers, contextPath) {
+    addNodesByAlignment (newcomers, contextPath) {
         Object.keys(newcomers).forEach(alignment => {
             const teammates = newcomers[alignment];
 
@@ -218,8 +216,8 @@ class WorldState {
         });
     }
 
-    thingString () {
-        return this.things.filter(
+    nodeString () {
+        return this.nodes.filter(
             t => t.active
         ).map(
             t => `\n    ${Util.capitalized(t.toAlignmentString())}`
@@ -227,8 +225,8 @@ class WorldState {
         .join('') || `\n    Only the tireless void`;
     }
 
-    printThings () {
-        const output = `At t=${ this.now() }, this world contains: ${ this.thingString() }\n    (${this.alignmentCensusString()})`;
+    printNodes () {
+        const output = `At t=${ this.now() }, this world contains: ${ this.nodeString() }\n    (${this.alignmentCensusString()})`;
 
         Util.log(output, 'info');
     }
@@ -251,10 +249,10 @@ class WorldState {
     }
 
     // Debug helper func.
-    thingTypesString () {
-        return this.things
+    nodeTypesString () {
+        return this.nodes
             .map(
-                thing => thing.constructor.name
+                node => node.constructor.name
             )
             .join(', ');
     }
@@ -270,25 +268,25 @@ class WorldState {
         );
     }
 
-    // returns a dict<Thing[]>
+    // returns a dict<WNode[]>
     // {
     //     'foo': [a, b, c],
     //     'bar': [d, e, f]
     // }
-    dictByProp (prop, things) {
-        things = things || this.things;
+    dictByProp (prop, nodes) {
+        nodes = nodes || this.nodes;
 
         const dict = {};
 
-        things.forEach(
-            thing => {
-                const value = thing[prop];
+        nodes.forEach(
+            node => {
+                const value = node[prop];
 
                 if (dict[value]) {
-                    dict[value].push(thing);
+                    dict[value].push(node);
                 }
                 else {
-                    dict[value] = [thing];
+                    dict[value] = [node];
                 }
             }
         );
@@ -321,15 +319,15 @@ class WorldState {
     // }
     templateCensusObj () {
         const census = {};
-        const thingsByAlignment = this.dictByProp('alignment');
+        const nodesByAlignment = this.dictByProp('alignment');
 
-        Object.keys(thingsByAlignment).forEach(alignment => {
+        Object.keys(nodesByAlignment).forEach(alignment => {
             // Partition each alignment further, by template.
-            thingsByAlignment[alignment] = this.dictByProp('templateName', thingsByAlignment[alignment]);
+            nodesByAlignment[alignment] = this.dictByProp('templateName', nodesByAlignment[alignment]);
 
 
             census[alignment] = {};
-            const friends = thingsByAlignment[alignment];
+            const friends = nodesByAlignment[alignment];
 
             Object.keys(friends).forEach(templateName => {
                 const kin = friends[templateName];
@@ -392,23 +390,23 @@ class WorldState {
     alignmentCensusObj () {
         const alignments = {};
 
-        this.things.forEach(
-            thing => {
-                const existingEntry = alignments[thing.alignment];
+        this.nodes.forEach(
+            node => {
+                const existingEntry = alignments[node.alignment];
 
                 if (existingEntry) {
                     existingEntry.total += 1;
 
-                    if (thing.active) {
+                    if (node.active) {
                         existingEntry.active += 1;
                     }
 
                     return;
                 }
 
-                alignments[thing.alignment] = { total: 1 };
+                alignments[node.alignment] = { total: 1 };
 
-                alignments[thing.alignment].active = thing.active ?
+                alignments[node.alignment].active = node.active ?
                     1 :
                     0;
             }
@@ -435,13 +433,13 @@ class WorldState {
     alignments () {
         const alignments = {};
 
-        this.things.forEach(
-            thing => {
-                if (! thing.active) {
+        this.nodes.forEach(
+            node => {
+                if (! node.active) {
                     return;
                 }
 
-                alignments[thing.alignment] = true;
+                alignments[node.alignment] = true;
             }
         );
 
@@ -450,14 +448,14 @@ class WorldState {
 
     // Returns true iff multiple factions exist among living beings.
     conflictExists () {
-        if (! this.things || this.things.length <= 1) {
+        if (! this.nodes || this.nodes.length <= 1) {
             return false;
         }
 
         const alignments = {};
 
-        for (let i = 0; i < this.things.length; i++) {
-            const ti = this.things[i];
+        for (let i = 0; i < this.nodes.length; i++) {
+            const ti = this.nodes[i];
 
             if (! ti.active) {
                 continue;
@@ -475,13 +473,13 @@ class WorldState {
     }
 
     toJson () {
-        const serializedThings = this.things.map(
-            thing => thing.toJson()
+        const serializedNodes = this.nodes.map(
+            node => node.toJson()
         );
 
         return {
             t: this.t,
-            things: serializedThings,
+            nodes: serializedNodes,
             wanderingGenerator: this.wanderingGenerator.toJson()
         };
 

@@ -7,10 +7,7 @@ class RingWorldState extends GroupWorldState {
     constructor (startingGroups, circumference) {
         super();
 
-        // TODO Alternately, could rename WorldState.things to .wnodes or .entities
-        // And could put the array of extant Forces in there.
-        // (Force does not extend Thing, it only extends WNode)
-        this.forces = startingGroups || [];
+        this.nodes = this.nodes.concat(startingGroups || []);
     }
 
     allAlignments () {
@@ -52,7 +49,7 @@ class RingWorldState extends GroupWorldState {
             }
         };
 
-        worldState.addThingsByAlignment(startingThings, context);
+        worldState.addNodesByAlignment(startingThings, context);
 
         return worldState;
     }
@@ -61,7 +58,7 @@ class RingWorldState extends GroupWorldState {
         Util.log(`Beginning the RingWorldState test...`, `debug`);
 
         const worldState = RingWorldState.example();
-        worldState.printThings();
+        worldState.printNodes();
 
         while (worldState.worthContinuing()) {
             worldState.timeline.computeNextInstant();

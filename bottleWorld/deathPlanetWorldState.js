@@ -24,8 +24,8 @@ class DeathPlanetWorldState extends ContinuousWorldState {
     }
 
     moveEverything () {
-        this.things.forEach(
-            thing => {
+        this.nodes.forEach(
+            node => {
                 // LATER If it has momentum or is continuing to travel, move it one second further along its path.
                 // Round coords to the nearest cm.
             }
@@ -82,7 +82,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
             }
         };
 
-        worldState.addThingsByAlignment(startingThings, context);
+        worldState.addNodesByAlignment(startingThings, context);
 
         return worldState;
     }
@@ -91,7 +91,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         Util.log(`Beginning the DeathPlanetWorldState test...`, `debug`);
 
         const worldState = DeathPlanetWorldState.example();
-        worldState.printThings();
+        worldState.printNodes();
 
         while (worldState.worthContinuing()) {
             worldState.timeline.computeNextInstant();

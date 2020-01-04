@@ -71,7 +71,7 @@ module.exports = class Creature extends Thing {
     chooseTarget (worldState, actionTemplate) {
         // Later, actionTemplate can inform whether some targets are a bad idea for that action.
 
-        const nonAllies = worldState.thingsWithout(
+        const nonAllies = worldState.nodesWithout(
             {
                 alignment: this.alignment
             }

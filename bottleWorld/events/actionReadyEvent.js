@@ -25,7 +25,7 @@ module.exports = class ActionReadyEvent extends BEvent {
             protagonist.getActions().length === 0 ||
             ! protagonist.template
         ) {
-            throw new Error(`ActionReadyEvent found a strange protagonist (type ${protagonist.constructor.name}) in WorldState.things. { id: ${protagonist.id}, getActions(): ${protagonist.getActions ? protagonist.getActions() : 'undefined'}, template: ${protagonist.template}, templateName: ${protagonist.templateName} }`);
+            throw new Error(`ActionReadyEvent found a strange protagonist (type ${protagonist.constructor.name}) in WorldState.nodes. { id: ${protagonist.id}, getActions(): ${protagonist.getActions ? protagonist.getActions() : 'undefined'}, template: ${protagonist.template}, templateName: ${protagonist.templateName} }`);
         }
 
         if (! protagonist.active) {
