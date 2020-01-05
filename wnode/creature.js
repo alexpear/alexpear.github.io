@@ -41,33 +41,6 @@ module.exports = class Creature extends Thing {
         );
     }
 
-    // Recursion is necessary when base chassis traits are stored in a component WNode
-    findTrait (trait) {
-        if (this.template && this.template[trait]) {
-            return this.template[trait];
-        }
-
-        for (let i = 0; i < this.components.length; i++) {
-            const child = this.components[i];
-
-            // We dont want the stat from a item, or a modifier stat for example. We want something applicable to creatures.
-            if (child.constructor.name !== 'Creature') {
-                continue;
-            }
-
-            const childTrait = this.components[i].template &&
-                this.components[i].template[trait];
-
-            if (Util.exists(childTrait)) {
-                return childTrait;
-
-                // Note that if this trait is present on multiple components, this returns a arbitrary one.
-            }
-        }
-
-        return undefined;
-    }
-
     chooseTarget (worldState, actionTemplate) {
         // Later, actionTemplate can inform whether some targets are a bad idea for that action.
 

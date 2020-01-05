@@ -313,6 +313,33 @@ class WNode {
         );
     }
 
+    // Recursion is necessary when base chassis traits are stored in a component WNode
+    findTrait (trait) {
+        if (this.template && this.template[trait]) {
+            return this.template[trait];
+        }
+
+        for (let i = 0; i < this.components.length; i++) {
+            const child = this.components[i];
+
+            // A Creature doesnt want the stat from a item, or a modifier (relative) stat for example. We want something applicable to this type.
+            if (child.constructor.name !== this.constructor.name) {
+                continue;
+            }
+
+            const childTrait = this.components[i].template &&
+                this.components[i].template[trait];
+
+            if (Util.exists(childTrait)) {
+                return childTrait;
+
+                // Note that if this trait is present on multiple components, this returns a arbitrary one.
+            }
+        }
+
+        return undefined;
+    }
+
     // threshold is in ms of Unix time.
     // Recursive.
     pruneIfOld (threshold) {
