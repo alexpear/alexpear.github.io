@@ -44,4 +44,12 @@ module.exports = class Group extends WNode {
     //         localWeight
     //     );
     // }
+
+    static marineCompany () {
+        // const template = WGenerator.getTemplate('halo/unsc/individual/marinePrivate');
+
+        const company = new Group('halo/unsc/individual/marinePrivate', 50);
+
+        return company
+;    }
 };

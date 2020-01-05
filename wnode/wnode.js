@@ -130,6 +130,19 @@ class WNode {
         return this.traitMin('stealth');
     }
 
+    getSp () {
+        const personalSp = (this.sp && this.active) ?
+            this.sp :
+            0;
+
+        return this.components.reduce(
+            (spSoFar, component) => {
+                spSoFar + component.getSp()
+            },
+            personalSp
+        );
+    }
+
     toAlignmentString () {
         const tName = this.templateName ?
             Util.fromCamelCase(this.templateName) :
