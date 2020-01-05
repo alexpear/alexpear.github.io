@@ -16,8 +16,10 @@ module.exports = class Group extends WNode {
     constructor (template, quantity, coord) {
         super(template);
 
-        this.quantity = quantity || 1;
-        this.worstSp = 1; // TODO
+        this.quantity = Util.exists(quantity) || 1;
+        this.worstSp = this.template ?
+            this.template.maxSp :
+            1;
 
         this.coord = coord || new Coord();
     }
