@@ -16,12 +16,23 @@ module.exports = class Group extends WNode {
     constructor (template, quantity, alignment, coord) {
         super(template);
 
-        this.quantity = Util.exists(quantity) || 1;
+        this.quantity = Util.exists(quantity) ?
+            quantity :
+            1;
+
         this.worstSp = this.template ?
             this.template.maxSp :
             1;
 
-        this.coord = coord || new Coord();
+        this.alignment = alignment;
+
+        this.coord = coord;
+    }
+
+    toAlignmentString() {
+        const tName = Util.fromCamelCase(this.templateName);
+
+        return `${tName} x${this.quantity} (${this.alignment})`;
     }
 
     // distanceTo (target) {

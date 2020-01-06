@@ -56,18 +56,45 @@ class RingWorldState extends GroupWorldState {
     }
 
     toDebugString () {
-        const output = '';
+        const output = [];
 
-        // Bucket the wnodes into 36 sectors
+        // Bucket the wnodes into sectors
+        const SECTOR_COUNT = 36;
+        const sectorSize = this.circumference / SECTOR_COUNT;
         const sectors = [];
 
         this.nodes.forEach(
             node => {
-                const n = node.coord.x / 36 // or something. look up bucketing, truncation TODO
-                // sectors[n] <- push here or make array here
+                const n = Math.floor(node.coord.x / sectorSize);
+
+                // Util.log(n);
+
+                // Util.log(node.coord.toString());
+
+                if (sectors[n]) {
+                    sectors[n].push(node);
+                }
+                else {
+                    sectors[n] = [node];
+                }
             }
         );
 
+        for (let n = 0; n < SECTOR_COUNT; n++) {
+            const contents = sectors[n] ?
+                sectors[n].map(
+                    node => node.toAlignmentString()
+                )
+                .join(', ') :
+                '';
+
+            // LATER functionize this in Util
+            const sectorWithLeadingZeroes = _.padStart(n, 2, '0');
+
+            output[n] = `${sectorWithLeadingZeroes}: ${contents}`;
+        }
+
+        return '\n' + output.join('\n');
     }
 
     static example (timeline) {
@@ -102,7 +129,9 @@ class RingWorldState extends GroupWorldState {
         Util.log(`Beginning the RingWorldState test...`, `debug`);
 
         const worldState = RingWorldState.example();
-        worldState.printNodes();
+
+        // worldState.printNodes();
+        Util.log(worldState.toDebugString());
 
         while (worldState.worthContinuing()) {
             worldState.timeline.computeNextInstant();
