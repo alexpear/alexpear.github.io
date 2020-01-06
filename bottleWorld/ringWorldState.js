@@ -1,8 +1,16 @@
 'use strict';
 
-const ForceWorldState = require('./worldState.js');
+const _ = require('lodash');
 
-// Forces on a thin circular world.
+const GroupWorldState = require('./groupWorldState.js');
+const Timeline = require('./timeline.js');
+
+const Coord = require('../util/coord.js');
+const Util = require('../util/util.js');
+
+const Group = require('../wnode/group.js');
+
+// Armies on a thin circular world, a la Ringworld by Larry Niven.
 class RingWorldState extends GroupWorldState {
     constructor (startingGroups, circumference) {
         super();
@@ -11,7 +19,7 @@ class RingWorldState extends GroupWorldState {
 
         this.circumference = circumference || RingWorldState.CIRCUMFERENCE;
 
-        // Give the groups random Coords on the ring
+        this.assignCoords();
     }
 
     allAlignments () {
@@ -24,6 +32,18 @@ class RingWorldState extends GroupWorldState {
 
     randomCoord () {
         return Coord.random(this.circumference);
+    }
+
+    assignCoords () {
+        this.nodes.forEach(
+            node => {
+                if (node.coord) {
+                    return;
+                }
+
+                node.coord = this.randomCoord();
+            }
+        );
     }
 
     worthContinuing () {
