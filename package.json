@@ -20,9 +20,10 @@
     "buildTreeBrowser": "browserify treebrowser/treeBrowser.js -o treebrowser/bundle.js",
     "buildFishTank": "browserify fishTank/src/*.js -o fishTank/bundle.js",
     "server": "http-server",
-    "test": "npm run testDeathPlanet",
+    "test": "npm run testRingWorld",
     "testWGenerator": "node generation/WGenerator.js",
-    "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test"
+    "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
+    "testRingWorld": "node bottleWorld/ringWorldState.js test"
   },
   "repository": {
     "type": "git",
