@@ -406,6 +406,67 @@ util.abbrvNumber = (n) => {
         `-${output}`;
 };
 
+// Returns string
+util.prettyDistance = (meters) => {
+    meters = Math.abs(meters);
+
+    const AU = 149597870700;
+    const LIGHT_YEAR = 9460730472580800;
+
+    if (meters < 3) {
+        const rounded = _.round(meters, 2);
+
+        return `${rounded} m`;
+    }
+    else if (meters < 1000) {
+        const rounded = _.round(meters);
+
+        return `${rounded} m`;
+    }
+    else if (meters < 3000) {
+        const klicks = _.round(meters / 1000, 1);
+
+        return `${klicks} km`;
+    }
+    else if (meters < AU * 0.1) {
+        const klicks = util.commaNumber(
+            _.round(meters / 1000)
+        );
+
+        return `${klicks} km`;
+    }
+    else if (meters < AU * 3) {
+        const au = _.round(meters / AU, 1)
+            .toFixed(1);
+
+        return `${au} AU`;
+    }
+    else if (meters < LIGHT_YEAR * 0.1) {
+        const au = util.commaNumber(
+            _.round(meters / AU)
+        );
+
+        return `${au} AU`;
+    } else if (meters < LIGHT_YEAR * 3) {
+        const ly = _.round(meters / LIGHT_YEAR, 1);
+
+        return `${ly} lightyears`;
+    }
+    else {
+        const ly = util.commaNumber(
+            _.round(meters / LIGHT_YEAR)
+        );
+
+        return `${ly} lightyears`;
+    }
+};
+
+util.testPrettyDistance = () => {
+    for (let n = 0.197842357; n < 94607304725808000000; n = 2 * n) {
+        console.log(util.prettyDistance(n));
+    }
+};
+
 util.sigFigsOf = (n) => {
     if (! util.isNumber(n)) {
         n = parseFloat(n);
@@ -554,3 +615,10 @@ util.mbti = () => {
     ]
     .join('');
 };
+
+util.testAll = () => {
+    util.testPrettyDistance();
+};
+
+
+// util.testAll();
