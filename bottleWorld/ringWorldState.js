@@ -67,10 +67,6 @@ class RingWorldState extends GroupWorldState {
             node => {
                 const n = Math.floor(node.coord.x / sectorSize);
 
-                // Util.log(n);
-
-                // Util.log(node.coord.toString());
-
                 if (sectors[n]) {
                     sectors[n].push(node);
                 }
