@@ -153,6 +153,7 @@ class WNode {
             'KO';
 
         if (this.displayName) {
+            // later include alignment here
             return `${this.displayName} (${tName})`;
         }
         else {
