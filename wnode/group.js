@@ -13,7 +13,7 @@ const WNode = require('./wnode.js');
 // Contains a homogenous set of 1+ Creatures
 // These are not instantiated in .components.
 module.exports = class Group extends WNode {
-    constructor (template, quantity, coord) {
+    constructor (template, quantity, alignment, coord) {
         super(template);
 
         this.quantity = Util.exists(quantity) || 1;
@@ -23,8 +23,6 @@ module.exports = class Group extends WNode {
 
         this.coord = coord || new Coord();
     }
-
-    // TODO start with example () func.
 
     // distanceTo (target) {
     //     const targetCoord = target.coord || target;

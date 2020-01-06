@@ -8,15 +8,22 @@ class RingWorldState extends GroupWorldState {
         super();
 
         this.nodes = this.nodes.concat(startingGroups || []);
+
+        this.circumference = circumference || RingWorldState.CIRCUMFERENCE;
+
+        // Give the groups random Coords on the ring
     }
 
     allAlignments () {
         // Yes, this capitalization is inconsistent with the camelcase style used by templateNames. Standardize stuff later.
         return [
             'UNSC',
-            // 'Covenant',
             'Insurrection'
         ];
+    }
+
+    randomCoord () {
+        return Coord.random(this.circumference);
     }
 
     worthContinuing () {
@@ -28,28 +35,45 @@ class RingWorldState extends GroupWorldState {
             (conflictExists && probablyNotStuck);
     }
 
+    toDebugString () {
+        const output = '';
+
+        // Bucket the wnodes into 36 sectors
+        const sectors = [];
+
+        this.nodes.forEach(
+            node => {
+                const n = node.coord.x / 36 // or something. look up bucketing, truncation TODO
+                // sectors[n] <- push here or make array here
+            }
+        );
+
+    }
+
     static example (timeline) {
         // TODO comment out death planet specific stuff
-        const worldState = new RingWorldState();
+
+        const context = 'halo/unsc/individual';
+
+        const startingGroups = [
+            new Group(
+                'marinePrivate',
+                50,
+                'UNSC'
+            ),
+            new Group(
+                'marinePrivate',
+                49,
+                'Insurrection'
+            )
+        ];
+
+        const worldState = new RingWorldState(startingGroups, RingWorldState.CIRCUMFERENCE);
 
         timeline = timeline || new Timeline(worldState);
         timeline.currentWorldState = worldState;
 
         worldState.timeline = timeline;
-
-        const context = 'halo/unsc/individual';
-
-        const startingThings = {
-            UNSC: {
-                marinePrivate: 30,
-                spartan: 30
-            },
-            Insurrection: {
-                marinePrivate: 70
-            }
-        };
-
-        worldState.addNodesByAlignment(startingThings, context);
 
         return worldState;
     }
@@ -89,6 +113,8 @@ class RingWorldState extends GroupWorldState {
         }
     }
 }
+
+RingWorldState.CIRCUMFERENCE = Math.pow(10000 * 1000 / 2, 2) * 3.14159;
 
 module.exports = RingWorldState;
 

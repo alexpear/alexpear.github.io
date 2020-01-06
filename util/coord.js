@@ -97,12 +97,16 @@ class Coord {
         if (!rCount || !cCount) {
             console.log('ERROR: Coord.random() called without arguments');
             return new Coord(-1,-1);
-            // TODO throw exception, make supervisor reboot, et cetera.
+            // LATER throw exception, make supervisor reboot, et cetera.
         }
+
+        const c = cCount ?
+            Util.randomUpTo(cCount - 1) :
+            0;
 
         return new Coord(
             Util.randomUpTo(rCount-1),
-            Util.randomUpTo(cCount-1)
+            c
         );
     }
 
