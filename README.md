@@ -27,11 +27,7 @@ This website include the following prototype projects:
     - Also, maybe we could omit that prop in whichever case is more common.
 
 - Halo Ring Bottle
-  - Force/Banner based. Creatures of a faction always move in clumps. Nearby clumps join up.
-  - Display with CLI log function that buckets the 1-dimensional space into 30-50 sectors, and lists what is there.
-  - All human marines for MRB 1
-  - Start with a subclass or variant of ContinuousWorldState called RingWorldState
-    - Alternately add intermediate class forceWorldState, in case i want to make a 2d overmap version of this later
+  - Give RingWorldState.example() some ArrivalEvents that instantiate Groups into the .nodes array.
 
 - Waffle Tree fractal mode
   - Scale test result: JS stack limit exceeded. Could test with larger limit.

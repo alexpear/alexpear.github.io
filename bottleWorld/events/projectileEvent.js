@@ -135,6 +135,12 @@ module.exports = class ProjectileEvent extends BEvent {
 
         return Math.random() < hitChance;
     }
+
+    static testActionDamage (actionTemplate, target) {
+        // target = target || a default
+
+        // TODO: Log how much expected damage this attack deals at 0, 1, 2, 4, 8, etc meters
+    }
 };
 
 // Old funcs from battle20 group.js:
