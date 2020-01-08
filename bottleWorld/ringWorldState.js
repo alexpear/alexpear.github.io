@@ -99,6 +99,7 @@ class RingWorldState extends GroupWorldState {
         const context = 'halo/unsc/individual';
 
         const startingGroups = [
+            // TODO Perhaps the string templateName given to WGenerator should be sufficient for it to know when to create a Creature and when a Group. the template entry in the generator txt file could specify this.
             new Group(
                 'marinePrivate',
                 50,

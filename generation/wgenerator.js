@@ -209,6 +209,7 @@ class WGenerator {
             return new WNode(templateName);
         }
 
+        // TODO: For RingWorldState, we also want the capacity to create Group instances. The template entry can have a row like 'class: group' to indicate this.
         if (template.isCreature()) {
             return new Creature(template);
         }
