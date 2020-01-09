@@ -460,6 +460,7 @@ class WGenerator {
         // For now, this is hard coded to one fictional setting.
         WGenerator.loadHaloCodices();
         WGenerator.loadSunlightCodices();
+        WGenerator.loadYACodices();
     }
 
     static loadHaloCodices () {
@@ -574,6 +575,20 @@ class WGenerator {
         WGenerator.addGenerator(
             require('../codices/sunlight/warband/player'),
             'sunlight/warband/player'
+        );
+    }
+
+    static loadYACodices () {
+        if (! WGenerator.generators) {
+            WGenerator.generators = {};
+        }
+        else if (Util.exists( WGenerator.generators['ya/setting'] )) {
+            return;
+        }
+
+        WGenerator.addGenerator(
+            require('../codices/ya/setting'),
+            'ya/setting'
         );
     }
 
