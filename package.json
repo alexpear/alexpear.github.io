@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alexpear/waffle.git"
+    "url": "git+https://github.com/alexpear/alexpear.github.io.git"
   },
   "keywords": [
     "procedural",
@@ -43,7 +43,7 @@
   "author": "Alex Pear",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/alexpear/waffle/issues"
+    "url": "https://github.com/alexpear/alexpear.github.io/issues"
   },
-  "homepage": "https://github.com/alexpear/waffle#readme"
+  "homepage": "https://github.com/alexpear/alexpear.github.io#readme"
 }
