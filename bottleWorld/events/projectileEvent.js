@@ -133,12 +133,18 @@ class ProjectileEvent extends BEvent {
     static damagePerShot (actionTemplate, target) {
         const damage = actionTemplate.damage - target.resistanceTo(actionTemplate.tags);
 
-        // Minimum damage per projectile.
-        return damage < 1 ?
-            1 :
-            damage;
+        // Min and max damage per projectile.
+        if (damage < 1) {
+            return 1;
+        }
+        else if (damage > target.sp) {
+            return target.sp;
+        }
+
+        return damage;
     }
 
+    // Later could also add a similar func that calculates TTK for range/weap/target combinations
     static testActionDamage (actionTemplate, target) {
         actionTemplate = actionTemplate || ActionTemplate.example();
         target = target || Creature.example();
