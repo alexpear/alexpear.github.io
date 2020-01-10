@@ -1,8 +1,13 @@
 'use strict';
 
 const BEvent = require('../bEvent.js');
+
+const ActionTemplate = require('../../battle20/actionTemplate.js');
+
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
+
+const Creature = require('../../wnode/creature.js');
 
 module.exports = class ProjectileEvent extends BEvent {
     // protagonist is a input param of type Thing.
@@ -98,14 +103,7 @@ module.exports = class ProjectileEvent extends BEvent {
             return;
         }
 
-        let damage = actionTemplate.damage - target.resistanceTo(actionTemplate.tags);
-
-        // Minimum damage per projectile.
-        if (damage < 1) {
-            damage = 1;
-        }
-
-        target.sp -= actionTemplate.damage;
+        target.sp -= ProjectileEvent.damagePerShot(actionTemplate, target);
         target.lastDamaged = worldState.now();
         this.resultantTargetSp = target.sp;
 
@@ -114,26 +112,31 @@ module.exports = class ProjectileEvent extends BEvent {
         }
     }
 
+    // Later this could be static if that helps.
     doesItHit (protagonist, actionTemplate, target, worldState) {
+        return Math.random() < ProjectileEvent.hitChance(
+            actionTemplate,
+            target,
+            protagonist.distanceTo(target)
+        );
+    }
+
+    static hitChance (actionTemplate, target, distance) {
         // Algorithm comes from WCW in hobby/warband/gameState.js
+        // LATER gather modifiers of hit, including from creatures like spartan, instead of just base hit stat.
         const AIM_FUDGE = 1;
 
-        // LATER gather modifiers of hit, including from creatures like spartan, instead of just base hit stat.
         const advantage = target.getSize() * actionTemplate.hit / AIM_FUDGE;
+        return advantage / (advantage + distance + 1);
+    }
 
-        const distance = protagonist.distanceTo(target);
-        const hitChance = advantage / (advantage + distance + 1);
+    static damagePerShot (actionTemplate, target) {
+        const damage = actionTemplate.damage - target.resistanceTo(actionTemplate.tags);
 
-        // Util.logDebug({
-        //     context: 'ProjectileEvent.doesItHit()',
-        //     size: target.getSize(),
-        //     hit: actionTemplate.hit,
-        //     advantage,
-        //     distance,
-        //     hitChance: hitChance.toFixed(2)
-        // });
-
-        return Math.random() < hitChance;
+        // Minimum damage per projectile.
+        return damage < 1 ?
+            1 :
+            damage;
     }
 
     static testActionDamage (actionTemplate, target) {
