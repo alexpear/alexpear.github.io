@@ -166,7 +166,7 @@ class ProjectileEvent extends BEvent {
 
         const TOO_FAR = 10 * 1000;
         for (let range = 1; range < TOO_FAR; range = range * 2) {
-            const expectedHits = shots * ProjectileEvent.hitChance(actionTemplate, target, distance);
+            const expectedHits = shots * ProjectileEvent.hitChance(actionTemplate, target, range);
 
             summary[range] = expectedHits * ProjectileEvent.damagePerShot(actionTemplate, target);
         }
