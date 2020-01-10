@@ -59,7 +59,7 @@ class ActionTemplate extends NodeTemplate {
     }
 
     static example () {
-        return ActionTemplate.dwarfExample();
+        return ActionTemplate.gunExample();
     }
 
     static dwarfExample () {

@@ -1,8 +1,9 @@
 'use strict';
 
+const Thing = require('./thing.js');
+
 const Coord = require('../util/coord.js');
 const Util = require('../util/util.js');
-const Thing = require('./thing.js');
 
 // Later i may decide to move this class into the bottleWorld/ dir, if it doesnt feel generic enough for the wnode/ dir.
 module.exports = class Creature extends Thing {
@@ -51,5 +52,18 @@ module.exports = class Creature extends Thing {
         );
 
         return Util.randomOf(nonAllies);
+    }
+
+    static example () {
+        return Creature.humanExample();
+    }
+
+    static humanExample () {
+        const human = new Creature('human', undefined, 'LG');
+
+        human.sp = 10;
+        human.size = 2;
+
+        return human;
     }
 };
