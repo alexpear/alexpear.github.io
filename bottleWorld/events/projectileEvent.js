@@ -9,7 +9,7 @@ const Util = require('../../util/util.js');
 
 const Creature = require('../../wnode/creature.js');
 
-module.exports = class ProjectileEvent extends BEvent {
+class ProjectileEvent extends BEvent {
     // protagonist is a input param of type Thing.
     constructor (protagonist, target, coord, action) {
         super(
@@ -191,3 +191,7 @@ module.exports = class ProjectileEvent extends BEvent {
 //     const damageChance = exponentiated / (exponentiated + 1);
 //     return Math.random() < damageChance;
 // }
+
+module.exports = ProjectileEvent;
+
+// ProjectileEvent.testActionDamage();
