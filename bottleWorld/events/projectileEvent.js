@@ -140,9 +140,33 @@ module.exports = class ProjectileEvent extends BEvent {
     }
 
     static testActionDamage (actionTemplate, target) {
-        // target = target || a default
+        actionTemplate = actionTemplate || ActionTemplate.example();
+        target = target || Creature.example();
 
-        // TODO: Log how much expected damage this attack deals at 0, 1, 2, 4, 8, etc meters
+        // const exampleSummary = {
+        //     actionTemplateName: 'heavyStubber',
+        //     targetTemplateName: 'marinePrivate',
+        //     1: 2.5,
+        //     2: 2.3,
+        //     4: 1.9
+        // };
+
+        const summary = {
+            actionTemplateName: actionTemplate.name,
+            targetTemplateName: target.templateName
+        };
+
+        const shots = actionTemplate.shotsPerSecond;
+
+        const TOO_FAR = 10 * 1000;
+        for (let range = 1; range < TOO_FAR; range = range * 2) {
+            const expectedHits = shots * ProjectileEvent.hitChance(actionTemplate, target, distance);
+
+            summary[range] = expectedHits * ProjectileEvent.damagePerShot(actionTemplate, target);
+        }
+
+        Util.log(summary);
+        return summary;
     }
 };
 
