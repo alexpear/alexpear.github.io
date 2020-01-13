@@ -48,6 +48,7 @@ module.exports = `
 4 mageBloodlines
 4 magicalCreature
 3 spirits
+4 masquerade
 
 * alias scifiDeviations
 4 {scifiDev}
