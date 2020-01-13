@@ -5,6 +5,11 @@ const Thing = require('./thing.js');
 const Coord = require('../util/coord.js');
 const Util = require('../util/util.js');
 
+/*
+Desire: Creature and Group should be more easily interchangeable.
+Should share more funcs, perhaps.
+*/
+
 // Later i may decide to move this class into the bottleWorld/ dir, if it doesnt feel generic enough for the wnode/ dir.
 module.exports = class Creature extends Thing {
     constructor (template, coord, alignment) {
