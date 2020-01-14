@@ -132,6 +132,8 @@ class RingWorldState extends GroupWorldState {
 
         while (worldState.worthContinuing()) {
             worldState.timeline.computeNextInstant();
+
+            // Movement MRB1: Each Group moves towards nearest enemy Group, unless it has attacked in the last 10 seconds, in which case it cannot move.
         }
 
         Util.log(`Up to t=${worldState.now()}, the timeline is: \n${worldState.timeline.toDebugString()}`, 'debug');
