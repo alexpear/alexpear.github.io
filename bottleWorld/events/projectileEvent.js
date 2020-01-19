@@ -126,6 +126,11 @@ class ProjectileEvent extends BEvent {
         // LATER gather modifiers of hit, including from creatures like spartan, instead of just base hit stat.
         const AIM_FUDGE = 1;
 
+        // Decided on hard range limits 2020 Jan 14
+        if (distance > actionTemplate.range) {
+            return 0;
+        }
+
         const advantage = target.getSize() * actionTemplate.hit / AIM_FUDGE;
         return advantage / (advantage + distance + 1);
     }
