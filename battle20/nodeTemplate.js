@@ -28,6 +28,11 @@ module.exports = class NodeTemplate {
             Util.isArray(this.actions);
     }
 
+    isGroup () {
+        return this.isCreature() ||
+            Util.hasOverlap(this.tags, ['group', 'force', 'taskForce', 'set', 'squad', 'team']);
+    }
+
     toJson () {
         // Already free of circular reference.
         return this;

@@ -12,6 +12,7 @@ const ChildTable = require('./childTable.js');
 const ContextString = require('./contextString.js');
 const Creature = require('../wnode/creature.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
+const Group = require('../wnode/group.js');
 const StorageModes = require('../wnode/storageModes.js');
 const Util = require('../util/util.js');
 const WNode = require('../wnode/wnode.js');
@@ -209,9 +210,12 @@ class WGenerator {
             return new WNode(templateName);
         }
 
-        // TODO: For RingWorldState, we also want the capacity to create Group instances. The template entry can have a row like 'class: group' to indicate this.
-        if (template.isCreature()) {
-            return new Creature(template);
+        // TODO: For RingWorldState, we also want the capacity to create Group instances. 
+        // Unanimous option: convert this logic and BEvent logic to use Group of quantity 1 instead of Creature.
+          // 2020 January 19: This sounds like a good MRB path to me.
+        // toggleable option: The template entry can have a row like 'class: group' to indicate this.
+        if (template.isGroup()) {
+            return new Group(template);
         }
 
         if (template.isThing()) {
