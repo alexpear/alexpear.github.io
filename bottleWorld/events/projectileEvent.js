@@ -149,8 +149,6 @@ class ProjectileEvent extends BEvent {
         return damage;
     }
 
-    // TODO draft a func for calculating the outcome of one Group shooting another. Probably high precision just because that's morefa miliar. easy to change later.
-
     // Later could also add a similar func that calculates TTK for range/weap/target combinations
     static testActionDamage (actionTemplate, target) {
         actionTemplate = actionTemplate || ActionTemplate.example();

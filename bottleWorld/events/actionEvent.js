@@ -1,8 +1,12 @@
 'use strict';
 
-const BEvent = require('../bEvent.js');
-const Coord = require('../../util/coord.js');
 const ProjectileEvent = require('./projectileEvent.js');
+
+const BEvent = require('../bEvent.js');
+
+const WorldState = require('../../bottleWorld/worldState.js');
+
+const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 module.exports = class ActionEvent extends BEvent {
@@ -44,4 +48,20 @@ module.exports = class ActionEvent extends BEvent {
             this
         );
     }
+
+    // TODO draft a func for calculating the outcome of one Group shooting another. Probably high precision if that's more familiar. Easy to change later.
+    // Note: Since it's multiple projectiles, this seems more relevant to ActionEvent than ProjectileEvent
+    resolveForGroups (worldState) {
+
+    }
+
+    static testGroupAttack (protagonistGroup, targetGroup, actionTemplate) {
+        const dummyWorldState = new WorldState();
+        const event = new ActionEvent(protagonistGroup, targetGroup, undefined, actionTemplate.id);
+
+        event.resolveForGroups(dummyWorldState);
+
+        Util.logDebug(event);
+    }
+
 };
