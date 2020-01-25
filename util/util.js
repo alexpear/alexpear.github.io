@@ -272,7 +272,7 @@ util.toCamelCase = (s) => {
 
     const words = s.split(/\s/);
     const tail = words.slice(1)
-        .map(sub = util.capitalized(sub))
+        .map(sub => util.capitalized(sub))
         .join('');
 
     return words[0].toLowerCase() +
