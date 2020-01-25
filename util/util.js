@@ -101,9 +101,11 @@ util.randomBelow = function (maxExclusive) {
 };
 
 util.randomOf = function (array) {
-    const index = util.randomBelow(array.length);
-    return array[index];
+    return array[
+        util.randomBelow(array.length)
+    ];
 };
+util.sample = util.sampleFrom = util.randomOf; // alias
 
 util.randomFromObj = function (obj) {
     const key = util.randomOf(Object.keys(obj));
@@ -321,6 +323,27 @@ util.fromCamelCase = (s) => {
             util.capitalized(w)
     )
     .join(' ');
+};
+
+util.testCamelCase = () => {
+    const tests = [
+        ['Hector Breaker Of Horses', 'hectorBreakerOfHorses'],
+        ['Cellar Door', 'cellarDoor'],
+        ['C Deck', 'cDeck'],
+        ['Awakening', 'awakening']
+    ];
+
+    tests.forEach(t => {
+        const camelized = util.toCamelCase(t[0]);
+        const uncamelized = util.fromCamelCase(t[1]);
+
+        if (camelized !== t[1]) {
+            throw new Error(camelized);
+        }
+        if (uncamelized !== t[0]) {
+            throw new Error(uncamelized);
+        }
+    });
 };
 
 // Note that typeof NaN is also 'number',
@@ -618,7 +641,8 @@ util.mbti = () => {
 
 util.testAll = () => {
     util.testPrettyDistance();
+    util.testCamelCase();
+    util.logDebug(`Done with unit tests for Util module :)`);
 };
-
 
 // util.testAll();
