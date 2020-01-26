@@ -3,6 +3,8 @@
 const Creature = require('./creature.js');
 const WNode = require('./wnode.js');
 
+const TraitGrid = require('../bottleWorld/traitGrid.js');
+
 const Util = require('../util/util.js');
 
 module.exports = class DetailedPerson extends Creature {
@@ -21,7 +23,7 @@ module.exports = class DetailedPerson extends Creature {
 
         const json = {
             nodeType: 'DetailedPerson',
-            alignment: 'CN',
+            personality: TraitGrid.random(),
             components: [
                 mbti,
                 {
@@ -30,7 +32,8 @@ module.exports = class DetailedPerson extends Creature {
             ]
         };
 
-        const human = new DetailedPerson('human', undefined, 'LG');
+        // Hmm. How about the constructor style instead?
+        const human = new DetailedPerson('human', undefined);
 
         human.sp = 10;
         human.size = 2;
