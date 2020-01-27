@@ -71,12 +71,14 @@ class TraitGrid {
 
     static random (axisCount) {
         // LATER: Only consider a random n axes, controled by axisCount param.
-        const outputs = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
+        const outputs = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 1];
 
         const grid = new TraitGrid();
 
         Object.keys(TraitGrid.axisToAdjective).forEach(axis => {
-            const value = Util.randomOf(outputs);
+            const value = TraitGrid.randomValue(
+                TraitGrid.axisToAdjective[axis].extremeness
+            );
 
             // Util.logDebug(`value is ${value}, axis is ${axis}`);
 
@@ -90,25 +92,38 @@ class TraitGrid {
         return grid;
     }
 
+    static randomValue (extremeness) {
+        // Later: could support a no-param usage of this func if desired. Currently skipping that for a tiny performance bump.
+        const isExtreme = Math.random() < extremeness;
+
+        return isExtreme ?
+            Util.randomOf([-1, 1]) :
+            0;
+    }
+
     static initStaticProps () {
         // To temporarily disable a axis, just comment it out here.
         TraitGrid.AXES = [
+            'plain attractive',
             'short tall',
-            'young elder',
-            'male female',
+            'young elder 0.5',
+            'keen passionate',
             'lawful chaotic',
             // 'evil good',
             // 'chthonic sidereal',
-            'dark radiant',
-            'cool warm',
-            'lowborn highborn',
+            // 'dark radiant',
+            // 'cool warm',
+            'standoffish amiable',
             'steady energetic',
             'introverted extroverted',
-            'keen passionate',
-            'plain attractive',
+            'married single',
             'timid brave',
-            'downbeat upbeat',
+            // 'downbeat upbeat',
+            'cynical optimistic',
+            'male female 0.8',
+            // 'masculine effeminate',
             'reformist loyal',
+            'lowborn highborn',
         ];
 
         // Glossary used in translating storage format (-1/1) to a adjective string
@@ -118,17 +133,18 @@ class TraitGrid {
         TraitGrid.adjectiveToAxis = {};
 
         TraitGrid.AXES.forEach(axisWords => {
-            const poles = axisWords.split(/\s/);
+            const poles = axisWords.trim().split(/\s/);
             const axisCamel = Util.toCamelCase(axisWords);
 
-            if (axisCamel.length + 1 !== axisWords.length ||
+            if (axisCamel.length + poles.length - 1 !== axisWords.length ||
                 axisCamel.indexOf(' ') >= 0) {
                 throw new Error(`${axisWords} -> ${axisCamel}`);
             }
 
             TraitGrid.axisToAdjective[axisCamel] = {
                 '-1': poles[0],
-                '1': poles[1]
+                '1': poles[1],
+                extremeness: poles[3] || TraitGrid.DEFAULT_EXTREMENESS
             };
 
             TraitGrid.adjectiveToAxis[poles[0]] = {
@@ -153,13 +169,15 @@ class TraitGrid {
             const grid = TraitGrid.random();
 
             // console.log(JSON.stringify(grid));
-            console.log(grid.toString());
+            console.log(grid.toString() + ' human officer');
             // console.log();
         }
 
         console.log(`TraitGrid test complete.`);
     }
 }
+
+TraitGrid.DEFAULT_EXTREMENESS = 0.2;
 
 module.exports = TraitGrid;
 
