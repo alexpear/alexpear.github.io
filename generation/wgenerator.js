@@ -141,7 +141,7 @@ class WGenerator {
             .reduce(
                 (stringsSoFar, s) =>
                     stringsSoFar.concat(
-                        this.maybeResolveAlias(s)
+                        this.resolveTerm(s)
                     ),
                 []
             );
@@ -299,6 +299,38 @@ class WGenerator {
 
         node.storageMode = StorageModes.Complete;
         return node;
+    }
+
+    // Takes string with no commas
+    // Returns ContextString[]
+    // Wraps maybeResolveAlias()
+    // No side effects
+    // Can call stochastic (random) functions
+    resolveTerm (commalessStr) {
+        // Util.logDebug(`Top of WGenerator.resolveTerm(${commalessStr})`);
+
+        const contexts = this.maybeResolveAlias(commalessStr);
+
+        return contexts.reduce(
+            (finishedContexts, contextString) => {
+                if (contextString.name.startsWith('{')) {
+                    const appropriateGen = WGenerator.generators[contextString.path];
+
+                    // Maybe .name is {outout}, which came from WGenerator.contextString().
+                    // Loop these thru the pipeline again.
+                    const finishedBatch = appropriateGen.resolveTerm(contextString.name);
+
+                    return finishedContexts.concat(finishedBatch);
+                }
+                else if (Util.contains(contextString.name, '/')) {
+                    throw new Error(`Probably WGenerator.contextString() should remove all slashes: ${contextString.name}`)
+                }
+
+                finishedContexts.push(contextString);
+                return finishedContexts;
+            },
+            []
+        );
     }
 
     // Returns ContextString[]
@@ -674,7 +706,7 @@ class WGenerator {
         if (gen) {
             return {
                 gen: gen,
-                name: 'output'
+                name: '{output}'
             };
         }
 
