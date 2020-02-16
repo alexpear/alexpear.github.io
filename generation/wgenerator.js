@@ -171,6 +171,8 @@ class WGenerator {
     // LATER maybe rename ContextString local vars to contextString or contextStr, for reading clarity.
     // Returns a WNode
     makeSubtree (cString) {
+        // Util.logDebug(`In WGenerator.makeSubtree(). This WGenerator is ${this.codexPath}. Input is ${cString}.`);
+
         return cString.path === this.codexPath ?
             this.makeLocalSubtree(cString) :
             WGenerator.makeExternalSubtree(cString);
@@ -350,6 +352,8 @@ class WGenerator {
 
     // Converts a more arbitrary string into a ContextString object.
     contextString (stringWithoutCommas) {
+        // Util.logDebug(`In WGenerator.contextString(${stringWithoutCommas}), top of function. This is the ${this.codexPath} WGenerator.`);
+
         if (Util.contains(stringWithoutCommas, '/')) {
             const path = this.makePathAbsolute(stringWithoutCommas);
             const findings = WGenerator.findGenAndTable(path);
@@ -414,7 +418,7 @@ class WGenerator {
         // Later, could detect if a path is absolute by checking whether its first term is on a whitelist of settings.
         // const CONTEXTS = ['40k', 'darktapestry', 'dnd', 'downstairs', 'halo', 'parahumans', 'scifi', 'sunlight', 'wizardingworld', 'yearsofadventure'];
         while (curPath.length >= 0) {
-            // Util.log(`In ChildTable.getAbsolutePath( '${relativePathStr}' ) loop. curPath is ${curPath}. curPath.length is ${curPath.length}. curPath[0] is ${curPath[0]}.`, 'debug');
+            // Util.log(`In WGenerator.getAbsolutePath( '${relativePathStr}' ) loop. curPath is [${curPath}]. curPath.length is ${curPath.length}. curPath[0] is ${curPath[0]}.`, 'debug');
 
             // TODO I may want to interpret the last term as a possible alias table name, but not as a childTable or glossary name.
             const genPath = WGenerator.interpretRelativePath(relativePath, curPath);
@@ -608,7 +612,7 @@ class WGenerator {
     // Returns a absolute path version of the relative path (as a string) if it finds one
     // Otherwise it returns undefined.
     static interpretRelativePath (relativePath, contextPath) {
-        // console.log(`Top of WGenerator.interpretRelativePath([${relativePath}], [${contextPath}])`);
+        // Util.logDebug(`Top of WGenerator.interpretRelativePath([${relativePath}], [${contextPath}])`);
 
         // The last term of relativePath might refer to a file.
         const filePath = WGenerator.interpretRelativePathAsFile(relativePath, contextPath);

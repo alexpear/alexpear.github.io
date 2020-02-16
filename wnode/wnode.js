@@ -179,7 +179,12 @@ class WNode {
         indent = Util.default(indent, 0);
 
         let outString = furtherLine(Util.formatProp(this, 'name'));
-        outString += furtherLine(this.templateName);
+
+        const templateLine = this.templateName === 'mbti' ?
+            `MBTI (${this.displayName})` :
+            Util.fromCamelCase(this.templateName);
+
+        outString += furtherLine(templateLine);
 
         const SKIP_PROPS = [
             'name',

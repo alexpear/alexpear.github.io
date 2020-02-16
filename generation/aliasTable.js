@@ -69,6 +69,8 @@ class AliasTable {
     getOutputAndResolveIt () {
         const outputStr = this.getOutput();
 
+        // Util.logDebug(`In AliasTable.getOutputAndResolveIt(), about to pass ${outputStr} into ${this.generator.codexPath}'s resolveCommas() func.`);
+
         return this.generator.resolveCommas(outputStr);
     }
 

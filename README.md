@@ -12,6 +12,9 @@ This website include the following prototype projects:
 
 ## To Do:
 - See TODOs in timeline.js
+
+- Func for Parahumans that takes a cape WNode and pretty prints it
+
 - Death Planet Fish Tank
   - Add logic about every creature moving closer to its destination each tick.
   - Maybe increase frame rate. 0.1 seconds per tick.
