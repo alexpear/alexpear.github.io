@@ -501,6 +501,7 @@ class WGenerator {
         WGenerator.loadHaloCodices();
         WGenerator.loadSunlightCodices();
         WGenerator.loadYACodices();
+        WGenerator.loadParahumansCodices();
     }
 
     static loadHaloCodices () {
@@ -629,6 +630,25 @@ class WGenerator {
         WGenerator.addGenerator(
             require('../codices/ya/setting'),
             'ya/setting'
+        );
+    }
+
+    static loadParahumansCodices () {
+        if (! WGenerator.generators) {
+            WGenerator.generators = {};
+        }
+        else if (Util.exists( WGenerator.generators['parahumans/cape'] )) {
+            return;
+        }
+
+        WGenerator.addGenerator(
+            require('../codices/parahumans/cape'),
+            'parahumans/cape'
+        );
+
+        WGenerator.addGenerator(
+            require('../codices/parahumans/org'),
+            'parahumans/org'
         );
     }
 
