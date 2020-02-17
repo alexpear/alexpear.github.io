@@ -259,6 +259,16 @@ class WNode {
         .join('<br>');
     }
 
+    findComponent (query) {
+        if (Util.isString(query)) {
+            return this.components.find(
+                c => c.templateName === query
+            );
+        }
+
+        return this.components.find(query);
+    }
+
     toJson () {
         const serialized = {};
 
