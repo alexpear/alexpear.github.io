@@ -2,7 +2,7 @@
 
 const BEvent = require('../bEvent.js');
 
-const ActionTemplate = require('../../battle20/actionTemplate.js');
+const ActionTemplate = require('../../battle20/actiontemplate.js');
 
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
