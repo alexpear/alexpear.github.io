@@ -13,7 +13,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "npm i && npm run refresh",
+    "start": "npm i && npm run buildAll && npm run test",
     "firstTimeSetup": "npm install -g browserify && npm install -g http-server && npm start",
     "refresh": "npm run buildAll && npm run server",
     "buildAll": "npm run buildTreeBrowser && npm run buildFishTank",
