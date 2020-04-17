@@ -55,6 +55,11 @@ class RingWorldState extends GroupWorldState {
             (conflictExists && probablyNotStuck);
     }
 
+    // TODO add one UnivesalUpdate BEvent in the first tick.
+    // Actually make this a side effect of a Arrival ... well, no, could be expensive
+    // Yeah, always add it on init.
+    // The moveEverything logic can be the resolve() of this UniversalUpdate
+    // Could even make a new BEvent subclass called MoveAll
     moveEverything () {
         // Movement MRB1: Each Group moves towards nearest enemy Group, unless it has attacked in the last 10 seconds, in which case it cannot move.
         // TODO iterate over all creatures / groups

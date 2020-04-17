@@ -198,7 +198,7 @@ const BEvent = module.exports = class BEvent {
 };
 
 
-// TODO write the other subclass files
+// LATER write the other subclass files
 
 BEvent.TYPES = Util.makeEnum([
     'Arrival',
@@ -212,5 +212,6 @@ BEvent.TYPES = Util.makeEnum([
     'Projectile',
     'Explosion',
     'Effect',
+    'MoveAll',
     'UniversalUpdate'
 ]);

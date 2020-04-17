@@ -202,6 +202,11 @@ class WorldState {
         return bEvent.resolve(this);
     }
 
+    // called by MoveAllEvent
+    coordAtEndOfMove (wnode, destinationCoord) {
+        // TODO, see MoveAllEvent.js for usage
+    }
+
     addNodesByAlignment (newcomers, contextPath) {
         Object.keys(newcomers).forEach(alignment => {
             const teammates = newcomers[alignment];
