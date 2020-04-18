@@ -13,6 +13,7 @@ Should share more funcs, perhaps.
 // Later i may decide to move this class into the bottleWorld/ dir, if it doesnt feel generic enough for the wnode/ dir.
 module.exports = class Creature extends Thing {
     constructor (template, coord, alignment) {
+        // BTW if this throw statement gets too confusing, comment it and stick with the old inheritance model until there's time for a inheritance refactor.
         throw new Error(`Let's use Group of quantity 1 instead of Creature for a little while. template param was ${template.name || template}`);
 
         super(template, coord);
