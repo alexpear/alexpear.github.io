@@ -25,6 +25,12 @@ const MoveAllEvent = module.exports = class MoveAllEvent extends BEvent {
                 this.endCoords[node.id] = destination;
             }
         );
+
+        this.addOutcome(
+            new MoveAllEvent(),
+            worldState,
+            this.t + 1
+        );
     }
 };
 
