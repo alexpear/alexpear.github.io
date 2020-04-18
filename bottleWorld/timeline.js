@@ -15,6 +15,10 @@ module.exports = class Timeline {
         this.timestamps = {};
         // Later fix a weird bug where new WorldState() throws 'WorldState is not a constructor'.
         this.currentWorldState = worldState || new WorldState(this, 0);
+
+        this.addEvent(
+            new MoveAllEvent()
+        );
     }
 
     // returns number

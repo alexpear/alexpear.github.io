@@ -146,7 +146,6 @@ class RingWorldState extends GroupWorldState {
 
         while (worldState.worthContinuing()) {
             worldState.timeline.computeNextInstant();
-            worldState.moveEverything();
         }
 
         Util.log(`Up to t=${worldState.now()}, the timeline is: \n${worldState.timeline.toDebugString()}`, 'debug');
