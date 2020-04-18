@@ -6,26 +6,26 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 const MoveAllEvent = module.exports = class MoveAllEvent extends BEvent {
-	constructor (templateName, coord, alignment) {
+    constructor (templateName, coord, alignment) {
         super(BEvent.TYPES.MoveAll);
 
         this.alignment = alignment;
     }
 
     resolve (worldState) {
-    	// If seems appropriate, we could persist in this BEvent a map from WNode id to its Coord at end of the step.
-    	this.endCoords = {};
+        // If seems appropriate, we could persist in this BEvent a map from WNode id to its Coord at end of the step.
+        this.endCoords = {};
 
-    	worldState.activeNodes().forEach(
-    		(node) => {
-    			const nearestFoe = undefined;
-				const destination = worldState.coordAtEndOfMove(node, nearestFoe && nearestFoe.coord);
+        worldState.activeNodes().forEach(
+            (node) => {
+                const nearestFoe = undefined;
+                const destination = worldState.coordAtEndOfMove(node, nearestFoe && nearestFoe.coord);
 
-				node.coord = destination;
-				this.endCoords[node.id] = destination;
-    		}
-    	);
-	}
+                node.coord = destination;
+                this.endCoords[node.id] = destination;
+            }
+        );
+    }
 };
 
 // const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
