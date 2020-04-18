@@ -125,6 +125,7 @@ class RingWorldState extends GroupWorldState {
             )
         ];
 
+        // LATER could use a func like worldState.addNodesByAlignment() to add these using ArrivalEvents
         const worldState = new RingWorldState(startingGroups, RingWorldState.CIRCUMFERENCE);
 
         timeline = timeline || new Timeline(worldState);

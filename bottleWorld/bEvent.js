@@ -22,6 +22,7 @@ const BEvent = module.exports = class BEvent {
         // type string
         this.templateName = templateName;
 
+        // LATER i should check whether this is ending up as undefined
         // type number
         this.t = time;
 
