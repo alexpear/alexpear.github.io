@@ -32,6 +32,13 @@ class Coord {
         );
     }
 
+    plus1d (distance) {
+        return new Coord(
+            this.r + distance,
+            this.c
+        );
+    }
+
     minus (other) {
         return new Coord(
             this.r - other.r,
@@ -94,8 +101,8 @@ class Coord {
     }
 
     static random (rCount, cCount) {
-        if (! (Util.exists(rCount) || Util.exists(cCount))) {
-            console.log('ERROR: Coord.random() called without arguments');
+        if (! Util.exists(rCount)) {
+            console.log('ERROR: Coord.random() called without r argument');
             return new Coord(-1,-1);
             // LATER throw exception, make supervisor reboot, et cetera.
         }
