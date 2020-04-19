@@ -5,6 +5,7 @@
 // Parent of WorldState. A WorldState only describes a single instant.
 
 const BEvent = require('./bEvent.js');
+const MoveAllEvent = require('./events/moveAllEvent.js');
 const Util = require('../util/util.js');
 const WorldState = require('./worldState.js');
 
