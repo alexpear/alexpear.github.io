@@ -68,6 +68,64 @@ class RingWorldState extends GroupWorldState {
         // perhaps as Move events or Update events or something
     }
 
+    // subclassed version.
+    coordAtEndOfMove (wnode, destinationCoord) {
+        const speed = wnode.getSpeed() || 0;
+
+        if (Math.abs(wnode.coord.x - destinationCoord.x) <= speed) {
+            return destinationCoord;
+        }
+
+        const clockwise = wnode.coord.plus1d(speed);
+        const counterclockwise = wnode.coord.plus1d(speed * -1);
+        const clockwiseIsCloser = this.distanceBetweenCoords(clockwise, destinationCoord) <
+            this.distanceBetweenCoords(counterclockwise, destinationCoord);
+
+        return clockwiseIsCloser ?
+            clockwise :
+            counterclockwise;
+    }
+
+    distanceBetween (nodeA, nodeB) {
+        return this.distanceBetweenCoords(nodeA.coord, nodeB.coord);
+    }
+
+    distanceBetweenCoords (coordA, coordB) {
+        const distance = Math.abs(coordA.x - coordB.x);
+
+        return distance <= this.circumference / 2 ?
+            distance :
+            this.circumference - distance;
+    }
+
+    static testDistanceBetween () {
+        const worldState = new RingWorldState([], 360);
+
+        distanceBetweenScenario(30, 40, 10);
+        distanceBetweenScenario(0, 179, 179);
+        distanceBetweenScenario(0, 181, 179);
+        distanceBetweenScenario(350, 10, 20);
+
+        function distanceBetweenScenario (coordA, coordB, desiredDistance) {
+            const nodeA = fakeNode(coordA);
+            const nodeB = fakeNode(coordB);
+            const output = worldState.distanceBetween(nodeA, nodeB);
+            const reverseOutput = worldState.distanceBetween(nodeB, nodeA);
+
+            if (output !== desiredDistance || reverseOutput !== desiredDistance) {
+                throw new Error(`RingWorldState.distanceBetween() scandalously took inputs ${coordA} and ${coordB} and output ${output} (and ${reverseOutput} with switched inputs) instead of ${desiredDistance}.`);
+            }
+        }
+
+        function fakeNode (position) {
+            return {
+                coord: {
+                    x: position
+                }
+            };
+        }
+    }
+
     toDebugString () {
         const output = [];
 
@@ -162,6 +220,8 @@ class RingWorldState extends GroupWorldState {
         Util.log(`The json version of the timeline is ${timelineJsonStr.length} characters long (no whitespace).`);
 
         // Util.log(timelineJsonStr);
+
+        RingWorldState.testDistanceBetween();
 
         return worldState;
     }

@@ -205,6 +205,9 @@ class WorldState {
     // called by MoveAllEvent
     coordAtEndOfMove (wnode, destinationCoord) {
         // TODO, see MoveAllEvent.js for usage
+        // Just do very simple skeleton version for now, perhaps speed 0
+
+
     }
 
     addNodesByAlignment (newcomers, contextPath) {
