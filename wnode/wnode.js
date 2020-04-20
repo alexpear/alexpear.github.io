@@ -92,6 +92,9 @@ class WNode {
 
     traitMin (propStr) {
         const localTrait = this.getTrait(propStr);
+
+        // Util.logDebug(`in WNode.traitMin('${propStr}'). localTrait is ${localTrait}`);
+
         const min = this.components.reduce(
             (soFar, component) => Math.min(soFar, component.traitMin(propStr)),
             localTrait || Infinity

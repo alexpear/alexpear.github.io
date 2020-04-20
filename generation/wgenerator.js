@@ -149,6 +149,7 @@ class WGenerator {
 
     // Returns WNode[]
     resolveString (inputString) {
+        // Util.logDebug(`WGenerator.resolveString('${inputString}')`)
         const nodes = this.resolveCommas(inputString)
             .map(contextString => this.makeSubtree(contextString));
 
@@ -249,6 +250,7 @@ class WGenerator {
         table.children.forEach(
             childString => {
                 // Note that resolveString() always returns an array.
+                // Util.log(`in WGenerator.addChildren(), childString is ${childString}`)
                 const children = this.resolveString(childString);
                 node.components = node.components.concat(children);
                 children.forEach(
