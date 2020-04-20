@@ -15,7 +15,7 @@ const Group = require('../wnode/group.js');
 // Armies on a thin circular world, a la Ringworld by Larry Niven.
 class RingWorldState extends GroupWorldState {
     constructor (startingGroups, circumference) {
-        super();
+        super(undefined, 0, 'halo/unsc/squad');
 
         this.circumference = circumference || RingWorldState.CIRCUMFERENCE;
 
@@ -23,7 +23,7 @@ class RingWorldState extends GroupWorldState {
     }
 
     addStartingGroups (groups, contextPath) {
-        contextPath = contextPath || 'halo/unsc/individual';
+        contextPath = contextPath || 'halo/unsc/squad';
 
         if (! this.timeline) {
             throw new Error('Cant addStartingGroups() because worldState.timeline is not yet populated.');
@@ -31,7 +31,7 @@ class RingWorldState extends GroupWorldState {
 
         groups.forEach(group => {
             this.timeline.addEvent(
-                new ArrivalEvent(contextPath + '/' + group.templateName, undefined, group.alignment)
+                new ArrivalEvent(contextPath + '/' + group.templateName, this.randomCoord(), group.alignment)
             );
         })
     }
