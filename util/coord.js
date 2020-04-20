@@ -39,6 +39,14 @@ class Coord {
         );
     }
 
+    // For circular environments of a given circumference. The values can loop around again to 0.
+    plus1dCircle (distance, circumference) {
+        return new Coord(
+            (this.r + distance) % circumference,
+            this.c
+        );
+    }
+
     minus (other) {
         return new Coord(
             this.r - other.r,

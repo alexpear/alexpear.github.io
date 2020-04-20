@@ -68,8 +68,8 @@ class RingWorldState extends GroupWorldState {
             return destinationCoord;
         }
 
-        const clockwise = wnode.coord.plus1d(speed);
-        const counterclockwise = wnode.coord.plus1d(speed * -1);
+        const clockwise = wnode.coord.plus1dCircle(speed, this.circumference);
+        const counterclockwise = wnode.coord.plus1dCircle(speed * -1, this.circumference);
         const clockwiseIsCloser = this.distanceBetweenCoords(clockwise, destinationCoord) <
             this.distanceBetweenCoords(counterclockwise, destinationCoord);
 
@@ -196,7 +196,7 @@ class RingWorldState extends GroupWorldState {
     }
 
     degrees (meters) {
-        return meters / this.circumference * 360;
+        return meters / this.circumference * 360 % 360;
     }
 
     prettyDegrees (meters, precision) {
