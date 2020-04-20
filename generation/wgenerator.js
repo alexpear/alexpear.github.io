@@ -387,6 +387,11 @@ class WGenerator {
 
     // Returns ContextString[]
     resolveLocalAlias (tableName) {
+        // Remove {} wrapper if present
+        tableName = tableName[0] === '{' ?
+            tableName.slice(1, tableName.length - 1).trim() :
+            tableName;
+
         // Later make this case insensitive
         const table = this.aliasTables[tableName];
 
