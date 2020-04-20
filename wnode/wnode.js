@@ -133,6 +133,7 @@ class WNode {
         return this.traitMin('stealth') || 1;
     }
 
+    // Stamina Points, very similar to Hit Points
     getSp () {
         const personalSp = (this.sp && this.active) ?
             this.sp :
