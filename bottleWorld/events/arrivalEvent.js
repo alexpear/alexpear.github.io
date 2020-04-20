@@ -6,13 +6,13 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
-    constructor (templateName, coord, alignment) {
+    constructor (templatePath, coord, alignment) {
         super(
             BEvent.TYPES.Arrival,
             undefined,
             undefined,
             coord || Coord.randomOnScreen(),
-            templateName
+            templatePath
         );
 
         this.alignment = alignment;
@@ -22,6 +22,9 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
         const arriver = this.templateName ?
             worldState.generateNodes(this.templateName)[0] :
             worldState.fromId(this.templateName);
+
+        Util.logDebug('Here is what this ArrivalEvent is creating:');
+        Util.logDebug(arriver.typeTreeYaml());
 
         arriver.alignment = this.alignment || Util.randomOf(worldState.allAlignments());
 

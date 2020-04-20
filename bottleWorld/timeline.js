@@ -113,7 +113,7 @@ module.exports = class Timeline {
                     // Avoid cluttering the output with repetitive lines.
                     if(this.getEventsAt(t + 1).length === 0) {
                         // When done with a series of omissions, add this note:
-                        lines.push('...some ticks omitted for brevity...');
+                        lines.push('...some rows omitted for brevity...');
                     }
 
                     continue;

@@ -268,7 +268,9 @@ class RingWorldState extends GroupWorldState {
     }
 }
 
-RingWorldState.CIRCUMFERENCE = 3.14159 * 10000 * 1000; // Default diameter is 10,000km
+// Default diameter is 10,000km
+// Unit: meters
+RingWorldState.CIRCUMFERENCE = 3.14159 * 10000 * 1000;
 
 module.exports = RingWorldState;
 

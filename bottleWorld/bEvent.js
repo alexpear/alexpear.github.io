@@ -5,6 +5,7 @@ const Util = require('../util/util.js');
 
 // BEvent stands for Bottle World Event
 const BEvent = module.exports = class BEvent {
+    // TODO use a options param instead of this list of params
     constructor (eventType, protagonist, target, coord, templateName, time) {
 
         // type string

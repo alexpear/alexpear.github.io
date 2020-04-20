@@ -23,7 +23,7 @@ const MoveAllEvent = module.exports = class MoveAllEvent extends BEvent {
                 // Util.log(`nearestFoe exists? ${!!nearestFoe}`);
                 const destination = worldState.coordAtEndOfMove(node, nearestFoe && nearestFoe.coord);
 
-                Util.log(`in MoveAllEvent, moving a ${node.alignment} wnode from ${node.coord.x} to ${destination.x}. Its speed is ${node.getSpeed()}`);
+                // Util.log(`in MoveAllEvent, moving a ${node.alignment} wnode from ${Util.prettyMeters(node.coord.x)} (${worldState.prettyDegrees(node.coord.x)}) to ${Util.prettyMeters(destination.x)} (${worldState.prettyDegrees(destination.x)}). Its speed is ${node.getSpeed()}`);
 
                 node.coord = destination;
                 this.endCoords[node.id] = destination;

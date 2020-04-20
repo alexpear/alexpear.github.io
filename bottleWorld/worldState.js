@@ -484,7 +484,7 @@ class WorldState {
     worthContinuing () {
         const inSetup = this.now() <= 10;
         const conflictExists = this.conflictExists();
-        const probablyNotStuck = this.now() <= 5000;
+        const probablyNotStuck = this.now() <= 50000; // TODO parameterize this, perhaps a instance variable on WorldState.
 
         return inSetup ||
             (conflictExists && probablyNotStuck);
