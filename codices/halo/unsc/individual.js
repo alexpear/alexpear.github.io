@@ -39,6 +39,7 @@ human
 
 * template marinePrivate
 tags: creature
+speed: 3
 comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily.
 
 * childrenof marinePrivate
