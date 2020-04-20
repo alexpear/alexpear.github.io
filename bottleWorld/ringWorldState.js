@@ -195,6 +195,18 @@ class RingWorldState extends GroupWorldState {
         // Util.log(`this.nodes[0].active is ${this.nodes[0].active}`);
     }
 
+    degrees (meters) {
+        return meters / this.circumference * 360;
+    }
+
+    prettyDegrees (meters, precision) {
+        return `${this.degrees(meters).toFixed(precision || 0)}°`;
+    }
+
+    prettyCoord (coord) {
+        return `${Util.prettyMeters(coord.x)} (${this.prettyDegrees(coord.x)})`
+    }
+
     static example (timeline) {
         // TODO comment out death planet specific stuff
 
