@@ -373,6 +373,19 @@ class WGenerator {
     }
 
     // Returns ContextString[]
+    static resolveExternalAlias (absolutePath) {
+        const findings = WGenerator.findGenAndTable(absolutePath);
+        // Later, check if this throwing is redundant.
+        if (! findings || ! findings.gen || ! findings.name) {
+            throw new Error(`Did not find gen and/or name for absolutePath: ${absolutePath}`);
+        }
+
+        // Util.log(`in WGenerator.resolveExternalAlias('${absolutePath}'), findings.name is ${findings.name}`);
+
+        return findings.gen.resolveLocalAlias(findings.name);
+    }
+
+    // Returns ContextString[]
     resolveLocalAlias (tableName) {
         // Later make this case insensitive
         const table = this.aliasTables[tableName];
@@ -750,17 +763,6 @@ class WGenerator {
         }
 
         throw new Error(`Could not find a WGenerator for this absolutePath: ${ absolutePath }`);
-    }
-
-    // Returns ContextString[]
-    static resolveExternalAlias (absolutePath) {
-        const findings = WGenerator.findGenAndTable(absolutePath);
-        // Later, check if this throwing is redundant.
-        if (! findings || ! findings.gen || ! findings.name) {
-            throw new Error(`Did not find gen and/or name for absolutePath: ${absolutePath}`);
-        }
-
-        return findings.gen.resolveLocalAlias(findings.name);
     }
 
     // Returns a WNode
