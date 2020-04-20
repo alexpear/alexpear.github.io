@@ -217,6 +217,7 @@ class WGenerator {
             return new WNode(templateName);
         }
 
+        // TODO This func is choosing screwy JS classes as of 2020 April 20. This partly comes from inconsistent tagging in the codex files, and partly from half-baked logic in battle20/nodeTemplate.js
         // TODO: For RingWorldState, we also want the capacity to create Group instances. 
         // Unanimous option: convert this logic and BEvent logic to use Group of quantity 1 instead of Creature.
           // 2020 January 19: This sounds like a good MRB path to me.
