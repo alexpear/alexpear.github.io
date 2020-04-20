@@ -210,8 +210,6 @@ class RingWorldState extends GroupWorldState {
     static example (timeline) {
         // TODO comment out death planet specific stuff
 
-        const context = 'halo/unsc/individual';
-
         const startingGroups = [
             // TODO Perhaps the string templateName given to WGenerator should be sufficient for it to know when to create a Creature and when a Group. the template entry in the generator txt file could specify this.
             // TODO these Groups only have templateNames at time of writing, no template objs. I want to populate the speed field on the template.
