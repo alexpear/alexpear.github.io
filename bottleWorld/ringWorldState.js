@@ -15,7 +15,7 @@ const Group = require('../wnode/group.js');
 // Armies on a thin circular world, a la Ringworld by Larry Niven.
 class RingWorldState extends GroupWorldState {
     constructor (startingGroups, circumference) {
-        super(undefined, 0, 'halo/unsc/squad');
+        super(undefined, 0, 'halo/unsc/squad', 1000000);
 
         this.circumference = circumference || RingWorldState.CIRCUMFERENCE;
 
@@ -245,7 +245,7 @@ class RingWorldState extends GroupWorldState {
         // worldState.printNodes();
         Util.log(worldState.toDebugString());
 
-        while (worldState.worthContinuing() && worldState.now() < 10) {
+        while (worldState.worthContinuing()) {
             worldState.printCoords();
             worldState.timeline.computeNextInstant();
         }
