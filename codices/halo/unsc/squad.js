@@ -438,4 +438,11 @@ forklift
 {unsc/individual/squadLeader}
 {unsc/individual/squadLeader}
 
+* template marineGroup
+tags: group
+quantity: 8
+speed: 3
+consistsOf: individual/marinePrivate
+comment: used in the Ring Bottle World
+
 `;
