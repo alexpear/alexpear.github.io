@@ -172,10 +172,10 @@ class RingWorldState extends GroupWorldState {
                 .join(', ') :
                 '';
 
-            // LATER functionize this in Util
-            const sectorWithLeadingZeroes = _.padStart(n, 2, '0');
+            // LATER functionize this padding idiom in Util
+            const sectorId = _.padStart(n, 2, '0') + '0';
 
-            output[n] = `${sectorWithLeadingZeroes}: ${contents}`;
+            output[n] = `${sectorId}: ${contents}`;
         }
 
         return '\n' + output.join('\n');
@@ -183,7 +183,7 @@ class RingWorldState extends GroupWorldState {
 
     printCoords () {
         const coordStrings = this.activeNodes().map(node =>
-            `${node.toAlignmentString()} at ${node.coord.to1dString()}`
+            `${node.toAlignmentString()} at ${this.prettyCoord(node.coord)}`
         );
 
         Util.log(
