@@ -41,15 +41,6 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         ];
     }
 
-    worthContinuing () {
-        const inSetup = this.now() <= 10;
-        const conflictExists = this.conflictExists();
-        const probablyNotStuck = this.now() <= 500000;
-
-        return inSetup ||
-            (conflictExists && probablyNotStuck);
-    }
-
     static example (timeline) {
         const worldState = new DeathPlanetWorldState();
 

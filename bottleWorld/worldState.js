@@ -480,6 +480,15 @@ class WorldState {
         return false;
     }
 
+    worthContinuing () {
+        const inSetup = this.now() <= 10;
+        const conflictExists = this.conflictExists();
+        const probablyNotStuck = this.now() <= 5000;
+
+        return inSetup ||
+            (conflictExists && probablyNotStuck);
+    }
+
     toJson () {
         const serializedNodes = this.nodes.map(
             node => node.toJson()
