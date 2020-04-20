@@ -18,7 +18,7 @@ module.exports = class Group extends WNode {
 
         this.quantity = Util.exists(quantity) ?
             quantity :
-            1;
+            template.quantity || 1;
 
         this.worstSp = this.template ?
             this.template.maxSp :
