@@ -29,7 +29,7 @@ module.exports = class NodeTemplate {
     }
 
     isGroup () {
-        return this.isCreature() ||
+        return this.isCreature() &&
             Util.hasOverlap(this.tags, ['group', 'force', 'taskForce', 'set', 'squad', 'team']);
     }
 
