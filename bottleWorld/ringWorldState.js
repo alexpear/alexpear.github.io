@@ -5,6 +5,8 @@ const _ = require('lodash');
 const GroupWorldState = require('./groupWorldState.js');
 const Timeline = require('./timeline.js');
 
+const ArrivalEvent = require('./events/arrivalEvent.js');
+
 const Coord = require('../util/coord.js');
 const Util = require('../util/util.js');
 
@@ -15,11 +17,23 @@ class RingWorldState extends GroupWorldState {
     constructor (startingGroups, circumference) {
         super();
 
-        this.nodes = this.nodes.concat(startingGroups || []);
-
         this.circumference = circumference || RingWorldState.CIRCUMFERENCE;
 
         this.assignCoords();
+    }
+
+    addStartingGroups (groups, contextPath) {
+        contextPath = contextPath || 'halo/unsc/individual';
+
+        if (! this.timeline) {
+            throw new Error('Cant addStartingGroups() because worldState.timeline is not yet populated.');
+        }
+
+        groups.forEach(group => {
+            this.timeline.addEvent(
+                new ArrivalEvent(contextPath + '/' + group.templateName, undefined, group.alignment)
+            );
+        })
     }
 
     allAlignments () {
@@ -186,13 +200,14 @@ class RingWorldState extends GroupWorldState {
             )
         ];
 
-        // LATER could use a func like worldState.addNodesByAlignment() to add these using ArrivalEvents
-        const worldState = new RingWorldState(startingGroups, RingWorldState.CIRCUMFERENCE);
+        // Eventually should functionize this timeline initialization:
+        const worldState = new RingWorldState([], RingWorldState.CIRCUMFERENCE);
 
         timeline = timeline || new Timeline(worldState);
         timeline.currentWorldState = worldState;
-
         worldState.timeline = timeline;
+
+        worldState.addStartingGroups(startingGroups);
 
         return worldState;
     }
