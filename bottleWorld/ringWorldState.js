@@ -237,6 +237,9 @@ class RingWorldState extends GroupWorldState {
     static test () {
         Util.log(`Beginning the RingWorldState test...`, `debug`);
 
+        // Unit tests
+        RingWorldState.testDistanceBetween();
+
         const worldState = RingWorldState.example();
 
         // worldState.printNodes();
@@ -262,7 +265,7 @@ class RingWorldState extends GroupWorldState {
 
         // Util.log(timelineJsonStr);
 
-        RingWorldState.testDistanceBetween();
+        Util.log(worldState.toDebugString());
 
         return worldState;
     }
