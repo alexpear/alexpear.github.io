@@ -10,11 +10,15 @@ const fs = require('fs');
 const AliasTable = require('./aliasTable.js');
 const ChildTable = require('./childTable.js');
 const ContextString = require('./contextString.js');
-const Creature = require('../wnode/creature.js');
+
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
-const Group = require('../wnode/group.js');
-const StorageModes = require('../wnode/storageModes.js');
+
 const Util = require('../util/util.js');
+
+const Creature = require('../wnode/creature.js');
+const Group = require('../wnode/group.js');
+const Thing = require('../wnode/thing.js');
+const StorageModes = require('../wnode/storageModes.js');
 const WNode = require('../wnode/wnode.js');
 
 class WGenerator {
