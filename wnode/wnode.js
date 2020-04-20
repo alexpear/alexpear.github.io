@@ -112,27 +112,27 @@ class WNode {
 
         // Util.log(`In headCount(). this.templateName is ${this.templateName}. sum is ${sum}. this.individuals is ${this.individuals}.`, 'debug');
 
-        return sum;
+        return sum || 0;
     }
 
     getWeight () {
-        return this.traitSum('weight');
+        return this.traitSum('weight') || 0;
     }
 
     maxSize () {
-        return this.traitMax('size');
+        return this.traitMax('size') || 0;
     }
 
     minSize () {
-        return this.traitMin('size');
+        return this.traitMin('size') || 0;
     }
 
     getSpeed () {
-        return this.traitMin('speed');
+        return this.traitMin('speed') || 0;
     }
 
     getStealth () {
-        return this.traitMin('stealth');
+        return this.traitMin('stealth') || 1;
     }
 
     getSp () {
