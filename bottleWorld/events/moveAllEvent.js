@@ -21,6 +21,8 @@ const MoveAllEvent = module.exports = class MoveAllEvent extends BEvent {
                 const nearestFoe = undefined;
                 const destination = worldState.coordAtEndOfMove(node, nearestFoe && nearestFoe.coord);
 
+                Util.log(`in MoveAllEvent, moving a ${node.alignment} wnode from ${node.coord.x} to ${destination.x}. Its speed is ${node.getSpeed()}`);
+
                 node.coord = destination;
                 this.endCoords[node.id] = destination;
             }

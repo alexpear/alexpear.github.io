@@ -122,6 +122,7 @@ class WorldState {
 
     // Returns WNode[], or array of various subclasses of WNode
     generateNodes (path) {
+        Util.log(`worldState.generateNodes(${path}) called. this.wanderingGenerator.codexPath is ${this.wanderingGenerator.codexPath}`);
         return this.wanderingGenerator.getOutputs(path);
     }
 

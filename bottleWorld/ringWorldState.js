@@ -82,6 +82,8 @@ class RingWorldState extends GroupWorldState {
         distanceBetweenScenario(30, 40, 10);
         distanceBetweenScenario(0, 179, 179);
         distanceBetweenScenario(0, 181, 179);
+        distanceBetweenScenario(90, 260, 170);
+        distanceBetweenScenario(90, 280, 170);
         distanceBetweenScenario(350, 10, 20);
 
         function distanceBetweenScenario (coordA, coordB, desiredDistance) {
