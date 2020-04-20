@@ -20,15 +20,17 @@ const WNode = require('../wnode/wnode.js');
 const Yaml = require('js-yaml');
 
 class WorldState {
-    constructor (timeline, t) {
+    constructor (timeline, t, codexPath, giveUpTime) {
         this.timeline = timeline;
         this.t = t || 0;
+
+        this.giveUpTime = giveUpTime || 50000;
 
         // Maybe we should make Thing.sp into a getter, which Group can override. Group can then extend Thing or Creature
         this.nodes = [];
 
         // Later, probably template lookups should be looking across all generators.
-        this.wanderingGenerator = WGenerator.generators['halo/unsc/individual'];
+        this.wanderingGenerator = WGenerator.generators[codexPath || 'halo/unsc/individual'];
 
         // Contrary to a popular misconception, the W in WGenerator does not stand for Wandering.
         // It stands for WAFFLE.
@@ -484,7 +486,7 @@ class WorldState {
     worthContinuing () {
         const inSetup = this.now() <= 10;
         const conflictExists = this.conflictExists();
-        const probablyNotStuck = this.now() <= 50000; // TODO parameterize this, perhaps a instance variable on WorldState.
+        const probablyNotStuck = this.now() <= this.giveUpTime;
 
         return inSetup ||
             (conflictExists && probablyNotStuck);
