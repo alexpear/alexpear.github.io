@@ -106,6 +106,19 @@ module.exports = class Timeline {
 
                 const eventsSummary = Util.arraySummary(events);
 
+                if (
+                    lines.length > 0 &&
+                    lines[lines.length - 1].endsWith(`: ${eventsSummary}`)
+                ) {
+                    // Avoid cluttering the output with repetitive lines.
+                    if(this.getEventsAt(t + 1).length === 0) {
+                        // When done with a series of omissions, add this note:
+                        lines.push('...some ticks omitted for brevity...');
+                    }
+
+                    continue;
+                }
+
                 lines.push(`${t}: ${eventsSummary}`);
             }
             // If a timespan has no events, represent that whole timespan with one '...' line.

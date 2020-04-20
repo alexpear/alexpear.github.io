@@ -181,6 +181,20 @@ class RingWorldState extends GroupWorldState {
         return '\n' + output.join('\n');
     }
 
+    printCoords () {
+        const coordStrings = this.activeNodes().map(node =>
+            `${node.toAlignmentString()} at ${node.coord.to1dString()}`
+        );
+
+        Util.log(
+            '\n' + coordStrings.join('\n')
+        );
+
+        // Util.log(`activeNodes length is ${this.activeNodes().length}`);
+        // Util.log(`this.nodes length is ${this.nodes.length}`);
+        // Util.log(`this.nodes[0].active is ${this.nodes[0].active}`);
+    }
+
     static example (timeline) {
         // TODO comment out death planet specific stuff
 
@@ -220,7 +234,8 @@ class RingWorldState extends GroupWorldState {
         // worldState.printNodes();
         Util.log(worldState.toDebugString());
 
-        while (worldState.worthContinuing()) {
+        while (worldState.worthContinuing() && worldState.now() < 10) {
+            worldState.printCoords();
             worldState.timeline.computeNextInstant();
         }
 
