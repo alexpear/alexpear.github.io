@@ -16,9 +16,11 @@ const MoveAllEvent = module.exports = class MoveAllEvent extends BEvent {
         // If seems appropriate, we could persist in this BEvent a map from WNode id to its Coord at end of the step.
         this.endCoords = {};
 
+        // Movement MRB1: Each Group moves towards nearest enemy Group, unless it has attacked in the last 10 seconds, in which case it cannot move.
         worldState.activeNodes().forEach(
             (node) => {
-                const nearestFoe = undefined;
+                const nearestFoe = worldState.nearestFoe(node);
+                // Util.log(`nearestFoe exists? ${!!nearestFoe}`);
                 const destination = worldState.coordAtEndOfMove(node, nearestFoe && nearestFoe.coord);
 
                 Util.log(`in MoveAllEvent, moving a ${node.alignment} wnode from ${node.coord.x} to ${destination.x}. Its speed is ${node.getSpeed()}`);

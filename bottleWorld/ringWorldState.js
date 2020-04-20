@@ -106,6 +106,29 @@ class RingWorldState extends GroupWorldState {
         }
     }
 
+    nearestFoe (wnode) {
+        const activeNodes = this.activeNodes();
+
+        let bestFoe;
+        let bestDistance;
+
+        for (let i = 0; i < activeNodes.length; i++) {
+            if (activeNodes[i].alignment === wnode.alignment) {
+                continue;
+            }
+
+            const distance = this.distanceBetween(wnode, activeNodes[i]);
+            // Util.log(`in nearestFoe(), distance is ${distance}`)
+
+            if (! bestFoe || distance < bestDistance) {
+                bestFoe = activeNodes[i];
+                bestDistance = distance;
+            }
+        }
+
+        return bestFoe;
+    }
+
     toDebugString () {
         const output = [];
 
