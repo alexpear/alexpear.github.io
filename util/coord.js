@@ -92,6 +92,10 @@ class Coord {
         return '[' + this.r + ',' + this.c + ']';
     }
 
+    to1dString () {
+        return this.r.toString();
+    }
+
     randomAdjacent () {
         do {
             var candidateNeighbor = Coord.randomDirection().plus(this);
