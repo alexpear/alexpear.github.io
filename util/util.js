@@ -490,6 +490,10 @@ util.testPrettyDistance = () => {
     }
 };
 
+util.prettyMeters = (meters) => {
+    return `${util.commaNumber(meters)}m`;
+}
+
 util.sigFigsOf = (n) => {
     if (! util.isNumber(n)) {
         n = parseFloat(n);

@@ -32,7 +32,7 @@ module.exports = class Group extends WNode {
     toAlignmentString() {
         const tName = Util.fromCamelCase(this.templateName);
 
-        return `${tName} x${this.quantity} (${this.alignment})`;
+        return `${tName} x${this.quantity} (${this.alignmentAsString()} Group)`;
     }
 
     // distanceTo (target) {

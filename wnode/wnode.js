@@ -95,8 +95,6 @@ class WNode {
     traitMin (propStr) {
         const localTrait = this.getTrait(propStr);
 
-        // Util.logDebug(`in WNode.traitMin('${propStr}'). localTrait is ${localTrait}`);
-
         const min = this.components.reduce(
             (soFar, component) => Math.min(soFar, component.traitMin(propStr)),
             localTrait || Infinity
@@ -148,10 +146,19 @@ class WNode {
         );
     }
 
+    alignmentAsString () {
+        return this.alignment ?
+            Util.capitalized(this.alignment) :
+            'Unaligned';
+    }
+
+    // A pretty-string func.
     toAlignmentString () {
+        // Util.logDebug(`WNode.toAlignmentString(). templateName is ${this.templateName}, displayName is ${this.displayName}, alignment is ${this.alignment}`)
+
         const tName = this.templateName ?
             Util.fromCamelCase(this.templateName) :
-            `<WNode with no templateName>`;
+            `<WNode w/o templateName>`;
 
         const active = this.active ?
             'Up' :
@@ -159,10 +166,11 @@ class WNode {
 
         if (this.displayName) {
             // later include alignment here
+            // Util.logDebug(`this.templateName is ${this.templateName} and typeof this.templateName = ${typeof this.templateName}. displayName is ${this.displayName}`)
             return `${this.displayName} (${tName})`;
         }
         else {
-            return `${tName} (${this.shortId()}, ${active}, ${this.alignment})`;
+            return `${tName} (${this.shortId()}, ${active}, ${this.alignmentAsString()})`;
         }
     }
 
@@ -272,6 +280,21 @@ class WNode {
         }
 
         return this.components.find(query);
+    }
+
+    // for debug purposes
+    typeTree () {
+        return {
+            alignmentString: this.toAlignmentString(),
+            jsType: this.constructor.name,
+            components: this.components.map(
+                c => c.typeTree()
+            )
+        };
+    }
+
+    typeTreeYaml () {
+        return '\n' + Yaml.dump(this.typeTree());
     }
 
     toJson () {
