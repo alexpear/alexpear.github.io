@@ -29,6 +29,8 @@ class WNode {
             }
         }
 
+        // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
+        this.active = true;
         this.components = [];
 
         // Partial means that dynamic 'fractal' storage could append components to this when its zoomed in on. IE, not guaranteed to be a leaf.
