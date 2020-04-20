@@ -261,7 +261,7 @@ class RingWorldState extends GroupWorldState {
         const timelineJsonStr = JSON.stringify(timelineJson);
         const timelineJsonStrWhitespace = JSON.stringify(timelineJson, undefined, '    ');
 
-        Util.log(`The json version of the timeline is ${timelineJsonStr.length} characters long (no whitespace).`);
+        Util.log(`The json version of the timeline is ${Util.commaNumber(timelineJsonStr.length)} characters long (no whitespace).`);
 
         // Util.log(timelineJsonStr);
 
