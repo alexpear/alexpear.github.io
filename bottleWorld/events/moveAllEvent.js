@@ -21,12 +21,16 @@ const MoveAllEvent = module.exports = class MoveAllEvent extends BEvent {
             (node) => {
                 const nearestFoe = worldState.nearestFoe(node);
                 // Util.log(`nearestFoe exists? ${!!nearestFoe}`);
-                const destination = worldState.coordAtEndOfMove(node, nearestFoe && nearestFoe.coord);
+                const endLocation = worldState.coordAtEndOfMove(node, nearestFoe && nearestFoe.coord);
 
                 // Util.log(`in MoveAllEvent, moving a ${node.alignment} wnode from ${Util.prettyMeters(node.coord.x)} (${worldState.prettyDegrees(node.coord.x)}) to ${Util.prettyMeters(destination.x)} (${worldState.prettyDegrees(destination.x)}). Its speed is ${node.getSpeed()}`);
 
-                node.coord = destination;
-                this.endCoords[node.id] = destination;
+                if (node.coord.equals(endLocation)) {
+                    return;
+                }
+
+                node.coord = endLocation;
+                this.endCoords[node.id] = endLocation;
             }
         );
 
