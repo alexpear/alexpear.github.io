@@ -40,7 +40,7 @@ class RingWorldState extends GroupWorldState {
         // Yes, this capitalization is inconsistent with the camelcase style used by templateNames. Standardize stuff later.
         return [
             'UNSC',
-            'Insurrection'
+            'Innie'
         ];
     }
 
@@ -218,7 +218,7 @@ class RingWorldState extends GroupWorldState {
             },
             {
                 templateName: 'marineGroup',
-                alignment: 'Insurrection'
+                alignment: 'Innie'
             }
         ];
 
