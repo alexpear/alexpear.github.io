@@ -14,8 +14,8 @@ const Group = require('../wnode/group.js');
 
 // Armies on a thin circular world, a la Ringworld by Larry Niven.
 class RingWorldState extends GroupWorldState {
-    constructor (startingGroups, circumference) {
-        super(undefined, 0, 'halo/unsc/squad', 1000000);
+    constructor (startingGroups, circumference, giveUpTime) {
+        super(undefined, 0, 'halo/unsc/squad', giveUpTime || 100000);
 
         this.circumference = circumference || RingWorldState.CIRCUMFERENCE;
 
@@ -207,7 +207,7 @@ class RingWorldState extends GroupWorldState {
         return `${Util.prettyMeters(coord.x)} (${this.prettyDegrees(coord.x)})`
     }
 
-    static example (timeline) {
+    static example (timeline, giveUpTime) {
         // TODO comment out death planet specific stuff
 
         const startingGroups = [
@@ -223,7 +223,7 @@ class RingWorldState extends GroupWorldState {
         ];
 
         // Eventually should functionize this timeline initialization:
-        const worldState = new RingWorldState([], RingWorldState.CIRCUMFERENCE);
+        const worldState = new RingWorldState([], RingWorldState.CIRCUMFERENCE, giveUpTime);
 
         timeline = timeline || new Timeline(worldState);
         timeline.currentWorldState = worldState;
@@ -240,10 +240,10 @@ class RingWorldState extends GroupWorldState {
         // Unit tests
         RingWorldState.testDistanceBetween();
 
-        const worldState = RingWorldState.example();
+        const worldState = RingWorldState.example(undefined, 10);
 
         // worldState.printNodes();
-        Util.log(worldState.toDebugString());
+        // Util.log(worldState.toDebugString());
 
         while (worldState.worthContinuing()) {
             worldState.printCoords();

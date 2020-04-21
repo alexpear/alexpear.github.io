@@ -443,6 +443,6 @@ tags: group
 quantity: 8
 speed: 3
 consistsOf: individual/marinePrivate
-comment: used in the Ring Bottle World
+comment: used in the Ring Bottle World. Hmm. How to incorporate info from consistsOf? Should the Group constructor grab that template?
 
 `;

@@ -23,8 +23,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
             worldState.generateNodes(this.templateName)[0] :
             worldState.fromId(this.templateName);
 
-        Util.logDebug('Here is what this ArrivalEvent is creating:');
-        Util.logDebug(arriver.typeTreeYaml());
+        Util.logDebug('Here is what this ArrivalEvent is creating:' + arriver.typeTreeYaml());
 
         arriver.alignment = this.alignment || Util.randomOf(worldState.allAlignments());
 
