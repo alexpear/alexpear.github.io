@@ -19,9 +19,9 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const arriver = this.templateName ?
-            worldState.generateNodes(this.templateName)[0] :
-            worldState.fromId(this.templateName);
+        const arriver = this.templatePath ?
+            worldState.generateNodes(this.templatePath)[0] :
+            worldState.fromId(this.templatePath);
 
         Util.logDebug('Here is what this ArrivalEvent is creating:' + arriver.typeTreeYaml());
 

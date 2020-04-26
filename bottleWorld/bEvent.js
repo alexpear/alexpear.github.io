@@ -6,7 +6,7 @@ const Util = require('../util/util.js');
 // BEvent stands for Bottle World Event
 const BEvent = module.exports = class BEvent {
     // TODO use a options param instead of this list of params
-    constructor (eventType, protagonist, target, coord, templateName, time) {
+    constructor (eventType, protagonist, target, coord, templatePath, time) {
 
         // type string
         this.eventType = eventType;
@@ -21,7 +21,7 @@ const BEvent = module.exports = class BEvent {
         this.coord = coord;
 
         // type string
-        this.templateName = templateName;
+        this.templatePath = templatePath;
 
         // LATER i should check whether this is ending up as undefined
         // type number
