@@ -22,8 +22,7 @@ class RingWorldState extends GroupWorldState {
         this.assignCoords();
     }
 
-    addStartingGroups (groups, contextPath) {
-        contextPath = contextPath || 'halo/unsc/squad';
+    addStartingGroups (groups) {
 
         if (! this.timeline) {
             throw new Error('Cant addStartingGroups() because worldState.timeline is not yet populated.');
@@ -31,7 +30,7 @@ class RingWorldState extends GroupWorldState {
 
         groups.forEach(group => {
             this.timeline.addEvent(
-                new ArrivalEvent(contextPath + '/' + group.templateName, this.randomCoord(), group.alignment)
+                new ArrivalEvent(group.templatePath, this.randomCoord(), group.alignment)
             );
         })
     }
@@ -40,7 +39,8 @@ class RingWorldState extends GroupWorldState {
         // Yes, this capitalization is inconsistent with the camelcase style used by templateNames. Standardize stuff later.
         return [
             'UNSC',
-            'Innie'
+            'Innie',
+            'Flood'
         ];
     }
 
@@ -208,9 +208,6 @@ class RingWorldState extends GroupWorldState {
     }
 
     static example (timeline, giveUpTime) {
-        // TODO comment out death planet specific stuff
-
-        // TODO next let's make a ArrivalEvent with Flood pods. halo/flood/squad/podSwarm
         const startingGroups = [
             // TODO Perhaps the string templateName given to WGenerator should be sufficient for it to know when to create a Creature and when a Group. the template entry in the generator txt file could specify this.
             {
@@ -241,7 +238,7 @@ class RingWorldState extends GroupWorldState {
         // Unit tests
         RingWorldState.testDistanceBetween();
 
-        const worldState = RingWorldState.example(undefined, 10);
+        const worldState = RingWorldState.example(undefined);
 
         // worldState.printNodes();
         // Util.log(worldState.toDebugString());
@@ -262,7 +259,7 @@ class RingWorldState extends GroupWorldState {
         const timelineJsonStr = JSON.stringify(timelineJson);
         const timelineJsonStrWhitespace = JSON.stringify(timelineJson, undefined, '    ');
 
-        Util.log(`The json version of the timeline is ${Util.commaNumber(timelineJsonStr.length)} characters long (no whitespace).`);
+        Util.log(`The json version of the timeline is ${Util.commaNumber(timelineJsonStr.length)} characters long (no whitespace). The timeline has run for ${Util.prettyTime(worldState.now())} of in-world time.`);
 
         // Util.log(timelineJsonStr);
 

@@ -497,16 +497,16 @@ util.prettyMeters = (meters) => {
 util.prettyTime = (seconds) => {
     if (seconds < 59.5) {
         const rounded = _.round(seconds);
-        return `${rounded} sec`;
+        return `${rounded} seconds`;
     }
     else if (seconds < 3570) {
         const minutes = _.round(seconds / 60);
-        return `${minutes} min`;
+        return `${minutes} minutes`;
     }
     // 84600 seconds is 23.5 hours
     else if (seconds < 84600) {
         const hours = _.round(seconds / 3600, 1);
-        return `${hours} hr`;
+        return `${hours} hours`;
     }
     // 31556736 seconds is roughly 1 year
     else if (seconds < 31556736) {
