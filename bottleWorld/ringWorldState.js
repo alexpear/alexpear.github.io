@@ -211,12 +211,12 @@ class RingWorldState extends GroupWorldState {
         const startingGroups = [
             // TODO Perhaps the string templateName given to WGenerator should be sufficient for it to know when to create a Creature and when a Group. the template entry in the generator txt file could specify this.
             {
-                templateName: 'marineGroup',
+                templatePath: 'halo/unsc/squad/marineGroup',
                 alignment: 'UNSC'
             },
             {
-                templateName: 'marineGroup',
-                alignment: 'Innie'
+                templatePath: 'halo/flood/squad/podGroup',
+                alignment: 'Flood'
             }
         ];
 

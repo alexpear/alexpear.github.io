@@ -33,6 +33,13 @@ individual/pod
 individual/pod
 individual/pod
 
+* template podGroup
+tags: group
+consistsOf: individual/pod
+quantity: 13
+speed: 4
+comment: used in the Ring Bottle World.
+
 * childrenof combatPack
 {individual/combatForm}
 {individual/combatForm}
