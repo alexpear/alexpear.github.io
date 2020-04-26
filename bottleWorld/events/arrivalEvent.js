@@ -48,8 +48,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     arriver.components[1].templateName: ${arriver.components[1] && arriver.components[1].templateName},
     arriver.components[1].constructor.name: ${arriver.components[1] && arriver.components[1].constructor.name},
     arriver.toJson() is the following:
-    `);
-            Util.logDebug(arriver.toJson());
+    ${arriver.toJson()}`);
 
             // throw new Error(`Debug throwing to figure out why ArrivalEvent receives something with no actions.`);
 

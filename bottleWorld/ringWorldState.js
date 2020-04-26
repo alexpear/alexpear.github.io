@@ -210,6 +210,7 @@ class RingWorldState extends GroupWorldState {
     static example (timeline, giveUpTime) {
         // TODO comment out death planet specific stuff
 
+        // TODO next let's make a ArrivalEvent with Flood pods. halo/flood/squad/podSwarm
         const startingGroups = [
             // TODO Perhaps the string templateName given to WGenerator should be sufficient for it to know when to create a Creature and when a Group. the template entry in the generator txt file could specify this.
             {

@@ -6,10 +6,8 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 const MoveAllEvent = module.exports = class MoveAllEvent extends BEvent {
-    constructor (templateName, coord, alignment) {
+    constructor () {
         super(BEvent.TYPES.MoveAll);
-
-        this.alignment = alignment;
     }
 
     resolve (worldState) {
