@@ -80,6 +80,13 @@ util.sum = function (array) {
     );
 };
 
+// Average
+util.mean = (array) => {
+    array = util.array(array);
+    const sum = util.sum(array);
+    return sum / array.length;
+};
+
 util.randomIntBetween = function (minInclusive, maxExclusive) {
     if (! util.exists(minInclusive) || ! util.exists(maxExclusive)) {
         console.log('error: util.randomIntBetween() called with missing parameters.');
