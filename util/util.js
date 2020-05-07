@@ -100,7 +100,7 @@ util.randomIntBetween = function (minInclusive, maxExclusive) {
 };
 
 util.randomUpTo = function (maxInclusive) {
-    return util.randomIntBetween(0, maxInclusive - 1);
+    return util.randomIntBetween(0, maxInclusive + 1);
 };
 
 util.randomBelow = function (maxExclusive) {
