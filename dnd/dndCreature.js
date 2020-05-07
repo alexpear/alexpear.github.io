@@ -75,6 +75,11 @@ class DndCreature {
         || actions[0];
     }
 
+    attackOutcome (targetCreature) {
+        // TODO
+
+    }
+
     static testDefaultAttack () {
         for (let template of Monsters) {
             // Check for TypeErrors
