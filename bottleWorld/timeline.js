@@ -67,6 +67,13 @@ module.exports = class Timeline {
         // this.worldState.moveEverything(); // TODO implement this func, which moves all moving Things towards their destinations.
     }
 
+    printInRealTime () {
+        // TODO step thru each tick once per second.
+        // If WorldState is RingWorldState, then the printing style should be RingWorld specific somehow. 
+        // Probably we'll obtain a RingWorldState for the current instant, then call worldState.summarizeRecentChanges() on it.
+        // Maybe that func will print a sector map at the end too. Or every 60 seconds, etc.
+    }
+
     toJson () {
         const serializedEvents = {};
 

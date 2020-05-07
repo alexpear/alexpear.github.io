@@ -250,6 +250,8 @@ class RingWorldState extends GroupWorldState {
 
         Util.log(`Up to t=${worldState.now()}, the timeline is: \n${worldState.timeline.toDebugString()}`, 'debug');
 
+        worldState.timeline.printInRealTime();
+
         worldState.printCensus();
 
         // Type: object
