@@ -1,5 +1,7 @@
 'use strict';
 
+const Monsters = require('../dnd/monsters.js');
+
 const Util = require('../util/util.js');
 
 const Creature = require('../wnode/creature.js');
@@ -19,28 +21,29 @@ class DndWarband {
         this.desiredDifficulty = options.difficulty || 1; // Medium, a la DMG 5e
 
         this.creatures = {};
-        this.selectCreatures();
+        this.selectCreaturesByCr();
     }
 
-    selectCreatures () {
+    selectCreaturesByXp () {
         while (this.xpAvailable() >= 25) {
-            // Util.logDebug(`Top of selectCreatures() loop`);
+            // Util.logDebug(`Top of selectCreaturesByXp() loop`);
 
-            const creature = this.randomCreature();
+            const creature = this.randomCreatureByXp();
 
-            // TODO make sure we select one of a workable cr.
             const maxAddable = Math.floor(this.xpAvailable() / creature.xp);
             const quantity = Util.randomUpTo(maxAddable - 1) + 1;
+
+            // Util.logDebug(`xpAvailable() is ${this.xpAvailable()}. creature.xp is ${creature.xp}. maxAddable is ${maxAddable}. quantity is ${quantity}.`);
 
             this.addCreature(creature, quantity);
         }
     }
 
-    randomCreature () {
+    randomCreatureByXp () {
         let crKey = Util.randomOf(Object.keys(DndWarband.monsterManual));
 
         while (DndWarband.xpForCr(crKey) > this.xpAvailable() && this.xpAvailable() >= 5) {
-            // Util.logDebug(`Top of randomCreature() loop`);
+            // Util.logDebug(`Top of randomCreatureByXp() loop`);
 
             crKey = Util.randomOf(Object.keys(DndWarband.monsterManual));
         }
@@ -51,34 +54,84 @@ class DndWarband {
         return crObj[creatureKey];
     }
 
+    selectCreaturesByCr () {
+        while (this.crAvailable() >= 0.125) {
+            const creature = this.randomCreatureByCr();
+
+            const cr = creature.cr || DndWarband.EPSILON;
+            const maxAddable = Math.floor(this.crAvailable() / cr);
+
+            const quantity = Util.randomUpTo(maxAddable - 1) + 1;
+
+            this.addCreature(creature, quantity);
+        }
+    }
+
+    randomCreatureByCr () {
+        let crKey = Util.randomOf(Object.keys(DndWarband.monsterManual));
+
+        while (DndWarband.keyToCr(crKey) > this.crAvailable() && this.crAvailable() >= DndWarband.EPSILON) {
+            crKey = Util.randomOf(Object.keys(DndWarband.monsterManual));
+        }
+
+        const crObj = DndWarband.monsterManual[crKey];
+
+        const creatureKey = Util.randomOf(Object.keys(crObj));
+        return crObj[creatureKey];
+    }
+
+
     toString () {
         return JSON.stringify(this, undefined, '    ');
     }
 
     toPrettyString () {
-        const str = Object.keys(this.creatures).map(
-            creatureKey => `${creatureKey} x${this.creatures[creatureKey].quantity}`
-        )
-        .join('\n');
+        const creatures = Object.keys(
+            this.creatures
+        ).map(
+            key => this.creatures[key]
+        ).sort(
+            (a, b) => a.quantity - b.quantity
+        );
+
+        const str = creatures.map(
+            // c => `${c.name} x${c.quantity}\t\tCR ${this.fractionalCr(c.cr)}`
+            c => `CR ${this.fractionalCr(c.cr)}\t${c.quantity}x ${c.name}`
+        ).join('\n');
 
         return '\n' + str;
     }
 
-    // selectCreature () {
-    //     return this.randomCreature();
-    // }
+    fractionalCr (cr) {
+        if (cr === 0.125) {
+            return '1/8';
+        }
+        else if (cr === 0.25) {
+            return '1/4';
+        }
+        else if (cr === 0.5) {
+            return '1/2';
+        }
+
+        return cr;
+    }
 
     addCreature(creatureEntry, quantity) {
-        if (this.creatures[creatureEntry.name]) {
-            this.creatures[creatureEntry.name].quantity += quantity;
+        const camelName = Util.toCamelCase(creatureEntry.name);
+
+        if (this.creatures[camelName]) {
+            this.creatures[camelName].quantity += quantity;
             return;
         }
 
-        this.creatures[creatureEntry.name] = {
+        this.creatures[camelName] = {
             quantity: quantity,
             cr: creatureEntry.cr,
-            xp: creatureEntry.xp
+            xp: creatureEntry.xp,
+            name: creatureEntry.name
         };
+
+        // Util.logDebug(Object.keys(this.creatures));
     }
 
 
@@ -106,10 +159,41 @@ class DndWarband {
         );
     }
 
+    crAvailable () {
+        // Util.logDebug(`In crAvailable(). maxCr() is ${this.maxCr()}. totalCr() is ${this.totalCr()}.`)
+        return this.maxCr() - this.totalCr();
+    }
+
+    totalCr () {
+        let total = 0;
+
+        for (let species in this.creatures) {
+            const creature = this.creatures[species];
+
+            if (creature.cr === 0) {
+                total += DndWarband.EPSILON * creature.quantity;
+                continue;
+            }
+
+            total += creature.cr * creature.quantity;
+        }
+
+        return total;
+    }
+
+    maxCr () {
+        return Util.sum(
+            this.pcLevels.map(
+                // This approximation returns too-low numbers for high levels and difficulties
+                pcLevel => 0.25 * pcLevel * this.desiredDifficulty
+            )
+        );
+    }
+
     difficulty () {
         const xpPerPc = this.xp() / this.pcLevels.length;
         const meanLevel = Util.mean(this.pcLevels);
-        // see DMG
+        // see DMG, complete later.
     }
 
     // Convert to number by replacing 'half' with 0.5, etc
@@ -123,26 +207,48 @@ class DndWarband {
         return keyToCr[crKey] || crKey;
     }
 
+    static crToKey (crNumber) {
+        if (crNumber === 0.125) {
+            return 'eighth';
+        }
+        else if (crNumber === 0.25) {
+            return 'quarter';
+        }
+        else if (crNumber === 0.5) {
+            return 'half';
+        }
+        else {
+            // Util.logDebug(`${crNumber} in crToKey()`)
+            return crNumber;
+        }
+    }
+
     static prepareMonsterManual () {
-        // Cache some values
-        for (let crKey in DndWarband.monsterManual) {
-            const crList = DndWarband.monsterManual[crKey];
-            const xp = DndWarband.xpForCr(crKey);
+        const manual = DndWarband.monsterManual = {};
 
-            const cr = DndWarband.keyToCr(crKey);
+        for (let entry of Monsters) {
+            const crKey = DndWarband.crToKey(entry.challenge_rating);
 
-            for (const creatureKey in crList) {
-                const creature = crList[creatureKey];
-            
-                creature.name = creatureKey;
-                creature.cr = cr;
-                creature.xp = xp;
+            if (! manual[crKey]) {
+                manual[crKey] = {};
             }
+
+            const name = Util.toCamelCase(entry.name);
+            
+            // Duplicating for legacy support. Can clean up later.
+            entry.cr = entry.challenge_rating;
+            entry.xp = DndWarband.xpForCr(crKey);
+
+            if (! Util.exists(entry.xp)) {
+                Util.logDebug(`entry.xp is ${entry.xp} in prepareMonsterManual(). entry.challenge_rating is ${entry.challenge_rating}`)
+            }
+
+            manual[crKey][name] = entry;
         }
     }
 
     static xpForCr (crKey) {
-        return {
+        const xp = {
             0: 5,
             eighth: 25,
             quarter: 50,
@@ -150,8 +256,35 @@ class DndWarband {
             1: 200,
             2: 450,
             3: 700,
-            4: 1100
+            4: 1100,
+            5: 1800,
+            6: 2300,
+            7: 2900,
+            8: 3900,
+            9: 5000,
+            10: 5900,
+            11: 7200,
+            12: 8400,
+            13: 10000,
+            14: 11500,
+            15: 13000,
+            16: 15000,
+            17: 18000,
+            18: 20000,
+            19: 22000,
+            20: 25000,
+            21: 33000,
+            22: 41000,
+            23: 50000,
+            24: 62000,
+            30: 155000
         }[crKey];
+
+        if (xp === undefined) {
+            throw new Error(`Unsure what XP to assign to this CR`);
+        }
+
+        return xp;
     }
 
     static example () {
@@ -186,106 +319,7 @@ class DndWarband {
     }
 }
 
-DndWarband.monsterManual = {
-    0: {
-        awakenedShrub: {},
-        baboon: {},
-        badger: {},
-        cat: {},
-        commoner: {},
-        crab: {},
-        deer: {},
-        eagle: {},
-        goat: {},
-        hawk: {},
-        homunculus: {},
-        hyena: {},
-        jackal: {},
-        lizard: {},
-        owl: {},
-        rat: {},
-        raven: {},
-        scorpion: {},
-        spider: {},
-        vulture: {},
-        weasel: {}
-    },
-    eighth: {
-        bandit: {},
-        camel: {},
-        cultist: {},
-        flumph: {},
-        flyingSnake: {},
-        giantCrab: {},
-        giantRat: {},
-        giantWeasel: {},
-        guard: {},
-        kobold: {},
-        mastiff: {},
-        noble: {},
-        poisonousSnake: {},
-        pony: {}
-    },
-    quarter: {
-        acolyte: {},
-        boar: {},
-        drow: {},
-        elk: {},
-        giantBadger: {},
-        giantCentipede: {},
-        giantFrog: {},
-        giantLizard: {},
-        giantOwl: {},
-        goblin: {},
-        panther: {},
-        pixie: {},
-        skeleton: {},
-        wolf: {},
-        ratSwarm: {},
-        ravenSwarm: {},
-        zombie: {}
-    },
-    half: {
-        bear: {},
-        crocodile: {},
-        giantGoat: {},
-        giantWasp: {},
-        gnoll: {},
-        hobgoblin: {},
-        lizardfolk: {},
-        orc: {},
-        satyr: {},
-        scout: {},
-        shadow: {},
-        insectSwarm: {},
-        thug: {}
-    },
-    1: {
-        bugbear: {},
-        goblinBoss: {},
-        giantEagle: {},
-        direWolf: {},
-        dryad: {},
-        hippogriff: {},
-        lion: {},
-        imp: {},
-        spy: {},
-        tiger: {}
-    },
-    2: {
-        banditCaptain: {},
-        centaur: {},
-        berserker: {},
-        druid: {},
-        cultFanatic: {},
-        gargoyle: {},
-        giantConstrictorSnake: {},
-        ogre: {},
-        priest: {},
-        rhinoceros: {},
-        poisonousSnakeSwarm: {}
-    }
-}
+DndWarband.EPSILON = 0.03;
 
 module.exports = DndWarband;
 
