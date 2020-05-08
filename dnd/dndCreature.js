@@ -8,6 +8,8 @@ const Monsters = require('./monsters.js');
 
 const Util = require('../util/util.js');
 
+const d20 = require('d20');
+
 class DndCreature {
     constructor (input) {
         if (Util.isString(input)) {
@@ -18,6 +20,8 @@ class DndCreature {
 
         this.monsterTemplate = input;
         this.parseResistances();
+        this.currentHp = input.hit_points;
+        this.conditions = [];
     }
 
     parseResistances () {
@@ -41,6 +45,10 @@ class DndCreature {
 
     templateName () {
         return this.monsterTemplate.name;
+    }
+
+    isActive () {
+        return this.currentHp > 0;
     }
 
     cr () {
@@ -75,9 +83,49 @@ class DndCreature {
         || actions[0];
     }
 
-    attackOutcome (targetCreature) {
-        // TODO
+    attack (targetCreature, attackTemplate) {
+        attackTemplate = attackTemplate || this.defaultAttack();
 
+        const outcome = {
+            // result: undefined,
+            targetHp: targetCreature.currentHp
+        };
+
+        if (! attackTemplate) {
+            return outcome;
+        }
+
+        outcome.result = Dice.check(targetCreature.monsterTemplate.armor_class, attackTemplate.attack_bonus);
+
+        if (outcome.result === Dice.Failure) {
+            return outcome;
+        }
+
+        if (outcome.result === Dice.CriticalFailure) {
+            // Later can implement some additional setback here. Lose 1 HP? Negative condition until next turn? Hit a ally?
+            return outcome;
+        }
+
+        let damage = d20.roll(`${attackTemplate.damage_dice} + ${attackTemplate.damage_bonus}`);
+
+        if (outcome.result === Dice.CriticalSuccess) {
+            damage += d20.roll(attackTemplate.damage_dice);
+        }
+
+        // Later: Look at target DR vs damage type. Requires parsing damage type out of description, perhaps regex for 'slashing damage.' etc.
+        // const resistance = targetCreature.monsterTemplate.resistances[damageType];
+
+        targetCreature.currentHp -= damage;
+        outcome.targetHp = targetCreature.currentHp;
+
+        return outcome;
+    }
+
+    heal (hitDice) {
+        hitDice = hitDice || 1;
+        // Later flesh out
+
+        // return outcome;
     }
 
     static testDefaultAttack () {
