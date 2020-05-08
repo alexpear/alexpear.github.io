@@ -1,10 +1,9 @@
 'use strict';
 
+const DndCreature = require('../dnd/dndCreature.js');
 const Monsters = require('../dnd/monsters.js');
 
 const Util = require('../util/util.js');
-
-const Creature = require('../wnode/creature.js');
 
 class DndWarband {
     constructor (options) {
@@ -26,14 +25,10 @@ class DndWarband {
 
     selectCreaturesByXp () {
         while (this.xpAvailable() >= 25) {
-            // Util.logDebug(`Top of selectCreaturesByXp() loop`);
-
             const creature = this.randomCreatureByXp();
 
             const maxAddable = Math.floor(this.xpAvailable() / creature.xp);
             const quantity = Util.randomUpTo(maxAddable - 1) + 1;
-
-            // Util.logDebug(`xpAvailable() is ${this.xpAvailable()}. creature.xp is ${creature.xp}. maxAddable is ${maxAddable}. quantity is ${quantity}.`);
 
             this.addCreature(creature, quantity);
         }
