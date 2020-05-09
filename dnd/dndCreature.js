@@ -43,15 +43,16 @@ class DndCreature {
         }
     }
 
+    // Note that this might not follow the camelcase standard of other templateNames. Could tidy that later.
     templateName () {
         return this.monsterTemplate.name;
     }
 
-    isActive () {
+    active () {
         return this.currentHp > 0;
     }
 
-    cr () {
+    getCr () {
         return this.monsterTemplate.challenge_rating;
     }
 

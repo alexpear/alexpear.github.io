@@ -19,7 +19,6 @@ class DndWarband {
         //  2  approximates Deadly
         this.desiredDifficulty = options.difficulty || 1; // Medium, a la DMG 5e
 
-        // TODO i also want to store a array of DndCreatures. Replace the .creatures obj with a more specific, live-hitpoints array of DndCreature.
         this.creatures = [];
         this.selectCreaturesByCr();
     }
@@ -52,15 +51,21 @@ class DndWarband {
 
     selectCreaturesByCr () {
         while (this.crAvailable() >= 0.125) {
-            const creature = this.randomCreatureByCr();
+            // Util.logDebug(`top of selectCreaturesByCr() loop. this.creatures.length is ${this.creatures.length}. this.crAvailable() is ${this.crAvailable()}`)
 
-            const cr = creature.cr || DndWarband.EPSILON;
+            const creatureEntry = this.randomCreatureByCr();
+
+            const cr = creatureEntry.cr || DndWarband.EPSILON;
             const maxAddable = Math.floor(this.crAvailable() / cr);
 
             const quantity = Util.randomUpTo(maxAddable - 1) + 1;
 
-            this.addCreature(creature, quantity);
+            this.addCreature(creatureEntry, quantity);
+
+            // Util.logDebug(`Bottom of selectCreaturesByCr() loop. this.creatures.length is ${this.creatures.length}. this.crAvailable() is ${this.crAvailable()}`);
         }
+
+        // Util.logDebug(`Bottom of selectCreaturesByCr() overall. this.creatures.length is ${this.creatures.length}. this.crAvailable() is ${this.crAvailable()}`);
     }
 
     randomCreatureByCr () {
@@ -82,18 +87,44 @@ class DndWarband {
     }
 
     toPrettyString () {
-        const creatures = Object.keys(
-            this.creatures
-        ).map(
-            key => this.creatures[key]
-        ).sort(
-            (a, b) => a.quantity - b.quantity
-        );
+        const summary = {};
 
-        const str = creatures.map(
-            // c => `${c.name} x${c.quantity}\t\tCR ${this.fractionalCr(c.cr)}`
-            c => `CR ${this.fractionalCr(c.cr)}\t${c.quantity}x ${c.name}`
-        ).join('\n');
+        for (const c of this.creatures) {
+            const name = c.templateName();
+
+            if (summary[name]) {
+                summary[name].quantity += 1;
+            }
+            else {
+                summary[name] = {
+                    cr: c.getCr(),
+                    quantity: 1,
+                    name: name
+                };
+            }
+        }
+
+        const lines = [];
+
+        for (const name in summary) {
+            lines.push(summary[name]);
+        }
+
+        const str = lines.sort(
+            (a, b) => {
+                const diff = b.cr - a.cr;
+
+                return diff === 0 ?
+                    a.quantity - b.quantity :
+                    diff;
+            }
+        )
+        .map(
+            row => `CR ${this.fractionalCr(row.cr)}\t${row.quantity}x ${row.name}`
+        )
+        .join('\n');
+
+        // Util.logDebug(`this.creatures.length is ${this.creatures.length}. summary has ${Object.keys(summary).length} keys. lines.length is ${lines.length}`)
 
         return '\n' + str;
     }
@@ -124,6 +155,7 @@ class DndWarband {
     xp () {
         let xpSoFar = 0;
 
+        // Later update this to expect creatures to be array, not obj.
         for (let creatureKey in this.creatures) {
             const creature = this.creatures[creatureKey];
             xpSoFar += creature.xp * creature.quantity;
@@ -153,16 +185,15 @@ class DndWarband {
     totalCr () {
         let total = 0;
 
-        for (let species in this.creatures) {
-            const creature = this.creatures[species];
-
-            if (creature.cr === 0) {
-                total += DndWarband.EPSILON * creature.quantity;
+        for (const creature of this.creatures) {
+            if (! creature.active()) {
                 continue;
             }
 
-            total += creature.cr * creature.quantity;
+            total += creature.getCr() || DndWarband.EPSILON;
         }
+
+        // Util.logDebug(`in totalCr(), returning ${total}`)
 
         return total;
     }
@@ -276,8 +307,6 @@ class DndWarband {
     static example () {
         const warband = new DndWarband();
 
-        // Later overwrite this.creatures obj.
-
         return warband;
     }
 
@@ -295,9 +324,11 @@ class DndWarband {
     }
 
     static test () {
-        console.log(`DndWarband.test(): \n\n`);
+        console.log(`DndWarband.test(): \n`);
 
-        const warband = new DndWarband();
+        const warband = new DndWarband({
+            pcLevels: [20, 20, 20, 20, 20, 20]
+        });
 
         Util.logDebug(warband.toPrettyString());
 
