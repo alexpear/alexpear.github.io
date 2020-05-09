@@ -19,7 +19,8 @@ class DndWarband {
         //  2  approximates Deadly
         this.desiredDifficulty = options.difficulty || 1; // Medium, a la DMG 5e
 
-        this.creatures = {};
+        // TODO i also want to store a array of DndCreatures. Replace the .creatures obj with a more specific, live-hitpoints array of DndCreature.
+        this.creatures = [];
         this.selectCreaturesByCr();
     }
 
@@ -114,19 +115,9 @@ class DndWarband {
     addCreature(creatureEntry, quantity) {
         const camelName = Util.toCamelCase(creatureEntry.name);
 
-        if (this.creatures[camelName]) {
-            this.creatures[camelName].quantity += quantity;
-            return;
+        for (let i = 0; i < quantity; i++) {
+            this.creatures.push(new DndCreature(creatureEntry));
         }
-
-        this.creatures[camelName] = {
-            quantity: quantity,
-            cr: creatureEntry.cr,
-            xp: creatureEntry.xp,
-            name: creatureEntry.name
-        };
-
-        // Util.logDebug(Object.keys(this.creatures));
     }
 
 
