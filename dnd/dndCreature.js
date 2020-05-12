@@ -8,8 +8,6 @@ const Monsters = require('./monsters.js');
 
 const Util = require('../util/util.js');
 
-const d20 = require('d20');
-
 class DndCreature {
     constructor (input) {
         if (Util.isString(input)) {
@@ -20,6 +18,9 @@ class DndCreature {
 
         this.monsterTemplate = input;
         this.parseResistances();
+        // this.alignment = new Alignment(input.alignment); LATER
+        // TODO initialize vague values like 'any alignment'.
+        this.alignment = input.alignment;
         this.currentHp = input.hit_points;
         this.conditions = [];
     }
@@ -38,7 +39,7 @@ class DndCreature {
             }
             else if (template.damage_immunities.indexOf(damageType) >= 0) {
                 // Util.logDebug(`damageType is ${damageType}`);
-                template.resistances[damageType] = 9999;
+                template.resistances[damageType] = DndCreature.IMMUNE;
             }
         }
     }
@@ -50,6 +51,11 @@ class DndCreature {
 
     active () {
         return this.currentHp > 0;
+    }
+
+    getAlignment () {
+        // TODO this will say 'unaligned' or 'any alignment' sometimes. Initialize those in constructor.
+        return this.alignment;
     }
 
     getCr () {
@@ -82,6 +88,43 @@ class DndCreature {
             a => a.desc.indexOf('Attack:') >= 0
         )
         || actions[0];
+    }
+
+    selectTarget (others, attackTemplate) {
+        attackTemplate = attackTemplate || this.defaultAttack();
+
+        // We use slice() to deep copy to prevent side effects from sort().
+        const sorted = others.slice().sort(
+            (a, b) => b.getCr() - a.getCr()
+        );
+
+        // set damage expectations
+        let desiredDamage = this.damage(DndCreature.punchingBag(), attackTemplate);
+
+        for (const target of sorted) {
+            if (! this.isFoe(target)) {
+                continue;
+            }
+
+            // This is a approximate algorithm.
+            const wouldDamage = this.damage(target, attackTemplate);
+
+            // Check whether resistances dont get in the way.
+            if (wouldDamage >= desiredDamage) {
+                return target;
+            }
+
+            // Lower expectations
+            desiredDamage = wouldDamage;
+        }
+
+        // If all are hard, attack the lowest-CR target.
+        return sorted[sorted.length - 1];
+    }
+
+    isFoe (target) {
+        // Later make this more sophisticated between LG-NG, or LG-NN, etc. LG-CG can stay foes.
+        return target.getAlignment() !== target.getAlignment();
     }
 
     attack (targetCreature, attackTemplate) {
