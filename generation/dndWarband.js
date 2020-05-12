@@ -1,5 +1,8 @@
 'use strict';
 
+const Yaml = require('js-yaml');
+
+const Alignment = require('../dnd/alignment.js');
 const DamageTypes = require('../dnd/damageTypes.js');
 const DndCreature = require('../dnd/dndCreature.js');
 const Monsters = require('../dnd/monsters.js');
@@ -241,6 +244,37 @@ class DndWarband {
         }
     }
 
+    static namesByFaction () {
+        const alignments = {};
+
+        for (const entry of Monsters) {
+            // Later decide how to deal with 'any alignment', etc
+            if (! alignments[entry.alignment]) {
+                alignments[entry.alignment] = {};
+            }
+
+            if (! alignments[entry.alignment][entry.type]) {
+                alignments[entry.alignment][entry.type] = [];
+            }
+
+            alignments[entry.alignment][entry.type].push(entry.name);
+        }
+
+        return alignments;
+    }
+
+    static allAlignmentStrings () {
+        const alignments = {};
+
+        for (const entry of Monsters) {
+            if (! alignments[entry.alignment]) {
+                alignments[entry.alignment] = true;
+            }
+        }
+
+        return Object.keys(alignments).sort();
+    }
+
     static prepareMonsterManual () {
         const manual = DndWarband.monsterManual = {};
 
@@ -309,6 +343,7 @@ class DndWarband {
 
     static printJson (obj) {
         Util.logDebug(
+            // 2 spaces to match existing indentation of monsters.js
             JSON.stringify(obj, undefined, '  ')
         );
     }
@@ -379,7 +414,14 @@ class DndWarband {
             pcLevels: [20, 20, 20, 20, 20, 20]
         });
 
-        Util.logDebug(warband.toPrettyString());
+        // Util.logDebug(warband.toPrettyString());
+
+        Util.logDebug(
+            '\n' + 
+            Yaml.dump(
+                DndWarband.namesByFaction()
+            )
+        );
 
         return warband;
     }
