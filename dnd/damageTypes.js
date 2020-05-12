@@ -13,6 +13,7 @@ module.exports = Util.makeEnum([
     'lightning',
     'radiant',
     'necrotic',
+    'psychic',
     'force',
     'thunder'
 ]);
