@@ -150,14 +150,11 @@ class DndCreature {
             return outcome;
         }
 
-        let damage = d20.roll(`${attackTemplate.damage_dice} + ${attackTemplate.damage_bonus}`);
-
-        if (outcome.result === Dice.CriticalSuccess) {
-            damage += d20.roll(attackTemplate.damage_dice);
-        }
-
-        // Later: Look at target DR vs damage type. Requires parsing damage type out of description, perhaps regex for 'slashing damage.' etc.
-        // const resistance = targetCreature.monsterTemplate.resistances[damageType];
+        const damage = this.damage(
+            targetCreature,
+            attackTemplate,
+            outcome.result === Dice.CriticalSuccess
+        );
 
         targetCreature.currentHp -= damage;
         outcome.targetHp = targetCreature.currentHp;
@@ -165,11 +162,65 @@ class DndCreature {
         return outcome;
     }
 
+    damage (target, attackTemplate, wasCrit) {
+        attackTemplate = attackTemplate || this.defaultAttack();
+        let damage = Dice.roll(`${attackTemplate.damage_dice} + ${attackTemplate.damage_bonus}`);
+
+        if (wasCrit) {
+            damage += Dice.roll(attackTemplate.damage_dice);
+        }
+
+        if (! attackTemplate.damage_types) {
+            return damage;
+        }
+
+        let resistedDamage = 0;
+        const damageByType = Dice.divideAmong(damage, attackTemplate.damage_types);
+
+        for (const type in damageByType) {
+            const resistance = targetCreature.monsterTemplate.resistances[type] || 1;
+
+            resistedDamage += resistance === DndCreature.IMMUNE ?
+                0 :
+                damageByType[type] * resistance;
+        }
+
+        return resistedDamage;
+    }
+
     heal (hitDice) {
         hitDice = hitDice || 1;
         // Later flesh out
 
         // return outcome;
+    }
+
+    static punchingBag () {
+        return new DndCreature({
+            name: 'Punching Bag',
+            size: 'Medium',
+            type: 'construct',
+            subtype: '',
+            alignment: 'neutral',
+            armor_class: 0,
+            hit_points: 99999,
+            hit_dice: '1d4',
+            speed: '0 ft.',
+            strength: 1,
+            dexterity: 1,
+            constitution: 1,
+            intelligence: 1,
+            wisdom: 1,
+            charisma: 1,
+            damage_vulnerabilities: '',
+            damage_resistances: '',
+            damage_immunities: '',
+            condition_immunities: '',
+            senses: 'passive Perception 10',
+            languages: '',
+            challenge_rating: 0,
+            actions: []
+        });
     }
 
     static testDefaultAttack () {
@@ -235,6 +286,8 @@ class DndCreature {
         Util.logDebug(creature.defaultAttack());
     }
 }
+
+DndCreature.IMMUNE = 9999;
 
 module.exports = DndCreature;
 
