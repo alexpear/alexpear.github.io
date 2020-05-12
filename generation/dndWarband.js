@@ -1,5 +1,6 @@
 'use strict';
 
+const DamageTypes = require('../dnd/damageTypes.js');
 const DndCreature = require('../dnd/dndCreature.js');
 const Monsters = require('../dnd/monsters.js');
 
@@ -243,7 +244,7 @@ class DndWarband {
     static prepareMonsterManual () {
         const manual = DndWarband.monsterManual = {};
 
-        for (let entry of Monsters) {
+        for (const entry of Monsters) {
             const crKey = DndWarband.crToKey(entry.challenge_rating);
 
             if (! manual[crKey]) {
@@ -262,6 +263,54 @@ class DndWarband {
 
             manual[crKey][name] = entry;
         }
+
+        DndWarband.parseDamageTypes();
+
+        // DndWarband.printJson(DndWarband.monsterManual);
+        // DndWarband.printJson(Monsters);
+    }
+
+    static parseDamageTypes () {
+        const types = Object.keys(DamageTypes);
+
+        for (const entry of Monsters) {
+            // Util.logDebug(`In parseDamageTypes(), looking at ${entry.name}`);
+
+            if (! entry.actions) {
+                continue;
+            }
+
+            for (const action of entry.actions) {
+                if (! action.damage_dice && ! action.damage_bonus) {
+                    continue;
+                }
+
+                action.damage_types = [];
+
+                const phrases = action.desc.split(' damage');
+
+                // All but last
+                for (let t = 0; t < types.length; t++) {
+                    for (let p = 0; p < phrases.length - 1; p++) {
+                        // Util.logDebug(`Comparing ${phrases[p]} to ${types[t]}`)
+
+                        if (phrases[p].endsWith(types[t])) {
+                            action.damage_types.push(types[t]);
+                            break;
+                            // Note that 'as much damage' does appear in descriptions, which is not referring to a type.
+                        }
+                    }
+                }
+            }
+        }
+
+        // No return, just side effects.
+    }
+
+    static printJson (obj) {
+        Util.logDebug(
+            JSON.stringify(obj, undefined, '  ')
+        );
     }
 
     static xpForCr (crKey) {
@@ -341,5 +390,9 @@ DndWarband.EPSILON = 0.03;
 module.exports = DndWarband;
 
 // Run
-DndWarband.run();
+// DndWarband.run();
+DndWarband.test();
+
+// TODO make class and func: DndWorldState.battle(warbandA, warbandB);
+
 
