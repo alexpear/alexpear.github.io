@@ -86,7 +86,8 @@ const monsters = [
         "desc": "One creature charmed by the aboleth takes 10 (3d6) psychic damage, and the aboleth regains hit points equal to the damage the creature takes.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5900
   },
   {
     "name": "Acolyte",
@@ -127,7 +128,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "1d4"
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Adult Black Dragon",
@@ -225,7 +227,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 10 ft. of the dragon must succeed on a DC 19 Dexterity saving throw or take 13 (2d6 + 6) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 11500
   },
   {
     "name": "Adult Blue Dracolich",
@@ -318,7 +321,8 @@ const monsters = [
         "desc": "The dracolich beats its tattered wings. Each creature within 10 ft. of the dracolich must succeed on a DC 21 Dexterity saving throw or take 14 (2d6 + 7) bludgeoning damage and be knocked prone. After beating its wings this way, the dracolich can fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 18000
   },
   {
     "name": "Adult Blue Dragon",
@@ -411,7 +415,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 10 ft. of the dragon must succeed on a DC 20 Dexterity saving throw or take 14 (2d6 + 7) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 15000
   },
   {
     "name": "Adult Brass Dragon",
@@ -489,7 +494,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "13d6"
       }
-    ]
+    ],
+    "xp": 10000
   },
   {
     "name": "Adult Bronze Dragon",
@@ -588,7 +594,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 10 ft. of the dragon must succeed on a DC 20 Dexterity saving throw or take 14 (2d6 + 7) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 13000
   },
   {
     "name": "Adult Copper Dragon",
@@ -682,7 +689,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 10 ft. of the dragon must succeed on a DC 19 Dexterity saving throw or take 13 (2d6 + 6) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 11500
   },
   {
     "name": "Adult Gold Dragon",
@@ -782,7 +790,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 10 ft. of the dragon must succeed on a DC 22 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 18000
   },
   {
     "name": "Adult Green Dragon",
@@ -883,7 +892,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 10 ft. of the dragon must succeed on a DC 19 Dexterity saving throw or take 13 (2d6 + 6) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 13000
   },
   {
     "name": "Adult Red Dragon",
@@ -982,7 +992,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 10 ft. of the dragon must succeed on a DC 22 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 18000
   },
   {
     "name": "Adult Silver Dragon",
@@ -1077,7 +1088,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 10 ft. of the dragon must succeed on a DC 22 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 15000
   },
   {
     "name": "Adult White Dragon",
@@ -1175,7 +1187,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 10 ft. of the dragon must succeed on a DC 19 Dexterity saving throw or take 13 (2d6 + 6) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 10000
   },
   {
     "name": "Air Elemental",
@@ -1225,7 +1238,8 @@ const monsters = [
         "desc": "Each creature in the elemental's space must make a DC 13 Strength saving throw. On a failure, a target takes 15 (3d8 + 2) bludgeoning damage and is flung up 20 feet away from the elemental in a random direction and knocked prone. If a thrown target strikes an object, such as a wall or floor, the target takes 3 (1d6) bludgeoning damage for every 10 feet it was thrown. If the target is thrown at another creature, that creature must succeed on a DC 13 Dexterity saving throw or take the same damage and be knocked prone.\nIf the saving throw is successful, the target takes half the bludgeoning damage and isn't flung away or knocked prone.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Ancient Black Dragon",
@@ -1327,7 +1341,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 15 ft. of the dragon must succeed on a DC 23 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 33000
   },
   {
     "name": "Ancient Blue Dragon",
@@ -1413,7 +1428,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 15 ft. of the dragon must succeed on a DC 24 Dexterity saving throw or take 16 (2d6 + 9) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 50000
   },
   {
     "name": "Ancient Brass Dragon",
@@ -1513,7 +1529,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 15 ft. of the dragon must succeed on a DC 22 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 25000
   },
   {
     "name": "Ancient Bronze Dragon",
@@ -1617,7 +1634,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 15 ft. of the dragon must succeed on a DC 24 Dexterity saving throw or take 16 (2d6 + 9) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 41000
   },
   {
     "name": "Ancient Copper Dragon",
@@ -1716,7 +1734,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 15 ft. of the dragon must succeed on a DC 23 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 33000
   },
   {
     "name": "Ancient Gold Dragon",
@@ -1821,7 +1840,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 15 ft. of the dragon must succeed on a DC 25 Dexterity saving throw or take 17 (2d6 + 10) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 62000
   },
   {
     "name": "Ancient Green Dragon",
@@ -1922,7 +1942,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 15 ft. of the dragon must succeed on a DC 23 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 41000
   },
   {
     "name": "Ancient Red Dragon",
@@ -2015,7 +2036,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 15 ft. of the dragon must succeed on a DC 25 Dexterity saving throw or take 17 (2d6 + 10) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 62000
   },
   {
     "name": "Ancient Silver Dragon",
@@ -2115,7 +2137,8 @@ const monsters = [
         "desc": "The dragon beats its wings. Each creature within 15 ft. of the dragon must succeed on a DC 25 Dexterity saving throw or take 17 (2d6 + 10) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 50000
   },
   {
     "name": "Ancient White Dragon",
@@ -2196,7 +2219,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "16d8"
       }
-    ]
+    ],
+    "xp": 25000
   },
   {
     "name": "Androsphinx",
@@ -2280,7 +2304,8 @@ const monsters = [
         "desc": "The sphinx casts a spell from its list of prepared spells, using a spell slot as normal.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 18000
   },
   {
     "name": "Animated Armor",
@@ -2330,7 +2355,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Ankheg",
@@ -2369,7 +2395,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "3d6"
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Ape",
@@ -2416,7 +2443,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Archmage",
@@ -2465,7 +2493,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 8400
   },
   {
     "name": "Assassin",
@@ -2534,7 +2563,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 3900
   },
   {
     "name": "Awakened Shrub",
@@ -2574,7 +2604,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": -1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Awakened Tree",
@@ -2614,7 +2645,8 @@ const monsters = [
         "damage_dice": "3d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Axe Beak",
@@ -2647,7 +2679,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Azer",
@@ -2699,7 +2732,8 @@ const monsters = [
         "damage_dice": "1d8 + 1d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Baboon",
@@ -2739,7 +2773,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": -1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Badger",
@@ -2778,7 +2813,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Balor",
@@ -2861,7 +2897,8 @@ const monsters = [
         "desc": "The demon chooses what to summon and attempts a magical summoning.\nA balor has a 50 percent chance of summoning 1d8 vrocks, 1d6 hezrous, 1d4 glabrezus, 1d3 nalfeshnees, 1d2 mariliths, or one goristro.\nA summoned demon appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other demons. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 22000
   },
   {
     "name": "Bandit",
@@ -2901,7 +2938,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Bandit Captain",
@@ -2958,7 +2996,8 @@ const monsters = [
         "desc": "The captain adds 2 to its AC against one melee attack that would hit it. To do so, the captain must see the attacker and be wielding a melee weapon.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Barbed Devil",
@@ -3034,7 +3073,8 @@ const monsters = [
         "attack_bonus": 5,
         "damage_dice": "3d6"
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Basilisk",
@@ -3074,7 +3114,8 @@ const monsters = [
         "damage_dice": "2d6 + 2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Bat",
@@ -3118,7 +3159,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Bearded Devil",
@@ -3183,7 +3225,8 @@ const monsters = [
         "damage_dice": "1d10",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Behir",
@@ -3242,7 +3285,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "6d6"
       }
-    ]
+    ],
+    "xp": 7200
   },
   {
     "name": "Berserker",
@@ -3282,7 +3326,8 @@ const monsters = [
         "damage_dice": "1d12",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Black Bear",
@@ -3334,7 +3379,8 @@ const monsters = [
         "damage_dice": "2d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Black Dragon Wyrmling",
@@ -3386,7 +3432,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "5d8"
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Black Pudding",
@@ -3444,7 +3491,8 @@ const monsters = [
         "desc": "When a pudding that is Medium or larger is subjected to lightning or slashing damage, it splits into two new puddings if it has at least 10 hit points. Each new pudding has hit points equal to half the original pudding's, rounded down. New puddings are one size smaller than the original pudding.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Blink Dog",
@@ -3491,7 +3539,8 @@ const monsters = [
         "desc": "The dog magically teleports, along with any equipment it is wearing or carrying, up to 40 ft. to an unoccupied space it can see. Before or after teleporting, the dog can make one bite attack.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Blood Hawk",
@@ -3537,7 +3586,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Blue Dragon Wyrmling",
@@ -3582,7 +3632,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "4d10"
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Boar",
@@ -3628,7 +3679,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Bone Devil",
@@ -3709,7 +3761,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 8400
   },
   {
     "name": "Brass Dragon Wyrmling",
@@ -3754,7 +3807,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "4d6"
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Bronze Dragon Wyrmling",
@@ -3806,7 +3860,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "3d10"
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Brown Bear",
@@ -3859,7 +3914,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Bugbear",
@@ -3914,7 +3970,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Bulette",
@@ -3960,7 +4017,8 @@ const monsters = [
         "desc": "If the bulette jumps at least 15 ft. as part of its movement, it can then use this action to land on its ft. in a space that contains one or more other creatures. Each of those creatures must succeed on a DC 16 Strength or Dexterity saving throw (target's choice) or be knocked prone and take 14 (3d6 + 4) bludgeoning damage plus 14 (3d6 + 4) slashing damage. On a successful save, the creature takes only half the damage, isn't knocked prone, and is pushed 5 ft. out of the bulette's space into an unoccupied space of the creature's choice. If no unoccupied space is within range, the creature instead falls prone in the bulette's space.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Camel",
@@ -3992,7 +4050,8 @@ const monsters = [
         "attack_bonus": 5,
         "damage_dice": "1d4"
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Carrion Crawler",
@@ -4050,7 +4109,8 @@ const monsters = [
         "damage_dice": "2d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Cat",
@@ -4091,7 +4151,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Cave Bear",
@@ -4144,7 +4205,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Centaur",
@@ -4207,7 +4269,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Chain Devil",
@@ -4269,7 +4332,8 @@ const monsters = [
         "desc": "When a creature the devil can see starts its turn within 30 feet of the devil, the devil can create the illusion that it looks like one of the creature's departed loved ones or bitter enemies. If the creature can see the devil, it must succeed on a DC 14 Wisdom saving throw or be frightened until the end of its turn.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 7200
   },
   {
     "name": "Chimera",
@@ -4328,7 +4392,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "7d8"
       }
-    ]
+    ],
+    "xp": 2300
   },
   {
     "name": "Chuul",
@@ -4384,7 +4449,8 @@ const monsters = [
         "desc": "One creature grappled by the chuul must succeed on a DC 13 Constitution saving throw or be poisoned for 1 minute. Until this poison ends, the target is paralyzed. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Clay Golem",
@@ -4454,7 +4520,8 @@ const monsters = [
         "desc": "Until the end of its next turn, the golem magically gains a +2 bonus to its AC, has advantage on Dexterity saving throws, and can use its slam attack as a bonus action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5000
   },
   {
     "name": "Cloaker",
@@ -4527,7 +4594,8 @@ const monsters = [
         "desc": "The cloaker magically creates three illusory duplicates of itself if it isn't in bright light. The duplicates move with it and mimic its actions, shifting position so as to make it impossible to track which cloaker is the real one. If the cloaker is ever in an area of bright light, the duplicates disappear.\nWhenever any creature targets the cloaker with an attack or a harmful spell while a duplicate remains, that creature rolls randomly to determine whether it targets the cloaker or one of the duplicates. A creature is unaffected by this magical effect if it can't see or if it relies on senses other than sight.\nA duplicate has the cloaker's AC and uses its saving throws. If an attack hits a duplicate, or if a duplicate fails a saving throw against an effect that deals damage, the duplicate disappears.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 3900
   },
   {
     "name": "Cloud Giant",
@@ -4589,7 +4657,8 @@ const monsters = [
         "damage_dice": "4d10",
         "damage_bonus": 8
       }
-    ]
+    ],
+    "xp": 5000
   },
   {
     "name": "Cockatrice",
@@ -4622,7 +4691,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Commoner",
@@ -4654,7 +4724,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "1d4"
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Constrictor Snake",
@@ -4694,7 +4765,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Copper Dragon Wyrmling",
@@ -4739,7 +4811,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "4d8"
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Couatl",
@@ -4804,7 +4877,8 @@ const monsters = [
         "desc": "The couatl magically polymorphs into a humanoid or beast that has a challenge rating equal to or less than its own, or back into its true form. It reverts to its true form if it dies. Any equipment it is wearing or carrying is absorbed or borne by the new form (the couatl's choice).\nIn a new form, the couatl retains its game statistics and ability to speak, but its AC, movement modes, Strength, Dexterity, and other actions are replaced by those of the new form, and it gains any statistics and capabilities (except class features, legendary actions, and lair actions) that the new form has but that it lacks. If the new form has a bite attack, the couatl can use its bite in that form.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Crab",
@@ -4844,7 +4918,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Crocodile",
@@ -4885,7 +4960,8 @@ const monsters = [
         "damage_dice": "1d10",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Cult Fanatic",
@@ -4938,7 +5014,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Cultist",
@@ -4980,7 +5057,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Darkmantle",
@@ -5031,7 +5109,8 @@ const monsters = [
         "desc": "A 15-foot radius of magical darkness extends out from the darkmantle, moves with it, and spreads around corners. The darkness lasts as long as the darkmantle maintains concentration, up to 10 minutes (as if concentrating on a spell). Darkvision can't penetrate this darkness, and no natural light can illuminate it. If any of the darkness overlaps with an area of light created by a spell of 2nd level or lower, the spell creating the light is dispelled.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Death Dog",
@@ -5078,7 +5157,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Deep Gnome (Svirfneblin)",
@@ -5138,7 +5218,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Deer",
@@ -5170,7 +5251,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "1d4"
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Deva",
@@ -5239,7 +5321,8 @@ const monsters = [
         "desc": "The deva magically polymorphs into a humanoid or beast that has a challenge rating equal to or less than its own, or back into its true form. It reverts to its true form if it dies. Any equipment it is wearing or carrying is absorbed or borne by the new form (the deva's choice).\nIn a new form, the deva retains its game statistics and ability to speak, but its AC, movement modes, Strength, Dexterity, and special senses are replaced by those of the new form, and it gains any statistics and capabilities (except class features, legendary actions, and lair actions) that the new form has but that it lacks.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5900
   },
   {
     "name": "Dire Wolf",
@@ -5286,7 +5369,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Djinni",
@@ -5349,7 +5433,8 @@ const monsters = [
         "desc": "A 5-foot-radius, 30-foot-tall cylinder of swirling air magically forms on a point the djinni can see within 120 feet of it. The whirlwind lasts as long as the djinni maintains concentration (as if concentrating on a spell). Any creature but the djinni that enters the whirlwind must succeed on a DC 18 Strength saving throw or be restrained by it. The djinni can move the whirlwind up to 60 feet as an action, and creatures restrained by the whirlwind move with it. The whirlwind ends if the djinni loses sight of it.\nA creature can use its action to free a creature restrained by the whirlwind, including itself, by succeeding on a DC 18 Strength check. If the check succeeds, the creature is no longer restrained and moves to the nearest space outside the whirlwind.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 7200
   },
   {
     "name": "Doppelganger",
@@ -5412,7 +5497,8 @@ const monsters = [
         "desc": "The doppelganger magically reads the surface thoughts of one creature within 60 ft. of it. The effect can penetrate barriers, but 3 ft. of wood or dirt, 2 ft. of stone, 2 inches of metal, or a thin sheet of lead blocks it. While the target is in range, the doppelganger can continue reading its thoughts, as long as the doppelganger's concentration isn't broken (as if concentrating on a spell). While reading the target's mind, the doppelganger has advantage on Wisdom (Insight) and Charisma (Deception, Intimidation, and Persuasion) checks against the target.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Draft Horse",
@@ -5445,7 +5531,8 @@ const monsters = [
         "damage_dice": "2d4",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Dragon Turtle",
@@ -5513,7 +5600,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "15d6"
       }
-    ]
+    ],
+    "xp": 18000
   },
   {
     "name": "Dretch",
@@ -5561,7 +5649,8 @@ const monsters = [
         "desc": "A 10-foot radius of disgusting green gas extends out from the dretch. The gas spreads around corners, and its area is lightly obscured. It lasts for 1 minute or until a strong wind disperses it. Any creature that starts its turn in that area must succeed on a DC 11 Constitution saving throw or be poisoned until the start of its next turn. While poisoned in this way, the target can take either an action or a bonus action on its turn, not both, and can't take reactions.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Drider",
@@ -5642,7 +5731,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 2300
   },
   {
     "name": "Drow",
@@ -5701,7 +5791,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Druid",
@@ -5743,7 +5834,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "1d6"
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Dryad",
@@ -5804,7 +5896,8 @@ const monsters = [
         "desc": "The dryad targets one humanoid or beast that she can see within 30 feet of her. If the target can see the dryad, it must succeed on a DC 14 Wisdom saving throw or be magically charmed. The charmed creature regards the dryad as a trusted friend to be heeded and protected. Although the target isn't under the dryad's control, it takes the dryad's requests or actions in the most favorable way it can.\nEach time the dryad or its allies do anything harmful to the target, it can repeat the saving throw, ending the effect on itself on a success. Otherwise, the effect lasts 24 hours or until the dryad dies, is on a different plane of existence from the target, or ends the effect as a bonus action. If a target's saving throw is successful, the target is immune to the dryad's Fey Charm for the next 24 hours.\nThe dryad can have no more than one humanoid and up to three beasts charmed at a time.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Duergar",
@@ -5866,7 +5959,8 @@ const monsters = [
         "desc": "The duergar magically turns invisible until it attacks, casts a spell, or uses its Enlarge, or until its concentration is broken, up to 1 hour (as if concentrating on a spell). Any equipment the duergar wears or carries is invisible with it .",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Dust Mephit",
@@ -5923,7 +6017,8 @@ const monsters = [
         "desc": "The mephit has a 25 percent chance of summoning 1d4 mephits of its kind. A summoned mephit appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other mephits. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Eagle",
@@ -5964,7 +6059,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Earth Elemental",
@@ -6014,7 +6110,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Efreeti",
@@ -6078,7 +6175,8 @@ const monsters = [
         "attack_bonus": 7,
         "damage_dice": "5d6"
       }
-    ]
+    ],
+    "xp": 7200
   },
   {
     "name": "Elephant",
@@ -6125,7 +6223,8 @@ const monsters = [
         "damage_dice": "3d10",
         "damage_bonus": 6
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Elk",
@@ -6169,7 +6268,8 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one prone creature. Hit: 8 (2d4 + 3) bludgeoning damage.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Erinyes",
@@ -6242,7 +6342,8 @@ const monsters = [
         "desc": "The erinyes adds 4 to its AC against one melee attack that would hit it. To do so, the erinyes must see the attacker and be wielding a melee weapon.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 8400
   },
   {
     "name": "Ettercap",
@@ -6319,7 +6420,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Ettin",
@@ -6377,7 +6479,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Fire Elemental",
@@ -6433,7 +6536,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Fire Giant",
@@ -6483,7 +6587,8 @@ const monsters = [
         "damage_dice": "4d10",
         "damage_bonus": 7
       }
-    ]
+    ],
+    "xp": 5000
   },
   {
     "name": "Flesh Golem",
@@ -6553,7 +6658,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Flying Snake",
@@ -6592,7 +6698,8 @@ const monsters = [
         "attack_bonus": 6,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Flying Sword",
@@ -6638,7 +6745,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Frog",
@@ -6676,7 +6784,8 @@ const monsters = [
         "desc": "The frog's long jump is up to 10 ft. and its high jump is up to 5 ft., with or without a running start.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Frost Giant",
@@ -6726,7 +6835,8 @@ const monsters = [
         "damage_dice": "4d10",
         "damage_bonus": 6
       }
-    ]
+    ],
+    "xp": 3900
   },
   {
     "name": "Gargoyle",
@@ -6778,7 +6888,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Gelatinous Cube",
@@ -6827,7 +6938,8 @@ const monsters = [
         "desc": "The cube moves up to its speed. While doing so, it can enter Large or smaller creatures' spaces. Whenever the cube enters a creature's space, the creature must make a DC 12 Dexterity saving throw.\nOn a successful save, the creature can choose to be pushed 5 feet back or to the side of the cube. A creature that chooses not to be pushed suffers the consequences of a failed saving throw.\nOn a failed save, the cube enters the creature's space, and the creature takes 10 (3d6) acid damage and is engulfed. The engulfed creature can't breathe, is restrained, and takes 21 (6d6) acid damage at the start of each of the cube's turns. When the cube moves, the engulfed creature moves with it.\nAn engulfed creature can try to escape by taking an action to make a DC 12 Strength check. On a success, the creature escapes and enters a space of its choice within 5 feet of the cube.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Ghast",
@@ -6879,7 +6991,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Ghost",
@@ -6939,7 +7052,8 @@ const monsters = [
         "desc": "One humanoid that the ghost can see within 5 ft. of it must succeed on a DC 13 Charisma saving throw or be possessed by the ghost; the ghost then disappears, and the target is incapacitated and loses control of its body. The ghost now controls the body but doesn't deprive the target of awareness. The ghost can't be targeted by any attack, spell, or other effect, except ones that turn undead, and it retains its alignment, Intelligence, Wisdom, Charisma, and immunity to being charmed and frightened. It otherwise uses the possessed target's statistics, but doesn't gain access to the target's knowledge, class features, or proficiencies.\nThe possession lasts until the body drops to 0 hit points, the ghost ends it as a bonus action, or the ghost is turned or forced out by an effect like the dispel evil and good spell. When the possession ends, the ghost reappears in an unoccupied space within 5 ft. of the body. The target is immune to this ghost's Possession for 24 hours after succeeding on the saving throw or after the possession ends.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Ghoul",
@@ -6977,7 +7091,8 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) slashing damage. If the target is a creature other than an elf or undead, it must succeed on a DC 10 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Giant Ape",
@@ -7024,7 +7139,8 @@ const monsters = [
         "damage_dice": "7d6",
         "damage_bonus": 6
       }
-    ]
+    ],
+    "xp": 2900
   },
   {
     "name": "Giant Badger",
@@ -7076,7 +7192,8 @@ const monsters = [
         "damage_dice": "2d4",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Giant Bat",
@@ -7121,7 +7238,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Giant Boar",
@@ -7167,7 +7285,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Giant Centipede",
@@ -7200,7 +7319,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Giant Constrictor Snake",
@@ -7241,7 +7361,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Giant Crab",
@@ -7282,7 +7403,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Giant Crocodile",
@@ -7335,7 +7457,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Giant Eagle",
@@ -7388,7 +7511,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Giant Elk",
@@ -7437,7 +7561,8 @@ const monsters = [
         "damage_dice": "4d8",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Giant Fire Beetle",
@@ -7477,7 +7602,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": -1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Giant Frog",
@@ -7529,7 +7655,8 @@ const monsters = [
         "desc": "The frog makes one bite attack against a Small or smaller target it is grappling. If the attack hits, the target is swallowed, and the grapple ends. The swallowed target is blinded and restrained, it has total cover against attacks and other effects outside the frog, and it takes 5 (2d4) acid damage at the start of each of the frog's turns. The frog can have only one target swallowed at a time. If the frog dies, a swallowed creature is no longer restrained by it and can escape from the corpse using 5 ft. of movement, exiting prone.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Giant Goat",
@@ -7575,7 +7702,8 @@ const monsters = [
         "damage_dice": "2d4",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Giant Hyena",
@@ -7616,7 +7744,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Giant Lizard",
@@ -7661,7 +7790,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Giant Octopus",
@@ -7718,7 +7848,8 @@ const monsters = [
         "desc": "A 20-foot-radius cloud of ink extends all around the octopus if it is underwater. The area is heavily obscured for 1 minute, although a significant current can disperse the ink. After releasing the ink, the octopus can use the Dash action as a bonus action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Giant Owl",
@@ -7765,7 +7896,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Giant Poisonous Snake",
@@ -7799,7 +7931,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Giant Rat",
@@ -7844,7 +7977,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Giant Rat (Diseased)",
@@ -7877,7 +8011,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Giant Scorpion",
@@ -7922,7 +8057,8 @@ const monsters = [
         "damage_dice": "1d10",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Giant Sea Horse",
@@ -7968,7 +8104,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Giant Shark",
@@ -8014,7 +8151,8 @@ const monsters = [
         "damage_dice": "3d10",
         "damage_bonus": 6
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Giant Spider",
@@ -8070,7 +8208,8 @@ const monsters = [
         "desc": "Ranged Weapon Attack: +5 to hit, range 30/60 ft., one creature. Hit: The target is restrained by webbing. As an action, the restrained target can make a DC 12 Strength check, bursting the webbing on a success. The webbing can also be attacked and destroyed (AC 10; hp 5; vulnerability to fire damage; immunity to bludgeoning, poison, and psychic damage).",
         "attack_bonus": 5
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Giant Toad",
@@ -8120,7 +8259,8 @@ const monsters = [
         "desc": "The toad makes one bite attack against a Medium or smaller target it is grappling. If the attack hits, the target is swallowed, and the grapple ends. The swallowed target is blinded and restrained, it has total cover against attacks and other effects outside the toad, and it takes 10 (3d6) acid damage at the start of each of the toad's turns. The toad can have only one target swallowed at a time.\nIf the toad dies, a swallowed creature is no longer restrained by it and can escape from the corpse using 5 feet of movement, exiting prone.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Giant Vulture",
@@ -8178,7 +8318,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Giant Wasp",
@@ -8211,7 +8352,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Giant Weasel",
@@ -8253,7 +8395,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Giant Wolf Spider",
@@ -8305,7 +8448,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Gibbering Mouther",
@@ -8359,7 +8503,8 @@ const monsters = [
         "desc": "The mouther spits a chemical glob at a point it can see within 15 feet of it. The glob explodes in a blinding flash of light on impact. Each creature within 5 feet of the flash must succeed on a DC 13 Dexterity saving throw or be blinded until the end of the mouther's next turn.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Glabrezu",
@@ -8425,7 +8570,8 @@ const monsters = [
         "desc": "The demon chooses what to summon and attempts a magical summoning.\nA glabrezu has a 30 percent chance of summoning 1d3 vrocks, 1d2 hezrous, or one glabrezu.\nA summoned demon appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other demons. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5000
   },
   {
     "name": "Gladiator",
@@ -8494,7 +8640,8 @@ const monsters = [
         "desc": "The gladiator adds 3 to its AC against one melee attack that would hit it. To do so, the gladiator must see the attacker and be wielding a melee weapon.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Gnoll",
@@ -8548,7 +8695,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Goat",
@@ -8594,7 +8742,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Goblin",
@@ -8642,7 +8791,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Gold Dragon Wyrmling",
@@ -8694,7 +8844,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "4d10"
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Gorgon",
@@ -8747,7 +8898,8 @@ const monsters = [
         "desc": "The gorgon exhales petrifying gas in a 30-foot cone. Each creature in that area must succeed on a DC 13 Constitution saving throw. On a failed save, a target begins to turn to stone and is restrained. The restrained target must repeat the saving throw at the end of its next turn. On a success, the effect ends on the target. On a failure, the target is petrified until freed by the greater restoration spell or other magic.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Gray Ooze",
@@ -8798,7 +8950,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Green Dragon Wyrmling",
@@ -8850,7 +9003,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "6d6"
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Green Hag",
@@ -8929,7 +9083,8 @@ const monsters = [
         "desc": "The hag magically turns invisible until she attacks or casts a spell, or until her concentration ends (as if concentrating on a spell). While invisible, she leaves no physical evidence of her passage, so she can be tracked only by magic. Any equipment she wears or carries is invisible with her.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Grick",
@@ -8981,7 +9136,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Griffon",
@@ -9034,7 +9190,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Grimlock",
@@ -9087,7 +9244,8 @@ const monsters = [
         "damage_dice": "1d4 + 1d4",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Guard",
@@ -9121,7 +9279,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Guardian Naga",
@@ -9177,7 +9336,8 @@ const monsters = [
         "attack_bonus": 8,
         "damage_dice": "10d8"
       }
-    ]
+    ],
+    "xp": 5900
   },
   {
     "name": "Gynosphinx",
@@ -9253,7 +9413,8 @@ const monsters = [
         "desc": "The sphinx casts a spell from its list of prepared spells, using a spell slot as normal.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 7200
   },
   {
     "name": "Half-Red Dragon Veteran",
@@ -9311,7 +9472,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "7d6"
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Harpy",
@@ -9361,7 +9523,8 @@ const monsters = [
         "desc": "The harpy sings a magical melody. Every humanoid and giant within 300 ft. of the harpy that can hear the song must succeed on a DC 11 Wisdom saving throw or be charmed until the song ends. The harpy must take a bonus action on its subsequent turns to continue singing. It can stop singing at any time. The song ends if the harpy is incapacitated.\nWhile charmed by the harpy, a target is incapacitated and ignores the songs of other harpies. If the charmed target is more than 5 ft. away from the harpy, the must move on its turn toward the harpy by the most direct route. It doesn't avoid opportunity attacks, but before moving into damaging terrain, such as lava or a pit, and whenever it takes damage from a source other than the harpy, a target can repeat the saving throw. A creature can also repeat the saving throw at the end of each of its turns. If a creature's saving throw is successful, the effect ends on it.\nA target that successfully saves is immune to this harpy's song for the next 24 hours.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Hawk",
@@ -9401,7 +9564,8 @@ const monsters = [
         "attack_bonus": 5,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Hell Hound",
@@ -9453,7 +9617,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "6d6"
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Hezrou",
@@ -9518,7 +9683,8 @@ const monsters = [
         "desc": "The demon chooses what to summon and attempts a magical summoning.\nA hezrou has a 30 percent chance of summoning 2d6 dretches or one hezrou.\nA summoned demon appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other demons. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 3900
   },
   {
     "name": "Hill Giant",
@@ -9564,7 +9730,8 @@ const monsters = [
         "damage_dice": "3d10",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Hippogriff",
@@ -9617,7 +9784,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Hobgoblin",
@@ -9665,7 +9833,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Homunculus",
@@ -9704,7 +9873,8 @@ const monsters = [
         "attack_bonus": 4,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Horned Devil",
@@ -9771,7 +9941,8 @@ const monsters = [
         "attack_bonus": 7,
         "damage_dice": "4d6"
       }
-    ]
+    ],
+    "xp": 7200
   },
   {
     "name": "Hunter Shark",
@@ -9817,7 +9988,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Hydra",
@@ -9878,7 +10050,8 @@ const monsters = [
         "damage_dice": "1d10",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 3900
   },
   {
     "name": "Hyena",
@@ -9918,7 +10091,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "1d6"
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Ice Devil",
@@ -9991,7 +10165,8 @@ const monsters = [
         "desc": "The devil magically forms an opaque wall of ice on a solid surface it can see within 60 feet of it. The wall is 1 foot thick and up to 30 feet long and 10 feet high, or it's a hemispherical dome up to 20 feet in diameter.\nWhen the wall appears, each creature in its space is pushed out of it by the shortest route. The creature chooses which side of the wall to end up on, unless the creature is incapacitated. The creature then makes a DC 17 Dexterity saving throw, taking 35 (10d6) cold damage on a failed save, or half as much damage on a successful one.\nThe wall lasts for 1 minute or until the devil is incapacitated or dies. The wall can be damaged and breached; each 10-foot section has AC 5, 30 hit points, vulnerability to fire damage, and immunity to acid, cold, necrotic, poison, and psychic damage. If a section is destroyed, it leaves behind a sheet of frigid air in the space the wall occupied. Whenever a creature finishes moving through the frigid air on a turn, willingly or otherwise, the creature must make a DC 17 Constitution saving throw, taking 17 (5d6) cold damage on a failed save, or half as much damage on a successful one. The frigid air dissipates when the rest of the wall vanishes.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 11500
   },
   {
     "name": "Ice Mephit",
@@ -10054,7 +10229,8 @@ const monsters = [
         "desc": "The mephit has a 25 percent chance of summoning 1d4 mephits of its kind. A summoned mephit appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other mephits. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Imp",
@@ -10118,7 +10294,8 @@ const monsters = [
         "desc": "The imp magically turns invisible until it attacks, or until its concentration ends (as if concentrating on a spell). Any equipment the imp wears or carries is invisible with it.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Invisible Stalker",
@@ -10170,7 +10347,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 2300
   },
   {
     "name": "Iron Golem",
@@ -10243,7 +10421,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "10d8"
       }
-    ]
+    ],
+    "xp": 15000
   },
   {
     "name": "Jackal",
@@ -10289,7 +10468,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": -1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Killer Whale",
@@ -10338,7 +10518,8 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 21 (5d6 + 4) piercing damage.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Knight",
@@ -10403,7 +10584,8 @@ const monsters = [
         "desc": "The knight adds 2 to its AC against one melee attack that would hit it. To do so, the knight must see the attacker and be wielding a melee weapon.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Kobold",
@@ -10455,7 +10637,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Kraken",
@@ -10550,7 +10733,8 @@ const monsters = [
         "desc": "While underwater, the kraken expels an ink cloud in a 60-foot radius. The cloud spreads around corners, and that area is heavily obscured to creatures other than the kraken. Each creature other than the kraken that ends its turn there must succeed on a DC 23 Constitution saving throw, taking 16 (3d10) poison damage on a failed save, or half as much damage on a successful one. A strong current disperses the cloud, which otherwise disappears at the end of the kraken's next turn.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 50000
   },
   {
     "name": "Lamia",
@@ -10610,7 +10794,8 @@ const monsters = [
         "desc": "Melee Spell Attack: +5 to hit, reach 5 ft., one creature. Hit: The target is magically cursed for 1 hour. Until the curse ends, the target has disadvantage on Wisdom saving throws and all ability checks.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Lemure",
@@ -10654,7 +10839,8 @@ const monsters = [
         "attack_bonus": 3,
         "damage_dice": "1d4"
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Lich",
@@ -10738,7 +10924,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "6d6"
       }
-    ]
+    ],
+    "xp": 33000
   },
   {
     "name": "Lion",
@@ -10802,7 +10989,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Lizard",
@@ -10834,7 +11022,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Lizardfolk",
@@ -10903,7 +11092,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Mage",
@@ -10947,7 +11137,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 2300
   },
   {
     "name": "Magma Mephit",
@@ -11009,7 +11200,8 @@ const monsters = [
         "desc": "The mephit has a 25 percent chance of summoning 1d4 mephits of its kind. A summoned mephit appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other mephits. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Magmin",
@@ -11054,7 +11246,8 @@ const monsters = [
         "attack_bonus": 4,
         "damage_dice": "2d6"
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Mammoth",
@@ -11101,7 +11294,8 @@ const monsters = [
         "damage_dice": "4d10",
         "damage_bonus": 7
       }
-    ]
+    ],
+    "xp": 2300
   },
   {
     "name": "Manticore",
@@ -11160,7 +11354,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Marilith",
@@ -11243,7 +11438,8 @@ const monsters = [
         "desc": "The marilith adds 5 to its AC against one melee attack that would hit it. To do so, the marilith must see the attacker and be wielding a melee weapon.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 15000
   },
   {
     "name": "Mastiff",
@@ -11284,7 +11480,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Medusa",
@@ -11346,7 +11543,8 @@ const monsters = [
         "attack_bonus": 5,
         "damage_dice": "2d6"
       }
-    ]
+    ],
+    "xp": 2300
   },
   {
     "name": "Merfolk",
@@ -11386,7 +11584,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "1d6"
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Merrow",
@@ -11445,7 +11644,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Mimic",
@@ -11508,7 +11708,8 @@ const monsters = [
         "damage_dice": "1d8 + 1d8",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Minotaur",
@@ -11567,7 +11768,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Minotaur Skeleton",
@@ -11615,7 +11817,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Mule",
@@ -11660,7 +11863,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Mummy",
@@ -11704,7 +11908,8 @@ const monsters = [
         "desc": "The mummy targets one creature it can see within 60 ft. of it. If the target can see the mummy, it must succeed on a DC 11 Wisdom saving throw against this magic or become frightened until the end of the mummy's next turn. If the target fails the saving throw by 5 or more, it is also paralyzed for the same duration. A target that succeeds on the saving throw is immune to the Dreadful Glare of all mummies (but not mummy lords) for the next 24 hours.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Mummy Lord",
@@ -11797,7 +12002,8 @@ const monsters = [
         "desc": "The mummy lord magically transforms into a whirlwind of sand, moves up to 60 feet, and reverts to its normal form. While in whirlwind form, the mummy lord is immune to all damage, and it can't be grappled, petrified, knocked prone, restrained, or stunned. Equipment worn or carried by the mummy lord remain in its possession.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 13000
   },
   {
     "name": "Nalfeshnee",
@@ -11868,7 +12074,8 @@ const monsters = [
         "desc": "The demon chooses what to summon and attempts a magical summoning.\nA nalfeshnee has a 50 percent chance of summoning 1d4 vrocks, 1d3 hezrous, 1d2 glabrezus, or one nalfeshnee.\nA summoned demon appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other demons. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 10000
   },
   {
     "name": "Night Hag",
@@ -11952,7 +12159,8 @@ const monsters = [
         "desc": "While on the Ethereal Plane, the hag magically touches a sleeping humanoid on the Material Plane. A protection from evil and good spell cast on the target prevents this contact, as does a magic circle. As long as the contact persists, the target has dreadful visions. If these visions last for at least 1 hour, the target gains no benefit from its rest, and its hit point maximum is reduced by 5 (1d10). If this effect reduces the target's hit point maximum to 0, the target dies, and if the target was evil, its soul is trapped in the hag's soul bag. The reduction to the target's hit point maximum lasts until removed by the greater restoration spell or similar magic.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Nightmare",
@@ -12002,7 +12210,8 @@ const monsters = [
         "desc": "The nightmare and up to three willing creatures within 5 feet of it magically enter the Ethereal Plane from the Material Plane, or vice versa.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Noble",
@@ -12045,7 +12254,8 @@ const monsters = [
         "desc": "The noble adds 2 to its AC against one melee attack that would hit it. To do so, the noble must see the attacker and be wielding a melee weapon.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Ochre Jelly",
@@ -12097,7 +12307,8 @@ const monsters = [
         "desc": "When a jelly that is Medium or larger is subjected to lightning or slashing damage, it splits into two new jellies if it has at least 10 hit points. Each new jelly has hit points equal to half the original jelly's, rounded down. New jellies are one size smaller than the original jelly.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Octopus",
@@ -12153,7 +12364,8 @@ const monsters = [
         "desc": "A 5-foot-radius cloud of ink extends all around the octopus if it is underwater. The area is heavily obscured for 1 minute, although a significant current can disperse the ink. After releasing the ink, the octopus can use the Dash action as a bonus action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Ogre",
@@ -12193,7 +12405,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Ogre Zombie",
@@ -12234,7 +12447,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Oni",
@@ -12308,7 +12522,8 @@ const monsters = [
         "desc": "The oni magically polymorphs into a Small or Medium humanoid, into a Large giant, or back into its true form. Other than its size, its statistics are the same in each form. The only equipment that is transformed is its glaive, which shrinks so that it can be wielded in humanoid form. If the oni dies, it reverts to its true form, and its glaive reverts to its normal size.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 2900
   },
   {
     "name": "Orc",
@@ -12356,7 +12571,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Otyugh",
@@ -12414,7 +12630,8 @@ const monsters = [
         "desc": "The otyugh slams creatures grappled by it into each other or a solid surface. Each creature must succeed on a DC 14 Constitution saving throw or take 10 (2d6 + 3) bludgeoning damage and be stunned until the end of the otyugh's next turn. On a successful save, the target takes half the bludgeoning damage and isn't stunned.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Owl",
@@ -12460,7 +12677,8 @@ const monsters = [
         "attack_bonus": 3,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Owlbear",
@@ -12513,7 +12731,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Panther",
@@ -12567,7 +12786,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Pegasus",
@@ -12604,7 +12824,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Phase Spider",
@@ -12655,7 +12876,8 @@ const monsters = [
         "damage_dice": "1d10",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Pit Fiend",
@@ -12739,7 +12961,8 @@ const monsters = [
         "damage_dice": "3d10",
         "damage_bonus": 8
       }
-    ]
+    ],
+    "xp": 25000
   },
   {
     "name": "Planetar",
@@ -12808,7 +13031,8 @@ const monsters = [
         "desc": "The planetar touches another creature. The target magically regains 30 (6d8 + 3) hit points and is freed from any curse, disease, poison, blindness, or deafness.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 15000
   },
   {
     "name": "Plesiosaurus",
@@ -12850,7 +13074,8 @@ const monsters = [
         "damage_dice": "3d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Poisonous Snake",
@@ -12882,7 +13107,8 @@ const monsters = [
         "attack_bonus": 5,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Polar Bear",
@@ -12935,7 +13161,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Pony",
@@ -12968,7 +13195,8 @@ const monsters = [
         "damage_dice": "2d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Priest",
@@ -13016,7 +13244,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "1d6"
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Pseudodragon",
@@ -13080,7 +13309,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Purple Worm",
@@ -13134,7 +13364,8 @@ const monsters = [
         "damage_dice": "3d6",
         "damage_bonus": 9
       }
-    ]
+    ],
+    "xp": 13000
   },
   {
     "name": "Quasit",
@@ -13195,7 +13426,8 @@ const monsters = [
         "desc": "The quasit magically turns invisible until it attacks or uses Scare, or until its concentration ends (as if concentrating on a spell). Any equipment the quasit wears or carries is invisible with it.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Quipper",
@@ -13239,7 +13471,8 @@ const monsters = [
         "attack_bonus": 5,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Rakshasa",
@@ -13291,7 +13524,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 10000
   },
   {
     "name": "Rat",
@@ -13330,7 +13564,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Raven",
@@ -13369,7 +13604,8 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 1 piercing damage.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Red Dragon Wyrmling",
@@ -13414,7 +13650,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "7d6"
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Reef Shark",
@@ -13460,7 +13697,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Remorhaz",
@@ -13506,7 +13744,8 @@ const monsters = [
         "desc": "The remorhaz makes one bite attack against a Medium or smaller creature it is grappling. If the attack hits, that creature takes the bite's damage and is swallowed, and the grapple ends. While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the remorhaz, and it takes 21 (6d6) acid damage at the start of each of the remorhaz's turns.\nIf the remorhaz takes 30 damage or more on a single turn from a creature inside it, the remorhaz must succeed on a DC 15 Constitution saving throw at the end of that turn or regurgitate all swallowed creatures, which fall prone in a space within 10 feet oft he remorhaz. If the remorhaz dies, a swallowed creature is no longer restrained by it and can escape from the corpse using 15 feet of movement, exiting prone.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 7200
   },
   {
     "name": "Rhinoceros",
@@ -13547,7 +13786,8 @@ const monsters = [
         "damage_dice": "2d8",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Riding Horse",
@@ -13580,7 +13820,8 @@ const monsters = [
         "damage_dice": "2d4",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Roc",
@@ -13637,7 +13878,8 @@ const monsters = [
         "damage_dice": "4d6",
         "damage_bonus": 9
       }
-    ]
+    ],
+    "xp": 7200
   },
   {
     "name": "Roper",
@@ -13704,7 +13946,8 @@ const monsters = [
         "desc": "The roper pulls each creature grappled by it up to 25 ft. straight toward it.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Rug of Smothering",
@@ -13754,7 +13997,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Rust Monster",
@@ -13804,7 +14048,8 @@ const monsters = [
         "desc": "The rust monster corrodes a nonmagical ferrous metal object it can see within 5 feet of it. If the object isn't being worn or carried, the touch destroys a 1-foot cube of it. If the object is being worn or carried by a creature, the creature can make a DC 11 Dexterity saving throw to avoid the rust monster's touch.\nIf the object touched is either metal armor or a metal shield being worn or carried, its takes a permanent and cumulative -1 penalty to the AC it offers. Armor reduced to an AC of 10 or a shield that drops to a +0 bonus is destroyed. If the object touched is a held metal weapon, it rusts as described in the Rust Metal trait.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Saber-Toothed Tiger",
@@ -13858,7 +14103,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 5
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Sahuagin",
@@ -13928,7 +14174,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Salamander",
@@ -13986,7 +14233,8 @@ const monsters = [
         "damage_dice": "2d6 + 2d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Satyr",
@@ -14048,7 +14296,8 @@ const monsters = [
         "desc": "Gentle Lullaby. The creature falls asleep and is unconscious for 1 minute. The effect ends if the creature takes damage or if someone takes an action to shake the creature awake.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Scorpion",
@@ -14080,7 +14329,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Scout",
@@ -14136,7 +14386,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Sea Hag",
@@ -14206,7 +14457,8 @@ const monsters = [
         "desc": "The hag covers herself and anything she is wearing or carrying with a magical illusion that makes her look like an ugly creature of her general size and humanoid shape. The effect ends if the hag takes a bonus action to end it or if she dies.\nThe changes wrought by this effect fail to hold up to physical inspection. For example, the hag could appear to have no claws, but someone touching her hand might feel the claws. Otherwise, a creature must take an action to visually inspect the illusion and succeed on a DC 16 Intelligence (Investigation) check to discern that the hag is disguised.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Sea Horse",
@@ -14237,7 +14489,8 @@ const monsters = [
         "desc": "The sea horse can breathe only underwater.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Shadow",
@@ -14288,7 +14541,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Shambling Mound",
@@ -14339,7 +14593,8 @@ const monsters = [
         "desc": "The shambling mound engulfs a Medium or smaller creature grappled by it. The engulfed target is blinded, restrained, and unable to breathe, and it must succeed on a DC 14 Constitution saving throw at the start of each of the mound's turns or take 13 (2d8 + 4) bludgeoning damage. If the mound moves, the engulfed target moves with it. The mound can have only one creature engulfed at a time.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Shield Guardian",
@@ -14401,7 +14656,8 @@ const monsters = [
         "desc": "When a creature makes an attack against the wearer of the guardian's amulet, the guardian grants a +2 bonus to the wearer's AC if the guardian is within 5 feet of the wearer.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 2900
   },
   {
     "name": "Shrieker",
@@ -14439,7 +14695,8 @@ const monsters = [
         "desc": "When bright light or a creature is within 30 feet of the shrieker, it emits a shriek audible within 300 feet of it. The shrieker continues to shriek until the disturbance moves out of range and for 1d4 of the shrieker's turns afterward",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Silver Dragon Wyrmling",
@@ -14484,7 +14741,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "4d8"
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Skeleton",
@@ -14524,7 +14782,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Solar",
@@ -14622,7 +14881,8 @@ const monsters = [
         "desc": "The solar targets one creature it can see within 30 ft. of it. If the target can see it, the target must succeed on a DC 15 Constitution saving throw or be blinded until magic such as the lesser restoration spell removes the blindness.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 33000
   },
   {
     "name": "Specter",
@@ -14666,7 +14926,8 @@ const monsters = [
         "attack_bonus": 4,
         "damage_dice": "3d6"
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Spider",
@@ -14716,7 +14977,8 @@ const monsters = [
         "attack_bonus": 4,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Spirit Naga",
@@ -14765,7 +15027,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 3900
   },
   {
     "name": "Sprite",
@@ -14815,7 +15078,8 @@ const monsters = [
         "desc": "The sprite magically turns invisible until it attacks or casts a spell, or until its concentration ends (as if concentrating on a spell). Any equipment the sprite wears or carries is invisible with it.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Spy",
@@ -14879,7 +15143,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Steam Mephit",
@@ -14934,7 +15199,8 @@ const monsters = [
         "desc": "The mephit has a 25 percent chance of summoning 1d4 mephits of its kind. A summoned mephit appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other mephits. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Stirge",
@@ -14967,7 +15233,8 @@ const monsters = [
         "damage_dice": "1d4",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Stone Giant",
@@ -15031,7 +15298,8 @@ const monsters = [
         "desc": "If a rock or similar object is hurled at the giant, the giant can, with a successful DC 10 Dexterity saving throw, catch the missile and take no bludgeoning damage from it.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 2900
   },
   {
     "name": "Stone Golem",
@@ -15091,7 +15359,8 @@ const monsters = [
         "desc": "The golem targets one or more creatures it can see within 10 ft. of it. Each target must make a DC 17 Wisdom saving throw against this magic. On a failed save, a target can't use reactions, its speed is halved, and it can't make more than one attack on its turn. In addition, the target can take either an action or a bonus action on its turn, not both. These effects last for 1 minute. A target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5900
   },
   {
     "name": "Storm Giant",
@@ -15162,7 +15431,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "12d8"
       }
-    ]
+    ],
+    "xp": 10000
   },
   {
     "name": "Succubus/Incubus",
@@ -15229,7 +15499,8 @@ const monsters = [
         "desc": "The fiend magically enters the Ethereal Plane from the Material Plane, or vice versa.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Swarm of Bats",
@@ -15278,7 +15549,8 @@ const monsters = [
         "attack_bonus": 4,
         "damage_dice": "2d4"
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Swarm of Beetles",
@@ -15317,7 +15589,8 @@ const monsters = [
         "attack_bonus": 3,
         "damage_dice": "4d4"
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Swarm of Centipedes",
@@ -15356,7 +15629,8 @@ const monsters = [
         "attack_bonus": 3,
         "damage_dice": "4d4"
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Swarm of Insects",
@@ -15395,7 +15669,8 @@ const monsters = [
         "attack_bonus": 3,
         "damage_dice": "4d4"
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Swarm of Poisonous Snakes",
@@ -15434,7 +15709,8 @@ const monsters = [
         "attack_bonus": 6,
         "damage_dice": "2d6"
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Swarm of Quippers",
@@ -15483,7 +15759,8 @@ const monsters = [
         "attack_bonus": 5,
         "damage_dice": "4d6"
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Swarm of Rats",
@@ -15527,7 +15804,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "2d6"
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Swarm of Ravens",
@@ -15566,7 +15844,8 @@ const monsters = [
         "attack_bonus": 4,
         "damage_dice": "2d6"
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Swarm of Spiders",
@@ -15620,7 +15899,8 @@ const monsters = [
         "attack_bonus": 3,
         "damage_dice": "4d4"
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Swarm of Wasps",
@@ -15659,7 +15939,8 @@ const monsters = [
         "attack_bonus": 3,
         "damage_dice": "4d4"
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Tarrasque",
@@ -15770,7 +16051,8 @@ const monsters = [
         "desc": "The tarrasque makes one bite attack or uses its Swallow.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 155000
   },
   {
     "name": "Thug",
@@ -15822,7 +16104,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "1d10"
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Tiger",
@@ -15874,7 +16157,8 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) slashing damage.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 200
   },
   {
     "name": "Treant",
@@ -15936,7 +16220,8 @@ const monsters = [
         "desc": "The treant magically animates one or two trees it can see within 60 feet of it. These trees have the same statistics as a treant, except they have Intelligence and Charisma scores of 1, they can't speak, and they have only the Slam action option. An animated tree acts as an ally of the treant. The tree remains animate for 1 day or until it dies; until the treant dies or is more than 120 feet from the tree; or until the treant takes a bonus action to turn it back into an inanimate tree. The tree then takes root if possible.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 5000
   },
   {
     "name": "Tribal Warrior",
@@ -15976,7 +16261,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 25
   },
   {
     "name": "Triceratops",
@@ -16023,7 +16309,8 @@ const monsters = [
         "damage_dice": "3d10",
         "damage_bonus": 6
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Troll",
@@ -16086,7 +16373,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Tyrannosaurus Rex",
@@ -16132,7 +16420,8 @@ const monsters = [
         "damage_dice": "3d8",
         "damage_bonus": 7
       }
-    ]
+    ],
+    "xp": 3900
   },
   {
     "name": "Unicorn",
@@ -16227,7 +16516,8 @@ const monsters = [
         "desc": "The unicorn magically regains 11 (2d8 + 2) hit points.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Vampire",
@@ -16336,7 +16626,8 @@ const monsters = [
         "desc": "The vampire makes one bite attack.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 10000
   },
   {
     "name": "Vampire Spawn",
@@ -16400,7 +16691,8 @@ const monsters = [
         "damage_dice": "2d4",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Veteran",
@@ -16454,7 +16746,8 @@ const monsters = [
         "damage_dice": "1d10",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Violet Fungus",
@@ -16498,7 +16791,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "1d8"
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Vrock",
@@ -16568,7 +16862,8 @@ const monsters = [
         "desc": "The demon chooses what to summon and attempts a magical summoning.\nA vrock has a 30 percent chance of summoning 2d4 dretches or one vrock.\nA summoned demon appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other demons. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 2300
   },
   {
     "name": "Vulture",
@@ -16613,7 +16908,8 @@ const monsters = [
         "attack_bonus": 2,
         "damage_dice": "1d4"
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Warhorse",
@@ -16653,7 +16949,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Warhorse Skeleton",
@@ -16686,7 +16983,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Water Elemental",
@@ -16741,7 +17039,8 @@ const monsters = [
         "desc": "Each creature in the elemental's space must make a DC 15 Strength saving throw. On a failure, a target takes 13 (2d8 + 4) bludgeoning damage. If it is Large or smaller, it is also grappled (escape DC 14). Until this grapple ends, the target is restrained and unable to breathe unless it can breathe water. If the saving throw is successful, the target is pushed out of the elemental's space.\nThe elemental can grapple one Large creature or up to two Medium or smaller creatures at one time. At the start of each of the elemental's turns, each target grappled by it takes 13 (2d8 + 4) bludgeoning damage. A creature within 5 feet of the elemental can pull a creature or object out of it by taking an action to make a DC 14 Strength and succeeding.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Weasel",
@@ -16782,7 +17081,8 @@ const monsters = [
         "attack_bonus": 5,
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 5
   },
   {
     "name": "Werebear",
@@ -16847,7 +17147,8 @@ const monsters = [
         "damage_dice": "1d12",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Wereboar",
@@ -16911,7 +17212,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Wererat",
@@ -16977,7 +17279,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Weretiger",
@@ -17055,7 +17358,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 1100
   },
   {
     "name": "Werewolf",
@@ -17120,7 +17424,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": -2
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "White Dragon Wyrmling",
@@ -17165,7 +17470,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "5d8"
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Wight",
@@ -17226,7 +17532,8 @@ const monsters = [
         "damage_dice": "1d8",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Will-o'-Wisp",
@@ -17285,7 +17592,8 @@ const monsters = [
         "desc": "The will-o'-wisp and its light magically become invisible until it attacks or uses its Consume Life, or until its concentration ends (as if concentrating on a spell).",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 450
   },
   {
     "name": "Winter Wolf",
@@ -17343,7 +17651,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "4d8"
       }
-    ]
+    ],
+    "xp": 700
   },
   {
     "name": "Wolf",
@@ -17390,7 +17699,8 @@ const monsters = [
         "damage_dice": "2d4",
         "damage_bonus": 2
       }
-    ]
+    ],
+    "xp": 50
   },
   {
     "name": "Worg",
@@ -17431,7 +17741,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 100
   },
   {
     "name": "Wraith",
@@ -17481,7 +17792,8 @@ const monsters = [
         "desc": "The wraith targets a humanoid within 10 feet of it that has been dead for no longer than 1 minute and died violently. The target's spirit rises as a specter in the space of its corpse or in the nearest unoccupied space. The specter is under the wraith's control. The wraith can have no more than seven specters under its control at one time.",
         "attack_bonus": 0
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Wyvern",
@@ -17534,7 +17846,8 @@ const monsters = [
         "damage_dice": "2d6",
         "damage_bonus": 4
       }
-    ]
+    ],
+    "xp": 2300
   },
   {
     "name": "Xorn",
@@ -17598,7 +17911,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 3
       }
-    ]
+    ],
+    "xp": 1800
   },
   {
     "name": "Young Black Dragon",
@@ -17662,7 +17976,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "11d8"
       }
-    ]
+    ],
+    "xp": 2900
   },
   {
     "name": "Young Blue Dragon",
@@ -17719,7 +18034,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "10d10"
       }
-    ]
+    ],
+    "xp": 5000
   },
   {
     "name": "Young Brass Dragon",
@@ -17777,7 +18093,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "12d6"
       }
-    ]
+    ],
+    "xp": 2300
   },
   {
     "name": "Young Bronze Dragon",
@@ -17842,7 +18159,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "10d10"
       }
-    ]
+    ],
+    "xp": 3900
   },
   {
     "name": "Young Copper Dragon",
@@ -17900,7 +18218,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "9d8"
       }
-    ]
+    ],
+    "xp": 2900
   },
   {
     "name": "Young Gold Dragon",
@@ -17966,7 +18285,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "10d10"
       }
-    ]
+    ],
+    "xp": 5900
   },
   {
     "name": "Young Green Dragon",
@@ -18031,7 +18351,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "12d6"
       }
-    ]
+    ],
+    "xp": 3900
   },
   {
     "name": "Young Red Dragon",
@@ -18088,7 +18409,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "16d6"
       }
-    ]
+    ],
+    "xp": 5900
   },
   {
     "name": "Young Silver Dragon",
@@ -18147,7 +18469,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "12d8"
       }
-    ]
+    ],
+    "xp": 5000
   },
   {
     "name": "Young White Dragon",
@@ -18211,7 +18534,8 @@ const monsters = [
         "attack_bonus": 0,
         "damage_dice": "10d8"
       }
-    ]
+    ],
+    "xp": 2300
   },
   {
     "name": "Zombie",
@@ -18252,7 +18576,8 @@ const monsters = [
         "damage_dice": "1d6",
         "damage_bonus": 1
       }
-    ]
+    ],
+    "xp": 50
   }
 ];
 
