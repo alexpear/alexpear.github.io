@@ -55,14 +55,21 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 12 (2d6 + 5) bludgeoning damage. If the target is a creature, it must succeed on a DC 14 Constitution saving throw or become diseased. The disease has no effect for 1 minute and can be removed by any magic that cures disease. After 1 minute, the diseased creature's skin becomes translucent and slimy, the creature can't regain hit points unless it is underwater, and the disease can be removed only by heal or another disease-curing spell of 6th level or higher. When the creature is outside a body of water, it takes 6 (1d12) acid damage every 10 minutes unless moisture is applied to the skin before 10 minutes have passed.",
         "attack_bonus": 9,
         "damage_dice": "2d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning",
+          "acid"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft. one target. Hit: 15 (3d6 + 5) bludgeoning damage.",
         "attack_bonus": 9,
         "damage_dice": "3d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Enslave (3/day)",
@@ -126,7 +133,10 @@ const monsters = [
         "name": "Club",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 2 (1d4) bludgeoning damage.",
         "attack_bonus": 2,
-        "damage_dice": "1d4"
+        "damage_dice": "1d4",
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 50
@@ -183,21 +193,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +11 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage plus 4 (1d8) acid damage.",
         "attack_bonus": 11,
         "damage_dice": "2d10 + 1d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing",
+          "acid"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +11 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage.",
         "attack_bonus": 11,
         "damage_dice": "2d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +11 to hit, reach 15 ft., one target. Hit: 15 (2d8 + 6) bludgeoning damage.",
         "attack_bonus": 11,
         "damage_dice": "2d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -208,7 +228,10 @@ const monsters = [
         "name": "Acid Breath (Recharge 5-6)",
         "desc": "The dragon exhales acid in a 60-foot line that is 5 feet wide. Each creature in that line must make a DC 18 Dexterity saving throw, taking 54 (12d8) acid damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "12d8"
+        "damage_dice": "12d8",
+        "damage_types": [
+          "acid"
+        ]
       }
     ],
     "legendary_actions": [
@@ -277,21 +300,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +12 to hit, reach 10 ft., one target. Hit: 18 (2d10 + 7) piercing damage plus 5 (1d10) lightning damage.",
         "attack_bonus": 12,
         "damage_dice": "2d10 + 1d10",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "piercing",
+          "lightning"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +12 to hit, reach 5 ft., one target. Hit: 14 (2d6 + 7) slashing damage.",
         "attack_bonus": 12,
         "damage_dice": "2d6",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +12 to hit, reach 15 ft., one target. Hit: 16 (2d8 + 7) bludgeoning damage.",
         "attack_bonus": 12,
         "damage_dice": "2d8",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -302,7 +335,10 @@ const monsters = [
         "name": "Lightning Breath (Recharge 5-6)",
         "desc": "The dracolich exhales lightning in a 90-foot line that is 5 feet wide. Each creature in that line must make a DC 20 Dexterity saving throw, taking 66 (12d10) lightning damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "12d10"
+        "damage_dice": "12d10",
+        "damage_types": [
+          "lightning"
+        ]
       }
     ],
     "legendary_actions": [
@@ -371,21 +407,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +12 to hit, reach 10 ft., one target. Hit: 18 (2d10 + 7) piercing damage plus 5 (1d10) lightning damage.",
         "attack_bonus": 12,
         "damage_dice": "2d10 + 1d10",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "piercing",
+          "lightning"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +12 to hit, reach 5 ft., one target. Hit: 14 (2d6 + 7) slashing damage.",
         "attack_bonus": 12,
         "damage_dice": "2d6",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +12 to hit, reach 15 ft., one target. Hit: 16 (2d8 + 7) bludgeoning damage.",
         "attack_bonus": 12,
         "damage_dice": "2d8",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -396,7 +442,10 @@ const monsters = [
         "name": "Lightning Breath (Recharge 5-6)",
         "desc": "The dragon exhales lightning in a 90-foot line that is 5 ft. wide. Each creature in that line must make a DC 19 Dexterity saving throw, taking 66 (12d10) lightning damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "12d10"
+        "damage_dice": "12d10",
+        "damage_types": [
+          "lightning"
+        ]
       }
     ],
     "legendary_actions": [
@@ -467,21 +516,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +11 to hit, reach,.0 ft., one target. Hit: 17 (2d10 + 6) piercing damage.",
         "attack_bonus": 11,
         "damage_dice": "2d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +11 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage.",
         "attack_bonus": 11,
         "damage_dice": "2d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +11 to hit, reach 15 ft., one target. Hit: 15 (2d8 + 6) bludgeoning damage.",
         "attack_bonus": 11,
         "damage_dice": "2d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -492,7 +550,10 @@ const monsters = [
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nFire Breath. The dragon exhales fire in an 60-foot line that is 5 feet wide. Each creature in that line must make a DC 18 Dexterity saving throw, taking 45 (13d6) fire damage on a failed save, or half as much damage on a successful one.\nSleep Breath. The dragon exhales sleep gas in a 60-foot cone. Each creature in that area must succeed on a DC 18 Constitution saving throw or fall unconscious for 10 minutes. This effect ends for a creature if the creature takes damage or someone uses an action to wake it.",
         "attack_bonus": 0,
-        "damage_dice": "13d6"
+        "damage_dice": "13d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 10000
@@ -550,21 +611,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +12 to hit, reach 10 ft., one target. Hit: 18 (2d10 + 7) piercing damage.",
         "attack_bonus": 12,
         "damage_dice": "2d10",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +12 to hit, reach 5 ft., one target. Hit: 14 (2d6 + 7) slashing damage.",
         "attack_bonus": 12,
         "damage_dice": "2d6",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +12 to hit, reach 15 ft., one target. Hit: 16 (2d8 + 7) bludgeoning damage.",
         "attack_bonus": 12,
         "damage_dice": "2d8",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -575,7 +645,10 @@ const monsters = [
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nLightning Breath. The dragon exhales lightning in a 90-foot line that is 5 feet wide. Each creature in that line must make a DC 19 Dexterity saving throw, taking 66 (12d10) lightning damage on a failed save, or half as much damage on a successful one.\nRepulsion Breath. The dragon exhales repulsion energy in a 30-foot cone. Each creature in that area must succeed on a DC 19 Strength saving throw. On a failed save, the creature is pushed 60 feet away from the dragon.",
         "attack_bonus": 0,
-        "damage_dice": "12d10"
+        "damage_dice": "12d10",
+        "damage_types": [
+          "lightning"
+        ]
       }
     ],
     "legendary_actions": [
@@ -645,21 +718,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +11 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage.",
         "attack_bonus": 11,
         "damage_dice": "2d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +11 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage.",
         "attack_bonus": 11,
         "damage_dice": "2d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +11 to hit, reach 15 ft., one target. Hit: 15 (2d8 + 6) bludgeoning damage.",
         "attack_bonus": 11,
         "damage_dice": "2d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -670,7 +752,10 @@ const monsters = [
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nAcid Breath. The dragon exhales acid in an 60-foot line that is 5 feet wide. Each creature in that line must make a DC 18 Dexterity saving throw, taking 54 (12d8) acid damage on a failed save, or half as much damage on a successful one.\nSlowing Breath. The dragon exhales gas in a 60-foot cone. Each creature in that area must succeed on a DC 18 Constitution saving throw. On a failed save, the creature can't use reactions, its speed is halved, and it can't make more than one attack on its turn. In addition, the creature can use either an action or a bonus action on its turn, but not both. These effects last for 1 minute. The creature can repeat the saving throw at the end of each of its turns, ending the effect on itself with a successful save.",
         "attack_bonus": 0,
-        "damage_dice": "12d8"
+        "damage_dice": "12d8",
+        "damage_types": [
+          "acid"
+        ]
       }
     ],
     "legendary_actions": [
@@ -746,21 +831,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 19 (2d10 + 8) piercing damage.",
         "attack_bonus": 14,
         "damage_dice": "2d10",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +14 to hit, reach 5 ft., one target. Hit: 15 (2d6 + 8) slashing damage.",
         "attack_bonus": 14,
         "damage_dice": "2d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +14 to hit, reach 15 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
         "attack_bonus": 14,
         "damage_dice": "2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -771,7 +865,10 @@ const monsters = [
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nFire Breath. The dragon exhales fire in a 60-foot cone. Each creature in that area must make a DC 21 Dexterity saving throw, taking 66 (12d10) fire damage on a failed save, or half as much damage on a successful one.\nWeakening Breath. The dragon exhales gas in a 60-foot cone. Each creature in that area must succeed on a DC 21 Strength saving throw or have disadvantage on Strength-based attack rolls, Strength checks, and Strength saving throws for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0,
-        "damage_dice": "12d10"
+        "damage_dice": "12d10",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "legendary_actions": [
@@ -848,21 +945,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +11 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage plus 7 (2d6) poison damage.",
         "attack_bonus": 11,
         "damage_dice": "2d10 + 2d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +11 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage.",
         "attack_bonus": 11,
         "damage_dice": "2d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +11 to hit, reach 15 ft., one target. Hit: 15 (2d8 + 6) bludgeoning damage.",
         "attack_bonus": 11,
         "damage_dice": "2d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -873,7 +980,10 @@ const monsters = [
         "name": "Poison Breath (Recharge 5-6)",
         "desc": "The dragon exhales poisonous gas in a 60-foot cone. Each creature in that area must make a DC 18 Constitution saving throw, taking 56 (16d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "16d6"
+        "damage_dice": "16d6",
+        "damage_types": [
+          "poison"
+        ]
       }
     ],
     "legendary_actions": [
@@ -942,21 +1052,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 7 (2d6) fire damage.",
         "attack_bonus": 14,
         "damage_dice": "2d10 + 2d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "piercing",
+          "fire"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +14 to hit, reach 5 ft., one target. Hit: 15 (2d6 + 8) slashing damage.",
         "attack_bonus": 14,
         "damage_dice": "2d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +14 to hit, reach 15 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
         "attack_bonus": 14,
         "damage_dice": "2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -967,13 +1087,19 @@ const monsters = [
         "name": "Fire Breath (Recharge 5-6)",
         "desc": "The dragon exhales fire in a 60-foot cone. Each creature in that area must make a DC 21 Dexterity saving throw, taking 63 (18d6) fire damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "18d6"
+        "damage_dice": "18d6",
+        "damage_types": [
+          "fire"
+        ]
       },
       {
         "name": "Lair Actions",
         "desc": "On initiative count 20 (losing initiative ties), the dragon takes a lair action to cause one of the following effects: the dragon can't use the same effect two rounds in a row:\n• Magma erupts from a point on the ground the dragon can see within 120 feet of it, creating a 20-foot-high, 5-foot-radius geyser. Each creature in the geyser's area must make a DC 15 Dexterity saving throw, taking 21 (6d6) fire damage on a failed save, or half as much damage on a successful one.\n• A tremor shakes the lair in a 60-foot-radius around the dragon. Each creature other than the dragon on the ground in that area must succeed on a DC 15 Dexterity saving throw or be knocked prone.\n• Volcanic gases form a cloud in a 20-foot-radius sphere centered on a point the dragon can see within 120 feet of it. The sphere spreads around corners, and its area is lightly obscured. It lasts until initiative count 20 on the next round. Each creature that starts its turn in the cloud must succeed on a DC 13 Constitution saving throw or be poisoned until the end of its turn. While poisoned in this way, a creature is incapacitated.",
         "attack_bonus": 0,
-        "damage_dice": "6d6"
+        "damage_dice": "6d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "legendary_actions": [
@@ -1044,21 +1170,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +13 to hit, reach 10 ft., one target. Hit: 19 (2d10 + 8) piercing damage.",
         "attack_bonus": 13,
         "damage_dice": "2d10",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +13 to hit, reach 5 ft., one target. Hit: 15 (2d6 + 8) slashing damage.",
         "attack_bonus": 13,
         "damage_dice": "2d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +13 to hit, reach 15 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
         "attack_bonus": 13,
         "damage_dice": "2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -1069,7 +1204,10 @@ const monsters = [
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nCold Breath. The dragon exhales an icy blast in a 60-foot cone. Each creature in that area must make a DC 20 Constitution saving throw, taking 58 (13d8) cold damage on a failed save, or half as much damage on a successful one.\nParalyzing Breath. The dragon exhales paralyzing gas in a 60-foot cone. Each creature in that area must succeed on a DC 20 Constitution saving throw or be paralyzed for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0,
-        "damage_dice": "13d8"
+        "damage_dice": "13d8",
+        "damage_types": [
+          "cold"
+        ]
       }
     ],
     "legendary_actions": [
@@ -1143,21 +1281,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +11 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage plus 4 (1d8) cold damage.",
         "attack_bonus": 11,
         "damage_dice": "2d10 + 1d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing",
+          "cold"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +11 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage.",
         "attack_bonus": 11,
         "damage_dice": "2d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +11 to hit, reach 15 ft., one target. Hit: 15 (2d8 + 6) bludgeoning damage.",
         "attack_bonus": 11,
         "damage_dice": "2d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -1168,7 +1316,10 @@ const monsters = [
         "name": "Cold Breath (Recharge 5-6)",
         "desc": "The dragon exhales an icy blast in a 60-foot cone. Each creature in that area must make a DC 19 Constitution saving throw, taking 54 (12d8) cold damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "12d8"
+        "damage_dice": "12d8",
+        "damage_types": [
+          "cold"
+        ]
       }
     ],
     "legendary_actions": [
@@ -1231,7 +1382,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) bludgeoning damage.",
         "attack_bonus": 8,
         "damage_dice": "2d8",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Whirlwind (Recharge 4-6)",
@@ -1298,21 +1452,31 @@ const monsters = [
         "desc": "Melee Weapon Attack:+ 15 to hit, reach 15 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 9 (2d8) acid damage.",
         "attack_bonus": 15,
         "damage_dice": "2d10 + 2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "piercing",
+          "acid"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +15 to hit, reach 10 ft., one target. Hit: 15 (2d6 + 8) slashing damage.",
         "attack_bonus": 15,
         "damage_dice": "2d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +15 to hit, reach 20 ft ., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
         "attack_bonus": 15,
         "damage_dice": "2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -1384,21 +1548,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +16 to hit, reach 15 ft., one target. Hit: 20 (2d10 + 9) piercing damage plus 11 (2d10) lightning damage.",
         "attack_bonus": 16,
         "damage_dice": "2d10 + 2d10",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "piercing",
+          "lightning"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +16 to hit, reach 10 ft., one target. Hit: 16 (2d6 + 9) slashing damage.",
         "attack_bonus": 16,
         "damage_dice": "2d6",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +16 to hit, reach 20 ft., one target. Hit: 18 (2d8 + 9) bludgeoning damage.",
         "attack_bonus": 16,
         "damage_dice": "2d8",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -1409,7 +1583,10 @@ const monsters = [
         "name": "Lightning Breath (Recharge 5-6)",
         "desc": "The dragon exhales lightning in a 120-foot line that is 10 feet wide. Each creature in that line must make a DC 23 Dexterity saving throw, taking 88 (16d10) lightning damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "16d10"
+        "damage_dice": "16d10",
+        "damage_types": [
+          "lightning"
+        ]
       }
     ],
     "legendary_actions": [
@@ -1480,21 +1657,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +14 to hit, reach 15 ft., one target. Hit: 19 (2d10 + 8) piercing damage.",
         "attack_bonus": 14,
         "damage_dice": "2d10",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 15 (2d6 + 8) slashing damage.",
         "attack_bonus": 14,
         "damage_dice": "2d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +14 to hit, reach 20 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
         "attack_bonus": 14,
         "damage_dice": "2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -1505,7 +1691,10 @@ const monsters = [
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons:\nFire Breath. The dragon exhales fire in an 90-foot line that is 10 feet wide. Each creature in that line must make a DC 21 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one.\nSleep Breath. The dragon exhales sleep gas in a 90-foot cone. Each creature in that area must succeed on a DC 21 Constitution saving throw or fall unconscious for 10 minutes. This effect ends for a creature if the creature takes damage or someone uses an action to wake it.",
         "attack_bonus": 0,
-        "damage_dice": "16d6"
+        "damage_dice": "16d6",
+        "damage_types": [
+          "fire"
+        ]
       },
       {
         "name": "Change Shape",
@@ -1585,21 +1774,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +16 to hit, reach 15 ft., one target. Hit: 20 (2d10 + 9) piercing damage.",
         "attack_bonus": 16,
         "damage_dice": "2d10",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +16 to hit, reach 10 ft., one target. Hit: 16 (2d6 + 9) slashing damage.",
         "attack_bonus": 16,
         "damage_dice": "1d6",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +16 to hit, reach 20 ft., one target. Hit: 18 (2d8 + 9) bludgeoning damage.",
         "attack_bonus": 0,
         "damage_dice": "2d8",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -1610,7 +1808,10 @@ const monsters = [
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nLightning Breath. The dragon exhales lightning in a 120-foot line that is 10 feet wide. Each creature in that line must make a DC 23 Dexterity saving throw, taking 88 (16d10) lightning damage on a failed save, or half as much damage on a successful one.\nRepulsion Breath. The dragon exhales repulsion energy in a 30-foot cone. Each creature in that area must succeed on a DC 23 Strength saving throw. On a failed save, the creature is pushed 60 feet away from the dragon.",
         "attack_bonus": 0,
-        "damage_dice": "16d10"
+        "damage_dice": "16d10",
+        "damage_types": [
+          "lightning"
+        ]
       },
       {
         "name": "Change Shape",
@@ -1685,21 +1886,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +15 to hit, reach 15 ft., one target. Hit: 19 (2d10 + 8) piercing damage.",
         "attack_bonus": 15,
         "damage_dice": "2d10",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +15 to hit, reach 10 ft., one target. Hit: 15 (2d6 + 8) slashing damage.",
         "attack_bonus": 15,
         "damage_dice": "2d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +15 to hit, reach 20 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
         "attack_bonus": 15,
         "damage_dice": "2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -1710,7 +1920,10 @@ const monsters = [
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nAcid Breath. The dragon exhales acid in an 90-foot line that is 10 feet wide. Each creature in that line must make a DC 22 Dexterity saving throw, taking 63 (14d8) acid damage on a failed save, or half as much damage on a successful one.\nSlowing Breath. The dragon exhales gas in a 90-foot cone. Each creature in that area must succeed on a DC 22 Constitution saving throw. On a failed save, the creature can't use reactions, its speed is halved, and it can't make more than one attack on its turn. In addition, the creature can use either an action or a bonus action on its turn, but not both. These effects last for 1 minute. The creature can repeat the saving throw at the end of each of its turns, ending the effect on itself with a successful save.",
         "attack_bonus": 0,
-        "damage_dice": "14d8"
+        "damage_dice": "14d8",
+        "damage_types": [
+          "acid"
+        ]
       },
       {
         "name": "Change Shape",
@@ -1791,21 +2004,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +17 to hit, reach 15 ft., one target. Hit: 21 (2d10 + 10) piercing damage.",
         "attack_bonus": 17,
         "damage_dice": "2d10",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +17 to hit, reach 10 ft., one target. Hit: 17 (2d6 + 10) slashing damage.",
         "attack_bonus": 17,
         "damage_dice": "2d6",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +17 to hit, reach 20 ft., one target. Hit: 19 (2d8 + 10) bludgeoning damage.",
         "attack_bonus": 17,
         "damage_dice": "2d8",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -1816,7 +2038,10 @@ const monsters = [
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nFire Breath. The dragon exhales fire in a 90-foot cone. Each creature in that area must make a DC 24 Dexterity saving throw, taking 71 (13d10) fire damage on a failed save, or half as much damage on a successful one.\nWeakening Breath. The dragon exhales gas in a 90-foot cone. Each creature in that area must succeed on a DC 24 Strength saving throw or have disadvantage on Strength-based attack rolls, Strength checks, and Strength saving throws for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0,
-        "damage_dice": "13d10"
+        "damage_dice": "13d10",
+        "damage_types": [
+          "fire"
+        ]
       },
       {
         "name": "Change Shape",
@@ -1898,21 +2123,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +15 to hit, reach 15 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 10 (3d6) poison damage.",
         "attack_bonus": 15,
         "damage_dice": "2d10 + 3d6",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +15 to hit, reach 10 ft., one target. Hit: 22 (4d6 + 8) slashing damage.",
         "attack_bonus": 15,
         "damage_dice": "4d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +15 to hit, reach 20 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
         "attack_bonus": 16,
         "damage_dice": "2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -1923,7 +2158,10 @@ const monsters = [
         "name": "Poison Breath (Recharge 5-6)",
         "desc": "The dragon exhales poisonous gas in a 90-foot cone. Each creature in that area must make a DC 22 Constitution saving throw, taking 77 (22d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "22d6"
+        "damage_dice": "22d6",
+        "damage_types": [
+          "poison"
+        ]
       }
     ],
     "legendary_actions": [
@@ -1992,21 +2230,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +17 to hit, reach 15 ft., one target. Hit: 21 (2d10 + 10) piercing damage plus 14 (4d6) fire damage.",
         "attack_bonus": 17,
         "damage_dice": "2d10 + 4d6",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "piercing",
+          "fire"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +17 to hit, reach 10 ft., one target. Hit: 17 (2d6 + 10) slashing damage.",
         "attack_bonus": 17,
         "damage_dice": "2d6",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +17 to hit, reach 20 ft., one target. Hit: 19 (2d8 + 10) bludgeoning damage.",
         "attack_bonus": 17,
         "damage_dice": "2d8",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -2017,7 +2265,10 @@ const monsters = [
         "name": "Fire Breath (Recharge 5-6)",
         "desc": "The dragon exhales fire in a 90-foot cone. Each creature in that area must make a DC 24 Dexterity saving throw, taking 91 (26d6) fire damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "26d6"
+        "damage_dice": "26d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "legendary_actions": [
@@ -2088,21 +2339,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +17 to hit, reach 15 ft., one target. Hit: 21 (2d10 + 10) piercing damage.",
         "attack_bonus": 17,
         "damage_dice": "2d10",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +17 to hit, reach 10 ft., one target. Hit: 17 (2d6 + 10) slashing damage.",
         "attack_bonus": 17,
         "damage_dice": "2d6",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +17 to hit, reach 20 ft., one target. Hit: 19 (2d8 + 10) bludgeoning damage.",
         "attack_bonus": 17,
         "damage_dice": "2d8",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -2113,7 +2373,10 @@ const monsters = [
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nCold Breath. The dragon exhales an icy blast in a 90-foot cone. Each creature in that area must make a DC 24 Constitution saving throw, taking 67 (15d8) cold damage on a failed save, or half as much damage on a successful one.\nParalyzing Breath. The dragon exhales paralyzing gas in a 90- foot cone. Each creature in that area must succeed on a DC 24 Constitution saving throw or be paralyzed for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0,
-        "damage_dice": "15d8"
+        "damage_dice": "15d8",
+        "damage_types": [
+          "cold"
+        ]
       },
       {
         "name": "Change Shape",
@@ -2192,21 +2455,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +14 to hit, reach 15 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 9 (2d8) cold damage.",
         "attack_bonus": 14,
         "damage_dice": "2d10 + 2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "piercing",
+          "cold"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 15 (2d6 + 8) slashing damage.",
         "attack_bonus": 14,
         "damage_dice": "2d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +14 to hit, reach 20 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
         "attack_bonus": 14,
         "damage_dice": "2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -2217,7 +2490,10 @@ const monsters = [
         "name": "Cold Breath (Recharge 5-6)",
         "desc": "The dragon exhales an icy blast in a 90-foot cone. Each creature in that area must make a DC 22 Constitution saving throw, taking 72 (l6d8) cold damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "16d8"
+        "damage_dice": "16d8",
+        "damage_types": [
+          "cold"
+        ]
       }
     ],
     "xp": 25000
@@ -2280,7 +2556,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +12 to hit, reach 5 ft., one target. Hit: 17 (2d10 + 6) slashing damage.",
         "attack_bonus": 12,
         "damage_dice": "2d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Roar (3/Day)",
@@ -2353,7 +2632,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) bludgeoning damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 200
@@ -2387,13 +2669,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage plus 3 (1d6) acid damage. If the target is a Large or smaller creature, it is grappled (escape DC 13). Until this grapple ends, the ankheg can bite only the grappled creature and has advantage on attack rolls to do so.",
         "attack_bonus": 5,
         "damage_dice": "2d6 + 1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing",
+          "acid"
+        ]
       },
       {
         "name": "Acid Spray (Recharge 6)",
         "desc": "The ankheg spits acid in a line that is 30 ft. long and 5 ft. wide, provided that it has no creature grappled. Each creature in that line must make a DC 13 Dexterity saving throw, taking 10 (3d6) acid damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "3d6"
+        "damage_dice": "3d6",
+        "damage_types": [
+          "acid"
+        ]
       }
     ],
     "xp": 450
@@ -2434,14 +2723,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) bludgeoning damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Rock",
         "desc": "Ranged Weapon Attack: +5 to hit, range 25/50 ft., one target. Hit: 6 (1d6 + 3) bludgeoning damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 100
@@ -2491,7 +2786,10 @@ const monsters = [
         "desc": "Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d4 + 2) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 8400
@@ -2554,14 +2852,22 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage, and the target must make a DC 15 Constitution saving throw, taking 24 (7d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 6,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Light Crossbow",
         "desc": "Ranged Weapon Attack: +6 to hit, range 80/320 ft., one target. Hit: 7 (1d8 + 3) piercing damage, and the target must make a DC 15 Constitution saving throw, taking 24 (7d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 6,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 3900
@@ -2602,7 +2908,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +1 to hit, reach 5 ft., one target. Hit: 1 (1d4 — 1) slashing damage.",
         "attack_bonus": 1,
         "damage_dice": "1d4",
-        "damage_bonus": -1
+        "damage_bonus": -1,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 5
@@ -2643,7 +2952,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 14 (3d6 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "3d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 450
@@ -2677,7 +2989,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) slashing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 50
@@ -2730,7 +3045,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) bludgeoning damage, or 8 (1d10 + 3) bludgeoning damage if used with two hands to make a melee attack, plus 3 (1d6) fire damage.",
         "attack_bonus": 5,
         "damage_dice": "1d8 + 1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning",
+          "fire"
+        ]
       }
     ],
     "xp": 450
@@ -2771,7 +3090,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +1 to hit, reach 5 ft., one target. Hit: 1 (1d4 — 1) piercing damage.",
         "attack_bonus": 1,
         "damage_dice": "1d4",
-        "damage_bonus": -1
+        "damage_bonus": -1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -2811,7 +3133,10 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 1 piercing damage.",
         "attack_bonus": 2,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -2878,14 +3203,22 @@ const monsters = [
         "desc": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 21 (3d8 + 8) slashing damage plus 13 (3d8) lightning damage. If the balor scores a critical hit, it rolls damage dice three times, instead of twice.",
         "attack_bonus": 14,
         "damage_dice": "3d8 + 3d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing",
+          "lightning"
+        ]
       },
       {
         "name": "Whip",
         "desc": "Melee Weapon Attack: +14 to hit, reach 30 ft., one target. Hit: 15 (2d6 + 8) slashing damage plus 10 (3d6) fire damage, and the target must succeed on a DC 20 Strength saving throw or be pulled up to 25 feet toward the balor.",
         "attack_bonus": 14,
         "damage_dice": "2d6 + 3d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing",
+          "fire"
+        ]
       },
       {
         "name": "Teleport",
@@ -2929,14 +3262,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) slashing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Light Crossbow",
         "desc": "Ranged Weapon Attack: +3 to hit, range 80 ft./320 ft., one target. Hit: 5 (1d8 + 1) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d8",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 25
@@ -2980,14 +3319,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Dagger",
         "desc": "Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 5 (1d4 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d4",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "reactions": [
@@ -3058,20 +3403,29 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft ., one target. Hit: 6 (1d6 + 3) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Hurl Flame",
         "desc": "Ranged Spell Attack: +5 to hit, range 150 ft., one target. Hit: 10 (3d6) fire damage. If the target is a flammable object that isn't being worn or carried, it also catches fire.",
         "attack_bonus": 5,
-        "damage_dice": "3d6"
+        "damage_dice": "3d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 1800
@@ -3112,7 +3466,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage plus 7 (2d6) poison damage.",
         "attack_bonus": 5,
         "damage_dice": "2d6 + 2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 700
@@ -3157,7 +3515,10 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +0 to hit, reach 5 ft., one creature. Hit: 1 piercing damage.",
         "attack_bonus": 0,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -3216,14 +3577,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one creature. Hit: 6 (1d8 + 2) piercing damage, and the target must succeed on a DC 12 Constitution saving throw or be poisoned for 1 minute. While poisoned in this way, the target can't regain hit points. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Glaive",
         "desc": "Melee Weapon Attack: +5 to hit, reach 10 ft., one target. Hit: 8 (1d10 + 3) slashing damage. If the target is a creature other than an undead or a construct, it must succeed on a DC 12 Constitution saving throw or lose 5 (1d10) hit points at the start of each of its turns due to an infernal wound. Each time the devil hits the wounded target with this attack, the damage dealt by the wound increases by 5 (1d10). Any creature can take an action to stanch the wound with a successful DC 12 Wisdom (Medicine) check. The wound also closes if the target receives magical healing.",
         "attack_bonus": 5,
         "damage_dice": "1d10",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 700
@@ -3264,26 +3631,39 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 22 (3d10 + 6) piercing damage.",
         "attack_bonus": 10,
         "damage_dice": "3d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Constrict",
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one Large or smaller creature. Hit: 17 (2d10 + 6) bludgeoning damage plus 17 (2d10 + 6) slashing damage. The target is grappled (escape DC 16) if the behir isn't already constricting a creature, and the target is restrained until this grapple ends.",
         "attack_bonus": 10,
         "damage_dice": "2d10 + 2d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning",
+          "slashing"
+        ]
       },
       {
         "name": "Lightning Breath (Recharge 5-6)",
         "desc": "The behir exhales a line of lightning that is 20 ft. long and 5 ft. wide. Each creature in that line must make a DC 16 Dexterity saving throw, taking 66 (12d10) lightning damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "12d10"
+        "damage_dice": "12d10",
+        "damage_types": [
+          "lightning"
+        ]
       },
       {
         "name": "Swallow",
         "desc": "The behir makes one bite attack against a Medium or smaller target it is grappling. If the attack hits, the target is also swallowed, and the grapple ends. While swallowed, the target is blinded and restrained, it has total cover against attacks and other effects outside the behir, and it takes 21 (6d6) acid damage at the start of each of the behir's turns. A behir can have only one creature swallowed at a time.\nIf the behir takes 30 damage or more on a single turn from the swallowed creature, the behir must succeed on a DC 14 Constitution saving throw at the end of that turn or regurgitate the creature, which falls prone in a space within 10 ft. of the behir. If the behir dies, a swallowed creature is no longer restrained by it and can escape from the corpse by using 15 ft. of movement, exiting prone.",
         "attack_bonus": 0,
-        "damage_dice": "6d6"
+        "damage_dice": "6d6",
+        "damage_types": [
+          "acid"
+        ]
       }
     ],
     "xp": 7200
@@ -3324,7 +3704,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d12",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 450
@@ -3370,14 +3753,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) slashing damage.",
         "attack_bonus": 3,
         "damage_dice": "2d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 100
@@ -3424,13 +3813,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (1d10 + 2) piercing damage plus 2 (1d4) acid damage.",
         "attack_bonus": 4,
         "damage_dice": "1d10",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing",
+          "acid"
+        ]
       },
       {
         "name": "Acid Breath (Recharge 5-6)",
         "desc": "The dragon exhales acid in a 15-foot line that is 5 feet wide. Each creature in that line must make a DC 11 Dexterity saving throw, taking 22 (Sd8) acid damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "5d8"
+        "damage_dice": "5d8",
+        "damage_types": [
+          "acid"
+        ]
       }
     ],
     "xp": 450
@@ -3482,7 +3878,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) bludgeoning damage plus 18 (4d8) acid damage. In addition, nonmagical armor worn by the target is partly dissolved and takes a permanent and cumulative -1 penalty to the AC it offers. The armor is destroyed if the penalty reduces its AC to 10.",
         "attack_bonus": 5,
         "damage_dice": "1d6 + 4d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning",
+          "acid"
+        ]
       }
     ],
     "reactions": [
@@ -3532,7 +3932,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Teleport (Recharge 4-6)",
@@ -3584,7 +3987,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 25
@@ -3624,13 +4030,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage plus 3 (1d6) lightning damage.",
         "attack_bonus": 5,
         "damage_dice": "1d10 + 1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "lightning"
+        ]
       },
       {
         "name": "Lightning Breath (Recharge 5-6)",
         "desc": "The dragon exhales lightning in a 30-foot line that is 5 feet wide. Each creature in that line must make a DC 12 Dexterity saving throw, taking 22 (4d10) lightning damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "4d10"
+        "damage_dice": "4d10",
+        "damage_types": [
+          "lightning"
+        ]
       }
     ],
     "xp": 700
@@ -3677,7 +4090,10 @@ const monsters = [
         "desc": "Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) slashing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 50
@@ -3738,28 +4154,42 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 8 (1d8 + 4) slashing damage.",
         "attack_bonus": 8,
         "damage_dice": "1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 8 (1d8 + 4) slashing damage.",
         "attack_bonus": 8,
         "damage_dice": "1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Sting",
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 13 (2d8 + 4) piercing damage plus 17 (5d6) poison damage, and the target must succeed on a DC 14 Constitution saving throw or become poisoned for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success .",
         "attack_bonus": 8,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Sting",
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 13 (2d8 + 4) piercing damage plus 17 (5d6) poison damage, and the target must succeed on a DC 14 Constitution saving throw or become poisoned for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success .",
         "attack_bonus": 8,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 8400
@@ -3799,13 +4229,19 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (1d10 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d10",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nFire Breath. The dragon exhales fire in an 20-foot line that is 5 feet wide. Each creature in that line must make a DC 11 Dexterity saving throw, taking 14 (4d6) fire damage on a failed save, or half as much damage on a successful one.\nSleep Breath. The dragon exhales sleep gas in a 15-foot cone. Each creature in that area must succeed on a DC 11 Constitution saving throw or fall unconscious for 1 minute. This effect ends for a creature if the creature takes damage or someone uses an action to wake it.",
         "attack_bonus": 0,
-        "damage_dice": "4d6"
+        "damage_dice": "4d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 200
@@ -3852,13 +4288,19 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d10",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nLightning Breath. The dragon exhales lightning in a 40-foot line that is 5 feet wide. Each creature in that line must make a DC 12 Dexterity saving throw, taking 16 (3d10) lightning damage on a failed save, or half as much damage on a successful one.\nRepulsion Breath. The dragon exhales repulsion energy in a 30-foot cone. Each creature in that area must succeed on a DC 12 Strength saving throw. On a failed save, the creature is pushed 30 feet away from the dragon.",
         "attack_bonus": 0,
-        "damage_dice": "3d10"
+        "damage_dice": "3d10",
+        "damage_types": [
+          "lightning"
+        ]
       }
     ],
     "xp": 450
@@ -3905,14 +4347,20 @@ const monsters = [
         "desc": "Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 200
@@ -3961,14 +4409,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 11 (2d8 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "2d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Javelin",
         "desc": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 9 (2d6 + 2) piercing damage in melee or 5 (1d6 + 2) piercing damage at range.",
         "attack_bonus": 4,
         "damage_dice": "2d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 200
@@ -4010,7 +4464,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 30 (4d12 + 4) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "4d12",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Deadly Leap",
@@ -4048,7 +4505,10 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 2 (1d4) bludgeoning damage.",
         "attack_bonus": 5,
-        "damage_dice": "1d4"
+        "damage_dice": "1d4",
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 25
@@ -4100,14 +4560,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one creature. Hit: 4 (1d4 + 2) poison damage, and the target must succeed on a DC 13 Constitution saving throw or be poisoned for 1 minute. Until this poison ends, the target is paralyzed. The target can repeat the saving throw at the end of each of its turns, ending the poison on itself on a success.",
         "attack_bonus": 8,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "poison"
+        ]
       },
       {
         "name": "Bite",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "2d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 450
@@ -4149,7 +4615,10 @@ const monsters = [
         "name": "Claws",
         "desc": "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 slashing damage.",
         "attack_bonus": 0,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 5
@@ -4196,14 +4665,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 9 (1d8 + 5) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "1d8",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 12 (2d6 + 5) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 450
@@ -4253,21 +4728,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 9 (1d10 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "1d10",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Hooves",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Longbow",
         "desc": "Ranged Weapon Attack: +4 to hit, range 150/600 ft., one target. Hit: 6 (1d8 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 450
@@ -4318,7 +4802,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 11 (2d6 + 4) slashing damage. The target is grappled (escape DC 14) if the devil isn't already grappling a creature. Until this grapple ends, the target is restrained and takes 7 (2d6) piercing damage at the start of each of its turns.",
         "attack_bonus": 8,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing",
+          "piercing"
+        ]
       },
       {
         "name": "Animate Chains (Recharges after a Short or Long Rest)",
@@ -4370,27 +4858,39 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Horns",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 10 (1d12 + 4) bludgeoning damage.",
         "attack_bonus": 7,
         "damage_dice": "1d12",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Fire Breath (Recharge 5-6)",
         "desc": "The dragon head exhales fire in a 15-foot cone. Each creature in that area must make a DC 15 Dexterity saving throw, taking 31 (7d8) fire damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "7d8"
+        "damage_dice": "7d8",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 2300
@@ -4442,7 +4942,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage. The target is grappled (escape DC 14) if it is a Large or smaller creature and the chuul doesn't have two other creatures grappled.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Tentacles",
@@ -4513,7 +5016,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 16 (2d10 + 5) bludgeoning damage. If the target is a creature, it must succeed on a DC 15 Constitution saving throw or have its hit point maximum reduced by an amount equal to the damage taken. The target dies if this attack reduces its hit point maximum to 0. The reduction lasts until removed by the greater restoration spell or other magic.",
         "attack_bonus": 8,
         "damage_dice": "2d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Haste (Recharge 5-6)",
@@ -4575,14 +5081,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one creature. Hit: 10 (2d6 + 3) piercing damage, and if the target is Large or smaller, the cloaker attaches to it. If the cloaker has advantage against the target, the cloaker attaches to the target's head, and the target is blinded and unable to breathe while the cloaker is attached. While attached, the cloaker can make this attack only against the target and has advantage on the attack roll. The cloaker can detach itself by spending 5 feet of its movement. A creature, including the target, can take its action to detach the cloaker by succeeding on a DC 16 Strength check.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +6 to hit, reach 10 ft., one creature. Hit: 7 (1d8 + 3) slashing damage.",
         "attack_bonus": 6,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Moan",
@@ -4648,14 +5160,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +12 to hit, reach 10 ft., one target. Hit: 21 (3d8 + 8) piercing damage.",
         "attack_bonus": 12,
         "damage_dice": "3d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Rock",
         "desc": "Ranged Weapon Attack: +12 to hit, range 60/240 ft., one target. Hit: 30 (4d10 + 8) bludgeoning damage.",
         "attack_bonus": 12,
         "damage_dice": "4d10",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 5000
@@ -4689,7 +5207,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 3 (1d4 + 1) piercing damage, and the target must succeed on a DC 11 Constitution saving throw against being magically petrified. On a failed save, the creature begins to turn to stone and is restrained. It must repeat the saving throw at the end of its next turn. On a success, the effect ends. On a failure, the creature is petrified for 24 hours.",
         "attack_bonus": 3,
         "damage_dice": "1d4",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -4722,7 +5243,10 @@ const monsters = [
         "name": "Club",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 2 (1d4) bludgeoning damage.",
         "attack_bonus": 2,
-        "damage_dice": "1d4"
+        "damage_dice": "1d4",
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 5
@@ -4756,14 +5280,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Constrict",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 6 (1d8 + 2) bludgeoning damage, and the target is grappled (escape DC 14). Until this grapple ends, the creature is restrained, and the snake can't constrict another target.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 50
@@ -4803,13 +5333,19 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (1d10 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d10",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nAcid Breath. The dragon exhales acid in an 20-foot line that is 5 feet wide. Each creature in that line must make a DC 11 Dexterity saving throw, taking 18 (4d8) acid damage on a failed save, or half as much damage on a successful one.\nSlowing Breath. The dragon exhales gas in a 1 5-foot cone. Each creature in that area must succeed on a DC 11 Constitution saving throw. On a failed save, the creature can't use reactions, its speed is halved, and it can't make more than one attack on its turn. In addition, the creature can use either an action or a bonus action on its turn, but not both. These effects last for 1 minute. The creature can repeat the saving throw at the end of each of its turns, ending the effect on itself with a successful save.",
         "attack_bonus": 0,
-        "damage_dice": "4d8"
+        "damage_dice": "4d8",
+        "damage_types": [
+          "acid"
+        ]
       }
     ],
     "xp": 200
@@ -4863,14 +5399,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one creature. Hit: 8 (1d6 + 5) piercing damage, and the target must succeed on a DC 13 Constitution saving throw or be poisoned for 24 hours. Until this poison ends, the target is unconscious. Another creature can use an action to shake the target awake.",
         "attack_bonus": 8,
         "damage_dice": "1d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Constrict",
         "desc": "Melee Weapon Attack: +6 to hit, reach 10 ft., one Medium or smaller creature. Hit: 10 (2d6 + 3) bludgeoning damage, and the target is grappled (escape DC 15). Until this grapple ends, the target is restrained, and the couatl can't constrict another target.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Change Shape",
@@ -4916,7 +5458,10 @@ const monsters = [
         "name": "Claw",
         "desc": "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 bludgeoning damage.",
         "attack_bonus": 0,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 5
@@ -4958,7 +5503,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 7 (1d10 + 2) piercing damage, and the target is grappled (escape DC 12). Until this grapple ends, the target is restrained, and the crocodile can't bite another target",
         "attack_bonus": 4,
         "damage_dice": "1d10",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -5012,7 +5560,10 @@ const monsters = [
         "desc": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 20/60 ft., one creature. Hit: 4 (1d4 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 450
@@ -5055,7 +5606,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 4 (1d6 + 1) slashing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 25
@@ -5102,7 +5656,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one creature. Hit: 6 (1d6 + 3) bludgeoning damage, and the darkmantle attaches to the target. If the target is Medium or smaller and the darkmantle has advantage on the attack roll, it attaches by engulfing the target's head, and the target is also blinded and unable to breathe while the darkmantle is attached in this way.\nWhile attached to the target, the darkmantle can attack no other creature except the target but has advantage on its attack rolls. The darkmantle's speed also becomes 0, it can't benefit from any bonus to its speed, and it moves with the target.\nA creature can detach the darkmantle by making a successful DC 13 Strength check as an action. On its turn, the darkmantle can detach itself from the target by using 5 feet of movement.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Darkness Aura (1/day)",
@@ -5155,7 +5712,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage. If the target is a creature, it must succeed on a DC 12 Constitution saving throw against disease or become poisoned until the disease is cured. Every 24 hours that elapse, the creature must repeat the saving throw, reducing its hit point maximum by 5 (1d10) on a failure. This reduction lasts until the disease is cured. The creature dies if the disease reduces its hit point maximum to 0.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 200
@@ -5209,14 +5769,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Poisoned Dart",
         "desc": "Ranged Weapon Attack: +4 to hit, range 30/120 ft., one creature. Hit: 4 (1d4 + 2) piercing damage, and the target must succeed on a DC 12 Constitution saving throw or be poisoned for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -5249,7 +5815,10 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 2 (1d4) piercing damage.",
         "attack_bonus": 2,
-        "damage_dice": "1d4"
+        "damage_dice": "1d4",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -5309,7 +5878,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 7 (1d6 + 4) bludgeoning damage plus 18 (4d8) radiant damage.",
         "attack_bonus": 8,
         "damage_dice": "1d6 + 4d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning",
+          "radiant"
+        ]
       },
       {
         "name": "Healing Touch (3/Day)",
@@ -5367,7 +5940,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 200
@@ -5426,7 +6002,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 12 (2d6 + 5) slashing damage plus 3 (1d6) lightning or thunder damage (djinni's choice).",
         "attack_bonus": 9,
         "damage_dice": "2d6 + 1d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "slashing",
+          "thunder"
+        ]
       },
       {
         "name": "Create Whirlwind",
@@ -5490,7 +6070,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 7 (1d6 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "1d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Read Thoughts",
@@ -5529,7 +6112,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (2d4 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "2d4",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 50
@@ -5578,27 +6164,39 @@ const monsters = [
         "desc": "Melee Weapon Attack: +13 to hit, reach 15 ft., one target. Hit: 26 (3d12 + 7) piercing damage.",
         "attack_bonus": 13,
         "damage_dice": "3d12",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +13 to hit, reach 10 ft., one target. Hit: 16 (2d8 + 7) slashing damage.",
         "attack_bonus": 13,
         "damage_dice": "2d8",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +13 to hit, reach 15 ft., one target. Hit: 26 (3d12 + 7) bludgeoning damage. If the target is a creature, it must succeed on a DC 20 Strength saving throw or be pushed up to 10 feet away from the dragon turtle and knocked prone.",
         "attack_bonus": 13,
         "damage_dice": "3d12",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Steam Breath (Recharge 5-6)",
         "desc": "The dragon turtle exhales scalding steam in a 60-foot cone. Each creature in that area must make a DC 18 Constitution saving throw, taking 52 (15d6) fire damage on a failed save, or half as much damage on a successful one. Being underwater doesn't grant resistance against this damage.",
         "attack_bonus": 0,
-        "damage_dice": "15d6"
+        "damage_dice": "15d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 18000
@@ -5636,13 +6234,19 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 3 (1d6) piercing damage.",
         "attack_bonus": 2,
-        "damage_dice": "1d6"
+        "damage_dice": "1d6",
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 5 (2d4) slashing damage.",
         "attack_bonus": 2,
-        "damage_dice": "2d4"
+        "damage_dice": "2d4",
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Fetid Cloud (1/Day)",
@@ -5715,21 +6319,32 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one creature. Hit: 2 (1d4) piercing damage plus 9 (2d8) poison damage.",
         "attack_bonus": 6,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Longsword",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) slashing damage, or 8 (1d10 + 3) slashing damage if used with two hands.",
         "attack_bonus": 6,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Longbow",
         "desc": "Ranged Weapon Attack: +6 to hit, range 150/600 ft., one target. Hit: 7 (1d8 + 3) piercing damage plus 4 (1d8) poison damage.",
         "attack_bonus": 6,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 2300
@@ -5782,14 +6397,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Hand Crossbow",
         "desc": "Ranged Weapon Attack: +4 to hit, range 30/120 ft., one target. Hit: 5 (1d6 + 2) piercing damage, and the target must succeed on a DC 13 Constitution saving throw or be poisoned for 1 hour. If the saving throw fails by 5 or more, the target is also unconscious while poisoned in this way. The target wakes up if it takes damage or if another creature takes an action to shake it awake.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -5832,7 +6453,10 @@ const monsters = [
         "name": "Quarterstaff",
         "desc": "Melee Weapon Attack: +2 to hit (+4 to hit with shillelagh), reach 5 ft., one target. Hit: 3 (1d6) bludgeoning damage, or 6 (1d8 + 2) bludgeoning damage with shillelagh or if wielded with two hands.",
         "attack_bonus": 2,
-        "damage_dice": "1d6"
+        "damage_dice": "1d6",
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 450
@@ -5889,7 +6513,10 @@ const monsters = [
         "name": "Club",
         "desc": "Melee Weapon Attack: +2 to hit (+6 to hit with shillelagh), reach 5 ft., one target. Hit: 2 (1 d4) bludgeoning damage, or 8 (1d8 + 4) bludgeoning damage with shillelagh.",
         "attack_bonus": 2,
-        "damage_dice": "1d4"
+        "damage_dice": "1d4",
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Fey Charm",
@@ -5945,14 +6572,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage, or 11 (2d8 + 2) piercing damage while enlarged.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Javelin",
         "desc": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 5 (1d6 + 2) piercing damage, or 9 (2d6 + 2) piercing damage while enlarged.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Invisibility (Recharges after a Short or Long Rest)",
@@ -6005,7 +6638,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 4 (1d4 + 2) slashing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Blinding Breath (Recharge 6)",
@@ -6057,7 +6693,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 5
@@ -6108,7 +6747,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 14 (2d8 + 5) bludgeoning damage.",
         "attack_bonus": 8,
         "damage_dice": "2d8",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 1800
@@ -6167,13 +6809,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage plus 7 (2d6) fire damage.",
         "attack_bonus": 10,
         "damage_dice": "2d6 + 2d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing",
+          "fire"
+        ]
       },
       {
         "name": "Hurl Flame",
         "desc": "Ranged Spell Attack: +7 to hit, range 120 ft., one target. Hit: 17 (5d6) fire damage.",
         "attack_bonus": 7,
-        "damage_dice": "5d6"
+        "damage_dice": "5d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 7200
@@ -6214,14 +6863,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 19 (3d8 + 6) piercing damage.",
         "attack_bonus": 8,
         "damage_dice": "3d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Stomp",
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one prone creature. Hit: 22 (3d10 + 6) bludgeoning damage.",
         "attack_bonus": 8,
         "damage_dice": "3d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 1100
@@ -6321,14 +6976,22 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) slashing damage, or 9 (1d10 + 4) slashing damage if used with two hands, plus 13 (3d8) poison damage.",
         "attack_bonus": 8,
         "damage_dice": "1d8 + 3d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing",
+          "poison"
+        ]
       },
       {
         "name": "Longbow",
         "desc": "Ranged Weapon Attack: +7 to hit, range 150/600 ft., one target. Hit: 7 (1d8 + 3) piercing damage plus 13 (3d8) poison damage, and the target must succeed on a DC 14 Constitution saving throw or be poisoned. The poison lasts until it is removed by the lesser restoration spell or similar magic.",
         "attack_bonus": 7,
         "damage_dice": "1d8 + 3d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Variant: Rope of Entanglement",
@@ -6399,14 +7062,21 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 6 (1d8 + 2) piercing damage plus 4 (1d8) poison damage. The target must succeed on a DC 11 Constitution saving throw or be poisoned for 1 minute. The creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) slashing damage.",
         "attack_bonus": 4,
         "damage_dice": "2d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Web (Recharge 5-6)",
@@ -6418,7 +7088,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one Medium or Small creature against which the ettercap has advantage on the attack roll. Hit: 4 (1d4 + 2) bludgeoning damage, and the target is grappled (escape DC 12). Until this grapple ends, the target can't breathe, and the ettercap has advantage on attack rolls against it.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 450
@@ -6470,14 +7143,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d8",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Morningstar",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d8",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 1100
@@ -6534,7 +7213,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) fire damage. If the target is a creature or a flammable object, it ignites. Until a creature takes an action to douse the fire, the target takes 5 (1d10) fire damage at the start of each of its turns.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 1800
@@ -6578,14 +7260,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +11 to hit, reach 10 ft., one target. Hit: 28 (6d6 + 7) slashing damage.",
         "attack_bonus": 11,
         "damage_dice": "6d6",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Rock",
         "desc": "Ranged Weapon Attack: +11 to hit, range 60/240 ft., one target. Hit: 29 (4d10 + 7) bludgeoning damage.",
         "attack_bonus": 11,
         "damage_dice": "4d10",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 5000
@@ -6656,7 +7344,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.",
         "attack_bonus": 7,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 1800
@@ -6696,7 +7387,11 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 1 piercing damage plus 7 (3d4) poison damage.",
         "attack_bonus": 6,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 25
@@ -6743,7 +7438,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) slashing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d8",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 50
@@ -6826,14 +7524,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 25 (3d12 + 6) slashing damage.",
         "attack_bonus": 9,
         "damage_dice": "3d12",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Rock",
         "desc": "Ranged Weapon Attack: +9 to hit, range 60/240 ft., one target. Hit: 28 (4d10 + 6) bludgeoning damage.",
         "attack_bonus": 9,
         "damage_dice": "4d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 3900
@@ -6879,14 +7583,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 450
@@ -6931,7 +7641,10 @@ const monsters = [
         "name": "Pseudopod",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 10 (3d6) acid damage.",
         "attack_bonus": 4,
-        "damage_dice": "3d6"
+        "damage_dice": "3d6",
+        "damage_types": [
+          "acid"
+        ]
       },
       {
         "name": "Engulf",
@@ -6982,14 +7695,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 12 (2d8 + 3) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "2d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage. If the target is a creature other than an undead, it must succeed on a DC 10 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 450
@@ -7035,7 +7754,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 17 (4d6 + 3) necrotic damage.",
         "attack_bonus": 5,
         "damage_dice": "4d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "necrotic"
+        ]
       },
       {
         "name": "Etherealness",
@@ -7084,7 +7806,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one creature. Hit: 9 (2d6 + 2) piercing damage.",
         "attack_bonus": 2,
         "damage_dice": "2d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
@@ -7130,14 +7855,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 22 (3d10 + 6) bludgeoning damage.",
         "attack_bonus": 9,
         "damage_dice": "3d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Rock",
         "desc": "Ranged Weapon Attack: +9 to hit, range 50/100 ft., one target. Hit: 30 (7d6 + 6) bludgeoning damage.",
         "attack_bonus": 9,
         "damage_dice": "7d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 2900
@@ -7183,14 +7914,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 6 (2d4 + 1) slashing damage.",
         "attack_bonus": 3,
         "damage_dice": "2d4",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 50
@@ -7236,7 +7973,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -7283,7 +8023,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 450
@@ -7317,7 +8060,11 @@ const monsters = [
         "desc": "Bite. Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 4 (1d4 + 2) piercing damage, and the target must succeed on a DC 11 Constitution saving throw or take 10 (3d6) poison damage. If the poison damage reduces the target to 0 hit points, the target is stable but poisoned for 1 hour, even after regaining hit points, and is paralyzed while poisoned in this way.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 50
@@ -7352,14 +8099,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 10 ft., one creature. Hit: 11 (2d6 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Constrict",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one creature. Hit: 13 (2d8 + 4) bludgeoning damage, and the target is grappled (escape DC 16). Until this grapple ends, the creature is restrained, and the snake can't constrict another target.",
         "attack_bonus": 6,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 450
@@ -7401,7 +8154,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage, and the target is grappled (escape DC 11). The crab has two claws, each of which can grapple only one target.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 25
@@ -7448,14 +8204,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 21 (3d10 + 5) piercing damage, and the target is grappled (escape DC 16). Until this grapple ends, the target is restrained, and the crocodile can't bite another target.",
         "attack_bonus": 8,
         "damage_dice": "3d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target not grappled by the crocodile. Hit: 14 (2d8 + 5) bludgeoning damage. If the target is a creature, it must succeed on a DC 16 Strength saving throw or be knocked prone.",
         "attack_bonus": 8,
         "damage_dice": "2d8",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 1800
@@ -7502,14 +8264,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Talons",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 200
@@ -7552,14 +8320,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Hooves",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one prone creature. Hit: 22 (4d8 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "4d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 450
@@ -7600,7 +8374,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +1 to hit, reach 5 ft., one target. Hit: 2 (1d6 — 1) slashing damage.",
         "attack_bonus": 1,
         "damage_dice": "1d6",
-        "damage_bonus": -1
+        "damage_bonus": -1,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 5
@@ -7648,7 +8425,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) piercing damage, and the target is grappled (escape DC 11). Until this grapple ends, the target is restrained, and the frog can't bite another target.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Swallow",
@@ -7700,7 +8480,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (2d4 + 3) bludgeoning damage.",
         "attack_bonus": 5,
         "damage_dice": "2d4",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 100
@@ -7742,7 +8525,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 200
@@ -7788,7 +8574,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -7841,7 +8630,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 15 ft., one target. Hit: 10 (2d6 + 3) bludgeoning damage. If the target is a creature, it is grappled (escape DC 16). Until this grapple ends, the target is restrained, and the octopus can't use its tentacles on another target.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Ink Cloud (Recharges after a Short or Long Rest)",
@@ -7894,7 +8686,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 8 (2d6 + 1) slashing damage.",
         "attack_bonus": 3,
         "damage_dice": "2d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 50
@@ -7929,7 +8724,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 6 (1d4 + 4) piercing damage, and the target must make a DC 11 Constitution saving throw, taking 10 (3d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 6,
         "damage_dice": "1d4",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 50
@@ -7975,7 +8774,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 25
@@ -8009,7 +8811,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 3 (1d4 + 2) piercing damage. If the target is a creature, it must succeed on a DC 10 Constitution saving throw or contract a disease. Until the disease is cured, the target can't regain hit points except by magical means, and the target's hit point maximum decreases by 3 (1d6) every 24 hours. If the target's hit point maximum drops to 0 as a result of this disease, the target dies.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 25
@@ -8043,7 +8848,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) bludgeoning damage, and the target is grappled (escape DC 12). The scorpion has two claws, each of which can grapple only one target.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Multiattack",
@@ -8055,7 +8863,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 7 (1d10 + 2) piercing damage, and the target must make a DC 12 Constitution saving throw, taking 22 (4d10) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 4,
         "damage_dice": "1d10",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 700
@@ -8102,7 +8914,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 100
@@ -8149,7 +8964,10 @@ const monsters = [
         "desc": "Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 22 (3d10 + 6) piercing damage.",
         "attack_bonus": 9,
         "damage_dice": "3d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 1800
@@ -8201,7 +9019,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one creature. Hit: 7 (1d8 + 3) piercing damage, and the target must make a DC 11 Constitution saving throw, taking 9 (2d8) poison damage on a failed save, or half as much damage on a successful one. If the poison damage reduces the target to 0 hit points, the target is stable but poisoned for 1 hour, even after regaining hit points, and is paralyzed while poisoned in this way.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Web (Recharge 5-6)",
@@ -8252,7 +9074,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (1d10 + 2) piercing damage plus 5 (1d10) poison damage, and the target is grappled (escape DC 13). Until this grapple ends, the target is restrained, and the toad can't bite another target.",
         "attack_bonus": 4,
         "damage_dice": "1d10",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Swallow",
@@ -8309,14 +9135,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "2d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Talons",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 9 (2d6 + 2) slashing damage.",
         "attack_bonus": 4,
         "damage_dice": "2d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 200
@@ -8350,7 +9182,11 @@ const monsters = [
         "desc": "Sting. Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 5 (1d6 + 2) piercing damage, and the target must make a DC 11 Constitution saving throw, taking 10 (3d6) poison damage on a failed save, or half as much damage on a successful one. If the poison damage reduces the target to 0 hit points, the target is stable but poisoned for 1 hour, even after regaining hit points, and is paralyzed while poisoned in this way.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 100
@@ -8393,7 +9229,10 @@ const monsters = [
         "desc": "Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 (1d4 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d4",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 25
@@ -8446,7 +9285,11 @@ const monsters = [
         "desc": "Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 4 (1d6 + 1) piercing damage, and the target must make a DC 11 Constitution saving throw, taking 7 (2d6) poison damage on a failed save, or half as much damage on a successful one. If the poison damage reduces the target to 0 hit points, the target is stable but poisoned for 1 hour, even after regaining hit points, and is paralyzed while poisoned in this way.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 50
@@ -8496,7 +9339,10 @@ const monsters = [
         "name": "Bites",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one creature. Hit: 17 (5d6) piercing damage. If the target is Medium or smaller, it must succeed on a DC 10 Strength saving throw or be knocked prone. If the target is killed by this damage, it is absorbed into the mouther.",
         "attack_bonus": 2,
-        "damage_dice": "5d6"
+        "damage_dice": "5d6",
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Blinding Spittle (Recharge 5-6)",
@@ -8556,14 +9402,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 16 (2d10 + 5) bludgeoning damage. If the target is a Medium or smaller creature, it is grappled (escape DC 15). The glabrezu has two pincers, each of which can grapple only one target.",
         "attack_bonus": 9,
         "damage_dice": "2d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Fist",
         "desc": "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) bludgeoning damage.",
         "attack_bonus": 9,
         "damage_dice": "2d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Variant: Summon Demon (1/Day)",
@@ -8624,14 +9476,20 @@ const monsters = [
         "desc": "Melee or Ranged Weapon Attack: +7 to hit, reach 5 ft. and range 20/60 ft., one target. Hit: 11 (2d6 + 4) piercing damage, or 13 (2d8 + 4) piercing damage if used with two hands to make a melee attack.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Shield Bash",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one creature. Hit: 9 (2d4 + 4) bludgeoning damage. If the target is a Medium or smaller creature, it must succeed on a DC 15 Strength saving throw or be knocked prone.",
         "attack_bonus": 7,
         "damage_dice": "2d4",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "reactions": [
@@ -8679,21 +9537,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 4 (1d4 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Spear",
         "desc": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 5 (1d6 + 2) piercing damage, or 6 (1d8 + 2) piercing damage if used with two hands to make a melee attack.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Longbow",
         "desc": "Ranged Weapon Attack: +3 to hit, range 150/600 ft., one target. Hit: 5 (1d8 + 1) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d8",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -8740,7 +9607,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 3 (1d4 + 1) bludgeoning damage.",
         "attack_bonus": 3,
         "damage_dice": "1d4",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 5
@@ -8782,14 +9652,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Shortbow",
         "desc": "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -8836,13 +9712,19 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (1d10 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "1d10",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nFire Breath. The dragon exhales fire in a 15-foot cone. Each creature in that area must make a DC 13 Dexterity saving throw, taking 22 (4d10) fire damage on a failed save, or half as much damage on a successful one.\nWeakening Breath. The dragon exhales gas in a 15-foot cone. Each creature in that area must succeed on a DC 13 Strength saving throw or have disadvantage on Strength-based attack rolls, Strength checks, and Strength saving throws for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0,
-        "damage_dice": "4d10"
+        "damage_dice": "4d10",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 700
@@ -8884,14 +9766,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 18 (2d12 + 5) piercing damage.",
         "attack_bonus": 8,
         "damage_dice": "2d12",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Hooves",
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 16 (2d10 + 5) bludgeoning damage.",
         "attack_bonus": 8,
         "damage_dice": "2d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Petrifying Breath (Recharge 5-6)",
@@ -8948,7 +9836,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage plus 7 (2d6) acid damage, and if the target is wearing nonmagical metal armor, its armor is partly corroded and takes a permanent and cumulative -1 penalty to the AC it offers. The armor is destroyed if the penalty reduces its AC to 10.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "bludgeoning",
+          "acid"
+        ]
       }
     ],
     "xp": 100
@@ -8995,13 +9887,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (1d10 + 2) piercing damage plus 3 (1d6) poison damage.",
         "attack_bonus": 4,
         "damage_dice": "1d10 + 1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Poison Breath (Recharge 5-6)",
         "desc": "The dragon exhales poisonous gas in a 15-foot cone. Each creature in that area must make a DC 11 Constitution saving throw, taking 21 (6d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "6d6"
+        "damage_dice": "6d6",
+        "damage_types": [
+          "poison"
+        ]
       }
     ],
     "xp": 450
@@ -9071,7 +9970,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) slashing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Illusory Appearance",
@@ -9127,14 +10029,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 9 (2d6 + 2) slashing damage.",
         "attack_bonus": 4,
         "damage_dice": "2d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Beak",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 450
@@ -9181,14 +10089,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 450
@@ -9242,7 +10156,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 (1d4 + 3) bludgeoning damage plus 2 (1d4) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d4 + 1d4",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning",
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -9277,7 +10195,10 @@ const monsters = [
         "desc": "Melee or Ranged Weapon Attack: +3 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d6 + 1) piercing damage or 5 (1d8 + 1) piercing damage if used with two hands to make a melee attack.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 25
@@ -9328,13 +10249,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one creature. Hit: 8 (1d8 + 4) piercing damage, and the target must make a DC 15 Constitution saving throw, taking 45 (10d8) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 8,
         "damage_dice": "1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Spit Poison",
         "desc": "Ranged Weapon Attack: +8 to hit, range 15/30 ft., one creature. Hit: The target must make a DC 15 Constitution saving throw, taking 45 (10d8) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 8,
-        "damage_dice": "10d8"
+        "damage_dice": "10d8",
+        "damage_types": [
+          "poison"
+        ]
       }
     ],
     "xp": 5900
@@ -9394,7 +10322,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) slashing damage.",
         "attack_bonus": 9,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "legendary_actions": [
@@ -9450,27 +10381,39 @@ const monsters = [
         "desc": "Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) slashing damage, or 8 (1d10 + 3) slashing damage if used with two hands.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Shortsword",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Heavy Crossbow",
         "desc": "Ranged Weapon Attack: +3 to hit, range 100/400 ft., one target. Hit: 6 (1d10 + 1) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d10",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Fire Breath (Recharge 5-6)",
         "desc": "The veteran exhales fire in a 15-foot cone. Each creature in that area must make a DC 15 Dexterity saving throw, taking 24 (7d6) fire damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "7d6"
+        "damage_dice": "7d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 1800
@@ -9509,14 +10452,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 6 (2d4 + 1) slashing damage.",
         "attack_bonus": 3,
         "damage_dice": "2d4",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Club",
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 3 (1d4 + 1) bludgeoning damage.",
         "attack_bonus": 3,
         "damage_dice": "1d4",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Luring Song",
@@ -9562,7 +10511,10 @@ const monsters = [
         "name": "Talons",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 1 slashing damage.",
         "attack_bonus": 5,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 5
@@ -9609,13 +10561,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) piercing damage plus 7 (2d6) fire damage.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "fire"
+        ]
       },
       {
         "name": "Fire Breath (Recharge 5-6)",
         "desc": "The hound exhales fire in a 15-foot cone. Each creature in that area must make a DC 12 Dexterity saving throw, taking 21 (6d6) fire damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "6d6"
+        "damage_dice": "6d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 700
@@ -9669,14 +10628,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 15 (2d10 + 4) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d10",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Variant: Summon Demon (1/Day)",
@@ -9721,14 +10686,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 18 (3d8 + 5) bludgeoning damage.",
         "attack_bonus": 8,
         "damage_dice": "3d8",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Rock",
         "desc": "Ranged Weapon Attack: +8 to hit, range 60/240 ft., one target. Hit: 21 (3d10 + 5) bludgeoning damage.",
         "attack_bonus": 8,
         "damage_dice": "3d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 1800
@@ -9775,14 +10746,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d10",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 200
@@ -9824,14 +10801,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) slashing damage, or 6 (1d10 + 1) slashing damage if used with two hands.",
         "attack_bonus": 3,
         "damage_dice": "1d8",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Longbow",
         "desc": "Ranged Weapon Attack: +3 to hit, range 150/600 ft., one target. Hit: 5 (1d8 + 1) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d8",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -9871,7 +10854,10 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 1 piercing damage, and the target must succeed on a DC 10 Constitution saving throw or be poisoned for 1 minute. If the saving throw fails by 5 or more, the target is instead poisoned for 5 (1d10) minutes and unconscious while poisoned in this way.",
         "attack_bonus": 4,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -9926,20 +10912,29 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 15 (2d8 + 6) piercing damage.",
         "attack_bonus": 10,
         "damage_dice": "2d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 10 (1d8 + 6) piercing damage. If the target is a creature other than an undead or a construct, it must succeed on a DC 17 Constitution saving throw or lose 10 (3d6) hit points at the start of each of its turns due to an infernal wound. Each time the devil hits the wounded target with this attack, the damage dealt by the wound increases by 10 (3d6). Any creature can take an action to stanch the wound with a successful DC 12 Wisdom (Medicine) check. The wound also closes if the target receives magical healing.",
         "attack_bonus": 10,
         "damage_dice": "1d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Hurl Flame",
         "desc": "Ranged Spell Attack: +7 to hit, range 150 ft., one target. Hit: 14 (4d6) fire damage. If the target is a flammable object that isn't being worn or carried, it also catches fire.",
         "attack_bonus": 7,
-        "damage_dice": "4d6"
+        "damage_dice": "4d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 7200
@@ -9986,7 +10981,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 450
@@ -10048,7 +11046,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 10 (1d10 + 5) piercing damage.",
         "attack_bonus": 8,
         "damage_dice": "1d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 3900
@@ -10089,7 +11090,10 @@ const monsters = [
         "name": "Bite",
         "desc": "Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 3 (1d6) piercing damage.",
         "attack_bonus": 2,
-        "damage_dice": "1d6"
+        "damage_dice": "1d6",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -10144,21 +11148,33 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 12 (2d6 + 5) piercing damage plus 10 (3d6) cold damage.",
         "attack_bonus": 10,
         "damage_dice": "2d6 + 3d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing",
+          "cold"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 10 (2d4 + 5) slashing damage plus 10 (3d6) cold damage.",
         "attack_bonus": 10,
         "damage_dice": "2d4 + 3d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "slashing",
+          "cold"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack:+10 to hit, reach 10 ft., one target. Hit: 12 (2d6 + 5) bludgeoning damage plus 10 (3d6) cold damage.",
         "attack_bonus": 10,
         "damage_dice": "2d6 + 3d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning",
+          "cold"
+        ]
       },
       {
         "name": "Wall of Ice",
@@ -10217,7 +11233,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 3 (1d4 + 1) slashing damage plus 2 (1d4) cold damage.",
         "attack_bonus": 3,
         "damage_dice": "1d4",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing",
+          "cold"
+        ]
       },
       {
         "name": "Frost Breath (Recharge 6)",
@@ -10287,7 +11307,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft ., one target. Hit: 5 (1d4 + 3) piercing damage, and the target must make on a DC 11 Constitution saving throw, taking 10 (3d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 5,
         "damage_dice": "1d4",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Invisibility",
@@ -10345,7 +11369,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 2300
@@ -10406,20 +11433,29 @@ const monsters = [
         "desc": "Melee Weapon Attack: +13 to hit, reach 5 ft., one target. Hit: 20 (3d8 + 7) bludgeoning damage.",
         "attack_bonus": 13,
         "damage_dice": "3d8",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Sword",
         "desc": "Melee Weapon Attack: +13 to hit, reach 10 ft., one target. Hit: 23 (3d10 + 7) slashing damage.",
         "attack_bonus": 13,
         "damage_dice": "3d10",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Poison Breath (Recharge 5-6)",
         "desc": "The golem exhales poisonous gas in a 15-foot cone. Each creature in that area must make a DC 19 Constitution saving throw, taking 45 (l0d8) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "10d8"
+        "damage_dice": "10d8",
+        "damage_types": [
+          "poison"
+        ]
       }
     ],
     "xp": 15000
@@ -10466,7 +11502,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +1 to hit, reach 5 ft., one target. Hit: 1 (1d4 — 1) piercing damage.",
         "attack_bonus": 1,
         "damage_dice": "1d4",
-        "damage_bonus": -1
+        "damage_bonus": -1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -10564,13 +11603,19 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Heavy Crossbow",
         "desc": "Ranged Weapon Attack: +2 to hit, range 100/400 ft., one target. Hit: 5 (1d10) piercing damage.",
         "attack_bonus": 2,
-        "damage_dice": "1d10"
+        "damage_dice": "1d10",
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Leadership (Recharges after a Short or Long Rest)",
@@ -10628,14 +11673,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Sling",
         "desc": "Ranged Weapon Attack: +4 to hit, range 30/120 ft., one target. Hit: 4 (1d4 + 2) bludgeoning damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 25
@@ -10696,14 +11747,21 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 23 (3d8 + 10) piercing damage. If the target is a Large or smaller creature grappled by the kraken, that creature is swallowed, and the grapple ends. While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the kraken, and it takes 42 (12d6) acid damage at the start of each of the kraken's turns. If the kraken takes 50 damage or more on a single turn from a creature inside it, the kraken must succeed on a DC 25 Constitution saving throw at the end of that turn or regurgitate all swallowed creatures, which fall prone in a space within 10 feet of the kraken. If the kraken dies, a swallowed creature is no longer restrained by it and can escape from the corpse using 15 feet of movement, exiting prone.",
         "attack_bonus": 7,
         "damage_dice": "3d8",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "piercing",
+          "acid"
+        ]
       },
       {
         "name": "Tentacle",
         "desc": "Melee Weapon Attack: +7 to hit, reach 30 ft., one target. Hit: 20 (3d6 + 10) bludgeoning damage, and the target is grappled (escape DC 18). Until this grapple ends, the target is restrained. The kraken has ten tentacles, each of which can grapple one target.",
         "attack_bonus": 7,
         "damage_dice": "3d6",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Fling",
@@ -10714,7 +11772,10 @@ const monsters = [
         "name": "Lightning Storm",
         "desc": "The kraken magically creates three bolts of lightning, each of which can strike a target the kraken can see within 120 feet of it. A target must make a DC 23 Dexterity saving throw, taking 22 (4d10) lightning damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "4d10"
+        "damage_dice": "4d10",
+        "damage_types": [
+          "lightning"
+        ]
       }
     ],
     "legendary_actions": [
@@ -10780,14 +11841,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 14 (2d10 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "2d10",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Dagger",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 (1d4 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d4",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Intoxicating Touch",
@@ -10837,7 +11904,10 @@ const monsters = [
         "name": "Fist",
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 2 (1d4) bludgeoning damage",
         "attack_bonus": 3,
-        "damage_dice": "1d4"
+        "damage_dice": "1d4",
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 5
@@ -10899,7 +11969,10 @@ const monsters = [
         "name": "Paralyzing Touch",
         "desc": "Melee Spell Attack: +12 to hit, reach 5 ft., one creature. Hit: 10 (3d6) cold damage. The target must succeed on a DC 18 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 12,
-        "damage_dice": "3d6"
+        "damage_dice": "3d6",
+        "damage_types": [
+          "cold"
+        ]
       }
     ],
     "legendary_actions": [
@@ -10980,14 +12053,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 200
@@ -11020,7 +12099,10 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 piercing damage.",
         "attack_bonus": 0,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -11069,28 +12151,40 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Heavy Club",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) bludgeoning damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Javelin",
         "desc": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Spiked Shield",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -11135,7 +12229,10 @@ const monsters = [
         "desc": "Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d4 + 2) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 2300
@@ -11188,7 +12285,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft ., one creature. Hit: 3 (1d4 + 1) slashing damage plus 2 (1d4) fire damage.",
         "attack_bonus": 3,
         "damage_dice": "1d4",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing",
+          "fire"
+        ]
       },
       {
         "name": "Fire Breath (Recharge 6)",
@@ -11244,7 +12345,10 @@ const monsters = [
         "name": "Touch",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d6) fire damage. If the target is a creature or a flammable object, it ignites. Until a target takes an action to douse the fire, the target takes 3 (1d6) fire damage at the end of each of its turns.",
         "attack_bonus": 4,
-        "damage_dice": "2d6"
+        "damage_dice": "2d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 100
@@ -11285,14 +12389,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 25 (4d8 + 7) piercing damage.",
         "attack_bonus": 10,
         "damage_dice": "4d8",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Stomp",
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one prone creature. Hit: 29 (4d10 + 7) bludgeoning damage.",
         "attack_bonus": 10,
         "damage_dice": "4d10",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 2300
@@ -11338,21 +12448,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail Spike",
         "desc": "Ranged Weapon Attack: +5 to hit, range 100/200 ft., one target. Hit: 7 (1d8 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 700
@@ -11412,14 +12531,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) slashing damage.",
         "attack_bonus": 9,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft., one creature. Hit: 15 (2d10 + 4) bludgeoning damage. If the target is Medium or smaller, it is grappled (escape DC 19). Until this grapple ends, the target is restrained, the marilith can automatically hit the target with its tail, and the marilith can't make tail attacks against other targets.",
         "attack_bonus": 9,
         "damage_dice": "2d10",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Teleport",
@@ -11478,7 +12603,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) piercing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 25
@@ -11528,20 +12656,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one creature. Hit: 4 (1d4 + 2) piercing damage plus 14 (4d6) poison damage.",
         "attack_bonus": 5,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Shortsword",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Longbow",
         "desc": "Ranged Weapon Attack: +5 to hit, range 150/600 ft., one target. Hit: 6 (1d8 + 2) piercing damage plus 7 (2d6) poison damage.",
         "attack_bonus": 5,
-        "damage_dice": "2d6"
+        "damage_dice": "2d6",
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 2300
@@ -11582,7 +12721,10 @@ const monsters = [
         "name": "Spear",
         "desc": "Melee or Ranged Weapon Attack: +2 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 3 (1d6) piercing damage, or 4 (1d8) piercing damage if used with two hands to make a melee attack.",
         "attack_bonus": 2,
-        "damage_dice": "1d6"
+        "damage_dice": "1d6",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 25
@@ -11628,21 +12770,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (2d4 + 4) slashing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d4",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Harpoon",
         "desc": "Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 11 (2d6 + 4) piercing damage. If the target is a Huge or smaller creature, it must succeed on a Strength contest against the merrow or be pulled up to 20 feet toward the merrow.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 450
@@ -11699,14 +12850,21 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) bludgeoning damage. If the mimic is in object form, the target is subjected to its Adhesive trait.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Bite",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) piercing damage plus 4 (1d8) acid damage.",
         "attack_bonus": 5,
         "damage_dice": "1d8 + 1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "acid"
+        ]
       }
     ],
     "xp": 450
@@ -11759,14 +12917,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 17 (2d12 + 4) slashing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d12",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Gore",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 700
@@ -11808,14 +12972,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 17 (2d12 + 4) slashing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d12",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Gore",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 450
@@ -11861,7 +13031,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) bludgeoning damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 25
@@ -11901,7 +13074,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) bludgeoning damage plus 10 (3d6) necrotic damage. If the target is a creature, it must succeed on a DC 12 Constitution saving throw or be cursed with mummy rot. The cursed target can't regain hit points, and its hit point maximum decreases by 10 (3d6) for every 24 hours that elapse. If the curse reduces the target's hit point maximum to 0, the target dies, and its body turns to dust. The curse lasts until removed by the remove curse spell or other magic.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning",
+          "necrotic"
+        ]
       },
       {
         "name": "Dreadful Glare",
@@ -11968,7 +13145,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 14 (3d6 + 4) bludgeoning damage plus 21 (6d6) necrotic damage. If the target is a creature, it must succeed on a DC 16 Constitution saving throw or be cursed with mummy rot. The cursed target can't regain hit points, and its hit point maximum decreases by 10 (3d6) for every 24 hours that elapse. If the curse reduces the target's hit point maximum to 0, the target dies, and its body turns to dust. The curse lasts until removed by the remove curse spell or other magic.",
         "attack_bonus": 9,
         "damage_dice": "3d6 + 6d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning",
+          "necrotic"
+        ]
       },
       {
         "name": "Dreadful Glare",
@@ -12050,14 +13231,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 32 (5d10 + 5) piercing damage.",
         "attack_bonus": 10,
         "damage_dice": "5d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 15 (3d6 + 5) slashing damage.",
         "attack_bonus": 10,
         "damage_dice": "3d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Horror Nimbus (Recharge 5-6)",
@@ -12142,7 +13329,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Change Shape",
@@ -12203,7 +13393,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage plus 7 (2d6) fire damage.",
         "attack_bonus": 6,
         "damage_dice": "2d8 + 2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning",
+          "fire"
+        ]
       },
       {
         "name": "Ethereal Stride",
@@ -12245,7 +13439,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d8",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "reactions": [
@@ -12298,7 +13495,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 9 (2d6 + 2) bludgeoning damage plus 3 (1d6) acid damage.",
         "attack_bonus": 4,
         "damage_dice": "2d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning",
+          "acid"
+        ]
       }
     ],
     "reactions": [
@@ -12357,7 +13558,10 @@ const monsters = [
         "name": "Tentacles",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 1 bludgeoning damage, and the target is grappled (escape DC 10). Until this grapple ends, the octopus can't use its tentacles on another target.",
         "attack_bonus": 4,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Ink Cloud (Recharges after a Short or Long Rest)",
@@ -12396,14 +13600,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Javelin",
         "desc": "Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 11 (2d6 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 450
@@ -12445,7 +13655,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 450
@@ -12508,14 +13721,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Glaive",
         "desc": "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) slashing damage, or 9 (1d10 + 4) slashing damage in Small or Medium form.",
         "attack_bonus": 7,
         "damage_dice": "2d10",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Change Shape",
@@ -12562,14 +13781,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d12",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Javelin",
         "desc": "Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 6 (1d6 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -12616,14 +13841,21 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 12 (2d8 + 3) piercing damage. If the target is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease is cured.",
         "attack_bonus": 6,
         "damage_dice": "2d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Tentacle",
         "desc": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 7 (1d8 + 3) bludgeoning damage plus 4 (1d8) piercing damage. If the target is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The otyugh has two tentacles, each of which can grapple one target.",
         "attack_bonus": 6,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning",
+          "piercing"
+        ]
       },
       {
         "name": "Tentacle Slam",
@@ -12675,7 +13907,10 @@ const monsters = [
         "name": "Talons",
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 1 slashing damage.",
         "attack_bonus": 3,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 5
@@ -12722,14 +13957,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one creature. Hit: 10 (1d10 + 5) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "1d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d8",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 700
@@ -12777,14 +14018,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 50
@@ -12822,7 +14069,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 450
@@ -12874,7 +14124,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 7 (1d10 + 2) piercing damage, and the target must make a DC 11 Constitution saving throw, taking 18 (4d8) poison damage on a failed save, or half as much damage on a successful one. If the poison damage reduces the target to 0 hit points, the target is stable but poisoned for 1 hour, even after regaining hit points, and is paralyzed while poisoned in this way.",
         "attack_bonus": 4,
         "damage_dice": "1d10",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 700
@@ -12938,28 +14192,42 @@ const monsters = [
         "desc": "Melee Weapon Attack: +14 to hit, reach 5 ft., one target. Hit: 22 (4d6 + 8) piercing damage. The target must succeed on a DC 21 Constitution saving throw or become poisoned. While poisoned in this way, the target can't regain hit points, and it takes 21 (6d6) poison damage at the start of each of its turns. The poisoned target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 14,
         "damage_dice": "4d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +14 to hit, reach 10 ft. , one target. Hit: 17 (2d8 + 8) slashing damage.",
         "attack_bonus": 14,
         "damage_dice": "2d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Mace",
         "desc": "Melee Weapon Attack: +14 to hit, reach 10ft., one target. Hit: 15 (2d6 + 8) bludgeoning damage plus 21 (6d6) fire damage.",
         "attack_bonus": 14,
         "damage_dice": "2d6",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning",
+          "fire"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +14 to hit, reach 10ft., one target. Hit: 24 (3d1O + 8) bludgeoning damage.",
         "attack_bonus": 14,
         "damage_dice": "3d10",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 25000
@@ -13024,7 +14292,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +12 to hit, reach 5 ft., one target. Hit: 21 (4d6 + 7) slashing damage plus 22 (5d8) radiant damage.",
         "attack_bonus": 12,
         "damage_dice": "4d6 + 5d8",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "slashing",
+          "radiant"
+        ]
       },
       {
         "name": "Healing Touch (4/Day)",
@@ -13072,7 +14344,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 14 (3d6 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "3d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 450
@@ -13105,7 +14380,11 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 1 piercing damage, and the target must make a DC 10 Constitution saving throw, taking 5 (2d4) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 5,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 25
@@ -13152,14 +14431,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 9 (1d8 + 5) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "1d8",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 12 (2d6 + 5) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 450
@@ -13193,7 +14478,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) bludgeoning damage.",
         "attack_bonus": 4,
         "damage_dice": "2d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 25
@@ -13242,7 +14530,10 @@ const monsters = [
         "name": "Mace",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 3 (1d6) bludgeoning damage.",
         "attack_bonus": 2,
-        "damage_dice": "1d6"
+        "damage_dice": "1d6",
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 450
@@ -13300,14 +14591,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Sting",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 4 (1d4 + 2) piercing damage, and the target must succeed on a DC 11 Constitution saving throw or become poisoned for 1 hour. If the saving throw fails by 5 or more, the target falls unconscious for the same duration, or until it takes damage or another creature uses an action to shake it awake.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -13355,14 +14652,22 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 22 (3d8 + 9) piercing damage. If the target is a Large or smaller creature, it must succeed on a DC 19 Dexterity saving throw or be swallowed by the worm. A swallowed creature is blinded and restrained, it has total cover against attacks and other effects outside the worm, and it takes 21 (6d6) acid damage at the start of each of the worm's turns.\nIf the worm takes 30 damage or more on a single turn from a creature inside it, the worm must succeed on a DC 21 Constitution saving throw at the end of that turn or regurgitate all swallowed creatures, which fall prone in a space within 10 feet of the worm. If the worm dies, a swallowed creature is no longer restrained by it and can escape from the corpse by using 20 feet of movement, exiting prone.",
         "attack_bonus": 9,
         "damage_dice": "3d8",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "piercing",
+          "acid"
+        ]
       },
       {
         "name": "Tail Stinger",
         "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft., one creature. Hit: 19 (3d6 + 9) piercing damage, and the target must make a DC 19 Constitution saving throw, taking 42 (12d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 9,
         "damage_dice": "3d6",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 13000
@@ -13414,7 +14719,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft ., one target. Hit: 5 (1d4 + 3) piercing damage, and the target must succeed on a DC 10 Constitution saving throw or take 5 (2d4) poison damage and become poisoned for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Scare (1/day)",
@@ -13469,7 +14778,10 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 1 piercing damage.",
         "attack_bonus": 5,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -13522,7 +14834,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 9 (2d6 + 2) slashing damage, and the target is cursed if it is a creature. The magical curse takes effect whenever the target takes a short or long rest, filling the target's thoughts with horrible images and dreams. The cursed target gains no benefit from finishing a short or long rest. The curse lasts until it is lifted by a remove curse spell or similar magic.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 10000
@@ -13562,7 +14877,10 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 piercing damage.",
         "attack_bonus": 0,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -13642,13 +14960,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (1d10 + 4) piercing damage plus 3 (1d6) fire damage.",
         "attack_bonus": 6,
         "damage_dice": "1d10 + 1d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "fire"
+        ]
       },
       {
         "name": "Fire Breath (Recharge 5-6)",
         "desc": "The dragon exhales fire in a 15-foot cone. Each creature in that area must make a DC l3 Dexterity saving throw, taking 24 (7d6) fire damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "7d6"
+        "damage_dice": "7d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 1100
@@ -13695,7 +15020,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -13737,7 +15065,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +11 to hit, reach 10 ft., one target. Hit: 40 (6d10 + 7) piercing damage plus 10 (3d6) fire damage. If the target is a creature, it is grappled (escape DC 17). Until this grapple ends, the target is restrained, and the remorhaz can't bite another target.",
         "attack_bonus": 11,
         "damage_dice": "6d10 + 3d6",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "piercing",
+          "fire"
+        ]
       },
       {
         "name": "Swallow",
@@ -13784,7 +15116,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) bludgeoning damage.",
         "attack_bonus": 7,
         "damage_dice": "2d8",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 450
@@ -13818,7 +15153,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (2d4 + 3) bludgeoning damage.",
         "attack_bonus": 5,
         "damage_dice": "2d4",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 50
@@ -13869,14 +15207,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +13 to hit, reach 10 ft., one target. Hit: 27 (4d8 + 9) piercing damage.",
         "attack_bonus": 13,
         "damage_dice": "4d8",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Talons",
         "desc": "Melee Weapon Attack: +13 to hit, reach 5 ft., one target. Hit: 23 (4d6 + 9) slashing damage, and the target is grappled (escape DC 19). Until this grapple ends, the target is restrained, and the roc can't use its talons on another target.",
         "attack_bonus": 13,
         "damage_dice": "4d6",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 7200
@@ -13934,7 +15278,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 22 (4d8 + 4) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "4d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Tendril",
@@ -13995,7 +15342,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one Medium or smaller creature. Hit: The creature is grappled (escape DC 13). Until this grapple ends, the target is restrained, blinded, and at risk of suffocating, and the rug can't smother another target. In addition, at the start of each of the target's turns, the target takes 10 (2d6 + 3) bludgeoning damage.",
         "attack_bonus": 0,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 450
@@ -14041,7 +15391,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d8",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Antennae",
@@ -14094,14 +15447,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 10 (1d10 + 5) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "1d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 12 (2d6 + 5) slashing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 450
@@ -14158,21 +15517,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 3 (1d4 + 1) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d4",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 3 (1d4 + 1) slashing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d4",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Spear",
         "desc": "Melee or Ranged Weapon Attack: +3 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d6 + 1) piercing damage, or 5 (1d8 + 1) piercing damage if used with two hands to make a melee attack.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -14224,14 +15592,22 @@ const monsters = [
         "desc": "Melee or Ranged Weapon Attack: +7 to hit, reach 5 ft. or range 20 ft./60 ft., one target. Hit: 11 (2d6 + 4) piercing damage, or 13 (2d8 + 4) piercing damage if used with two hands to make a melee attack, plus 3 (1d6) fire damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "fire"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage plus 7 (2d6) fire damage, and the target is grappled (escape DC 14). Until this grapple ends, the target is restrained, the salamander can automatically hit the target with its tail, and the salamander can't make tail attacks against other targets.",
         "attack_bonus": 7,
         "damage_dice": "2d6 + 2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning",
+          "fire"
+        ]
       }
     ],
     "xp": 1800
@@ -14275,21 +15651,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 6 (2d4 + 1) bludgeoning damage.",
         "attack_bonus": 3,
         "damage_dice": "2d4",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Shortsword",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1 d6 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Shortbow",
         "desc": "Ranged Weapon Attack: +5 to hit, range 80/320 ft., one target. Hit: 6 (1d6 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Variant: Panpipes",
@@ -14327,7 +15712,11 @@ const monsters = [
         "name": "Sting",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one creature. Hit: 1 piercing damage, and the target must make a DC 9 Constitution saving throw, taking 4 (1d8) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 2,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 5
@@ -14377,14 +15766,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Longbow",
         "desc": "Ranged Weapon Attack: +4 to hit, ranged 150/600 ft., one target. Hit: 6 (1d8 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -14445,7 +15840,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Death Glare",
@@ -14539,7 +15937,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 9 (2d6 + 2) necrotic damage, and the target's Strength score is reduced by 1d4. The target dies if this reduces its Strength to 0. Otherwise, the reduction lasts until the target finishes a short or long rest.\nIf a non-evil humanoid dies from this attack, a new shadow rises from the corpse 1d4 hours later.",
         "attack_bonus": 4,
         "damage_dice": "2d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "necrotic"
+        ]
       }
     ],
     "xp": 100
@@ -14586,7 +15987,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.",
         "attack_bonus": 7,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Engulf",
@@ -14647,7 +16051,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "reactions": [
@@ -14733,13 +16140,19 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (1d10 + 4) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "1d10",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nCold Breath. The dragon exhales an icy blast in a 15-foot cone. Each creature in that area must make a DC 13 Constitution saving throw, taking 18 (4d8) cold damage on a failed save, or half as much damage on a successful one.\nParalyzing Breath. The dragon exhales paralyzing gas in a 15-foot cone. Each creature in that area must succeed on a DC 13 Constitution saving throw or be paralyzed for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0,
-        "damage_dice": "4d8"
+        "damage_dice": "4d8",
+        "damage_types": [
+          "cold"
+        ]
       }
     ],
     "xp": 450
@@ -14773,14 +16186,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Shortbow",
         "desc": "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -14845,14 +16264,22 @@ const monsters = [
         "desc": "Melee Weapon Attack: +15 to hit, reach 5 ft., one target. Hit: 22 (4d6 + 8) slashing damage plus 27 (6d8) radiant damage.",
         "attack_bonus": 15,
         "damage_dice": "4d6 + 6d8",
-        "damage_bonus": 8
+        "damage_bonus": 8,
+        "damage_types": [
+          "slashing",
+          "radiant"
+        ]
       },
       {
         "name": "Slaying Longbow",
         "desc": "Ranged Weapon Attack: +13 to hit, range 150/600 ft., one target. Hit: 15 (2d8 + 6) piercing damage plus 27 (6d8) radiant damage. If the target is a creature that has 190 hit points or fewer, it must succeed on a DC 15 Constitution saving throw or die.",
         "attack_bonus": 13,
         "damage_dice": "2d8 + 6d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing",
+          "radiant"
+        ]
       },
       {
         "name": "Flying Sword",
@@ -14924,7 +16351,10 @@ const monsters = [
         "name": "Life Drain",
         "desc": "Melee Spell Attack: +4 to hit, reach 5 ft., one creature. Hit: 10 (3d6) necrotic damage. The target must succeed on a DC 10 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the creature finishes a long rest. The target dies if this effect reduces its hit point maximum to 0.",
         "attack_bonus": 4,
-        "damage_dice": "3d6"
+        "damage_dice": "3d6",
+        "damage_types": [
+          "necrotic"
+        ]
       }
     ],
     "xp": 200
@@ -14975,7 +16405,11 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 1 piercing damage, and the target must succeed on a DC 9 Constitution saving throw or take 2 (1d4) poison damage.",
         "attack_bonus": 4,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 5
@@ -15025,7 +16459,11 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 10 ft., one creature. Hit: 7 (1d6 + 4) piercing damage, and the target must make a DC 13 Constitution saving throw, taking 31 (7d8) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 7,
         "damage_dice": "1d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 3900
@@ -15060,13 +16498,19 @@ const monsters = [
         "name": "Longsword",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 1 slashing damage.",
         "attack_bonus": 2,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Shortbow",
         "desc": "Ranged Weapon Attack: +6 to hit, range 40/160 ft., one target. Hit: 1 piercing damage, and the target must succeed on a DC 10 Constitution saving throw or become poisoned for 1 minute. If its saving throw result is 5 or lower, the poisoned target falls unconscious for the same duration, or until it takes damage or another creature takes an action to shake it awake.",
         "attack_bonus": 6,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Heart Sight",
@@ -15134,14 +16578,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Hand Crossbow",
         "desc": "Ranged Weapon Attack: +4 to hit, range 30/120 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 200
@@ -15187,7 +16637,11 @@ const monsters = [
         "name": "Claws",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one creature. Hit: 2 (1d4) slashing damage plus 2 (1d4) fire damage.",
         "attack_bonus": 2,
-        "damage_dice": "2d4"
+        "damage_dice": "2d4",
+        "damage_types": [
+          "slashing",
+          "fire"
+        ]
       },
       {
         "name": "Steam Breath (Recharge 6)",
@@ -15231,7 +16685,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one creature. Hit: 5 (1d4 + 3) piercing damage, and the stirge attaches to the target. While attached, the stirge doesn't attack. Instead, at the start of each of the stirge's turns, the target loses 5 (1d4 + 3) hit points due to blood loss.\nThe stirge can detach itself by spending 5 feet of its movement. It does so after it drains 10 hit points of blood from the target or the target dies. A creature, including the target, can use its action to detach the stirge.",
         "attack_bonus": 5,
         "damage_dice": "1d4",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 25
@@ -15282,14 +16739,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 15 ft., one target. Hit: 19 (3d8 + 6) bludgeoning damage.",
         "attack_bonus": 9,
         "damage_dice": "3d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Rock",
         "desc": "Ranged Weapon Attack: +9 to hit, range 60/240 ft., one target. Hit: 28 (4d10 + 6) bludgeoning damage. If the target is a creature, it must succeed on a DC 17 Strength saving throw or be knocked prone.",
         "attack_bonus": 9,
         "damage_dice": "4d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "reactions": [
@@ -15352,7 +16815,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 19 (3d8 + 6) bludgeoning damage.",
         "attack_bonus": 10,
         "damage_dice": "3d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Slow (Recharge 5-6)",
@@ -15416,20 +16882,29 @@ const monsters = [
         "desc": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 30 (6d6 + 9) slashing damage.",
         "attack_bonus": 14,
         "damage_dice": "6d6",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Rock",
         "desc": "Ranged Weapon Attack: +14 to hit, range 60/240 ft., one target. Hit: 35 (4d12 + 9) bludgeoning damage.",
         "attack_bonus": 14,
         "damage_dice": "4d12",
-        "damage_bonus": 9
+        "damage_bonus": 9,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Lightning Strike (Recharge 5-6)",
         "desc": "The giant hurls a magical lightning bolt at a point it can see within 500 feet of it. Each creature within 10 feet of that point must make a DC 17 Dexterity saving throw, taking 54 (12d8) lightning damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "12d8"
+        "damage_dice": "12d8",
+        "damage_types": [
+          "lightning"
+        ]
       }
     ],
     "xp": 10000
@@ -15480,7 +16955,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Charm",
@@ -15492,7 +16970,10 @@ const monsters = [
         "desc": "The fiend kisses a creature charmed by it or a willing creature. The target must make a DC 15 Constitution saving throw against this magic, taking 32 (5d10 + 5) psychic damage on a failed save, or half as much damage on a successful one. The target's hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0.",
         "attack_bonus": 0,
         "damage_dice": "5d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "psychic"
+        ]
       },
       {
         "name": "Etherealness",
@@ -15547,7 +17028,10 @@ const monsters = [
         "name": "Bites",
         "desc": "Melee Weapon Attack: +4 to hit, reach 0 ft., one creature in the swarm's space. Hit: 5 (2d4) piercing damage, or 2 (1d4) piercing damage if the swarm has half of its hit points or fewer.",
         "attack_bonus": 4,
-        "damage_dice": "2d4"
+        "damage_dice": "2d4",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -15587,7 +17071,10 @@ const monsters = [
         "name": "Bites",
         "desc": "Melee Weapon Attack: +3 to hit, reach 0 ft., one target in the swarm's space. Hit: 10 (4d4) piercing damage, or 5 (2d4) piercing damage if the swarm has half of its hit points or fewer.",
         "attack_bonus": 3,
-        "damage_dice": "4d4"
+        "damage_dice": "4d4",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -15627,7 +17114,10 @@ const monsters = [
         "name": "Bites",
         "desc": "Melee Weapon Attack: +3 to hit, reach 0 ft., one target in the swarm's space. Hit: 10 (4d4) piercing damage, or 5 (2d4) piercing damage if the swarm has half of its hit points or fewer.\nA creature reduced to 0 hit points by a swarm of centipedes is stable but poisoned for 1 hour, even after regaining hit points, and paralyzed while poisoned in this way.",
         "attack_bonus": 3,
-        "damage_dice": "4d4"
+        "damage_dice": "4d4",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -15667,7 +17157,10 @@ const monsters = [
         "name": "Bites",
         "desc": "Melee Weapon Attack: +3 to hit, reach 0 ft., one target in the swarm's space. Hit: 10 (4d4) piercing damage, or 5 (2d4) piercing damage if the swarm has half of its hit points or fewer.",
         "attack_bonus": 3,
-        "damage_dice": "4d4"
+        "damage_dice": "4d4",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -15707,7 +17200,11 @@ const monsters = [
         "name": "Bites",
         "desc": "Melee Weapon Attack: +6 to hit, reach 0 ft., one creature in the swarm's space. Hit: 7 (2d6) piercing damage, or 3 (1d6) piercing damage if the swarm has half of its hit points or fewer. The target must make a DC 10 Constitution saving throw, taking 14 (4d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 6,
-        "damage_dice": "2d6"
+        "damage_dice": "2d6",
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 450
@@ -15757,7 +17254,10 @@ const monsters = [
         "name": "Bites",
         "desc": "Melee Weapon Attack: +5 to hit, reach 0 ft., one creature in the swarm's space. Hit: 14 (4d6) piercing damage, or 7 (2d6) piercing damage if the swarm has half of its hit points or fewer.",
         "attack_bonus": 5,
-        "damage_dice": "4d6"
+        "damage_dice": "4d6",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 200
@@ -15802,7 +17302,10 @@ const monsters = [
         "name": "Bites",
         "desc": "Melee Weapon Attack: +2 to hit, reach 0 ft., one target in the swarm's space. Hit: 7 (2d6) piercing damage, or 3 (1d6) piercing damage if the swarm has half of its hit points or fewer.",
         "attack_bonus": 2,
-        "damage_dice": "2d6"
+        "damage_dice": "2d6",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -15842,7 +17345,10 @@ const monsters = [
         "name": "Beaks",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target in the swarm's space. Hit: 7 (2d6) piercing damage, or 3 (1d6) piercing damage if the swarm has half of its hit points or fewer.",
         "attack_bonus": 4,
-        "damage_dice": "2d6"
+        "damage_dice": "2d6",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -15897,7 +17403,10 @@ const monsters = [
         "name": "Bites",
         "desc": "Melee Weapon Attack: +3 to hit, reach 0 ft., one target in the swarm's space. Hit: 10 (4d4) piercing damage, or 5 (2d4) piercing damage if the swarm has half of its hit points or fewer.",
         "attack_bonus": 3,
-        "damage_dice": "4d4"
+        "damage_dice": "4d4",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -15937,7 +17446,10 @@ const monsters = [
         "name": "Bites",
         "desc": "Melee Weapon Attack: +3 to hit, reach 0 ft., one target in the swarm's space. Hit: 10 (4d4) piercing damage, or 5 (2d4) piercing damage if the swarm has half of its hit points or fewer.",
         "attack_bonus": 3,
-        "damage_dice": "4d4"
+        "damage_dice": "4d4",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -16001,28 +17513,40 @@ const monsters = [
         "desc": "Melee Weapon Attack: +19 to hit, reach 10 ft., one target. Hit: 36 (4d12 + 10) piercing damage. If the target is a creature, it is grappled (escape DC 20). Until this grapple ends, the target is restrained, and the tarrasque can't bite another target.",
         "attack_bonus": 19,
         "damage_dice": "4d12",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +19 to hit, reach 15 ft., one target. Hit: 28 (4d8 + 10) slashing damage.",
         "attack_bonus": 19,
         "damage_dice": "4d8",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Horns",
         "desc": "Melee Weapon Attack: +19 to hit, reach 10 ft., one target. Hit: 32 (4d10 + 10) piercing damage.",
         "attack_bonus": 19,
         "damage_dice": "4d10",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +19 to hit, reach 20 ft., one target. Hit: 24 (4d6 + 10) bludgeoning damage. If the target is a creature, it must succeed on a DC 20 Strength saving throw or be knocked prone.",
         "attack_bonus": 19,
         "damage_dice": "4d6",
-        "damage_bonus": 10
+        "damage_bonus": 10,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Frightful Presence",
@@ -16096,13 +17620,19 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 5 (1d6 + 2) bludgeoning damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Heavy Crossbow",
         "desc": "Ranged Weapon Attack: +2 to hit, range 100/400 ft., one target. Hit: 5 (1d10) piercing damage.",
         "attack_bonus": 2,
-        "damage_dice": "1d10"
+        "damage_dice": "1d10",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -16150,7 +17680,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d10",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
@@ -16206,14 +17739,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 16 (3d6 + 6) bludgeoning damage.",
         "attack_bonus": 10,
         "damage_dice": "3d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Rock",
         "desc": "Ranged Weapon Attack: +10 to hit, range 60/180 ft., one target. Hit: 28 (4d10 + 6) bludgeoning damage.",
         "attack_bonus": 10,
         "damage_dice": "4d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Animate Trees (1/Day)",
@@ -16259,7 +17798,10 @@ const monsters = [
         "desc": "Melee or Ranged Weapon Attack: +3 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d6 + 1) piercing damage, or 5 (1d8 + 1) piercing damage if used with two hands to make a melee attack.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 25
@@ -16300,14 +17842,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 24 (4d8 + 6) piercing damage.",
         "attack_bonus": 9,
         "damage_dice": "4d8",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Stomp",
         "desc": "Melee Weapon Attack: +9 to hit, reach 5 ft., one prone creature. Hit: 22 (3d10 + 6) bludgeoning damage",
         "attack_bonus": 9,
         "damage_dice": "3d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 1800
@@ -16364,14 +17912,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 7 (1d6 + 4) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "1d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 1800
@@ -16411,14 +17965,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 33 (4d12 + 7) piercing damage. If the target is a Medium or smaller creature, it is grappled (escape DC 17). Until this grapple ends, the target is restrained, and the tyrannosaurus can't bite another target.",
         "attack_bonus": 10,
         "damage_dice": "4d12",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Tail",
         "desc": "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 20 (3d8 + 7) bludgeoning damage.",
         "attack_bonus": 10,
         "damage_dice": "3d8",
-        "damage_bonus": 7
+        "damage_bonus": 7,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 3900
@@ -16480,14 +18040,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft ., one target. Hit: 11 (2d6 + 4) bludgeoning damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Horn",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft ., one target. Hit: 8 (1d8 + 4) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Healing Touch (3/Day)",
@@ -16590,14 +18156,21 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 5 ft., one creature. Hit: 8 (1d8 + 4) bludgeoning damage. Instead of dealing damage, the vampire can grapple the target (escape DC 18).",
         "attack_bonus": 9,
         "damage_dice": "1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Bite (Bat or Vampire Form Only)",
         "desc": "Melee Weapon Attack: +9 to hit, reach 5 ft., one willing creature, or a creature that is grappled by the vampire, incapacitated, or restrained. Hit: 7 (1d6 + 4) piercing damage plus 10 (3d6) necrotic damage. The target's hit point maximum is reduced by an amount equal to the necrotic damage taken, and the vampire regains hit points equal to that amount. The reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0. A humanoid slain in this way and then buried in the ground rises the following night as a vampire spawn under the vampire's control.",
         "attack_bonus": 9,
         "damage_dice": "1d6 + 3d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "necrotic"
+        ]
       },
       {
         "name": "Charm",
@@ -16689,7 +18262,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one creature. Hit: 8 (2d4 + 3) slashing damage. Instead of dealing damage, the vampire can grapple the target (escape DC 13).",
         "attack_bonus": 6,
         "damage_dice": "2d4",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 1800
@@ -16730,21 +18306,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) slashing damage, or 8 (1d10 + 3) slashing damage if used with two hands.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Shortsword",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Heavy Crossbow",
         "desc": "Ranged Weapon Attack: +3 to hit, range 100/400 ft., one target. Hit: 6 (1d10 + 1) piercing damage.",
         "attack_bonus": 3,
         "damage_dice": "1d10",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 700
@@ -16789,7 +18374,10 @@ const monsters = [
         "name": "Rotting Touch",
         "desc": "Melee Weapon Attack: +2 to hit, reach 10 ft., one creature. Hit: 4 (1d8) necrotic damage.",
         "attack_bonus": 2,
-        "damage_dice": "1d8"
+        "damage_dice": "1d8",
+        "damage_types": [
+          "necrotic"
+        ]
       }
     ],
     "xp": 50
@@ -16838,14 +18426,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Talons",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 14 (2d10 + 3) slashing damage.",
         "attack_bonus": 6,
         "damage_dice": "2d10",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Spores (Recharge 6)",
@@ -16906,7 +18500,10 @@ const monsters = [
         "name": "Beak",
         "desc": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 2 (1d4) piercing damage.",
         "attack_bonus": 2,
-        "damage_dice": "1d4"
+        "damage_dice": "1d4",
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -16947,7 +18544,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 100
@@ -16981,7 +18581,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 100
@@ -17032,7 +18635,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.",
         "attack_bonus": 7,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Whelm (Recharge 4-6)",
@@ -17079,7 +18685,10 @@ const monsters = [
         "name": "Bite",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one creature. Hit: 1 piercing damage.",
         "attack_bonus": 5,
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -17131,21 +18740,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 15 (2d10 + 4) piercing damage. If the target is a humanoid, it must succeed on a DC 14 Constitution saving throw or be cursed with were bear lycanthropy.",
         "attack_bonus": 7,
         "damage_dice": "2d10",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw (Bear or Hybrid Form Only)",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Greataxe (Humanoid or Hybrid Form Only)",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 10 (1d12 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "1d12",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 1800
@@ -17203,14 +18821,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) bludgeoning damage.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "bludgeoning"
+        ]
       },
       {
         "name": "Tusks (Boar or Hybrid Form Only)",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage. If the target is a humanoid, it must succeed on a DC 12 Constitution saving throw or be cursed with wereboar lycanthropy.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 1100
@@ -17263,21 +18887,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) piercing damage. If the target is a humanoid, it must succeed on a DC 11 Constitution saving throw or be cursed with wererat lycanthropy.",
         "attack_bonus": 4,
         "damage_dice": "1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Shortsword (Humanoid or Hybrid Form Only)",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Hand Crossbow (Humanoid or Hybrid Form Only)",
         "desc": "Ranged Weapon Attack: +4 to hit, range 30/120 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 450
@@ -17335,28 +18968,40 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage. If the target is a humanoid, it must succeed on a DC 13 Constitution saving throw or be cursed with weretiger lycanthropy.",
         "attack_bonus": 5,
         "damage_dice": "1d10",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw (Tiger or Hybrid Form Only)",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Scimitar (Humanoid or Hybrid Form Only)",
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) slashing damage.",
         "attack_bonus": 5,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Longbow (Humanoid or Hybrid Form Only)",
         "desc": "Ranged Weapon Attack: +4 to hit, range 150/600 ft., one target. Hit: 6 (1d8 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 1100
@@ -17408,21 +19053,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage. If the target is a humanoid, it must succeed on a DC 12 Constitution saving throw or be cursed with werewolf lycanthropy.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws (Hybrid Form Only)",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 7 (2d4 + 2) slashing damage.",
         "attack_bonus": 4,
         "damage_dice": "2d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Spear (Humanoid Form Only)",
         "desc": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 20/60 ft., one creature. Hit: 5 (1d6 + 2) piercing damage, or 6 (1d8 + 2) piercing damage if used with two hands to make a melee attack.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": -2
+        "damage_bonus": -2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 700
@@ -17462,13 +19116,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (1d10 + 2) piercing damage plus 2 (1d4) cold damage.",
         "attack_bonus": 4,
         "damage_dice": "1d10 + 1d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing",
+          "cold"
+        ]
       },
       {
         "name": "Cold Breath (Recharge 5-6)",
         "desc": "The dragon exhales an icy blast of hail in a 15-foot cone. Each creature in that area must make a DC 12 Constitution saving throw, taking 22 (5d8) cold damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "5d8"
+        "damage_dice": "5d8",
+        "damage_types": [
+          "cold"
+        ]
       }
     ],
     "xp": 450
@@ -17516,21 +19177,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 5 (1d6 + 2) necrotic damage. The target must succeed on a DC 13 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0.\nA humanoid slain by this attack rises 24 hours later as a zombie under the wight's control, unless the humanoid is restored to life or its body is destroyed. The wight can have no more than twelve zombies under its control at one time.",
         "attack_bonus": 4,
         "damage_dice": "1d6",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "necrotic"
+        ]
       },
       {
         "name": "Longsword",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) slashing damage, or 7 (1d10 + 2) slashing damage if used with two hands.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Longbow",
         "desc": "Ranged Weapon Attack: +4 to hit, range 150/600 ft., one target. Hit: 6 (1d8 + 2) piercing damage.",
         "attack_bonus": 4,
         "damage_dice": "1d8",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 700
@@ -17585,7 +19255,10 @@ const monsters = [
         "name": "Shock",
         "desc": "Melee Spell Attack: +4 to hit, reach 5 ft., one creature. Hit: 9 (2d8) lightning damage.",
         "attack_bonus": 4,
-        "damage_dice": "2d8"
+        "damage_dice": "2d8",
+        "damage_types": [
+          "lightning"
+        ]
       },
       {
         "name": "Invisibility",
@@ -17643,13 +19316,19 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) piercing damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be knocked prone.",
         "attack_bonus": 6,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Cold Breath (Recharge 5-6)",
         "desc": "The wolf exhales a blast of freezing wind in a 15-foot cone. Each creature in that area must make a DC 12 Dexterity saving throw, taking 18 (4d8) cold damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "4d8"
+        "damage_dice": "4d8",
+        "damage_types": [
+          "cold"
+        ]
       }
     ],
     "xp": 700
@@ -17697,7 +19376,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone.",
         "attack_bonus": 4,
         "damage_dice": "2d4",
-        "damage_bonus": 2
+        "damage_bonus": 2,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 50
@@ -17739,7 +19421,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone.",
         "attack_bonus": 5,
         "damage_dice": "2d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 100
@@ -17785,7 +19470,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one creature. Hit: 21 (4d8 + 3) necrotic damage. The target must succeed on a DC 14 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0.",
         "attack_bonus": 6,
         "damage_dice": "4d8",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "necrotic"
+        ]
       },
       {
         "name": "Create Specter",
@@ -17830,21 +19518,31 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 10 ft., one creature. Hit: 11 (2d6 + 4) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claws",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Stinger",
         "desc": "Melee Weapon Attack: +7 to hit, reach 10 ft., one creature. Hit: 11 (2d6 + 4) piercing damage. The target must make a DC 15 Constitution saving throw, taking 24 (7d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       }
     ],
     "xp": 2300
@@ -17902,14 +19600,20 @@ const monsters = [
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (3d6 + 3) piercing damage.",
         "attack_bonus": 6,
         "damage_dice": "3d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) slashing damage.",
         "attack_bonus": 6,
         "damage_dice": "1d6",
-        "damage_bonus": 3
+        "damage_bonus": 3,
+        "damage_types": [
+          "slashing"
+        ]
       }
     ],
     "xp": 1800
@@ -17961,20 +19665,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage plus 4 (1d8) acid damage.",
         "attack_bonus": 7,
         "damage_dice": "2d10 + 1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "acid"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Acid Breath (Recharge 5-6)",
         "desc": "The dragon exhales acid in a 30-foot line that is 5 feet wide. Each creature in that line must make a DC 14 Dexterity saving throw, taking 49 (11d8) acid damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "11d8"
+        "damage_dice": "11d8",
+        "damage_types": [
+          "acid"
+        ]
       }
     ],
     "xp": 2900
@@ -18019,20 +19733,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 16 (2d10 + 5) piercing damage plus 5 (1d10) lightning damage.",
         "attack_bonus": 9,
         "damage_dice": "2d10 + 1d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing",
+          "lightning"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 12 (2d6 + 5) slashing damage.",
         "attack_bonus": 9,
         "damage_dice": "2d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Lightning Breath (Recharge 5-6)",
         "desc": "The dragon exhales lightning in an 60-foot line that is 5 feet wide. Each creature in that line must make a DC 16 Dexterity saving throw, taking 55 (10d10) lightning damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "10d10"
+        "damage_dice": "10d10",
+        "damage_types": [
+          "lightning"
+        ]
       }
     ],
     "xp": 5000
@@ -18078,20 +19802,29 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d10",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nFire Breath. The dragon exhales fire in a 40-foot line that is 5 feet wide. Each creature in that line must make a DC 14 Dexterity saving throw, taking 42 (12d6) fire damage on a failed save, or half as much damage on a successful one.\nSleep Breath. The dragon exhales sleep gas in a 30-foot cone. Each creature in that area must succeed on a DC 14 Constitution saving throw or fall unconscious for 5 minutes. This effect ends for a creature if the creature takes damage or someone uses an action to wake it.",
         "attack_bonus": 0,
-        "damage_dice": "12d6"
+        "damage_dice": "12d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 2300
@@ -18144,20 +19877,29 @@ const monsters = [
         "desc": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 16 (2d10 + 5) piercing damage.",
         "attack_bonus": 8,
         "damage_dice": "2d10",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 12 (2d6 + 5) slashing damage.",
         "attack_bonus": 8,
         "damage_dice": "2d6",
-        "damage_bonus": 5
+        "damage_bonus": 5,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nLightning Breath. The dragon exhales lightning in a 60-foot line that is 5 feet wide. Each creature in that line must make a DC 15 Dexterity saving throw, taking 55 (10d10) lightning damage on a failed save, or half as much damage on a successful one.\nRepulsion Breath. The dragon exhales repulsion energy in a 30-foot cone. Each creature in that area must succeed on a DC 15 Strength saving throw. On a failed save, the creature is pushed 40 feet away from the dragon.",
         "attack_bonus": 0,
-        "damage_dice": "10d10"
+        "damage_dice": "10d10",
+        "damage_types": [
+          "lightning"
+        ]
       }
     ],
     "xp": 3900
@@ -18203,20 +19945,29 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d10",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nAcid Breath. The dragon exhales acid in an 40-foot line that is 5 feet wide. Each creature in that line must make a DC 14 Dexterity saving throw, taking 40 (9d8) acid damage on a failed save, or half as much damage on a successful one.\nSlowing Breath. The dragon exhales gas in a 30-foot cone. Each creature in that area must succeed on a DC 14 Constitution saving throw. On a failed save, the creature can't use reactions, its speed is halved, and it can't make more than one attack on its turn. In addition, the creature can use either an action or a bonus action on its turn, but not both. These effects last for 1 minute. The creature can repeat the saving throw at the end of each of its turns, ending the effect on itself with a successful save.",
         "attack_bonus": 0,
-        "damage_dice": "9d8"
+        "damage_dice": "9d8",
+        "damage_types": [
+          "acid"
+        ]
       }
     ],
     "xp": 2900
@@ -18270,20 +20021,29 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage.",
         "attack_bonus": 10,
         "damage_dice": "2d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage.",
         "attack_bonus": 10,
         "damage_dice": "2d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nFire Breath. The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 55 (10d10) fire damage on a failed save, or half as much damage on a successful one.\nWeakening Breath. The dragon exhales gas in a 30-foot cone. Each creature in that area must succeed on a DC 17 Strength saving throw or have disadvantage on Strength-based attack rolls, Strength checks, and Strength saving throws for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0,
-        "damage_dice": "10d10"
+        "damage_dice": "10d10",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 5900
@@ -18336,20 +20096,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage plus 7 (2d6) poison damage.",
         "attack_bonus": 7,
         "damage_dice": "2d10 + 2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "poison"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Poison Breath (Recharge 5-6)",
         "desc": "The dragon exhales poisonous gas in a 30-foot cone. Each creature in that area must make a DC 14 Constitution saving throw, taking 42 (12d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "12d6"
+        "damage_dice": "12d6",
+        "damage_types": [
+          "poison"
+        ]
       }
     ],
     "xp": 3900
@@ -18394,20 +20164,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage plus 3 (1d6) fire damage.",
         "attack_bonus": 10,
         "damage_dice": "2d10 + 1d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing",
+          "fire"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage.",
         "attack_bonus": 10,
         "damage_dice": "2d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Fire Breath (Recharge 5-6)",
         "desc": "The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "16d6"
+        "damage_dice": "16d6",
+        "damage_types": [
+          "fire"
+        ]
       }
     ],
     "xp": 5900
@@ -18454,20 +20234,29 @@ const monsters = [
         "desc": "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage.",
         "attack_bonus": 10,
         "damage_dice": "2d10",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "piercing"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage.",
         "attack_bonus": 10,
         "damage_dice": "2d6",
-        "damage_bonus": 6
+        "damage_bonus": 6,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Breath Weapons (Recharge 5-6)",
         "desc": "The dragon uses one of the following breath weapons.\nCold Breath. The dragon exhales an icy blast in a 30-foot cone. Each creature in that area must make a DC 17 Constitution saving throw, taking 54 (12d8) cold damage on a failed save, or half as much damage on a successful one.\nParalyzing Breath. The dragon exhales paralyzing gas in a 30-foot cone. Each creature in that area must succeed on a DC 17 Constitution saving throw or be paralyzed for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack_bonus": 0,
-        "damage_dice": "12d8"
+        "damage_dice": "12d8",
+        "damage_types": [
+          "cold"
+        ]
       }
     ],
     "xp": 5000
@@ -18519,20 +20308,30 @@ const monsters = [
         "desc": "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage plus 4 (1d8) cold damage.",
         "attack_bonus": 7,
         "damage_dice": "2d10 + 1d8",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "piercing",
+          "cold"
+        ]
       },
       {
         "name": "Claw",
         "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage.",
         "attack_bonus": 7,
         "damage_dice": "2d6",
-        "damage_bonus": 4
+        "damage_bonus": 4,
+        "damage_types": [
+          "slashing"
+        ]
       },
       {
         "name": "Cold Breath (Recharge 5-6)",
         "desc": "The dragon exhales an icy blast in a 30-foot cone. Each creature in that area must make a DC 15 Constitution saving throw, taking 45 (10d8) cold damage on a failed save, or half as much damage on a successful one.",
         "attack_bonus": 0,
-        "damage_dice": "10d8"
+        "damage_dice": "10d8",
+        "damage_types": [
+          "cold"
+        ]
       }
     ],
     "xp": 2300
@@ -18574,7 +20373,10 @@ const monsters = [
         "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage.",
         "attack_bonus": 3,
         "damage_dice": "1d6",
-        "damage_bonus": 1
+        "damage_bonus": 1,
+        "damage_types": [
+          "bludgeoning"
+        ]
       }
     ],
     "xp": 50
