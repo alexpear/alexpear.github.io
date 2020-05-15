@@ -14920,7 +14920,11 @@ const monsters = [
       {
         "name": "Beak",
         "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 1 piercing damage.",
-        "attack_bonus": 0
+        "attack_bonus": 0,
+        "damage_bonus": 1,
+        "damage_types": [
+          "piercing"
+        ]
       }
     ],
     "xp": 5
@@ -20384,6 +20388,573 @@ const monsters = [
 ];
 
 module.exports = monsters;
+
+/* Monsters by alignment and type:
+LE:
+  aberration:
+    - Aboleth
+  humanoid:
+    - Acolyte (any alignment)
+    - Archmage (any alignment)
+    - Assassin (any non-good alignment)
+    - Commoner (any alignment)
+    - Cult Fanatic (any non-good alignment)
+    - Cultist (any non-good alignment)
+    - Druid (any alignment)
+    - Duergar
+    - Gladiator (any alignment)
+    - Guard (any alignment)
+    - Half-Red Dragon Veteran (any alignment)
+    - Hobgoblin
+    - Knight (any alignment)
+    - Kobold
+    - Mage (any alignment)
+    - Noble (any alignment)
+    - Priest (any alignment)
+    - Sahuagin
+    - Scout (any alignment)
+    - Spy (any alignment)
+    - Thug (any non-good alignment)
+    - Tribal Warrior (any alignment)
+    - Veteran (any alignment)
+    - Wererat
+  undead:
+    - Adult Blue Dracolich
+    - Ghost (any alignment)
+    - Lich (any evil alignment)
+    - Minotaur Skeleton
+    - Mummy
+    - Mummy Lord
+    - Skeleton
+    - Vampire
+    - Warhorse Skeleton
+  dragon:
+    - Adult Blue Dragon
+    - Adult Green Dragon
+    - Ancient Blue Dragon
+    - Ancient Green Dragon
+    - Blue Dragon Wyrmling
+    - Green Dragon Wyrmling
+    - Young Blue Dragon
+    - Young Green Dragon
+  fiend:
+    - Barbed Devil
+    - Bearded Devil
+    - Bone Devil
+    - Chain Devil
+    - Erinyes
+    - Hell Hound
+    - Horned Devil
+    - Ice Devil
+    - Imp
+    - Lemure
+    - Pit Fiend
+    - Rakshasa
+  elemental:
+    - Efreeti
+  giant:
+    - Fire Giant
+    - Oni
+  monstrosity:
+    - Manticore
+    - Medusa
+LG:
+  humanoid:
+    - Acolyte (any alignment)
+    - Archmage (any alignment)
+    - Commoner (any alignment)
+    - Druid (any alignment)
+    - Gladiator (any alignment)
+    - Guard (any alignment)
+    - Half-Red Dragon Veteran (any alignment)
+    - Knight (any alignment)
+    - Mage (any alignment)
+    - Noble (any alignment)
+    - Priest (any alignment)
+    - Scout (any alignment)
+    - Spy (any alignment)
+    - Tribal Warrior (any alignment)
+    - Veteran (any alignment)
+  dragon:
+    - Adult Bronze Dragon
+    - Adult Gold Dragon
+    - Adult Silver Dragon
+    - Ancient Bronze Dragon
+    - Ancient Gold Dragon
+    - Ancient Silver Dragon
+    - Bronze Dragon Wyrmling
+    - Gold Dragon Wyrmling
+    - Silver Dragon Wyrmling
+    - Young Bronze Dragon
+    - Young Gold Dragon
+    - Young Silver Dragon
+  fey:
+    - Blink Dog
+  celestial:
+    - Couatl
+    - Deva
+    - Planetar
+    - Solar
+    - Unicorn
+  undead:
+    - Ghost (any alignment)
+  monstrosity:
+    - Guardian Naga
+LN:
+  humanoid:
+    - Acolyte (any alignment)
+    - Archmage (any alignment)
+    - Assassin (any non-good alignment)
+    - Commoner (any alignment)
+    - Cult Fanatic (any non-good alignment)
+    - Cultist (any non-good alignment)
+    - Druid (any alignment)
+    - Gladiator (any alignment)
+    - Guard (any alignment)
+    - Half-Red Dragon Veteran (any alignment)
+    - Knight (any alignment)
+    - Mage (any alignment)
+    - Noble (any alignment)
+    - Priest (any alignment)
+    - Scout (any alignment)
+    - Spy (any alignment)
+    - Thug (any non-good alignment)
+    - Tribal Warrior (any alignment)
+    - Veteran (any alignment)
+  monstrosity:
+    - Androsphinx
+    - Gynosphinx
+  elemental:
+    - Azer
+  undead:
+    - Ghost (any alignment)
+NE:
+  humanoid:
+    - Acolyte (any alignment)
+    - Archmage (any alignment)
+    - Assassin (any non-good alignment)
+    - Bandit (any non-lawful alignment)
+    - Bandit Captain (any non-lawful alignment)
+    - Commoner (any alignment)
+    - Cult Fanatic (any non-good alignment)
+    - Cultist (any non-good alignment)
+    - Drow
+    - Druid (any alignment)
+    - Gladiator (any alignment)
+    - Goblin
+    - Grimlock
+    - Guard (any alignment)
+    - Half-Red Dragon Veteran (any alignment)
+    - Knight (any alignment)
+    - Mage (any alignment)
+    - Noble (any alignment)
+    - Priest (any alignment)
+    - Scout (any alignment)
+    - Spy (any alignment)
+    - Thug (any non-good alignment)
+    - Tribal Warrior (any alignment)
+    - Veteran (any alignment)
+    - Wereboar
+  monstrosity:
+    - Behir
+    - Death Dog
+    - Ettercap
+    - Roper
+    - Winter Wolf
+    - Worg
+  giant:
+    - Cloud Giant (neutral good (50%) or neutral evil (50%))
+    - Frost Giant
+  elemental:
+    - Dust Mephit
+    - Ice Mephit
+    - Magma Mephit
+    - Salamander
+    - Steam Mephit
+  undead:
+    - Ghost (any alignment)
+    - Lich (any evil alignment)
+    - Ogre Zombie
+    - Vampire Spawn
+    - Wight
+    - Wraith
+    - Zombie
+  beast:
+    - Giant Vulture
+  fey:
+    - Green Hag
+  fiend:
+    - Night Hag
+    - Nightmare
+    - Succubus/Incubus
+CE:
+  humanoid:
+    - Acolyte (any alignment)
+    - Archmage (any alignment)
+    - Assassin (any non-good alignment)
+    - Bandit (any non-lawful alignment)
+    - Bandit Captain (any non-lawful alignment)
+    - Berserker (any chaotic alignment)
+    - Bugbear
+    - Commoner (any alignment)
+    - Cult Fanatic (any non-good alignment)
+    - Cultist (any non-good alignment)
+    - Druid (any alignment)
+    - Gladiator (any alignment)
+    - Gnoll
+    - Guard (any alignment)
+    - Half-Red Dragon Veteran (any alignment)
+    - Knight (any alignment)
+    - Mage (any alignment)
+    - Noble (any alignment)
+    - Orc
+    - Priest (any alignment)
+    - Scout (any alignment)
+    - Spy (any alignment)
+    - Thug (any non-good alignment)
+    - Tribal Warrior (any alignment)
+    - Veteran (any alignment)
+    - Werewolf
+  dragon:
+    - Adult Black Dragon
+    - Adult Red Dragon
+    - Adult White Dragon
+    - Ancient Black Dragon
+    - Ancient Red Dragon
+    - Ancient White Dragon
+    - Black Dragon Wyrmling
+    - Red Dragon Wyrmling
+    - White Dragon Wyrmling
+    - Young Black Dragon
+    - Young Red Dragon
+    - Young White Dragon
+  fiend:
+    - Balor
+    - Dretch
+    - Glabrezu
+    - Hezrou
+    - Marilith
+    - Nalfeshnee
+    - Quasit
+    - Vrock
+  monstrosity:
+    - Chimera
+    - Drider
+    - Harpy
+    - Kraken
+    - Lamia
+    - Merrow
+    - Minotaur
+    - Spirit Naga
+  aberration:
+    - Chuul
+  giant:
+    - Ettin
+    - Hill Giant
+    - Ogre
+    - Troll
+  elemental:
+    - Gargoyle
+  undead:
+    - Ghast
+    - Ghost (any alignment)
+    - Ghoul
+    - Lich (any evil alignment)
+    - Shadow
+    - Specter
+    - Will-o'-Wisp
+  fey:
+    - Sea Hag
+CN:
+  humanoid:
+    - Acolyte (any alignment)
+    - Archmage (any alignment)
+    - Assassin (any non-good alignment)
+    - Bandit (any non-lawful alignment)
+    - Bandit Captain (any non-lawful alignment)
+    - Berserker (any chaotic alignment)
+    - Commoner (any alignment)
+    - Cult Fanatic (any non-good alignment)
+    - Cultist (any non-good alignment)
+    - Druid (any alignment)
+    - Gladiator (any alignment)
+    - Guard (any alignment)
+    - Half-Red Dragon Veteran (any alignment)
+    - Knight (any alignment)
+    - Mage (any alignment)
+    - Noble (any alignment)
+    - Priest (any alignment)
+    - Scout (any alignment)
+    - Spy (any alignment)
+    - Thug (any non-good alignment)
+    - Tribal Warrior (any alignment)
+    - Veteran (any alignment)
+  aberration:
+    - Cloaker
+  undead:
+    - Ghost (any alignment)
+  elemental:
+    - Magmin
+  fey:
+    - Satyr
+CG:
+  humanoid:
+    - Acolyte (any alignment)
+    - Archmage (any alignment)
+    - Bandit (any non-lawful alignment)
+    - Bandit Captain (any non-lawful alignment)
+    - Berserker (any chaotic alignment)
+    - Commoner (any alignment)
+    - Druid (any alignment)
+    - Gladiator (any alignment)
+    - Guard (any alignment)
+    - Half-Red Dragon Veteran (any alignment)
+    - Knight (any alignment)
+    - Mage (any alignment)
+    - Noble (any alignment)
+    - Priest (any alignment)
+    - Scout (any alignment)
+    - Spy (any alignment)
+    - Tribal Warrior (any alignment)
+    - Veteran (any alignment)
+  dragon:
+    - Adult Brass Dragon
+    - Adult Copper Dragon
+    - Ancient Brass Dragon
+    - Ancient Copper Dragon
+    - Brass Dragon Wyrmling
+    - Copper Dragon Wyrmling
+    - Young Brass Dragon
+    - Young Copper Dragon
+  elemental:
+    - Djinni
+  undead:
+    - Ghost (any alignment)
+  celestial:
+    - Pegasus
+  giant:
+    - Storm Giant
+  plant:
+    - Treant
+NG:
+  humanoid:
+    - Acolyte (any alignment)
+    - Archmage (any alignment)
+    - Bandit (any non-lawful alignment)
+    - Bandit Captain (any non-lawful alignment)
+    - Commoner (any alignment)
+    - Deep Gnome (Svirfneblin)
+    - Druid (any alignment)
+    - Gladiator (any alignment)
+    - Guard (any alignment)
+    - Half-Red Dragon Veteran (any alignment)
+    - Knight (any alignment)
+    - Mage (any alignment)
+    - Noble (any alignment)
+    - Priest (any alignment)
+    - Scout (any alignment)
+    - Spy (any alignment)
+    - Tribal Warrior (any alignment)
+    - Veteran (any alignment)
+    - Werebear
+  monstrosity:
+    - Centaur
+  giant:
+    - Cloud Giant (neutral good (50%) or neutral evil (50%))
+  undead:
+    - Ghost (any alignment)
+  beast:
+    - Giant Eagle
+  dragon:
+    - Pseudodragon
+  fey:
+    - Sprite
+NN:
+  humanoid:
+    - Acolyte (any alignment)
+    - Archmage (any alignment)
+    - Assassin (any non-good alignment)
+    - Bandit (any non-lawful alignment)
+    - Bandit Captain (any non-lawful alignment)
+    - Commoner (any alignment)
+    - Cult Fanatic (any non-good alignment)
+    - Cultist (any non-good alignment)
+    - Druid (any alignment)
+    - Gladiator (any alignment)
+    - Guard (any alignment)
+    - Half-Red Dragon Veteran (any alignment)
+    - Knight (any alignment)
+    - Lizardfolk
+    - Mage (any alignment)
+    - Merfolk
+    - Noble (any alignment)
+    - Priest (any alignment)
+    - Scout (any alignment)
+    - Spy (any alignment)
+    - Thug (any non-good alignment)
+    - Tribal Warrior (any alignment)
+    - Veteran (any alignment)
+    - Weretiger
+  elemental:
+    - Air Elemental
+    - Earth Elemental
+    - Fire Elemental
+    - Invisible Stalker
+    - Water Elemental
+    - Xorn
+  construct:
+    - Animated Armor
+    - Clay Golem
+    - Flesh Golem
+    - Flying Sword
+    - Homunculus
+    - Iron Golem
+    - Rug of Smothering
+    - Shield Guardian
+    - Stone Golem
+  monstrosity:
+    - Ankheg
+    - Basilisk
+    - Bulette
+    - Carrion Crawler
+    - Cockatrice
+    - Darkmantle
+    - Doppelganger
+    - Gorgon
+    - Grick
+    - Griffon
+    - Hippogriff
+    - Hydra
+    - Mimic
+    - Owlbear
+    - Phase Spider
+    - Purple Worm
+    - Remorhaz
+    - Roc
+    - Rust Monster
+    - Tarrasque
+  beast:
+    - Ape
+    - Axe Beak
+    - Baboon
+    - Badger
+    - Bat
+    - Black Bear
+    - Blood Hawk
+    - Boar
+    - Brown Bear
+    - Camel
+    - Cat
+    - Cave Bear
+    - Constrictor Snake
+    - Crab
+    - Crocodile
+    - Deer
+    - Dire Wolf
+    - Draft Horse
+    - Eagle
+    - Elephant
+    - Elk
+    - Flying Snake
+    - Frog
+    - Giant Ape
+    - Giant Badger
+    - Giant Bat
+    - Giant Boar
+    - Giant Centipede
+    - Giant Constrictor Snake
+    - Giant Crab
+    - Giant Crocodile
+    - Giant Elk
+    - Giant Fire Beetle
+    - Giant Frog
+    - Giant Goat
+    - Giant Hyena
+    - Giant Lizard
+    - Giant Octopus
+    - Giant Owl
+    - Giant Poisonous Snake
+    - Giant Rat
+    - Giant Rat (Diseased)
+    - Giant Scorpion
+    - Giant Sea Horse
+    - Giant Shark
+    - Giant Spider
+    - Giant Toad
+    - Giant Wasp
+    - Giant Weasel
+    - Giant Wolf Spider
+    - Goat
+    - Hawk
+    - Hunter Shark
+    - Hyena
+    - Jackal
+    - Killer Whale
+    - Lion
+    - Lizard
+    - Mammoth
+    - Mastiff
+    - Mule
+    - Octopus
+    - Owl
+    - Panther
+    - Plesiosaurus
+    - Poisonous Snake
+    - Polar Bear
+    - Pony
+    - Quipper
+    - Rat
+    - Raven
+    - Reef Shark
+    - Rhinoceros
+    - Riding Horse
+    - Saber-Toothed Tiger
+    - Scorpion
+    - Sea Horse
+    - Spider
+    - Stirge
+    - Tiger
+    - Triceratops
+    - Tyrannosaurus Rex
+    - Vulture
+    - Warhorse
+    - Weasel
+    - Wolf
+  plant:
+    - Awakened Shrub
+    - Awakened Tree
+    - Shambling Mound
+    - Shrieker
+    - Violet Fungus
+  ooze:
+    - Black Pudding
+    - Gelatinous Cube
+    - Gray Ooze
+    - Ochre Jelly
+  dragon:
+    - Dragon Turtle
+    - Wyvern
+  fey:
+    - Dryad
+  undead:
+    - Ghost (any alignment)
+  aberration:
+    - Gibbering Mouther
+    - Otyugh
+  giant:
+    - Stone Giant
+  swarm of Tiny beasts:
+    - Swarm of Bats
+    - Swarm of Beetles
+    - Swarm of Centipedes
+    - Swarm of Insects
+    - Swarm of Poisonous Snakes
+    - Swarm of Quippers
+    - Swarm of Rats
+    - Swarm of Ravens
+    - Swarm of Spiders
+    - Swarm of Wasps
+*/
 
 /*
   "License":
