@@ -14,12 +14,22 @@ const Yaml = require('js-yaml');
 
 class DndCreature {
     constructor (input) {
-        if (Util.isString(input)) {
+        if (! input) {
+            input = DndCreature.randomTemplate();
+        }
+        else if (Util.isString(input)) {
+            const inputString = input;
+
             input = Monsters.find(
                 m => m.name.toLowerCase() === input.toLowerCase()
             );
+
+            if (! input) {
+                throw new Error(`I dont know of a species called '${inputString}'.`);
+            }
         }
 
+        this.id = Util.newId();
         this.monsterTemplate = input;
         this.parseResistances();
         // this.alignment = new Alignment(input.alignment); LATER
@@ -37,7 +47,8 @@ class DndCreature {
             if (template.damage_vulnerabilities.indexOf(damageType) >= 0) {
                 template.resistances[damageType] = 0.5;
             }
-            // This does not parse notes about resistance/immunity being overcome by magical weapons or by certain materials (eg silver).
+            // TODO This does not parse notes about resistance/immunity being overcome by magical weapons or by certain materials (eg silver).
+            // We also do not yet parse whether attacks are magical, such as those of the Androsphynx
             else if (template.damage_resistances.indexOf(damageType) >= 0) {
                 template.resistances[damageType] = 2;
             }
@@ -131,6 +142,7 @@ class DndCreature {
         return target.getAlignment() !== target.getAlignment();
     }
 
+    // Has side effects on the target's .currentHp, and also returns a summary object.
     attack (targetCreature, attackTemplate) {
         attackTemplate = attackTemplate || this.defaultAttack();
 
@@ -140,7 +152,7 @@ class DndCreature {
         };
 
         if (! attackTemplate) {
-            return outcome;
+            throw new Error(`No attack template found for DndCreature ${this.id} of type ${this.monsterTemplate.name}.`);
         }
 
         outcome.result = Dice.check(targetCreature.monsterTemplate.armor_class, attackTemplate.attack_bonus);
@@ -182,7 +194,7 @@ class DndCreature {
         const damageByType = Dice.divideAmong(damage, attackTemplate.damage_types);
 
         for (const type in damageByType) {
-            const resistance = targetCreature.monsterTemplate.resistances[type] || 1;
+            const resistance = target.monsterTemplate.resistances[type] || 1;
 
             resistedDamage += resistance === DndCreature.IMMUNE ?
                 0 :
@@ -427,7 +439,15 @@ class DndCreature {
     }
 
     static example () {
-        return new DndCreature(Util.randomOf(Monsters));
+        return DndCreature.randomCreature();
+    }
+
+    static randomTemplate () {
+        return Util.randomOf(Monsters);
+    }
+
+    static randomCreature () {
+        return new DndCreature(DndCreature.randomTemplate());
     }
 
     static angelExample () {
@@ -456,6 +476,7 @@ class DndCreature {
 
     static run () {
         if (! process.argv ||
+            process.argv.length < 3 ||
             ! process.argv[0] ||
             ! process.argv[0].endsWith('node') ||
             ! process.argv[1].endsWith('dndCreature.js') ||
