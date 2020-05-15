@@ -97,8 +97,72 @@ class Alignment {
         return true;
     }
 
-    // Hmm. Do i want the internal data model of this class to be multi-axis, like the hobby/ version?
-    // Doesnt seem important for now.
+    // Only supports the 2 standard axes, L/C and G/E.
+    static possibilities (text) {
+        const OR = ' or ';
+        if (text.indexOf(OR) >= 0) {
+            const terms = text.split(OR);
+
+            return terms.reduce(
+                (array, term) => array.concat(Alignment.possibilities(term)),
+                []
+            );
+        }
+
+        const SPECIAL_PHRASES = {
+            neutral: ['NN'],
+            unaligned: ['NN'],
+            'any alignment': Object.keys(ALIGNMENTS),
+            'any chaotic alignment': ['CG', 'CN', 'CE'],
+            'any evil alignment': ['LE', 'NE', 'CE'],
+            'any non-good alignment': ['LN', 'NN', 'CN', 'LE', 'NE', 'CE'],
+            'any non-lawful alignment': ['NG', 'NN', 'NE', 'CG', 'CN', 'CE']
+        };
+
+        const cached = SPECIAL_PHRASES[text];
+
+        if (cached) {
+            return cached;
+        }
+
+        const words = text.split(' ');
+
+        // Util.logDebug(`words is the following in Alignment.possibilities():`)
+        // Util.logDebug(words);
+
+        if (
+            words[0] === 'neutral' ||
+            words[0] === 'lawful' ||
+            words[0] === 'chaotic'
+        ) {
+            return [
+                words[0][0].toUpperCase() + words[1][0].toUpperCase()
+            ];
+        }
+
+        throw new Error(`Weird input ${text}`);
+    }
 }
+
+// All strings from monsters.js:
+// any alignment
+// any chaotic alignment
+// any evil alignment
+// any non-good alignment
+// any non-lawful alignment
+// chaotic evil
+// chaotic good
+// chaotic neutral
+// lawful evil
+// lawful good
+// lawful neutral
+// neutral
+// neutral evil
+// neutral good
+// neutral good (50%) or neutral evil (50%)
+// unaligned
+
+// Hmm. Do i want the internal data model of this class to be multi-axis, like the hobby/ version?
+// Doesnt seem important for now.
 
 module.exports = Alignment;
