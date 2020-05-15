@@ -506,9 +506,17 @@ util.prettyTime = (seconds) => {
         const rounded = _.round(seconds);
         return `${rounded} seconds`;
     }
+    else if (seconds < 90) {
+        return `1 minute`;
+    }
+    // 3570 seconds is 59.5 minutes
     else if (seconds < 3570) {
         const minutes = _.round(seconds / 60);
         return `${minutes} minutes`;
+    }
+    // 5400 seconds is 1.5 hours
+    else if (seconds < 5400) {
+        return `1 hour`;
     }
     // 84600 seconds is 23.5 hours
     else if (seconds < 84600) {
@@ -552,6 +560,12 @@ util.sigFigsOf = (n) => {
         return s.length - zeroes;
     }
 };
+
+// Call like 'await Util.sleep(6);'
+util.sleep = (seconds) =>
+    new Promise(
+        funcWhenResolved => setTimeout(funcWhenResolved, seconds * 1000)
+    );
 
 // eg ('00705', '0') => 2
 util.charCountAtStart = (str, char) => {
