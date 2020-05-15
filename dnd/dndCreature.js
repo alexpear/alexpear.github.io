@@ -1,12 +1,16 @@
 'use strict';
 
 const DamageTypes = require('./damageTypes.js');
+const Dice = require('./dice.js');
 
 // I found monsters.js on Github and am using it as a casual prototype starting point.
 // Later could set up a hashmap if performance gets too slow.
 const Monsters = require('./monsters.js');
 
 const Util = require('../util/util.js');
+
+const _ = require('lodash');
+const Yaml = require('js-yaml');
 
 class DndCreature {
     constructor (input) {
