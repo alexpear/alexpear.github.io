@@ -234,16 +234,23 @@ class DndWarband {
         const alignments = {};
 
         for (const entry of Monsters) {
-            // Later decide how to deal with 'any alignment', etc
-            if (! alignments[entry.alignment]) {
-                alignments[entry.alignment] = {};
-            }
+            const possibilities = Alignment.possibilities(entry.alignment);
 
-            if (! alignments[entry.alignment][entry.type]) {
-                alignments[entry.alignment][entry.type] = [];
-            }
+            for (let possible of possibilities) {
+                if (! alignments[possible]) {
+                    alignments[possible] = {};
+                }
 
-            alignments[entry.alignment][entry.type].push(entry.name);
+                if (! alignments[possible][entry.type]) {
+                    alignments[possible][entry.type] = [];
+                }
+
+                const row = possibilities.length === 1 ?
+                    entry.name :
+                    `${entry.name} (${entry.alignment})`;
+
+                alignments[possible][entry.type].push(row);
+            }
         }
 
         return alignments;
