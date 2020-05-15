@@ -195,6 +195,192 @@ class DndCreature {
         // return outcome;
     }
 
+    randomHpMax () {
+        // LATER: Based on rolling hit dice
+    }
+
+    static fractionalCr (cr) {
+        if (cr === 0.125) {
+            return '1/8';
+        }
+        else if (cr === 0.25) {
+            return '1/4';
+        }
+        else if (cr === 0.5) {
+            return '1/2';
+        }
+
+        return cr;
+    }
+
+    async duel (other) {
+        const yourName = this.monsterTemplate.name;
+        const yourAttack = this.defaultAttack();
+        const yourDamages = yourAttack ?
+            yourAttack.damage_types :
+            [];
+
+        const otherName = other.monsterTemplate.name;
+        const otherAttack = other.defaultAttack();
+        const otherDamages = otherAttack ?
+            otherAttack.damage_types :
+            [];
+
+        Util.log(`\n\n=== Start of a duel between ${yourName} (CR ${DndCreature.fractionalCr(this.getCr())}) & ${otherName} (CR ${DndCreature.fractionalCr(other.getCr())}) ===`);
+
+        Util.log(`The ${yourName} has ${this.currentHp} HP. The ${otherName} has ${other.currentHp} HP.`);
+
+        if (! yourAttack) {
+            if (! otherAttack) {
+                Util.log(`... Oh. This is awkward. Neither combatant has any way to attack under the current rules! Let's arbitrarily say the ${yourName} wins.`);
+                return this;
+            }
+
+            Util.log(`The ${yourName} has no way to attack under the current rules! Thus, the ${otherName} wins.`);
+            return other;
+        }
+        else if (! otherAttack) {
+            Util.log(`The ${otherName} has no way to attack under the current rules! Thus, the ${yourName} wins.`);
+            return this;
+        }
+
+        // TODO the immunity did not get logged in androsphynx vs dragon
+        const yourRelevantResistances = this.unusualDamageResponses(otherAttack);
+        const otherRelevantResistances = other.unusualDamageResponses(yourAttack);
+
+        if (Object.keys(yourRelevantResistances).length > 0) {
+            Util.log(`Relevantly, the ${yourName} has the following damage resistances:\n${Yaml.dump(yourRelevantResistances)}`);
+        }
+
+        if (Object.keys(otherRelevantResistances).length > 0) {
+            Util.log(`Relevantly, the ${otherName} has the following damage resistances:\n${Yaml.dump(otherRelevantResistances)}`);
+        }
+
+        await Util.sleep(6);
+
+        const startTime = new Date();
+
+        let round = 0;
+        while (this.currentHp > 0 && other.currentHp > 0 && round < 10000) {
+            const elapsed = new Date() - startTime;
+
+            if (elapsed < (round * 6000)) {
+                // Util.logDebug(`Time to sleep! elapsed is ${elapsed}`);
+                await Util.sleep(6);
+            }
+
+            round++;
+
+            // Later randomize who goes first
+            const yourHpWas = this.currentHp;
+            const othersAttack = other.attack(this);
+
+            Util.log(other.summarizeAttack(othersAttack, yourName, yourHpWas));
+
+            if (this.currentHp <= 0) {
+                break;
+            }
+
+            const othersHpWas = other.currentHp;
+            const yourAttack = this.attack(other);
+
+            Util.log(this.summarizeAttack(yourAttack, otherName, othersHpWas));
+
+            Util.log(`Duel clock: ${Util.prettyTime(round * 6)}`);
+        }
+
+        const winner = this.currentHp <= 0 ?
+            other :
+            this;
+        // Later make other win in timeouts.
+
+        Util.log(`The winner is the ${winner.monsterTemplate.name}, with ${winner.currentHp} HP remaining! The duel lasted ${round} rounds.`)
+
+        // Reset
+        this.currentHp = this.monsterTemplate.hit_points;
+        other.currentHp = other.monsterTemplate.hit_points;
+
+        return winner;
+    }
+
+    // later make 2nd param target not targetSpecies, to access maxHp for logging %.
+    // Later find a visual way to do this
+    summarizeAttack (outcome, targetSpecies, targetPreviousHp) {
+        const name = `The ${this.monsterTemplate.name}`;
+        const targetName = `The ${targetSpecies || 'target'}`;
+
+        const damage = Util.exists(targetPreviousHp) ?
+            targetPreviousHp - outcome.targetHp :
+            'unknown';
+
+        if (Dice.successful(outcome.result)) {
+            const criticalNote = outcome.result === Dice.CriticalSuccess ?
+                ' (Critical hit!)' :
+                '';
+
+            return `${name} hits for ${damage} damage${criticalNote}. ${targetName} has ${outcome.targetHp} HP.`;
+        }
+
+        const summary = `${name} misses!`;
+
+        if (outcome.result === Dice.CriticalFailure) {
+            return summary + ' (Critical failure)';
+        }
+
+        return summary;
+    }
+
+    static randomDuel () {
+        (new DndCreature()).duel(new DndCreature());
+    }
+
+    static randomWithCr (crNum) {
+        return Util.randomOf(
+            DndCreature.creaturesWithCr(crNum)
+        );
+    }
+
+    static creaturesWithCr (crNum) {
+        return Monsters.filter(
+            m => m.challenge_rating === crNum
+        );
+    }
+
+    static async tournamentOfCr (crNum) {
+        let contestants = DndCreature.creaturesWithCr(crNum);
+        contestants = _.shuffle(contestants);
+
+        let champion = new DndCreature(contestants[0]);
+
+        for (let i = 1; i < contestants.length; i++) {
+            const challenger = new DndCreature(contestants[i]);
+            // Later change to challenger.dule(champion), because it's like Chal is throwing a guantlet at Cham.
+            const winner = await champion.duel(challenger);
+
+            if (winner === challenger) {
+                Util.log(`The ${challenger.monsterTemplate.name} is the new champion!`);
+                champion = challenger;
+            }
+        }
+
+        Util.log(`The ${champion.monsterTemplate.name} is the final champion!`);
+    }
+
+    // Overlap.
+    unusualDamageResponses (attackTemplate) {
+        const responses = {};
+
+        for (const type of attackTemplate.damage_types) {
+            // Util.logDebug(`The attack involves ${type} damage. This creature's resistance value to that is ${this.monsterTemplate.resistances[type]}`);
+
+            if (Util.exists(this.monsterTemplate.resistances[type])) {
+                responses[type] = this.monsterTemplate.resistances[type];
+            }
+        }
+
+        return responses;
+    }
+
     static punchingBag () {
         return new DndCreature({
             name: 'Punching Bag',
@@ -277,13 +463,15 @@ class DndCreature {
         DndCreature.test();
     }
 
-    static test () {
+    static async test () {
         DndCreature.testDefaultAttack();
 
-        const creature = DndCreature.example();
+        const dragon = new DndCreature('Ancient Red Dragon');
+        const sphynx = new DndCreature('Androsphinx');
+        const relevantResistances = sphynx.unusualDamageResponses(dragon.defaultAttack());
+        // Util.log(relevantResistances);
 
-        Util.logDebug(creature.toJson());
-        Util.logDebug(creature.defaultAttack());
+        await DndCreature.tournamentOfCr(8);
     }
 }
 

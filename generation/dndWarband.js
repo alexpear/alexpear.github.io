@@ -124,27 +124,13 @@ class DndWarband {
             }
         )
         .map(
-            row => `CR ${this.fractionalCr(row.cr)}\t${row.quantity}x ${row.name}`
+            row => `CR ${DndCreature.fractionalCr(row.cr)}\t${row.quantity}x ${row.name}`
         )
         .join('\n');
 
         // Util.logDebug(`this.creatures.length is ${this.creatures.length}. summary has ${Object.keys(summary).length} keys. lines.length is ${lines.length}`)
 
         return '\n' + str;
-    }
-
-    fractionalCr (cr) {
-        if (cr === 0.125) {
-            return '1/8';
-        }
-        else if (cr === 0.25) {
-            return '1/4';
-        }
-        else if (cr === 0.5) {
-            return '1/2';
-        }
-
-        return cr;
     }
 
     addCreature(creatureEntry, quantity) {
