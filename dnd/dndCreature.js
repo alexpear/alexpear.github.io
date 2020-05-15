@@ -504,7 +504,8 @@ class DndCreature {
         const relevantResistances = sphynx.unusualDamageResponses(dragon.defaultAttack());
         // Util.log(relevantResistances);
 
-        await DndCreature.tournamentOfCr(8);
+        const herald = DndCreature.randomTemplate();
+        await DndCreature.tournamentOfCr(herald.challenge_rating);
     }
 }
 
