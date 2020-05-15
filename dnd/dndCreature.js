@@ -180,10 +180,18 @@ class DndCreature {
 
     damage (target, attackTemplate, wasCrit) {
         attackTemplate = attackTemplate || this.defaultAttack();
-        let damage = Dice.roll(`${attackTemplate.damage_dice} + ${attackTemplate.damage_bonus}`);
+
+        const modifier = attackTemplate.damage_bonus || 0;
+
+        let damage = attackTemplate.damage_dice ?
+            Dice.roll(`${attackTemplate.damage_dice} + ${modifier}`) :
+            modifier;
 
         if (wasCrit) {
-            damage += Dice.roll(attackTemplate.damage_dice);
+            damage += attackTemplate.damage_dice ?
+                Dice.roll(attackTemplate.damage_dice) :
+                1;
+            // NOTE: The 5e PHB says that crits double the number of damage DICE, not modifiers. But i want to be nice to the lucky raven (0d4 + 1 damage).
         }
 
         if (! attackTemplate.damage_types) {
