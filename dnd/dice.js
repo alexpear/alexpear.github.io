@@ -1,5 +1,7 @@
 'use strict';
 
+const DamageTypes = require('./damageTypes.js');
+
 const Util = require('../util/util.js');
 
 const d20 = require('d20');
@@ -42,6 +44,7 @@ class Dice {
                         }
 
                         if (p.indexOf('d') >= 0) {
+                            // Util.logDebug(`About to call d20.roll(${p})`);
                             return d20.roll(p);
                         }
 
@@ -52,11 +55,23 @@ class Dice {
         }
 
         // Anything else, the d20 library can hopefully handle.
+        // Util.logDebug(`About to call d20.roll(${diceString})`);
         return d20.roll(diceString);
     }
 
     static substringCount (substring, string) {
         return string.split(substring).length - 1;
+    }
+
+    static successful (result) {
+        if (
+            result === Dice.Success ||
+            result === Dice.CriticalSuccess
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     static divideAmong (damage, types) {
@@ -67,11 +82,16 @@ class Dice {
             return damageByType;
         }
 
-        for (const type of types) {
-            const portion = Math.ceiling(damage / types.length);
+        let damageLeft = damage;
+
+        for (let i = 0; i < types.length; i++) {
+            const type = types[i];
+            const splitBetween = types.length - i;
+
+            const portion = Math.ceil(damageLeft / splitBetween);
 
             damageByType[type] = portion;
-            damage -= portion;
+            damageLeft -= portion;
         }
 
         // Later remove this test, to gain performance.
@@ -86,6 +106,18 @@ class Dice {
 
         return damageByType;
     }
+
+    static testDivideAmong () {
+        let i;
+
+        for (i = 0; i < 10000; i++) {
+            for (let j = 0; j < DamageTypes.length; j++) {
+                const output = Dice.divideAmong(i, DamageTypes.slice(j));
+            }
+        }
+
+        Util.logDebug(`Done with testDivideAmong(), tested up to ${i} damage.`);
+    }
 }
 
 Dice.CriticalSuccess = 'criticalSuccess';
@@ -95,4 +127,4 @@ Dice.CriticalFailure = 'criticalFailure';
 
 module.exports = Dice;
 
-// Dice.test();
+// Dice.testDivideAmong();
