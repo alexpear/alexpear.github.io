@@ -12,6 +12,7 @@ const Util = require('../util/util.js');
 const _ = require('lodash');
 const Yaml = require('js-yaml');
 
+// TODO require and extend Creature (which extends WNode)
 class DndCreature {
     constructor (input) {
         if (! input) {
