@@ -12,9 +12,6 @@ module.exports = class Thing extends WNode {
 
         this.coord = coord || Coord.randomOnScreen();
 
-        // Non-active means eliminated, incapacitated, nonfunctional, inactive, or dead.
-        this.active = true;
-
         // Init stamina points
         this.sp = this.findTrait('maxSp') || 1;
 
