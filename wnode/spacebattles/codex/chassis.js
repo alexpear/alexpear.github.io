@@ -67,6 +67,26 @@ const Chassis = module.exports = {
         ],
         cantHave: ['impulse']
     },
+    deathmoon: {
+        cost: 4,
+        techsRequired: ['starbase'],
+        size: 100,
+        weight: 600000,
+        durability: 1,
+        slots: 6,
+        bonus: [
+            durability: 2
+        ],
+        startingUpgrades: [
+            'ionCannon',
+            'antimatterCannon',
+            'electronComputer',
+            'hullArmor',
+            'fissionReactor',
+            'fissionDrive'
+        ],
+        cantHave: ['impulse']
+    },
     orbital: {
         cost: 3,
         size: 10000000,
