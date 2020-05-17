@@ -4,6 +4,7 @@ const Coord = require('../util/coord.js');
 const Util = require('../util/util.js');
 const Thing = require('./thing.js');
 
+// Modular spaceship minigame inspired by Eclipse: Second Dawn board game.
 module.exports = class Vessel extends Thing {
     constructor (chassisTemplate, parts, coord) {
         super(chassisTemplate);
@@ -30,6 +31,8 @@ module.exports = class Vessel extends Thing {
         // Check how many Parts are among this.components
         // Compare to number of slots in chassis
         // Check power consumption total
+        // Later: Check tech requirements
+        // Check for multiple of the same unique
     }
 
     getInitiative () {
@@ -57,6 +60,10 @@ module.exports = class Vessel extends Thing {
 
     }
 
+    static example () {
+
+    }
+
     static getExampleAttack () {
         return {
             missile: true,
@@ -68,7 +75,14 @@ module.exports = class Vessel extends Thing {
     }
 
     traitSumFromParts () {
+        const sum = 0;
 
+        for (const c of this.components) {
+            // if it's a part, add it (or zero) to the sum.
+            // TODO
+        }
+
+        return sum;
     }
 
     rollAttackDice () {
