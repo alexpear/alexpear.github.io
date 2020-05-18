@@ -8,6 +8,7 @@ const Util = require('../../util/util.js');
 
 const _ = require('lodash');
 const d20 = require('d20');
+const Yaml = require('js-yaml');
 
 // Modular spaceship minigame inspired by Eclipse: Second Dawn board game.
 class Vessel extends Thing {
@@ -36,13 +37,26 @@ class Vessel extends Thing {
             currentDurability: this.currentDurability
         };
 
-        summary.components = {};
+        summary.components = [];
 
         for (const c of this.components) {
-            summary.components[c.template.name] = c.template.power || 0;
+            // summary.components[c.template.name] = c.template.power || 0;
+            summary.components.push(`${c.template.name} (${c.template.power})`);
+            // {
+            //     name: c.template.name,
+            //     power: c.template.power || 0
+            // });
         }
 
+        summary.components.sort();
+        //     (a, b) => a.name.localeCompare(b.name)
+        // );
+
         return summary;
+    }
+
+    simpleYaml () {
+        return '\n' + Yaml.dump(this.simpleJson());
     }
 
     netPower () {
@@ -61,7 +75,9 @@ class Vessel extends Thing {
         );
     }
 
-    legal () {
+    legal (techs) {
+        techs = techs || [];
+
         const parts = this.getParts();
 
         if (parts.length > this.template.slots) {
@@ -78,12 +94,24 @@ class Vessel extends Thing {
 
         for (const c of this.components) {
             if (c.template.context === Vessel.ShipPartContext) {
+                for (const tech of (c.template.techsRequired || [])) {
+                    const requirement = tech === 'this' ?
+                        c.template.name :
+                        tech;
+
+                    if (! techs.includes(requirement)) {
+                        return false;
+                    }
+                }
+
                 if (seen[c.template.name]) {
                     // 2 of the same unique part.
                     return false;
                 }
 
-                seen[c.template.name] = true;
+                if (c.template.unique) {
+                    seen[c.template.name] = true;                    
+                }
             }
         }
 
@@ -100,7 +128,6 @@ class Vessel extends Thing {
         return this.traitSumFromParts('travel');
     }
 
-    // Hull total + 1
     getDurability () {
         return 1 + this.traitSumFromParts('durability');
     }
@@ -266,35 +293,37 @@ class Vessel extends Thing {
         return expectedDamage;
     }
 
-    // Side effects, returns nothing.
-    randomizeParts (techs) {
+    // Has side effects, returns nothing.
+    randomizeParts (techs, maxSurplus) {
         techs = techs || [];
+        maxSurplus = maxSurplus || 20;
 
         // Remove all existing Part components
         this.components = this.components.filter(
             c => (! c.template) || c.template.context !== Vessel.ShipPartContext
         );
 
-        // TODO: Enable repeats of non-unique parts
-        const partNames = _.shuffle(Object.keys(Parts));
+        const partNames = Object.keys(Parts);
+        // const partNames = ['fissionReactor'];
         let slotsFilled = 0;
 
-        for (const name of partNames) {
-            if (slotsFilled >= this.template.slots) {
-                break;
-            }
+        let attempts = 0;
+        while (slotsFilled < this.template.slots && attempts < 200) {
+            const name = Util.randomOf(partNames);
 
-            const part = Vessel.makePart(name);
-            delete part.coord;
+            this.components.push(
+                Vessel.makePart(name)
+            );
 
-            this.components.push(part);
-
-            if (this.legal()) {
+            // Later, improve surplus logic. Should be able to add a big reactor but then add lots of power-hungry parts to use it.
+            if (this.legal() && this.netPower() <= maxSurplus) {
                 slotsFilled += 1;
             }
             else {
                 this.components.pop();
             }
+
+            attempts++;
         }
     }
 
@@ -304,7 +333,10 @@ class Vessel extends Thing {
         template.name = partName;
         template.context = Vessel.ShipPartContext;
 
-        return new Thing(template);
+        const part = new Thing(template);
+        delete part.coord;
+
+        return part;
     }
 
     static randomEclipseShip () {
@@ -325,10 +357,14 @@ class Vessel extends Thing {
         return vessel;
     }
 
+    static allTechs () {
+        return Object.keys(Parts);
+    }
+
     static test () {
         const ship = Vessel.randomEclipseShip();
 
-        Util.logDebug(ship.simpleJson());
+        Util.logDebug(ship.simpleYaml());
 
         Util.logDebug(`Net Power: ${ship.netPower()}. Legal? ${ship.legal()}`)
     }
