@@ -156,12 +156,12 @@ const Parts = module.exports = {
         attack: {
             dice: 1,
             rift: true
-            // 1 damage
-            // 2 damage
-            // 3 damage, 1 ally damage
             // 1 ally damage
             // miss
             // miss
+            // 1 damage
+            // 2 damage
+            // 3 damage, 1 ally damage
         },
         techsRequired: ['this']
     },

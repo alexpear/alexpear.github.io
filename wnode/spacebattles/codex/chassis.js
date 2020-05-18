@@ -1,14 +1,15 @@
 const Chassis = module.exports = {
     interceptor: {
+        name: 'interceptor',
         cost: 2,
         size: 20,
         weight: 30000, // Later could do this in tonnes, not kg
         durability: 1, // Tempting to sync this with sp in other waffle systems
         slots: 4,
-        bonus: [
+        bonus: {
             // Later could express init bonuses in terms of weight? Altho not for starbases.
             initiative: 2
-        ],
+        },
         startingUpgrades: [
             'ionCannon',
             'fissionDrive',
@@ -16,14 +17,15 @@ const Chassis = module.exports = {
         ]
     },
     cruiser: {
+        name: 'cruiser',
         cost: 4,
         size: 200,
         weight: 1000000,
         durability: 1,
         slots: 6,
-        bonus: [
+        bonus: {
             initiative: 1
-        ],
+        },
         startingUpgrades: [
             'ionCannon',
             'electronComputer',
@@ -33,6 +35,7 @@ const Chassis = module.exports = {
         ]
     },
     dreadnought: {
+        name: 'dreadnought',
         cost: 7,
         size: 400,
         weight: 10000000,
@@ -49,16 +52,17 @@ const Chassis = module.exports = {
         ]
     },
     starbase: {
+        name: 'starbase',
         cost: 2,
         techsRequired: ['starbase'],
         size: 100,
         weight: 600000,
         durability: 1,
         slots: 5,
-        bonus: [
+        bonus: {
             initiative: 4,
             power: 3
-        ],
+        },
         startingUpgrades: [
             'ionCannon',
             'electronComputer',
@@ -68,15 +72,16 @@ const Chassis = module.exports = {
         cantHave: ['impulse']
     },
     deathmoon: {
+        name: 'deathmoon',
         cost: 4,
         techsRequired: ['starbase'],
         size: 100,
         weight: 600000,
         durability: 1,
         slots: 6,
-        bonus: [
+        bonus: {
             durability: 2
-        ],
+        },
         startingUpgrades: [
             'ionCannon',
             'antimatterCannon',
@@ -88,28 +93,33 @@ const Chassis = module.exports = {
         cantHave: ['impulse']
     },
     orbital: {
+        name: 'orbital',
         cost: 3,
         size: 10000000,
         weight: 101000000000,
         durability: 10000
     },
     monolith: {
+        name: 'monolith',
         cost: 8,
         size: 3,
         weight: 10000,
         durability: 100
     },
     corvette: {
+        name: 'corvette',
         size: 8,
         weight: 1000,
         durability: 100
     },
     frigate: {
+        name: 'frigate',
         size: 8,
         weight: 1000,
         durability: 100
     },
     carrier: {
+        name: 'carrier',
         size: 8,
         weight: 1000,
         durability: 100
