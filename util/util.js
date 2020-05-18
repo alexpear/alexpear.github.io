@@ -648,7 +648,7 @@ util.logError = function (input) {
 util.makeEnum = (vals) => {
     const dict = {};
     for (let val of vals) {
-        dict[val] = util.uncapitalized(val);
+        dict[util.capitalized(val)] = util.uncapitalized(val);
     }
 
     return dict;
