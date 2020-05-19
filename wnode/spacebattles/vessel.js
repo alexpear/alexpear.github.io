@@ -115,9 +115,20 @@ class Vessel extends Thing {
             }
         }
 
-        // Later: Check tech requirements
-
         return true;
+    }
+
+    getTraits () {
+        return {
+            legal: this.legal(),
+            netPower: this.netPower(),
+            travel: this.getTravelDistance(),
+            initiative: this.getInitiative(),
+            durability: this.getDurability(),
+            aiming: this.getAimingModifier(),
+            shieldPenalty: this.getShieldPenalty(),
+            attacks: this.getAllAttacks()
+        };
     }
 
     getInitiative () {
@@ -183,7 +194,7 @@ class Vessel extends Thing {
     }
 
     traitSumFromParts (trait) {
-        const sum = 0;
+        let sum = 0;
 
         for (const c of this.components) {
             if (c.template && c.template[trait]) {
@@ -327,6 +338,45 @@ class Vessel extends Thing {
         }
     }
 
+    // Has side effects, returns nothing.
+    improve () {
+        let attempts = 0;
+
+        while (attempts < 100) {
+            attempts++;
+
+            const startingPower = this.netPower();
+
+            if (startingPower <= 0) {
+                break;
+            }
+
+            const i = Util.randomUpTo(this.components.length - 1);
+            const existing = this.components[i];
+
+            // Dont replace reactors.
+            if (existing.template.power > 0) {
+                continue;
+            }
+
+            this.components[i] = Vessel.randomPart();
+
+            if (! this.legal() || this.netPower() >= startingPower) {
+                // Undo.
+                this.components[i] = existing;
+                continue;
+            }
+
+            // Util.logDebug(`Replacing ${existing.template.name} with ${this.components[i].template.name}`)
+        }
+    }
+
+    static randomPart () {
+        const name = Util.randomOf(Object.keys(Parts));
+
+        return Vessel.makePart(name);
+    }
+
     static makePart (partName) {
         const template = Parts[partName];
 
@@ -364,9 +414,13 @@ class Vessel extends Thing {
     static test () {
         const ship = Vessel.randomEclipseShip();
 
-        Util.logDebug(ship.simpleYaml());
+        // Util.logDebug(ship.simpleYaml());
+        // Util.logDebug(ship.getTraits());
 
-        Util.logDebug(`Net Power: ${ship.netPower()}. Legal? ${ship.legal()}`)
+        ship.improve();
+
+        Util.logDebug(ship.simpleYaml());
+        Util.logDebug(ship.getTraits());
     }
 };
 
