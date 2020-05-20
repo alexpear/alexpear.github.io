@@ -41,16 +41,24 @@ class Vessel extends Thing {
 
         for (const c of this.components) {
             // summary.components[c.template.name] = c.template.power || 0;
-            summary.components.push(`${c.template.name} (${c.template.power})`);
-            // {
-            //     name: c.template.name,
-            //     power: c.template.power || 0
-            // });
+            summary.components.push(//`${c.template.name} (${c.template.power})`);
+                {
+                    name: c.template.name,
+                    power: c.template.power || 0
+                }
+            );
         }
 
-        summary.components.sort();
-        //     (a, b) => a.name.localeCompare(b.name)
-        // );
+        summary.components.sort(
+            (a, b) => a.power === b.power ?
+                a.name.localeCompare(b.name) :
+                b.power - a.power
+        );
+
+        summary.components = summary.components.map(
+            c => `${c.name} (${c.power})`
+        );
+
 
         return summary;
     }
@@ -127,20 +135,51 @@ class Vessel extends Thing {
             durability: this.getDurability(),
             aiming: this.getAimingModifier(),
             shieldPenalty: this.getShieldPenalty(),
-            attacks: this.getAllAttacks()
+            attacks: this.attackSummary()
         };
     }
 
     getInitiative () {
-        return this.traitSumFromParts('initiative');
+        const trait = 'initiative';
+        return (this.template.bonus && this.template.bonus[trait] || 0) +
+            (this.traitSumFromParts(trait) || 0);
     }
 
     getTravelDistance () {
-        return this.traitSumFromParts('travel');
+        const trait = 'travel';
+        return (this.template.bonus && this.template.bonus[trait] || 0) +
+            (this.traitSumFromParts(trait) || 0);
     }
 
     getDurability () {
-        return 1 + this.traitSumFromParts('durability');
+        const trait = 'durability';
+        return 1 +
+            (this.template.bonus && this.template.bonus[trait] || 0) +
+            (this.traitSumFromParts(trait) || 0);
+    }
+
+    getAimingModifier () {
+        const trait = 'aiming';
+        return (this.template.bonus && this.template.bonus[trait] || 0) +
+            (this.traitSumFromParts(trait) || 0);
+    }
+
+    getShieldPenalty () {
+        const trait = 'shieldPenalty';
+        return (this.template.bonus && this.template.bonus[trait] || 0) +
+            (this.traitSumFromParts(trait) || 0);
+    }
+
+    traitSumFromParts (trait) {
+        let sum = 0;
+
+        for (const c of this.components) {
+            if (c.template && c.template[trait]) {
+                sum += c.template[trait];
+            }
+        }
+
+        return sum;
     }
 
     getMissileAttacks () {
@@ -162,25 +201,102 @@ class Vessel extends Thing {
     }
 
     getAllAttacks () {
-        return this.components
+        const fromChassis = this.template.bonus && this.template.bonus.attacks || [];
+
+        const fromParts = this.components
             .filter(
                 c => c.template.attack
             )
             .map(
                 c => c.template.attack
             );
+
+        return fromChassis.concat(fromParts);
     }
 
-    getAimingModifier () {
-        return this.traitSumFromParts('aiming');
+    // Returns string[]
+    // For logging or display
+    attackSummary () {
+        const attacks = this.getAllAttacks();
+        
+        attacks.sort(
+            (a, b) => a.damage - b.damage
+        );
+
+        const byDamage = {};
+
+        attacks.forEach(a => {
+            const newDice = a.dice || 0;
+            const damage = a.damage || 'rift';
+
+            if (! byDamage[damage]) {
+                byDamage[damage] = {
+                    dice: newDice,
+                    missile: a.missile,
+                    rift: a.rift
+                };
+
+                return;
+            }
+
+            byDamage[damage].dice += newDice;
+        });
+
+        // Util.logDebug(byDamage);
+
+        return Object.keys(byDamage).map(
+            damage => {
+                const diceGroup = byDamage[damage];
+
+                const missileNote = diceGroup.missile ?
+                    ' (missile)' :
+                    '';
+
+                if (damage === 'rift') {
+                    return `Rift x${diceGroup.dice}${missileNote}`;
+                }
+
+                let symbolic = '';
+
+                for (let i = 0; i < damage; i++) {
+                    symbolic = symbolic + '*';
+                }
+
+                return `${symbolic} x${diceGroup.dice}${missileNote}`;
+            }
+        )
     }
 
-    getShieldPenalty () {
-        return this.traitSumFromParts('shieldPenalty');
+    totalDice (attacks) {
+        attacks = Util.array(attacks);
+
+        return Util.sum(
+            attacks.map(a => a.dice)
+        );
+    }
+
+    averageDamage (attacks) {
+        attacks = Util.array(attacks);
+
+        return Util.mean(
+            attacks.map(
+                a => a.rift ?
+                    2 : // This is a approximation
+                    a.damage
+            )
+        );
     }
 
     static example () {
+        return Vessel.randomEclipseShip();
+    }
+
+    static riftExample () {
         const ship = Vessel.randomEclipseShip();
+        ship.components.push(Vessel.makePart('riftCannon'));
+
+        // Probably not a legal blueprint.
+        return ship;
     }
 
     static getExampleAttack () {
@@ -191,18 +307,6 @@ class Vessel extends Thing {
             // damage is per die
             damage: 2
         };
-    }
-
-    traitSumFromParts (trait) {
-        let sum = 0;
-
-        for (const c of this.components) {
-            if (c.template && c.template[trait]) {
-                sum += c.template[trait];
-            }
-        }
-
-        return sum;
     }
 
     // Returns array of effects
@@ -242,6 +346,7 @@ class Vessel extends Thing {
 
         if (special === 'rift') {
             // TODO, see face summary in parts.js
+            // Later maybe itd be neater to give rollDie a options param that can have rift: true.
         }
 
         if (roll === 1) {

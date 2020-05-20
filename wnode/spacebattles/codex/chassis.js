@@ -106,22 +106,124 @@ const Chassis = module.exports = {
         weight: 10000,
         durability: 100
     },
-    corvette: {
-        name: 'corvette',
-        size: 8,
-        weight: 1000,
-        durability: 100
+    ancient: {
+        name: 'ancient',
+        durability: 2,
+        slots: 0,
+        bonus: {
+            initiative: 2,
+            aiming: 1,
+            attacks: [
+                {
+                    dice: 2,
+                    damage: 1
+                }
+            ]
+        }
     },
-    frigate: {
-        name: 'frigate',
-        size: 8,
-        weight: 1000,
-        durability: 100
+    advancedAncient: {
+        name: 'advancedAncient',
+        durability: 3,
+        slots: 0,
+        bonus: {
+            initiative: 1,
+            aiming: 1,
+            attacks: [
+                {
+                    dice: 1,
+                    damage: 2
+                }
+            ]
+        }
     },
-    carrier: {
-        name: 'carrier',
-        size: 8,
-        weight: 1000,
-        durability: 100
-    }
+    guardian: {
+        name: 'guardian',
+        durability: 3,
+        slots: 0,
+        bonus: {
+            initiative: 3,
+            aiming: 2,
+            attacks: [
+                {
+                    dice: 3,
+                    damage: 1
+                }
+            ]
+        }
+    },
+
+    advancedGuardian: {
+        name: 'advancedGuardian',
+        durability: 4,
+        slots: 0,
+        bonus: {
+            initiative: 1,
+            aiming: 1,
+            attacks: [
+                {
+                    dice: 2,
+                    damage: 2,
+                    missile: true
+                },
+                {
+                    dice: 1,
+                    damage: 4
+                }
+            ]
+        }
+    },
+    gcds: {
+        name: 'gcds',
+        durability: 8,
+        slots: 0,
+        bonus: {
+            aiming: 2,
+            attacks: [
+                {
+                    dice: 1,
+                    damage: 4
+                }
+            ]
+        }
+    },
+    advancedGcds: {
+        name: 'advancedGcds',
+        durability: 4,
+        slots: 0,
+        bonus: {
+            initiative: 2,
+            aiming: 2,
+            attacks: [
+                {
+                    dice: 4,
+                    damage: 1,
+                    missile: true
+                },
+                {
+                    dice: 1,
+                    damage: 4
+                }
+            ]
+        }
+    },
+
+    // Homebrew concepts
+    // corvette: {
+    //     name: 'corvette',
+    //     size: 8,
+    //     weight: 1000,
+    //     durability: 100
+    // },
+    // frigate: {
+    //     name: 'frigate',
+    //     size: 8,
+    //     weight: 1000,
+    //     durability: 100
+    // },
+    // carrier: {
+    //     name: 'carrier',
+    //     size: 8,
+    //     weight: 1000,
+    //     durability: 100
+    // }
 };
