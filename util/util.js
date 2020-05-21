@@ -534,6 +534,16 @@ util.prettyTime = (seconds) => {
     }
 };
 
+util.asBar = (n) => {
+    let bar = '';
+
+    for (let i = 0; i < n; i++) {
+        bar = bar + 'X';
+    }
+
+    return bar;
+};
+
 util.sigFigsOf = (n) => {
     if (! util.isNumber(n)) {
         n = parseFloat(n);
