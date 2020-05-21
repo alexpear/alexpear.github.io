@@ -139,6 +139,28 @@ class Vessel extends Thing {
         };
     }
 
+    traitsString () {
+        const traits = this.getTraits();
+
+        const legalStr = traits.legal ? 'Legal' : 'Illegal';
+
+        const formatted = {
+            legal: '\t' + legalStr,
+            netPower: `${traits.netPower}`,
+            travel: Util.asBar(traits.travel),
+            initiative: Util.asBar(traits.initiative),
+            durability: Util.asBar(traits.durability),
+            aiming: Util.asBar(traits.aiming),
+            shields: Util.asBar(traits.shieldPenalty * -1),
+            attacks: '\n' + traits.attacks.join('\n')
+        };
+
+        return Object.keys(formatted).map(
+            key => `${Util.capitalized(key)}: \t${formatted[key]}`
+        )
+        .join('\n');
+    }
+
     getInitiative () {
         const trait = 'initiative';
         return (this.template.bonus && this.template.bonus[trait] || 0) +
@@ -525,7 +547,7 @@ class Vessel extends Thing {
         ship.improve();
 
         Util.logDebug(ship.simpleYaml());
-        Util.logDebug(ship.getTraits());
+        Util.logDebug('\n' + ship.traitsString());
     }
 };
 
