@@ -485,6 +485,40 @@ class DndCreature {
         return angel;
     }
 
+    static monstersInfo () {
+        const totalAbilities = Util.sum(
+            Monsters.map(
+                m => {
+                    const abilities = (m.special_abilities || []).length +
+                        (m.actions || []).length +
+                        (m.legendary_actions || []).length;
+
+                    // Later functionize this ability-finder.
+                    const spellcasting = m.special_abilities && m.special_abilities.find(
+                        a => a.name.endsWith('Spellcasting')
+                    );
+
+                    // Highly approximate
+                    const spellEstimate = spellcasting ?
+                        spellcasting.desc.split(',').length :
+                        0;
+
+                    return abilities + spellEstimate;
+                }
+            )
+        );
+
+        return {
+            monsterCount: Monsters.length,
+            totalAbilities: totalAbilities,
+            abilitiesPerMonster: totalAbilities / Monsters.length
+        };
+
+        //     "monsterCount": 325,
+        //     "totalAbilities": 1734,
+        //     "abilitiesPerMonster": 5.3
+    }
+
     static run () {
         if (! process.argv ||
             process.argv.length < 3 ||
