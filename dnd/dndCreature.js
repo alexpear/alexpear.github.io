@@ -325,8 +325,6 @@ class DndCreature {
         this.currentHp = this.monsterTemplate.hit_points;
         other.currentHp = other.monsterTemplate.hit_points;
 
-        await Util.sleep(6);
-
         return winner;
     }
 
@@ -388,6 +386,8 @@ class DndCreature {
                 Util.log(`The ${challenger.monsterTemplate.name} is the new champion!`);
                 champion = challenger;
             }
+
+            await Util.sleep(6);
         }
 
         Util.log(`The ${champion.monsterTemplate.name} is the final champion!`);
