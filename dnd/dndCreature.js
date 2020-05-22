@@ -325,6 +325,8 @@ class DndCreature {
         this.currentHp = this.monsterTemplate.hit_points;
         other.currentHp = other.monsterTemplate.hit_points;
 
+        await Util.sleep(6);
+
         return winner;
     }
 
