@@ -577,24 +577,32 @@ class DndCreature {
         // I just did to-hit manually.
 
         const classWords = sentences[2]
-            .split(' spell prepared')[0]
+            .split(' spells prepared')[0]
             .split(' ');
 
         parsed.class = classWords[classWords.length - 1];
 
-
         for (let i = 2; i < sections.length; i++) {
             const category = {};
 
-            category.level = parseInt(
+            if (sections[i].indexOf('Cantrips') >= 0) {
+                category.level = 0;
+            }
+            else {
+                category.level = parseInt(
+                    sections[i]
+                        .slice(1, 3)
+                );                
+            }
+
+            const slots = parseInt(
                 sections[i]
-                    .slice(1, 3)
+                    .split(' (')[1]
             );
 
-            category.slots = parseInt(
-                sections[i]
-                    .split('( ')[1]
-            );
+            if (Util.exists(slots)) {
+                category.slots = slots;
+            }
 
             const parts = sections[i].split(': ');
 
@@ -605,6 +613,11 @@ class DndCreature {
             );
 
             parsed.spellCategories.push(category);
+        }
+
+        if (entry.name === 'Lich') {
+            // Util.logDebug(`It's lich timeee`)
+            // Util.logDebug(parsed);
         }
 
         return parsed;
@@ -636,6 +649,10 @@ class DndCreature {
             category.perDay = parts[0] === 'At will' ?
                 Number.MAX_VALUE :
                 parseInt(parts[0]);
+
+            if (parsed.spellCategories.find(c => c.perDay === category.perDay)) {
+                continue;
+            }
 
             category.spells = parts[1].split(', ').map(
                 spell => spell.trim()
@@ -708,6 +725,8 @@ class DndCreature {
 
         // Util.logDebug(DndCreature.parseSpellcasting(Monsters.mage));
         DndCreature.addSpellcasting();
+        // Monsters.sort((a, b) => a.name - b.name);
+        // Util.logDebug(JSON.stringify(Monsters, undefined, '  '));
 
         const herald = DndCreature.randomTemplate();
         // await DndCreature.tournamentOfCr(herald.challenge_rating);
