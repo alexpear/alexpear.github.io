@@ -494,8 +494,8 @@ class DndCreature {
             Monsters[i].spellcasting = DndCreature.parseSpellcasting(Monsters[i]);
         }
 
-        // Util.logDebug(Monsters);
-        Util.logDebug(Monsters.filter(m => m.spellcasting));
+        Util.logDebug(JSON.stringify(Monsters, undefined, '  '));
+        // Util.logDebug(Monsters.filter(m => m.spellcasting));
     }
 
     static parseSpellcasting (entry) {
@@ -509,44 +509,83 @@ class DndCreature {
             return DndCreature.parseInnateSpellcasting(ability);
         }
 
+        // return {
+        //     // mage example
+        //     // Note that eg naga has a extra sentence in the intro
+        //     spellcasterLevel: 9,
+        //     abilityScore: 'int',
+        //     spellSaveDc: 14,
+        //     toHit: 6,
+        //     spellList: 'wizard',
+        //     spellCategories: [
+        //         {
+        //             level: 0,
+        //             slots: undefined,
+        //             spells: [
+        //                 'fire bolt',
+        //                 'light',
+        //                 'mage hand',
+        //                 'prestidigitation'
+        //             ]
+        //         },
+        //         {
+        //             level: 1,
+        //             slots: 4,
+        //             spells: [
+        //                 'foo...'
+        //             ]
+        //         }
+        //         // ...
+        //     ]
+        // }
 
+        // {
+        //   "name": "Spellcasting",
+        //   "desc": "The mage is a 9th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 14, +6 to hit with spell attacks). The mage has the following wizard spells prepared:\n\n• Cantrips (at will): fire bolt, light, mage hand, prestidigitation\n• 1st level (4 slots): detect magic, mage armor, magic missile, shield\n• 2nd level (3 slots): misty step, suggestion\n• 3rd level (3 slots): counterspell, fireball, fly\n• 4th level (3 slots): greater invisibility, ice storm\n• 5th level (1 slot): cone of cold",
+        //   "attack_bonus": 0
+        // }
 
-        return {
-            // mage example
-            // Note that eg naga has a extra sentence in the intro
-            spellcasterLevel: 9,
-            abilityScore: 'int',
-            spellSaveDc: 14,
-            toHit: 6,
-            spellList: 'wizard',
-            spellCategories: [
-                {
-                    level: 0,
-                    slots: undefined,
-                    spells: [
-                        'fire bolt',
-                        'light',
-                        'mage hand',
-                        'prestidigitation'
-                    ]
-                },
-                {
-                    level: 1,
-                    slots: 4,
-                    spells: [
-                        'foo...'
-                    ]
-                }
-                // ...
-            ]
+        const sections = ability.desc.split('\n');
+        const sentences = sections[0].split('. ');
+
+        const parsed = {
+            spellCategories: []
+        };
+
+        const levelParts = sentences[0].split('-level spellcaster');
+        const levelWords = levelParts[0].split(' ');
+        parsed.level = parseInt(levelWords[levelWords.length - 1]);
+
+        parsed.abilityScore = sentences[1]
+            .split('casting ability is ')[1]
+            .slice(0, 3)
+            .toLowerCase();
+
+        const sentence2Parts = sentences[1].split(' (spell save DC ');
+
+        parsed.spellSaveDc = parseInt(
+            sentence2Parts[1]
+        );
+
+        // const toHitPhrase = sentences[1].split(' +')
+
+        for (let i = 2; i < sections.length; i++) {
+            const category = {};
+
+            const parts = sections[i].split(': ');
+
+            category.perDay = parts[0] === 'At will' ?
+                Number.MAX_VALUE :
+                parseInt(parts[0]);
+
+            category.spells = parts[1] && parts[1].split(', ').map(
+                spell => spell.trim()
+            );
+
+            parsed.spellCategories.push(category);
         }
 
-
-      // {
-      //   "name": "Spellcasting",
-      //   "desc": "The mage is a 9th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 14, +6 to hit with spell attacks). The mage has the following wizard spells prepared:\n\n• Cantrips (at will): fire bolt, light, mage hand, prestidigitation\n• 1st level (4 slots): detect magic, mage armor, magic missile, shield\n• 2nd level (3 slots): misty step, suggestion\n• 3rd level (3 slots): counterspell, fireball, fly\n• 4th level (3 slots): greater invisibility, ice storm\n• 5th level (1 slot): cone of cold",
-      //   "attack_bonus": 0
-      // }
+        return parsed;
     }
 
     static parseInnateSpellcasting (ability) {
@@ -561,7 +600,9 @@ class DndCreature {
         const parts = sentences[0].split(' innate spellcasting ability is ');
 
         if (parts.length === 2) {
-            parsed.abilityScore = parts[1].slice(0, 3).toLowerCase();
+            parsed.abilityScore = parts[1]
+                .slice(0, 3)
+                .toLowerCase();
         }
 
         for (let i = 2; i < sections.length; i++) {
@@ -646,7 +687,7 @@ class DndCreature {
         DndCreature.addSpellcasting();
 
         const herald = DndCreature.randomTemplate();
-        await DndCreature.tournamentOfCr(herald.challenge_rating);
+        // await DndCreature.tournamentOfCr(herald.challenge_rating);
     }
 }
 
