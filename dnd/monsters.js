@@ -143,22 +143,6 @@ const monsters = [
     "xp": 50,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "light",
-            "sacred flame",
-            "thaumaturgy"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "bless",
-            "cure wounds",
-            "sanctuary"
-          ]
-        }
       ],
       "level": 1,
       "abilityScore": "wis",
@@ -2686,56 +2670,6 @@ const monsters = [
     "xp": 18000,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "sacred flame",
-            "spare the dying",
-            "thaumaturgy"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "command",
-            "detect evil and good",
-            "detect magic"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "lesser restoration",
-            "zone of truth"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "dispel magic",
-            "tongues"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "banishment",
-            "freedom of movement"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "flame strike",
-            "greater restoration"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "heroes' feast"
-          ]
-        }
       ],
       "level": 12,
       "abilityScore": "wis",
@@ -2964,83 +2898,6 @@ const monsters = [
     "xp": 8400,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "fire bolt",
-            "light",
-            "mage hand",
-            "prestidigitation",
-            "shocking grasp"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "detect magic",
-            "identify",
-            "mage armor*",
-            "magic missile"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "detect thoughts",
-            "mirror image",
-            "misty step"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "counterspell,fly",
-            "lightning bolt"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "banishment",
-            "fire shield",
-            "stoneskin*"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "cone of cold",
-            "scrying",
-            "wall of force"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "globe of invulnerability"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "teleport"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "mind blank*"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "time stop"
-          ]
-        },
-        {
-          "perDay": null
-        }
       ],
       "level": 18,
       "abilityScore": "int",
@@ -6019,29 +5876,6 @@ const monsters = [
     "xp": 450,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "light",
-            "sacred flame",
-            "thaumaturgy"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "command",
-            "inflict wounds",
-            "shield of faith"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "hold person",
-            "spiritual weapon"
-          ]
-        }
       ],
       "level": 4,
       "abilityScore": "wis",
@@ -7055,30 +6889,6 @@ const monsters = [
     "xp": 450,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "druidcraft",
-            "produce flame",
-            "shillelagh"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "entangle",
-            "longstrider",
-            "speak with animals",
-            "thunderwave"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "animal messenger",
-            "barkskin"
-          ]
-        }
       ],
       "level": 4,
       "abilityScore": "wis",
@@ -11138,56 +10948,6 @@ const monsters = [
     "xp": 5900,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "mending",
-            "sacred flame",
-            "thaumaturgy"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "command",
-            "cure wounds",
-            "shield of faith"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "calm emotions",
-            "hold person"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "bestow curse",
-            "clairvoyance"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "banishment",
-            "freedom of movement"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "flame strike",
-            "geas"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "true seeing"
-          ]
-        }
       ],
       "level": 11,
       "abilityScore": "wis",
@@ -11279,51 +11039,6 @@ const monsters = [
     "xp": 7200,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "mage hand",
-            "minor illusion",
-            "prestidigitation"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "detect magic",
-            "identify",
-            "shield"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "darkness",
-            "locate object",
-            "suggestion"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "dispel magic",
-            "remove curse",
-            "tongues"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "banishment",
-            "greater invisibility"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "legend lore"
-          ]
-        }
       ],
       "level": 9,
       "abilityScore": "int",
@@ -13094,82 +12809,6 @@ const monsters = [
     "xp": 33000,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "mage hand",
-            "prestidigitation",
-            "ray of frost"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "detect magic",
-            "magic missile",
-            "shield",
-            "thunderwave"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "detect thoughts",
-            "invisibility",
-            "Melf's acid arrow",
-            "mirror image"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "animate dead",
-            "counterspell",
-            "dispel magic",
-            "fireball"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "blight",
-            "dimension door"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "cloudkill",
-            "scrying"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "disintegrate",
-            "globe of invulnerability"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "finger of death",
-            "plane shift"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "dominate monster",
-            "power word stun"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "power word kill"
-          ]
-        }
       ],
       "level": 18,
       "abilityScore": "int",
@@ -13427,52 +13066,6 @@ const monsters = [
     "xp": 2300,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "fire bolt",
-            "light",
-            "mage hand",
-            "prestidigitation"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "detect magic",
-            "mage armor",
-            "magic missile",
-            "shield"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "misty step",
-            "suggestion"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "counterspell",
-            "fireball",
-            "fly"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "greater invisibility",
-            "ice storm"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "cone of cold"
-          ]
-        }
       ],
       "level": 9,
       "abilityScore": "int",
@@ -14484,56 +14077,6 @@ const monsters = [
     "xp": 13000,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "sacred flame",
-            "thaumaturgy"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "command",
-            "guiding bolt",
-            "shield of faith"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "hold person",
-            "silence",
-            "spiritual weapon"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "animate dead",
-            "dispel magic"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "divination",
-            "guardian of faith"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "contagion",
-            "insect plague"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "harm"
-          ]
-        }
       ],
       "level": 10,
       "abilityScore": "wis",
@@ -16039,36 +15582,6 @@ const monsters = [
     "xp": 450,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "light",
-            "sacred flame",
-            "thaumaturgy"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "cure wounds",
-            "guiding bolt",
-            "sanctuary"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "lesser restoration",
-            "spiritual weapon"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "dispel magic",
-            "spirit guardians"
-          ]
-        }
       ],
       "level": 5,
       "abilityScore": "wis",
@@ -18168,49 +17681,6 @@ const monsters = [
     "xp": 3900,
     "spellcasting": {
       "spellCategories": [
-        {
-          "perDay": null,
-          "spells": [
-            "mage hand",
-            "minor illusion",
-            "ray of frost"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "charm person",
-            "detect magic",
-            "sleep"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "detect thoughts",
-            "hold person"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "lightning bolt",
-            "water breathing"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "blight",
-            "dimension door"
-          ]
-        },
-        {
-          "perDay": null,
-          "spells": [
-            "dominate person"
-          ]
-        }
       ],
       "level": 10,
       "abilityScore": "int",
