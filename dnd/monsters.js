@@ -94,7 +94,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 5900
+    "xp": 5900,
+    "resistances": {}
   },
   {
     "name": "Acolyte",
@@ -163,7 +164,8 @@ const monsters = [
       "abilityScore": "wis",
       "spellSaveDc": 12,
       "toHit": 4
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Adult Black Dragon",
@@ -275,7 +277,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 11500
+    "xp": 11500,
+    "resistances": {
+      "acid": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Adult Blue Dracolich",
@@ -382,7 +387,12 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 18000
+    "xp": 18000,
+    "resistances": {
+      "poison": 1.7976931348623157e+308,
+      "lightning": 1.7976931348623157e+308,
+      "necrotic": 2
+    }
   },
   {
     "name": "Adult Blue Dragon",
@@ -489,7 +499,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 15000
+    "xp": 15000,
+    "resistances": {
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Adult Brass Dragon",
@@ -580,7 +593,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 10000
+    "xp": 10000,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Adult Bronze Dragon",
@@ -692,7 +708,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 13000
+    "xp": 13000,
+    "resistances": {
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Adult Copper Dragon",
@@ -799,7 +818,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 11500
+    "xp": 11500,
+    "resistances": {
+      "acid": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Adult Gold Dragon",
@@ -912,7 +934,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 18000
+    "xp": 18000,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Adult Green Dragon",
@@ -1027,7 +1052,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 13000
+    "xp": 13000,
+    "resistances": {
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Adult Red Dragon",
@@ -1143,7 +1171,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 18000
+    "xp": 18000,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Adult Silver Dragon",
@@ -1251,7 +1282,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 15000
+    "xp": 15000,
+    "resistances": {
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Adult White Dragon",
@@ -1363,7 +1397,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 10000
+    "xp": 10000,
+    "resistances": {
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Air Elemental",
@@ -1417,7 +1454,15 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "lightning": 2,
+      "thunder": 2
+    }
   },
   {
     "name": "Ancient Black Dragon",
@@ -1530,7 +1575,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 33000
+    "xp": 33000,
+    "resistances": {
+      "acid": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ancient Blue Dragon",
@@ -1630,7 +1678,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 50000
+    "xp": 50000,
+    "resistances": {
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ancient Brass Dragon",
@@ -1743,7 +1794,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 25000
+    "xp": 25000,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ancient Bronze Dragon",
@@ -1860,7 +1914,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 41000
+    "xp": 41000,
+    "resistances": {
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ancient Copper Dragon",
@@ -1972,7 +2029,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 33000
+    "xp": 33000,
+    "resistances": {
+      "acid": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ancient Gold Dragon",
@@ -2090,7 +2150,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 62000
+    "xp": 62000,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ancient Green Dragon",
@@ -2205,7 +2268,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 41000
+    "xp": 41000,
+    "resistances": {
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ancient Red Dragon",
@@ -2312,7 +2378,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 62000
+    "xp": 62000,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ancient Silver Dragon",
@@ -2425,7 +2494,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 50000
+    "xp": 50000,
+    "resistances": {
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ancient White Dragon",
@@ -2520,7 +2592,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25000
+    "xp": 25000,
+    "resistances": {
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Androsphinx",
@@ -2666,6 +2741,12 @@ const monsters = [
       "abilityScore": "wis",
       "spellSaveDc": 18,
       "toHit": 10
+    },
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "psychic": 1.7976931348623157e+308
     }
   },
   {
@@ -2720,7 +2801,11 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {
+      "poison": 1.7976931348623157e+308,
+      "psychic": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ankheg",
@@ -2767,7 +2852,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Ape",
@@ -2821,7 +2907,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Archmage",
@@ -2959,6 +3046,11 @@ const monsters = [
       "abilityScore": "int",
       "spellSaveDc": 17,
       "toHit": 9
+    },
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
     }
   },
   {
@@ -3037,7 +3129,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 3900
+    "xp": 3900,
+    "resistances": {
+      "poison": 2
+    }
   },
   {
     "name": "Awakened Shrub",
@@ -3081,7 +3176,11 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {
+      "piercing": 2,
+      "fire": 0.5
+    }
   },
   {
     "name": "Awakened Tree",
@@ -3125,7 +3224,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "bludgeoning": 2,
+      "piercing": 2,
+      "fire": 0.5
+    }
   },
   {
     "name": "Axe Beak",
@@ -3162,7 +3266,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Azer",
@@ -3219,7 +3324,11 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Baboon",
@@ -3263,7 +3372,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Badger",
@@ -3306,7 +3416,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Balor",
@@ -3398,7 +3509,16 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 22000
+    "xp": 22000,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 2,
+      "lightning": 2
+    }
   },
   {
     "name": "Bandit",
@@ -3445,7 +3565,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Bandit Captain",
@@ -3509,7 +3630,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Barbed Devil",
@@ -3595,7 +3717,15 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 2
+    }
   },
   {
     "name": "Basilisk",
@@ -3640,7 +3770,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {}
   },
   {
     "name": "Bat",
@@ -3688,7 +3819,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Bearded Devil",
@@ -3760,7 +3892,15 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 2
+    }
   },
   {
     "name": "Behir",
@@ -3833,7 +3973,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 7200
+    "xp": 7200,
+    "resistances": {
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Berserker",
@@ -3877,7 +4020,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Black Bear",
@@ -3936,7 +4080,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Black Dragon Wyrmling",
@@ -3996,7 +4141,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "acid": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Black Pudding",
@@ -4059,7 +4207,13 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "resistances": {
+      "slashing": 1.7976931348623157e+308,
+      "acid": 1.7976931348623157e+308,
+      "cold": 1.7976931348623157e+308,
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Blink Dog",
@@ -4110,7 +4264,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Blood Hawk",
@@ -4160,7 +4315,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Blue Dragon Wyrmling",
@@ -4213,7 +4369,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Boar",
@@ -4263,7 +4422,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Bone Devil",
@@ -4359,7 +4519,15 @@ const monsters = [
         ]
       }
     ],
-    "xp": 8400
+    "xp": 8400,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 2
+    }
   },
   {
     "name": "Brass Dragon Wyrmling",
@@ -4411,7 +4579,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Bronze Dragon Wyrmling",
@@ -4470,7 +4641,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Brown Bear",
@@ -4530,7 +4704,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Bugbear",
@@ -4592,7 +4767,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Bulette",
@@ -4642,7 +4818,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {}
   },
   {
     "name": "Camel",
@@ -4678,7 +4855,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Carrion Crawler",
@@ -4743,7 +4921,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Cat",
@@ -4788,7 +4967,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Cave Bear",
@@ -4848,7 +5028,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Centaur",
@@ -4921,7 +5102,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Chain Devil",
@@ -4988,7 +5170,15 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 7200
+    "xp": 7200,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 2
+    }
   },
   {
     "name": "Chimera",
@@ -5060,7 +5250,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2300
+    "xp": 2300,
+    "resistances": {}
   },
   {
     "name": "Chuul",
@@ -5120,7 +5311,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "resistances": {
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Clay Golem",
@@ -5194,7 +5388,15 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 5000
+    "xp": 5000,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "poison": 1.7976931348623157e+308,
+      "acid": 1.7976931348623157e+308,
+      "psychic": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Cloaker",
@@ -5274,7 +5476,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 3900
+    "xp": 3900,
+    "resistances": {}
   },
   {
     "name": "Cloud Giant",
@@ -5373,7 +5576,8 @@ const monsters = [
         }
       ],
       "abilityScore": "cha"
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Cockatrice",
@@ -5410,7 +5614,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Commoner",
@@ -5446,7 +5651,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Constrictor Snake",
@@ -5493,7 +5699,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Copper Dragon Wyrmling",
@@ -5545,7 +5752,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {
+      "acid": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Couatl",
@@ -5651,6 +5861,13 @@ const monsters = [
         }
       ],
       "spellSaveDc": 14
+    },
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "radiant": 2,
+      "psychic": 1.7976931348623157e+308
     }
   },
   {
@@ -5695,7 +5912,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Crocodile",
@@ -5740,7 +5958,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Cult Fanatic",
@@ -5828,7 +6047,8 @@ const monsters = [
       "abilityScore": "wis",
       "spellSaveDc": 11,
       "toHit": 3
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Cultist",
@@ -5874,7 +6094,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Darkmantle",
@@ -5929,7 +6150,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Death Dog",
@@ -5980,7 +6202,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Deep Gnome (Svirfneblin)",
@@ -6062,7 +6285,8 @@ const monsters = [
       ],
       "abilityScore": "int",
       "spellSaveDc": 11
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Deer",
@@ -6098,7 +6322,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Deva",
@@ -6185,6 +6410,12 @@ const monsters = [
         }
       ],
       "spellSaveDc": 17
+    },
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "radiant": 2
     }
   },
   {
@@ -6236,7 +6467,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Djinni",
@@ -6331,6 +6563,10 @@ const monsters = [
       "abilityScore": "cha",
       "spellSaveDc": 17,
       "toHit": 9
+    },
+    "resistances": {
+      "lightning": 1.7976931348623157e+308,
+      "thunder": 1.7976931348623157e+308
     }
   },
   {
@@ -6398,7 +6634,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {}
   },
   {
     "name": "Draft Horse",
@@ -6435,7 +6672,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Dragon Turtle",
@@ -6516,7 +6754,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 18000
+    "xp": 18000,
+    "resistances": {
+      "fire": 2
+    }
   },
   {
     "name": "Dretch",
@@ -6571,7 +6812,13 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {
+      "poison": 1.7976931348623157e+308,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2
+    }
   },
   {
     "name": "Drider",
@@ -6678,7 +6925,8 @@ const monsters = [
       ],
       "abilityScore": "wis",
       "spellSaveDc": 13
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Drow",
@@ -6757,7 +7005,8 @@ const monsters = [
         }
       ],
       "spellSaveDc": 11
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Druid",
@@ -6835,7 +7084,8 @@ const monsters = [
       "abilityScore": "wis",
       "spellSaveDc": 12,
       "toHit": 4
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Dryad",
@@ -6928,7 +7178,8 @@ const monsters = [
       ],
       "abilityScore": "cha",
       "spellSaveDc": 14
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Duergar",
@@ -6997,7 +7248,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {
+      "poison": 2
+    }
   },
   {
     "name": "Dust Mephit",
@@ -7070,6 +7324,10 @@ const monsters = [
         }
       ],
       "abilityScore": "cha"
+    },
+    "resistances": {
+      "poison": 1.7976931348623157e+308,
+      "fire": 0.5
     }
   },
   {
@@ -7115,7 +7373,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Earth Elemental",
@@ -7169,7 +7428,14 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "thunder": 0.5
+    }
   },
   {
     "name": "Efreeti",
@@ -7272,6 +7538,9 @@ const monsters = [
       ],
       "spellSaveDc": 15,
       "toHit": 7
+    },
+    "resistances": {
+      "fire": 1.7976931348623157e+308
     }
   },
   {
@@ -7326,7 +7595,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "resistances": {}
   },
   {
     "name": "Elk",
@@ -7371,7 +7641,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Erinyes",
@@ -7453,7 +7724,15 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 8400
+    "xp": 8400,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 2
+    }
   },
   {
     "name": "Ettercap",
@@ -7541,7 +7820,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Ettin",
@@ -7606,7 +7886,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "resistances": {}
   },
   {
     "name": "Fire Elemental",
@@ -7666,7 +7947,14 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Fire Giant",
@@ -7723,7 +8011,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5000
+    "xp": 5000,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Flesh Golem",
@@ -7797,7 +8088,14 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "poison": 1.7976931348623157e+308,
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Flying Snake",
@@ -7841,7 +8139,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Flying Sword",
@@ -7891,7 +8190,11 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {
+      "poison": 1.7976931348623157e+308,
+      "psychic": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Frog",
@@ -7930,7 +8233,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Frost Giant",
@@ -7987,7 +8291,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 3900
+    "xp": 3900,
+    "resistances": {
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Gargoyle",
@@ -8046,7 +8353,13 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Gelatinous Cube",
@@ -8099,7 +8412,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Ghast",
@@ -8158,7 +8472,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "necrotic": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ghost",
@@ -8222,7 +8539,19 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "acid": 2,
+      "fire": 2,
+      "cold": 1.7976931348623157e+308,
+      "lightning": 2,
+      "necrotic": 1.7976931348623157e+308,
+      "thunder": 2
+    }
   },
   {
     "name": "Ghoul",
@@ -8264,7 +8593,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Giant Ape",
@@ -8318,7 +8648,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2900
+    "xp": 2900,
+    "resistances": {}
   },
   {
     "name": "Giant Badger",
@@ -8377,7 +8708,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Giant Bat",
@@ -8426,7 +8758,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Giant Boar",
@@ -8476,7 +8809,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Giant Centipede",
@@ -8514,7 +8848,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Giant Constrictor Snake",
@@ -8562,7 +8897,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Giant Crab",
@@ -8607,7 +8943,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Giant Crocodile",
@@ -8667,7 +9004,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {}
   },
   {
     "name": "Giant Eagle",
@@ -8727,7 +9065,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Giant Elk",
@@ -8783,7 +9122,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Giant Fire Beetle",
@@ -8827,7 +9167,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Giant Frog",
@@ -8883,7 +9224,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Giant Goat",
@@ -8933,7 +9275,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Giant Hyena",
@@ -8978,7 +9321,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Giant Lizard",
@@ -9027,7 +9371,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Giant Octopus",
@@ -9088,7 +9433,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Giant Owl",
@@ -9139,7 +9485,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Giant Poisonous Snake",
@@ -9178,7 +9525,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Giant Rat",
@@ -9227,7 +9575,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Giant Rat (Diseased)",
@@ -9264,7 +9613,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Giant Scorpion",
@@ -9317,7 +9667,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {}
   },
   {
     "name": "Giant Sea Horse",
@@ -9367,7 +9718,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Giant Shark",
@@ -9417,7 +9769,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {}
   },
   {
     "name": "Giant Spider",
@@ -9478,7 +9831,8 @@ const monsters = [
         "attack_bonus": 5
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Giant Toad",
@@ -9533,7 +9887,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Giant Vulture",
@@ -9598,7 +9953,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Giant Wasp",
@@ -9636,7 +9992,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Giant Weasel",
@@ -9682,7 +10039,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Giant Wolf Spider",
@@ -9739,7 +10097,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Gibbering Mouther",
@@ -9797,7 +10156,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Glabrezu",
@@ -9884,6 +10244,15 @@ const monsters = [
         }
       ],
       "spellSaveDc": 16
+    },
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2
     }
   },
   {
@@ -9960,7 +10329,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {}
   },
   {
     "name": "Gnoll",
@@ -10024,7 +10394,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Goat",
@@ -10074,7 +10445,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Goblin",
@@ -10129,7 +10501,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Gold Dragon Wyrmling",
@@ -10188,7 +10561,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Gorgon",
@@ -10248,7 +10624,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {}
   },
   {
     "name": "Gray Ooze",
@@ -10304,7 +10681,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {
+      "acid": 2,
+      "fire": 2,
+      "cold": 2
+    }
   },
   {
     "name": "Green Dragon Wyrmling",
@@ -10364,7 +10746,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Green Hag",
@@ -10462,7 +10847,8 @@ const monsters = [
       ],
       "abilityScore": "cha",
       "spellSaveDc": 12
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Grick",
@@ -10521,7 +10907,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Griffon",
@@ -10581,7 +10972,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Grimlock",
@@ -10639,7 +11031,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Guard",
@@ -10677,7 +11070,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Guardian Naga",
@@ -10799,6 +11193,9 @@ const monsters = [
       "abilityScore": "wis",
       "spellSaveDc": 16,
       "toHit": 8
+    },
+    "resistances": {
+      "poison": 1.7976931348623157e+308
     }
   },
   {
@@ -10932,6 +11329,12 @@ const monsters = [
       "abilityScore": "int",
       "spellSaveDc": 16,
       "toHit": 8
+    },
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "psychic": 1.7976931348623157e+308
     }
   },
   {
@@ -11003,7 +11406,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "fire": 2
+    }
   },
   {
     "name": "Harpy",
@@ -11060,7 +11466,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Hawk",
@@ -11104,7 +11511,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Hell Hound",
@@ -11164,7 +11572,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Hezrou",
@@ -11236,7 +11647,16 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 3900
+    "xp": 3900,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2
+    }
   },
   {
     "name": "Hill Giant",
@@ -11289,7 +11709,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {}
   },
   {
     "name": "Hippogriff",
@@ -11349,7 +11770,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Hobgoblin",
@@ -11404,7 +11826,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Homunculus",
@@ -11447,7 +11870,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Horned Devil",
@@ -11524,7 +11950,15 @@ const monsters = [
         ]
       }
     ],
-    "xp": 7200
+    "xp": 7200,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 2
+    }
   },
   {
     "name": "Hunter Shark",
@@ -11574,7 +12008,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Hydra",
@@ -11639,7 +12074,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 3900
+    "xp": 3900,
+    "resistances": {}
   },
   {
     "name": "Hyena",
@@ -11683,7 +12119,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Ice Devil",
@@ -11769,7 +12206,14 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 11500
+    "xp": 11500,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Ice Mephit",
@@ -11849,6 +12293,12 @@ const monsters = [
         }
       ],
       "abilityScore": "cha"
+    },
+    "resistances": {
+      "bludgeoning": 0.5,
+      "poison": 1.7976931348623157e+308,
+      "fire": 0.5,
+      "cold": 1.7976931348623157e+308
     }
   },
   {
@@ -11918,7 +12368,15 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 2
+    }
   },
   {
     "name": "Invisible Stalker",
@@ -11974,7 +12432,13 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2300
+    "xp": 2300,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Iron Golem",
@@ -12057,7 +12521,15 @@ const monsters = [
         ]
       }
     ],
-    "xp": 15000
+    "xp": 15000,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "psychic": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Jackal",
@@ -12107,7 +12579,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Killer Whale",
@@ -12157,7 +12630,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {}
   },
   {
     "name": "Knight",
@@ -12229,7 +12703,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {}
   },
   {
     "name": "Kobold",
@@ -12288,7 +12763,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Kraken",
@@ -12394,7 +12870,13 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 50000
+    "xp": 50000,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Lamia",
@@ -12467,7 +12949,8 @@ const monsters = [
       "spellCategories": [],
       "abilityScore": "cha",
       "spellSaveDc": 13
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Lemure",
@@ -12515,7 +12998,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 2
+    }
   },
   {
     "name": "Lich",
@@ -12687,6 +13175,15 @@ const monsters = [
       "abilityScore": "int",
       "spellSaveDc": 20,
       "toHit": 12
+    },
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "poison": 1.7976931348623157e+308,
+      "cold": 2,
+      "lightning": 2,
+      "necrotic": 2
     }
   },
   {
@@ -12758,7 +13255,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Lizard",
@@ -12794,7 +13292,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Lizardfolk",
@@ -12876,7 +13375,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Mage",
@@ -12978,7 +13478,8 @@ const monsters = [
       "abilityScore": "int",
       "spellSaveDc": 14,
       "toHit": 6
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Magma Mephit",
@@ -13057,6 +13558,11 @@ const monsters = [
         }
       ],
       "abilityScore": "cha"
+    },
+    "resistances": {
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 0.5
     }
   },
   {
@@ -13106,7 +13612,13 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Mammoth",
@@ -13160,7 +13672,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2300
+    "xp": 2300,
+    "resistances": {}
   },
   {
     "name": "Manticore",
@@ -13229,7 +13742,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {}
   },
   {
     "name": "Marilith",
@@ -13319,7 +13833,16 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 15000
+    "xp": 15000,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2
+    }
   },
   {
     "name": "Mastiff",
@@ -13364,7 +13887,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Medusa",
@@ -13438,7 +13962,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2300
+    "xp": 2300,
+    "resistances": {}
   },
   {
     "name": "Merfolk",
@@ -13482,7 +14007,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Merrow",
@@ -13551,7 +14077,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Mimic",
@@ -13622,7 +14149,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "acid": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Minotaur",
@@ -13688,7 +14218,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {}
   },
   {
     "name": "Minotaur Skeleton",
@@ -13743,7 +14274,11 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "bludgeoning": 0.5,
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Mule",
@@ -13792,7 +14327,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Mummy",
@@ -13841,7 +14377,13 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "fire": 0.5
+    }
   },
   {
     "name": "Mummy Lord",
@@ -13997,6 +14539,13 @@ const monsters = [
       "abilityScore": "wis",
       "spellSaveDc": 17,
       "toHit": 9
+    },
+    "resistances": {
+      "bludgeoning": 0.5,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "poison": 1.7976931348623157e+308,
+      "necrotic": 1.7976931348623157e+308
     }
   },
   {
@@ -14075,7 +14624,16 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 10000
+    "xp": 10000,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2
+    }
   },
   {
     "name": "Night Hag",
@@ -14186,6 +14744,13 @@ const monsters = [
       "abilityScore": "cha",
       "spellSaveDc": 14,
       "toHit": 6
+    },
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "fire": 2,
+      "cold": 2
     }
   },
   {
@@ -14241,7 +14806,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Noble",
@@ -14288,7 +14856,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Ochre Jelly",
@@ -14345,7 +14914,12 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "slashing": 1.7976931348623157e+308,
+      "acid": 2,
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Octopus",
@@ -14405,7 +14979,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Ogre",
@@ -14452,7 +15027,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Ogre Zombie",
@@ -14497,7 +15073,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Oni",
@@ -14601,7 +15180,8 @@ const monsters = [
       ],
       "abilityScore": "cha",
       "spellSaveDc": 13
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Orc",
@@ -14656,7 +15236,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Otyugh",
@@ -14722,7 +15303,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {}
   },
   {
     "name": "Owl",
@@ -14772,7 +15354,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Owlbear",
@@ -14832,7 +15415,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {}
   },
   {
     "name": "Panther",
@@ -14893,7 +15477,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Pegasus",
@@ -14934,7 +15519,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Phase Spider",
@@ -14990,7 +15576,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {}
   },
   {
     "name": "Pit Fiend",
@@ -15102,6 +15689,14 @@ const monsters = [
         }
       ],
       "spellSaveDc": 21
+    },
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308,
+      "cold": 2
     }
   },
   {
@@ -15199,6 +15794,12 @@ const monsters = [
         }
       ],
       "spellSaveDc": 20
+    },
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "radiant": 2
     }
   },
   {
@@ -15245,7 +15846,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Poisonous Snake",
@@ -15282,7 +15884,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Polar Bear",
@@ -15342,7 +15945,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Pony",
@@ -15379,7 +15983,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Priest",
@@ -15469,7 +16074,8 @@ const monsters = [
       "abilityScore": "wis",
       "spellSaveDc": 13,
       "toHit": 5
-    }
+    },
+    "resistances": {}
   },
   {
     "name": "Pseudodragon",
@@ -15540,7 +16146,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Purple Worm",
@@ -15603,7 +16210,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 13000
+    "xp": 13000,
+    "resistances": {}
   },
   {
     "name": "Quasit",
@@ -15669,7 +16277,16 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2
+    }
   },
   {
     "name": "Quipper",
@@ -15717,7 +16334,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Rakshasa",
@@ -15809,6 +16427,11 @@ const monsters = [
       "abilityScore": "cha",
       "spellSaveDc": 18,
       "toHit": 10
+    },
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 0.5
     }
   },
   {
@@ -15852,7 +16475,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Raven",
@@ -15896,7 +16520,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Red Dragon Wyrmling",
@@ -15949,7 +16574,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Reef Shark",
@@ -15999,7 +16627,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Remorhaz",
@@ -16050,7 +16679,11 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 7200
+    "xp": 7200,
+    "resistances": {
+      "fire": 1.7976931348623157e+308,
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Rhinoceros",
@@ -16095,7 +16728,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Riding Horse",
@@ -16132,7 +16766,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Roc",
@@ -16196,7 +16831,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 7200
+    "xp": 7200,
+    "resistances": {}
   },
   {
     "name": "Roper",
@@ -16267,7 +16903,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {}
   },
   {
     "name": "Rug of Smothering",
@@ -16321,7 +16958,11 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "poison": 1.7976931348623157e+308,
+      "psychic": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Rust Monster",
@@ -16375,7 +17016,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Saber-Toothed Tiger",
@@ -16436,7 +17078,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Sahuagin",
@@ -16516,7 +17159,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Salamander",
@@ -16583,7 +17227,14 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "fire": 1.7976931348623157e+308,
+      "cold": 0.5
+    }
   },
   {
     "name": "Satyr",
@@ -16655,7 +17306,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Scorpion",
@@ -16692,7 +17344,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Scout",
@@ -16755,7 +17408,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Sea Hag",
@@ -16829,7 +17483,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {}
   },
   {
     "name": "Sea Horse",
@@ -16861,7 +17516,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Shadow",
@@ -16916,7 +17572,20 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "acid": 2,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2,
+      "radiant": 0.5,
+      "necrotic": 1.7976931348623157e+308,
+      "thunder": 2
+    }
   },
   {
     "name": "Shambling Mound",
@@ -16971,7 +17640,12 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "fire": 2,
+      "cold": 2,
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Shield Guardian",
@@ -17037,7 +17711,10 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 2900
+    "xp": 2900,
+    "resistances": {
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Shrieker",
@@ -17076,7 +17753,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Silver Dragon Wyrmling",
@@ -17128,7 +17806,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Skeleton",
@@ -17175,7 +17856,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {
+      "bludgeoning": 0.5
+    }
   },
   {
     "name": "Solar",
@@ -17303,6 +17987,14 @@ const monsters = [
         }
       ],
       "spellSaveDc": 25
+    },
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "radiant": 2,
+      "necrotic": 1.7976931348623157e+308
     }
   },
   {
@@ -17351,7 +18043,19 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "acid": 2,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2,
+      "necrotic": 1.7976931348623157e+308,
+      "thunder": 2
+    }
   },
   {
     "name": "Spider",
@@ -17406,7 +18110,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Spirit Naga",
@@ -17511,6 +18216,9 @@ const monsters = [
       "abilityScore": "int",
       "spellSaveDc": 14,
       "toHit": 6
+    },
+    "resistances": {
+      "poison": 1.7976931348623157e+308
     }
   },
   {
@@ -17568,7 +18276,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Spy",
@@ -17639,7 +18348,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Steam Mephit",
@@ -17711,6 +18421,10 @@ const monsters = [
         }
       ],
       "abilityScore": "cha"
+    },
+    "resistances": {
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308
     }
   },
   {
@@ -17748,7 +18462,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Stone Giant",
@@ -17819,7 +18534,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 2900
+    "xp": 2900,
+    "resistances": {}
   },
   {
     "name": "Stone Golem",
@@ -17883,7 +18599,14 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 5900
+    "xp": 5900,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "poison": 1.7976931348623157e+308,
+      "psychic": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Storm Giant",
@@ -17987,6 +18710,11 @@ const monsters = [
       ],
       "abilityScore": "cha",
       "spellSaveDc": 17
+    },
+    "resistances": {
+      "cold": 2,
+      "lightning": 1.7976931348623157e+308,
+      "thunder": 1.7976931348623157e+308
     }
   },
   {
@@ -18061,7 +18789,16 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 2,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2
+    }
   },
   {
     "name": "Swarm of Bats",
@@ -18114,7 +18851,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Swarm of Beetles",
@@ -18157,7 +18899,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Swarm of Centipedes",
@@ -18200,7 +18947,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Swarm of Insects",
@@ -18243,7 +18995,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Swarm of Poisonous Snakes",
@@ -18287,7 +19044,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Swarm of Quippers",
@@ -18340,7 +19102,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Swarm of Rats",
@@ -18388,7 +19155,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Swarm of Ravens",
@@ -18431,7 +19203,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Swarm of Spiders",
@@ -18489,7 +19266,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Swarm of Wasps",
@@ -18532,7 +19314,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Tarrasque",
@@ -18656,7 +19443,14 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 155000
+    "xp": 155000,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "poison": 1.7976931348623157e+308,
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Thug",
@@ -18715,7 +19509,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Tiger",
@@ -18771,7 +19566,8 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "resistances": {}
   },
   {
     "name": "Treant",
@@ -18840,7 +19636,12 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 5000
+    "xp": 5000,
+    "resistances": {
+      "bludgeoning": 2,
+      "piercing": 2,
+      "fire": 0.5
+    }
   },
   {
     "name": "Tribal Warrior",
@@ -18884,7 +19685,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25
+    "xp": 25,
+    "resistances": {}
   },
   {
     "name": "Triceratops",
@@ -18938,7 +19740,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {}
   },
   {
     "name": "Troll",
@@ -19008,7 +19811,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {}
   },
   {
     "name": "Tyrannosaurus Rex",
@@ -19061,7 +19865,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 3900
+    "xp": 3900,
+    "resistances": {}
   },
   {
     "name": "Unicorn",
@@ -19186,6 +19991,9 @@ const monsters = [
       ],
       "abilityScore": "cha",
       "spellSaveDc": 14
+    },
+    "resistances": {
+      "poison": 1.7976931348623157e+308
     }
   },
   {
@@ -19303,7 +20111,13 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 10000
+    "xp": 10000,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "necrotic": 2
+    }
   },
   {
     "name": "Vampire Spawn",
@@ -19371,7 +20185,13 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "necrotic": 2
+    }
   },
   {
     "name": "Veteran",
@@ -19435,7 +20255,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {}
   },
   {
     "name": "Violet Fungus",
@@ -19483,7 +20304,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Vrock",
@@ -19560,7 +20382,16 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 2300
+    "xp": 2300,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2
+    }
   },
   {
     "name": "Vulture",
@@ -19609,7 +20440,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Warhorse",
@@ -19653,7 +20485,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Warhorse Skeleton",
@@ -19690,7 +20523,11 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {
+      "bludgeoning": 0.5,
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Water Elemental",
@@ -19749,7 +20586,14 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "acid": 2
+    }
   },
   {
     "name": "Weasel",
@@ -19794,7 +20638,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5
+    "xp": 5,
+    "resistances": {}
   },
   {
     "name": "Werebear",
@@ -19869,7 +20714,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Wereboar",
@@ -19940,7 +20790,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Wererat",
@@ -20016,7 +20871,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Weretiger",
@@ -20107,7 +20967,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Werewolf",
@@ -20182,7 +21047,12 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308
+    }
   },
   {
     "name": "White Dragon Wyrmling",
@@ -20235,7 +21105,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Wight",
@@ -20306,7 +21179,13 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {
+      "bludgeoning": 1.7976931348623157e+308,
+      "slashing": 1.7976931348623157e+308,
+      "piercing": 1.7976931348623157e+308,
+      "necrotic": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Will-o'-Wisp",
@@ -20369,7 +21248,19 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "acid": 2,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 1.7976931348623157e+308,
+      "necrotic": 2,
+      "thunder": 2
+    }
   },
   {
     "name": "Winter Wolf",
@@ -20434,7 +21325,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "resistances": {
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Wolf",
@@ -20485,7 +21379,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   },
   {
     "name": "Worg",
@@ -20530,7 +21425,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "resistances": {}
   },
   {
     "name": "Wraith",
@@ -20584,7 +21480,19 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "bludgeoning": 2,
+      "slashing": 2,
+      "piercing": 2,
+      "poison": 1.7976931348623157e+308,
+      "acid": 2,
+      "fire": 2,
+      "cold": 2,
+      "lightning": 2,
+      "necrotic": 1.7976931348623157e+308,
+      "thunder": 2
+    }
   },
   {
     "name": "Wyvern",
@@ -20648,7 +21556,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2300
+    "xp": 2300,
+    "resistances": {}
   },
   {
     "name": "Xorn",
@@ -20719,7 +21628,11 @@ const monsters = [
         ]
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "resistances": {
+      "slashing": 2,
+      "piercing": 2
+    }
   },
   {
     "name": "Young Black Dragon",
@@ -20794,7 +21707,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2900
+    "xp": 2900,
+    "resistances": {
+      "acid": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Young Blue Dragon",
@@ -20862,7 +21778,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5000
+    "xp": 5000,
+    "resistances": {
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Young Brass Dragon",
@@ -20930,7 +21849,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2300
+    "xp": 2300,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Young Bronze Dragon",
@@ -21005,7 +21927,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 3900
+    "xp": 3900,
+    "resistances": {
+      "lightning": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Young Copper Dragon",
@@ -21073,7 +21998,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2900
+    "xp": 2900,
+    "resistances": {
+      "acid": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Young Gold Dragon",
@@ -21149,7 +22077,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5900
+    "xp": 5900,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Young Green Dragon",
@@ -21225,7 +22156,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 3900
+    "xp": 3900,
+    "resistances": {
+      "poison": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Young Red Dragon",
@@ -21293,7 +22227,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5900
+    "xp": 5900,
+    "resistances": {
+      "fire": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Young Silver Dragon",
@@ -21362,7 +22299,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5000
+    "xp": 5000,
+    "resistances": {
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Young White Dragon",
@@ -21437,7 +22377,10 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2300
+    "xp": 2300,
+    "resistances": {
+      "cold": 1.7976931348623157e+308
+    }
   },
   {
     "name": "Zombie",
@@ -21482,7 +22425,8 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "resistances": {}
   }
 ];
 
