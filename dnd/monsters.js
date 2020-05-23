@@ -139,7 +139,31 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "light",
+            "sacred flame",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "bless",
+            "cure wounds",
+            "sanctuary"
+          ]
+        }
+      ],
+      "level": 1,
+      "abilityScore": "wis",
+      "spellSaveDc": 12,
+      "toHit": 4
+    }
   },
   {
     "name": "Adult Black Dragon",
@@ -2584,7 +2608,65 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 18000
+    "xp": 18000,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "sacred flame",
+            "spare the dying",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "command",
+            "detect evil and good",
+            "detect magic"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "lesser restoration",
+            "zone of truth"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "dispel magic",
+            "tongues"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "banishment",
+            "freedom of movement"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "flame strike",
+            "greater restoration"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "heroes' feast"
+          ]
+        }
+      ],
+      "level": 12,
+      "abilityScore": "wis",
+      "spellSaveDc": 18,
+      "toHit": 10
+    }
   },
   {
     "name": "Animated Armor",
@@ -2792,7 +2874,92 @@ const monsters = [
         ]
       }
     ],
-    "xp": 8400
+    "xp": 8400,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "fire bolt",
+            "light",
+            "mage hand",
+            "prestidigitation",
+            "shocking grasp"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "detect magic",
+            "identify",
+            "mage armor*",
+            "magic missile"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "detect thoughts",
+            "mirror image",
+            "misty step"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "counterspell,fly",
+            "lightning bolt"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "banishment",
+            "fire shield",
+            "stoneskin*"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "cone of cold",
+            "scrying",
+            "wall of force"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "globe of invulnerability"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "teleport"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "mind blank*"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "time stop"
+          ]
+        },
+        {
+          "perDay": null
+        }
+      ],
+      "level": 18,
+      "abilityScore": "int",
+      "spellSaveDc": 17,
+      "toHit": 9
+    }
   },
   {
     "name": "Assassin",
@@ -5176,7 +5343,37 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5000
+    "xp": 5000,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "detect magic",
+            "fog cloud",
+            "light"
+          ]
+        },
+        {
+          "perDay": 3,
+          "spells": [
+            "feather fall",
+            "fly",
+            "misty step",
+            "telekinesis"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "control weather",
+            "gaseous form"
+          ]
+        }
+      ],
+      "abilityScore": "cha"
+    }
   },
   {
     "name": "Cockatrice",
@@ -5420,7 +5617,41 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "detect evil and good",
+            "detect magic",
+            "detect thoughts"
+          ]
+        },
+        {
+          "perDay": 3,
+          "spells": [
+            "bless",
+            "create food and water",
+            "cure wounds",
+            "lesser restoration",
+            "protection from poison",
+            "sanctuary",
+            "shield"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "dream",
+            "greater restoration",
+            "scrying"
+          ]
+        }
+      ],
+      "spellSaveDc": 14
+    }
   },
   {
     "name": "Crab",
@@ -5566,7 +5797,38 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "light",
+            "sacred flame",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "command",
+            "inflict wounds",
+            "shield of faith"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "hold person",
+            "spiritual weapon"
+          ]
+        }
+      ],
+      "level": 4,
+      "abilityScore": "wis",
+      "spellSaveDc": 11,
+      "toHit": 3
+    }
   },
   {
     "name": "Cultist",
@@ -5785,7 +6047,22 @@ const monsters = [
         ]
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1,
+          "spells": [
+            "blindness/deafness",
+            "blur",
+            "disguise self"
+          ]
+        }
+      ],
+      "abilityScore": "int",
+      "spellSaveDc": 11
+    }
   },
   {
     "name": "Deer",
@@ -5895,7 +6172,20 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 5900
+    "xp": 5900,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1,
+          "spells": [
+            "commune",
+            "raise dead"
+          ]
+        }
+      ],
+      "spellSaveDc": 17
+    }
   },
   {
     "name": "Dire Wolf",
@@ -6014,7 +6304,34 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 7200
+    "xp": 7200,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "detect evil and good",
+            "detect magic",
+            "thunderwave 3/day each"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "conjure elemental (air elemental only)",
+            "creation",
+            "gaseous form",
+            "invisibility",
+            "major image",
+            "plane shift"
+          ]
+        }
+      ],
+      "abilityScore": "cha",,
+      "spellSaveDc": 17
+      "toHit": 9
+    }
   },
   {
     "name": "Doppelganger",
@@ -6347,7 +6664,21 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2300
+    "xp": 2300,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1,
+          "spells": [
+            "darkness",
+            "faerie fire"
+          ]
+        }
+      ],
+      "abilityScore": "wis",
+      "spellSaveDc": 13
+    }
   },
   {
     "name": "Drow",
@@ -6413,7 +6744,20 @@ const monsters = [
         ]
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1,
+          "spells": [
+            "darkness",
+            "faerie fire"
+          ]
+        }
+      ],
+      "spellSaveDc": 11
+    }
   },
   {
     "name": "Druid",
@@ -6459,7 +6803,40 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          TODO
+          "perDay": null,
+          "spells": [
+            "druidcraft",
+            "produce flame",
+            "shillelagh"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "entangle",
+            "longstrider",
+            "speak with animals",
+            "thunderwave"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "animal messenger",
+            "barkskin"
+          ]
+        }
+      ],
+      "level": 4,
+      "abilityScore": "wis",
+      "spellSaveDc": 12,
+      "toHit": 4
+    }
   },
   {
     "name": "Dryad",
@@ -6524,7 +6901,35 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 200
+    "xp": 200,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "druidcraft"
+          ]
+        },
+        {
+          "perDay": 3,
+          "spells": [
+            "entangle",
+            "goodberry"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "barkskin",
+            "pass without trace",
+            "shillelagh"
+          ]
+        }
+      ],
+      "abilityScore": "cha",
+      "spellSaveDc": 14
+    }
   },
   {
     "name": "Duergar",
@@ -6825,7 +7230,38 @@ const monsters = [
         ]
       }
     ],
-    "xp": 7200
+    "xp": 7200,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "detect magic"
+          ]
+        },
+        {
+          "perDay": 3,
+          "spells": [
+            "enlarge/reduce",
+            "tongues"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "conjure elemental (fire elemental only)",
+            "gaseous form",
+            "invisibility",
+            "major image",
+            "plane shift",
+            "wall of fire"
+          ]
+        }
+      ],
+      "spellSaveDc": 15,
+      "toHit": 7
+    }
   },
   {
     "name": "Elephant",
@@ -9423,7 +9859,21 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 5000
+    "xp": 5000,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1,
+          "spells": [
+            "confusion",
+            "fly",
+            "power word stun"
+          ]
+        }
+      ],
+      "spellSaveDc": 16
+    }
   },
   {
     "name": "Gladiator",
@@ -9986,7 +10436,22 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 700
+    "xp": 700,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "dancing lights",
+            "minor illusion",
+            "vicious mockery"
+          ]
+        }
+      ],
+      "abilityScore": "cha",
+      "spellSaveDc": 12
+    }
   },
   {
     "name": "Grick",
@@ -10265,7 +10730,65 @@ const monsters = [
         ]
       }
     ],
-    "xp": 5900
+    "xp": 5900,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "mending",
+            "sacred flame",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "command",
+            "cure wounds",
+            "shield of faith"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "calm emotions",
+            "hold person"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "bestow curse",
+            "clairvoyance"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "banishment",
+            "freedom of movement"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "flame strike",
+            "geas"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "true seeing"
+          ]
+        }
+      ],
+      "level": 11,
+      "abilityScore": "wis",
+      "spellSaveDc": 16,
+      "toHit": 8
+    }
   },
   {
     "name": "Gynosphinx",
@@ -10345,7 +10868,60 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 7200
+    "xp": 7200,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "mage hand",
+            "minor illusion",
+            "prestidigitation"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "detect magic",
+            "identify",
+            "shield"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "darkness",
+            "locate object",
+            "suggestion"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "dispel magic",
+            "remove curse",
+            "tongues"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "banishment",
+            "greater invisibility"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "legend lore"
+          ]
+        }
+      ],
+      "level": 9,
+      "abilityScore": "int",
+      "spellSaveDc": 16,
+      "toHit": 8
+    }
   },
   {
     "name": "Half-Red Dragon Veteran",
@@ -11862,7 +12438,13 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1100
+    "xp": 1100,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [],
+      "abilityScore": "cha",
+      "spellSaveDc": 13
+    }
   },
   {
     "name": "Lemure",
@@ -11998,7 +12580,91 @@ const monsters = [
         "damage_dice": "6d6"
       }
     ],
-    "xp": 33000
+    "xp": 33000,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "mage hand",
+            "prestidigitation",
+            "ray of frost"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "detect magic",
+            "magic missile",
+            "shield",
+            "thunderwave"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "detect thoughts",
+            "invisibility",
+            "Melf's acid arrow",
+            "mirror image"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "animate dead",
+            "counterspell",
+            "dispel magic",
+            "fireball"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "blight",
+            "dimension door"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "cloudkill",
+            "scrying"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "disintegrate",
+            "globe of invulnerability"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "finger of death",
+            "plane shift"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "dominate monster",
+            "power word stun"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "power word kill"
+          ]
+        }
+      ],
+      "level": 18,
+      "abilityScore": "int",
+      "spellSaveDc": 20,
+      "toHit": 12
+    }
   },
   {
     "name": "Lion",
@@ -12235,7 +12901,61 @@ const monsters = [
         ]
       }
     ],
-    "xp": 2300
+    "xp": 2300,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "fire bolt",
+            "light",
+            "mage hand",
+            "prestidigitation"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "detect magic",
+            "mage armor",
+            "magic missile",
+            "shield"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "misty step",
+            "suggestion"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "counterspell",
+            "fireball",
+            "fly"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "greater invisibility",
+            "ice storm"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "cone of cold"
+          ]
+        }
+      ],
+      "level": 9,
+      "abilityScore": "int",
+      "spellSaveDc": 14,
+      "toHit": 6
+    }
   },
   {
     "name": "Magma Mephit",
@@ -12275,6 +12995,7 @@ const monsters = [
       },
       {
         "name": "Innate Spellcasting (1/Day)",
+        TODO
         "desc": "The mephit can innately cast heat metal (spell save DC 10), requiring no material components. Its innate spellcasting ability is Charisma.",
         "attack_bonus": 0
       }
@@ -13184,7 +13905,65 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 13000
+    "xp": 13000,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "sacred flame",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "command",
+            "guiding bolt",
+            "shield of faith"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "hold person",
+            "silence",
+            "spiritual weapon"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "animate dead",
+            "dispel magic"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "divination",
+            "guardian of faith"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "contagion",
+            "insect plague"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "harm"
+          ]
+        }
+      ],
+      "level": 10,
+      "abilityScore": "wis",
+      "spellSaveDc": 17,
+      "toHit": 9
+    }
   },
   {
     "name": "Nalfeshnee",
@@ -13350,7 +14129,30 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "detect magic",
+            "magic missile"
+          ]
+        },
+        {
+          "perDay": 2,
+          "spells": [
+            "plane shift (self only)",
+            "ray of enfeeblement",
+            "sleep"
+          ]
+        }
+      ],
+      "abilityScore": "cha",
+      "spellSaveDc": 14,
+      "toHit": 6
+    }
   },
   {
     "name": "Nightmare",
@@ -13742,7 +14544,30 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 2900
+    "xp": 2900,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "darkness",
+            "invisibility"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "charm person",
+            "cone of cold",
+            "gaseous form",
+            "sleep"
+          ]
+        }
+      ],
+      "abilityScore": "cha",
+      "spellSaveDc": 13
+    }
   },
   {
     "name": "Orc",
@@ -14230,7 +15055,20 @@ const monsters = [
         ]
       }
     ],
-    "xp": 25000
+    "xp": 25000,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 3,
+          "spells": [
+            "hold monster",
+            "wall of fire"
+          ]
+        }
+      ],
+      "spellSaveDc": 21
+    }
   },
   {
     "name": "Planetar",
@@ -14304,7 +15142,30 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 15000
+    "xp": 15000,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 3,
+          "spells": [
+            "blade barrier",
+            "dispel evil and good",
+            "flame strike",
+            "raise dead"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "commune",
+            "control weather",
+            "insect plague"
+          ]
+        }
+      ],
+      "spellSaveDc": 20
+    }
   },
   {
     "name": "Plesiosaurus",
@@ -14536,7 +15397,45 @@ const monsters = [
         ]
       }
     ],
-    "xp": 450
+    "xp": 450,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "light",
+            "sacred flame",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "cure wounds",
+            "guiding bolt",
+            "sanctuary"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "lesser restoration",
+            "spiritual weapon"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "dispel magic",
+            "spirit guardians"
+          ]
+        }
+      ],
+      "level": 5,
+      "abilityScore": "wis",
+      "spellSaveDc": 13,
+      "toHit": 5
+    }
   },
   {
     "name": "Pseudodragon",
@@ -14840,7 +15739,43 @@ const monsters = [
         ]
       }
     ],
-    "xp": 10000
+    "xp": 10000,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "detect thoughts",
+            "disguise self",
+            "mage hand",
+            "minor illusion"
+          ]
+        },
+        {
+          "perDay": 3,
+          "spells": [
+            "charm person",
+            "detect magic",
+            "invisibility",
+            "major image",
+            "suggestion"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "dominate person",
+            "fly",
+            "plane shift",
+            "true seeing"
+          ]
+        }
+      ],
+      "abilityScore": "cha",
+      "spellSaveDc": 18,
+      "toHit": 10
+    }
   },
   {
     "name": "Rat",
@@ -16313,7 +17248,28 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 33000
+    "xp": 33000,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 3,
+          "spells": [
+            "blade barrier",
+            "dispel evil and good",
+            "resurrection"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "commune",
+            "control weather"
+          ]
+        }
+      ],
+      "spellSaveDc": 25
+    }
   },
   {
     "name": "Specter",
@@ -16470,7 +17426,58 @@ const monsters = [
         ]
       }
     ],
-    "xp": 3900
+    "xp": 3900,
+    "spellcasting": {
+      "spellCategories": [
+        {
+          "perDay": null,
+          "spells": [
+            "mage hand",
+            "minor illusion",
+            "ray of frost"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "charm person",
+            "detect magic",
+            "sleep"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "detect thoughts",
+            "hold person"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "lightning bolt",
+            "water breathing"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "blight",
+            "dimension door"
+          ]
+        },
+        {
+          "perDay": null,
+          "spells": [
+            "dominate person"
+          ]
+        }
+      ],
+      "level": 10,
+      "abilityScore": "int",
+      "spellSaveDc": 14,
+      "toHit": 6
+    }
   },
   {
     "name": "Sprite",
@@ -16911,7 +17918,30 @@ const monsters = [
         ]
       }
     ],
-    "xp": 10000
+    "xp": 10000,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "detect magic",
+            "feather fall",
+            "levitate",
+            "light"
+          ]
+        },
+        {
+          "perDay": 3,
+          "spells": [
+            "control weather",
+            "water breathing"
+          ]
+        }
+      ],
+      "abilityScore": "cha",
+      "spellSaveDc": 17
+    }
   },
   {
     "name": "Succubus/Incubus",
@@ -18087,7 +19117,30 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 1800
+    "xp": 1800,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "detect evil and good",
+            "druidcraft",
+            "pass without trace"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "calm emotions",
+            "dispel evil and good",
+            "entangle"
+          ]
+        }
+      ],
+      "abilityScore": "cha",
+      "spellSaveDc": 14
+    }
   },
   {
     "name": "Vampire",
