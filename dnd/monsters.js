@@ -2748,7 +2748,8 @@ const monsters = [
       "level": 12,
       "abilityScore": "wis",
       "spellSaveDc": 18,
-      "toHit": 10
+      "toHit": 10,
+      "class": "cleric"
     },
     "resistances": {
       "bludgeoning": 1.7976931348623157e+308,
