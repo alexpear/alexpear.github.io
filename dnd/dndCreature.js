@@ -220,11 +220,28 @@ class DndCreature {
         return resistedDamage;
     }
 
-    heal (hitDice) {
-        hitDice = hitDice || 1;
-        // Later flesh out
+    heal (diceHealed) {
+        diceHealed = diceHealed || 1;
 
-        // return outcome;
+        const outcome = {
+            diceHealed
+        };
+
+        // Minimum 1 per healing session, even if CON modifier is negative.
+        let healed = 1;
+
+        for (let d = 0; d < diceHealed; d++) {
+            const conModifier = Dice.abilityModifier(this.monsterTemplate.constitution);
+            const dieBoost = Dice.roll(`${this.monsterTemplate.hit_dice} + ${conModifier}`);
+            healed += dieBoost >= 0 ?
+                dieBoost :
+                0;
+        }
+
+        this.currentHp = Math.min(this.currentHp + healed, this.maxHp);
+        outcome.subsequentHp = this.currentHp;
+
+        return outcome;
     }
 
     randomHpMax () {
