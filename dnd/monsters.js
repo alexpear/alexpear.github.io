@@ -2973,6 +2973,90 @@ const monsters = [
     "xp": 8400,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "fire bolt",
+            "light",
+            "mage hand",
+            "prestidigitation",
+            "shocking grasp"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "detect magic",
+            "identify",
+            "mage armor",
+            "magic missile"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "detect thoughts",
+            "mirror image",
+            "misty step"
+          ]
+        },
+        {
+          "level": 3,
+          "slots": 3,
+          "spells": [
+            "counterspell",
+            "fly",
+            "lightning bolt"
+          ]
+        },
+        {
+          "level": 4,
+          "slots": 3,
+          "spells": [
+            "banishment",
+            "fire shield",
+            "stoneskin"
+          ]
+        },
+        {
+          "level": 5,
+          "slots": 3,
+          "spells": [
+            "cone of cold",
+            "scrying",
+            "wall of force"
+          ]
+        },
+        {
+          "level": 6,
+          "slots": 1,
+          "spells": [
+            "globe of invulnerability"
+          ]
+        },
+        {
+          "level": 7,
+          "slots": 1,
+          "spells": [
+            "teleport"
+          ]
+        },
+        {
+          "level": 8,
+          "slots": 1,
+          "spells": [
+            "mind blank"
+          ]
+        },
+        {
+          "level": 9,
+          "slots": 1,
+          "spells": [
+            "time stop"
+          ]
+        }
       ],
       "level": 18,
       "abilityScore": "int",
