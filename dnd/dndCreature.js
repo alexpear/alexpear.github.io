@@ -552,7 +552,7 @@ class DndCreature {
         const sections = ability.desc.split('\n');
         const sentences = sections[0].split('. ');
 
-        const parsed = entry.spellcasting || 
+        const parsed = entry.spellcasting ||
             {
                 spellCategories: []
             };
