@@ -538,6 +538,48 @@ class Vessel extends Thing {
         return Object.keys(Parts);
     }
 
+    static armsRace (iterations) {
+        iterations = iterations || 12;
+
+        // If they are not the same chassis, that is still a realistic battle.
+        const terranShip = Vessel.randomEclipseShip();
+        const martianShip = Vessel.randomEclipseShip();
+
+        for (let i = 0; i < iterations; i++) {
+            if (terranShip.beats(martianShip)) {
+                martianShip.mutate();
+
+                Util.log(`Terra wins, with ${terranShip.currentDurability} durability remaining! Now Mars develops this new design: \n${martianShip.debugString()}`)
+            }
+            else {
+                terranShip.mutate();
+
+                Util.log(`Mars wins, with ${martianShip.currentDurability} durability remaining! Now Terra develops this new design: \n${martianShip.debugString()}`)
+            }
+
+            terranShip.repair();
+            martianShip.repair();
+        }
+    }
+
+    // Returns boolean
+    // Performs 1 random battle
+    // Does not repair afterwards
+    beats (other) {
+
+    }
+
+    // Adds 1 random part, so long as that is legal
+    // Returns nothing
+    mutate () {
+
+    }
+
+    repair () {
+        this.active = true;
+        this.currentDurability = this.maxDurability;
+    }
+
     static test () {
         const ship = Vessel.randomEclipseShip();
 

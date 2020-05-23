@@ -347,15 +347,15 @@ const Parts = module.exports = {
             
     //     ]
     // },
-    // cockpit: {
-    //     power: 10,
-    //     weight: 1000,
-    //     sensors: 3,
-    //     comms: 10,
-    //     processing: 3,
-    //     techsRequired: [
-    //         'lifeSupport'
-    //     ]
-    // }
+    cockpit: {
+        power: -1,
+        aiming: 1,
+        initiative: 2,
+        techsRequired: [
+            'lifeSupport'
+        ]
+        // sensors: 3,
+        // comms: 2,
+    }
 
 };
