@@ -7,14 +7,27 @@ const Util = require('../util/util.js');
 const d20 = require('d20');
 
 class Dice {
-    static check (dc, modifier) {
+    // Advantage: 1 means advantage, 0 or undefined means normal, and -1 means disadvantage
+    static check (dc, modifier, advantage) {
         if (! Util.exists(dc)) {
             dc = 15;
         }
 
         modifier = modifier || 0;
 
-        const roll = d20.roll(20);
+        let roll = d20.roll(20);
+
+        // If positive or negative (ie nonzero)
+        if (advantage) {
+            const pair = [roll, d20.roll(20)];
+
+            if (advantage > 0) {
+                roll = Math.max(pair);
+            }
+            else {
+                roll = Math.min(pair);
+            }
+        }
 
         if (roll === 1) {
             return Dice.CriticalFailure;
