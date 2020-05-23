@@ -6533,13 +6533,22 @@ const monsters = [
           "spells": [
             "detect evil and good",
             "detect magic",
-            "thunderwave 3/day each"
+            "thunderwave"
+          ]
+        },
+        {
+          "perDay": 3,
+          "spells": [
+            "create food and water",
+            "create wine",
+            "tongues",
+            "wind walk"
           ]
         },
         {
           "perDay": 1,
           "spells": [
-            "conjure elemental (air elemental only)",
+            "conjure elemental",
             "creation",
             "gaseous form",
             "invisibility",
@@ -7518,7 +7527,7 @@ const monsters = [
         {
           "perDay": 1,
           "spells": [
-            "conjure elemental (fire elemental only)",
+            "conjure elemental",
             "gaseous form",
             "invisibility",
             "major image",
@@ -11331,7 +11340,8 @@ const monsters = [
       "level": 9,
       "abilityScore": "int",
       "spellSaveDc": 16,
-      "toHit": 8
+      "toHit": 8,
+      "class": "wizard"
     },
     "resistances": {
       "bludgeoning": 2,
