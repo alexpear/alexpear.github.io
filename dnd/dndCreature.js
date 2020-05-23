@@ -44,7 +44,11 @@ class DndCreature {
         const template = this.monsterTemplate;
         template.resistances = {};
 
-        for (let damageType in DamageTypes) {
+        for (let damageTypeCapitalized in DamageTypes) {
+            const damageType = damageTypeCapitalized.toLowerCase();
+
+            // Util.logDebug(`examining resistance to ${damageType} on ${template.name}. template.damage_immunities is ${template.damage_immunities}. template.damage_immunities.indexOf(damageType) is ${template.damage_immunities.indexOf(damageType)}.`);
+
             if (template.damage_vulnerabilities.indexOf(damageType) >= 0) {
                 template.resistances[damageType] = 0.5;
             }
