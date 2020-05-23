@@ -510,7 +510,7 @@ class DndCreature {
         }
 
         if (ability.name === 'Innate Spellcasting') {
-            return DndCreature.parseInnateSpellcasting(ability);
+            return DndCreature.parseInnateSpellcasting(ability, entry.spellcasting);
         }
 
         // return {
@@ -552,9 +552,12 @@ class DndCreature {
         const sections = ability.desc.split('\n');
         const sentences = sections[0].split('. ');
 
-        const parsed = {
-            spellCategories: []
-        };
+        const parsed = entry.spellcasting || 
+            {
+                spellCategories: []
+            };
+
+        // "desc": "The lich is an 18th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 20, +12 to hit with spell attacks). The lich has the following wizard spells prepared:\n\n• Cantrips (at will): mage hand, prestidigitation, ray of frost\n• 1st level (4 slots): detect magic, magic missile, shield, thunderwave\n• 2nd level (3 slots): detect thoughts, invisibility, Melf's acid arrow, mirror image\n• 3rd level (3 slots): animate dead, counterspell, dispel magic, fireball\n• 4th level (3 slots): blight, dimension door\n• 5th level (3 slots): cloudkill, scrying\n• 6th level (1 slot): disintegrate, globe of invulnerability\n• 7th level (1 slot): finger of death, plane shift\n• 8th level (1 slot): dominate monster, power word stun\n• 9th level (1 slot): power word kill",
 
         const levelParts = sentences[0].split('-level spellcaster');
         const levelWords = levelParts[0].split(' ');
@@ -571,16 +574,31 @@ class DndCreature {
             sentence2Parts[1]
         );
 
-        // const toHitPhrase = sentences[1].split(' +')
+        // I just did to-hit manually.
+
+        const classWords = sentences[2]
+            .split(' spell prepared')[0]
+            .split(' ');
+
+        parsed.class = classWords[classWords.length - 1];
+
 
         for (let i = 2; i < sections.length; i++) {
             const category = {};
 
+            category.level = parseInt(
+                sections[i]
+                    .slice(1, 3)
+            );
+
+            category.slots = parseInt(
+                sections[i]
+                    .split('( ')[1]
+            );
+
             const parts = sections[i].split(': ');
 
-            category.perDay = parts[0] === 'At will' ?
-                Number.MAX_VALUE :
-                parseInt(parts[0]);
+            // • 2nd level (3 slots): detect thoughts, invisibility, Melf's acid arrow, mirror image
 
             category.spells = parts[1] && parts[1].split(', ').map(
                 spell => spell.trim()
@@ -592,14 +610,15 @@ class DndCreature {
         return parsed;
     }
 
-    static parseInnateSpellcasting (ability) {
+    static parseInnateSpellcasting (ability, existingSpellcasting) {
         const sections = ability.desc.split('\n');
         const sentences = sections[0].split('. ');
 
-        const parsed = {
-            innate: true,
-            spellCategories: []
-        };
+        const parsed = existingSpellcasting ||
+            {
+                innate: true,
+                spellCategories: []
+            };
 
         const parts = sentences[0].split(' innate spellcasting ability is ');
 
