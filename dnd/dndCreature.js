@@ -485,6 +485,110 @@ class DndCreature {
         return angel;
     }
 
+    static isMagical (entry) {
+        // Later
+    }
+
+    static addSpellcasting () {
+        for (let i = 0; i < Monsters.length; i++) {
+            Monsters[i].spellcasting = DndCreature.parseSpellcasting(Monsters[i]);
+        }
+
+        // Util.logDebug(Monsters);
+        Util.logDebug(Monsters.filter(m => m.spellcasting));
+    }
+
+    static parseSpellcasting (entry) {
+        const ability = DndCreature.findSpellcastingObj(entry);
+
+        if (! ability) {
+            return;
+        }
+
+        if (ability.name === 'Innate Spellcasting') {
+            return DndCreature.parseInnateSpellcasting(ability);
+        }
+
+
+
+        return {
+            // mage example
+            // Note that eg naga has a extra sentence in the intro
+            spellcasterLevel: 9,
+            abilityScore: 'int',
+            spellSaveDc: 14,
+            toHit: 6,
+            spellList: 'wizard',
+            spellCategories: [
+                {
+                    level: 0,
+                    slots: undefined,
+                    spells: [
+                        'fire bolt',
+                        'light',
+                        'mage hand',
+                        'prestidigitation'
+                    ]
+                },
+                {
+                    level: 1,
+                    slots: 4,
+                    spells: [
+                        'foo...'
+                    ]
+                }
+                // ...
+            ]
+        }
+
+
+      // {
+      //   "name": "Spellcasting",
+      //   "desc": "The mage is a 9th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 14, +6 to hit with spell attacks). The mage has the following wizard spells prepared:\n\n• Cantrips (at will): fire bolt, light, mage hand, prestidigitation\n• 1st level (4 slots): detect magic, mage armor, magic missile, shield\n• 2nd level (3 slots): misty step, suggestion\n• 3rd level (3 slots): counterspell, fireball, fly\n• 4th level (3 slots): greater invisibility, ice storm\n• 5th level (1 slot): cone of cold",
+      //   "attack_bonus": 0
+      // }
+    }
+
+    static parseInnateSpellcasting (ability) {
+        const sections = ability.desc.split('\n');
+        const sentences = sections[0].split('. ');
+
+        const parsed = {
+            innate: true,
+            spellCategories: []
+        };
+
+        const parts = sentences[0].split(' innate spellcasting ability is ');
+
+        if (parts.length === 2) {
+            parsed.abilityScore = parts[1].slice(0, 3).toLowerCase();
+        }
+
+        for (let i = 2; i < sections.length; i++) {
+            const category = {};
+
+            const parts = sections[i].split(': ');
+
+            category.perDay = parts[0] === 'At will' ?
+                Number.MAX_VALUE :
+                parseInt(parts[0]);
+
+            category.spells = parts[1].split(', ').map(
+                spell => spell.trim()
+            );
+
+            parsed.spellCategories.push(category);
+        }
+
+        return parsed;
+    }
+
+    static findSpellcastingObj (entry) {
+        return entry.special_abilities && entry.special_abilities.find(
+            a => a.name.endsWith('Spellcasting')
+        );
+    }
+
     static monstersInfo () {
         const totalAbilities = Util.sum(
             Monsters.map(
@@ -493,10 +597,7 @@ class DndCreature {
                         (m.actions || []).length +
                         (m.legendary_actions || []).length;
 
-                    // Later functionize this ability-finder.
-                    const spellcasting = m.special_abilities && m.special_abilities.find(
-                        a => a.name.endsWith('Spellcasting')
-                    );
+                    const spellcasting = DndCreature.findSpellcastingObj(m);
 
                     // Highly approximate
                     const spellEstimate = spellcasting ?
@@ -541,12 +642,15 @@ class DndCreature {
         const relevantResistances = sphynx.unusualDamageResponses(dragon.defaultAttack());
         // Util.log(relevantResistances);
 
+        // Util.logDebug(DndCreature.parseSpellcasting(Monsters.mage));
+        DndCreature.addSpellcasting();
+
         const herald = DndCreature.randomTemplate();
         await DndCreature.tournamentOfCr(herald.challenge_rating);
     }
 }
 
-DndCreature.IMMUNE = 9999;
+DndCreature.IMMUNE = Number.MAX_VALUE;
 
 module.exports = DndCreature;
 
