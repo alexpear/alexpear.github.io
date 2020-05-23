@@ -143,11 +143,29 @@ const monsters = [
     "xp": 50,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "light",
+            "sacred flame",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 3,
+          "spells": [
+            "bless",
+            "cure wounds",
+            "sanctuary"
+          ]
+        }
       ],
       "level": 1,
       "abilityScore": "wis",
       "spellSaveDc": 12,
-      "toHit": 4
+      "toHit": 4,
+      "class": "cleric"
     },
     "resistances": {}
   },
@@ -2670,6 +2688,62 @@ const monsters = [
     "xp": 18000,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "sacred flame",
+            "spare the dying",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "command",
+            "detect evil and good",
+            "detect magic"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "lesser restoration",
+            "zone of truth"
+          ]
+        },
+        {
+          "level": 3,
+          "slots": 3,
+          "spells": [
+            "dispel magic",
+            "tongues"
+          ]
+        },
+        {
+          "level": 4,
+          "slots": 3,
+          "spells": [
+            "banishment",
+            "freedom of movement"
+          ]
+        },
+        {
+          "level": 5,
+          "slots": 2,
+          "spells": [
+            "flame strike",
+            "greater restoration"
+          ]
+        },
+        {
+          "level": 6,
+          "slots": 1,
+          "spells": [
+            "heroes' feast"
+          ]
+        }
       ],
       "level": 12,
       "abilityScore": "wis",
@@ -2902,7 +2976,8 @@ const monsters = [
       "level": 18,
       "abilityScore": "int",
       "spellSaveDc": 17,
-      "toHit": 9
+      "toHit": 9,
+      "class": "wizard"
     },
     "resistances": {
       "bludgeoning": 2,
@@ -5430,6 +5505,30 @@ const monsters = [
             "control weather",
             "gaseous form"
           ]
+        },
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "detect magic",
+            "fog cloud",
+            "light"
+          ]
+        },
+        {
+          "perDay": 3,
+          "spells": [
+            "feather fall",
+            "fly",
+            "misty step",
+            "telekinesis"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "control weather",
+            "gaseous form"
+          ]
         }
       ],
       "abilityScore": "cha"
@@ -5715,6 +5814,34 @@ const monsters = [
             "greater restoration",
             "scrying"
           ]
+        },
+        {
+          "perDay": 1.7976931348623157e+308,
+          "spells": [
+            "detect evil and good",
+            "detect magic",
+            "detect thoughts"
+          ]
+        },
+        {
+          "perDay": 3,
+          "spells": [
+            "bless",
+            "create food and water",
+            "cure wounds",
+            "lesser restoration",
+            "protection from poison",
+            "sanctuary",
+            "shield"
+          ]
+        },
+        {
+          "perDay": 1,
+          "spells": [
+            "dream",
+            "greater restoration",
+            "scrying"
+          ]
         }
       ],
       "spellSaveDc": 14
@@ -5876,11 +6003,37 @@ const monsters = [
     "xp": 450,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "light",
+            "sacred flame",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "command",
+            "inflict wounds",
+            "shield of faith"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "hold person",
+            "spiritual weapon"
+          ]
+        }
       ],
       "level": 4,
       "abilityScore": "wis",
       "spellSaveDc": 11,
-      "toHit": 3
+      "toHit": 3,
+      "class": "cleric"
     },
     "resistances": {}
   },
@@ -6889,11 +7042,38 @@ const monsters = [
     "xp": 450,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "druidcraft",
+            "produce flame",
+            "shillelagh"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "entangle",
+            "longstrider",
+            "speak with animals",
+            "thunderwave"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "animal messenger",
+            "barkskin"
+          ]
+        }
       ],
       "level": 4,
       "abilityScore": "wis",
       "spellSaveDc": 12,
-      "toHit": 4
+      "toHit": 4,
+      "class": "druid"
     },
     "resistances": {}
   },
@@ -10948,11 +11128,68 @@ const monsters = [
     "xp": 5900,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "mending",
+            "sacred flame",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "command",
+            "cure wounds",
+            "shield of faith"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "calm emotions",
+            "hold person"
+          ]
+        },
+        {
+          "level": 3,
+          "slots": 3,
+          "spells": [
+            "bestow curse",
+            "clairvoyance"
+          ]
+        },
+        {
+          "level": 4,
+          "slots": 3,
+          "spells": [
+            "banishment",
+            "freedom of movement"
+          ]
+        },
+        {
+          "level": 5,
+          "slots": 2,
+          "spells": [
+            "flame strike",
+            "geas"
+          ]
+        },
+        {
+          "level": 6,
+          "slots": 1,
+          "spells": [
+            "true seeing"
+          ]
+        }
       ],
       "level": 11,
       "abilityScore": "wis",
       "spellSaveDc": 16,
-      "toHit": 8
+      "toHit": 8,
+      "class": "cleric"
     },
     "resistances": {
       "poison": 1.7976931348623157e+308
@@ -11039,6 +11276,56 @@ const monsters = [
     "xp": 7200,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "mage hand",
+            "minor illusion",
+            "prestidigitation"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "detect magic",
+            "identify",
+            "shield"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "darkness",
+            "locate object",
+            "suggestion"
+          ]
+        },
+        {
+          "level": 3,
+          "slots": 3,
+          "spells": [
+            "dispel magic",
+            "remove curse",
+            "tongues"
+          ]
+        },
+        {
+          "level": 4,
+          "slots": 3,
+          "spells": [
+            "banishment",
+            "greater invisibility"
+          ]
+        },
+        {
+          "level": 5,
+          "slots": 1,
+          "spells": [
+            "legend lore"
+          ]
+        }
       ],
       "level": 9,
       "abilityScore": "int",
@@ -12809,11 +13096,97 @@ const monsters = [
     "xp": 33000,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "mage hand",
+            "prestidigitation",
+            "ray of frost"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "detect magic",
+            "magic missile",
+            "shield",
+            "thunderwave"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "detect thoughts",
+            "invisibility",
+            "Melf's acid arrow",
+            "mirror image"
+          ]
+        },
+        {
+          "level": 3,
+          "slots": 3,
+          "spells": [
+            "animate dead",
+            "counterspell",
+            "dispel magic",
+            "fireball"
+          ]
+        },
+        {
+          "level": 4,
+          "slots": 3,
+          "spells": [
+            "blight",
+            "dimension door"
+          ]
+        },
+        {
+          "level": 5,
+          "slots": 3,
+          "spells": [
+            "cloudkill",
+            "scrying"
+          ]
+        },
+        {
+          "level": 6,
+          "slots": 1,
+          "spells": [
+            "disintegrate",
+            "globe of invulnerability"
+          ]
+        },
+        {
+          "level": 7,
+          "slots": 1,
+          "spells": [
+            "finger of death",
+            "plane shift"
+          ]
+        },
+        {
+          "level": 8,
+          "slots": 1,
+          "spells": [
+            "dominate monster",
+            "power word stun"
+          ]
+        },
+        {
+          "level": 9,
+          "slots": 1,
+          "spells": [
+            "power word kill"
+          ]
+        }
       ],
       "level": 18,
       "abilityScore": "int",
       "spellSaveDc": 20,
-      "toHit": 12
+      "toHit": 12,
+      "class": "wizard"
     },
     "resistances": {
       "bludgeoning": 1.7976931348623157e+308,
@@ -13066,11 +13439,63 @@ const monsters = [
     "xp": 2300,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "fire bolt",
+            "light",
+            "mage hand",
+            "prestidigitation"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "detect magic",
+            "mage armor",
+            "magic missile",
+            "shield"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "misty step",
+            "suggestion"
+          ]
+        },
+        {
+          "level": 3,
+          "slots": 3,
+          "spells": [
+            "counterspell",
+            "fireball",
+            "fly"
+          ]
+        },
+        {
+          "level": 4,
+          "slots": 3,
+          "spells": [
+            "greater invisibility",
+            "ice storm"
+          ]
+        },
+        {
+          "level": 5,
+          "slots": 1,
+          "spells": [
+            "cone of cold"
+          ]
+        }
       ],
       "level": 9,
       "abilityScore": "int",
       "spellSaveDc": 14,
-      "toHit": 6
+      "toHit": 6,
+      "class": "wizard"
     },
     "resistances": {}
   },
@@ -14077,11 +14502,68 @@ const monsters = [
     "xp": 13000,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "sacred flame",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "command",
+            "guiding bolt",
+            "shield of faith"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "hold person",
+            "silence",
+            "spiritual weapon"
+          ]
+        },
+        {
+          "level": 3,
+          "slots": 3,
+          "spells": [
+            "animate dead",
+            "dispel magic"
+          ]
+        },
+        {
+          "level": 4,
+          "slots": 3,
+          "spells": [
+            "divination",
+            "guardian of faith"
+          ]
+        },
+        {
+          "level": 5,
+          "slots": 2,
+          "spells": [
+            "contagion",
+            "insect plague"
+          ]
+        },
+        {
+          "level": 6,
+          "slots": 1,
+          "spells": [
+            "harm"
+          ]
+        }
       ],
       "level": 10,
       "abilityScore": "wis",
       "spellSaveDc": 17,
-      "toHit": 9
+      "toHit": 9,
+      "class": "cleric"
     },
     "resistances": {
       "bludgeoning": 0.5,
@@ -15582,11 +16064,45 @@ const monsters = [
     "xp": 450,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "light",
+            "sacred flame",
+            "thaumaturgy"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "cure wounds",
+            "guiding bolt",
+            "sanctuary"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "lesser restoration",
+            "spiritual weapon"
+          ]
+        },
+        {
+          "level": 3,
+          "slots": 2,
+          "spells": [
+            "dispel magic",
+            "spirit guardians"
+          ]
+        }
       ],
       "level": 5,
       "abilityScore": "wis",
       "spellSaveDc": 13,
-      "toHit": 5
+      "toHit": 5,
+      "class": "cleric"
     },
     "resistances": {}
   },
@@ -17681,11 +18197,60 @@ const monsters = [
     "xp": 3900,
     "spellcasting": {
       "spellCategories": [
+        {
+          "level": 0,
+          "spells": [
+            "mage hand",
+            "minor illusion",
+            "ray of frost"
+          ]
+        },
+        {
+          "level": 1,
+          "slots": 4,
+          "spells": [
+            "charm person",
+            "detect magic",
+            "sleep"
+          ]
+        },
+        {
+          "level": 2,
+          "slots": 3,
+          "spells": [
+            "detect thoughts",
+            "hold person"
+          ]
+        },
+        {
+          "level": 3,
+          "slots": 3,
+          "spells": [
+            "lightning bolt",
+            "water breathing"
+          ]
+        },
+        {
+          "level": 4,
+          "slots": 3,
+          "spells": [
+            "blight",
+            "dimension door"
+          ]
+        },
+        {
+          "level": 5,
+          "slots": 2,
+          "spells": [
+            "dominate person"
+          ]
+        }
       ],
       "level": 10,
       "abilityScore": "int",
       "spellSaveDc": 14,
-      "toHit": 6
+      "toHit": 6,
+      "class": "wizard"
     },
     "resistances": {
       "poison": 1.7976931348623157e+308
