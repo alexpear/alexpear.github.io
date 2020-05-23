@@ -13,6 +13,7 @@ const _ = require('lodash');
 const Yaml = require('js-yaml');
 
 // TODO require and extend Creature (which extends WNode)
+// Say 'template' instead of 'monsterTemplate'
 class DndCreature {
     constructor (input) {
         if (! input) {
@@ -36,7 +37,7 @@ class DndCreature {
         // this.alignment = new Alignment(input.alignment); LATER
         // TODO initialize vague values like 'any alignment'.
         this.alignment = input.alignment;
-        this.currentHp = input.hit_points;
+        this.currentHp = this.randomHpMax();
         this.conditions = [];
     }
 
@@ -209,9 +210,11 @@ class DndCreature {
         for (const type in damageByType) {
             const resistance = target.monsterTemplate.resistances[type] || 1;
 
-            resistedDamage += resistance === DndCreature.IMMUNE ?
+            const fromType = resistance === DndCreature.IMMUNE ?
                 0 :
                 damageByType[type] * resistance;
+
+            resistedDamage += Math.floor(fromType);
         }
 
         return resistedDamage;
@@ -225,7 +228,12 @@ class DndCreature {
     }
 
     randomHpMax () {
-        // LATER: Based on rolling hit dice
+        const hitDice = this.monsterTemplate.hit_dice;
+
+        const conModifier = Dice.abilityModifier(this.monsterTemplate.constitution);
+        const diceCount = parseInt(hitDice);
+
+        return Dice.roll(`${hitDice} + ${conModifier * diceCount}`);
     }
 
     static fractionalCr (cr) {
@@ -724,12 +732,12 @@ class DndCreature {
         // Util.log(relevantResistances);
 
         // Util.logDebug(DndCreature.parseSpellcasting(Monsters.mage));
-        DndCreature.addSpellcasting();
+        // DndCreature.addSpellcasting();
         // Monsters.sort((a, b) => a.name - b.name);
         // Util.logDebug(JSON.stringify(Monsters, undefined, '  '));
 
         const herald = DndCreature.randomTemplate();
-        // await DndCreature.tournamentOfCr(herald.challenge_rating);
+        await DndCreature.tournamentOfCr(herald.challenge_rating);
     }
 }
 

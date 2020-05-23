@@ -87,6 +87,16 @@ class Dice {
         return false;
     }
 
+    static abilityModifier (abilityScore) {
+        return Math.floor((abilityScore - 10) / 2);
+    }
+
+    static testAbilityModifier () {
+        for (let s = 0; s <= 30; s++) {
+            console.log(`Ability score ${s}, Modifier ${Dice.abilityModifier(s)}`);
+        }
+    }
+
     static divideAmong (damage, types) {
         const damageByType = {};
 
@@ -140,4 +150,5 @@ Dice.CriticalFailure = 'criticalFailure';
 
 module.exports = Dice;
 
+// Dice.testAbilityModifier();
 // Dice.testDivideAmong();
