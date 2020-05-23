@@ -6328,8 +6328,8 @@ const monsters = [
           ]
         }
       ],
-      "abilityScore": "cha",,
-      "spellSaveDc": 17
+      "abilityScore": "cha",
+      "spellSaveDc": 17,
       "toHit": 9
     }
   },
@@ -6807,7 +6807,6 @@ const monsters = [
     "spellcasting": {
       "spellCategories": [
         {
-          TODO
           "perDay": null,
           "spells": [
             "druidcraft",
@@ -7059,7 +7058,19 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1,
+          "spells": [
+            "sleep"
+          ]
+        }
+      ],
+      "abilityScore": "cha"
+    }
   },
   {
     "name": "Eagle",
@@ -11826,7 +11837,19 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1,
+          "spells": [
+            "fog cloud"
+          ]
+        }
+      ],
+      "abilityScore": "cha"
+    }
   },
   {
     "name": "Imp",
@@ -12995,7 +13018,6 @@ const monsters = [
       },
       {
         "name": "Innate Spellcasting (1/Day)",
-        TODO
         "desc": "The mephit can innately cast heat metal (spell save DC 10), requiring no material components. Its innate spellcasting ability is Charisma.",
         "attack_bonus": 0
       }
@@ -13023,7 +13045,19 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 100
+    "xp": 100,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1,
+          "spells": [
+            "heat metal"
+          ]
+        }
+      ],
+      "abilityScore": "cha"
+    }
   },
   {
     "name": "Magmin",
@@ -17665,7 +17699,19 @@ const monsters = [
         "attack_bonus": 0
       }
     ],
-    "xp": 50
+    "xp": 50,
+    "spellcasting": {
+      "innate": true,
+      "spellCategories": [
+        {
+          "perDay": 1,
+          "spells": [
+            "blur"
+          ]
+        }
+      ],
+      "abilityScore": "cha"
+    }
   },
   {
     "name": "Stirge",
