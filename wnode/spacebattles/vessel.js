@@ -372,12 +372,12 @@ class Vessel extends Thing {
         }
 
         if (roll === 1) {
-            summary.outcome = DieOutcome.Miss;
+            summary.outcome = Vessel.DieOutcome.Miss;
         }
         else {
             summary.outcome = roll === 6 ?
-                DieOutcome.CriticalHit :
-                DieOutcome.Number;
+                Vessel.DieOutcome.CriticalHit :
+                Vessel.DieOutcome.Number;
         }
 
         summary.value = roll + modifier;
@@ -389,22 +389,22 @@ class Vessel extends Thing {
         // These are the rolled dice that are available to be assigned to targets.
         return [
             {
-                outcome: DieOutcome.CriticalHit,
+                outcome: Vessel.DieOutcome.CriticalHit,
                 value: 6,
                 damage: 2
             },
             {
-                outcome: DieOutcome.Number,
+                outcome: Vessel.DieOutcome.Number,
                 value: 7,
                 damage: 2
             },
             {
-                outcome: DieOutcome.Number,
+                outcome: Vessel.DieOutcome.Number,
                 value: 3,
                 damage: 2
             },
             {
-                outcome: DieOutcome.Miss,
+                outcome: Vessel.DieOutcome.Miss,
                 value: 1,
                 damage: 1
             }
@@ -420,8 +420,8 @@ class Vessel extends Thing {
 
         for (const die of dice) {
             if (
-                die.outcome === DieOutcome.CriticalHit ||
-                die.outcome === DieOutcome.Number &&
+                die.outcome === Vessel.DieOutcome.CriticalHit ||
+                die.outcome === Vessel.DieOutcome.Number &&
                 die.value - shieldPenalty >= 6
             ) {
                 expectedDamage += die.damage;
@@ -429,6 +429,16 @@ class Vessel extends Thing {
         }
 
         return expectedDamage;
+    }
+
+    takeDamage (n) {
+        this.currentDurability -= n;
+
+        if (this.currentDurability <= 0) {
+            this.active = false;
+        }
+
+        return this.currentDurability;
     }
 
     // Has side effects, returns nothing.
@@ -562,11 +572,161 @@ class Vessel extends Thing {
         }
     }
 
+    isActive () {
+        this.active = this.currentDurability > 0;
+        return this.active;
+    }
+
     // Returns boolean
-    // Performs 1 random battle
+    // Performs 1 stochastic 1-on-1 battle
     // Does not repair afterwards
     beats (other) {
+        // Flesh this out later when battle() is implemented.
+    }
 
+    // Does not repair afterwards
+    static battle (attackers, defenders) {
+        attackers = WNode.activesAmong(attackers);
+        defenders = WNode.activesAmong(defenders);
+
+        const activeAttackers = Util.arrayCopy(attackers);
+        const activeDefenders = Util.arrayCopy(defenders);
+
+        const allVessels = attackers.concat(defenders);
+        const byInitiative = {};
+
+        allVessels.forEach(v => {
+            const init = v.getInitiative();
+
+            const factionSymbol = defenders.includes(v) ?
+                'D' :
+                'A';
+
+            // Eg, a defending ship might be stored under initiative key '2D'.
+            const key = init + factionSymbol;
+            
+            if (byInitiative[key]) {
+                byInitiative[key].push(v);
+            }
+            else {
+                byInitiative[key] = [v];
+            }
+        });
+
+        const initKeys = Vessel.sortedInitiative(byInitiative);
+
+        let remaining = allVessels.length;
+        
+        // Missile round, in init order.
+        // TODO functionize for reuse in nonmissile rounds.
+        initKeys.forEach(key => {
+            const defendersTurn = key.endsWith('D');
+
+            const rolled = byInitiative[key].reduce(
+                (rolledSoFar, v) => {
+                    if (! v.isActive()) {
+                        return [];
+                    }
+
+                    return rolledSoFar.concat(
+                        v.rollMissileDice()
+                    );
+                },
+                []
+            );
+
+            // Assign to targets following the Eclipse rules' heuristics for nonplayer ships (LATER)
+            rolled.forEach(die => {
+                if (die.outcome === Vessel.DieOutcome.Miss) {
+                    Util.log(`In initiative step ${key}, a attack die with damage ${die.damage} has outcome ${die.outcome}.`);
+                    return;
+                }
+
+                if (die.outcome === Vessel.DieOutcome.FriendlyFire) {
+                    Util.log(`In initiative step ${key}, a rift die is doing its thing.`);
+
+                    // Later deal with rift case.
+                    return;
+                }
+
+                // Note: We could refresh activeAttackers or activeDefenders after each die is randomly assigned. But the heuristics in the Eclipse rulebook will be better anyway.
+                const target = Util.randomOf(
+                    defendersTurn ?
+                        activeAttackers :
+                        activeDefenders
+                );
+
+                const damage = target.damageFromDice([die]);
+                const subsequentDurability = target.takeDamage(damage);
+
+                Util.log(`In initiative step ${key}, a attack die with damage ${die.damage}, value ${die.value}, and outcome ${die.outcome} targets ${target.template.name} ${target.id}, dealing ${damage} damage and reducing it to ${subsequentDurability} durability.`);
+                // Later persist info about where the die came from, what its value was, and where it was assigned.
+            });
+
+            if (defendersTurn) {
+                activeAttackers = WNode.activesAmong(activeAttackers);
+            }
+            else {
+                activeDefenders = WNode.activesAmong(activeDefenders);
+            }
+        });
+
+        // Nonmissile rounds, in init order.
+        for (let t = 0; t < 100; t++) {
+            Vessel.engagementRound(byInitiative, activeAttackers, activeDefenders);
+
+
+            // initKeys.forEach(key => {
+            //     const rolled = byInitiative[key].reduce(
+            //         (rolledSoFar, v) =>
+            //             rolledSoFar.concat(
+            //                 v.rollAttackDice()
+            //             ),
+            //         []
+            //     );
+            // });
+
+        }
+
+    }
+
+    static sortedInitiative (byInitiative) {
+        return Object.keys(byInitiative).sort(
+            (a, b) => {
+                const diff = parseInt(b) - parseInt(a);
+
+                if (diff !== 0) {
+                    return diff;
+                }
+
+                // In ties, defenders act first.
+                return a[a.length - 1] === 'D' ?
+                    -1:
+                    1;
+            }
+        );
+    }
+
+    static testSortedInitiative () {
+        const out1 = Vessel.sortedInitiative({
+            '0D': true,
+            '0A': true,
+            '24D': true,
+            '-12A': true,
+            '-12D': true,
+            '24A': true
+        });
+
+        Util.logDebug(out1);
+
+        // Import some simple expect/assert functions later
+        if (out1.length !== 6) {
+            throw new Error(out1);
+        }
+    }
+
+    static engagementRound (byInitiative, activeAttackers, activeDefenders) {
+        
     }
 
     // Adds 1 random part, so long as that is legal
@@ -590,6 +750,8 @@ class Vessel extends Thing {
 
         Util.logDebug(ship.simpleYaml());
         Util.logDebug('\n' + ship.traitsString());
+
+        // Vessel.testSortedInitiative();
     }
 };
 
@@ -600,6 +762,7 @@ Vessel.DieOutcome = Util.makeEnum([
     'Number',
     'CriticalHit',
     'FriendlyFire'
+    // Later might need more rift cases.
 ]);
 
 module.exports = Vessel;

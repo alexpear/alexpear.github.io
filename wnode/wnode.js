@@ -470,6 +470,10 @@ class WNode {
         );
     }
 
+    static activesAmong (nodes) {
+        return Util.withProp(nodes, 'active');
+    }
+
     static test () {
         // Unit test for toArray()
         const root = new WNode('root');

@@ -664,6 +664,10 @@ util.makeEnum = (vals) => {
     return dict;
 };
 
+util.withProp = (array, key) => {
+    return array.filter(x => x[key]);
+};
+
 util.toJson = (x) => {
     return x && util.isFunction(x.toJson) ?
         x.toJson() :
