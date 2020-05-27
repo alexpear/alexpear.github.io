@@ -3,6 +3,7 @@
 const Chassis = require('./codex/chassis.js');
 const Parts = require('./codex/parts.js');
 const Thing = require('../thing.js');
+const WNode = require('../wnode.js');
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
@@ -415,7 +416,7 @@ class Vessel extends Thing {
     // Returns number of durability points that would be lost by absorbing these dice.
     // No side effects.
     damageFromDice (dice) {
-        const expectedDamage = 0;
+        let expectedDamage = 0;
         const shieldPenalty = this.getShieldPenalty();
 
         for (const die of dice) {
@@ -581,16 +582,19 @@ class Vessel extends Thing {
     // Performs 1 stochastic 1-on-1 battle
     // Does not repair afterwards
     beats (other) {
-        // Flesh this out later when battle() is implemented.
+        const outcome = Vessel.battle([this], [other]);
+
+        return outcome.attackersWon;
     }
 
+    // Has side effects
     // Does not repair afterwards
     static battle (attackers, defenders) {
         attackers = WNode.activesAmong(attackers);
         defenders = WNode.activesAmong(defenders);
 
-        const activeAttackers = Util.arrayCopy(attackers);
-        const activeDefenders = Util.arrayCopy(defenders);
+        let activeAttackers = Util.arrayCopy(attackers);
+        let activeDefenders = Util.arrayCopy(defenders);
 
         const allVessels = attackers.concat(defenders);
         const byInitiative = {};
@@ -624,20 +628,23 @@ class Vessel extends Thing {
         activeDefenders = WNode.activesAmong(activeDefenders);
 
         // Nonmissile rounds, in init order.
-        for (let t = 0; t < 100 && activeAttackers.length && activeDefenders.length; t++) {
+        let t;
+        for (t = 0; t < 100 && activeAttackers.length && activeDefenders.length; t++) {
             Vessel.engagementRound(byInitiative, activeAttackers, activeDefenders);
 
             activeAttackers = WNode.activesAmong(activeAttackers);
             activeDefenders = WNode.activesAmong(activeDefenders);
         }
 
-        // later
+        let attackersWon = false;
+
         if (activeAttackers.length > 0) {
             if (activeDefenders.length > 0) {
                 Util.log(`The battle was a tie!`);
             }
             else {
                 Util.log(`Attackers win!`);
+                attackersWon = true;
             }
         }
         else {
@@ -653,7 +660,8 @@ class Vessel extends Thing {
 
         return {
             activeAttackers,
-            activeDefenders
+            activeDefenders,
+            attackersWon
         };
     }
 
@@ -771,6 +779,7 @@ class Vessel extends Thing {
         Util.logDebug('\n' + ship.traitsString());
 
         // Vessel.testSortedInitiative();
+        Vessel.armsRace();
     }
 };
 
