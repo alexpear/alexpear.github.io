@@ -560,12 +560,12 @@ class Vessel extends Thing {
             if (terranShip.beats(martianShip)) {
                 martianShip.mutate();
 
-                Util.log(`Terra wins, with ${terranShip.currentDurability} durability remaining! Now Mars develops this new design: \n${martianShip.debugString()}`)
+                Util.log(`Terra wins, with ${terranShip.currentDurability} durability remaining! Now Mars is thinking about a new design: \n${martianShip.simpleYaml()}`)
             }
             else {
                 terranShip.mutate();
 
-                Util.log(`Mars wins, with ${martianShip.currentDurability} durability remaining! Now Terra develops this new design: \n${martianShip.debugString()}`)
+                Util.log(`Mars wins, with ${martianShip.currentDurability} durability remaining! Now Terra is thinking about a new design: \n${martianShip.simpleYaml()}`)
             }
 
             terranShip.repair();
