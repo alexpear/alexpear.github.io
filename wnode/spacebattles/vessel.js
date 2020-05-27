@@ -613,13 +613,87 @@ class Vessel extends Thing {
             }
         });
 
-        const initKeys = Vessel.sortedInitiative(byInitiative);
+        // const initKeys = Vessel.sortedInitiative(byInitiative);
 
         let remaining = allVessels.length;
         
         // Missile round, in init order.
-        // TODO functionize for reuse in nonmissile rounds.
-        initKeys.forEach(key => {
+        Vessel.engagementRound(byInitiative, activeAttackers, activeDefenders, true);
+
+        activeAttackers = WNode.activesAmong(activeAttackers);
+        activeDefenders = WNode.activesAmong(activeDefenders);
+
+        // Nonmissile rounds, in init order.
+        for (let t = 0; t < 100 && activeAttackers.length && activeDefenders.length; t++) {
+            Vessel.engagementRound(byInitiative, activeAttackers, activeDefenders);
+
+            activeAttackers = WNode.activesAmong(activeAttackers);
+            activeDefenders = WNode.activesAmong(activeDefenders);
+        }
+
+        // later
+        if (activeAttackers.length > 0) {
+            if (activeDefenders.length > 0) {
+                Util.log(`The battle was a tie!`);
+            }
+            else {
+                Util.log(`Attackers win!`);
+            }
+        }
+        else {
+            if (activeDefenders.length > 0) {
+                Util.log(`Defenders win!`);
+            }
+            else {
+                Util.log(`There were no survivors on either side!`);
+            }
+        }
+
+        Util.log(`After ${t} engagement rounds, ${activeAttackers.length} attacking vessels and ${activeDefenders.length} defending vessels survived.`);
+
+        return {
+            activeAttackers,
+            activeDefenders
+        };
+    }
+
+    static sortedInitiative (byInitiative) {
+        return Object.keys(byInitiative).sort(
+            (a, b) => {
+                const diff = parseInt(b) - parseInt(a);
+
+                if (diff !== 0) {
+                    return diff;
+                }
+
+                // In ties, defenders act first.
+                return a[a.length - 1] === 'D' ?
+                    -1:
+                    1;
+            }
+        );
+    }
+
+    static testSortedInitiative () {
+        const out1 = Vessel.sortedInitiative({
+            '0D': true,
+            '0A': true,
+            '24D': true,
+            '-12A': true,
+            '-12D': true,
+            '24A': true
+        });
+
+        Util.logDebug(out1);
+
+        // Import some simple expect/assert functions later
+        if (out1.length !== 6) {
+            throw new Error(out1);
+        }
+    }
+
+    static engagementRound (byInitiative, activeAttackers, activeDefenders, missileMode) {
+        Vessel.sortedInitiative(byInitiative).forEach(key => {
             const defendersTurn = key.endsWith('D');
 
             const rolled = byInitiative[key].reduce(
@@ -629,7 +703,9 @@ class Vessel extends Thing {
                     }
 
                     return rolledSoFar.concat(
-                        v.rollMissileDice()
+                        missileMode ?
+                            v.rollMissileDice() :
+                            v.rollAttackDice()
                     );
                 },
                 []
@@ -670,63 +746,6 @@ class Vessel extends Thing {
                 activeDefenders = WNode.activesAmong(activeDefenders);
             }
         });
-
-        // Nonmissile rounds, in init order.
-        for (let t = 0; t < 100; t++) {
-            Vessel.engagementRound(byInitiative, activeAttackers, activeDefenders);
-
-
-            // initKeys.forEach(key => {
-            //     const rolled = byInitiative[key].reduce(
-            //         (rolledSoFar, v) =>
-            //             rolledSoFar.concat(
-            //                 v.rollAttackDice()
-            //             ),
-            //         []
-            //     );
-            // });
-
-        }
-
-    }
-
-    static sortedInitiative (byInitiative) {
-        return Object.keys(byInitiative).sort(
-            (a, b) => {
-                const diff = parseInt(b) - parseInt(a);
-
-                if (diff !== 0) {
-                    return diff;
-                }
-
-                // In ties, defenders act first.
-                return a[a.length - 1] === 'D' ?
-                    -1:
-                    1;
-            }
-        );
-    }
-
-    static testSortedInitiative () {
-        const out1 = Vessel.sortedInitiative({
-            '0D': true,
-            '0A': true,
-            '24D': true,
-            '-12A': true,
-            '-12D': true,
-            '24A': true
-        });
-
-        Util.logDebug(out1);
-
-        // Import some simple expect/assert functions later
-        if (out1.length !== 6) {
-            throw new Error(out1);
-        }
-    }
-
-    static engagementRound (byInitiative, activeAttackers, activeDefenders) {
-        
     }
 
     // Adds 1 random part, so long as that is legal
