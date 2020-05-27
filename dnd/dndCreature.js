@@ -12,7 +12,7 @@ const Util = require('../util/util.js');
 const _ = require('lodash');
 const Yaml = require('js-yaml');
 
-// TODO require and extend Creature (which extends WNode)
+// Later require and extend Creature (which extends WNode)
 // Say 'template' instead of 'monsterTemplate'
 class DndCreature {
     constructor (input) {
@@ -282,6 +282,7 @@ class DndCreature {
 
         Util.log(`\n\n=== Start of a duel between ${yourName} (CR ${DndCreature.fractionalCr(this.getCr())}) & ${otherName} (CR ${DndCreature.fractionalCr(other.getCr())}) ===`);
 
+        // Later make a func for highly-readable HP logging, such as health bar.
         Util.log(`The ${yourName} has ${this.currentHp} HP. The ${otherName} has ${other.currentHp} HP.`);
 
         if (! yourAttack) {
@@ -298,7 +299,6 @@ class DndCreature {
             return this;
         }
 
-        // TODO the immunity did not get logged in androsphynx vs dragon
         const yourRelevantResistances = this.unusualDamageResponses(otherAttack);
         const otherRelevantResistances = other.unusualDamageResponses(yourAttack);
 
@@ -357,7 +357,7 @@ class DndCreature {
         return winner;
     }
 
-    // later make 2nd param target not targetSpecies, to access maxHp for logging %.
+    // later make 2nd param target rather than targetSpecies, to access maxHp for logging %.
     // Later find a visual way to do this
     summarizeAttack (outcome, targetSpecies, targetPreviousHp) {
         const name = `The ${this.monsterTemplate.name}`;
@@ -408,7 +408,7 @@ class DndCreature {
 
         for (let i = 1; i < contestants.length; i++) {
             const challenger = new DndCreature(contestants[i]);
-            // Later change to challenger.dule(champion), because it's like Chal is throwing a guantlet at Cham.
+            // Later change to challenger.duel(champion), because it's like Chal is throwing a guantlet at Cham.
             const winner = await champion.duel(challenger);
 
             if (winner === challenger) {
@@ -515,7 +515,7 @@ class DndCreature {
     }
 
     static isMagical (entry) {
-        // Later
+        // Later parse whether its attacks are magical
     }
 
     static addSpellcasting () {
