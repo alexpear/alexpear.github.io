@@ -356,6 +356,16 @@ const Parts = module.exports = {
         ]
         // sensors: 3,
         // comms: 2,
+    },
+    // I guess their cargo makes this fill a whole slot? Not sure.
+    eccentricGenius: {
+        power: 0,
+        aiming: 1,
+        initiative: 1,
+        unique: true,
+        techsRequired: [
+            'lifeSupport'
+        ]
     }
 
 };

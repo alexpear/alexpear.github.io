@@ -232,6 +232,14 @@ class RingWorldState extends GroupWorldState {
         return worldState;
     }
 
+    // Later add example setup funcs 
+    setupTwoBetrayalsArmy () {
+        // Add wraith
+        // Add 2 turrets
+        // Add 2 ghosts
+        // Add various infantry 
+    }
+
     static test () {
         Util.log(`Beginning the RingWorldState test...`, `debug`);
 
