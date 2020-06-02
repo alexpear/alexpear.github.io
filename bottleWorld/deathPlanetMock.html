@@ -18,11 +18,15 @@ table, th, td {
 <script>
 // just do a static HTML mock up of example grid to start
 class GridView {
-    constructor (worldState) {
-        this.worldState = worldState;
+    constructor (worldState, cornerCoord) {
+        this.worldState = worldState || {};
 
         // The top left corner of the view is displaying this coord.
-        this.cornerCoord = undefined;
+        this.cornerCoord = cornerCoord || { x: 0, y: 0 };
+
+        // Later can integrate with existing WorldState getters.
+        // For now, just use temporary prop for mocking
+        this.worldState.simpleGroups = this.exampleGroups();
     }
     
     exampleGroups () {
@@ -30,35 +34,36 @@ class GridView {
             {
                 alignment: 'unsc',
                 templateName: 'odst',
-                coord: { x: 4, y: 1}
+                coord: { x: 1, y: 1}
             },
             {
                 alignment: 'unsc',
                 templateName: 'odst',
-                coord: { x: 9, y: 1}
+                coord: { x: 5, y: 1}
             },
             {
                 alignment: 'unsc',
                 templateName: 'odst',
-                coord: { x: 6, y: 2}
+                coord: { x: 3, y: 2}
             },
             {
                 alignment: 'covenant',
                 templateName: 'bruteProwler',
-                coord: { x: 3, y: 9}
+                coord: { x: 2, y: 8}
             },
             {
                 alignment: 'covenant',
                 templateName: 'bruteProwler',
-                coord: { x: 8, y: 8}
-            },
+                coord: { x: 5, y: 7}
+            }
         ];
     }
 
     spriteFor (templateName) {
         const sprites = {
-            'odst': 'https://content.halocdn.com/media/Default/encyclopedia/factions/odst/media-gallery/assassinjv11-1920x1080-e34ddadf403241d4b0c1b31945c48403.jpg',
-            'bruteProwler': 'https://content.halocdn.com/media/Default/encyclopedia/vehicles/prowler/prowler-large-square-542x542-84509ba37f0f49c28e74f4b3620fc683.jpg'
+            sand: 'https://images.homedepot-static.com/productImages/7c61a416-c547-4ee2-bf95-d6b7b25d8c9f/svn/stone-tan-armstrong-vct-tile-54004031-64_1000.jpg',
+            odst: 'https://content.halocdn.com/media/Default/encyclopedia/factions/odst/media-gallery/assassinjv11-1920x1080-e34ddadf403241d4b0c1b31945c48403.jpg',
+            bruteProwler: 'https://content.halocdn.com/media/Default/encyclopedia/vehicles/prowler/prowler-large-square-542x542-84509ba37f0f49c28e74f4b3620fc683.jpg'
         };
 
         return sprites[templateName];
@@ -71,14 +76,22 @@ class GridView {
             const row = table.insertRow();
 
             for (let c = 0; c < GridView.WINDOW_SQUARES; c++) {
-                const exampleSprite = document.createElement('img');
-                exampleSprite.src = this.spriteFor('odst');
-                exampleSprite.height = 15;
-                exampleSprite.width = 20;
+                const group = this.worldState.simpleGroups.find(
+                    g => g.coord.x === c && g.coord.y === r
+                );
+
+                const child = document.createElement('img');
+
+                child.height = 15;
+                child.width = 20;
+                child.src = this.spriteFor(
+                    group ?
+                        group.templateName :
+                        'sand'
+                );
 
                 const cell = row.insertCell();
-                cell.appendChild(exampleSprite);
-                // TODO could have this func prepopulate a mapping from square ${c},${r} to mock wnode. Could consult that mapping here.
+                cell.appendChild(child);
             }
         }
     }
