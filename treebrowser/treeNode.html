@@ -1,39 +1,60 @@
-<body style="background: #327711; color: #FFFFFF; font-size: 24px">
+<html>
+
+<head>
   <style>
-    .center * {
+    html * {
       display: block;
+      text-align: center;
       margin: 0 auto 0 auto;
     }
 
-    .center h3 {
-      text-align: center;
+    body {
+      background: #327711;
+      color: #FFFFFF;
+      font-size: 24px;
+    }
+
+    #discardButton {
+      background-color: Gray;
+    }
+
+    #parentDiv {
+      margin: 40 auto 40 auto;
+    }
+
+    #parentHeader, #parentButton {
+      display: inline;
+    }
+
+    style {
+      display: none;
     }
   </style>
+</head>
 
+<body>
   <div id="navigatorWindow">
 
     <h3 id="uiTitle">Tree Navigator</h3>
-
     <br>
 
-    <input id="discardButton" type="button" onclick="window.treeBrowser.discard()" value="Discard this!" style="background-color:Gray;">
+    <input id="discardButton" type="button" onclick="window.treeBrowser.discard()" value="Discard this!">
     <br>
 
     <h1 id="currentNodeName">?</h4>
 
     <p id="properties">Rating: 99</p>
 
-    <p>Parent ( ` ): </p>
-    <input id="parentButton" type="button" class="iconButton group" onclick="window.treeBrowser.goUp()" value="Newt Squad - Squad">
-    <p>Components: </p>
-    <div id="components">
-<!--       TODO instead, these should be created by JS. Remove all placeholder values. -->
-<!--       TODO these should ideally have the ids of their node ids -->
-      <input type="button" class="iconButton item" onclick="window.treeBrowser.goToChild(0)" value="Smg">
-      <br>
+    <div id="parentDiv">
+      <p id="parentHeader">Parent ( ` ):</p>
+      <input id="parentButton" type="button" class="iconButton group" onclick="window.treeBrowser.goUp()">
     </div>
+
+    <p>Components:</p>
+    <div id="components"></div>
   </div>
 </body>
+</html>
 
 <!-- browserify treeBrowser.js -o bundle.js -->
 <script src="bundle.js"></script>
