@@ -22,11 +22,11 @@ class GridView {
         this.worldState = worldState || {};
 
         // The top left corner of the view is displaying this coord.
+        // Later standardize the prop names between this and coord.js
         this.cornerCoord = cornerCoord || { x: 0, y: 0 };
 
-        // Later can integrate with existing WorldState getters.
-        // For now, just use temporary prop for mocking
-        this.worldState.simpleGroups = this.exampleGroups();
+        // TODO make a test that uses real wnodes.
+        this.worldState.nodes = this.exampleGroups();
     }
     
     exampleGroups () {
@@ -76,7 +76,7 @@ class GridView {
             const row = table.insertRow();
 
             for (let c = 0; c < GridView.WINDOW_SQUARES; c++) {
-                const group = this.worldState.simpleGroups.find(
+                const group = this.worldState.nodes.find(
                     g => g.coord.x === c && g.coord.y === r
                 );
 
