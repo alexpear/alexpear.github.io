@@ -1,36 +1,85 @@
 'use strict';
 
-
-
-
-// TODO consult treebrowser use of browserify for reminders about how to structure HTML-JS relationship
-// But can just do a static HTML mock up of example grid to start, if that is easier.
+// With TreeNode.html here's how we do that.
+// The js file connects to specific html ids.
+// Then we build with 'browserify treeBrowser.js -o bundle.js'.
+// The html file connects to the resulting bundle with a element like this:
+// <script src="bundle.js">
 class GridView {
-    constructor (worldState) {
-        this.worldState = worldState;
+    constructor (worldState, cornerCoord) {
+        this.worldState = worldState || {};
 
-        this.cornerCoord = undefined;
+        // The top left corner of the view is displaying this coord.
+        // Later standardize the prop names between this and coord.js
+        this.cornerCoord = cornerCoord || { x: 0, y: 0 };
+
+        // TODO make a test that uses real wnodes.
+        this.worldState.nodes = this.exampleGroups();
     }
     
-    tableHtml () {
-        for (let element of data) {
-            let row = table.insertRow();
-
-            for (key in element) {
-                let cell = row.insertCell();
-                let text = document.createTextNode(element[key]);
-
-                cell.appendChild(text);
+    exampleGroups () {
+        return [
+            {
+                alignment: 'unsc',
+                templateName: 'odst',
+                coord: { x: 1, y: 1}
+            },
+            {
+                alignment: 'unsc',
+                templateName: 'odst',
+                coord: { x: 4, y: 1}
+            },
+            {
+                alignment: 'unsc',
+                templateName: 'odst',
+                coord: { x: 3, y: 2}
+            },
+            {
+                alignment: 'covenant',
+                templateName: 'bruteProwler',
+                coord: { x: 2, y: 8}
+            },
+            {
+                alignment: 'covenant',
+                templateName: 'bruteProwler',
+                coord: { x: 5, y: 7}
             }
-        }
+        ];
     }
 
-    setExampleGridHtml () {
-        const table = undefined;
+    spriteFor (templateName) {
+        const sprites = {
+            sand: 'https://images.homedepot-static.com/productImages/7c61a416-c547-4ee2-bf95-d6b7b25d8c9f/svn/stone-tan-armstrong-vct-tile-54004031-64_1000.jpg',
+            odst: 'https://content.halocdn.com/media/Default/encyclopedia/factions/odst/media-gallery/assassinjv11-1920x1080-e34ddadf403241d4b0c1b31945c48403.jpg',
+            bruteProwler: 'https://content.halocdn.com/media/Default/encyclopedia/vehicles/prowler/prowler-large-square-542x542-84509ba37f0f49c28e74f4b3620fc683.jpg'
+        };
+
+        return sprites[templateName];
+    }
+
+    setGridHtml () {
+        const table = document.getElementById('grid');
 
         for (let r = 0; r < GridView.WINDOW_SQUARES; r++) {
-            for (let c = 0; c < GridView.WINDOW_SQUARES; c++) {
+            const row = table.insertRow();
 
+            for (let c = 0; c < GridView.WINDOW_SQUARES; c++) {
+                const group = this.worldState.nodes.find(
+                    g => g.coord.x === c && g.coord.y === r
+                );
+
+                const child = document.createElement('img');
+
+                child.height = 15;
+                child.width = 20;
+                child.src = this.spriteFor(
+                    group ?
+                        group.templateName :
+                        'sand'
+                );
+
+                const cell = row.insertCell();
+                cell.appendChild(child);
             }
         }
     }
@@ -39,46 +88,10 @@ class GridView {
         // set up example
         const view = new GridView();
 
-        view.setExampleGridHtml();
+        view.setGridHtml();
     }
 }
 
-GridView.WINDOW_SQUARES = 20;
+GridView.WINDOW_SQUARES = 10;
 
-
-
-
-let mountains = [
-    { name: "Monte Falco", height: 1658, place: "Parco Foreste Casentinesi" },
-    { name: "Monte Falterona", height: 1654, place: "Parco Foreste Casentinesi" },
-    { name: "Poggio Scali", height: 1520, place: "Parco Foreste Casentinesi" },
-    { name: "Pratomagno", height: 1592, place: "Parco Foreste Casentinesi" },
-    { name: "Monte Amiata", height: 1738, place: "Siena" }
-];
-
-// function generateTableHead(table, data) {
-//   let thead = table.createTHead();
-//   let row = thead.insertRow();
-//   for (let key of data) {
-//     let th = document.createElement("th");
-//     let text = document.createTextNode(key);
-//     th.appendChild(text);
-//     row.appendChild(th);
-//   }
-// }
-
-function generateTable(table, data) {
-  for (let element of data) {
-    let row = table.insertRow();
-    for (key in element) {
-      let cell = row.insertCell();
-      let text = document.createTextNode(element[key]);
-      cell.appendChild(text);
-    }
-  }
-}
-
-let table = document.querySelector("table");
-let data = Object.keys(mountains[0]);
-generateTableHead(table, data);
-generateTable(table, mountains);
+GridView.run();
