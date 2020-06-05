@@ -20,7 +20,7 @@ class GridView {
 
         // The top left corner of the view is displaying this coord.
         // Later standardize the prop names between this and coord.js
-        this.cornerCoord = cornerCoord || { x: 0, y: 0 };
+        this.cornerCoord = cornerCoord || new Coord(0, 0);
 
         // TODO make a test that uses real wnodes.
         this.worldState.nodes = this.exampleGroups();
@@ -28,30 +28,31 @@ class GridView {
     
     exampleGroups () {
         return [
+            // TODO call Group constructor (with quantitiy params) here instead of using POJOs
             {
                 alignment: 'unsc',
                 templateName: 'odst',
-                coord: { x: 1, y: 1}
+                coord: new Coord(1, 3)
             },
             {
                 alignment: 'unsc',
                 templateName: 'odst',
-                coord: { x: 4, y: 1}
+                coord: new Coord(4, 1)
             },
             {
                 alignment: 'unsc',
                 templateName: 'odst',
-                coord: { x: 3, y: 2}
+                coord: new Coord(3, 2)
             },
             {
                 alignment: 'covenant',
                 templateName: 'bruteProwler',
-                coord: { x: 2, y: 8}
+                coord: new Coord(2, 8)
             },
             {
                 alignment: 'covenant',
                 templateName: 'bruteProwler',
-                coord: { x: 5, y: 7}
+                coord: new Coord(5, 7)
             }
         ];
     }
