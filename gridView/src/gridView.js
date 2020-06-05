@@ -19,57 +19,28 @@ class GridView {
         this.worldState = worldState || {};
 
         // The top left corner of the view is displaying this coord.
-        // Later standardize the prop names between this and coord.js
         this.cornerCoord = cornerCoord || new Coord(0, 0);
 
-        // TODO make a test that uses real wnodes.
+        // Later dont overwrite .nodes prop.
         this.worldState.nodes = this.exampleGroups();
     }
     
     exampleGroups () {
         return [
-            // TODO call Group constructor (with quantity params) here instead of using POJOs
-            {
-                alignment: 'unsc',
-                templateName: 'odst',
-                coord: new Coord(
-                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
-                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
-                )
-            },
-            {
-                alignment: 'unsc',
-                templateName: 'odst',
-                coord: new Coord(
-                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
-                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
-                )
-            },
-            {
-                alignment: 'unsc',
-                templateName: 'odst',
-                coord: new Coord(
-                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
-                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
-                )
-            },
-            {
-                alignment: 'covenant',
-                templateName: 'bruteProwler',
-                coord: new Coord(
-                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
-                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
-                )
-            },
-            {
-                alignment: 'covenant',
-                templateName: 'bruteProwler',
-                coord: new Coord(
-                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
-                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
-                )
-            }
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/cov/squad/bruteProwler', 1, 'cov', this.randomOnScreen()),
+            new Group('halo/cov/squad/bruteProwler', 1, 'cov', this.randomOnScreen())
         ];
+    }
+
+    randomOnScreen () {
+        // Later support scrolling
+        return new Coord(
+            Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
+            Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
+        );
     }
 
     spriteFor (templateName) {
