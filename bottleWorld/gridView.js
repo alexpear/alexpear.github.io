@@ -64,7 +64,11 @@ class GridView {
             bruteProwler: 'https://content.halocdn.com/media/Default/encyclopedia/vehicles/prowler/prowler-large-square-542x542-84509ba37f0f49c28e74f4b3620fc683.jpg'
         };
 
-        return sprites[templateName];
+        const terms = templateName.split('/');
+
+        return sprites[
+            terms[terms.length - 1]
+        ];
     }
 
     setGridHtml () {
