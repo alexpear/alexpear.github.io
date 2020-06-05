@@ -1,10 +1,19 @@
 'use strict';
 
-// With TreeNode.html here's how we do that.
+// Here's how we connect js and html.
 // The js file connects to specific html ids.
-// Then we build with 'browserify treeBrowser.js -o bundle.js'.
+// Then we build with the below browserify command.
 // The html file connects to the resulting bundle with a element like this:
-// <script src="bundle.js">
+// <script src="groupGridBundle.js"></script>
+
+// Set it up with this command:
+// browserify gridView/src/*.js -o groupGridBundle.js
+
+const Coord = require('../../util/coord.js');
+const Util = require('../../util/util.js');
+
+const Group = require('../../wnode/group.js');
+
 class GridView {
     constructor (worldState, cornerCoord) {
         this.worldState = worldState || {};
