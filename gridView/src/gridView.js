@@ -28,31 +28,46 @@ class GridView {
     
     exampleGroups () {
         return [
-            // TODO call Group constructor (with quantitiy params) here instead of using POJOs
+            // TODO call Group constructor (with quantity params) here instead of using POJOs
             {
                 alignment: 'unsc',
                 templateName: 'odst',
-                coord: new Coord(1, 3)
+                coord: new Coord(
+                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
+                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
+                )
             },
             {
                 alignment: 'unsc',
                 templateName: 'odst',
-                coord: new Coord(4, 1)
+                coord: new Coord(
+                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
+                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
+                )
             },
             {
                 alignment: 'unsc',
                 templateName: 'odst',
-                coord: new Coord(3, 2)
+                coord: new Coord(
+                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
+                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
+                )
             },
             {
                 alignment: 'covenant',
                 templateName: 'bruteProwler',
-                coord: new Coord(2, 8)
+                coord: new Coord(
+                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
+                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
+                )
             },
             {
                 alignment: 'covenant',
                 templateName: 'bruteProwler',
-                coord: new Coord(5, 7)
+                coord: new Coord(
+                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1),
+                    Util.randomUpTo(GridView.WINDOW_SQUARES - 1)
+                )
             }
         ];
     }
