@@ -199,8 +199,8 @@ class GridView {
 
                 const child = document.createElement('img');
 
-                child.height = 15;
-                child.width = 20;
+                child.height = 45;
+                child.width = 60;
                 child.src = this.spriteFor(
                     group ?
                         group.templateName :
@@ -221,7 +221,7 @@ class GridView {
     }
 }
 
-GridView.WINDOW_SQUARES = 10;
+GridView.WINDOW_SQUARES = 16;
 
 GridView.run();
 
