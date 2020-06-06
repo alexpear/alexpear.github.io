@@ -5,65 +5,65 @@ var Util = require('./util.js');
 
 class Coord {
     // Later can have a array of dimensions, instead of r and c props.
-    constructor (r,c) {
-        this.r = Util.default(r, -1);
-        this.c = Util.default(c, -1);
+    constructor (x, y) {
+        this.x = Util.default(x, 0);
+        this.y = Util.default(y, 0);
     }
 
-    get x () {
-        // TODO is mapping r to x totally wrong, even in the short term?
-        return this.r;
-    }
+    // get x () {
+    //     // TODO is mapping r to x totally wrong, even in the short term?
+    //     return this.r;
+    // }
 
-    get y () {
-        return this.c;
-    }
-
+    // get y () {
+    //     return this.c;
+    // }
+    
     equals (other) {
-        return this.r === other.r && this.c === other.c;
+        return this.x === other.x && this.y === other.y;
     }
 
     is (other) { return this.equals(other); }
 
     plus (other) {
         return new Coord(
-            this.r + other.r,
-            this.c + other.c
+            this.x + other.x,
+            this.y + other.y
         );
     }
 
     plus1d (distance) {
         return new Coord(
-            this.r + distance,
-            this.c
+            this.x + distance,
+            this.y
         );
     }
 
     // For circular environments of a given circumference. The values can loop around again to 0.
     plus1dCircle (distance, circumference) {
         return new Coord(
-            (this.r + distance) % circumference,
-            this.c
+            (this.x + distance) % circumference,
+            this.y
         );
     }
 
     minus (other) {
         return new Coord(
-            this.r - other.r,
-            this.c - other.c
+            this.x - other.x,
+            this.y - other.y
         );
     }
 
     distanceTo (other) {
         return Math.sqrt(
-            Math.pow(this.r - other.r, 2) +
-            Math.pow(this.c - other.c, 2)
+            Math.pow(this.x - other.x, 2) +
+            Math.pow(this.y - other.y, 2)
         );
     }
 
     manhattanDistanceTo (other) {
-        const horizontal = Math.abs(this.r - other.r);
-        const vertical = Math.abs(this.c - other.c);
+        const horizontal = Math.abs(this.x - other.x);
+        const vertical = Math.abs(this.y - other.y);
 
         return horizontal + vertical;
     }
@@ -73,8 +73,8 @@ class Coord {
         // 1 - (1 / sqrt(2))
         const MAX_ADJUSTMENT = 0.29289321881345254;
 
-        const horizontal = Math.abs(this.r - other.r);
-        const vertical = Math.abs(this.c - other.c);
+        const horizontal = Math.abs(this.x - other.x);
+        const vertical = Math.abs(this.y - other.y);
 
         // 0 means 45°, 1 means 0° or 90°
         const orthagonalness = Math.abs(horizontal - vertical) / Math.max(horizontal, vertical);
@@ -97,11 +97,11 @@ class Coord {
     }
 
     toString () {
-        return '[' + this.r + ',' + this.c + ']';
+        return '[' + this.x + ',' + this.y + ']';
     }
 
     to1dString () {
-        return this.r.toString();
+        return this.x.toString();
     }
 
     randomAdjacent () {
@@ -112,19 +112,19 @@ class Coord {
         return candidateNeighbor;
     }
 
-    static random (rCount, cCount) {
-        if (! Util.exists(rCount)) {
+    static random (xCount, yCount) {
+        if (! Util.exists(xCount)) {
             console.log('ERROR: Coord.random() called without r argument');
             return new Coord(-1,-1);
             // LATER throw exception, make supervisor reboot, et cetera.
         }
 
-        const c = cCount ?
-            Util.randomUpTo(cCount - 1) :
+        const c = yCount ?
+            Util.randomUpTo(yCount - 1) :
             0;
 
         return new Coord(
-            Util.randomUpTo(rCount-1),
+            Util.randomUpTo(xCount-1),
             c
         );
     }
