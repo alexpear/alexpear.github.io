@@ -23,6 +23,7 @@ class GridView {
 
         // Later dont overwrite .nodes prop.
         this.worldState.nodes = this.exampleGroups();
+        this.mPerSquare = GridView.DEFAULT_SQUARE_SIZE;
     }
     
     exampleGroups () {
@@ -84,6 +85,13 @@ class GridView {
         }
     }
 
+    gridSquareOfCoord (coord) {
+        return new Coord(
+            coord.x * this.mPerSquare + this.cornerCoord.x,
+            coord.y + this.mPerSquare + this.cornerCoord.y
+        );
+    }
+
     static run () {
         // set up example
         const view = new GridView();
@@ -92,6 +100,7 @@ class GridView {
     }
 }
 
-GridView.WINDOW_SQUARES = 16;
+GridView.WINDOW_SQUARES = 16; // number of squares
+GridView.DEFAULT_SQUARE_SIZE = 4; // meters
 
 GridView.run();
