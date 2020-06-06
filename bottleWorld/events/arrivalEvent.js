@@ -37,6 +37,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
         if (! actions || actions.length === 0) {
             Util.logDebug(`In ArrivalEvent,
+    worldState.constructor.name: ${worldState.constructor.name},
     arriver.templateName: ${arriver.templateName},
     arriver.template: ${arriver.template},
     arriver.constructor.name: ${arriver.constructor.name},

@@ -117,6 +117,29 @@ class WorldState {
         this.nodes.push(node);
     }
 
+    nearestFoe (wnode) {
+        const activeNodes = this.activeNodes();
+
+        let bestFoe;
+        let bestDistance;
+
+        for (let i = 0; i < activeNodes.length; i++) {
+            if (activeNodes[i].alignment === wnode.alignment) {
+                continue;
+            }
+
+            const distance = wnode.coord.distanceTo(activeNodes[i].coord);
+            // Util.log(`in nearestFoe(), distance is ${distance}`)
+
+            if (! bestFoe || distance < bestDistance) {
+                bestFoe = activeNodes[i];
+                bestDistance = distance;
+            }
+        }
+
+        return bestFoe;
+    }
+
     // Probably deprecated and removable
     randomTrees () {
         return this.generateNodes();
@@ -209,8 +232,7 @@ class WorldState {
     coordAtEndOfMove (wnode, destinationCoord) {
         // TODO, see MoveAllEvent.js for usage
         // Just do very simple skeleton version for now, perhaps speed 0
-
-
+        return wnode.coord;
     }
 
     addNodesByAlignment (newcomers, contextPath) {

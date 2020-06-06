@@ -167,7 +167,7 @@ function deploySquads (faction) {
 function depictThings () {
     console.log(`Top of depictThings()`);
 
-    const individuals = fishTank.worldState.activeThings()
+    const individuals = fishTank.worldState.activeNodes()
         .map(thing => {
                 const pixelPosition = coordToPixel(thing.coord);
                 const individual = fishTank.worldState.squads.unsc.create(pixelPosition.x, pixelPosition.y, 'soldier', thing);
