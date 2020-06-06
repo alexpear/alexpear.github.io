@@ -4,23 +4,46 @@
 var Util = require('./util.js');
 
 class Coord {
-    // Later can have a array of dimensions, instead of r and c props.
-    constructor (x, y) {
-        this.x = Util.default(x, 0);
-        this.y = Util.default(y, 0);
+    constructor (x, y, z) {
+        this.dimensions = [
+            Util.default(x, 0),
+            Util.default(y, 0),
+            Util.default(z, 0)
+        ];
     }
 
-    // get x () {
-    //     // TODO is mapping r to x totally wrong, even in the short term?
-    //     return this.r;
-    // }
+    get x () {
+        return this.dimensions[0];
+    }
 
-    // get y () {
-    //     return this.c;
-    // }
+    get y () {
+        return this.dimensions[1];
+    }
     
-    equals (other) {
-        return this.x === other.x && this.y === other.y;
+    get z () {
+        return this.dimensions[2];
+    }
+
+    equals (other, dimensionCount) {
+        dimensionCount = dimensionCount || 2;
+
+        if (this.x !== other.x) {
+            return false;
+        }
+
+        if (dimensionCount === 1) {
+            return true;
+        }
+
+        if (this.y !== other.y) {
+            return false;
+        }
+
+        if (dimensionCount === 2) {
+            return true;
+        }  
+
+        return (this.z === other.z);
     }
 
     is (other) { return this.equals(other); }
@@ -28,36 +51,37 @@ class Coord {
     plus (other) {
         return new Coord(
             this.x + other.x,
-            this.y + other.y
+            this.y + other.y,
+            this.z + other.z
         );
     }
 
     plus1d (distance) {
         return new Coord(
-            this.x + distance,
-            this.y
+            this.x + distance
         );
     }
 
     // For circular environments of a given circumference. The values can loop around again to 0.
     plus1dCircle (distance, circumference) {
         return new Coord(
-            (this.x + distance) % circumference,
-            this.y
+            (this.x + distance) % circumference
         );
     }
 
     minus (other) {
         return new Coord(
             this.x - other.x,
-            this.y - other.y
+            this.y - other.y,
+            this.z - other.z
         );
     }
 
     distanceTo (other) {
         return Math.sqrt(
             Math.pow(this.x - other.x, 2) +
-            Math.pow(this.y - other.y, 2)
+            Math.pow(this.y - other.y, 2) +
+            Math.pow(this.z - other.z, 2)
         );
     }
 
@@ -96,6 +120,7 @@ class Coord {
         return 0.9 < distance && distance < 1.5;
     }
 
+    // Later support other dimensions on this and similar funcs
     toString () {
         return '[' + this.x + ',' + this.y + ']';
     }
