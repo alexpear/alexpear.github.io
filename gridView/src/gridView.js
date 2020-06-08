@@ -45,17 +45,17 @@ class GridView {
     }
 
     spriteFor (templateName) {
-        const sprites = {
-            sand: 'https://images.homedepot-static.com/productImages/7c61a416-c547-4ee2-bf95-d6b7b25d8c9f/svn/stone-tan-armstrong-vct-tile-54004031-64_1000.jpg',
-            odst: 'https://content.halocdn.com/media/Default/encyclopedia/factions/odst/media-gallery/assassinjv11-1920x1080-e34ddadf403241d4b0c1b31945c48403.jpg',
-            bruteProwler: 'https://content.halocdn.com/media/Default/encyclopedia/vehicles/prowler/prowler-large-square-542x542-84509ba37f0f49c28e74f4b3620fc683.jpg'
+        const terms = templateName.split('/');
+        const lastTerm = terms[terms.length - 1];
+
+        const extensions = {
+            sand: 'jpg',
+            odst: 'jpg',
+            wraith: 'png',
+            bruteProwler: 'jpg'
         };
 
-        const terms = templateName.split('/');
-
-        return sprites[
-            terms[terms.length - 1]
-        ];
+        return `images/${lastTerm}.${extensions[lastTerm]}`;
     }
 
     setGridHtml () {
