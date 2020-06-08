@@ -29,6 +29,7 @@ class GridWarWorldState extends WorldState {
 
     addNodesByAlignment (factionObj) {
         // TODO
+        // factionObj[faction].start is a Coord describing a base spawn, near which that faction should spawn.
     }
 
     static example (timeline) {
@@ -40,6 +41,7 @@ class GridWarWorldState extends WorldState {
 
         const context = 'halo/unsc/individual';
 
+        // TODO see deathPlanetMock group initialization logic for inspiration
         const startingThings = {
             unsc: {
                 start: new Coord(0, 0),
