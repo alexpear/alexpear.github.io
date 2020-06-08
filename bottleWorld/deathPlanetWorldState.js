@@ -23,6 +23,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         // Also perhaps put proceed() in a new class Transitioner, or Mover, or Director, or Simulator, or Mastermind.
     }
 
+    // TODO recent changes to MoveAllEvent seem to correspond with cessation of shooting on the Phaser front end. Look for TypeErrors and check the presence of BEvents in the Timeline. 
     moveEverything () {
         this.nodes.forEach(
             node => {

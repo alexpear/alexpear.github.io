@@ -234,6 +234,7 @@ function update (time, delta) {
 
     console.log(`In FishTank's update(), time is ${time}`);
 
+    // TODO Why do we see only 1 BEvent per second int he timeline, as of 2020 june 7?
     fishTank.worldState.timeline.computeNextInstant();
 
     fishTank.text.setText(`Death Planet, Population ${(fishTank.worldState.squads.unsc.countActive() + fishTank.worldState.squads.covenant.countActive()) || 'You'}`);
