@@ -24,11 +24,34 @@ class GridWarWorldState extends WorldState {
         return [
             'unsc',
             'cov'
-            // 'innie'
         ];
     }
 
+    addNodesByAlignment (factionObj) {
+        // TODO
+    }
+
     static example (timeline) {
+        const worldState = new GridWarWorldState();
+
+        timeline = timeline || new Timeline(worldState);
+        timeline.currentWorldState = worldState;
+        worldState.timeline = timeline;
+
+        const context = 'halo/unsc/individual';
+
+        const startingThings = {
+            unsc: {
+                start: new Coord(0, 0),
+                odst: 3
+            },
+            cov: {
+                start: new Coord(10, 10),
+                bruteProwler: 2
+            }
+        };
+
+        worldState.addNodesByAlignment(startingThings, context);
 
         return worldState;
     }
