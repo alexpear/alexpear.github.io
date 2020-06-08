@@ -31,6 +31,11 @@ class GridView {
             new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
             new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
             new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
             new Group('halo/cov/squad/bruteProwler', 1, 'cov', this.randomOnScreen()),
             new Group('halo/cov/squad/bruteProwler', 1, 'cov', this.randomOnScreen())
         ];
