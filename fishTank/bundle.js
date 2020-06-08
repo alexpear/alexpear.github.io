@@ -1526,6 +1526,7 @@ class DeathPlanetWorldState extends ContinuousWorldState {
         // Also perhaps put proceed() in a new class Transitioner, or Mover, or Director, or Simulator, or Mastermind.
     }
 
+    // TODO recent changes to MoveAllEvent seem to correspond with cessation of shooting on the Phaser front end. Look for TypeErrors and check the presence of BEvents in the Timeline. 
     moveEverything () {
         this.nodes.forEach(
             node => {
@@ -1801,6 +1802,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
         if (! actions || actions.length === 0) {
             Util.logDebug(`In ArrivalEvent,
+    worldState.constructor.name: ${worldState.constructor.name},
     arriver.templateName: ${arriver.templateName},
     arriver.template: ${arriver.template},
     arriver.constructor.name: ${arriver.constructor.name},
@@ -2138,9 +2140,12 @@ module.exports = class Timeline {
     }
 
     computeNextInstant () {
+        Util.logDebug(`Second #${this.currentWorldState.t} had ${this.getEventsAt(this.currentWorldState.t).length} events in it.`);
+
         this.currentWorldState.t += SECONDS_PER_TICK;
 
         // Later it would be delightful if this func would check the real-world timestamp on when the tick number was last logged out, and only log iff that was a little while ago. (And then update the timestamp.)
+        // In other words, don't crowd the logs.
         Util.logDebug(`Starting to compute second #${this.currentWorldState.t}...`);
 
         const events = this.getEventsAt(this.now() - 1);
@@ -2365,6 +2370,29 @@ class WorldState {
         this.nodes.push(node);
     }
 
+    nearestFoe (wnode) {
+        const activeNodes = this.activeNodes();
+
+        let bestFoe;
+        let bestDistance;
+
+        for (let i = 0; i < activeNodes.length; i++) {
+            if (activeNodes[i].alignment === wnode.alignment) {
+                continue;
+            }
+
+            const distance = wnode.coord.distanceTo(activeNodes[i].coord);
+            // Util.log(`in nearestFoe(), distance is ${distance}`)
+
+            if (! bestFoe || distance < bestDistance) {
+                bestFoe = activeNodes[i];
+                bestDistance = distance;
+            }
+        }
+
+        return bestFoe;
+    }
+
     // Probably deprecated and removable
     randomTrees () {
         return this.generateNodes();
@@ -2457,8 +2485,7 @@ class WorldState {
     coordAtEndOfMove (wnode, destinationCoord) {
         // TODO, see MoveAllEvent.js for usage
         // Just do very simple skeleton version for now, perhaps speed 0
-
-
+        return wnode.coord;
     }
 
     addNodesByAlignment (newcomers, contextPath) {
@@ -6627,7 +6654,7 @@ function deploySquads (faction) {
 function depictThings () {
     console.log(`Top of depictThings()`);
 
-    const individuals = fishTank.worldState.activeThings()
+    const individuals = fishTank.worldState.activeNodes()
         .map(thing => {
                 const pixelPosition = coordToPixel(thing.coord);
                 const individual = fishTank.worldState.squads.unsc.create(pixelPosition.x, pixelPosition.y, 'soldier', thing);
@@ -6694,6 +6721,7 @@ function update (time, delta) {
 
     console.log(`In FishTank's update(), time is ${time}`);
 
+    // TODO Why do we see only 1 BEvent per second int he timeline, as of 2020 june 7?
     fishTank.worldState.timeline.computeNextInstant();
 
     fishTank.text.setText(`Death Planet, Population ${(fishTank.worldState.squads.unsc.countActive() + fishTank.worldState.squads.covenant.countActive()) || 'You'}`);
@@ -33734,66 +33762,90 @@ module.exports = class Box {
 var Util = require('./util.js');
 
 class Coord {
-    // Later can have a array of dimensions, instead of r and c props.
-    constructor (r,c) {
-        this.r = Util.default(r, -1);
-        this.c = Util.default(c, -1);
+    constructor (x, y, z) {
+        this.dimensions = [
+            Util.default(x, 0),
+            Util.default(y, 0),
+            Util.default(z, 0)
+        ];
     }
 
     get x () {
-        // TODO is mapping r to x totally wrong, even in the short term?
-        return this.r;
+        return this.dimensions[0];
     }
 
     get y () {
-        return this.c;
+        return this.dimensions[1];
+    }
+    
+    get z () {
+        return this.dimensions[2];
     }
 
-    equals (other) {
-        return this.r === other.r && this.c === other.c;
+    equals (other, dimensionCount) {
+        dimensionCount = dimensionCount || 2;
+
+        if (this.x !== other.x) {
+            return false;
+        }
+
+        if (dimensionCount === 1) {
+            return true;
+        }
+
+        if (this.y !== other.y) {
+            return false;
+        }
+
+        if (dimensionCount === 2) {
+            return true;
+        }  
+
+        return (this.z === other.z);
     }
 
     is (other) { return this.equals(other); }
 
     plus (other) {
         return new Coord(
-            this.r + other.r,
-            this.c + other.c
+            this.x + other.x,
+            this.y + other.y,
+            this.z + other.z
         );
     }
 
     plus1d (distance) {
         return new Coord(
-            this.r + distance,
-            this.c
+            this.x + distance
         );
     }
 
     // For circular environments of a given circumference. The values can loop around again to 0.
     plus1dCircle (distance, circumference) {
         return new Coord(
-            (this.r + distance) % circumference,
-            this.c
+            (this.x + distance) % circumference
         );
     }
 
     minus (other) {
         return new Coord(
-            this.r - other.r,
-            this.c - other.c
+            this.x - other.x,
+            this.y - other.y,
+            this.z - other.z
         );
     }
 
     distanceTo (other) {
         return Math.sqrt(
-            Math.pow(this.r - other.r, 2) +
-            Math.pow(this.c - other.c, 2)
+            Math.pow(this.x - other.x, 2) +
+            Math.pow(this.y - other.y, 2) +
+            Math.pow(this.z - other.z, 2)
         );
     }
 
     manhattanDistanceTo (other) {
-        const horizontal = Math.abs(this.r - other.r);
-        const vertical = Math.abs(this.c - other.c);
+        const horizontal = Math.abs(this.x - other.x);
+        const vertical = Math.abs(this.y - other.y);
 
         return horizontal + vertical;
     }
@@ -33803,8 +33855,8 @@ class Coord {
         // 1 - (1 / sqrt(2))
         const MAX_ADJUSTMENT = 0.29289321881345254;
 
-        const horizontal = Math.abs(this.r - other.r);
-        const vertical = Math.abs(this.c - other.c);
+        const horizontal = Math.abs(this.x - other.x);
+        const vertical = Math.abs(this.y - other.y);
 
         // 0 means 45°, 1 means 0° or 90°
         const orthagonalness = Math.abs(horizontal - vertical) / Math.max(horizontal, vertical);
@@ -33826,12 +33878,13 @@ class Coord {
         return 0.9 < distance && distance < 1.5;
     }
 
+    // Later support other dimensions on this and similar funcs
     toString () {
-        return '[' + this.r + ',' + this.c + ']';
+        return '[' + this.x + ',' + this.y + ']';
     }
 
     to1dString () {
-        return this.r.toString();
+        return this.x.toString();
     }
 
     randomAdjacent () {
@@ -33842,19 +33895,19 @@ class Coord {
         return candidateNeighbor;
     }
 
-    static random (rCount, cCount) {
-        if (! Util.exists(rCount)) {
+    static random (xCount, yCount) {
+        if (! Util.exists(xCount)) {
             console.log('ERROR: Coord.random() called without r argument');
             return new Coord(-1,-1);
             // LATER throw exception, make supervisor reboot, et cetera.
         }
 
-        const c = cCount ?
-            Util.randomUpTo(cCount - 1) :
+        const c = yCount ?
+            Util.randomUpTo(yCount - 1) :
             0;
 
         return new Coord(
-            Util.randomUpTo(rCount-1),
+            Util.randomUpTo(xCount-1),
             c
         );
     }

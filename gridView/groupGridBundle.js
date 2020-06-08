@@ -123,10 +123,16 @@ class GridView {
 
         // Later dont overwrite .nodes prop.
         this.worldState.nodes = this.exampleGroups();
+        this.mPerSquare = GridView.DEFAULT_SQUARE_SIZE;
     }
     
     exampleGroups () {
         return [
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
+            new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
             new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
             new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
             new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
@@ -144,17 +150,17 @@ class GridView {
     }
 
     spriteFor (templateName) {
-        const sprites = {
-            sand: 'https://images.homedepot-static.com/productImages/7c61a416-c547-4ee2-bf95-d6b7b25d8c9f/svn/stone-tan-armstrong-vct-tile-54004031-64_1000.jpg',
-            odst: 'https://content.halocdn.com/media/Default/encyclopedia/factions/odst/media-gallery/assassinjv11-1920x1080-e34ddadf403241d4b0c1b31945c48403.jpg',
-            bruteProwler: 'https://content.halocdn.com/media/Default/encyclopedia/vehicles/prowler/prowler-large-square-542x542-84509ba37f0f49c28e74f4b3620fc683.jpg'
+        const terms = templateName.split('/');
+        const lastTerm = terms[terms.length - 1];
+
+        const extensions = {
+            sand: 'jpg',
+            odst: 'jpg',
+            wraith: 'png',
+            bruteProwler: 'jpg'
         };
 
-        const terms = templateName.split('/');
-
-        return sprites[
-            terms[terms.length - 1]
-        ];
+        return `images/${lastTerm}.${extensions[lastTerm]}`;
     }
 
     setGridHtml () {
@@ -184,6 +190,13 @@ class GridView {
         }
     }
 
+    gridSquareOfCoord (coord) {
+        return new Coord(
+            coord.x * this.mPerSquare + this.cornerCoord.x,
+            coord.y + this.mPerSquare + this.cornerCoord.y
+        );
+    }
+
     static run () {
         // set up example
         const view = new GridView();
@@ -192,7 +205,8 @@ class GridView {
     }
 }
 
-GridView.WINDOW_SQUARES = 16;
+GridView.WINDOW_SQUARES = 16; // number of squares
+GridView.DEFAULT_SQUARE_SIZE = 4; // meters
 
 GridView.run();
 
@@ -25979,66 +25993,90 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 var Util = require('./util.js');
 
 class Coord {
-    // Later can have a array of dimensions, instead of r and c props.
-    constructor (r,c) {
-        this.r = Util.default(r, -1);
-        this.c = Util.default(c, -1);
+    constructor (x, y, z) {
+        this.dimensions = [
+            Util.default(x, 0),
+            Util.default(y, 0),
+            Util.default(z, 0)
+        ];
     }
 
     get x () {
-        // TODO is mapping r to x totally wrong, even in the short term?
-        return this.r;
+        return this.dimensions[0];
     }
 
     get y () {
-        return this.c;
+        return this.dimensions[1];
+    }
+    
+    get z () {
+        return this.dimensions[2];
     }
 
-    equals (other) {
-        return this.r === other.r && this.c === other.c;
+    equals (other, dimensionCount) {
+        dimensionCount = dimensionCount || 2;
+
+        if (this.x !== other.x) {
+            return false;
+        }
+
+        if (dimensionCount === 1) {
+            return true;
+        }
+
+        if (this.y !== other.y) {
+            return false;
+        }
+
+        if (dimensionCount === 2) {
+            return true;
+        }  
+
+        return (this.z === other.z);
     }
 
     is (other) { return this.equals(other); }
 
     plus (other) {
         return new Coord(
-            this.r + other.r,
-            this.c + other.c
+            this.x + other.x,
+            this.y + other.y,
+            this.z + other.z
         );
     }
 
     plus1d (distance) {
         return new Coord(
-            this.r + distance,
-            this.c
+            this.x + distance
         );
     }
 
     // For circular environments of a given circumference. The values can loop around again to 0.
     plus1dCircle (distance, circumference) {
         return new Coord(
-            (this.r + distance) % circumference,
-            this.c
+            (this.x + distance) % circumference
         );
     }
 
     minus (other) {
         return new Coord(
-            this.r - other.r,
-            this.c - other.c
+            this.x - other.x,
+            this.y - other.y,
+            this.z - other.z
         );
     }
 
     distanceTo (other) {
         return Math.sqrt(
-            Math.pow(this.r - other.r, 2) +
-            Math.pow(this.c - other.c, 2)
+            Math.pow(this.x - other.x, 2) +
+            Math.pow(this.y - other.y, 2) +
+            Math.pow(this.z - other.z, 2)
         );
     }
 
     manhattanDistanceTo (other) {
-        const horizontal = Math.abs(this.r - other.r);
-        const vertical = Math.abs(this.c - other.c);
+        const horizontal = Math.abs(this.x - other.x);
+        const vertical = Math.abs(this.y - other.y);
 
         return horizontal + vertical;
     }
@@ -26048,8 +26086,8 @@ class Coord {
         // 1 - (1 / sqrt(2))
         const MAX_ADJUSTMENT = 0.29289321881345254;
 
-        const horizontal = Math.abs(this.r - other.r);
-        const vertical = Math.abs(this.c - other.c);
+        const horizontal = Math.abs(this.x - other.x);
+        const vertical = Math.abs(this.y - other.y);
 
         // 0 means 45°, 1 means 0° or 90°
         const orthagonalness = Math.abs(horizontal - vertical) / Math.max(horizontal, vertical);
@@ -26071,12 +26109,13 @@ class Coord {
         return 0.9 < distance && distance < 1.5;
     }
 
+    // Later support other dimensions on this and similar funcs
     toString () {
-        return '[' + this.r + ',' + this.c + ']';
+        return '[' + this.x + ',' + this.y + ']';
     }
 
     to1dString () {
-        return this.r.toString();
+        return this.x.toString();
     }
 
     randomAdjacent () {
@@ -26087,19 +26126,19 @@ class Coord {
         return candidateNeighbor;
     }
 
-    static random (rCount, cCount) {
-        if (! Util.exists(rCount)) {
+    static random (xCount, yCount) {
+        if (! Util.exists(xCount)) {
             console.log('ERROR: Coord.random() called without r argument');
             return new Coord(-1,-1);
             // LATER throw exception, make supervisor reboot, et cetera.
         }
 
-        const c = cCount ?
-            Util.randomUpTo(cCount - 1) :
+        const c = yCount ?
+            Util.randomUpTo(yCount - 1) :
             0;
 
         return new Coord(
-            Util.randomUpTo(rCount-1),
+            Util.randomUpTo(xCount-1),
             c
         );
     }
