@@ -32,6 +32,69 @@ class GridWarWorldState extends WorldState {
         // factionObj[faction].start is a Coord describing a base spawn, near which that faction should spawn.
     }
 
+    static presetArmy (scenario) {
+        const scenarios = {
+            singleCombat: {
+                unsc: {
+                    spartan: 1
+                },
+                cov: {
+                    bruteChieftain: 1,
+                    brute: 8
+                }
+            },
+            slayer: {
+                red: {
+                    spartan: 4
+                },
+                blue: {
+                    spartan: 4
+                }
+            },
+            btb: {
+                red: {
+                    mantis: 1,
+                    banshee: 1,
+                    warthog: 1,
+                    ghost: 1,
+                    spartan: 4
+                },
+                blue: {
+                    mantis: 1,
+                    banshee: 1,
+                    warthog: 1,
+                    ghost: 1,
+                    spartan: 4
+                }
+            },
+            tipOfTheSpear: {
+                unsc: {
+                    frigate: 2,
+                    missileSilo: 5,
+                    pelican: 40,
+                    scorpion: 100,
+                    warthog: 400,
+                    marine: 2000,
+                    falcon: 50,
+                    spartan: 6
+                },
+                cov: {
+                    corvette: 2,
+                    spire: 12,
+                    banshee: 100,
+                    spirit: 100,
+                    wraith: 100,
+                    ghost: 200,
+                    grunt: 2000,
+                    elite: 200,
+                    jackal: 500
+                }
+                // TODO estimate total size of this scenario, then decide what mPerSquare would be best.
+            }
+            // Add more later
+        }
+    }
+
     static example (timeline) {
         const worldState = new GridWarWorldState();
 
