@@ -13,9 +13,17 @@ module.exports = class Box {
 
     randomCoord () {
         return new Coord(
-            Util.randomRange(this.cornerA.r, this.cornerB.r, Coord.DECIMAL_PLACES),
-            Util.randomRange(this.cornerA.c, this.cornerB.c, Coord.DECIMAL_PLACES)
+            Util.randomRange(this.cornerA.x, this.cornerB.x, Coord.DECIMAL_PLACES),
+            Util.randomRange(this.cornerA.y, this.cornerB.y, Coord.DECIMAL_PLACES)
         );
+    }
+
+    width () {
+        return Math.abs(this.cornerA.x - this.cornerB.x);
+    }
+
+    height () {
+        return Math.abs(this.cornerA.y - this.cornerB.y);
     }
 
     // Input: number[], in meters

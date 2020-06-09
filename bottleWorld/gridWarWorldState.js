@@ -6,6 +6,8 @@ const ArrivalEvent = require('./events/arrivalEvent.js');
 
 const Box = require('../util/box.js');
 const Util = require('../util/util.js');
+
+const Group = require('../wnode/group.js');
 const Thing = require('../wnode/thing.js');
 
 // For use with gridView front end
@@ -16,6 +18,9 @@ const Thing = require('../wnode/thing.js');
 class GridWarWorldState extends WorldState {
     constructor (scenario) {
         super();
+
+        // Later dont edit a capitalized prop, because that feels sketchy.
+        Coord.DECIMAL_PLACES = 0;
 
         this.universe = 'halo'; // Later we can change this.
 
@@ -56,7 +61,11 @@ class GridWarWorldState extends WorldState {
                 sizeTotals[alignment][templateName] = totalSize;
                 grandTotal += totalSize;
 
-                // TODO should probably gather this info into a data structure. Maybe similar to or a modification of scenario. Keyed by alignment and templateName, but storing object at deepest level, not just number.
+                scenario[alignment][templateName] = {
+                    quantity: quantity,
+                    totalSize: totalSize,
+                    template: template
+                }
             }
         }
 
@@ -84,13 +93,81 @@ class GridWarWorldState extends WorldState {
     }
 
     getStartBoxes (alignments) {
-        // TODO
-        // MRB2: Support input array of 1-4 alignments
+        // MRB2: Support input array of 1-4 alignments. Inspired by Halo splitscreen pattern, eg 3 alignments might get N half, SW quadrant, and SE quadrant.
+        if (alignments.length !== 2) {
+            throw new Error(`Only having 2 start boxes is currently supported. ${alignments.length} start boxes is not yet supported.`);
+        }
+
+        this.startBoxes = {};
+
+        this.startBoxes[alignments[0]] = new Box(
+            new Coord(
+                0, 
+                0
+            ),
+            new Coord(
+                this.farCorner.x, 
+                Math.floor(this.farCorner.y / 2)
+            )
+        );
+
+        this.startBoxes[alignments[1]] = new Box(
+            new Coord(
+                0,
+                Math.ceil(this.farCorner.y / 2)
+            ),
+            this.farCorner
+        );
     }
 
     makeGroups (scenario) {
-        // TODO Involves this.nodes, scenario, this.mPerSquare, and this.startBoxes
+        for (const alignment in scenario) {
+            for (const templateName in scenario[alignment]) {
+                const entry = scenario[alignment][templateName];
 
+                // example
+                // 53 infantry into 7m squares
+                // 7 groups of 7 quantity
+                // 1 group of 4 quantity
+                const maxPerSquare = Math.floor(this.mPerSquare / entry.size) || 1;
+                const fullGroupCount = Math.floor(entry.quantity / maxPerSquare);
+                const remainder = entry.quantity - (fullGroupCount * maxPerSquare);
+
+                Util.logDebug(`Spawning ${templateName} x${entry.quantity} with mPerSquare ${this.mPerSquare}. Will do ${fullGroupCount} Groups of ${maxPerSquare} each, plus remainder Group of ${remainder}.`);
+
+                for (let i = 0; i < fullGroupCount; i++) {
+                    this.spawnGroup(entry.template, maxPerSquare, alignment);
+                }
+
+                this.spawnGroup(entry.template, remainder, alignment);
+            }
+        }
+    }
+
+    spawnGroup (template, quantity, alignment) {
+        // The unit of coord in this WorldState is squares, NOT meters.
+        const coord = this.findAvailableSpawn(alignment);
+
+        this.nodes.push(
+            new Group(template, quantity, alignment, coord)
+        );
+    }
+
+    findAvailableSpawn (alignment) {
+        const startBox = this.startBoxes[alignment];
+
+        let coord;
+
+        const lots = startBox.width() * startBox.height() * 12;
+        for (let i = 0; i < lots; i++) {
+            coord = startBox.randomCoord();
+
+            if (this.nodesAt(coord).length === 0) {
+                return coord;
+            }
+        }
+
+        throw new Error(`Cant spawn anything for ${alignment} because startBox with cornerA ${startBox.cornerA} is too crowded`);
     }
 
     static presetArmy (scenario) {
@@ -150,7 +227,6 @@ class GridWarWorldState extends WorldState {
                     elite: 200,
                     jackal: 500
                 }
-                // TODO estimate total size of this scenario, then decide what mPerSquare would be best. (divide by 40, consider largest.)
             }
             // Add more later
         }
@@ -165,7 +241,6 @@ class GridWarWorldState extends WorldState {
 
         const context = 'halo/unsc/individual';
 
-        // TODO see deathPlanetMock group initialization logic for inspiration
         const startingThings = {
             unsc: {
                 start: new Coord(0, 0),
