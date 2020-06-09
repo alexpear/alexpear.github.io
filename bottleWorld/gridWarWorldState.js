@@ -14,22 +14,83 @@ const Thing = require('../wnode/thing.js');
 // All groups fit into 1 square (a 2:1 leniency is granted for groups of 1 large creature)
 // Larger creatures or objects are not modeled in this system except as several squares of static terrain.
 class GridWarWorldState extends WorldState {
-	constructor () {
-		super();
+    constructor (scenario) {
+        super();
 
-		this.box = Box.ofDimensions();
-	}
+        this.universe = 'halo'; // Later we can change this.
 
-    allAlignments () {
-        return [
-            'unsc',
-            'cov'
-        ];
+        // We model a rectangular battlefield extending from (0,0) to this.farCorner
+        this.farCorner = new Coord(GridWarWorldState.WIDTH, GridWarWorldState.HEIGHT);
+
+        this.setUpScenario(scenario);
     }
 
-    addNodesByAlignment (factionObj) {
+    setUpScenario (scenario) {
+        this.alignments = Object.keys(scenario);
+
+        const sizeTotals = {};
+        let grandTotal = 0;
+        let largestSize = 0;
+
+        for (const alignment in scenario) {
+            sizeTotals[alignment] = {};
+
+            for (const templateName in scenario[alignment]) {
+                const path = this.universe + '/' + alignment + '/individual/' + templateName;
+                // TODO: vehicles may be in squad.js, not individual.js. Figure out a way to structure these names to accommodate that.
+
+                const template = this.getTemplate(path);
+
+                if (! template || ! template.size) {
+                    throw new Error(`Can't load size of ${templateName}`);
+                }
+
+                if (template.size > largestSize) {
+                    largestSize = template.size;
+                }
+
+                const quantity = scenario[alignment][templateName];
+                
+                const totalSize = template.size * quantity;
+
+                sizeTotals[alignment][templateName] = totalSize;
+                grandTotal += totalSize;
+
+                // TODO should probably gather this info into a data structure. Maybe similar to or a modification of scenario. Keyed by alignment and templateName, but storing object at deepest level, not just number.
+            }
+        }
+
+        // In order to fit the largest model, the squares must be at least this scale.
+        const minScale = largestSize * 2;
+
+        const DENSITY_HEURISTIC = 7;
+        const suggestedScale = grandTotal * DENSITY_HEURISTIC / (this.farCorner.x * this.farCorner.y);
+
+        this.mPerSquare = Math.max(minScale, suggestedScale);
+
+        // {
+        //     unsc: new Box(
+        //         new Coord(0, 0), 
+        //         new Coord(this.farCorner.x, Math.floor(this.farCorner.y))
+        //     ),
+        //     cov: new Box(
+        //         new Coord(0, Math.ceil(this.farCorner.y)), 
+        //         this.farCorner
+        //     )
+        // }
+        this.startBoxes = this.getStartBoxes(this.alignments);
+
+        this.makeGroups(scenario);
+    }
+
+    getStartBoxes (alignments) {
         // TODO
-        // factionObj[faction].start is a Coord describing a base spawn, near which that faction should spawn.
+        // MRB2: Support input array of 1-4 alignments
+    }
+
+    makeGroups (scenario) {
+        // TODO Involves this.nodes, scenario, this.mPerSquare, and this.startBoxes
+
     }
 
     static presetArmy (scenario) {
@@ -89,7 +150,7 @@ class GridWarWorldState extends WorldState {
                     elite: 200,
                     jackal: 500
                 }
-                // TODO estimate total size of this scenario, then decide what mPerSquare would be best.
+                // TODO estimate total size of this scenario, then decide what mPerSquare would be best. (divide by 40, consider largest.)
             }
             // Add more later
         }
@@ -129,6 +190,9 @@ class GridWarWorldState extends WorldState {
 
     }
 }
+
+GridWarWorldState.WIDTH = 16;
+GridWarWorldState.HEIGHT = 16;
 
 module.exports = GridWarWorldState;
 
