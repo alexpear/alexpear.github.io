@@ -72,8 +72,8 @@ class GridWarWorldState extends WorldState {
         // In order to fit the largest model, the squares must be at least this scale.
         const minScale = largestSize * 2;
 
-        const DENSITY_HEURISTIC = 7;
-        const suggestedScale = grandTotal * DENSITY_HEURISTIC / (this.farCorner.x * this.farCorner.y);
+        const SQUARES_PER_GROUP = 10;
+        const suggestedScale = Math.ceil(grandTotal * SQUARES_PER_GROUP / (this.farCorner.x * this.farCorner.y));
 
         this.mPerSquare = Math.max(minScale, suggestedScale);
 
