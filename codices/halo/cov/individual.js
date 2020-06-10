@@ -136,4 +136,133 @@ individuals: 1
 * childrenof engineer
 item/bombHarness
 
+* template ghost
+size: 4
+speed: 25
+moveType: skimmer
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
+
+* template spectre
+size: 7
+speed: 25
+moveType: skimmer
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template bruteChopper
+size: 6
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template bruteProwler
+size: 7
+speed: 25
+moveType: skimmer
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template wraith
+size: 9
+speed: 25
+moveType: skimmer
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template banshee
+size: 7
+speed: 25
+moveType: flight
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template phantom
+size: 33
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template scarab
+size: 49
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template lich
+size: 103
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template kraken
+size: 200
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template harvester
+size: 278
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template lightCruiser
+size: 300
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
 `;

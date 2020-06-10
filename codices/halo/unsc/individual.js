@@ -37,11 +37,6 @@ human
 4 civilian
 1 {output}
 
-* template marinePrivate
-tags: creature
-speed: 3
-comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily.
-
 * childrenof marinePrivate
 unsc/item/dmr
 {unsc/item}
@@ -122,5 +117,101 @@ weight: 1000
 2 marineSpecialist
 1 spartan
 1 {output}
+
+* template marinePrivate
+tags: creature
+size: 1
+speed: 1
+ac: 17
+sp: 10
+resistance: heat 2, pierce 2
+toHit: 2
+damage: 2
+shots: 3
+comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily. This marine has a SMG.
+
+* template mongoose
+size: 10
+speed: 2
+ac: 21
+sp: 150
+resistance: heat 2
+toHit: 1
+damage: 50
+shots: 0.5
+
+* template warthog
+size: 6
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
+
+* template hornet
+size: 10
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template scorpion
+size: 10
+speed: 2
+ac: 21
+sp: 150
+resistance: heat 2
+toHit: 1
+damage: 50
+shots: 0.5
+
+* template elephant
+size: 25
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template pelican
+size: 31
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template mammoth
+size: 68
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template frigate
+size: 500
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
 
 `;
