@@ -91,6 +91,8 @@ class CreatureTemplate extends NodeTemplate {
 
                 // Interpreted as modifiers, not absolute stats.
                 aggregation[key] = (existingValue || 0) + (otherValue || 0);
+
+                throw new Error(`debug throwing intentionally, to see when this gets called: this is ${this} and this.name is ${this && this.name}`);
             }
             else if (Util.isObject(otherValue)) {
                 // eg other.resistance

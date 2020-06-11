@@ -91,6 +91,7 @@ class GridView {
                         group.templateName :
                         'sand'
                 );
+                // TODO also display group.quantity as text over the image. (Centered, in corner, etc.)
 
                 const cell = row.insertCell();
                 cell.appendChild(child);

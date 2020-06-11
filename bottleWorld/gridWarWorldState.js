@@ -146,9 +146,10 @@ class GridWarWorldState extends WorldState {
         // The unit of coord in this WorldState is squares, NOT meters.
         const coord = this.findAvailableSpawn(alignment);
 
-        this.nodes.push(
-            new Group(template, quantity, alignment, coord)
-        );
+        const newGroup = new Group(template, quantity, alignment, coord);
+        this.nodes.push(newGroup);
+
+        Util.logDebug(`GridWar spawnGroup(). Created ${newGroup.templateName} group with quantity ${newGroup.quantity} and coord ${newGroup.coord}`);
     }
 
     findAvailableSpawn (alignment) {
@@ -232,8 +233,8 @@ class GridWarWorldState extends WorldState {
                     odst: 100
                 },
                 cov: {
-                    bruteProwler: 14,
-                    wraith: 12
+                    bruteProwler: 4,
+                    wraith: 2
                 }
             }
             // Add more later

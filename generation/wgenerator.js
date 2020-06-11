@@ -122,8 +122,9 @@ class WGenerator {
             }
         );
 
-        Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}`);
-    }
+        Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}.`);
+        // Util.logDebug(`templateObj is ${JSON.stringify(templateObj, undefined, '    ')}`);
+   }
 
     // Returns WNode[]
     getOutputs (key) {
