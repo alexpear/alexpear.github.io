@@ -1994,8 +1994,6 @@ class GridWarWorldState extends WorldState {
             for (const templateName in scenario[alignment]) {
                 const path = this.universe + '/' + alignment + '/individual/' + templateName;
                 // TODO: vehicles may be in squad.js, not individual.js. Figure out a way to structure these names to accommodate that.
-                // Option 1: put all these templates in files of the same name (unsc/individual, cov/individual, etc)
-                // Option 2: alls cenarios specify the filename
 
                 const template = this.getTemplate(path);
 
@@ -2236,9 +2234,6 @@ GridWarWorldState.HEIGHT = 16;
 
 module.exports = GridWarWorldState;
 
-// Option 1: Have gridView.js require GridWarWorldState, and call GWWS.run() somewhere
-// Option 2: Move GWWS.js file to gridView/src/ dir.
-// Option 3: Have npm script buildGroupGrid reference gridWarWorldState.js
 GridWarWorldState.run();
 
 },{"../gridView/src/gridView.js":45,"../util/box.js":79,"../util/coord.js":80,"../util/util.js":81,"../wnode/group.js":83,"../wnode/thing.js":85,"./events/arrivalEvent.js":9,"./timeline.js":13,"./worldState.js":14}],13:[function(require,module,exports){
@@ -8021,7 +8016,10 @@ class GridView {
     }
 
     spriteFor (templateName) {
-        const terms = templateName.split('/');
+        const terms = templateName ?
+            templateName.split('/') :
+            ['sand'];
+
         const lastTerm = terms[terms.length - 1];
 
         const extensions = {
@@ -8047,23 +8045,36 @@ class GridView {
             for (let c = 0; c < GridView.WINDOW_SQUARES; c++) {
                 // Util.logDebug(`top of inner for loop in setGridHtml(). this.worldState.constructor.name is ${this.worldState.constructor.name}.\n  this.worldState.nodes is ${this.worldState.nodes}`)
 
+                // Later could functionize this.
                 const group = this.worldState.nodes.find(
                     g => g.coord.x === c && g.coord.y === r
                 );
+                
+                const squareDiv = document.createElement('div');
+                squareDiv.classList.add('groupSquare');
 
-                const child = document.createElement('img');
+                const img = document.createElement('img');
 
-                child.height = 45;
-                child.width = 60;
-                child.src = this.spriteFor(
-                    group ?
-                        group.templateName :
-                        'sand'
+                // img.height = 45;
+                // img.width = 60;
+                img.src = this.spriteFor(
+                    group && group.templateName
                 );
-                // TODO also display group.quantity as text over the image. (Centered, in corner, etc.)
 
                 const cell = row.insertCell();
-                cell.appendChild(child);
+                cell.appendChild(squareDiv);
+                squareDiv.appendChild(img);
+
+                if (! group) {
+                    continue;
+                }
+
+                const quantityText = document.createElement('div');
+                quantityText.classList.add('quantityText');
+                quantityText.innerHTML = group.quantity > 1 ?
+                    group.quantity :
+                    '';
+                squareDiv.appendChild(quantityText);
             }
         }
     }
