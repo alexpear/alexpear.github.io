@@ -230,11 +230,11 @@ class GridWarWorldState extends WorldState {
             },
             bruteAssault: {
                 unsc: {
-                    odst: 100
+                    odst: 305
                 },
                 cov: {
-                    bruteProwler: 4,
-                    wraith: 2
+                    bruteProwler: 9,
+                    wraith: 3
                 }
             }
             // Add more later
