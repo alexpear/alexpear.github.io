@@ -52,7 +52,10 @@ class GridView {
     }
 
     spriteFor (templateName) {
-        const terms = templateName.split('/');
+        const terms = templateName ?
+            templateName.split('/') :
+            ['sand'];
+
         const lastTerm = terms[terms.length - 1];
 
         const extensions = {
@@ -78,23 +81,36 @@ class GridView {
             for (let c = 0; c < GridView.WINDOW_SQUARES; c++) {
                 // Util.logDebug(`top of inner for loop in setGridHtml(). this.worldState.constructor.name is ${this.worldState.constructor.name}.\n  this.worldState.nodes is ${this.worldState.nodes}`)
 
+                // Later could functionize this.
                 const group = this.worldState.nodes.find(
                     g => g.coord.x === c && g.coord.y === r
                 );
+                
+                const squareDiv = document.createElement('div');
+                squareDiv.classList.add('groupSquare');
 
-                const child = document.createElement('img');
+                const img = document.createElement('img');
 
-                child.height = 45;
-                child.width = 60;
-                child.src = this.spriteFor(
-                    group ?
-                        group.templateName :
-                        'sand'
+                // img.height = 45;
+                // img.width = 60;
+                img.src = this.spriteFor(
+                    group && group.templateName
                 );
-                // TODO also display group.quantity as text over the image. (Centered, in corner, etc.)
 
                 const cell = row.insertCell();
-                cell.appendChild(child);
+                cell.appendChild(squareDiv);
+                squareDiv.appendChild(img);
+
+                if (! group) {
+                    continue;
+                }
+
+                const quantityText = document.createElement('div');
+                quantityText.classList.add('quantityText');
+                quantityText.innerHTML = group.quantity > 1 ?
+                    group.quantity :
+                    '';
+                squareDiv.appendChild(quantityText);
             }
         }
     }
