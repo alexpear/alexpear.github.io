@@ -198,6 +198,8 @@ class CreatureTemplate extends NodeTemplate {
 
                 // Interpreted as modifiers, not absolute stats.
                 aggregation[key] = (existingValue || 0) + (otherValue || 0);
+
+                throw new Error(`debug throwing intentionally, to see when this gets called: this is ${this} and this.name is ${this && this.name}`);
             }
             else if (Util.isObject(otherValue)) {
                 // eg other.resistance
@@ -1236,7 +1238,8 @@ module.exports = class NodeTemplate {
     constructor (name) {
         this.name = name;
 
-        // TODO: Also should store codex path, to make the name more clear in case of collisions. Shouldnt require much memory since there should be < 300 templates.
+        // TODO: Also should store codex slashpath, to make the name more clear in case of collisions. Shouldnt require much memory since there should be < 300 templates.
+        // TODO parse template rows about miscellaneous properties, such as size. (Didnt i write that somewhere already...?)
 
         this.id = Util.newId();
         this.tags = [];
@@ -2436,8 +2439,8 @@ class WorldState {
 
         const listing = WGenerator.findGenAndTable(fullPath);
 
-        Util.logDebug(`In worldState.getTemplate('${inputString}'), listing.gen.codexPath is ${listing.gen.codexPath}. listing.name is ${listing.name}. listing.gen is the following:`);
-        Util.logDebug(listing.gen.toJson());
+        // Util.logDebug(`In worldState.getTemplate('${inputString}'), listing.gen.codexPath is ${listing.gen.codexPath}. listing.name is ${listing.name}. listing.gen is the following:`);
+        // Util.logDebug(listing.gen.toJson());
 
         const template = listing.gen.glossary[listing.name];
 
@@ -3321,6 +3324,135 @@ individuals: 1
 
 * childrenof engineer
 item/bombHarness
+
+* template ghost
+size: 4
+speed: 25
+moveType: skimmer
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
+
+* template spectre
+size: 7
+speed: 25
+moveType: skimmer
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template bruteChopper
+size: 6
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template bruteProwler
+size: 7
+speed: 25
+moveType: skimmer
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template wraith
+size: 9
+speed: 25
+moveType: skimmer
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template banshee
+size: 7
+speed: 25
+moveType: flight
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template phantom
+size: 33
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template scarab
+size: 49
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template lich
+size: 103
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template kraken
+size: 200
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template harvester
+size: 278
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template lightCruiser
+size: 300
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
 
 `;
 
@@ -4344,11 +4476,6 @@ human
 4 civilian
 1 {output}
 
-* template marinePrivate
-tags: creature
-speed: 3
-comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily.
-
 * childrenof marinePrivate
 unsc/item/dmr
 {unsc/item}
@@ -4394,7 +4521,7 @@ unsc/item/jetpack
 
 * template spartan
 tags: creature cyborg
-size: 2
+size: 1.5
 weight: 120
 maxSp: 20
 damage: 4
@@ -4429,6 +4556,129 @@ weight: 1000
 2 marineSpecialist
 1 spartan
 1 {output}
+
+* template marinePrivate
+tags: creature
+size: 1
+speed: 1
+ac: 17
+sp: 10
+resistance: heat 2, pierce 2
+toHit: 2
+damage: 2
+shots: 3
+comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily. This marine has a SMG.
+
+* template marine
+tags: creature
+size: 1
+speed: 1
+ac: 17
+sp: 10
+resistance: heat 2, pierce 2
+toHit: 2
+damage: 2
+shots: 3
+attacks: 
+  SMG: +2 x2, 2 pierce
+comment: GridWar calls them 'marine', not 'marinePrivate'. This marine has a SMG.
+
+* template odst
+tags: creature
+size: 1
+speed: 1
+ac: 19
+sp: 10
+resistance: heat 2, pierce 2
+toHit: 2
+damage: 2
+shots: 3
+attacks: 
+  SMG: +2 x2, 2 pierce
+
+* template mongoose
+size: 10
+speed: 2
+ac: 21
+sp: 150
+resistance: heat 2
+toHit: 1
+damage: 50
+shots: 0.5
+
+* template warthog
+size: 6
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
+
+* template hornet
+size: 10
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template scorpion
+size: 10
+speed: 2
+ac: 21
+sp: 150
+resistance: heat 2
+toHit: 1
+damage: 50
+shots: 0.5
+
+* template elephant
+size: 25
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template pelican
+size: 31
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template mammoth
+size: 68
+speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template frigate
+size: 500
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
 
 `;
 
@@ -7110,8 +7360,9 @@ class WGenerator {
             }
         );
 
-        Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}`);
-    }
+        Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}.`);
+        // Util.logDebug(`templateObj is ${JSON.stringify(templateObj, undefined, '    ')}`);
+   }
 
     // Returns WNode[]
     getOutputs (key) {
@@ -33736,9 +33987,17 @@ module.exports = class Box {
 
     randomCoord () {
         return new Coord(
-            Util.randomRange(this.cornerA.r, this.cornerB.r, Coord.DECIMAL_PLACES),
-            Util.randomRange(this.cornerA.c, this.cornerB.c, Coord.DECIMAL_PLACES)
+            Util.randomRange(this.cornerA.x, this.cornerB.x, Coord.DECIMAL_PLACES),
+            Util.randomRange(this.cornerA.y, this.cornerB.y, Coord.DECIMAL_PLACES)
         );
+    }
+
+    width () {
+        return Math.abs(this.cornerA.x - this.cornerB.x);
+    }
+
+    height () {
+        return Math.abs(this.cornerA.y - this.cornerB.y);
     }
 
     // Input: number[], in meters
@@ -34763,6 +35022,10 @@ const WNode = require('./wnode.js');
 module.exports = class Group extends WNode {
     constructor (template, quantity, alignment, coord) {
         super(template);
+
+        if (quantity === 0) {
+            return undefined;
+        }
 
         this.quantity = Util.exists(quantity) ?
             quantity :
