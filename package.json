@@ -20,7 +20,7 @@
     "buildAll": "npm run buildTreeBrowser && npm run buildFishTank && npm run buildGroupGrid",
     "buildTreeBrowser": "browserify treebrowser/treeBrowser.js -o treebrowser/bundle.js",
     "buildFishTank": "browserify fishTank/src/*.js -o fishTank/bundle.js",
-    "buildGroupGrid": "browserify gridView/src/*.js -o gridView/groupGridBundle.js",
+    "buildGroupGrid": "browserify gridView/src/*.js bottleWorld/gridWarWorldState.js -o gridView/groupGridBundle.js",
     "server": "http-server",
     "test": "npm run testRingWorld",
     "testWGenerator": "node generation/WGenerator.js",

@@ -16,13 +16,15 @@ const Group = require('../../wnode/group.js');
 
 class GridView {
     constructor (worldState, cornerCoord) {
-        this.worldState = worldState || {};
+        Util.logDebug(`GridView constructor. input param worldState is ${worldState}`)
+
+        this.worldState = worldState;
 
         // The top left corner of the view is displaying this coord.
         this.cornerCoord = cornerCoord || new Coord(0, 0);
 
         // Later dont overwrite .nodes prop.
-        this.worldState.nodes = this.exampleGroups();
+        // this.worldState.nodes = this.exampleGroups();
         this.mPerSquare = GridView.DEFAULT_SQUARE_SIZE;
     }
     
@@ -64,12 +66,18 @@ class GridView {
     }
 
     setGridHtml () {
+        const musings = document.getElementById('musings');
+
+        musings.innerHTML = `The scale is ${this.worldState.mPerSquare} meters per square...`;
+
         const table = document.getElementById('grid');
 
         for (let r = 0; r < GridView.WINDOW_SQUARES; r++) {
             const row = table.insertRow();
 
             for (let c = 0; c < GridView.WINDOW_SQUARES; c++) {
+                // Util.logDebug(`top of inner for loop in setGridHtml(). this.worldState.constructor.name is ${this.worldState.constructor.name}.\n  this.worldState.nodes is ${this.worldState.nodes}`)
+
                 const group = this.worldState.nodes.find(
                     g => g.coord.x === c && g.coord.y === r
                 );
@@ -108,4 +116,6 @@ class GridView {
 GridView.WINDOW_SQUARES = 16; // number of squares
 GridView.DEFAULT_SQUARE_SIZE = 4; // meters
 
-GridView.run();
+module.exports = GridView;
+
+// GridView.run();

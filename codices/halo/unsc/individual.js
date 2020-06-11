@@ -82,7 +82,7 @@ unsc/item/jetpack
 
 * template spartan
 tags: creature cyborg
-size: 2
+size: 1.5
 weight: 120
 maxSp: 20
 damage: 4
@@ -129,6 +129,33 @@ toHit: 2
 damage: 2
 shots: 3
 comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily. This marine has a SMG.
+
+* template marine
+tags: creature
+size: 1
+speed: 1
+ac: 17
+sp: 10
+resistance: heat 2, pierce 2
+toHit: 2
+damage: 2
+shots: 3
+attacks: 
+  SMG: +2 x2, 2 pierce
+comment: GridWar calls them 'marine', not 'marinePrivate'. This marine has a SMG.
+
+* template odst
+tags: creature
+size: 1
+speed: 1
+ac: 19
+sp: 10
+resistance: heat 2, pierce 2
+toHit: 2
+damage: 2
+shots: 3
+attacks: 
+  SMG: +2 x2, 2 pierce
 
 * template mongoose
 size: 10

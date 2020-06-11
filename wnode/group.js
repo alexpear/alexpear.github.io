@@ -16,6 +16,10 @@ module.exports = class Group extends WNode {
     constructor (template, quantity, alignment, coord) {
         super(template);
 
+        if (quantity === 0) {
+            return undefined;
+        }
+
         this.quantity = Util.exists(quantity) ?
             quantity :
             template.quantity || 1;

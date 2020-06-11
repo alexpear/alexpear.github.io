@@ -4,7 +4,10 @@ const WorldState = require('./worldState.js');
 const Timeline = require('./timeline.js');
 const ArrivalEvent = require('./events/arrivalEvent.js');
 
+const GridView = require('../gridView/src/gridView.js');
+
 const Box = require('../util/box.js');
+const Coord = require('../util/coord.js');
 const Util = require('../util/util.js');
 
 const Group = require('../wnode/group.js');
@@ -16,7 +19,7 @@ const Thing = require('../wnode/thing.js');
 // All groups fit into 1 square (a 2:1 leniency is granted for groups of 1 large creature)
 // Larger creatures or objects are not modeled in this system except as several squares of static terrain.
 class GridWarWorldState extends WorldState {
-    constructor (scenario) {
+    constructor (scenarioName) {
         super();
 
         // Later dont edit a capitalized prop, because that feels sketchy.
@@ -27,6 +30,7 @@ class GridWarWorldState extends WorldState {
         // We model a rectangular battlefield extending from (0,0) to this.farCorner
         this.farCorner = new Coord(GridWarWorldState.WIDTH, GridWarWorldState.HEIGHT);
 
+        const scenario = GridWarWorldState.presetArmy(scenarioName);
         this.setUpScenario(scenario);
     }
 
@@ -77,17 +81,9 @@ class GridWarWorldState extends WorldState {
 
         this.mPerSquare = Math.max(minScale, suggestedScale);
 
-        // {
-        //     unsc: new Box(
-        //         new Coord(0, 0), 
-        //         new Coord(this.farCorner.x, Math.floor(this.farCorner.y))
-        //     ),
-        //     cov: new Box(
-        //         new Coord(0, Math.ceil(this.farCorner.y)), 
-        //         this.farCorner
-        //     )
-        // }
-        this.startBoxes = this.getStartBoxes(this.alignments);
+        Util.logDebug(`GridWarWorldState.setUpScenario() ... grandTotal size is ${grandTotal}, largestSize is ${largestSize} so minScale is ${minScale}, and final mPerSquare is ${this.mPerSquare}.`)
+
+        this.getStartBoxes(this.alignments);
 
         this.makeGroups(scenario);
     }
@@ -107,7 +103,7 @@ class GridWarWorldState extends WorldState {
             ),
             new Coord(
                 this.farCorner.x, 
-                Math.floor(this.farCorner.y / 2)
+                Math.floor(this.farCorner.y / 2) - 1
             )
         );
 
@@ -133,13 +129,15 @@ class GridWarWorldState extends WorldState {
                 const fullGroupCount = Math.floor(entry.quantity / maxPerSquare);
                 const remainder = entry.quantity - (fullGroupCount * maxPerSquare);
 
-                Util.logDebug(`Spawning ${templateName} x${entry.quantity} with mPerSquare ${this.mPerSquare}. Will do ${fullGroupCount} Groups of ${maxPerSquare} each, plus remainder Group of ${remainder}.`);
+                Util.logDebug(`Spawning ${templateName} x${entry.quantity} with mPerSquare ${this.mPerSquare}, because entry.size is ${entry.size}. Will do ${fullGroupCount} Groups of ${maxPerSquare} each, with remainder Group of ${remainder}.`);
 
                 for (let i = 0; i < fullGroupCount; i++) {
                     this.spawnGroup(entry.template, maxPerSquare, alignment);
                 }
 
-                this.spawnGroup(entry.template, remainder, alignment);
+                if (remainder > 0) {
+                    this.spawnGroup(entry.template, remainder, alignment);                    
+                }
             }
         }
     }
@@ -182,6 +180,7 @@ class GridWarWorldState extends WorldState {
                 }
             },
             slayer: {
+                // TODO should this key specify faction ('unsc') or alignment ('red')?
                 red: {
                     spartan: 4
                 },
@@ -227,13 +226,24 @@ class GridWarWorldState extends WorldState {
                     elite: 200,
                     jackal: 500
                 }
+            },
+            bruteAssault: {
+                unsc: {
+                    odst: 100
+                },
+                cov: {
+                    bruteProwler: 14,
+                    wraith: 12
+                }
             }
             // Add more later
-        }
+        };
+
+        return scenarios[scenario] || scenarios.bruteAssault;
     }
 
     static example (timeline) {
-        const worldState = new GridWarWorldState();
+        const worldState = new GridWarWorldState('bruteAssault');
 
         timeline = timeline || new Timeline(worldState);
         timeline.currentWorldState = worldState;
@@ -241,28 +251,33 @@ class GridWarWorldState extends WorldState {
 
         const context = 'halo/unsc/individual';
 
-        const startingThings = {
-            unsc: {
-                start: new Coord(0, 0),
-                odst: 3
-            },
-            cov: {
-                start: new Coord(10, 10),
-                bruteProwler: 2
-            }
-        };
+        // const startingThings = {
+        //     unsc: {
+        //         start: new Coord(0, 0),
+        //         odst: 3
+        //     },
+        //     cov: {
+        //         start: new Coord(10, 10),
+        //         bruteProwler: 2
+        //     }
+        // };
 
-        worldState.addNodesByAlignment(startingThings, context);
+        // worldState.addNodesByAlignment(startingThings, context);
 
         return worldState;
     }
 
-    static test () {
+    static test (input) {
+        Util.logDebug(`Top of GridWarWorldState.test()`);
 
+        const worldState = GridWarWorldState.example();
+        const view = new GridView(worldState);
+
+        view.setGridHtml();
     }
 
     static run () {
-
+        GridWarWorldState.test();
     }
 }
 

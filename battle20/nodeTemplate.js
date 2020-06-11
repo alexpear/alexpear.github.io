@@ -7,7 +7,8 @@ module.exports = class NodeTemplate {
     constructor (name) {
         this.name = name;
 
-        // TODO: Also should store codex path, to make the name more clear in case of collisions. Shouldnt require much memory since there should be < 300 templates.
+        // TODO: Also should store codex slashpath, to make the name more clear in case of collisions. Shouldnt require much memory since there should be < 300 templates.
+        // TODO parse template rows about miscellaneous properties, such as size. (Didnt i write that somewhere already...?)
 
         this.id = Util.newId();
         this.tags = [];

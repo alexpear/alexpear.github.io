@@ -183,8 +183,8 @@ class WorldState {
 
         const listing = WGenerator.findGenAndTable(fullPath);
 
-        Util.logDebug(`In worldState.getTemplate('${inputString}'), listing.gen.codexPath is ${listing.gen.codexPath}. listing.name is ${listing.name}. listing.gen is the following:`);
-        Util.logDebug(listing.gen.toJson());
+        // Util.logDebug(`In worldState.getTemplate('${inputString}'), listing.gen.codexPath is ${listing.gen.codexPath}. listing.name is ${listing.name}. listing.gen is the following:`);
+        // Util.logDebug(listing.gen.toJson());
 
         const template = listing.gen.glossary[listing.name];
 
