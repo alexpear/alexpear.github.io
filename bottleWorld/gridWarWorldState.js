@@ -28,7 +28,7 @@ class GridWarWorldState extends WorldState {
         this.universe = 'halo'; // Later we can change this.
 
         // We model a rectangular battlefield extending from (0,0) to this.farCorner
-        this.farCorner = new Coord(GridWarWorldState.WIDTH, GridWarWorldState.HEIGHT);
+        this.farCorner = new Coord(GridWarWorldState.WIDTH - 1, GridWarWorldState.HEIGHT - 1);
 
         const scenario = GridWarWorldState.presetArmy(scenarioName);
         this.setUpScenario(scenario);
@@ -74,7 +74,7 @@ class GridWarWorldState extends WorldState {
         }
 
         // In order to fit the largest model, the squares must be at least this scale.
-        const minScale = largestSize * 2;
+        const minScale = Math.ceil(largestSize / 2);
 
         const SQUARES_PER_GROUP = 10;
         const suggestedScale = Math.ceil(grandTotal * SQUARES_PER_GROUP / (this.farCorner.x * this.farCorner.y));
@@ -125,11 +125,11 @@ class GridWarWorldState extends WorldState {
                 // 53 infantry into 7m squares
                 // 7 groups of 7 quantity
                 // 1 group of 4 quantity
-                const maxPerSquare = Math.floor(this.mPerSquare / entry.size) || 1;
+                const maxPerSquare = Math.floor(this.mPerSquare / entry.template.size) || 1;
                 const fullGroupCount = Math.floor(entry.quantity / maxPerSquare);
                 const remainder = entry.quantity - (fullGroupCount * maxPerSquare);
 
-                Util.logDebug(`Spawning ${templateName} x${entry.quantity} with mPerSquare ${this.mPerSquare}, because entry.size is ${entry.size}. Will do ${fullGroupCount} Groups of ${maxPerSquare} each, with remainder Group of ${remainder}.`);
+                Util.logDebug(`Spawning ${templateName} x${entry.quantity} with mPerSquare ${this.mPerSquare}, because entry.template.size is ${entry.template.size}. Will do ${fullGroupCount} Groups of ${maxPerSquare} each, with remainder Group of ${remainder}.`);
 
                 for (let i = 0; i < fullGroupCount; i++) {
                     this.spawnGroup(entry.template, maxPerSquare, alignment);
