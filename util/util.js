@@ -544,7 +544,42 @@ util.asBar = (n) => {
     return bar;
 };
 
-util.sigFigsOf = (n) => {
+// Returns the input number rounded up or down to 1 sigfig.
+util.sigfigRound = (n, sigfigs) => {
+    sigfigs = sigfigs || 1;
+
+    const log = Math.log10(Math.abs(n));
+
+    return _.round(
+        n,
+        sigfigs - (1 + Math.floor(log))
+    );
+};
+
+util.testSigfigRound = () => {
+    for (let f = 1; f < 3; f++) {
+        for (let n = 1; n < 1000000; n++) {
+            const output = util.sigfigRound(n, f);
+            const figs = util.sigfigsOf(output);
+
+            if (figs > f) {
+                const originalFigs = util.sigfigsOf(n);
+                if (originalFigs < f) {
+                    continue;
+                }
+
+                // Note that this test does not check whether it gets rid of TOO MANY sigfigs. In the case of (1950, 2) this seems hard to test for. It is correct to oversimplify to 2000, which has only 1 sigfig.
+
+                util.logError(`In testSigfigRound(), sigfigRound(${n}, ${f}) === ${output}. This has ${figs} sigfigs, but it should have ${f}.`);
+                return false;
+            }
+        }
+    }
+
+    return true;
+};
+
+util.sigfigsOf = (n) => {
     if (! util.isNumber(n)) {
         n = parseFloat(n);
     }
@@ -706,6 +741,7 @@ util.mbti = () => {
 util.testAll = () => {
     util.testPrettyDistance();
     util.testCamelCase();
+    util.testSigfigRound();
     util.logDebug(`Done with unit tests for Util module :)`);
 };
 

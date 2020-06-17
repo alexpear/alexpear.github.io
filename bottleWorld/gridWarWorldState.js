@@ -79,7 +79,10 @@ class GridWarWorldState extends WorldState {
         const SQUARES_PER_GROUP = 10;
         const suggestedScale = Math.ceil(grandTotal * SQUARES_PER_GROUP / (this.farCorner.x * this.farCorner.y));
 
-        this.mPerSquare = Math.max(minScale, suggestedScale);
+        this.mPerSquare = Util.sigfigRound(
+            Math.max(minScale, suggestedScale),
+            1
+        );
 
         Util.logDebug(`GridWarWorldState.setUpScenario() ... grandTotal size is ${grandTotal}, largestSize is ${largestSize} so minScale is ${minScale}, and final mPerSquare is ${this.mPerSquare}.`)
 
@@ -136,6 +139,7 @@ class GridWarWorldState extends WorldState {
                 }
 
                 if (remainder > 0) {
+                    // Alternatively, could divide combatants evenly between the N groups. For example, if there are 2 groups, split half and half. If 4, split into fourths.
                     this.spawnGroup(entry.template, remainder, alignment);                    
                 }
             }
@@ -207,20 +211,21 @@ class GridWarWorldState extends WorldState {
             },
             tipOfTheSpear: {
                 unsc: {
-                    frigate: 2,
-                    missileSilo: 5,
-                    pelican: 40,
+                    frigate: 1,
+                    missileSilo: 1,
+                    pelican: 20,
                     scorpion: 100,
                     warthog: 400,
                     marine: 2000,
+                    odst: 100,
                     falcon: 50,
                     spartan: 6
                 },
                 cov: {
-                    corvette: 2,
-                    spire: 12,
+                    corvette: 1,
+                    spire: 1,
                     banshee: 100,
-                    spirit: 100,
+                    phantom: 20,
                     wraith: 100,
                     ghost: 200,
                     grunt: 2000,
@@ -244,7 +249,7 @@ class GridWarWorldState extends WorldState {
     }
 
     static example (timeline) {
-        const worldState = new GridWarWorldState('bruteAssault');
+        const worldState = new GridWarWorldState('tipOfTheSpear');
 
         timeline = timeline || new Timeline(worldState);
         timeline.currentWorldState = worldState;
