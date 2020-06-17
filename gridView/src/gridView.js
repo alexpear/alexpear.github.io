@@ -27,7 +27,7 @@ class GridView {
         // this.worldState.nodes = this.exampleGroups();
         this.mPerSquare = GridView.DEFAULT_SQUARE_SIZE;
     }
-    
+
     exampleGroups () {
         return [
             new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
@@ -59,10 +59,31 @@ class GridView {
         const lastTerm = terms[terms.length - 1];
 
         const extensions = {
-            sand: 'jpg',
+            banshee: 'jpeg',
+            brute: 'jpg',
+            bruteProwler: 'jpg',
+            corvette: 'png',
+            elite: 'jpg',
+            falcon: 'jpg',
+            frigate: 'png',
+            ghost: 'jpg',
+            goldElite: 'jpg',
+            grunt: 'png',
+            hunter: 'png',
+            jackal: 'png',
+            mantis: 'png',
+            marathonCruiser: 'png',
+            marine: 'jpg',
+            missileSilo: 'jpg',
             odst: 'jpg',
-            wraith: 'png',
-            bruteProwler: 'jpg'
+            pelican: 'png',
+            phantom: 'png',
+            sand: 'jpg',
+            scorpion: 'png',
+            spartan: 'png',
+            spire: 'jpg',
+            warthog: 'jpg',
+            wraith: 'png'
         };
 
         return `images/${lastTerm}.${extensions[lastTerm]}`;

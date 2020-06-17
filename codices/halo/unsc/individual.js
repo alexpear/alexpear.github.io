@@ -82,7 +82,7 @@ unsc/item/jetpack
 
 * template spartan
 tags: creature cyborg
-size: 1.5
+size: 2
 weight: 120
 maxSp: 20
 damage: 4
@@ -209,6 +209,17 @@ toHit: 3
 damage: 9
 shots: 2
 
+* template falcon
+size: 10
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
 * template pelican
 size: 31
 speed: 25
@@ -228,6 +239,16 @@ sp: 50
 resistance: heat 2
 toHit: 3
 damage: 9
+shots: 2
+
+* template missileSilo
+size: 40
+speed: 0
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 99
 shots: 2
 
 * template frigate

@@ -56,10 +56,6 @@ speed: 4
 * childrenof eliteMinor
 {item/eliteMinorWeapon}
 
-* template hunter
-size: 3
-individuals: 1
-
 * childrenof hunter
 item/hunterCannon
 item/hunterShield
@@ -135,6 +131,57 @@ individuals: 1
 
 * childrenof engineer
 item/bombHarness
+
+* template grunt
+size: 1
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template jackal
+size: 1
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template elite
+size: 2
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template brute
+size: 2
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template hunter
+size: 3
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+individuals: 1
 
 * template ghost
 size: 4
@@ -213,9 +260,31 @@ toHit: 3
 damage: 9
 shots: 2
 
+* template spirit
+size: 33
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
 * template scarab
 size: 49
 speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template spire
+size: 50
+speed: 25
+moveType: hover
 ac: 19
 sp: 50
 resistance: heat 2
@@ -247,6 +316,17 @@ shots: 2
 * template harvester
 size: 278
 speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template corvette
+size: 980
+speed: 25
+moveType: hover
 ac: 19
 sp: 50
 resistance: heat 2
