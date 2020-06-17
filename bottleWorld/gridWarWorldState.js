@@ -69,7 +69,7 @@ class GridWarWorldState extends WorldState {
                     quantity: quantity,
                     totalSize: totalSize,
                     template: template
-                }
+                };
             }
         }
 
@@ -79,6 +79,8 @@ class GridWarWorldState extends WorldState {
         const SQUARES_PER_GROUP = 10;
         const suggestedScale = Math.ceil(grandTotal * SQUARES_PER_GROUP / (this.farCorner.x * this.farCorner.y));
 
+        // TODO No, this round func could round smaller than minScale
+        // A sigfigRoundUp() func would be useful...
         this.mPerSquare = Util.sigfigRound(
             Math.max(minScale, suggestedScale),
             1
@@ -175,6 +177,19 @@ class GridWarWorldState extends WorldState {
 
     static presetArmy (scenario) {
         const scenarios = {
+            cairoStation: {
+                unsc: {
+                    odst: 4,
+                    marine: 7,
+                    officer: 1
+                },
+                cov: {
+                    grunt: 5,
+                    jackal: 5,
+                    rifleJackal: 1,
+                    elite: 1
+                }
+            },
             singleCombat: {
                 unsc: {
                     spartan: 1
@@ -193,6 +208,30 @@ class GridWarWorldState extends WorldState {
                     spartan: 4
                 }
             },
+            strikeTeam: {
+                unsc: {
+                    mantis: 1,
+                    mongoose: 2,
+                    odst: 8
+                },
+                cov: {
+                    hunter: 2,
+                    ghost: 1,
+                    grunt: 10,
+                    elite: 1
+                }
+            },
+            lightBruteInvasion: {
+                unsc: {
+                    warthog: 2,
+                    spartan: 4
+                },
+                cov: {
+                    chopper: 2,
+                    ghost: 1,
+                    brute: 5
+                }
+            },
             btb: {
                 red: {
                     mantis: 1,
@@ -207,6 +246,103 @@ class GridWarWorldState extends WorldState {
                     warthog: 1,
                     ghost: 1,
                     spartan: 4
+                }
+            },
+            arkTankBattle: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            arkTankBattleWithScarab: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            theCovenantAirBattle: {
+                unsc: {
+                    hornet: 20,
+                    pelican: 7,
+                    warthog: 2,
+                    mongoose: 2,
+                    odst: 10
+                },
+                cov: {
+                    banshee: 20,
+                    phantom: 10,
+                    wraith: 4,
+                    brute: 20,
+                    shade: 6
+                }
+            },
+            sandtrapDropships: {
+                unsc: {
+
+                },
+                cov: {
+
+                }
+            },
+            bruteAssault: {
+                unsc: {
+                    odst: 305
+                },
+                cov: {
+                    bruteProwler: 9,
+                    wraith: 3
+                }
+            },
+            mammothInAPark: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            lichOverGovernorsIsland: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            forgeWorldBattle: {
+                unsc: {
+
+                },
+                cov: {
+
+                }
+            },
+            krakenSiege: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            cruisersAndHarvesters: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            frigateOverCentralPark: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
                 }
             },
             tipOfTheSpear: {
@@ -233,13 +369,52 @@ class GridWarWorldState extends WorldState {
                     jackal: 500
                 }
             },
-            bruteAssault: {
+            marathonsOverGoleta: {
                 unsc: {
-                    odst: 305
+                    // Fill in later
                 },
                 cov: {
-                    bruteProwler: 9,
-                    wraith: 3
+
+                }
+            },
+            spiritOfFireOverManhattan: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            infinityCityDefense: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            keyshipConnecticut: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            supercarrierPennsylvania: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            highCharityAustralia: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+
                 }
             }
             // Add more later
