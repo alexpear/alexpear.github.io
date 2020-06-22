@@ -250,18 +250,41 @@ class GridWarWorldState extends WorldState {
             },
             arkTankBattle: {
                 unsc: {
-                    // Fill in later
+                    scorpion: 7,
+                    warthog: 2,
+                    mongoose: 2,
+                    spartan: 1,
+                    marine: 8
                 },
                 cov: {
-
+                    wraith: 8,
+                    chopper: 4,
+                    bruteProwler: 1,
+                    grunt: 10,
+                    rifleJackal: 4,
+                    jackal: 5,
+                    brute: 6
                 }
             },
             arkTankBattleWithScarab: {
                 unsc: {
-                    // Fill in later
+                    scorpion: 7,
+                    warthog: 3,
+                    mongoose: 2,
+                    spartan: 1,
+                    marine: 20,
+                    pelican: 2
                 },
                 cov: {
-
+                    scarab: 1,
+                    phantom: 3,
+                    wraith: 8,
+                    chopper: 4,
+                    bruteProwler: 1,
+                    grunt: 10,
+                    rifleJackal: 4,
+                    jackal: 5,
+                    brute: 6
                 }
             },
             theCovenantAirBattle: {
@@ -282,9 +305,11 @@ class GridWarWorldState extends WorldState {
             },
             sandtrapDropships: {
                 unsc: {
+                    pelican: 2,
 
                 },
                 cov: {
+                    phantom: 2,
 
                 }
             },
@@ -299,10 +324,18 @@ class GridWarWorldState extends WorldState {
             },
             mammothInAPark: {
                 unsc: {
-                    // Fill in later
+                    mammoth: 1,
+                    wasp: 2,
+                    warthog: 2,
+                    scorpion: 1,
+                    marine: 40
                 },
                 cov: {
-
+                    scarab: 1,
+                    grunt: 20,
+                    bruteChieftain: 1,
+                    brute: 5,
+                    banshee: 2
                 }
             },
             lichOverGovernorsIsland: {
@@ -310,6 +343,7 @@ class GridWarWorldState extends WorldState {
                     // Fill in later
                 },
                 cov: {
+                    lich: 1,
 
                 }
             },
@@ -326,6 +360,7 @@ class GridWarWorldState extends WorldState {
                     // Fill in later
                 },
                 cov: {
+                    kraken: 1,
 
                 }
             },
@@ -334,12 +369,16 @@ class GridWarWorldState extends WorldState {
                     // Fill in later
                 },
                 cov: {
+                    lightCruiser: 1,
+                    harvester: 1,
 
                 }
             },
             frigateOverCentralPark: {
                 unsc: {
+                    frigate: 1,
                     // Fill in later
+
                 },
                 cov: {
 
@@ -371,6 +410,7 @@ class GridWarWorldState extends WorldState {
             },
             marathonsOverGoleta: {
                 unsc: {
+                    marathonClassCruiser: 2,
                     // Fill in later
                 },
                 cov: {
@@ -379,6 +419,7 @@ class GridWarWorldState extends WorldState {
             },
             spiritOfFireOverManhattan: {
                 unsc: {
+                    spiritOfFire: 1,
                     // Fill in later
                 },
                 cov: {
@@ -387,6 +428,7 @@ class GridWarWorldState extends WorldState {
             },
             infinityCityDefense: {
                 unsc: {
+                    infinity: 1,
                     // Fill in later
                 },
                 cov: {
@@ -398,6 +440,7 @@ class GridWarWorldState extends WorldState {
                     // Fill in later
                 },
                 cov: {
+                    keyship: 1,
 
                 }
             },
@@ -406,6 +449,7 @@ class GridWarWorldState extends WorldState {
                     // Fill in later
                 },
                 cov: {
+                    supercarrier: 1
 
                 }
             },
@@ -414,7 +458,7 @@ class GridWarWorldState extends WorldState {
                     // Fill in later
                 },
                 cov: {
-
+                    highCharity: 1,
                 }
             }
             // Add more later
