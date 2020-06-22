@@ -1,7 +1,11 @@
 'use strict';
 
 const ActionReadyEvent = require('./actionReadyEvent.js');
+
 const BEvent = require('../bEvent.js');
+
+const ActionTemplate = require('../../battle20/actiontemplate.js');
+
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
@@ -57,9 +61,9 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
             return;
         }
 
-        // LATER, remove this preference for homogenous actions
+        // LATER, look at actions[0] instead of this 'dmr or bust' approach.
         const preferredAction = actions.find(a => a.name === 'dmr');
-        const chosenAction = preferredAction || actions[0];
+        const chosenAction = preferredAction || ActionTemplate.gunExample();
 
         const actionReadyEvent = new ActionReadyEvent(arriver, chosenAction.id);
 

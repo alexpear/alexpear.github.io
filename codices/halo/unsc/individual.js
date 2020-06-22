@@ -38,7 +38,7 @@ human
 1 {output}
 
 * childrenof marinePrivate
-unsc/item/dmr
+{unsc/item/giWeapon}
 {unsc/item}
 unsc/item/flakHelmet
 unsc/item/flakArmor
@@ -90,7 +90,7 @@ speed: 5
 stealth: 12
 
 * childrenof spartan
-unsc/item/dmr
+{unsc/item/anyWeapon}
 {unsc/item/anyWeapon}
 {unsc/item/anyGear}
 unsc/item/fragGrenade
