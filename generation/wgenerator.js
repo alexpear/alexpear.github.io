@@ -815,23 +815,33 @@ class WGenerator {
         }
 
         let output;
+        let generatorInput;
 
         if (process.argv.length > 2) {
             if (! process.argv[2].includes('/')) {
-                console.log(`Usage: node wgenerator.js <codexPath>`);
-                return;
+                throw new Error(`Usage: node wgenerator.js <codexPath>`);
             }
             else {
-                // Later we can add support for references inside codex files, such as halo/forerunner/individual/knight.
+                // Later we can add support for references inside codex files, such as halo/forerunner/individual/knight. Possibly fixed 2020 June 22.
                 // This is supported in parsing but not in the CLI yet.
-                // The alg will be:
-                    // Check if the input path is a codex (ie, !!WGenerator.generators[process.argv[2]])
-                    // If so, call its .getOutputs() func
-                    // Else look at the input path minus the final term
-                    // then call wgen.getOutputs(finalTerm)
-                    // or wrap it in brackets if its a alias: `{${finalTerm}}`
-                const wgen = WGenerator.fromCodex(process.argv[2]);
-                output = wgen.getOutputs();
+                const path = process.argv[2];
+                let wgen = WGenerator.fromCodex(path);
+
+                if (! wgen) {
+                    const terms = path.split('/');
+                    const prefix = terms.slice(0, -1)
+                        .join('/');
+
+                    wgen = WGenerator.fromCodex(prefix);
+
+                    if (! wgen) {
+                        throw new Error(`Cannot interpret CLI input: ${path}`);
+                    }
+
+                    generatorInput = terms[terms.length - 1];
+                }
+
+                output = wgen.getOutputs(generatorInput);
             }
         }
         else {
