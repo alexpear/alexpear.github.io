@@ -128,7 +128,13 @@ class WGenerator {
 
     // Returns WNode[]
     getOutputs (key) {
-        const nodes = this.resolveString(key || '{output}');
+        let nodes = this.resolveString(key || '{output}');
+
+        if (nodes[0] && nodes[0].templateName === key && ! nodes[0].template && nodes.length === 1) {
+            // key may or may not be intended as a alias. If it was, this will not be noticed until makeNode() returns a WNode with no template, just a string templateName, like this: new WNode(key).
+            // We now retry generation with brackets, to indicate we want a alias.
+            nodes = this.resolveString(`{${key}}`);
+        }
 
         nodes.forEach(
             n => n.tidy()
@@ -324,7 +330,7 @@ class WGenerator {
                 if (contextString.name.startsWith('{')) {
                     const appropriateGen = WGenerator.generators[contextString.path];
 
-                    // Maybe .name is {outout}, which came from WGenerator.contextString().
+                    // Maybe .name is {output}, which came from WGenerator.contextString().
                     // Loop these thru the pipeline again.
                     const finishedBatch = appropriateGen.resolveTerm(contextString.name);
 
