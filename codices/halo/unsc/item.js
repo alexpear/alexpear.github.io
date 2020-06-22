@@ -1,12 +1,12 @@
 module.exports = `* output
-15 {anyWeapon}
+10 {anyWeapon}
 20 {anyGear}
 1 {gunComponent}
 
 * alias anyWeapon
 10 {smallWeapon}
 0 gi means General Issue
-20 {giWeapon}
+10 {giWeapon}
 1 {specialInfantryWeapon}
 1 {highWeightWeapon}
 0 {alienWeapon}
