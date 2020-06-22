@@ -822,8 +822,6 @@ class WGenerator {
                 throw new Error(`Usage: node wgenerator.js <codexPath>`);
             }
             else {
-                // Later we can add support for references inside codex files, such as halo/forerunner/individual/knight. Possibly fixed 2020 June 22.
-                // This is supported in parsing but not in the CLI yet.
                 const path = process.argv[2];
                 let wgen = WGenerator.fromCodex(path);
 
