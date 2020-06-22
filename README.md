@@ -5,12 +5,17 @@ This website include the following prototype projects:
 - Death Planet Fish Tank - A simulated world of endless battle. A top-down view onto this world. WIP.
 
 ## How to build:
+- clone this repo
 - npm start
 - go to localhost:8080 in a browser
 - Howto test via CLI:
   - npm run test
 
 ## To Do:
+- Add more files in gridView/images/, and templates mentioning size in individual.js files. See gridWarWorldState.js's scenarios list for which templateNames need images and sizes.
+
+- Brainstorm how to make all BEvents compatible with WorldStates of both continuous and grid spatial models. Ideally everything about Coords should call out to the WorldState, so that it can return Coords with appropriate dimensions and values.
+
 - See TODOs in timeline.js
 
 - Func for Parahumans that takes a cape WNode and pretty prints it

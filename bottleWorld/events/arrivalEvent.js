@@ -11,6 +11,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
             BEvent.TYPES.Arrival,
             undefined,
             undefined,
+            // TODO make BEvent files compatible with WorldStates of both continuous and grid spatial models.
             coord || Coord.randomOnScreen(),
             templatePath
         );

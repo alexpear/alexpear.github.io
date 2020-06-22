@@ -181,6 +181,7 @@ class GridWarWorldState extends WorldState {
                 unsc: {
                     odst: 4,
                     marine: 7,
+                    // TODO add image files and template entries for new combatant types
                     officer: 1
                 },
                 cov: {
