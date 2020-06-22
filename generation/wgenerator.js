@@ -513,8 +513,18 @@ class WGenerator {
 
     // Example input: 'sunlight/warbands/warrior'
     static fromCodex (codexPath) {
+        if (WGenerator.generators[codexPath]) {
+            return WGenerator.generators[codexPath];
+        }
+
+        const absoluteFilePath = `${ WGenerator.codicesDir() }/${ codexPath }.js`;
+
+        if (! fs.existsSync(absoluteFilePath)) {
+            return;
+        }
+
         // Warning: dynamic require() calls are incompatible with browserify.
-        const codexRaw = require(`${ WGenerator.codicesDir() }/${ codexPath }.js`);
+        const codexRaw = require(absoluteFilePath);
 
         return new WGenerator(codexRaw, codexPath);
     }
