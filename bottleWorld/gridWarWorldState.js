@@ -82,7 +82,7 @@ class GridWarWorldState extends WorldState {
         // TODO No, this round func could round smaller than minScale
         // A sigfigRoundUp() func would be useful...
         this.mPerSquare = Util.sigfigRound(
-            Math.max(minScale, suggestedScale),
+            Math.max(1, minScale, suggestedScale),
             1
         );
 
