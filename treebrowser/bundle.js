@@ -801,10 +801,6 @@ speed: 4
 * childrenof eliteMinor
 {item/eliteMinorWeapon}
 
-* template hunter
-size: 3
-individuals: 1
-
 * childrenof hunter
 item/hunterCannon
 item/hunterShield
@@ -838,12 +834,15 @@ item/plasmaPistol
 * template rifleJackal
 tags: jackal infantry
 weight: 80
-size: 1.5
+size: 1
 individuals: 1
 
 * childrenof rifleJackal
 {item/jackalRifle}
 item/plasmaPistol
+
+* template sniperJackal
+size: 1
 
 * template skirmisherJackal
 tags: jackal infantry
@@ -881,6 +880,63 @@ individuals: 1
 * childrenof engineer
 item/bombHarness
 
+* template grunt
+size: 1
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template jackal
+size: 1
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template drone
+size: 1
+
+* template elite
+size: 2
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template brute
+size: 2
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template bruteChieftain
+size: 2
+
+* template hunter
+size: 3
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+individuals: 1
+
 * template ghost
 size: 4
 speed: 25
@@ -893,6 +949,9 @@ damage: 9
 shots: 2
 comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
 
+* template shade
+size: 4
+
 * template spectre
 size: 7
 speed: 25
@@ -904,7 +963,7 @@ toHit: 3
 damage: 9
 shots: 2
 
-* template bruteChopper
+* template chopper
 size: 6
 speed: 25
 ac: 19
@@ -958,9 +1017,31 @@ toHit: 3
 damage: 9
 shots: 2
 
+* template spirit
+size: 33
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
 * template scarab
 size: 49
 speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template spire
+size: 50
+speed: 25
+moveType: hover
 ac: 19
 sp: 50
 resistance: heat 2
@@ -999,7 +1080,18 @@ toHit: 3
 damage: 9
 shots: 2
 
-* template lightCruiser
+* template corvette
+size: 980
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template ccsLightCruiser
 size: 300
 speed: 25
 moveType: hover
@@ -1009,6 +1101,12 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+
+* template supercarrier
+size: 29000
+
+* template highCharity
+size: 348000
 
 `;
 
@@ -1635,6 +1733,32 @@ forerunner/item/boltshot
 {forerunner/item/grenade}
 {forerunner/item/gear}
 
+* template sentinel
+size: 2
+
+* template enforcer
+size: 7
+
+* template crawler
+size: 1
+
+* template soldier
+size: 1
+
+* template knight
+size: 3
+
+* template survivor
+size: 3
+
+* template phaeton
+size: 10
+
+* template keyship
+size: 13000
+
+
+
 `;
 
 },{}],12:[function(require,module,exports){
@@ -2033,7 +2157,7 @@ human
 1 {output}
 
 * childrenof marinePrivate
-unsc/item/dmr
+{unsc/item/giWeapon}
 {unsc/item}
 unsc/item/flakHelmet
 unsc/item/flakArmor
@@ -2077,7 +2201,7 @@ unsc/item/jetpack
 
 * template spartan
 tags: creature cyborg
-size: 1.5
+size: 2
 weight: 120
 maxSp: 20
 damage: 4
@@ -2085,7 +2209,7 @@ speed: 5
 stealth: 12
 
 * childrenof spartan
-unsc/item/dmr
+{unsc/item/anyWeapon}
 {unsc/item/anyWeapon}
 {unsc/item/anyGear}
 unsc/item/fragGrenade
@@ -2144,7 +2268,7 @@ tags: creature
 size: 1
 speed: 1
 ac: 19
-sp: 10
+sp: 15
 resistance: heat 2, pierce 2
 toHit: 2
 damage: 2
@@ -2152,8 +2276,13 @@ shots: 3
 attacks: 
   SMG: +2 x2, 2 pierce
 
+* template officer
+size: 1
+speed: 1
+sp: 5
+
 * template mongoose
-size: 10
+size: 4
 speed: 2
 ac: 21
 sp: 150
@@ -2173,6 +2302,13 @@ damage: 9
 shots: 2
 comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
 
+* template transportWarthog
+size: 6
+comment: 'Later this would benefit from template inheritance.'
+
+* template mantis
+size: 4
+
 * template hornet
 size: 10
 speed: 25
@@ -2183,6 +2319,9 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+
+* template wasp
+size: 9
 
 * template scorpion
 size: 10
@@ -2197,6 +2336,17 @@ shots: 0.5
 * template elephant
 size: 25
 speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template falcon
+size: 10
+speed: 25
+moveType: hover
 ac: 19
 sp: 50
 resistance: heat 2
@@ -2225,6 +2375,16 @@ toHit: 3
 damage: 9
 shots: 2
 
+* template missileSilo
+size: 40
+speed: 0
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 99
+shots: 2
+
 * template frigate
 size: 500
 speed: 25
@@ -2236,18 +2396,28 @@ toHit: 3
 damage: 9
 shots: 2
 
+* template marathonCruiser
+size: 1170
+
+* template spiritOfFire
+size: 2500
+
+* template infinity
+size: 5000
+moveType: hover
+
 `;
 
 },{}],19:[function(require,module,exports){
 module.exports = `* output
-15 {anyWeapon}
+10 {anyWeapon}
 20 {anyGear}
 1 {gunComponent}
 
 * alias anyWeapon
 10 {smallWeapon}
 0 gi means General Issue
-20 {giWeapon}
+10 {giWeapon}
 1 {specialInfantryWeapon}
 1 {highWeightWeapon}
 0 {alienWeapon}
@@ -4373,7 +4543,13 @@ class WGenerator {
 
     // Returns WNode[]
     getOutputs (key) {
-        const nodes = this.resolveString(key || '{output}');
+        let nodes = this.resolveString(key || '{output}');
+
+        if (nodes[0] && nodes[0].templateName === key && ! nodes[0].template && nodes.length === 1) {
+            // key may or may not be intended as a alias. If it was, this will not be noticed until makeNode() returns a WNode with no template, just a string templateName, like this: new WNode(key).
+            // We now retry generation with brackets, to indicate we want a alias.
+            nodes = this.resolveString(`{${key}}`);
+        }
 
         nodes.forEach(
             n => n.tidy()
@@ -4569,7 +4745,7 @@ class WGenerator {
                 if (contextString.name.startsWith('{')) {
                     const appropriateGen = WGenerator.generators[contextString.path];
 
-                    // Maybe .name is {outout}, which came from WGenerator.contextString().
+                    // Maybe .name is {output}, which came from WGenerator.contextString().
                     // Loop these thru the pipeline again.
                     const finishedBatch = appropriateGen.resolveTerm(contextString.name);
 
@@ -4752,8 +4928,18 @@ class WGenerator {
 
     // Example input: 'sunlight/warbands/warrior'
     static fromCodex (codexPath) {
+        if (WGenerator.generators[codexPath]) {
+            return WGenerator.generators[codexPath];
+        }
+
+        const absoluteFilePath = `${ WGenerator.codicesDir() }/${ codexPath }.js`;
+
+        if (! fs.existsSync(absoluteFilePath)) {
+            return;
+        }
+
         // Warning: dynamic require() calls are incompatible with browserify.
-        const codexRaw = require(`${ WGenerator.codicesDir() }/${ codexPath }.js`);
+        const codexRaw = require(absoluteFilePath);
 
         return new WGenerator(codexRaw, codexPath);
     }
@@ -5044,23 +5230,31 @@ class WGenerator {
         }
 
         let output;
+        let generatorInput;
 
         if (process.argv.length > 2) {
             if (! process.argv[2].includes('/')) {
-                console.log(`Usage: node wgenerator.js <codexPath>`);
-                return;
+                throw new Error(`Usage: node wgenerator.js <codexPath>`);
             }
             else {
-                // Later we can add support for references inside codex files, such as halo/forerunner/individual/knight.
-                // This is supported in parsing but not in the CLI yet.
-                // The alg will be:
-                    // Check if the input path is a codex (ie, !!WGenerator.generators[process.argv[2]])
-                    // If so, call its .getOutputs() func
-                    // Else look at the input path minus the final term
-                    // then call wgen.getOutputs(finalTerm)
-                    // or wrap it in brackets if its a alias: `{${finalTerm}}`
-                const wgen = WGenerator.fromCodex(process.argv[2]);
-                output = wgen.getOutputs();
+                const path = process.argv[2];
+                let wgen = WGenerator.fromCodex(path);
+
+                if (! wgen) {
+                    const terms = path.split('/');
+                    const prefix = terms.slice(0, -1)
+                        .join('/');
+
+                    wgen = WGenerator.fromCodex(prefix);
+
+                    if (! wgen) {
+                        throw new Error(`Cannot interpret CLI input: ${path}`);
+                    }
+
+                    generatorInput = terms[terms.length - 1];
+                }
+
+                output = wgen.getOutputs(generatorInput);
             }
         }
         else {
@@ -32505,7 +32699,42 @@ util.asBar = (n) => {
     return bar;
 };
 
-util.sigFigsOf = (n) => {
+// Returns the input number rounded up or down to 1 sigfig.
+util.sigfigRound = (n, sigfigs) => {
+    sigfigs = sigfigs || 1;
+
+    const log = Math.log10(Math.abs(n));
+
+    return _.round(
+        n,
+        sigfigs - (1 + Math.floor(log))
+    );
+};
+
+util.testSigfigRound = () => {
+    for (let f = 1; f < 3; f++) {
+        for (let n = 1; n < 1000000; n++) {
+            const output = util.sigfigRound(n, f);
+            const figs = util.sigfigsOf(output);
+
+            if (figs > f) {
+                const originalFigs = util.sigfigsOf(n);
+                if (originalFigs < f) {
+                    continue;
+                }
+
+                // Note that this test does not check whether it gets rid of TOO MANY sigfigs. In the case of (1950, 2) this seems hard to test for. It is correct to oversimplify to 2000, which has only 1 sigfig.
+
+                util.logError(`In testSigfigRound(), sigfigRound(${n}, ${f}) === ${output}. This has ${figs} sigfigs, but it should have ${f}.`);
+                return false;
+            }
+        }
+    }
+
+    return true;
+};
+
+util.sigfigsOf = (n) => {
     if (! util.isNumber(n)) {
         n = parseFloat(n);
     }
@@ -32667,6 +32896,7 @@ util.mbti = () => {
 util.testAll = () => {
     util.testPrettyDistance();
     util.testCamelCase();
+    util.testSigfigRound();
     util.logDebug(`Done with unit tests for Util module :)`);
 };
 

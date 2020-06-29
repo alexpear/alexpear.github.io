@@ -1622,7 +1622,11 @@ module.exports = class ActionReadyEvent extends BEvent {
 'use strict';
 
 const ActionReadyEvent = require('./actionReadyEvent.js');
+
 const BEvent = require('../bEvent.js');
+
+const ActionTemplate = require('../../battle20/actiontemplate.js');
+
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
@@ -1632,6 +1636,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
             BEvent.TYPES.Arrival,
             undefined,
             undefined,
+            // TODO make BEvent files compatible with WorldStates of both continuous and grid spatial models.
             coord || Coord.randomOnScreen(),
             templatePath
         );
@@ -1677,9 +1682,9 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
             return;
         }
 
-        // LATER, remove this preference for homogenous actions
+        // LATER, look at actions[0] instead of this 'dmr or bust' approach.
         const preferredAction = actions.find(a => a.name === 'dmr');
-        const chosenAction = preferredAction || actions[0];
+        const chosenAction = preferredAction || ActionTemplate.gunExample();
 
         const actionReadyEvent = new ActionReadyEvent(arriver, chosenAction.id);
 
@@ -1691,7 +1696,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
 ArrivalEvent.ACTION_DELAY = 1;
 
-},{"../../util/coord.js":80,"../../util/util.js":81,"../bEvent.js":6,"./actionReadyEvent.js":8}],10:[function(require,module,exports){
+},{"../../battle20/actiontemplate.js":1,"../../util/coord.js":80,"../../util/util.js":81,"../bEvent.js":6,"./actionReadyEvent.js":8}],10:[function(require,module,exports){
 'use strict';
 
 // const ActionReadyEvent = require('./actionReadyEvent.js');
@@ -2016,7 +2021,7 @@ class GridWarWorldState extends WorldState {
                     quantity: quantity,
                     totalSize: totalSize,
                     template: template
-                }
+                };
             }
         }
 
@@ -2026,7 +2031,12 @@ class GridWarWorldState extends WorldState {
         const SQUARES_PER_GROUP = 10;
         const suggestedScale = Math.ceil(grandTotal * SQUARES_PER_GROUP / (this.farCorner.x * this.farCorner.y));
 
-        this.mPerSquare = Math.max(minScale, suggestedScale);
+        // TODO No, this round func could round smaller than minScale
+        // A sigfigRoundUp() func would be useful...
+        this.mPerSquare = Util.sigfigRound(
+            Math.max(1, minScale, suggestedScale),
+            1
+        );
 
         Util.logDebug(`GridWarWorldState.setUpScenario() ... grandTotal size is ${grandTotal}, largestSize is ${largestSize} so minScale is ${minScale}, and final mPerSquare is ${this.mPerSquare}.`)
 
@@ -2083,6 +2093,7 @@ class GridWarWorldState extends WorldState {
                 }
 
                 if (remainder > 0) {
+                    // Alternatively, could divide combatants evenly between the N groups. For example, if there are 2 groups, split half and half. If 4, split into fourths.
                     this.spawnGroup(entry.template, remainder, alignment);                    
                 }
             }
@@ -2118,6 +2129,20 @@ class GridWarWorldState extends WorldState {
 
     static presetArmy (scenario) {
         const scenarios = {
+            cairoStation: {
+                unsc: {
+                    odst: 4,
+                    marine: 7,
+                    // TODO add image files and template entries for new combatant types
+                    officer: 1
+                },
+                cov: {
+                    grunt: 5,
+                    jackal: 5,
+                    rifleJackal: 1,
+                    elite: 1
+                }
+            },
             singleCombat: {
                 unsc: {
                     spartan: 1
@@ -2127,47 +2152,225 @@ class GridWarWorldState extends WorldState {
                     brute: 8
                 }
             },
-            slayer: {
-                // TODO should this key specify faction ('unsc') or alignment ('red')?
-                red: {
-                    spartan: 4
+            // slayer: {
+            //     // TODO should this key specify faction ('unsc') or alignment ('red')?
+            //     red: {
+            //         spartan: 4
+            //     },
+            //     blue: {
+            //         spartan: 4
+            //     }
+            // },
+            strikeTeam: {
+                unsc: {
+                    mantis: 1,
+                    mongoose: 2,
+                    odst: 8
                 },
-                blue: {
-                    spartan: 4
+                cov: {
+                    hunter: 2,
+                    ghost: 1,
+                    grunt: 10,
+                    elite: 1
                 }
             },
-            btb: {
-                red: {
-                    mantis: 1,
-                    banshee: 1,
-                    warthog: 1,
-                    ghost: 1,
+            lightBruteInvasion: {
+                unsc: {
+                    warthog: 2,
                     spartan: 4
                 },
-                blue: {
-                    mantis: 1,
-                    banshee: 1,
-                    warthog: 1,
+                cov: {
+                    chopper: 2,
                     ghost: 1,
-                    spartan: 4
+                    brute: 5
+                }
+            },
+            // btb: {
+            //     red: {
+            //         mantis: 1,
+            //         banshee: 1,
+            //         warthog: 1,
+            //         ghost: 1,
+            //         spartan: 4
+            //     },
+            //     blue: {
+            //         mantis: 1,
+            //         banshee: 1,
+            //         warthog: 1,
+            //         ghost: 1,
+            //         spartan: 4
+            //     }
+            // },
+            arkTankBattle: {
+                unsc: {
+                    scorpion: 7,
+                    warthog: 2,
+                    mongoose: 2,
+                    spartan: 1,
+                    marine: 8
+                },
+                cov: {
+                    wraith: 8,
+                    chopper: 4,
+                    bruteProwler: 1,
+                    grunt: 10,
+                    rifleJackal: 4,
+                    jackal: 5,
+                    brute: 6
+                }
+            },
+            arkTankBattleWithScarab: {
+                unsc: {
+                    scorpion: 7,
+                    warthog: 3,
+                    mongoose: 2,
+                    spartan: 1,
+                    marine: 20,
+                    pelican: 2
+                },
+                cov: {
+                    scarab: 1,
+                    phantom: 3,
+                    wraith: 8,
+                    chopper: 4,
+                    bruteProwler: 1,
+                    grunt: 10,
+                    rifleJackal: 4,
+                    jackal: 5,
+                    brute: 6
+                }
+            },
+            theCovenantAirBattle: {
+                unsc: {
+                    hornet: 20,
+                    pelican: 7,
+                    warthog: 2,
+                    mongoose: 2,
+                    odst: 10
+                },
+                cov: {
+                    banshee: 20,
+                    phantom: 10,
+                    wraith: 4,
+                    brute: 20,
+                    shade: 6
+                }
+            },
+            sandtrapDropships: {
+                unsc: {
+                    pelican: 2,
+
+                },
+                cov: {
+                    phantom: 2,
+
+                }
+            },
+            prometheansVsFlood: {
+                forerunner: {
+                    crawler: 24,
+                    watcher: 6,
+                    soldier: 12,
+                    knight: 6,
+                    phaeton: 1,
+                    sentinel: 12,
+                    enforcer: 1
+                },
+                flood: {
+                    // pod: 67,
+                    // carrier: 11,
+                    // combatForm: 92,
+                    // floodTank: 9
+                }
+            },
+            bruteAssault: {
+                unsc: {
+                    odst: 305
+                },
+                cov: {
+                    bruteProwler: 9,
+                    wraith: 3
+                }
+            },
+            mammothInAPark: {
+                unsc: {
+                    mammoth: 1,
+                    wasp: 2,
+                    warthog: 2,
+                    scorpion: 1,
+                    marine: 40
+                },
+                cov: {
+                    scarab: 1,
+                    grunt: 20,
+                    bruteChieftain: 1,
+                    brute: 5,
+                    banshee: 2
+                }
+            },
+            lichOverGovernorsIsland: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+                    lich: 1,
+
+                }
+            },
+            forgeWorldBattle: {
+                unsc: {
+
+                },
+                cov: {
+
+                }
+            },
+            krakenSiege: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+                    kraken: 1,
+
+                }
+            },
+            cruisersAndHarvesters: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+                    ccsLightCruiser: 1,
+                    harvester: 1,
+
+                }
+            },
+            frigateOverCentralPark: {
+                unsc: {
+                    frigate: 1,
+                    // Fill in later
+
+                },
+                cov: {
+
                 }
             },
             tipOfTheSpear: {
                 unsc: {
-                    frigate: 2,
-                    missileSilo: 5,
-                    pelican: 40,
+                    frigate: 1,
+                    missileSilo: 1,
+                    pelican: 20,
                     scorpion: 100,
                     warthog: 400,
                     marine: 2000,
+                    odst: 100,
                     falcon: 50,
                     spartan: 6
                 },
                 cov: {
-                    corvette: 2,
-                    spire: 12,
+                    corvette: 1,
+                    spire: 1,
                     banshee: 100,
-                    spirit: 100,
+                    phantom: 20,
                     wraith: 100,
                     ghost: 200,
                     grunt: 2000,
@@ -2175,23 +2378,69 @@ class GridWarWorldState extends WorldState {
                     jackal: 500
                 }
             },
-            bruteAssault: {
+            marathonsOverGoleta: {
                 unsc: {
-                    odst: 100
+                    marathonCruiser: 2,
+                    // Fill in later
                 },
                 cov: {
-                    bruteProwler: 4,
-                    wraith: 2
+
+                }
+            },
+            spiritOfFireOverManhattan: {
+                unsc: {
+                    // spiritOfFire: 1,
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            infinityCityDefense: {
+                unsc: {
+                    infinity: 1,
+                    // Fill in later
+                },
+                cov: {
+
+                }
+            },
+            keyshipConnecticut: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+                    keyship: 1,
+
+                }
+            },
+            supercarrierPennsylvania: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+                    // supercarrier: 1
+
+                }
+            },
+            highCharityAustralia: {
+                unsc: {
+                    // Fill in later
+                },
+                cov: {
+                    highCharity: 1,
                 }
             }
             // Add more later
         };
 
-        return scenarios[scenario] || scenarios.bruteAssault;
+        // return scenarios[scenario] || scenarios.bruteAssault;
+        const randomName = Util.randomOf(Object.keys(scenarios));
+        return scenarios[randomName];
     }
 
     static example (timeline) {
-        const worldState = new GridWarWorldState('bruteAssault');
+        const worldState = new GridWarWorldState('tipOfTheSpear');
 
         timeline = timeline || new Timeline(worldState);
         timeline.currentWorldState = worldState;
@@ -3390,10 +3639,6 @@ speed: 4
 * childrenof eliteMinor
 {item/eliteMinorWeapon}
 
-* template hunter
-size: 3
-individuals: 1
-
 * childrenof hunter
 item/hunterCannon
 item/hunterShield
@@ -3427,12 +3672,15 @@ item/plasmaPistol
 * template rifleJackal
 tags: jackal infantry
 weight: 80
-size: 1.5
+size: 1
 individuals: 1
 
 * childrenof rifleJackal
 {item/jackalRifle}
 item/plasmaPistol
+
+* template sniperJackal
+size: 1
 
 * template skirmisherJackal
 tags: jackal infantry
@@ -3470,6 +3718,63 @@ individuals: 1
 * childrenof engineer
 item/bombHarness
 
+* template grunt
+size: 1
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template jackal
+size: 1
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template drone
+size: 1
+
+* template elite
+size: 2
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template brute
+size: 2
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template bruteChieftain
+size: 2
+
+* template hunter
+size: 3
+speed: 1
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+individuals: 1
+
 * template ghost
 size: 4
 speed: 25
@@ -3482,6 +3787,9 @@ damage: 9
 shots: 2
 comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
 
+* template shade
+size: 4
+
 * template spectre
 size: 7
 speed: 25
@@ -3493,7 +3801,7 @@ toHit: 3
 damage: 9
 shots: 2
 
-* template bruteChopper
+* template chopper
 size: 6
 speed: 25
 ac: 19
@@ -3547,9 +3855,31 @@ toHit: 3
 damage: 9
 shots: 2
 
+* template spirit
+size: 33
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
 * template scarab
 size: 49
 speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template spire
+size: 50
+speed: 25
+moveType: hover
 ac: 19
 sp: 50
 resistance: heat 2
@@ -3588,7 +3918,18 @@ toHit: 3
 damage: 9
 shots: 2
 
-* template lightCruiser
+* template corvette
+size: 980
+speed: 25
+moveType: hover
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template ccsLightCruiser
 size: 300
 speed: 25
 moveType: hover
@@ -3598,6 +3939,12 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+
+* template supercarrier
+size: 29000
+
+* template highCharity
+size: 348000
 
 `;
 
@@ -4224,6 +4571,32 @@ forerunner/item/boltshot
 {forerunner/item/grenade}
 {forerunner/item/gear}
 
+* template sentinel
+size: 2
+
+* template enforcer
+size: 7
+
+* template crawler
+size: 1
+
+* template soldier
+size: 1
+
+* template knight
+size: 3
+
+* template survivor
+size: 3
+
+* template phaeton
+size: 10
+
+* template keyship
+size: 13000
+
+
+
 `;
 
 },{}],23:[function(require,module,exports){
@@ -4622,7 +4995,7 @@ human
 1 {output}
 
 * childrenof marinePrivate
-unsc/item/dmr
+{unsc/item/giWeapon}
 {unsc/item}
 unsc/item/flakHelmet
 unsc/item/flakArmor
@@ -4666,7 +5039,7 @@ unsc/item/jetpack
 
 * template spartan
 tags: creature cyborg
-size: 1.5
+size: 2
 weight: 120
 maxSp: 20
 damage: 4
@@ -4674,7 +5047,7 @@ speed: 5
 stealth: 12
 
 * childrenof spartan
-unsc/item/dmr
+{unsc/item/anyWeapon}
 {unsc/item/anyWeapon}
 {unsc/item/anyGear}
 unsc/item/fragGrenade
@@ -4733,7 +5106,7 @@ tags: creature
 size: 1
 speed: 1
 ac: 19
-sp: 10
+sp: 15
 resistance: heat 2, pierce 2
 toHit: 2
 damage: 2
@@ -4741,8 +5114,13 @@ shots: 3
 attacks: 
   SMG: +2 x2, 2 pierce
 
+* template officer
+size: 1
+speed: 1
+sp: 5
+
 * template mongoose
-size: 10
+size: 4
 speed: 2
 ac: 21
 sp: 150
@@ -4762,6 +5140,13 @@ damage: 9
 shots: 2
 comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
 
+* template transportWarthog
+size: 6
+comment: 'Later this would benefit from template inheritance.'
+
+* template mantis
+size: 4
+
 * template hornet
 size: 10
 speed: 25
@@ -4772,6 +5157,9 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+
+* template wasp
+size: 9
 
 * template scorpion
 size: 10
@@ -4786,6 +5174,17 @@ shots: 0.5
 * template elephant
 size: 25
 speed: 25
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 9
+shots: 2
+
+* template falcon
+size: 10
+speed: 25
+moveType: hover
 ac: 19
 sp: 50
 resistance: heat 2
@@ -4814,6 +5213,16 @@ toHit: 3
 damage: 9
 shots: 2
 
+* template missileSilo
+size: 40
+speed: 0
+ac: 19
+sp: 50
+resistance: heat 2
+toHit: 3
+damage: 99
+shots: 2
+
 * template frigate
 size: 500
 speed: 25
@@ -4825,18 +5234,28 @@ toHit: 3
 damage: 9
 shots: 2
 
+* template marathonCruiser
+size: 1170
+
+* template spiritOfFire
+size: 2500
+
+* template infinity
+size: 5000
+moveType: hover
+
 `;
 
 },{}],30:[function(require,module,exports){
 module.exports = `* output
-15 {anyWeapon}
+10 {anyWeapon}
 20 {anyGear}
 1 {gunComponent}
 
 * alias anyWeapon
 10 {smallWeapon}
 0 gi means General Issue
-20 {giWeapon}
+10 {giWeapon}
 1 {specialInfantryWeapon}
 1 {highWeightWeapon}
 0 {alienWeapon}
@@ -7132,7 +7551,13 @@ class WGenerator {
 
     // Returns WNode[]
     getOutputs (key) {
-        const nodes = this.resolveString(key || '{output}');
+        let nodes = this.resolveString(key || '{output}');
+
+        if (nodes[0] && nodes[0].templateName === key && ! nodes[0].template && nodes.length === 1) {
+            // key may or may not be intended as a alias. If it was, this will not be noticed until makeNode() returns a WNode with no template, just a string templateName, like this: new WNode(key).
+            // We now retry generation with brackets, to indicate we want a alias.
+            nodes = this.resolveString(`{${key}}`);
+        }
 
         nodes.forEach(
             n => n.tidy()
@@ -7328,7 +7753,7 @@ class WGenerator {
                 if (contextString.name.startsWith('{')) {
                     const appropriateGen = WGenerator.generators[contextString.path];
 
-                    // Maybe .name is {outout}, which came from WGenerator.contextString().
+                    // Maybe .name is {output}, which came from WGenerator.contextString().
                     // Loop these thru the pipeline again.
                     const finishedBatch = appropriateGen.resolveTerm(contextString.name);
 
@@ -7511,8 +7936,18 @@ class WGenerator {
 
     // Example input: 'sunlight/warbands/warrior'
     static fromCodex (codexPath) {
+        if (WGenerator.generators[codexPath]) {
+            return WGenerator.generators[codexPath];
+        }
+
+        const absoluteFilePath = `${ WGenerator.codicesDir() }/${ codexPath }.js`;
+
+        if (! fs.existsSync(absoluteFilePath)) {
+            return;
+        }
+
         // Warning: dynamic require() calls are incompatible with browserify.
-        const codexRaw = require(`${ WGenerator.codicesDir() }/${ codexPath }.js`);
+        const codexRaw = require(absoluteFilePath);
 
         return new WGenerator(codexRaw, codexPath);
     }
@@ -7803,23 +8238,31 @@ class WGenerator {
         }
 
         let output;
+        let generatorInput;
 
         if (process.argv.length > 2) {
             if (! process.argv[2].includes('/')) {
-                console.log(`Usage: node wgenerator.js <codexPath>`);
-                return;
+                throw new Error(`Usage: node wgenerator.js <codexPath>`);
             }
             else {
-                // Later we can add support for references inside codex files, such as halo/forerunner/individual/knight.
-                // This is supported in parsing but not in the CLI yet.
-                // The alg will be:
-                    // Check if the input path is a codex (ie, !!WGenerator.generators[process.argv[2]])
-                    // If so, call its .getOutputs() func
-                    // Else look at the input path minus the final term
-                    // then call wgen.getOutputs(finalTerm)
-                    // or wrap it in brackets if its a alias: `{${finalTerm}}`
-                const wgen = WGenerator.fromCodex(process.argv[2]);
-                output = wgen.getOutputs();
+                const path = process.argv[2];
+                let wgen = WGenerator.fromCodex(path);
+
+                if (! wgen) {
+                    const terms = path.split('/');
+                    const prefix = terms.slice(0, -1)
+                        .join('/');
+
+                    wgen = WGenerator.fromCodex(prefix);
+
+                    if (! wgen) {
+                        throw new Error(`Cannot interpret CLI input: ${path}`);
+                    }
+
+                    generatorInput = terms[terms.length - 1];
+                }
+
+                output = wgen.getOutputs(generatorInput);
             }
         }
         else {
@@ -7991,7 +8434,7 @@ class GridView {
         // this.worldState.nodes = this.exampleGroups();
         this.mPerSquare = GridView.DEFAULT_SQUARE_SIZE;
     }
-    
+
     exampleGroups () {
         return [
             new Group('halo/unsc/individual/odst', 5, 'unsc', this.randomOnScreen()),
@@ -8022,11 +8465,63 @@ class GridView {
 
         const lastTerm = terms[terms.length - 1];
 
+        // Later i can probably just read the filenames instead.
         const extensions = {
-            sand: 'jpg',
+            banshee: 'jpeg',
+            brute: 'jpg',
+            bruteChieftain: 'png',
+            bruteProwler: 'jpg',
+            ccsLightCruiser: 'png',
+            chopper: 'jpg',
+            combatForm: 'png',
+            corvette: 'png',
+            crawler: 'png',
+            cryptum: 'png',
+            didact: 'png',
+            drone: 'png',
+            elite: 'jpg',
+            enforcer: 'png',
+            falcon: 'png',
+            floodCarrier: 'png',
+            floodTank: 'png',
+            frigate: 'png',
+            ghost: 'jpg',
+            goldElite: 'jpg',
+            grunt: 'png',
+            harvester: 'jpg',
+            highCharity: 'jpg',
+            hornet: 'png',
+            hunter: 'png',
+            infinity: 'jpeg',
+            jackal: 'png',
+            keyship: 'png',
+            knight: 'jpg',
+            kraken: 'jpg',
+            lich: 'png',
+            mammoth: 'png',
+            mantis: 'png',
+            marathonCruiser: 'png',
+            marine: 'png',
+            missileSilo: 'jpg',
+            mongoose: 'gif',
             odst: 'jpg',
-            wraith: 'png',
-            bruteProwler: 'jpg'
+            officer: 'jpg',
+            pelican: 'png',
+            phantom: 'png',
+            pod: 'jpg',
+            rifleJackal: 'png',
+            sand: 'jpg',
+            scarab: 'png',
+            scorpion: 'png',
+            sentinel: 'jpg',
+            shade: 'png',
+            sniperJackal: 'png',
+            spartan: 'png',
+            spire: 'jpg',
+            transportWarthog: 'png',
+            warthog: 'jpg',
+            wasp: 'png',
+            wraith: 'png'
         };
 
         return `images/${lastTerm}.${extensions[lastTerm]}`;
@@ -34664,7 +35159,42 @@ util.asBar = (n) => {
     return bar;
 };
 
-util.sigFigsOf = (n) => {
+// Returns the input number rounded up or down to 1 sigfig.
+util.sigfigRound = (n, sigfigs) => {
+    sigfigs = sigfigs || 1;
+
+    const log = Math.log10(Math.abs(n));
+
+    return _.round(
+        n,
+        sigfigs - (1 + Math.floor(log))
+    );
+};
+
+util.testSigfigRound = () => {
+    for (let f = 1; f < 3; f++) {
+        for (let n = 1; n < 1000000; n++) {
+            const output = util.sigfigRound(n, f);
+            const figs = util.sigfigsOf(output);
+
+            if (figs > f) {
+                const originalFigs = util.sigfigsOf(n);
+                if (originalFigs < f) {
+                    continue;
+                }
+
+                // Note that this test does not check whether it gets rid of TOO MANY sigfigs. In the case of (1950, 2) this seems hard to test for. It is correct to oversimplify to 2000, which has only 1 sigfig.
+
+                util.logError(`In testSigfigRound(), sigfigRound(${n}, ${f}) === ${output}. This has ${figs} sigfigs, but it should have ${f}.`);
+                return false;
+            }
+        }
+    }
+
+    return true;
+};
+
+util.sigfigsOf = (n) => {
     if (! util.isNumber(n)) {
         n = parseFloat(n);
     }
@@ -34826,6 +35356,7 @@ util.mbti = () => {
 util.testAll = () => {
     util.testPrettyDistance();
     util.testCamelCase();
+    util.testSigfigRound();
     util.logDebug(`Done with unit tests for Util module :)`);
 };
 
