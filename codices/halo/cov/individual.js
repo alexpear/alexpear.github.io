@@ -89,12 +89,15 @@ item/plasmaPistol
 * template rifleJackal
 tags: jackal infantry
 weight: 80
-size: 1.5
+size: 1
 individuals: 1
 
 * childrenof rifleJackal
 {item/jackalRifle}
 item/plasmaPistol
+
+* template sniperJackal
+size: 1
 
 * template skirmisherJackal
 tags: jackal infantry
@@ -152,6 +155,9 @@ toHit: 3
 damage: 9
 shots: 2
 
+* template drone
+size: 1
+
 * template elite
 size: 2
 speed: 1
@@ -171,6 +177,9 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+
+* template bruteChieftain
+size: 2
 
 * template hunter
 size: 3
@@ -195,6 +204,9 @@ damage: 9
 shots: 2
 comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
 
+* template shade
+size: 4
+
 * template spectre
 size: 7
 speed: 25
@@ -206,7 +218,7 @@ toHit: 3
 damage: 9
 shots: 2
 
-* template bruteChopper
+* template chopper
 size: 6
 speed: 25
 ac: 19
@@ -334,7 +346,7 @@ toHit: 3
 damage: 9
 shots: 2
 
-* template lightCruiser
+* template ccsLightCruiser
 size: 300
 speed: 25
 moveType: hover
@@ -344,5 +356,11 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+
+* template supercarrier
+size: 29000
+
+* template highCharity
+size: 348000
 
 `;

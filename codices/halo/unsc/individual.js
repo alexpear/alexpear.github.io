@@ -149,7 +149,7 @@ tags: creature
 size: 1
 speed: 1
 ac: 19
-sp: 10
+sp: 15
 resistance: heat 2, pierce 2
 toHit: 2
 damage: 2
@@ -157,8 +157,13 @@ shots: 3
 attacks: 
   SMG: +2 x2, 2 pierce
 
+* template officer
+size: 1
+speed: 1
+sp: 5
+
 * template mongoose
-size: 10
+size: 4
 speed: 2
 ac: 21
 sp: 150
@@ -178,6 +183,13 @@ damage: 9
 shots: 2
 comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
 
+* template transportWarthog
+size: 6
+comment: 'Later this would benefit from template inheritance.'
+
+* template mantis
+size: 4
+
 * template hornet
 size: 10
 speed: 25
@@ -188,6 +200,9 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+
+* template wasp
+size: 9
 
 * template scorpion
 size: 10
@@ -261,5 +276,15 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+
+* template marathonCruiser
+size: 1170
+
+* template spiritOfFire
+size: 2500
+
+* template infinity
+size: 5000
+moveType: hover
 
 `;

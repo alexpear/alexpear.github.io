@@ -31,4 +31,30 @@ forerunner/item/boltshot
 {forerunner/item/grenade}
 {forerunner/item/gear}
 
+* template sentinel
+size: 2
+
+* template enforcer
+size: 7
+
+* template crawler
+size: 1
+
+* template soldier
+size: 1
+
+* template knight
+size: 3
+
+* template survivor
+size: 3
+
+* template phaeton
+size: 10
+
+* template keyship
+size: 13000
+
+
+
 `;
