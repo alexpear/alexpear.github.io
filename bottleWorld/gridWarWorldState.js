@@ -200,15 +200,15 @@ class GridWarWorldState extends WorldState {
                     brute: 8
                 }
             },
-            slayer: {
-                // TODO should this key specify faction ('unsc') or alignment ('red')?
-                red: {
-                    spartan: 4
-                },
-                blue: {
-                    spartan: 4
-                }
-            },
+            // slayer: {
+            //     // TODO should this key specify faction ('unsc') or alignment ('red')?
+            //     red: {
+            //         spartan: 4
+            //     },
+            //     blue: {
+            //         spartan: 4
+            //     }
+            // },
             strikeTeam: {
                 unsc: {
                     mantis: 1,
@@ -233,22 +233,22 @@ class GridWarWorldState extends WorldState {
                     brute: 5
                 }
             },
-            btb: {
-                red: {
-                    mantis: 1,
-                    banshee: 1,
-                    warthog: 1,
-                    ghost: 1,
-                    spartan: 4
-                },
-                blue: {
-                    mantis: 1,
-                    banshee: 1,
-                    warthog: 1,
-                    ghost: 1,
-                    spartan: 4
-                }
-            },
+            // btb: {
+            //     red: {
+            //         mantis: 1,
+            //         banshee: 1,
+            //         warthog: 1,
+            //         ghost: 1,
+            //         spartan: 4
+            //     },
+            //     blue: {
+            //         mantis: 1,
+            //         banshee: 1,
+            //         warthog: 1,
+            //         ghost: 1,
+            //         spartan: 4
+            //     }
+            // },
             arkTankBattle: {
                 unsc: {
                     scorpion: 7,
@@ -314,6 +314,23 @@ class GridWarWorldState extends WorldState {
 
                 }
             },
+            prometheansVsFlood: {
+                forerunner: {
+                    crawler: 24,
+                    watcher: 6,
+                    soldier: 12,
+                    knight: 6,
+                    phaeton: 1,
+                    sentinel: 12,
+                    enforcer: 1
+                },
+                flood: {
+                    // pod: 67,
+                    // carrier: 11,
+                    // combatForm: 92,
+                    // floodTank: 9
+                }
+            },
             bruteAssault: {
                 unsc: {
                     odst: 305
@@ -370,7 +387,7 @@ class GridWarWorldState extends WorldState {
                     // Fill in later
                 },
                 cov: {
-                    lightCruiser: 1,
+                    ccsLightCruiser: 1,
                     harvester: 1,
 
                 }
@@ -411,7 +428,7 @@ class GridWarWorldState extends WorldState {
             },
             marathonsOverGoleta: {
                 unsc: {
-                    marathonClassCruiser: 2,
+                    marathonCruiser: 2,
                     // Fill in later
                 },
                 cov: {
@@ -420,7 +437,7 @@ class GridWarWorldState extends WorldState {
             },
             spiritOfFireOverManhattan: {
                 unsc: {
-                    spiritOfFire: 1,
+                    // spiritOfFire: 1,
                     // Fill in later
                 },
                 cov: {
@@ -450,7 +467,7 @@ class GridWarWorldState extends WorldState {
                     // Fill in later
                 },
                 cov: {
-                    supercarrier: 1
+                    // supercarrier: 1
 
                 }
             },
@@ -465,7 +482,9 @@ class GridWarWorldState extends WorldState {
             // Add more later
         };
 
-        return scenarios[scenario] || scenarios.bruteAssault;
+        // return scenarios[scenario] || scenarios.bruteAssault;
+        const randomName = Util.randomOf(Object.keys(scenarios));
+        return scenarios[randomName];
     }
 
     static example (timeline) {
