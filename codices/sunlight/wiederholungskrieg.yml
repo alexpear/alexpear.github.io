@@ -1,0 +1,144 @@
+# This file represents the items and combatants that can show up in the current dfaft of the Wiederholungskrieg universe.
+
+chassisList:
+  human:
+    size: 1 # topdown
+    weight: 70
+
+  gravChariot:
+    size: 3
+    weight: 300
+
+
+componentList:
+  binoculars:
+    weight: 1
+
+  knife:
+    weight: 2
+    # wait, trditionally childrenOf would specify a alias with certainty, then that would contain a random table.
+    # hmm ... i could just have a childrenChance to represent the nothing dynamic.
+    childrenOf:
+      nothing: 10
+      electroMod: 2
+
+      # More exotic tech such as energy weapons can be put into a 'expansion pack' yml file. That file can be merged in in-memory when needed.
+
+  lightPistol:
+    weight: 4
+
+  steelBreastplate:
+    weight: 30
+
+aliasList:
+  foo:
+    bar
+
+# like a grammar, or childrenOf.
+hierarchy:
+  armory:
+    weapon: 2 to 20
+    item: 0 to 40
+
+  chassisPool:
+    infantry: 1 to 5
+    vehicle: 1 to 20 # includes spacecraft
+    weapon: 2 to 10 # includes vehicle-scale weapons
+
+  weapon:
+    chassis: 1
+    weaponMod: 0 to 3
+
+  leader:
+    chassis: 1
+    weapon: 1 to 3
+    item: 0 to 4
+    # When generating leaders, i'm inclined to call genSpecialInfantry(), which have unrestricted access to the armory, etc.
+
+  army:
+    leader: 1
+    army: 0+
+    legion: 2 to 4
+
+  legion:
+    leader: 1
+    battalion: 2 to 10
+
+  battalion:
+    leader: 1
+    company: 2 to 10
+
+  company:
+    leader: 1
+    bulkCombatant: combatant
+    secondaryCombatant: combatant
+
+
+
+weapons:
+  mace: 6
+  hammer: 6
+  knife: 10
+  sword: 10
+  spear: 20 
+  glaive: 4
+  halberd: 4
+  axe: 6
+  whip: 1
+  flail: 2
+  pistol: 10
+  smg: 15
+  carbine: 15
+  shotgun: 8
+  rifle: 15
+  longrifle: 9
+  grenade: 2
+  grenadeLauncher: 3
+  bomb: 1
+  saw: 9 # aka stubber, boltgun
+  chaingun: 3 # aka maxim, minigun
+  cannon: 3 # usually too heavy for humans to carry alone
+
+weaponMods:
+  general:
+    heavy: 20
+    lightweight: 19
+    wristMounted: 8 # Incompatible with grenade and bomb, ofc
+    electric: 8
+    magnetic: 5
+    acid: 5
+    toxin: 4
+    ion: 5 # Weapons better against synthetic creatures than organics.
+    tracker: 4 # Weapons that embed microtrackers in the target, making them unable to hide.
+    fire: 8
+    guided: 7 # It partially aims on its own (homing).
+    10m: 0 # For tank-sized mecha
+    100m: 0
+    capitalGrade: 0 # For capital-ship-scale main weapons.
+
+  ranged:
+    rail: 3
+    laser: 10
+    beam: 6
+    plasma: 4 # Munitions that explode into bursts of plasma, not 'contained projectiles'
+    spiderweb: 5 # Similar to a netgun or containment foam from Parahumans
+    scoped: 9
+    extendedRange: 9
+    silenced: 6
+    bayonet: 6
+
+  softScience:
+    hardlight: 9
+    stun: 12
+    grav: 3
+    temporal: 2 # Slows time around impact
+    void: 1 # Mysterious. Either creates vacuum or (because that doesnt benefit melee weaps) slips thru armor somehow.
+
+holstering:
+  hip: 2
+  back: 1
+  sling: 1 # Like a rifle attached to a shoulder sling
+  belt: 4 # Small items only
+  chest: 2 # Small items only
+  ankle: 2 # Small items only
+
