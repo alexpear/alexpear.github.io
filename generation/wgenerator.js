@@ -3,8 +3,6 @@
 // Generator that outputs procedurally generated trees of WNodes (Waffle nodes).
 // These trees represent games states, game elements, narrative elements, and similar concepts.
 
-const fs = require('fs');
-
 // LATER perhaps restructure so that WGenerator doesn't import any Battle20 files.
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
 const AliasTable = require('./aliasTable.js');
@@ -20,6 +18,9 @@ const Group = require('../wnode/group.js');
 const Thing = require('../wnode/thing.js');
 const StorageModes = require('../wnode/storageModes.js');
 const WNode = require('../wnode/wnode.js');
+
+const fs = require('fs');
+const Yaml = require('js-yaml');
 
 class WGenerator {
     // Constructor param will be either a birddecisions-format string or a filename.
@@ -840,6 +841,20 @@ class WGenerator {
                 }
 
                 output = wgen.getOutputs(generatorInput);
+
+
+                // Test yaml conversion
+                const simplifiedGlossary = {};
+                for(let key in wgen.glossary) {
+                    const entry = wgen.glossary[key];
+
+                    simplifiedGlossary[key] = entry.toJson ?
+                        entry.toJson() :
+                        entry.constructor.name;
+                }
+
+                Util.log('Glossary:');
+                Util.log(Yaml.dump(simplifiedGlossary));
             }
         }
         else {

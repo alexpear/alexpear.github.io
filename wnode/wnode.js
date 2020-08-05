@@ -181,6 +181,7 @@ class WNode {
             `<WNode with no templateName>`;
 
         if (this.displayName) {
+            // Later this should perhaps recurse on components.
             return `${this.displayName} (${tName})`;
         }
         else {

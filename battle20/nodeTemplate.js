@@ -3,6 +3,8 @@
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
+const Yaml = require('js-yaml');
+
 module.exports = class NodeTemplate {
     constructor (name) {
         this.name = name;
@@ -34,8 +36,14 @@ module.exports = class NodeTemplate {
             Util.hasOverlap(this.tags, ['group', 'force', 'taskForce', 'set', 'squad', 'team']);
     }
 
+    // Returns obj, not string, like all other toJson() funcs in this library.
     toJson () {
         // Already free of circular reference.
         return this;
+    }
+
+    //returns str.
+    toYaml () {
+        return Yaml.dump(this.toJson());
     }
 }

@@ -12,7 +12,8 @@ This website include the following prototype projects:
   - npm run test
 
 ## To Do:
-- Add more files in gridView/images/, and templates mentioning size in individual.js files. See gridWarWorldState.js's scenarios list for which templateNames need images and sizes.
+- Add more files in gridView/images/, and templates mentioning size in individual.js files. 
+  - Add images for neutral terrain obstacles. pelicanWreck, warthogWreck, skyscraper, mountain, lake, etc.
 
 - Brainstorm how to make all BEvents compatible with WorldStates of both continuous and grid spatial models. Ideally everything about Coords should call out to the WorldState, so that it can return Coords with appropriate dimensions and values.
 
