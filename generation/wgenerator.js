@@ -853,8 +853,8 @@ class WGenerator {
                         entry.constructor.name;
                 }
 
-                Util.log('Glossary:');
-                Util.log(Yaml.dump(simplifiedGlossary));
+                // Util.log('Glossary:');
+                // Util.log(Yaml.dump(simplifiedGlossary));
             }
         }
         else {
