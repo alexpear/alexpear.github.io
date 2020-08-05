@@ -1,0 +1,111 @@
+# generated 2020 Aug 3
+
+mjolnirArmor:
+  name: mjolnirArmor
+  tags:
+    - armor
+    - energyShield
+    - robotic
+  actions: []
+  resistance:
+    fire: 4
+    piercing: 4
+    impact: 3
+    vacuum: 10
+  weight: 454
+  sp: 40
+
+flakArmor:
+  name: flakArmor
+  tags:
+    - armor
+  actions: []
+  resistance:
+    fire: 1
+    piercing: 1
+    impact: 1
+  sp: 20
+  comment: >-
+    Later we can model armor using resistances. But for MRB1 we can just use a
+    big SP bonus.
+
+smg:
+  name: smg
+  tags: 
+    - bullet
+    - firearm
+  actions:
+    - name: smg
+      tags:
+        - bullet
+        - firearm
+        - fullAuto
+      range: 20
+      hit: 3
+      damage: 7
+      shotsPerSecond: 1
+  resistance: {}
+
+assaultRifle:
+  name: assaultRifle
+  tags: 
+    - bullet
+    - firearm
+  actions:
+    - name: assaultRifle
+      tags:
+        - bullet
+        - fullAuto
+      range: 40
+      hit: 3
+      damage: 8
+      shotsPerSecond: 1
+  resistance: {}
+
+battleRifle:
+  name: battleRifle
+  tags: 
+    - bullet
+    - firearm
+  actions:
+    - name: battleRifle
+      tags:
+        - bullet
+      range: 80
+      hit: 3
+      damage: 9
+      shotsPerSecond: 1
+  resistance: {}
+
+dmr:
+  name: dmr
+  tags: 
+    - bullet
+    - firearm
+  actions:
+    - name: dmr
+      tags:
+        - bullet
+        - firearm
+        - optics
+      range: 100
+      hit: 3
+      damage: 10
+      shotsPerSecond: 2
+  resistance: {}
+
+shotgun:
+  name: shotgun
+  tags:
+    - bullet
+    - firearm
+  actions:
+    - name: shotgun
+      tags:
+        - bullet
+      range: 9
+      hit: 5
+      damage: 80
+      shotsPerSecond: 1
+  resistance: {}
+  attackDelay: 2
