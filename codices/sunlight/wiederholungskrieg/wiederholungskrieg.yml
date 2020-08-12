@@ -125,7 +125,7 @@ weaponMods:
     laser: 10
     beam: 6
     plasma: 4 # Munitions that explode into bursts of plasma, not 'contained projectiles'
-    spiderweb: 5 # Similar to a netgun or containment foam from Parahumans
+    spiderweb: 5 # Similar to a netgun or a little like containment foam from Parahumans
     scoped: 9
     extendedRange: 9
     silenced: 6

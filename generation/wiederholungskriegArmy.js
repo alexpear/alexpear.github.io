@@ -17,10 +17,10 @@ const FS = require('fs');
 const Yaml = require('js-yaml');
 
 const Arsenal = Yaml.safeLoad(
-    FS.readFileSync('./codices/sunlight/wiederholungskrieg.yml', 'utf8')
+    FS.readFileSync('./codices/sunlight/wiederholungskrieg/wiederholungskrieg.yml', 'utf8')
 );
 
-const factionWGen = WGenerator.generators['sunlight/faction'];
+const factionWGen = WGenerator.generators['sunlight/wiederholungskrieg/faction'];
 
 class WiederholungskriegArmy extends WNode {
     constructor () {

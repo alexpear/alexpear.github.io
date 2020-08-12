@@ -148,6 +148,10 @@ class WGenerator {
     resolveCommas (inputString) {
         // Util.log(`Top of resolveCommas(), inputString is '${inputString}'`, 'debug');
 
+        if (! inputString) {
+            return [];
+        }
+
         return inputString.trim()
             .split(',')
             .reduce(
@@ -653,12 +657,12 @@ class WGenerator {
 
         // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
         WGenerator.addGenerator(
-            require('../codices/sunlight/item'),
-            'sunlight/item'
+            require('../codices/sunlight/wiederholungskrieg/item'),
+            'sunlight/wiederholungskrieg/item'
         );
         WGenerator.addGenerator(
-            require('../codices/sunlight/faction'),
-            'sunlight/faction'
+            require('../codices/sunlight/wiederholungskrieg/faction'),
+            'sunlight/wiederholungskrieg/faction'
         );
         WGenerator.addGenerator(
             require('../codices/sunlight/warband/item'),
