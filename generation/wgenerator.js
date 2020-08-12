@@ -657,8 +657,8 @@ class WGenerator {
 
         // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
         WGenerator.addGenerator(
-            require('../codices/sunlight/wiederholungskrieg/item'),
-            'sunlight/wiederholungskrieg/item'
+            require('../codices/sunlight/wiederholungskrieg/carryable'),
+            'sunlight/wiederholungskrieg/carryable'
         );
         WGenerator.addGenerator(
             require('../codices/sunlight/wiederholungskrieg/faction'),
