@@ -15,6 +15,7 @@ This website include the following prototype projects:
 - Wiederholungskrieg army loadout gen
   - Timebox: Draft js-format version of Wiederholungskrieg weapon gen.
   - Explore expanding WGenerator to read from yml format.
+    - And/or converting existing codex js files into yml format.
 
 - Add more files in gridView/images/, and templates mentioning size in individual.js files. 
   - Add images for neutral terrain obstacles. pelicanWreck, warthogWreck, skyscraper, mountain, lake, etc.

@@ -79,14 +79,18 @@ weapons:
   melee:
     mace: 6
     hammer: 6
+    glove: 1
+    claw: 1
     knife: 10
     sword: 10
     spear: 20
     glaive: 4
     halberd: 4
     axe: 6
+    hatchet: 1
     whip: 1
     flail: 2
+    javelin: 2
   ranged:
     pistol: 10
     smg: 15
@@ -95,6 +99,10 @@ weapons:
     rifle: 15
     longrifle: 9
     grenadeLauncher: 3
+    shortbow: 2
+    longbow: 2
+    crossbow: 4
+    harpoon: 1
     saw: 9 # aka stubber, boltgun
     chaingun: 3 # aka maxim, minigun
     cannon: 3 # usually too heavy for humans to carry alone
