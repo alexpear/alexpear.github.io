@@ -12,6 +12,10 @@ This website include the following prototype projects:
   - npm run test
 
 ## To Do:
+- Wiederholungskrieg army loadout gen
+  - Move files in sunlight/ to a new subdirectory.
+  - Explore expanding WGenerator to read from yml format.
+
 - Add more files in gridView/images/, and templates mentioning size in individual.js files. 
   - Add images for neutral terrain obstacles. pelicanWreck, warthogWreck, skyscraper, mountain, lake, etc.
 

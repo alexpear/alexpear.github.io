@@ -76,28 +76,31 @@ hierarchy:
 
 
 weapons:
-  mace: 6
-  hammer: 6
-  knife: 10
-  sword: 10
-  spear: 20 
-  glaive: 4
-  halberd: 4
-  axe: 6
-  whip: 1
-  flail: 2
-  pistol: 10
-  smg: 15
-  carbine: 15
-  shotgun: 8
-  rifle: 15
-  longrifle: 9
-  grenade: 2
-  grenadeLauncher: 3
-  bomb: 1
-  saw: 9 # aka stubber, boltgun
-  chaingun: 3 # aka maxim, minigun
-  cannon: 3 # usually too heavy for humans to carry alone
+  melee:
+    mace: 6
+    hammer: 6
+    knife: 10
+    sword: 10
+    spear: 20
+    glaive: 4
+    halberd: 4
+    axe: 6
+    whip: 1
+    flail: 2
+  ranged:
+    pistol: 10
+    smg: 15
+    carbine: 15
+    shotgun: 8
+    rifle: 15
+    longrifle: 9
+    grenadeLauncher: 3
+    saw: 9 # aka stubber, boltgun
+    chaingun: 3 # aka maxim, minigun
+    cannon: 3 # usually too heavy for humans to carry alone
+  bomb:
+    grenade: 2
+    bomb: 1
 
 weaponMods:
   general:
@@ -111,6 +114,7 @@ weaponMods:
     ion: 5 # Weapons better against synthetic creatures than organics.
     tracker: 4 # Weapons that embed microtrackers in the target, making them unable to hide.
     fire: 8
+    thermal: 7
     guided: 7 # It partially aims on its own (homing).
     10m: 0 # For tank-sized mecha
     100m: 0
@@ -133,6 +137,12 @@ weaponMods:
     grav: 3
     temporal: 2 # Slows time around impact
     void: 1 # Mysterious. Either creates vacuum or (because that doesnt benefit melee weaps) slips thru armor somehow.
+
+# For if i use a more traditional WGenerator codes to gen these.
+exampleWeaponTree:
+  1mRangedWeapon:
+  - rifle
+  - spiderweb
 
 holstering:
   hip: 2
