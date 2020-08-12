@@ -40,18 +40,34 @@ class WiederholungskriegArmy extends WNode {
 
     randomWeapon () {
         // LATER add up the weights into a array, like WGenerator aliastables.
-        const weapons = Object.keys(Arsenal.weapons);
-        const chassisName = _.sample(weapons);
-
-        const generalMods = Object.keys(Arsenal.weaponMods.general);
-        const modName = _.sample(generalMods);
-
+        // const chassisName = this.fromSeveralAliasTable(Arsenal.weapons.melee, Arsenal.weapons.ranged);
+        const chassisName = this.fromAliasTable(Arsenal.weapons.melee, Arsenal.weapons.ranged);
         const weap = new WNode(chassisName);
+
+        const modName = this.fromAliasTable(Arsenal.weaponMods.general);
         weap.add(new WNode(modName));
 
         // Util.log(`${Util.fromCamelCase(modName)} ${Util.fromCamelCase(chassisName)}`);
 
         return weap;
+    }
+
+    // fromSeveralAliasTables (...tableObjs) {
+
+    // }
+
+    fromAliasTable (tableObj) {
+        const outputs = [];
+
+        for (let key in tableObj) {
+            const weight = tableObj[key];
+
+            for (let n = 0; n < weight; n++) {
+                outputs.push(key);
+            }
+        }
+
+        return _.sample(outputs);
     }
 
     static test () {
