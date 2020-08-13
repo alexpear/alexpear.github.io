@@ -1,7 +1,7 @@
 module.exports = `* output
-1 faction2
+1 faction
 
-* childrenof faction
+* childrenof oldFaction
 leadership
 personnel
 cognition
@@ -29,17 +29,19 @@ groundForces
 
 * alias composition
 4 organic
-4 hybrid
-4 synthetic
+2 hybrid
+3 synthetic
 
-* childrenof faction2
+* childrenof faction
 populace
 specialty
 armory
+representative
+militaryBulk
+militarySupport
 
 * childrenof populace
-mind
-body
+{composition}
 
 * childrenof mind 
 {composition}
@@ -70,6 +72,10 @@ body
 4 stealth
 4 espionage
 4 politics
+
+* childrenof armory
+{wiederholungskrieg/carryable}
+{wiederholungskrieg/carryable}
 
 `;
 

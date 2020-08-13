@@ -52,9 +52,9 @@ class WiederholungskriegArmy extends WNode {
         return weap;
     }
 
-    // fromSeveralAliasTables (...tableObjs) {
+    fromSeveralAliasTables (...tableObjs) {
 
-    // }
+    }
 
     fromAliasTable (tableObj) {
         const outputs = [];

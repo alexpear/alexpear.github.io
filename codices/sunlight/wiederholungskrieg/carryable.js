@@ -1,7 +1,7 @@
 module.exports = `* output
 4 meleeWeapon
 4 rangedWeapon
-1 bomb
+1 bombWeapon
 
 * childrenof meleeWeapon
 {meleeMod}
@@ -35,7 +35,6 @@ module.exports = `* output
 8 shotgun
 15 rifle
 10 longrifle
-3 grenadeLauncher
 2 shortbow
 2 longbow
 4 crossbow
@@ -44,12 +43,13 @@ module.exports = `* output
 3 chaingun
 3 cannon
 
-* childrenof bomb
+* childrenof bombWeapon
 {bombMod}
 {bombChassis}
 
 * alias bombChassis
 4 grenade
+2 grenadeLauncher
 2 bomb
 
 * alias weaponMod
