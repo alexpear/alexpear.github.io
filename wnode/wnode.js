@@ -47,6 +47,11 @@ class WNode {
         return this;
     }
 
+    addNewComponent (template) {
+        this.add(new WNode(template));
+        return this;
+    }
+
     deepCopy () {
         const clone = new WNode();
         Object.assign(clone, this);
@@ -190,8 +195,9 @@ class WNode {
     }
 
     // Format that looks like informal YAML but with props above components.
-    toPrettyString (indent) {
+    toPrettyString (indent, weightMode) {
         indent = Util.default(indent, 0);
+        weightMode = Util.default(weightMode, true);
 
         let outString = furtherLine(Util.formatProp(this, 'name'));
 
@@ -223,7 +229,7 @@ class WNode {
         }
 
         const weight = this.getWeight();
-        if (weight) {
+        if (weightMode && weight) {
             outString += furtherLine(`  ${Util.commaNumber(weight)} kg`);
         }
 
@@ -238,7 +244,7 @@ class WNode {
         }
 
         if (this.components.length > 0) {
-            outString += furtherLine('  w/');
+            // outString += furtherLine('  w/');
             for (let component of this.components) {
                 outString += component.toPrettyString(indent + 4);
             }

@@ -2,6 +2,8 @@ module.exports = `* output
 4 meleeWeapon
 4 rangedWeapon
 1 bombWeapon
+0 heldItem
+0 wornItem
 
 * childrenof meleeWeapon
 {meleeMod}
@@ -23,6 +25,10 @@ module.exports = `* output
 1 whip
 2 flail
 2 javelin
+
+* template mace
+weight: 7
+slot: hand
 
 * childrenof rangedWeapon
 {rangedMod}

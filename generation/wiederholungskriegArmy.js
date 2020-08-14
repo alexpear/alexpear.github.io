@@ -29,18 +29,24 @@ class WiederholungskriegArmy extends WNode {
         const faction = factionWGen.getOutputs()[0];
         this.add(faction);
 
+        this.equipWarriors();
+
         // Util.logDebug('\n' + faction.toPrettyString());
+    }
 
-        const armory = _.find(faction.components, n => n.templateName === 'armory');
+    equipWarriors () {
+        const faction = this.findComponent('faction');
+        const armory = faction.findComponent('armory');
+        const bulk = faction.findComponent('militaryBulk');
+        const support = faction.findComponent('militarySupport');
 
-        for (let w = 0; w < 2; w++) {
-            armory.add(this.randomWeapon());
-        }
+        let bulkWeaponCopy = _.sample(armory.components).deepCopy();
+        bulk.add(bulkWeaponCopy);
+        let supportWeaponCopy = _.sample(armory.components).deepCopy();
+        support.add(supportWeaponCopy);
     }
 
     randomWeapon () {
-        // LATER add up the weights into a array, like WGenerator aliastables.
-        // const chassisName = this.fromSeveralAliasTable(Arsenal.weapons.melee, Arsenal.weapons.ranged);
         const chassisName = this.fromAliasTable(Arsenal.weapons.melee, Arsenal.weapons.ranged);
         const weap = new WNode(chassisName);
 
@@ -50,10 +56,6 @@ class WiederholungskriegArmy extends WNode {
         // Util.log(`${Util.fromCamelCase(modName)} ${Util.fromCamelCase(chassisName)}`);
 
         return weap;
-    }
-
-    fromSeveralAliasTables (...tableObjs) {
-
     }
 
     fromAliasTable (tableObj) {
