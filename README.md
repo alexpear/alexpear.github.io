@@ -13,9 +13,7 @@ This website include the following prototype projects:
 
 ## To Do:
 - Wiederholungskrieg army loadout gen
-  - Timebox: Draft js-format version of Wiederholungskrieg weapon gen.
-  - Explore expanding WGenerator to read from yml format.
-    - And/or converting existing codex js files into yml format.
+  - Add carried nonweapon items to carryable.js (and armory node)
 
 - Add more files in gridView/images/, and templates mentioning size in individual.js files. 
   - Add images for neutral terrain obstacles. pelicanWreck, warthogWreck, skyscraper, mountain, lake, etc.
@@ -25,6 +23,9 @@ This website include the following prototype projects:
 - See TODOs in timeline.js
 
 - Func for Parahumans that takes a cape WNode and pretty prints it
+
+- Explore expanding WGenerator to read from yml format.
+  - And/or converting existing codex js files into yml format.
 
 - Death Planet Fish Tank
   - Add logic about every creature moving closer to its destination each tick.
