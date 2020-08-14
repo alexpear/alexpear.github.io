@@ -41,7 +41,7 @@ militaryBulk
 militarySupport
 
 * childrenof populace
-{composition}
+{wiederholungskrieg/species}
 
 * childrenof mind 
 {composition}

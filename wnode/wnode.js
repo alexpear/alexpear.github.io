@@ -197,7 +197,7 @@ class WNode {
     // Format that looks like informal YAML but with props above components.
     toPrettyString (indent, weightMode) {
         indent = Util.default(indent, 0);
-        weightMode = Util.default(weightMode, true);
+        weightMode = Util.default(weightMode, false);
 
         let outString = furtherLine(Util.formatProp(this, 'name'));
 

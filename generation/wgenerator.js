@@ -661,6 +661,10 @@ class WGenerator {
             'sunlight/wiederholungskrieg/carryable'
         );
         WGenerator.addGenerator(
+            require('../codices/sunlight/wiederholungskrieg/species'),
+            'sunlight/wiederholungskrieg/species'
+        );
+        WGenerator.addGenerator(
             require('../codices/sunlight/wiederholungskrieg/faction'),
             'sunlight/wiederholungskrieg/faction'
         );

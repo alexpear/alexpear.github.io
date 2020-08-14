@@ -25,6 +25,7 @@ module.exports = `* output
 1 whip
 2 flail
 2 javelin
+0 TODO would be nice if every node from meleeChassis had a prop that indicated it was a chassis.
 
 * template mace
 weight: 7
