@@ -1,44 +1,12 @@
 module.exports = `* output
 1 faction
 
-* childrenof oldFaction
-leadership
-personnel
-cognition
-economy
-starships
-groundForces
-
-* childrenof leadership
-{composition}
-
-* childrenof personnel
-{composition}
-
-* childrenof cognition
-{composition}
-
-* childrenof economy
-{composition}
-
-* childrenof starships
-{composition}
-
-* childrenof groundForces
-{composition}
-
-* alias composition
-4 organic
-2 hybrid
-3 synthetic
-
 * childrenof faction
 populace
 specialty
 armory
 representative
-infantry
-militarySupport
+military
 
 * childrenof populace
 {wiederholungskrieg/species}
@@ -143,6 +111,9 @@ wiederholungskrieg/outfit
 4 chancellor
 0 TODO later add a name generated from vowel and conosonant sounds, like fantasy worldName in hobby/
 
+* childrenof military
+infantry
+reserve
 
 * childrenof infantry
 wiederholungskrieg/outfit
@@ -193,18 +164,48 @@ wiederholungskrieg/outfit
 3 torchbearers
 3 braves
 
-
 * alias gender
 9 mixedGender
 4 exclusivelyFemale
 4 exclusivelyMale 
 1 exclusivelyPostgender
 
-* childrenof militarySupport
+* childrenof reserve
 wiederholungskrieg/outfit
 {infantryName}
 {gender}
 
+
+* childrenof oldFaction
+leadership
+personnel
+cognition
+economy
+starships
+groundForces
+
+* childrenof leadership
+{composition}
+
+* childrenof personnel
+{composition}
+
+* childrenof cognition
+{composition}
+
+* childrenof economy
+{composition}
+
+* childrenof starships
+{composition}
+
+* childrenof groundForces
+{composition}
+
+* alias composition
+4 organic
+2 hybrid
+3 synthetic
 
 `;
 

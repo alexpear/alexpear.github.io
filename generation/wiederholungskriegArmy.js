@@ -35,16 +35,17 @@ class WiederholungskriegArmy extends WNode {
     }
 
     equipWarriors () {
-        // TODO put military type profiles under a new node Military. Then call a func on each component without having to specify their templateNames here.
+        // LATER could call a func on each component under military without having to specify their templateNames here.
         const faction = this.findComponent('faction');
         const armory = faction.findComponent('armory');
-        const infantry = faction.findComponent('infantry');
-        const support = faction.findComponent('militarySupport');
+        const military = faction.findComponent('military');
+        const a = military.findComponent('infantry');
+        const b = military.findComponent('reserve');
 
-        let infantryWeaponCopy = _.sample(armory.components).deepCopy();
-        infantry.add(infantryWeaponCopy);
-        let supportWeaponCopy = _.sample(armory.components).deepCopy();
-        support.add(supportWeaponCopy);
+        let aWeaponCopy = _.sample(armory.components).deepCopy();
+        a.add(aWeaponCopy);
+        let bWeaponCopy = _.sample(armory.components).deepCopy();
+        b.add(bWeaponCopy);
     }
 
     randomWeapon () {

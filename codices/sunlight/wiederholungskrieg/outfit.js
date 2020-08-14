@@ -6,7 +6,6 @@ module.exports = `* output
 {base}
 {top}
 {feet}
-armorMaterial
 colors
 {extra}
 
@@ -19,7 +18,8 @@ colors
 3 goggles
 
 * alias base
-1 loincloth
+3 loincloth
+4 furs
 9 fatigues
 9 bodysuit
 1 doublet
@@ -42,7 +42,7 @@ colors
 3 breastplate, bracers, greaves
 4 breastplate, pauldrons, bracers
 
-* childrenof armorMaterial
+* childrenof breastplate
 {materialType}
 
 * alias materialType
@@ -138,9 +138,10 @@ colors
 12 gold
 
 * alias feet
+18 boots
 3 rocketBoots
 3 hoverBoots
-2 sandals
+4 sandals
 1 tennisShoes
 
 * alias extra
