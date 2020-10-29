@@ -18,7 +18,7 @@ class SocialWorldState extends WorldState {
             subject = 'You';
         }
         else {
-            // TODO fromId() should not clumsily fall back on WGenerator.
+            // TODO fromId() should not clumsily fall back on WGenerator here.
             const subjectThing = this.fromId(subjectId);
 
             if (! subjectThing) {
