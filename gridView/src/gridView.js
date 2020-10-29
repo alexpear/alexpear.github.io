@@ -188,3 +188,6 @@ GridView.DEFAULT_SQUARE_SIZE = 4; // meters
 module.exports = GridView;
 
 // GridView.run();
+
+// TODO Give the html a button to advance time forward 1 second.
+// TODO Give the html a div on the side that will show html text giving more info about the square currently being moused over.

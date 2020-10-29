@@ -23,7 +23,7 @@
     "buildGroupGrid": "browserify gridView/src/*.js bottleWorld/gridWarWorldState.js -o gridView/groupGridBundle.js",
     "server": "http-server",
     "test": "npm run testRingWorld",
-    "testWGenerator": "node generation/WGenerator.js",
+    "testWGenerator": "node generation/wgenerator.js",
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
     "testRingWorld": "node bottleWorld/ringWorldState.js test"
   },

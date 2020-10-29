@@ -27,6 +27,8 @@ class GridWarWorldState extends WorldState {
 
         this.universe = 'halo'; // Later we can change this.
 
+        this.timeline = new Timeline(this);
+
         // We model a rectangular battlefield extending from (0,0) to this.farCorner
         this.farCorner = new Coord(GridWarWorldState.WIDTH - 1, GridWarWorldState.HEIGHT - 1);
 
@@ -124,6 +126,11 @@ class GridWarWorldState extends WorldState {
     makeGroups (scenario) {
         for (const alignment in scenario) {
             for (const templateName in scenario[alignment]) {
+                // entry {
+                //     quantity: number,
+                //     totalSize: number
+                //     template: CreatureTemplate
+                // }
                 const entry = scenario[alignment][templateName];
 
                 // example
@@ -137,25 +144,34 @@ class GridWarWorldState extends WorldState {
                 Util.logDebug(`Spawning ${templateName} x${entry.quantity} with mPerSquare ${this.mPerSquare}, because entry.template.size is ${entry.template.size}. Will do ${fullGroupCount} Groups of ${maxPerSquare} each, with remainder Group of ${remainder}.`);
 
                 for (let i = 0; i < fullGroupCount; i++) {
-                    this.spawnGroup(entry.template, maxPerSquare, alignment);
+                    this.spawnGroup(templateName, maxPerSquare, alignment);
                 }
 
                 if (remainder > 0) {
                     // Alternatively, could divide combatants evenly between the N groups. For example, if there are 2 groups, split half and half. If 4, split into fourths.
-                    this.spawnGroup(entry.template, remainder, alignment);                    
+                    this.spawnGroup(templateName, remainder, alignment);
                 }
             }
         }
     }
 
-    spawnGroup (template, quantity, alignment) {
+    spawnGroup (templateName, quantity, alignment) {
         // The unit of coord in this WorldState is squares, NOT meters.
         const coord = this.findAvailableSpawn(alignment);
 
-        const newGroup = new Group(template, quantity, alignment, coord);
-        this.nodes.push(newGroup);
+        // TODO these ArrivalEvents are using WGenerator to instantiate WNodes and getting confused.
+        // I could set the path/codices up so that WG does not get confused.
+        const arrivalEvent = new ArrivalEvent(templateName, coord, alignment);
+        arrivalEvent.quantity = quantity;
+        this.timeline.addEvent(arrivalEvent);
 
-        Util.logDebug(`GridWar spawnGroup(). Created ${newGroup.templateName} group with quantity ${newGroup.quantity} and coord ${newGroup.coord}`);
+        Util.logDebug(`GridWar spawnGroup(). Created ArrivalEvent of template name '${arrivalEvent.templatePath}' with quantity ${arrivalEvent.quantity} and coord ${arrivalEvent.coord}`);
+
+        // Old logic that works but doesnt use BEvents.
+        // // const newGroup = new Group(template, quantity, alignment, coord);
+        // // this.nodes.push(newGroup);
+
+        // Util.logDebug(`GridWar spawnGroup(). Created ${newGroup.templateName} group with quantity ${newGroup.quantity} and coord ${newGroup.coord}`);
     }
 
     findAvailableSpawn (alignment) {
@@ -487,27 +503,8 @@ class GridWarWorldState extends WorldState {
         return scenarios[randomName];
     }
 
-    static example (timeline) {
+    static example () {
         const worldState = new GridWarWorldState('tipOfTheSpear');
-
-        timeline = timeline || new Timeline(worldState);
-        timeline.currentWorldState = worldState;
-        worldState.timeline = timeline;
-
-        const context = 'halo/unsc/individual';
-
-        // const startingThings = {
-        //     unsc: {
-        //         start: new Coord(0, 0),
-        //         odst: 3
-        //     },
-        //     cov: {
-        //         start: new Coord(10, 10),
-        //         bruteProwler: 2
-        //     }
-        // };
-
-        // worldState.addNodesByAlignment(startingThings, context);
 
         return worldState;
     }
@@ -517,8 +514,14 @@ class GridWarWorldState extends WorldState {
 
         const worldState = GridWarWorldState.example();
         const view = new GridView(worldState);
-
         view.setGridHtml();
+
+        while (worldState.worthContinuing()) {
+            Util.sleep(1);
+
+            worldState.timeline.computeNextInstant();
+            view.setGridHtml();
+        }
     }
 
     static run () {
@@ -532,3 +535,35 @@ GridWarWorldState.HEIGHT = 16;
 module.exports = GridWarWorldState;
 
 GridWarWorldState.run();
+
+
+/*
+Notes on the transition function.
+2020 Oct
+Currently in other WorldStates, it works like this:
+Timeline.computeNextInstant() looks at the set of all BEvents at time t.
+For each event we call event.resolve(worldState)
+These resolve() calls mutate worldState
+They also set up more BEvents in future ticks.
+
+For MRB1 GridWar (creature movement), do i want to keep this paradigm or not?
+
+One complication is that BEvents are written for continuous space, and GridWar is discrete.
+So the BEvent library as written is actually overly specific.
+Option 1: Make discrete subclasses of individual BEvent classes as needed. MoveAllDiscreteEvent, etc.
+. Well actually MoveAllEvent is already pretty robust, happily. Not very continuous-specific.
+. Altho i may need special logic for saving up movement credit over several seconds.
+. ProjectileEvent too
+
+Okay so maybe i can just move forward with making GridWarWorldState tests being more BEvent-based. Start with ArrivalEvent. Do this in spawnGroup()
+
+Currently we test with npm run refresh and going to:
+http://localhost:8080/gridView/gridView.html
+
+
+
+*/
+
+
+
+
