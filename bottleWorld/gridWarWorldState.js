@@ -12,6 +12,7 @@ const Util = require('../util/util.js');
 
 const Group = require('../wnode/group.js');
 const Thing = require('../wnode/thing.js');
+const WNode = require('../wnode/wnode.js');
 
 // For use with gridView front end
 // Space is a discrete square grid
@@ -20,7 +21,7 @@ const Thing = require('../wnode/thing.js');
 // Larger creatures or objects are not modeled in this system except as several squares of static terrain.
 class GridWarWorldState extends WorldState {
     constructor (scenarioName) {
-        super();
+        super(undefined, 0, undefined, 1000);
 
         // Later dont edit a capitalized prop, because that feels sketchy.
         Coord.DECIMAL_PLACES = 0;
@@ -191,7 +192,13 @@ class GridWarWorldState extends WorldState {
         throw new Error(`Cant spawn anything for ${alignment} because startBox with cornerA ${startBox.cornerA} is too crowded`);
     }
 
-    static presetArmy (scenario) {
+    // returns WNode[]
+    generateNodes (templatePath) {
+        // Later this can do more sophisticated stuff like look up template stats in codex files (using this.wanderingGenerator.getOutputs() probably).
+        return [new WNode(templatePath)];
+    }
+
+    static presetArmy (scenarioName) {
         const scenarios = {
             cairoStation: {
                 unsc: {
@@ -498,7 +505,10 @@ class GridWarWorldState extends WorldState {
             // Add more later
         };
 
-        // return scenarios[scenario] || scenarios.bruteAssault;
+        if (scenarioName) {
+            return scenarios[scenarioName];
+        }
+
         const randomName = Util.randomOf(Object.keys(scenarios));
         return scenarios[randomName];
     }
@@ -509,23 +519,28 @@ class GridWarWorldState extends WorldState {
         return worldState;
     }
 
-    static test (input) {
+    static async test (input) {
         Util.logDebug(`Top of GridWarWorldState.test()`);
 
         const worldState = GridWarWorldState.example();
+
+        Util.logDebug(`GridWarWorldState.test(), after example() returned.`);
+
         const view = new GridView(worldState);
         view.setGridHtml();
 
         while (worldState.worthContinuing()) {
-            Util.sleep(1);
+            await Util.sleep(1);
+
+            // Util.logDebug('GridWarWorldState, after sleep(1)');
 
             worldState.timeline.computeNextInstant();
             view.setGridHtml();
         }
     }
 
-    static run () {
-        GridWarWorldState.test();
+    static async run () {
+        await GridWarWorldState.test();
     }
 }
 

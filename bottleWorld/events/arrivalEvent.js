@@ -24,10 +24,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const arriver = this.templatePath ?
-            worldState.generateNodes(this.templatePath)[0] :
-            // TODO this looks buggy. Why pass something falsey to fromId()?
-            worldState.fromId(this.templatePath);
+        const arriver = worldState.generateNodes(this.templatePath || 'unknown')[0];
 
         Util.logDebug('Here is what this ArrivalEvent is creating:' + arriver.typeTreeYaml());
 
@@ -39,6 +36,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
         // Util.logDebug(`arriver.templateName: ${arriver.templateName}, arriver.template: ${arriver.template}, arriver.constructor.name: ${arriver.constructor.name}, typeof arriver.actions: ${typeof arriver.actions}, typeof arriver.deepCopy: ${typeof arriver.deepCopy}`);
 
+        // TODO i'm inclined to move away from the event-from-event paradigm. I'd rather create most BEvents using a turn loop over all Things that get a turn. It's much easier to visualize a turn loop over a WorldState than this self-propagating event model.
         const actions = Util.isFunction(arriver.getActions) && arriver.getActions();
 
         if (! actions || actions.length === 0) {
