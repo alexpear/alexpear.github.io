@@ -56,6 +56,8 @@ class GridView {
             templateName.split('/') :
             ['sand'];
 
+        // Later leave blank squares undrawn, and let a large background image show thru.
+
         const lastTerm = terms[terms.length - 1];
 
         // Later i can probably just read the filenames instead.
@@ -123,12 +125,13 @@ class GridView {
     setGridHtml () {
         const musings = document.getElementById('musings');
 
-        musings.innerHTML = `The scale is ${this.worldState.mPerSquare} meters per square...`;
+        musings.innerHTML = `The scale is ${this.worldState.mPerSquare} meters per square.`;
 
         const table = document.getElementById('grid');
+        // const firstDraw = ! table.rows.length;
 
         for (let r = 0; r < GridView.WINDOW_SQUARES; r++) {
-            const row = table.insertRow();
+            const row = table.rows[r] || table.insertRow();
 
             for (let c = 0; c < GridView.WINDOW_SQUARES; c++) {
                 // Util.logDebug(`top of inner for loop in setGridHtml(). this.worldState.constructor.name is ${this.worldState.constructor.name}.\n  this.worldState.nodes is ${this.worldState.nodes}`)
@@ -149,7 +152,13 @@ class GridView {
                     group && group.templateName
                 );
 
-                const cell = row.insertCell();
+                const existingCell = row.cells[c];
+                if (existingCell) {
+                    // Util.logDebug(`GridView, existingCell.childNodes.length is ${existingCell.childNodes.length}`)
+                    existingCell.removeChild(existingCell.childNodes[0]);
+                }
+
+                const cell = existingCell || row.insertCell();
                 cell.appendChild(squareDiv);
                 squareDiv.appendChild(img);
 
