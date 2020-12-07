@@ -54,7 +54,7 @@ class GridWarWorldState extends WorldState {
                 const template = this.getTemplate(path);
 
                 if (! template || ! template.size) {
-                    throw new Error(`Can't load size of ${templateName}`);
+                    throw new Error(`Can't load size of ${templateName}. Scenario keys are: ${this.alignments}`);
                 }
 
                 if (template.size > largestSize) {
