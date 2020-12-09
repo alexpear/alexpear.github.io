@@ -17,6 +17,8 @@ module.exports = class Timeline {
         // Later fix a weird bug where new WorldState() throws 'WorldState is not a constructor'.
         this.currentWorldState = worldState || new WorldState(this, 0);
 
+        // Util.logDebug(`Timeline constructor, this.currentWorldState is ${this.currentWorldState}`);
+
         this.addEvent(
             new MoveAllEvent()
         );
@@ -67,7 +69,9 @@ module.exports = class Timeline {
             i++;
         }
 
-        this.worldState.actorTurns();
+        // Util.logDebug(`worldstate constructor is named ${this.currentWorldState && this.currentWorldState.constructor.name}`)
+
+        this.currentWorldState.actorTurns();
     }
 
     printInRealTime () {
