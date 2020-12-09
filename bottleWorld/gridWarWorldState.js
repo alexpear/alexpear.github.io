@@ -198,6 +198,18 @@ class GridWarWorldState extends WorldState {
         return [new WNode(templatePath)];
     }
 
+    // Give each actor a turn.
+    actorTurns () {
+        // Later might need to filter this array further.
+        const groups = this.activeNodes();
+
+        for (const group of groups) {
+            // TODO call a consider() func for the Group. It will set a destination and choose 0-1 actions.
+
+            // So what DOES happen for each Group every second?
+        }
+    }
+
     static presetArmy (scenarioName) {
         const scenarios = {
             cairoStation: {

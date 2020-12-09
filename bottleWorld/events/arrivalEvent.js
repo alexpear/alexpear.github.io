@@ -40,20 +40,20 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
         const actions = Util.isFunction(arriver.getActions) && arriver.getActions();
 
         if (! actions || actions.length === 0) {
-            Util.logDebug(`In ArrivalEvent,
-    worldState.constructor.name: ${worldState.constructor.name},
-    arriver.templateName: ${arriver.templateName},
-    arriver.template: ${arriver.template},
-    arriver.constructor.name: ${arriver.constructor.name},
-    typeof arriver.getActions: ${typeof arriver.getActions},
-    typeof arriver.actions: ${typeof arriver.actions},
-    arriver.template.actions.length: ${arriver.template && arriver.template.actions.length},
-    typeof arriver.deepCopy: ${typeof arriver.deepCopy},
-    arriver.components[0].templateName: ${arriver.components[0] && arriver.components[0].templateName},
-    arriver.components[1].templateName: ${arriver.components[1] && arriver.components[1].templateName},
-    arriver.components[1].constructor.name: ${arriver.components[1] && arriver.components[1].constructor.name},
-    arriver.toJson() is the following:
-    ${arriver.toJson()}`);
+    //         Util.logDebug(`In ArrivalEvent,
+    // worldState.constructor.name: ${worldState.constructor.name},
+    // arriver.templateName: ${arriver.templateName},
+    // arriver.template: ${arriver.template},
+    // arriver.constructor.name: ${arriver.constructor.name},
+    // typeof arriver.getActions: ${typeof arriver.getActions},
+    // typeof arriver.actions: ${typeof arriver.actions},
+    // arriver.template.actions.length: ${arriver.template && arriver.template.actions.length},
+    // typeof arriver.deepCopy: ${typeof arriver.deepCopy},
+    // arriver.components[0].templateName: ${arriver.components[0] && arriver.components[0].templateName},
+    // arriver.components[1].templateName: ${arriver.components[1] && arriver.components[1].templateName},
+    // arriver.components[1].constructor.name: ${arriver.components[1] && arriver.components[1].constructor.name},
+    // arriver.toJson() is the following:
+    // ${arriver.toJson()}`);
 
             // throw new Error(`Debug throwing to figure out why ArrivalEvent receives something with no actions.`);
 

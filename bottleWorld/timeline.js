@@ -67,7 +67,7 @@ module.exports = class Timeline {
             i++;
         }
 
-        // this.worldState.moveEverything(); // TODO implement this func, which moves all moving Things towards their destinations.
+        this.worldState.actorTurns();
     }
 
     printInRealTime () {
