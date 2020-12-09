@@ -155,7 +155,7 @@ util.newId = function () {
 // Returns string
 util.shortId = function (id) {
     return id ?
-        `${id.slice(0, 3)}` :
+        `${id.slice(0, 3).toUpperCase()}` :
         '';
 };
 
