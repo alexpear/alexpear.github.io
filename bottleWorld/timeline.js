@@ -49,7 +49,7 @@ module.exports = class Timeline {
     }
 
     computeNextInstant () {
-        Util.logDebug(`Second #${this.currentWorldState.t} had ${this.getEventsAt(this.currentWorldState.t).length} events in it.`);
+        Util.logDebug(`Second #${this.currentWorldState.t} had ${this.getEventsAt(this.currentWorldState.t).length} events in it: ${this.summaryOfInstant(this.currentWorldState.t)}`);
 
         this.currentWorldState.t += SECONDS_PER_TICK;
 
@@ -105,16 +105,20 @@ module.exports = class Timeline {
         );
     }
 
+    summaryOfInstant (t) {
+        // We do indeed include events where e.happened = false, for the sake of Timeline internal debugging.
+        const events = this.getEventsAt(t)
+            .map(e => Util.capitalized(e.eventType));
+
+        return Util.arraySummary(events);
+    }
+
     toDebugString () {
         let lines = [];
 
         for (let t = 0; t <= this.now(); t++) {
             if (this.timestamps[t]) {
-                // We do indeed include events where e.happened = false, for the sake of Timeline internal debugging.
-                const events = this.getEventsAt(t)
-                    .map(e => Util.capitalized(e.eventType));
-
-                const eventsSummary = Util.arraySummary(events);
+                const eventsSummary = this.summaryOfInstant(t);
 
                 if (
                     lines.length > 0 &&
