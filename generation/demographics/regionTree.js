@@ -11,10 +11,71 @@ class RegionTree {
             eurasia: {
                 total: 5360000000,
                 china: {
-                    total: 1415000000
+                    total: 1415000000,
+                    guangdong: {
+                        total: 104000000
+                    },
+                    shandong: {
+                        total: 96000000
+                    },
+                    henan: {
+                        total: 94000000
+                    },
+                    sichuan: {
+                        total: 80000000
+                    },
+                    jiangsu: {
+                        total: 79000000
+                    },
+                    hebei: {
+                        total: 72000000
+                    },
+                    hunan: {
+                        total: 66000000
+                    },
+                    anhui: {
+                        total: 60000000
+                    },
+                    hubei: {
+                        total: 57000000
+                    },
+                    zhejiang: {
+                        total: 54000000
+                    }
+                    // https://en.wikipedia.org/wiki/Provinces_of_China...
                 },
                 india: {
-                    total: 1354000000
+                    total: 1354000000,
+                    uttarPradesh: {
+                        total: 199800000
+                    },
+                    maharashtra: {
+                        total: 112000000
+                    },
+                    bihar: {
+                        total: 104000000
+                    },
+                    westBengal: {
+                        total: 91000000
+                    },
+                    madhyaPradesh: {
+                        total: 73000000
+                    },
+                    tamilNadu: {
+                        total: 72000000
+                    },
+                    rajasthan: {
+                        total: 69000000
+                    },
+                    karnataka: {
+                        total: 61000000
+                    },
+                    gujarat: {
+                        total: 60000000
+                    }
+                    
+                    
+                    // https://en.wikipedia.org/wiki/States_and_union_territories_of_India#States...
                 },
                 pakistan: {
                     total: 201000000
@@ -44,6 +105,24 @@ class RegionTree {
                 },
                 germany: {
                     total: 82000000
+                },
+                france: {
+                    total: 67000000
+                },
+                uk: {
+                    total: 66800000
+                },
+                thailand: {
+                    total: 67000000
+                },
+                italy: {
+                    total: 60000000
+                },
+                myanmar: {
+                    total: 55000000
+                },
+                spain: {
+                    total: 47000000
                 }
             },
             africa: {
@@ -57,8 +136,11 @@ class RegionTree {
                 kenya: {
                     total: 51000000
                 },
-                egypt: 99000000,
-                tanzania: 59000000
+                egypt: {
+                    total: 99000000
+                },
+                tanzania: 59000000,
+                drc: 101900000
             },
             northAmerica: {
                 total: 587000000,
@@ -5369,6 +5451,10 @@ class RegionTree {
         if (Util.isNumber(node)) {
             return node;
         }
+        
+        if (! node) {
+            return 0;
+        }
 
         if (! node.total) {
             throw new Error(`Cant interpret tree node: ${Util.stringify(node)}`);
@@ -5381,8 +5467,47 @@ class RegionTree {
 
     }
 
-    static largestLeaf () {
+    static largestLeaf (curNode, largestSoFar, parentName) {
+        curNode = curNode || RegionTree.fullTree();
+        largestSoFar = largestSoFar || {
+            name: undefined, // but note that we must clarify where 'other' refers to
+            population: 0
+        };
+        parentName = parentName || 'earth';
 
+        const k2p = RegionTree.getKeysToPopulationObj(curNode);
+
+        for (const key in k2p) {
+            if (RegionTree.isLeafyKey(key)) {
+                continue;
+            }
+
+            // Later could probably consolidate the '>' logic with the similar logic below.
+            if (key === 'other' && k2p.other > largestSoFar.population) {
+                largestSoFar.name = `${parentName}/other`;
+                largestSoFar.population = k2p.other;
+                continue;
+            }
+
+            const childNode = curNode[key];
+            let candidate = {};
+
+            if (RegionTree.isLeaf(childNode)) {
+                candidate = {
+                    name: key,
+                    population: RegionTree.getTotal(childNode),
+                };
+            }
+            else {
+                candidate = RegionTree.largestLeaf(childNode, largestSoFar, key);
+            }
+
+            if (candidate.population > largestSoFar.population) {
+                largestSoFar = candidate;
+            }
+        }
+
+        return largestSoFar;
     }
 
     // Example entry in cities array:
@@ -5430,12 +5555,33 @@ class RegionTree {
         Util.log(usa);
     }
 
+    // RegionTree.parseBigDataset('./worldcitiespop.json');
+    static parseBigDataset (filePath) {
+        // TODO try stream-json module instead
+        // https://stackoverflow.com/questions/42896447/parse-large-json-file-in-nodejs-and-handle-each-object-independently
+        const json = require(filePath);
+
+        Util.log(Object.keys(json));
+    }
+
+    static parseNations (filePath) {
+        filePath = filePath || './nations.json';
+
+        const nations = require(filePath);
+        const tree = RegionTree.fullTree();
+
+        for (const entry of nations) {
+            
+        }
+
+    }
+
     static run () {
         // RegionTree.printMissingCounts();
         const path = RegionTree.randomLocation();
         Util.log(path);
 
-        // RegionTree.parseFlatInput('./cities.json');
+        Util.log(RegionTree.largestLeaf());
     }
 };
 
