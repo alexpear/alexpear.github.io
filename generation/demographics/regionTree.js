@@ -110,7 +110,19 @@ class RegionTree {
                     total: 67000000
                 },
                 uk: {
-                    total: 66800000
+                    total: 66800000,
+                    "england": {
+                        "total": 55619400
+                    },
+                    "scotland": {
+                        "total": 5424800
+                    },
+                    "wales": {
+                        "total": 3139000
+                    },
+                    "northernIreland": {
+                        "total": 1885400
+                    },
                 },
                 thailand: {
                     total: 67000000
@@ -319,6 +331,33 @@ class RegionTree {
                 "malta": {
                     "total": 484630
                 },
+                "srilanka": {
+                    "total": 21670000
+                },
+                "romania": {
+                    "total": 19466145
+                },
+                "singapore": {
+                    "total": 5638676
+                },
+                "slovakia": {
+                    "total": 5446771
+                },
+                "slovenia": {
+                    "total": 2073894
+                },
+                "nepal": {
+                    "total": 28087871
+                },
+                "netherlands": {
+                    "total": 17231624
+                },
+                "serbia": {
+                    "total": 6963764
+                },
+                "bahrain": {
+                    "total": 1569439
+                },
 
             },
             africa: {
@@ -421,7 +460,66 @@ class RegionTree {
                 "niger": {
                     "total": 22442948
                 },
-                // ...
+                "rwanda": {
+                    "total": 12301939
+                },
+                "seychelles": {
+                    "total": 96762
+                },
+                "sierraLeone": {
+                    "total": 7650154
+                },
+                "senegal": {
+                    "total": 15854360
+                },
+                "togo": {
+                    "total": 7889094
+                },
+                "uganda": {
+                    "total": 42723139
+                },
+                "westernSahara": {
+                    "total": 652271
+                },
+                "zambia": {
+                    "total": 17351822
+                },
+                "zimbabwe": {
+                    "total": 14439018
+                },
+                "guinea": {
+                    "total": 12414318
+                },
+                "guinea-bissau": {
+                    "total": 1874309
+                },
+                "madagascar": {
+                    "total": 26262368
+                },
+                "malawi": {
+                    "total": 18143315
+                },
+                "tunisia": {
+                    "total": 11565204
+                },
+                "djibouti": {
+                    "total": 958920
+                },
+                "equatorialGuinea": {
+                    "total": 1308974
+                },
+                "eritrea": {
+                    "total": 3213972
+                },
+                "mauritania": {
+                    "total": 4403319
+                },
+                "mauritius": {
+                    "total": 1265303
+                },
+                "libya": {
+                    "total": 6900000
+                },
             },
             northAmerica: {
                 total: 587000000,
@@ -5619,8 +5717,21 @@ class RegionTree {
                 "honduras": {
                     "total": 9587522
                 },
-
-                // TODO other nations...
+                "grenada": {
+                    "total": 111454
+                },
+                "guatemala": {
+                    "total": 17247807
+                },
+                "trinidadAndTobago": {
+                    "total": 1389858
+                },
+                "nicaragua": {
+                    "total": 6465513
+                },
+                "guadeloupe": {
+                    "total": 395700
+                }
             },
             southAmerica: {
                 total: 428000000,
@@ -5657,6 +5768,9 @@ class RegionTree {
                 "costaRica": {
                     "total": 4999441
                 },
+                "ecuador": {
+                    "total": 17084357
+                },
                 // ...
             },
             oceania: {
@@ -5666,8 +5780,10 @@ class RegionTree {
                 },
                 "newZealand": {
                     "total": 4841000
-                }
-
+                },
+                "papuaNewGuinea": {
+                    "total": 8606316
+                },
             },
             antarctica: {
                 total: 1106
@@ -5691,9 +5807,6 @@ class RegionTree {
             },
             "bahamas": {
                 "total": 385640
-            },
-            "bahrain": {
-                "total": 1569439
             },
             "barbados": {
                 "total": 286641
@@ -5726,23 +5839,10 @@ class RegionTree {
 
 
             
-            "ecuador": {
-                "total": 17084357
-            },
             
-            "england": {
-                "total": 55619400
-            },
+            
+            
 
-            "djibouti": {
-                "total": 958920
-            },
-            "equatorialGuinea": {
-                "total": 1308974
-            },
-            "eritrea": {
-                "total": 3213972
-            },
             
             "falklandIslands": {
                 "total": 2840
@@ -5762,24 +5862,16 @@ class RegionTree {
 
             
 
-            "grenada": {
-                "total": 111454
-            },
-            "guadeloupe": {
-                "total": 395700
-            },
+            // NA
+            
+
             "guam": {
                 "total": 165768
             },
-            "guatemala": {
-                "total": 17247807
-            },
-            "guinea": {
-                "total": 12414318
-            },
-            "guinea-bissau": {
-                "total": 1874309
-            },
+
+            
+
+
             "guyana": {
                 "total": 779004
             },
@@ -5795,18 +5887,12 @@ class RegionTree {
             
             
 
-            "libyanArabJamahiriya": {
-                "total": 6678567
-            },
+            
 
             
 
-            "madagascar": {
-                "total": 26262368
-            },
-            "malawi": {
-                "total": 18143315
-            },
+            
+
             "maldives": {
                 "total": 515696
             },
@@ -5823,12 +5909,9 @@ class RegionTree {
             "martinique": {
                 "total": 376480
             },
-            "mauritania": {
-                "total": 4403319
-            },
-            "mauritius": {
-                "total": 1265303
-            },
+
+
+
             "mayotte": {
                 "total": 270372
             },
@@ -5847,12 +5930,7 @@ class RegionTree {
                 "total": 12704
             },
             
-            "nepal": {
-                "total": 28087871
-            },
-            "netherlands": {
-                "total": 17231624
-            },
+            
 
             "netherlandsAntilles": {
                 "total": 227049
@@ -5860,17 +5938,11 @@ class RegionTree {
             "newCaledonia": {
                 "total": 284060
             },
-            "nicaragua": {
-                "total": 6465513
-            },
             "niue": {
                 "total": 1624
             },
             "norfolkIsland": {
                 "total": 2169
-            },
-            "northernIreland": {
-                "total": 1885400
             },
             "northernMarianaIslands": {
                 "total": 56882
@@ -5878,29 +5950,15 @@ class RegionTree {
             "palau": {
                 "total": 17907
             },
-            "papuaNewGuinea": {
-                "total": 8606316
-            },
 
             "pitcairn": {
                 "total": 67
             },
 
-            "puertoRico": {
-                "total": 3195153
-            },
             "reunion": {
                 "total": 859959
             },
-            "romania": {
-                "total": 19466145
-            },
-            "russianFederation": {
-                "total": 144478050
-            },
-            "rwanda": {
-                "total": 12301939
-            },
+
             "saintHelena": {
                 "total": 6600
             },
@@ -5925,38 +5983,13 @@ class RegionTree {
             "saoTomeAndPrincipe": {
                 "total": 211028
             },
-            "scotland": {
-                "total": 5424800
-            },
-            "senegal": {
-                "total": 15854360
-            },
-            "serbia": {
-                "total": 6963764
-            },
-            "seychelles": {
-                "total": 96762
-            },
-            "sierraLeone": {
-                "total": 7650154
-            },
-            "singapore": {
-                "total": 5638676
-            },
-            "slovakia": {
-                "total": 5446771
-            },
-            "slovenia": {
-                "total": 2073894
-            },
+ 
+
             "solomonIslands": {
                 "total": 652858
             },
             "southGeorgiaAndTheSouthSandwichIslands": {
                 "total": 30
-            },
-            "srilanka": {
-                "total": 21670000
             },
 
 
@@ -5967,29 +6000,21 @@ class RegionTree {
 
 
 
-            "togo": {
-                "total": 7889094
-            },
             "tokelau": {
                 "total": 1411
             },
             "tonga": {
                 "total": 103197
             },
-            "trinidadAndTobago": {
-                "total": 1389858
-            },
-            "tunisia": {
-                "total": 11565204
-            },
+
+            
+
+
             "turksAndCaicosIslands": {
                 "total": 37665
             },
             "tuvalu": {
                 "total": 11508
-            },
-            "uganda": {
-                "total": 42723139
             },
             "unitedStatesMinorOutlyingIslands": {
                 "total": 300
@@ -6000,21 +6025,15 @@ class RegionTree {
             "virginIslandsUK": {
                 "total": 29802
             },
-            "wales": {
-                "total": 3139000
-            },
+
+
+
             "wallisAndFutuna": {
                 "total": 15289
             },
-            "westernSahara": {
-                "total": 652271
-            },
-            "zambia": {
-                "total": 17351822
-            },
-            "zimbabwe": {
-                "total": 14439018
-            }
+
+
+            
         };
     }
 
