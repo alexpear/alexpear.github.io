@@ -7,7 +7,7 @@ const Util = require('../../util/util.js');
 class RegionTree {
     static fullTree () {
         return {
-            total: 7600000000,
+            total: 7800000000,
             eurasia: {
                 total: 5360000000,
                 china: {
@@ -483,7 +483,7 @@ class RegionTree {
 
             },
             africa: {
-                total: 1288000000,
+                total: 1294211893,
                 nigeria: {
                     total: 196000000
                 },
@@ -649,7 +649,7 @@ class RegionTree {
                     total: 37000000
                 },
                 usa: {
-                    total: 331100000,
+                    total: 331679950,
                     alabama: {
                         total: 4900000,
                         montgomery: {
@@ -5856,7 +5856,7 @@ class RegionTree {
                 }
             },
             southAmerica: {
-                total: 428000000,
+                total: 433000000,
                 brazil: {
                     total: 211000000
                 },
@@ -6255,8 +6255,29 @@ class RegionTree {
         return node.total;
     }
 
-    static printInconsistencies () {
+    static printInconsistencies (node) {
+        node = node || RegionTree.fullTree();
 
+        if (! node.total) {
+            return;
+        }
+
+        const k2p = RegionTree.getKeysToPopulationObj(node);
+        // Util.logDebug(`Inconsistency func. node is ${node} with keys ${node && Object.keys(node)}.`);
+
+        const sum = k2p ?
+            Util.sum(Object.values(k2p)) :
+            0;
+
+        if (sum > node.total) {
+            Util.log(`Inconsistency: keys + other sum to ${sum} but total is listed as ${node.total}. And other is ${k2p.other} Keys are ${Object.keys(k2p)}.`);
+        }
+
+        for (const key in node) {
+            if (! RegionTree.isLeafyKey(key) && node[key]) {
+                RegionTree.printInconsistencies(node[key]);
+            }
+        }
     }
 
     static largestLeaf (curNode, largestSoFar, parentName) {
@@ -6395,6 +6416,8 @@ class RegionTree {
         Util.log(path);
 
         Util.log(RegionTree.largestLeaf());
+
+        RegionTree.printInconsistencies();
     }
 };
 
