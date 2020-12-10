@@ -206,7 +206,7 @@ class GridWarWorldState extends WorldState {
         for (const group of groups) {
             // TODO call a consider() func for the Group. It will set a destination and choose 0-1 actions.
 
-            // So what DOES happen for each Group every second?
+            group.act(this);
         }
     }
 

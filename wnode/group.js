@@ -29,14 +29,41 @@ module.exports = class Group extends WNode {
             1;
 
         this.alignment = alignment;
-
         this.coord = coord;
+        this.destination = undefined;  // Coord
+        this.target = undefined;  // Group
     }
 
-    toAlignmentString() {
+    toAlignmentString () {
         const tName = Util.fromCamelCase(this.templateName);
 
         return `${tName} x${this.quantity} (${this.alignmentAsString()} Group)`;
+    }
+
+    // Later can move this to interface Actor or something.
+    act (worldState) {
+        this.destination = this.chosenDestination(worldState);
+        this.target = this.chosenTarget(worldState);
+
+        const stoppingPoint = worldState.coordAtEndOfMove(this, this.destination);
+
+        this.moveTo(stoppingPoint, worldState);
+
+        // Consider firing at .target if cooldown allows.
+        //   How is cooldown tracked?
+        if (true) {
+            this.attack(this.target, worldState);
+        }
+
+        // And make sure we persist everything as BEvents in Timeline
+    }
+
+    chosenDestination (worldState) {
+        if (! this.canReach(this.destination))
+    }
+
+    goodTimeToThink (worldState) {
+        
     }
 
     // distanceTo (target) {
