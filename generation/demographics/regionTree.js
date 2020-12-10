@@ -11,7 +11,7 @@ class RegionTree {
             eurasia: {
                 total: 5360000000,
                 china: {
-                    total: 1415000000,
+                    total: 1400000000,
                     guangdong: {
                         total: 104000000
                     },
@@ -41,6 +41,75 @@ class RegionTree {
                     },
                     zhejiang: {
                         total: 54000000
+                    },
+                    guangxiZhuang: {
+                        total: 46000000
+                    },
+                    yunnan: {
+                        total: 46000000
+                    },
+                    jiangxi: {
+                        total: 45000000
+                    },
+                    liaoning: {
+                        total: 44000000
+                    },
+                    heilongjiang: {
+                        total: 38000000
+                    },
+                    shaanxi: {
+                        total: 37000000
+                    },
+                    fujian: {
+                        total: 37000000
+                    },
+                    shanxi: {
+                        total: 36000000
+                    },
+                    guizhou: {
+                        total: 35000000
+                    },
+                    chongqing: {
+                        total: 29000000
+                    },
+                    jilin: {
+                        total: 27000000
+                    },
+                    gansu: {
+                        total: 26000000
+                    },
+                    innerMongoliaAutonomousRegion: {
+                        total: 25000000
+                    },
+                    shanghai: {
+                        total: 23000000
+                    },
+                    xinjiangUyghurAutonomousRegion: {
+                        total: 22000000
+                    },
+                    beijing: {
+                        total: 20000000
+                    },
+                    tianjin: {
+                        total: 13000000
+                    },
+                    hainan: {
+                        total: 9000000
+                    },
+                    hongKong: {
+                        total: 7000000
+                    },
+                    ningxiaHuiAutonomousRegion: {
+                        total: 6000000
+                    },
+                    qinghai: {
+                        total: 6000000
+                    },
+                    tibet: {
+                        total: 3000000
+                    },
+                    macau: {
+                        total: 552000
                     }
                     // https://en.wikipedia.org/wiki/Provinces_of_China...
                 },
@@ -186,9 +255,6 @@ class RegionTree {
                 },
                 finland: {
                     total: 5515525
-                },
-                hongKong: {
-                    total: 7451000
                 },
                 hungary: {
                     total: 9775564
