@@ -4,10 +4,10 @@ const Util = require('../util/util.js');
 
 // Sketch of populations of nested regions in 2020 Earth.
 // For the Cape Demographics fan project.
-module.exports = class RegionTree {
+class RegionTree {
     static fullTree () {
         return {
-            total: 7500000000,
+            total: 7600000000,
             eurasia: {
                 total: 5360000000,
                 china: {
@@ -45,7 +45,6 @@ module.exports = class RegionTree {
                 germany: {
                     total: 82000000
                 }
-
             },
             africa: {
                 total: 1288000000,
@@ -80,16 +79,16 @@ module.exports = class RegionTree {
                         concord: 44000
                     },
                     // ...
-                    newYork: {
-                        total: 1,
-                        nyc: {
-                            total: 1,
-                            manhattan: {
-                                total: 1,
-                                fidi: 1
-                            }
-                        }
-                    }
+                    // newYork: {
+                    //     total: 1,
+                    //     nyc: {
+                    //         total: 1,
+                    //         manhattan: {
+                    //             total: 1,
+                    //             fidi: 1
+                    //         }
+                    //     }
+                    // }
                 },
                 mexico: {
                     total: 131000000
@@ -114,41 +113,88 @@ module.exports = class RegionTree {
     // Returns array like ['westHollywood', 'losAngeles', 'california', 'usa', 'northAmerica']
     static randomLocation () {
         const tree = RegionTree.fullTree();
-        const curNode = tree;
+        let curNode = tree;
         const path = [];
 
         while (! RegionTree.isLeaf(curNode)) {
-            const keysToPopulation = {};
+            const keysToPopulation = RegionTree.getKeysToPopulationObj(curNode);
 
-            for (const key in curNode) {
-                if (key === 'total') {
-                    continue;
-                }
-
-                keysToPopulation[key] = RegionTree.getTotal(curNode[key]);
-            }
-
-            const missingCount = curNode.total - Util.sum(Object.values(keysToPopulation));
-
-            if (missingCount > 0) {
-                keysToPopulation.other = missingCount;
-            }
-
-            const roll = Math.random() * curNode.total;
+            let roll = Math.random() * curNode.total;
             // TODO random select based on values of keysToPopulation obj.
-            // TODO unshift() chosen key onto path array
-            // curNode = selectedNode;
+            for (const key in keysToPopulation) {
+                Util.logDebug(`About to decrement roll ${roll} by ${keysToPopulation[key]} thanks to ${key}`);
+
+                roll -= keysToPopulation[key];
+
+                if (roll <= 0) {
+                    path.unshift(key);
+
+                    // Note that when key is 'other', curNode will become undefined. isLeaf() will handle this.
+                    curNode = curNode[key];
+                    break;
+                }
+            }
+
+            if (roll > 0) {
+                throw new Error(`Didnt expect to match nothing with random roll ${roll} and path ${path}.`);
+            }
         }
+
+        return path;
     }
 
+    // Returns a flat obj describing the pop of each child (inc other)
     static getKeysToPopulationObj (node) {
+        if (RegionTree.isLeaf(node)) {
+            return;
+        }
 
+        const keysToPopulation = {};
+
+        for (const key in node) {
+            if (key === 'total') {
+                continue;
+            }
+
+            keysToPopulation[key] = RegionTree.getTotal(node[key]);
+        }
+
+        const missingCount = node.total - Util.sum(Object.values(keysToPopulation));
+
+        if (missingCount > 0) {
+
+            if (missingCount === undefined) {
+                throw new Error(`weird bug again. node's keys are ${Object.keys(node)}`)
+            }
+
+            keysToPopulation.other = missingCount;
+        }
+
+        return keysToPopulation;
     }
 
     static printMissingCounts () {
         const tree = RegionTree.fullTree();
-        const curNode = tree;
 
+        addMissingCounts(tree);
+
+        Util.log(tree);
+
+        function addMissingCounts (node) {
+            if (RegionTree.isLeaf(node)) {
+                return;
+            }
+
+            const k2p = RegionTree.getKeysToPopulationObj(node);
+
+            if (k2p.other) {
+                node.other = k2p.other;
+            }
+
+            for (const key in node) {
+                addMissingCounts(node[key]);
+            }
+        }
     }
 
     // static missingCount () {
@@ -156,7 +202,7 @@ module.exports = class RegionTree {
     // }
 
     static isLeaf (node) {
-        if (Util.isNumber(node)) {
+        if (! node || Util.isNumber(node)) {
             return true;
         }
 
@@ -180,4 +226,16 @@ module.exports = class RegionTree {
 
         return node.total;
     }
+
+    static run () {
+        // RegionTree.printMissingCounts();
+        const path = RegionTree.randomLocation();
+        Util.log(path);
+    }
 };
+
+module.exports = RegionTree;
+
+
+RegionTree.run();
+
