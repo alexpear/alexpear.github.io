@@ -111,17 +111,17 @@ class RegionTree {
                 },
                 uk: {
                     total: 66800000,
-                    "england": {
-                        "total": 55619400
+                    england: {
+                        total: 55619400
                     },
-                    "scotland": {
-                        "total": 5424800
+                    scotland: {
+                        total: 5424800
                     },
-                    "wales": {
-                        "total": 3139000
+                    wales: {
+                        total: 3139000
                     },
-                    "northernIreland": {
-                        "total": 1885400
+                    northernIreland: {
+                        total: 1885400
                     },
                 },
                 thailand: {
@@ -136,227 +136,227 @@ class RegionTree {
                 spain: {
                     total: 47000000
                 },
-                "afghanistan": {
-                    "total": 37172386
+                afghanistan: {
+                    total: 37172386
                 },
-                "albania": {
-                    "total": 2866376
+                albania: {
+                    total: 2866376
                 },
-                "andorra": {
-                    "total": 77006
+                andorra: {
+                    total: 77006
                 },
-                "armenia": {
-                    "total": 2951776
+                armenia: {
+                    total: 2951776
                 },
-                "austria": {
-                    "total": 8840521
+                austria: {
+                    total: 8840521
                 },
-                "azerbaijan": {
-                    "total": 9939800
+                azerbaijan: {
+                    total: 9939800
                 },
-                "belarus": {
-                    "total": 9483499
+                belarus: {
+                    total: 9483499
                 },
-                "belgium": {
-                    "total": 11433256
+                belgium: {
+                    total: 11433256
                 },
-                "bosniaAndHerzegovina": {
-                    "total": 3323929
+                bosniaAndHerzegovina: {
+                    total: 3323929
                 },
-                "brunei": {
-                    "total": 428962
+                brunei: {
+                    total: 428962
                 },
-                "bulgaria": {
-                    "total": 7025037
+                bulgaria: {
+                    total: 7025037
                 },
-                "cambodia": {
-                    "total": 16249798
+                cambodia: {
+                    total: 16249798
                 },
-                "cyprus": {
-                    "total": 1189265
+                cyprus: {
+                    total: 1189265
                 },
-                "czechRepublic": {
-                    "total": 10629928
+                czechRepublic: {
+                    total: 10629928
                 },
-                "denmark": {
-                    "total": 5793636
+                denmark: {
+                    total: 5793636
                 },
-                "estonia": {
-                    "total": 1321977
+                estonia: {
+                    total: 1321977
                 },
-                "finland": {
-                    "total": 5515525
+                finland: {
+                    total: 5515525
                 },
-                "hongKong": {
-                    "total": 7451000
+                hongKong: {
+                    total: 7451000
                 },
-                "hungary": {
-                    "total": 9775564
+                hungary: {
+                    total: 9775564
                 },
-                "iceland": {
-                    "total": 352721
+                iceland: {
+                    total: 352721
                 },
-                "iraq": {
-                    "total": 38433600
+                iraq: {
+                    total: 38433600
                 },
-                "ireland": {
-                    "total": 4867309
+                ireland: {
+                    total: 4867309
                 },
-                "israel": {
-                    "total": 8882800
+                israel: {
+                    total: 8882800
                 },
-                "malaysia": {
-                    "total": 31528585
+                malaysia: {
+                    total: 31528585
                 },
-                "turkmenistan": {
-                    "total": 5850908
+                turkmenistan: {
+                    total: 5850908
                 },
-                "unitedArabEmirates": {
-                    "total": 9630959
+                unitedArabEmirates: {
+                    total: 9630959
                 },
-                "uzbekistan": {
-                    "total": 32955400
+                uzbekistan: {
+                    total: 32955400
                 },
-                "ukraine": {
-                    "total": 44622516
+                ukraine: {
+                    total: 44622516
                 },
-                "poland": {
-                    "total": 37974750
+                poland: {
+                    total: 37974750
                 },
-                "portugal": {
-                    "total": 10283822
+                portugal: {
+                    total: 10283822
                 },
-                "saudiArabia": {
-                    "total": 33699947
+                saudiArabia: {
+                    total: 33699947
                 },
-                "qatar": {
-                    "total": 2781677
+                qatar: {
+                    total: 2781677
                 },
-                "vaticanCity": {
-                    "total": 825
+                vaticanCity: {
+                    total: 825
                 },
-                "jordan": {
-                    "total": 9956011
+                jordan: {
+                    total: 9956011
                 },
-                "croatia": {
-                    "total": 4087843
+                croatia: {
+                    total: 4087843
                 },
-                "kazakhstan": {
-                    "total": 18272430
+                kazakhstan: {
+                    total: 18272430
                 },
-                "kuwait": {
-                    "total": 4137309
+                kuwait: {
+                    total: 4137309
                 },
-                "kyrgyzstan": {
-                    "total": 6322800
+                kyrgyzstan: {
+                    total: 6322800
                 },
-                "laos": {
-                    "total": 7061507
+                laos: {
+                    total: 7061507
                 },
-                "latvia": {
-                    "total": 1927174
+                latvia: {
+                    total: 1927174
                 },
-                "lebanon": {
-                    "total": 6848925
+                lebanon: {
+                    total: 6848925
                 },
-                "northKorea": {
-                    "total": 25549819
+                northKorea: {
+                    total: 25549819
                 },
-                "norway": {
-                    "total": 5311916
+                norway: {
+                    total: 5311916
                 },
-                "oman": {
-                    "total": 4829483
+                oman: {
+                    total: 4829483
                 },
-                "palestine": {
-                    "total": 4569087
+                palestine: {
+                    total: 4569087
                 },
-                "svalbardAndJanMayen": {
-                    "total": 2572
+                svalbardAndJanMayen: {
+                    total: 2572
                 },
-                "sweden": {
-                    "total": 10175214
+                sweden: {
+                    total: 10175214
                 },
-                "switzerland": {
-                    "total": 8513227
+                switzerland: {
+                    total: 8513227
                 },
-                "syria": {
-                    "total": 16906283
+                syria: {
+                    total: 16906283
                 },
-                "tajikistan": {
-                    "total": 9100837
+                tajikistan: {
+                    total: 9100837
                 },
-                "yemen": {
-                    "total": 28498687
+                yemen: {
+                    total: 28498687
                 },
-                "eastTimor": {
-                    "total": 1267972
+                eastTimor: {
+                    total: 1267972
                 },
-                "georgia": {
-                    "total": 3726549
+                georgia: {
+                    total: 3726549
                 },
-                "gibraltar": {
-                    "total": 33718
+                gibraltar: {
+                    total: 33718
                 },
-                "greece": {
-                    "total": 10731726
+                greece: {
+                    total: 10731726
                 },
-                "greenland": {
-                    "total": 56025
+                greenland: {
+                    total: 56025
                 },
-                "moldova": {
-                    "total": 2706049
+                moldova: {
+                    total: 2706049
                 },
-                "monaco": {
-                    "total": 38682
+                monaco: {
+                    total: 38682
                 },
-                "mongolia": {
-                    "total": 3170208
+                mongolia: {
+                    total: 3170208
                 },
-                "montenegro": {
-                    "total": 631219
+                montenegro: {
+                    total: 631219
                 },
-                "liechtenstein": {
-                    "total": 37910
+                liechtenstein: {
+                    total: 37910
                 },
-                "lithuania": {
-                    "total": 2801543
+                lithuania: {
+                    total: 2801543
                 },
-                "luxembourg": {
-                    "total": 607950
+                luxembourg: {
+                    total: 607950
                 },
-                "northMacedonia": {
-                    "total": 2084367
+                northMacedonia: {
+                    total: 2084367
                 },
-                "malta": {
-                    "total": 484630
+                malta: {
+                    total: 484630
                 },
-                "srilanka": {
-                    "total": 21670000
+                srilanka: {
+                    total: 21670000
                 },
-                "romania": {
-                    "total": 19466145
+                romania: {
+                    total: 19466145
                 },
-                "singapore": {
-                    "total": 5638676
+                singapore: {
+                    total: 5638676
                 },
-                "slovakia": {
-                    "total": 5446771
+                slovakia: {
+                    total: 5446771
                 },
-                "slovenia": {
-                    "total": 2073894
+                slovenia: {
+                    total: 2073894
                 },
-                "nepal": {
-                    "total": 28087871
+                nepal: {
+                    total: 28087871
                 },
-                "netherlands": {
-                    "total": 17231624
+                netherlands: {
+                    total: 17231624
                 },
-                "serbia": {
-                    "total": 6963764
+                serbia: {
+                    total: 6963764
                 },
-                "bahrain": {
-                    "total": 1569439
+                bahrain: {
+                    total: 1569439
                 },
 
             },
@@ -376,149 +376,149 @@ class RegionTree {
                 },
                 tanzania: 59000000,
                 drc: 101900000,
-                "algeria": {
-                    "total": 42228429
+                algeria: {
+                    total: 42228429
                 },
-                "angola": {
-                    "total": 30809762
+                angola: {
+                    total: 30809762
                 },
-                "benin": {
-                    "total": 11485048
+                benin: {
+                    total: 11485048
                 },
-                "centralAfricanRepublic": {
-                    "total": 4666377
+                centralAfricanRepublic: {
+                    total: 4666377
                 },
-                "chad": {
-                    "total": 15477751
+                chad: {
+                    total: 15477751
                 },
-                "botswana": {
-                    "total": 2254126
+                botswana: {
+                    total: 2254126
                 },
-                "burkinaFaso": {
-                    "total": 19751535
+                burkinaFaso: {
+                    total: 19751535
                 },
-                "burundi": {
-                    "total": 11175378
+                burundi: {
+                    total: 11175378
                 },
-                "cameroon": {
-                    "total": 25216237
+                cameroon: {
+                    total: 25216237
                 },
-                "capeVerde": {
-                    "total": 543767
+                capeVerde: {
+                    total: 543767
                 },
-                "comoros": {
-                    "total": 832322
+                comoros: {
+                    total: 832322
                 },
-                "congo": {
-                    "total": 5244363
+                congo: {
+                    total: 5244363
                 },
-                "gabon": {
-                    "total": 2119275
+                gabon: {
+                    total: 2119275
                 },
-                "gambia": {
-                    "total": 2280102
+                gambia: {
+                    total: 2280102
                 },
-                "ghana": {
-                    "total": 29767108
+                ghana: {
+                    total: 29767108
                 },
-                "somalia": {
-                    "total": 15008154
+                somalia: {
+                    total: 15008154
                 },
-                "southAfrica": {
-                    "total": 57779622
+                southAfrica: {
+                    total: 57779622
                 },
-                "southSudan": {
-                    "total": 10975920
+                southSudan: {
+                    total: 10975920
                 },
-                "sudan": {
-                    "total": 41801533
+                sudan: {
+                    total: 41801533
                 },
-                "swaziland": {
-                    "total": 1136191
+                swaziland: {
+                    total: 1136191
                 },
-                "ivoryCoast": {
-                    "total": 25069229
+                ivoryCoast: {
+                    total: 25069229
                 },
-                "lesotho": {
-                    "total": 2108132
+                lesotho: {
+                    total: 2108132
                 },
-                "mali": {
-                    "total": 19077690
+                mali: {
+                    total: 19077690
                 },
-                "liberia": {
-                    "total": 4818977
+                liberia: {
+                    total: 4818977
                 },
-                "morocco": {
-                    "total": 36029138
+                morocco: {
+                    total: 36029138
                 },
-                "mozambique": {
-                    "total": 29495962
+                mozambique: {
+                    total: 29495962
                 },
-                "namibia": {
-                    "total": 2448255
+                namibia: {
+                    total: 2448255
                 },
-                "niger": {
-                    "total": 22442948
+                niger: {
+                    total: 22442948
                 },
-                "rwanda": {
-                    "total": 12301939
+                rwanda: {
+                    total: 12301939
                 },
-                "seychelles": {
-                    "total": 96762
+                seychelles: {
+                    total: 96762
                 },
-                "sierraLeone": {
-                    "total": 7650154
+                sierraLeone: {
+                    total: 7650154
                 },
-                "senegal": {
-                    "total": 15854360
+                senegal: {
+                    total: 15854360
                 },
-                "togo": {
-                    "total": 7889094
+                togo: {
+                    total: 7889094
                 },
-                "uganda": {
-                    "total": 42723139
+                uganda: {
+                    total: 42723139
                 },
-                "westernSahara": {
-                    "total": 652271
+                westernSahara: {
+                    total: 652271
                 },
-                "zambia": {
-                    "total": 17351822
+                zambia: {
+                    total: 17351822
                 },
-                "zimbabwe": {
-                    "total": 14439018
+                zimbabwe: {
+                    total: 14439018
                 },
-                "guinea": {
-                    "total": 12414318
+                guinea: {
+                    total: 12414318
                 },
-                "guinea-bissau": {
-                    "total": 1874309
+                guineaBissau: {
+                    total: 1874309
                 },
-                "madagascar": {
-                    "total": 26262368
+                madagascar: {
+                    total: 26262368
                 },
-                "malawi": {
-                    "total": 18143315
+                malawi: {
+                    total: 18143315
                 },
-                "tunisia": {
-                    "total": 11565204
+                tunisia: {
+                    total: 11565204
                 },
-                "djibouti": {
-                    "total": 958920
+                djibouti: {
+                    total: 958920
                 },
-                "equatorialGuinea": {
-                    "total": 1308974
+                equatorialGuinea: {
+                    total: 1308974
                 },
-                "eritrea": {
-                    "total": 3213972
+                eritrea: {
+                    total: 3213972
                 },
-                "mauritania": {
-                    "total": 4403319
+                mauritania: {
+                    total: 4403319
                 },
-                "mauritius": {
-                    "total": 1265303
+                mauritius: {
+                    total: 1265303
                 },
-                "libya": {
-                    "total": 6900000
+                libya: {
+                    total: 6900000
                 },
             },
             northAmerica: {
@@ -5696,41 +5696,41 @@ class RegionTree {
                 mexico: {
                     total: 131000000
                 },
-                "cuba": {
-                    "total": 11338138
+                cuba: {
+                    total: 11338138
                 },
-                "jamaica": {
-                    "total": 2934855
+                jamaica: {
+                    total: 2934855
                 },
-                "dominica": {
-                    "total": 71625
+                dominica: {
+                    total: 71625
                 },
-                "dominicanRepublic": {
-                    "total": 10627165
+                dominicanRepublic: {
+                    total: 10627165
                 },
-                "elSalvador": {
-                    "total": 6420744
+                elSalvador: {
+                    total: 6420744
                 },
-                "haiti": {
-                    "total": 11123176
+                haiti: {
+                    total: 11123176
                 },
-                "honduras": {
-                    "total": 9587522
+                honduras: {
+                    total: 9587522
                 },
-                "grenada": {
-                    "total": 111454
+                grenada: {
+                    total: 111454
                 },
-                "guatemala": {
-                    "total": 17247807
+                guatemala: {
+                    total: 17247807
                 },
-                "trinidadAndTobago": {
-                    "total": 1389858
+                trinidadAndTobago: {
+                    total: 1389858
                 },
-                "nicaragua": {
-                    "total": 6465513
+                nicaragua: {
+                    total: 6465513
                 },
-                "guadeloupe": {
-                    "total": 395700
+                guadeloupe: {
+                    total: 395700
                 }
             },
             southAmerica: {
@@ -5738,38 +5738,38 @@ class RegionTree {
                 brazil: {
                     total: 211000000
                 },
-                "argentina": {
-                    "total": 44494502
+                argentina: {
+                    total: 44494502
                 },
-                "panama": {
-                    "total": 4176873
+                panama: {
+                    total: 4176873
                 },
-                "paraguay": {
-                    "total": 6956071
+                paraguay: {
+                    total: 6956071
                 },
-                "peru": {
-                    "total": 31989256
+                peru: {
+                    total: 31989256
                 },
-                "uruguay": {
-                    "total": 3449299
+                uruguay: {
+                    total: 3449299
                 },
-                "venezuela": {
-                    "total": 28870195
+                venezuela: {
+                    total: 28870195
                 },
-                "bolivia": {
-                    "total": 11353142
+                bolivia: {
+                    total: 11353142
                 },
-                "chile": {
-                    "total": 18729160
+                chile: {
+                    total: 18729160
                 },
-                "colombia": {
-                    "total": 49648685
+                colombia: {
+                    total: 49648685
                 },
-                "costaRica": {
-                    "total": 4999441
+                costaRica: {
+                    total: 4999441
                 },
-                "ecuador": {
-                    "total": 17084357
+                ecuador: {
+                    total: 17084357
                 },
                 // ...
             },
@@ -5778,11 +5778,11 @@ class RegionTree {
                 australia: {
                     total: 24982688
                 },
-                "newZealand": {
-                    "total": 4841000
+                newZealand: {
+                    total: 4841000
                 },
-                "papuaNewGuinea": {
-                    "total": 8606316
+                papuaNewGuinea: {
+                    total: 8606316
                 },
             },
             antarctica: {
@@ -5793,247 +5793,214 @@ class RegionTree {
 
     static unassignedNations () {
         return {
-            "americanSamoa": {
-                "total": 55465
+            americanSamoa: {
+                total: 55465
             },
-            "anguilla": {
-                "total": 15094
+            anguilla: {
+                total: 15094
             },
-            "antiguaAndBarbuda": {
-                "total": 96286
+            antiguaAndBarbuda: {
+                total: 96286
             },
-            "aruba": {
-                "total": 105845
+            aruba: {
+                total: 105845
             },
-            "bahamas": {
-                "total": 385640
+            bahamas: {
+                total: 385640
             },
-            "barbados": {
-                "total": 286641
+            barbados: {
+                total: 286641
             },
-            "belize": {
-                "total": 383071
+            belize: {
+                total: 383071
             },
-            "bermuda": {
-                "total": 63973
+            bermuda: {
+                total: 63973
             },
-            "bhutan": {
-                "total": 754394
-            },
-
-
-            "caymanIslands": {
-                "total": 64174
-            },
-            "christmasIsland": {
-                "total": 1402
-            },
-            "cocosKeelingIslands": {
-                "total": 596
-            },
-            "cookIslands": {
-                "total": 17379
+            bhutan: {
+                total: 754394
             },
 
 
-
-
+            caymanIslands: {
+                total: 64174
+            },
+            christmasIsland: {
+                total: 1402
+            },
+            cocosKeelingIslands: {
+                total: 596
+            },
+            cookIslands: {
+                total: 17379
+            },
             
-            
-            
-            
-
-            
-            "falklandIslands": {
-                "total": 2840
+            falklandIslands: {
+                total: 2840
             },
-            "faroeIslands": {
-                "total": 48497
+            faroeIslands: {
+                total: 48497
             },
-            "fijiIslands": {
-                "total": 883483
+            fijiIslands: {
+                total: 883483
             },
-            "frenchGuiana": {
-                "total": 290691
+            frenchGuiana: {
+                total: 290691
             },
-            "frenchPolynesia": {
-                "total": 277679
+            frenchPolynesia: {
+                total: 277679
             },
 
-            
-
-            // NA
-            
-
-            "guam": {
-                "total": 165768
+            guam: {
+                total: 165768
             },
 
-            
-
-
-            "guyana": {
-                "total": 779004
+            guyana: {
+                total: 779004
             },
 
 
-            "kiribati": {
-                "total": 115847
+            kiribati: {
+                total: 115847
             },
 
 
-            
-
-            
-            
-
-            
-
-            
-
-            
-
-            "maldives": {
-                "total": 515696
+            maldives: {
+                total: 515696
             },
 
 
 
-            "macao": {
-                "total": 631636
+            macao: {
+                total: 631636
             },
 
-            "marshallIslands": {
-                "total": 58413
+            marshallIslands: {
+                total: 58413
             },
-            "martinique": {
-                "total": 376480
+            martinique: {
+                total: 376480
             },
 
 
 
-            "mayotte": {
-                "total": 270372
+            mayotte: {
+                total: 270372
             },
-            "micronesia,FederatedStatesOf": {
-                "total": 112640
+            micronesia,FederatedStatesOf: {
+                total: 112640
             },
 
             
 
-            "montserrat": {
-                "total": 5900
+            montserrat: {
+                total: 5900
             },
 
 
-            "nauru": {
-                "total": 12704
+            nauru: {
+                total: 12704
             },
             
             
 
-            "netherlandsAntilles": {
-                "total": 227049
+            netherlandsAntilles: {
+                total: 227049
             },
-            "newCaledonia": {
-                "total": 284060
+            newCaledonia: {
+                total: 284060
             },
-            "niue": {
-                "total": 1624
+            niue: {
+                total: 1624
             },
-            "norfolkIsland": {
-                "total": 2169
+            norfolkIsland: {
+                total: 2169
             },
-            "northernMarianaIslands": {
-                "total": 56882
+            northernMarianaIslands: {
+                total: 56882
             },
-            "palau": {
-                "total": 17907
-            },
-
-            "pitcairn": {
-                "total": 67
+            palau: {
+                total: 17907
             },
 
-            "reunion": {
-                "total": 859959
+            pitcairn: {
+                total: 67
             },
 
-            "saintHelena": {
-                "total": 6600
+            reunion: {
+                total: 859959
             },
-            "saintKittsAndNevis": {
-                "total": 52441
+
+            saintHelena: {
+                total: 6600
             },
-            "saintLucia": {
-                "total": 181889
+            saintKittsAndNevis: {
+                total: 52441
             },
-            "saintPierreAndMiquelon": {
-                "total": 5888
+            saintLucia: {
+                total: 181889
             },
-            "saintVincentAndTheGrenadines": {
-                "total": 110210
+            saintPierreAndMiquelon: {
+                total: 5888
             },
-            "samoa": {
-                "total": 196130
+            saintVincentAndTheGrenadines: {
+                total: 110210
             },
-            "sanMarino": {
-                "total": 33785
+            samoa: {
+                total: 196130
             },
-            "saoTomeAndPrincipe": {
-                "total": 211028
+            sanMarino: {
+                total: 33785
+            },
+            saoTomeAndPrincipe: {
+                total: 211028
             },
  
 
-            "solomonIslands": {
-                "total": 652858
+            solomonIslands: {
+                total: 652858
             },
-            "southGeorgiaAndTheSouthSandwichIslands": {
-                "total": 30
-            },
-
-
-
-            "suriname": {
-                "total": 575991
+            southGeorgiaAndTheSouthSandwichIslands: {
+                total: 30
             },
 
 
 
-            "tokelau": {
-                "total": 1411
+            suriname: {
+                total: 575991
             },
-            "tonga": {
-                "total": 103197
+
+
+
+            tokelau: {
+                total: 1411
+            },
+            tonga: {
+                total: 103197
             },
 
             
 
 
-            "turksAndCaicosIslands": {
-                "total": 37665
+            turksAndCaicosIslands: {
+                total: 37665
             },
-            "tuvalu": {
-                "total": 11508
+            tuvalu: {
+                total: 11508
             },
-            "unitedStatesMinorOutlyingIslands": {
-                "total": 300
+            unitedStatesMinorOutlyingIslands: {
+                total: 300
             },
-            "vanuatu": {
-                "total": 292680
+            vanuatu: {
+                total: 292680
             },
-            "virginIslandsUK": {
-                "total": 29802
-            },
-
-
-
-            "wallisAndFutuna": {
-                "total": 15289
+            virginIslandsUK: {
+                total: 29802
             },
 
-
-            
+            wallisAndFutuna: {
+                total: 15289
+            } 
         };
     }
 
