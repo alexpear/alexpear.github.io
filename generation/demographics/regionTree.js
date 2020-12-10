@@ -141,9 +141,64 @@ class RegionTree {
                     },
                     gujarat: {
                         total: 60000000
-                    }
-                    
-                    
+                    },
+                    andhraPradesh: {
+                        total: 50000000
+                    },
+                    odisha: {
+                        total: 42000000
+                    },
+                    telangala: {
+                        total: 35000000
+                    },
+                    kerala: {
+                        total: 33000000
+                    },
+                    jharkhand: {
+                        total: 33000000
+                    },
+                    assam: {
+                        total: 31000000
+                    },
+                    punjab: {
+                        total: 28000000
+                    },
+                    chhattisgarh: {
+                        total: 26000000
+                    },
+                    haryana: {
+                        total: 25000000
+                    },
+                    uttarakhand: {
+                        total: 10000000
+                    },
+                    himachal: {
+                        total: 7000000
+                    },
+                    tripura: {
+                        total: 4000000
+                    },
+                    meghalaya: {
+                        total: 3000000
+                    },
+                    manipur: {
+                        total: 3000000
+                    },
+                    nagaland: {
+                        total: 2000000
+                    },
+                    goa: {
+                        total: 1500000
+                    },
+                    arunachalPradesh: {
+                        total: 1400000
+                    },
+                    mizoram: {
+                        total: 1100000
+                    },
+                    sikkim: {
+                        total: 610000
+                    },
                     // https://en.wikipedia.org/wiki/States_and_union_territories_of_India#States...
                 },
                 pakistan: {
@@ -161,7 +216,8 @@ class RegionTree {
                     total: 107000000
                 },
                 indonesia: {
-                    total: 267000000
+                    total: 267000000,
+                    jakarta: 10800000
                 },
                 iran: {
                     total: 82000000
