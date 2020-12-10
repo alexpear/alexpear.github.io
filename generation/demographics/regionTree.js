@@ -5571,9 +5571,30 @@ class RegionTree {
         const tree = RegionTree.fullTree();
 
         for (const entry of nations) {
-            
+            const name = Util.toCamelCase(entry.country);
+
+            let foundKey;
+            for (const continentKey in tree) {
+                if (tree[continentKey][name]) {
+                    foundKey = continentKey;
+                    break;
+                }
+            }
+
+            foundKey = foundKey || 'unassigned';
+
+            if (foundKey === 'unassigned' || Util.isNumber(tree[foundKey][name])) {
+                tree[foundKey][name] = {
+                    total: entry.population
+                };
+
+                continue;
+            }
+
+            tree[foundKey][name].total = entry.population;
         }
 
+        Util.log(tree);
     }
 
     static run () {
