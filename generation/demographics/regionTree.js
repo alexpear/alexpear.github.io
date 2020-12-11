@@ -6138,7 +6138,7 @@ class RegionTree {
             let roll = Math.random() * curNode.total;
 
             for (const key in keysToPopulation) {
-                Util.logDebug(`About to decrement roll ${roll} by ${keysToPopulation[key]} thanks to ${key}`);
+                // Util.logDebug(`About to decrement roll ${roll} by ${keysToPopulation[key]} thanks to ${key}`);
 
                 roll -= keysToPopulation[key];
 
