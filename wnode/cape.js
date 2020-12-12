@@ -105,7 +105,7 @@ class Cape extends Group{
         // TODO read from txt file instead of EVERYONE.
         const selected = [];
         const lineReader = readline.createInterface({
-            input: fs.createReadStream('everyCape.txt')
+            input: fs.createReadStream('../generation/everyCape.txt')
         });
 
         lineReader.on(
@@ -159,6 +159,7 @@ class Cape extends Group{
                 }
 
                 selected.push(cape);
+                Util.log(cape.toCsvRow());
 
                 if (selected.length % 1000 === 0) {
                     Util.log(`Selected a ${selected.length}th cape.`);
@@ -166,56 +167,59 @@ class Cape extends Group{
             }
         );
 
-        return Cape.EVERYONE.filter(
-            cape => {
-                for (let key in traitsObj) {
-                    // TODO First attempt to filter into a in-memory array. If too many are ending up in output, stop and write to a out file instead.
+        // TODO this returns [], probably from a async / sync timing mismatch.
+        return selected;
 
-                    const skipThese = [];
-                    if (Util.contains(skipThese, key)) {
-                        continue;
-                    }
+        // return Cape.EVERYONE.filter(
+        //     cape => {
+        //         for (let key in traitsObj) {
+        //             // TODO First attempt to filter into a in-memory array. If too many are ending up in output, stop and write to a out file instead.
 
-                    if (key === 'age') {
-                        // Interpret as a maximum for now.
-                        if (cape.age > traitsObj.age) {
-                            return false;
-                        }
+        //             const skipThese = [];
+        //             if (Util.contains(skipThese, key)) {
+        //                 continue;
+        //             }
 
-                        continue;
-                    }
+        //             if (key === 'age') {
+        //                 // Interpret as a maximum for now.
+        //                 if (cape.age > traitsObj.age) {
+        //                     return false;
+        //                 }
 
-                    if (key === 'rating') {
-                        // Interpret as minimum
-                        if (cape.rating < traitsObj.rating) {
-                            return false;
-                        }
+        //                 continue;
+        //             }
 
-                        continue;
-                    }
+        //             if (key === 'rating') {
+        //                 // Interpret as minimum
+        //                 if (cape.rating < traitsObj.rating) {
+        //                     return false;
+        //                 }
 
-                    if (key === 'location') {
-                        const path = traitsObj.location;
+        //                 continue;
+        //             }
 
-                        for (let i = 0; i < path.length; i++) {
-                            if (path[i] !== cape.location[i]) {
-                                return false;
-                            }
-                        }
+        //             if (key === 'location') {
+        //                 const path = traitsObj.location;
 
-                        continue;
-                    }
+        //                 for (let i = 0; i < path.length; i++) {
+        //                     if (path[i] !== cape.location[i]) {
+        //                         return false;
+        //                     }
+        //                 }
 
-                    if (! cape[key] || cape[key] !== traitsObj[key]) {
-                        return false;
+        //                 continue;
+        //             }
 
-                        // Later support searching by parts of MBTI
-                    }
-                }
+        //             if (! cape[key] || cape[key] !== traitsObj[key]) {
+        //                 return false;
 
-                return true;
-            }
-        );
+        //                 // Later support searching by parts of MBTI
+        //             }
+        //         }
+
+        //         return true;
+        //     }
+        // );
     }
 
     // input: [continent, nation, province, city, borough, neighborhood]
@@ -294,17 +298,15 @@ class Cape extends Group{
 
         // outStream.end();
 
-        Util.log('\n' + Cape.toCsv(Cape.EVERYONE));
-
-        // Util.log(
-        //     '\n' +
-        //     Cape.toCsv(
-        //         Cape.withTraits({
-        //             rating: 6,
-        //             location: ['northAmerica', 'usa', 'california', 'santaBarbara']
-        //         })
-        //     )
-        // );
+        Util.log(
+            '\n' +
+            Cape.toCsv(
+                Cape.withTraits({
+                    // rating: 6,
+                    location: ['northAmerica', 'usa', 'california', 'santaBarbara']
+                })
+            )
+        );
     }
 };
 
