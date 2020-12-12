@@ -7,7 +7,7 @@ const Util = require('../../util/util.js');
 class RegionTree {
     static fullTree () {
         return {
-            total: 7800000000,
+            total: 7715214000,
             eurasia: {
                 total: 5360000000,
                 china: {
