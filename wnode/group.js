@@ -22,7 +22,7 @@ module.exports = class Group extends WNode {
 
         this.quantity = Util.exists(quantity) ?
             quantity :
-            template.quantity || 1;
+            template && template.quantity || 1;
 
         this.worstSp = this.template ?
             this.template.maxSp :
@@ -59,11 +59,13 @@ module.exports = class Group extends WNode {
     }
 
     chosenDestination (worldState) {
-        if (! this.canReach(this.destination))
+        if (! this.canReach(this.destination)) {
+            
+        }
     }
 
     goodTimeToThink (worldState) {
-        
+
     }
 
     // distanceTo (target) {

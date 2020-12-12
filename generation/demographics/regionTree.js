@@ -333,7 +333,7 @@ class RegionTree {
                 turkmenistan: {
                     total: 5850908
                 },
-                unitedArabEmirates: {
+                uae: {
                     total: 9630959
                 },
                 uzbekistan: {

@@ -48,9 +48,9 @@ mbti
 1 40YearsOld
  
 * alias gender
-10 female
-9 male
-1 nonbinary
+10 genderFemale
+9 genderMale
+1 genderNonbinary
 
 * childrenof power
 {ratings}
