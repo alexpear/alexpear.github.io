@@ -7,6 +7,8 @@ const WGenerator = require('../generation/wgenerator.js');
 
 const Util = require('..//util/util.js');
 
+const fs = require('fs');
+
 // For the Cape Demographics fan project.
 class Cape extends Group{
     constructor () {
@@ -153,22 +155,24 @@ class Cape extends Group{
     static run () {
         Cape.EVERYONE = [];
 
-        for (let i = 0; i < 1000; i++) {
+        for (let i = 0; i < 683000; i++) {
             Cape.EVERYONE.push(new Cape());
+
+            // TODO append to file using fs.createWriteStream(), to save memory
 
             if (i % 50000 === 0) {
                 Util.log(i);
             }
         }
 
-        // Util.log('\n' + Cape.toCsv(Cape.EVERYONE));
+        Util.log('\n' + Cape.toCsv(Cape.EVERYONE));
 
         Util.log(
             '\n' +
             Cape.toCsv(
                 Cape.withTraits({
                     rating: 6,
-                    location: ['northAmerica', 'usa', 'california']
+                    location: ['northAmerica', 'usa', 'california', 'santaBarbara']
                 })
             )
         );
