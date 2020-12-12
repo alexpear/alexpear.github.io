@@ -82,6 +82,9 @@ class Cape extends Group{
         return Cape.EVERYONE.filter(
             cape => {
                 for (let key in traitsObj) {
+                    // TODO read from txt file instead of EVERYONE.
+                    // TODO First attempt to filter into a in-memory array. If too many are ending up in output, stop and write to a out file instead.
+
                     const skipThese = [];
                     if (Util.contains(skipThese, key)) {
                         continue;
@@ -155,15 +158,21 @@ class Cape extends Group{
     static run () {
         Cape.EVERYONE = [];
 
-        for (let i = 0; i < 683000; i++) {
-            Cape.EVERYONE.push(new Cape());
+        const outStream = fs.createWriteStream(`allCapes-${Util.newId()}.txt`, { flags: 'a' });
 
-            // TODO append to file using fs.createWriteStream(), to save memory
+        for (let i = 0; i < 683000; i++) {
+            const cape = new Cape();
+            // Cape.EVERYONE.push(cape);
+
+            // Append to file to save JS memory
+            outStream.write(cape.toCsvRow() + '\n');
 
             if (i % 50000 === 0) {
                 Util.log(i);
             }
         }
+
+        outStream.end();
 
         Util.log('\n' + Cape.toCsv(Cape.EVERYONE));
 
