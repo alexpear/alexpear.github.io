@@ -20,10 +20,12 @@ class Cape extends Group{
             Number(ageNode.templateName.slice(0, 2));
 
         const genderNode = this.components.find(node => node.templateName.startsWith('gender'));
-        this.gender = genderNode && genderNode.templateName.slice(6);
+        this.gender = genderNode && genderNode.templateName.toLowerCase().slice(6);
 
-        const mbtiNode = this.components.find(node => node.templateName.startsWith('mbti'));
-        this.mbti = mbtiNode && mbtiNode.templateName.slice(6, 10);
+        const mbtiNode = this.components.find(
+            node => node.description && node.description.startsWith('Myers-Briggs')
+        );
+        this.mbti = mbtiNode && mbtiNode.displayName.toLowerCase();
 
         const powerNode = this.components.find(node => node.templateName === 'power');
         const powerChildren = powerNode.components[0].components;
@@ -41,7 +43,7 @@ class Cape extends Group{
         const themeNode = this.components.find(node => node.templateName === 'theme');
         this.theme = themeNode && themeNode.components[0].templateName;
 
-        const allegianceNode = this.components.find(node => Util.contains(['hero', 'rogue', 'villain'], node));
+        const allegianceNode = this.components.find(node => Util.contains(['hero', 'rogue', 'villain'], node.templateName));
         this.allegiance = allegianceNode && allegianceNode.templateName;
 
         this.location = RegionTree.randomLocation().reverse();
@@ -69,12 +71,35 @@ class Cape extends Group{
         ].join(',');
     }
 
-    static withTraits (traitsOBj) {
+    // TODO, in the style of PRTQuest's short paragraph bios of capes.
+    toPrettyBio () {
+
+    }
+
+    static withTraits (traitsObj) {
         return Cape.EVERYONE.filter(
             cape => {
                 for (let key in traitsObj) {
-                    const skipThese = ['power'];
+                    const skipThese = [];
                     if (Util.contains(skipThese, key)) {
+                        continue;
+                    }
+
+                    if (key === 'age') {
+                        // Interpret as a maximum for now.
+                        if (cape.age > traitsObj.age) {
+                            return false;
+                        }
+
+                        continue;
+                    }
+
+                    if (key === 'rating') {
+                        // Interpret as minimum
+                        if (cape.rating < traitsObj.rating) {
+                            return false;
+                        }
+
                         continue;
                     }
 
@@ -90,7 +115,7 @@ class Cape extends Group{
                         continue;
                     }
 
-                    if (! cape[key] || ! cape[key] === traitsObj[key]) {
+                    if (! cape[key] || cape[key] !== traitsObj[key]) {
                         return false;
 
                         // Later support searching by parts of MBTI
@@ -105,17 +130,9 @@ class Cape extends Group{
     // input: [continent, nation, province, city, borough, neighborhood]
     // returns: Cape[]
     static inLocation (path) {
-        return Cape.EVERYONE.filter(
-            cape => {
-                for (let i = 0; i < path.length; i++) {
-                    if (path[i] !== cape.location[i]) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        );
+        return Cape.withTraits({
+            location: path
+        });
     }
 
     static toCsv (capes) {
@@ -124,10 +141,19 @@ class Cape extends Group{
         ).join('\n');
     }
 
+    static biosWithTraits (traitsObj) {
+        Util.log(
+            '\n' +
+            Cape.withTraits(traitsObj)
+                .map(c => c.toPrettyBio())
+                .join('\n\n')
+        );
+    }
+
     static run () {
         Cape.EVERYONE = [];
 
-        for (let i = 0; i < 7000; i++) {
+        for (let i = 0; i < 1000; i++) {
             Cape.EVERYONE.push(new Cape());
 
             if (i % 50000 === 0) {
@@ -135,10 +161,17 @@ class Cape extends Group{
             }
         }
 
-        const locals = Cape.inLocation(['northAmerica', 'usa', 'newHampshire']);
-        // const locals = Cape.inLocation(['eurasia']);
+        // Util.log('\n' + Cape.toCsv(Cape.EVERYONE));
 
-        Util.log('\n' + Cape.toCsv(Cape.EVERYONE));
+        Util.log(
+            '\n' +
+            Cape.toCsv(
+                Cape.withTraits({
+                    rating: 6,
+                    location: ['northAmerica', 'usa', 'california']
+                })
+            )
+        );
     }
 };
 
