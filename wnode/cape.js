@@ -105,7 +105,7 @@ class Cape extends Group{
         // TODO read from txt file instead of EVERYONE.
         const selected = [];
         const lineReader = readline.createInterface({
-            input: fs.createReadStream('../generation/everyCape.txt')
+            input: fs.createReadStream('./generation/everyCape.txt')
         });
 
         lineReader.on(

@@ -22,6 +22,7 @@
     "buildFishTank": "browserify fishTank/src/*.js -o fishTank/bundle.js",
     "buildGroupGrid": "browserify gridView/src/*.js bottleWorld/gridWarWorldState.js -o gridView/groupGridBundle.js",
     "server": "http-server",
+    "cape": "node wnode/cape.js",
     "test": "npm run testRingWorld",
     "testWGenerator": "node generation/wgenerator.js",
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
