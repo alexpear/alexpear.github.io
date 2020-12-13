@@ -207,7 +207,10 @@ class RegionTree {
                 bangladesh: 166000000,
                 vietnam: 97000000,
                 japan: {
-                    total: 127000000
+                    total: 127000000,
+                    tokyo: {
+                        total: 38140000
+                    }
                 },
                 southKorea: {
                     total: 51000000

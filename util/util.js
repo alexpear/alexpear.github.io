@@ -133,10 +133,6 @@ util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
     return _.round(unrounded, decimalPlaces);
 };
 
-// util.round = function (x, decimalPlaces) {
-//     return 
-// };
-
 // Returns string
 util.newId = function () {
     // Later research the most performant way to run this.

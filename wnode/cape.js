@@ -74,10 +74,6 @@ class Cape extends Group{
         this.location = RegionTree.randomLocation().reverse();
     }
 
-    // findComponent (matchFunc) {
-    //     return this.components.find(matchFunc);
-    // }
-
     toCsvRow () {
         const locString = this.location.join(',');
 
@@ -128,7 +124,7 @@ class Cape extends Group{
         // TODO read from txt file instead of EVERYONE.
         const selected = [];
         const lineReader = readline.createInterface({
-            input: fs.createReadStream('./generation/everyCape.txt')
+            input: fs.createReadStream('./generation/demographics/everyCape.txt')
         });
 
         lineReader.on(
@@ -307,7 +303,7 @@ class Cape extends Group{
 
         // const outStream = fs.createWriteStream(`allCapes-${Util.newId()}.txt`, { flags: 'a' });
 
-        // for (let i = 0; i < 683000; i++) {
+        // for (let i = 0; i < 683270; i++) {
         //     const cape = new Cape();
         //     // Cape.EVERYONE.push(cape);
 
@@ -321,15 +317,17 @@ class Cape extends Group{
 
         // outStream.end();
 
-        Util.log(
-            '\n' +
-            Cape.toCsv(
-                Cape.withTraits({
-                    // rating: 6,
-                    location: ['northAmerica', 'usa', 'california', 'santaBarbara']
-                })
-            )
-        );
+        // Util.log(
+        //     '\n' +
+        //     Cape.toCsv(
+        //         // Later CLI support.
+        //         Cape.withTraits({
+        //             // allegiance: 'hero',
+        //             rating: 10,
+        //             location: ['eurasia', 'japan']
+        //         })
+        //     )
+        // );
     }
 };
 
