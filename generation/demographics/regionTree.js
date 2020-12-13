@@ -729,17 +729,57 @@ class RegionTree {
                             total: 87137,
                             latitude: 42.7653662,
                             longitude: -71.46756599999999
+                        },
+                        somersworth: {
+                            total: 11970
+                        },
+                        chicester: {
+                            total: 2523
                         }
                     },
                     newYork: {
                         total: 19450000,
                         newYork: {
-                            total: 8405837,
+                            total: 8619000,
                             latitude: 40.7127837,
                             longitude: -74.0059413,
                             manhattan: {
                                 total: 1660000,
-                                fidi: 60900
+                                fidi: 60900,
+                                midtown: 391000,
+                                harlem: 335000,
+                                upperEastSide: 229000,
+                                upperWestSide: 209000,
+                                chinatown: 95000,
+                                chelsea: 38000,
+                                greenwichVillage: 22800,
+                                washingtonHeights: 201590
+                            },
+                            brooklyn: {
+                                total: 2650000,
+                                bayRidge: 80000,
+                                coneyIsland: 24700,
+                                williamsburg: 78700,
+                                bedStuy: 157530,
+                                bushwick: 129239,
+                                sunsetPark: 126000,
+                                parkSlope: 67600,
+                                downtownBrooklyn: 7053,
+                                dumbo: 1139
+                            },
+                            queens: {
+                                total: 2360000,
+                                rockaway: 130000,
+                                flushing: 176000,
+                                astoria: 78800,
+                                longIslandCity: 20030,
+                                jamaica: 217000
+                            },
+                            statenIsland: {
+                                total: 479000
+                            },
+                            bronx: {
+                                total: 1470000
                             }
                         },
                         buffalo: {
@@ -1235,10 +1275,23 @@ class RegionTree {
                             latitude: 40.5865396,
                             longitude: -122.3916754
                         },
+                        // We probably could add counties at this level, so long as there is no overlapping
                         santaBarbara: {
                             total: 91300,
                             latitude: 34.4208305,
                             longitude: -119.6981901
+                        },
+                        goleta: {
+                            total: 30911
+                        },
+                        islaVista: {
+                            total: 23100
+                        },
+                        carpinteria: {
+                            total: 13385
+                        },
+                        montecito: {
+                            total: 8970
                         },
                         sanMarcos: {
                             total: 89387,
@@ -1514,6 +1567,12 @@ class RegionTree {
                             total: 62864,
                             latitude: 36.9741171,
                             longitude: -122.0307963
+                        },
+                        castroville: {
+                            total: 6481
+                        },
+                        kingCity: {
+                            total: 14077
                         },
                         laHabra: {
                             total: 61653,
@@ -5586,6 +5645,12 @@ class RegionTree {
                             total: 125017,
                             latitude: 41.76371109999999,
                             longitude: -72.6850932
+                        },
+                        simsbury: {
+                            total: 23511
+                        },
+                        avon: {
+                            total: 18302
                         },
                         waterbury: {
                             total: 109676,
