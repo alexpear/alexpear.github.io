@@ -40,6 +40,10 @@ class Cape extends Group{
         const wTree = WGenerator.fromCodex('parahumans/cape').getOutputs();
         this.components = wTree[0].components;
 
+        this.capeName = Util.capitalized(
+            Util.randomOf(Cape.WORDS)
+        );
+
         const ageNode = this.components.find(node => node.templateName.endsWith('YearsOld'));
         this.age = ageNode &&
             Number(ageNode.templateName.slice(0, 2));
@@ -77,7 +81,7 @@ class Cape extends Group{
 
         // Later might be convenient to store header names as a constant array of strings.
         return [
-            this.capeName, // later
+            this.capeName,
             this.fullName, // later
             this.age,
             this.gender,
@@ -329,6 +333,9 @@ class Cape extends Group{
     }
 
     static async run () {
+        Cape.WORDS = fs.readFileSync('/usr/share/dict/words', 'utf8')
+            .split('\n');
+
         Cape.testCsvConversion();
 
         // const outStream = fs.createWriteStream(`allCapes-${Util.newId()}.txt`, { flags: 'a' });
