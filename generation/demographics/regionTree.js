@@ -6371,6 +6371,27 @@ class RegionTree {
         return node.total;
     }
 
+    static toPrettyString (path) {
+        return path.map(
+            s => RegionTree.capitalized(s)
+        )
+        .join(' / ');
+    }
+
+    static capitalized (str) {
+        const SPECIAL = {
+            usa: 'USA',
+            uae: 'UAE',
+            uk: 'UK'
+        };
+
+        if (SPECIAL[str]) {
+            return SPECIAL[str];
+        }
+
+        return Util.fromCamelCase(str);
+    }
+
     static printInconsistencies (node) {
         node = node || RegionTree.fullTree();
 
