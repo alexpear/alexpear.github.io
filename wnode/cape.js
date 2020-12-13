@@ -96,7 +96,30 @@ class Cape extends Group{
         ].join(',');
     }
 
-    // TODO, in the style of PRTQuest's short paragraph bios of capes.
+    // TODO, in the style of PRTQuest's bios of capes, but probably as 1 short paragraph.
+    //     ◈ SNUBNOSE; Zoe Shane
+    // Classification: Blaster 3 (Brute 5)
+
+    // Short range bursts of sparks, applying a forceful pushing effect. Power is used in perpetuity in costume, to keep a heavy armored suit mobile.
+
+    // Disposition: Protectorate
+    // Location: DEPT 22 (Seattle)
+    // Age: 30 Status: Full time, married (non-PRT cape)
+    // Height: 5’5” Weight: 140 lbs.
+    // Class S Option: YES
+    // Appearance: Chinese-American woman, stocky.
+
+    // General:
+    // Snubnose is a dramatic figure on the battlefield in costume, as wide as she is tall, wearing a suit of armor capable of flattening a car should it tip over. Uninterested in what she terms the politics of the PRT, she takes particular pride in showmanship, leveraging her power to allow for dramatic maneuvers, preferring to do so for cameras. Snubnose is said to be universally loathed by the villains in Seattle and the surrounding area.
+
+    // Personality:
+    // Snubnose is best left to her own devices, in patrols and otherwise. Social with teammates, she prefers a light rivalry over cooperation and teamwork, and is liable to ignore orders if she views oversight as getting too strict. She has openly stated that she is a member of the PRT in name only, and has fought to reject
+    // Snubnose is married to Nutcracker, previously of the PRT Watchdog group. Contrary to all expectations, she remained with the PRT while Nutcracker left the group, after the Class-S incident in Brockton Bay. He remains active in Seattle.
+
+    // Powers:
+    // Snubnose generates bursts of sparks from her skin, emanating out in a cone. These sparks, on contact with a surface, imbue it with an antigravity effect, and ricochet off surfaces already imbued with the effect, forcefully enough to push objects. The range, however, is rather short, at about eight feet.
+    // Fully armored, Snubnose uses her power to fill her armor, a 800 lb. suit with no mechanical parts. The effect cushions her, while making the suit surprisingly light. Vents in the gauntlets allow her to deliver focused blasts at a range of about ten feet.
+    // Individuals struck by the power may be flung by the combination of antigravity and forceful ricochet. In confined quarters, the sparks may fill the area, disrupting foes or teammates.
     toPrettyBio () {
 
     }
