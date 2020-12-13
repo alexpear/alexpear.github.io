@@ -96,9 +96,12 @@ class Cape extends Group{
 
     // In the style of PRTQuest's bios of capes
     toPrettyBio () {
+        const LINE_SEPARATOR = '\n ';
+
         const allegiance = this.allegiance.toUpperCase();
+
         const cName = this.capeName ?
-            ' ' + this.capeName :
+            this.capeName + LINE_SEPARATOR :
             '';
 
         const rName = this.fullName || 'Civilian name unknown';
@@ -107,7 +110,17 @@ class Cape extends Group{
         const mbti = this.mbti.toUpperCase();
         const locString = RegionTree.toPrettyString(this.location);
 
-        return `\n ◈ [${allegiance}]${cName}\n   (${rName}, ${this.gender}, age ${this.age}). ${classification} ${this.rating}. ${theme}-themed costume. Personality type ${mbti}. \n   Based out of: ${locString}`;
+        return [
+            `\n ◈ ${cName}${allegiance}`,
+            Util.capitalized(this.gender),
+            `Age ${this.age}`,
+            rName,
+            `${classification} ${this.rating}`,
+            `${theme}-themed costume`,
+            `Based out of: ${locString}`,
+            `Personality type ${mbti}`
+        ]
+        .join(LINE_SEPARATOR);
     }
 
     prefix () {
@@ -354,22 +367,15 @@ class Cape extends Group{
 
         // outStream.end();
 
-        // Util.log(
-        //     '\n' +
-        //     Cape.toCsv(
-        //         // Later CLI support.
-        //         Cape.withTraits({
-        //             // allegiance: 'hero',
-        //             rating: 10,
-        //             location: ['eurasia', 'japan']
-        //         })
-        //     )
-        // );
+        Util.log(
+            new Cape().toPrettyBio()
+        );
 
         await Cape.biosWithTraits({
             // allegiance: 'hero',
-            // rating: 12,
-            location: ['northAmerica', 'usa', 'california', 'santaCruzCounty', 'santaCruz']
+            rating: 12,
+            // age: 17,
+            location: ['northAmerica', 'usa', 'newYork', 'newYork']
         });
     }
 };
