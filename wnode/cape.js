@@ -114,7 +114,7 @@ class Cape extends Group{
             `\n ◈ ${cName}${allegiance}`,
             Util.capitalized(this.gender),
             `Age ${this.age}`,
-            rName,
+            // rName,
             `${classification} ${this.rating}`,
             `${theme}-themed costume`,
             `Based out of: ${locString}`,
@@ -367,15 +367,11 @@ class Cape extends Group{
 
         // outStream.end();
 
-        Util.log(
-            new Cape().toPrettyBio()
-        );
-
         await Cape.biosWithTraits({
-            // allegiance: 'hero',
-            rating: 12,
-            // age: 17,
-            location: ['northAmerica', 'usa', 'newYork', 'newYork']
+            allegiance: 'hero',
+            // rating: 9,
+            age: 17,
+            location: ['northAmerica', 'usa', 'newYork', 'newYork', 'manhattan', 'harlem']
         });
     }
 };
