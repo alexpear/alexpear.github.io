@@ -1195,11 +1195,6 @@ class RegionTree {
                             latitude: 34.1808392,
                             longitude: -118.3089661
                         },
-                        santaMaria: {
-                            total: 102216,
-                            latitude: 34.9530337,
-                            longitude: -120.4357191
-                        },
                         elCajon: {
                             total: 102211,
                             latitude: 32.7947731,
@@ -1275,23 +1270,36 @@ class RegionTree {
                             latitude: 40.5865396,
                             longitude: -122.3916754
                         },
-                        // We probably could add counties at this level, so long as there is no overlapping
-                        santaBarbara: {
-                            total: 91300,
-                            latitude: 34.4208305,
-                            longitude: -119.6981901
-                        },
-                        goleta: {
-                            total: 30911
-                        },
-                        islaVista: {
-                            total: 23100
-                        },
-                        carpinteria: {
-                            total: 13385
-                        },
-                        montecito: {
-                            total: 8970
+                        // We can add counties at this level, so long as there is no overlapping.
+                        santaBarbaraCounty: {
+                            total: 446500,
+                            santaBarbara: {
+                                total: 91300,
+                                latitude: 34.4208305,
+                                longitude: -119.6981901
+                            },
+                            goleta: {
+                                total: 30911
+                            },
+                            islaVista: {
+                                total: 23100
+                            },
+                            carpinteria: {
+                                total: 13385
+                            },
+                            montecito: {
+                                total: 8970
+                            },
+                            santaMaria: {
+                                total: 102216,
+                                latitude: 34.9530337,
+                                longitude: -120.4357191
+                            },
+                            lompoc: {
+                                total: 43509,
+                                latitude: 34.6391501,
+                                longitude: -120.4579409
+                            }
                         },
                         sanMarcos: {
                             total: 89387,
@@ -1563,10 +1571,18 @@ class RegionTree {
                             latitude: 36.9613356,
                             longitude: -120.0607176
                         },
-                        santaCruz: {
-                            total: 62864,
-                            latitude: 36.9741171,
-                            longitude: -122.0307963
+                        santaCruzCounty: {
+                            total: 273213,
+                            santaCruz: {
+                                total: 62864,
+                                latitude: 36.9741171,
+                                longitude: -122.0307963
+                            },
+                            watsonville: {
+                                total: 52477,
+                                latitude: 36.910231,
+                                longitude: -121.7568946
+                            }
                         },
                         castroville: {
                             total: 6481
@@ -1719,11 +1735,6 @@ class RegionTree {
                             latitude: 34.033625,
                             longitude: -117.0430865
                         },
-                        watsonville: {
-                            total: 52477,
-                            latitude: 36.910231,
-                            longitude: -121.7568946
-                        },
                         delano: {
                             total: 52403,
                             latitude: 35.7688425,
@@ -1828,11 +1839,6 @@ class RegionTree {
                             total: 44096,
                             latitude: 37.5296593,
                             longitude: -122.0402399
-                        },
-                        lompoc: {
-                            total: 43509,
-                            latitude: 34.6391501,
-                            longitude: -120.4579409
                         },
                         elCentro: {
                             total: 43363,
@@ -5641,16 +5647,68 @@ class RegionTree {
                             latitude: 41.0534302,
                             longitude: -73.5387341
                         },
-                        hartford: {
-                            total: 125017,
-                            latitude: 41.76371109999999,
-                            longitude: -72.6850932
-                        },
-                        simsbury: {
-                            total: 23511
-                        },
-                        avon: {
-                            total: 18302
+                        hartfordCounty: {
+                            total: 891720,
+                            hartford: {
+                                total: 125017,
+                                latitude: 41.76371109999999,
+                                longitude: -72.6850932
+                            },
+                            westHartford: {
+                                total: 63300
+                            },
+                            eastHartford: {
+                                total: 51300
+                            },
+                            enfield: {
+                                total: 44700
+                            },
+                            southington: {
+                                total: 43000
+                            },
+                            glastonbury: {
+                                total: 34000
+                            },
+                            newington: {
+                                total: 30600
+                            },
+                            windsor: {
+                                total: 29000
+                            },
+                            wethersfield: {
+                                total: 26700
+                            },
+                            farmington: {
+                                total: 25000
+                            },
+                            bloomington: {
+                                total: 20500
+                            },
+                            granby: {
+                                total: 11000
+                            },
+                            burlington: {
+                                total: 9000
+                            },
+                            eastGranby: {
+                                total: 5000
+                            },
+                            newBritain: {
+                                total: 72939,
+                                latitude: 41.6612104,
+                                longitude: -72.7795419
+                            },
+                            bristol: {
+                                total: 60568,
+                                latitude: 41.67176480000001,
+                                longitude: -72.9492703
+                            },
+                            simsbury: {
+                                total: 23511
+                            },
+                            avon: {
+                                total: 18302
+                            }
                         },
                         waterbury: {
                             total: 109676,
@@ -5666,16 +5724,6 @@ class RegionTree {
                             total: 83684,
                             latitude: 41.394817,
                             longitude: -73.4540111
-                        },
-                        newBritain: {
-                            total: 72939,
-                            latitude: 41.6612104,
-                            longitude: -72.7795419
-                        },
-                        bristol: {
-                            total: 60568,
-                            latitude: 41.67176480000001,
-                            longitude: -72.9492703
                         },
                         meriden: {
                             total: 60456,
