@@ -61,9 +61,7 @@ class Cape extends Group{
         ).templateName;
 
         // eg 5
-        this.rating = Number(powerChildren.find(
-            node => node.templateName.length <= 2
-        ).templateName);
+        this.rating = Cape.randomRatingUnbound();
 
         const themeNode = this.components.find(node => node.templateName === 'theme');
         this.theme = themeNode && themeNode.components[0].templateName;
@@ -118,6 +116,79 @@ class Cape extends Group{
     // Individuals struck by the power may be flung by the combination of antigravity and forceful ricochet. In confined quarters, the sparks may fill the area, disrupting foes or teammates.
     toPrettyBio () {
 
+    }
+
+    static randomRating () {
+        let out = 0;
+        const PASSES = 6;
+
+        for (let pass = 0; pass < PASSES; pass++) {
+            out += Math.random();
+        }
+
+        out *= 12.4 / PASSES;
+
+        return Math.round(out);
+    }
+
+    // Unbounded method
+    static randomRatingUnbound () {
+        let rating = 0.5;
+        const WINE = 8;
+        let roll;
+
+        do {
+            roll = Math.random() * (rating + WINE);
+            rating += 0.5;
+        }
+        while (roll > rating);
+
+        return Math.round(rating);
+    }
+
+    // Stepwise method
+    static randomRatingStepwise () {
+        const cases = [
+            0,
+            1,
+            2, 2,
+            3, 3, 3, 3, 3,
+            4, 4, 4, 4, 4, 4,
+            5, 5, 5, 5, 5, 5
+        ];
+
+        const rating = Util.randomOf(cases);
+
+        if (rating === 5) {
+            // Iterative random chance of adding +1.
+        }
+
+        return rating;
+    }
+
+    static testRandomRating () {
+        const histogram = {};
+
+        const POPULATION = 680000;
+
+        for (let i = 0; i < 680000; i++) {
+            const rating = Cape.randomRatingUnbound();
+
+            if (histogram[rating]) {
+                histogram[rating] += 1;
+            }
+            else {
+                histogram[rating] = 1;
+            }
+        }
+
+        for (let r = 0; r < 20; r++) {
+            const context = Util.commaNumber(Math.round(
+                POPULATION / histogram[r]
+            ));
+
+            Util.log(`${r}: ${histogram[r]} (${(histogram[r] / POPULATION * 100).toFixed(4)}%) (1 in ${context})`);
+        }
     }
 
     static withTraits (traitsObj) {
