@@ -90,32 +90,31 @@ class Cape extends Group{
         ].join(',');
     }
 
-    // TODO, in the style of PRTQuest's bios of capes, but probably as 1 short paragraph.
-    //     ◈ SNUBNOSE; Zoe Shane
-    // Classification: Blaster 3 (Brute 5)
-
-    // Short range bursts of sparks, applying a forceful pushing effect. Power is used in perpetuity in costume, to keep a heavy armored suit mobile.
-
-    // Disposition: Protectorate
-    // Location: DEPT 22 (Seattle)
-    // Age: 30 Status: Full time, married (non-PRT cape)
-    // Height: 5’5” Weight: 140 lbs.
-    // Class S Option: YES
-    // Appearance: Chinese-American woman, stocky.
-
-    // General:
-    // Snubnose is a dramatic figure on the battlefield in costume, as wide as she is tall, wearing a suit of armor capable of flattening a car should it tip over. Uninterested in what she terms the politics of the PRT, she takes particular pride in showmanship, leveraging her power to allow for dramatic maneuvers, preferring to do so for cameras. Snubnose is said to be universally loathed by the villains in Seattle and the surrounding area.
-
-    // Personality:
-    // Snubnose is best left to her own devices, in patrols and otherwise. Social with teammates, she prefers a light rivalry over cooperation and teamwork, and is liable to ignore orders if she views oversight as getting too strict. She has openly stated that she is a member of the PRT in name only, and has fought to reject
-    // Snubnose is married to Nutcracker, previously of the PRT Watchdog group. Contrary to all expectations, she remained with the PRT while Nutcracker left the group, after the Class-S incident in Brockton Bay. He remains active in Seattle.
-
-    // Powers:
-    // Snubnose generates bursts of sparks from her skin, emanating out in a cone. These sparks, on contact with a surface, imbue it with an antigravity effect, and ricochet off surfaces already imbued with the effect, forcefully enough to push objects. The range, however, is rather short, at about eight feet.
-    // Fully armored, Snubnose uses her power to fill her armor, a 800 lb. suit with no mechanical parts. The effect cushions her, while making the suit surprisingly light. Vents in the gauntlets allow her to deliver focused blasts at a range of about ten feet.
-    // Individuals struck by the power may be flung by the combination of antigravity and forceful ricochet. In confined quarters, the sparks may fill the area, disrupting foes or teammates.
+    // In the style of PRTQuest's bios of capes
     toPrettyBio () {
+        const cName = this.capeName ?
+            this.prefix() + this.capeName.toUpperCase() :
+            '[' + this.allegiance.toUpperCase() + ']';
 
+        const rName = this.fullName || 'Civilian name unknown';
+        const classification = Util.capitalized(this.classification);
+        const theme = Util.capitalized(this.theme);
+        const mbti = this.mbti.toUpperCase();
+        const locString = RegionTree.toPrettyString(this.location);
+
+        return `\n ◈ ${cName} (${rName}, ${this.gender}, age ${this.age}). ${classification} ${this.rating}. ${theme}-themed costume. Personality type ${mbti}. \n   Based out of: ${locString}`;
+    }
+
+    prefix () {
+        if (this.allegiance === 'villain') {
+            return 'VLLN_';
+        }
+
+        if (this.allegiance === 'hero') {
+            return 'HERO_';
+        }
+
+        return 'ROGUE_';
     }
 
     static randomRating () {
@@ -191,130 +190,88 @@ class Cape extends Group{
         }
     }
 
-    static withTraits (traitsObj) {
-        // TODO read from txt file instead of EVERYONE.
-        const selected = [];
-        const lineReader = readline.createInterface({
-            input: fs.createReadStream('./generation/demographics/everyCape.txt')
-        });
+    static async withTraits (traitsObj) {
+        return new Promise(
+            (resolve, reject) => {
+                const selected = [];
 
-        lineReader.on(
-            'line',
-            line => {
-                const cape = new Cape(line);
+                const lineReader = readline.createInterface({
+                    input: fs.createReadStream('./generation/demographics/everyCape.txt')
+                });
 
-                for (let key in traitsObj) {
-                    // TODO First attempt to filter into a in-memory array. If too many are ending up in output, stop and write to a out file instead.
+                lineReader.on(
+                    'line',
+                    line => {
+                        const cape = new Cape(line);
 
-                    const skipThese = [];
-                    if (Util.contains(skipThese, key)) {
-                        continue;
-                    }
+                        for (let key in traitsObj) {
+                            // TODO First attempt to filter into a in-memory array. If too many are ending up in output, stop and write to a out file instead.
 
-                    if (key === 'age') {
-                        // Interpret as a maximum for now.
-                        if (cape.age > traitsObj.age) {
-                            return;
-                        }
+                            const skipThese = [];
+                            if (Util.contains(skipThese, key)) {
+                                continue;
+                            }
 
-                        continue;
-                    }
+                            if (key === 'age') {
+                                // Interpret as a maximum for now.
+                                if (cape.age > traitsObj.age) {
+                                    return;
+                                }
 
-                    if (key === 'rating') {
-                        // Interpret as minimum
-                        if (cape.rating < traitsObj.rating) {
-                            return;
-                        }
+                                continue;
+                            }
 
-                        continue;
-                    }
+                            if (key === 'rating') {
+                                // Interpret as minimum
+                                if (cape.rating < traitsObj.rating) {
+                                    return;
+                                }
 
-                    if (key === 'location') {
-                        const path = traitsObj.location;
+                                continue;
+                            }
 
-                        for (let i = 0; i < path.length; i++) {
-                            if (path[i] !== cape.location[i]) {
+                            if (key === 'location') {
+                                const path = traitsObj.location;
+
+                                for (let i = 0; i < path.length; i++) {
+                                    if (path[i] !== cape.location[i]) {
+                                        return;
+                                    }
+                                }
+
+                                continue;
+                            }
+
+                            if (! cape[key] || cape[key] !== traitsObj[key]) {
                                 return;
+
+                                // Later support searching by parts of MBTI
                             }
                         }
 
-                        continue;
+                        selected.push(cape);
+                        // Util.log(cape.toCsvRow());
+
+                        if (selected.length % 1000 === 0) {
+                            Util.log(`Selected a ${selected.length}th cape.`);
+                        }
                     }
+                );
 
-                    if (! cape[key] || cape[key] !== traitsObj[key]) {
-                        return;
+                // TODO this returns [], probably from a async / sync timing mismatch.
+                // return selected;
 
-                        // Later support searching by parts of MBTI
-                    }
-                }
-
-                selected.push(cape);
-                Util.log(cape.toCsvRow());
-
-                if (selected.length % 1000 === 0) {
-                    Util.log(`Selected a ${selected.length}th cape.`);
-                }
+                lineReader.on(
+                    'close',
+                    () => { resolve(selected); } // TODO this could work inside a Promise func.
+                );
             }
         );
-
-        // TODO this returns [], probably from a async / sync timing mismatch.
-        return selected;
-
-        // return Cape.EVERYONE.filter(
-        //     cape => {
-        //         for (let key in traitsObj) {
-        //             // TODO First attempt to filter into a in-memory array. If too many are ending up in output, stop and write to a out file instead.
-
-        //             const skipThese = [];
-        //             if (Util.contains(skipThese, key)) {
-        //                 continue;
-        //             }
-
-        //             if (key === 'age') {
-        //                 // Interpret as a maximum for now.
-        //                 if (cape.age > traitsObj.age) {
-        //                     return false;
-        //                 }
-
-        //                 continue;
-        //             }
-
-        //             if (key === 'rating') {
-        //                 // Interpret as minimum
-        //                 if (cape.rating < traitsObj.rating) {
-        //                     return false;
-        //                 }
-
-        //                 continue;
-        //             }
-
-        //             if (key === 'location') {
-        //                 const path = traitsObj.location;
-
-        //                 for (let i = 0; i < path.length; i++) {
-        //                     if (path[i] !== cape.location[i]) {
-        //                         return false;
-        //                     }
-        //                 }
-
-        //                 continue;
-        //             }
-
-        //             if (! cape[key] || cape[key] !== traitsObj[key]) {
-        //                 return false;
-
-        //                 // Later support searching by parts of MBTI
-        //             }
-        //         }
-
-        //         return true;
-        //     }
-        // );
     }
 
     // input: [continent, nation, province, city, borough, neighborhood]
     // returns: Cape[]
-    static inLocation (path) {
+    static async inLocation (path) {
         return Cape.withTraits({
             location: path
         });
@@ -326,13 +283,16 @@ class Cape extends Group{
         ).join('\n');
     }
 
-    static biosWithTraits (traitsObj) {
+    static async biosWithTraits (traitsObj) {
+        const capes = await Cape.withTraits(traitsObj);
+
+        const bios = capes.map(c => c.toPrettyBio());
+
         Util.log(
-            '\n' +
-            Cape.withTraits(traitsObj)
-                .map(c => c.toPrettyBio())
-                .join('\n\n')
+            bios.join('\n')
         );
+
+        return bios;
     }
 
     static testCsvConversion () {
@@ -367,10 +327,8 @@ class Cape extends Group{
         }
     }
 
-    static run () {
+    static async run () {
         Cape.testCsvConversion();
-
-        Cape.EVERYONE = [];
 
         // const outStream = fs.createWriteStream(`allCapes-${Util.newId()}.txt`, { flags: 'a' });
 
@@ -399,6 +357,12 @@ class Cape extends Group{
         //         })
         //     )
         // );
+
+        await Cape.biosWithTraits({
+            // allegiance: 'hero',
+            // rating: 12,
+            location: ['northAmerica', 'usa', 'california', 'santaCruzCounty', 'santaCruz']
+        });
     }
 };
 
