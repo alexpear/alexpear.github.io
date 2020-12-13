@@ -92,9 +92,10 @@ class Cape extends Group{
 
     // In the style of PRTQuest's bios of capes
     toPrettyBio () {
+        const allegiance = this.allegiance.toUpperCase();
         const cName = this.capeName ?
-            this.prefix() + this.capeName.toUpperCase() :
-            '[' + this.allegiance.toUpperCase() + ']';
+            ' ' + this.capeName :
+            '';
 
         const rName = this.fullName || 'Civilian name unknown';
         const classification = Util.capitalized(this.classification);
@@ -102,7 +103,7 @@ class Cape extends Group{
         const mbti = this.mbti.toUpperCase();
         const locString = RegionTree.toPrettyString(this.location);
 
-        return `\n ◈ ${cName} (${rName}, ${this.gender}, age ${this.age}). ${classification} ${this.rating}. ${theme}-themed costume. Personality type ${mbti}. \n   Based out of: ${locString}`;
+        return `\n ◈ [${allegiance}]${cName}\n   (${rName}, ${this.gender}, age ${this.age}). ${classification} ${this.rating}. ${theme}-themed costume. Personality type ${mbti}. \n   Based out of: ${locString}`;
     }
 
     prefix () {
