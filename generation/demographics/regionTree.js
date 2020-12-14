@@ -116,7 +116,8 @@ class RegionTree {
                 india: {
                     total: 1354000000,
                     uttarPradesh: {
-                        total: 199800000
+                        total: 199800000,
+                        lucknow: 3500000
                     },
                     maharashtra: {
                         total: 112000000
@@ -202,7 +203,14 @@ class RegionTree {
                     // https://en.wikipedia.org/wiki/States_and_union_territories_of_India#States...
                 },
                 pakistan: {
-                    total: 201000000
+                    total: 220100000,
+                    balochistan: 12300000,
+                    punjab: 110100000,
+                    sindh: 47900000,
+                    khyberPakhtunkhwa: 40500000,
+                    gilgitBaltistan: 1800000,
+                    azadKashmir: 4600000,
+                    islamabad: 2900000
                 },
                 bangladesh: 166000000,
                 vietnam: 97000000,
@@ -220,7 +228,10 @@ class RegionTree {
                 },
                 indonesia: {
                     total: 267000000,
-                    jakarta: 10800000
+                    jakarta: 10150000,
+                    westJava: 46700000,
+                    eastJava: 38800000,
+                    centralJava: 33750000
                 },
                 iran: {
                     total: 82000000
@@ -5974,7 +5985,22 @@ class RegionTree {
             southAmerica: {
                 total: 433000000,
                 brazil: {
-                    total: 211000000
+                    total: 211000000,
+                    north: {
+                        total: 17700000
+                    },
+                    northeast: {
+                        total: 56900000
+                    },
+                    centralWest: {
+                        total: 15600000
+                    },
+                    southeast: {
+                        total: 86300000
+                    },
+                    south: {
+                        total: 29400000
+                    }
                 },
                 argentina: {
                     total: 44494502
