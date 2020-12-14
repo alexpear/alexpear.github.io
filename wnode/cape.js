@@ -7,6 +7,7 @@ const WGenerator = require('../generation/wgenerator.js');
 
 const Util = require('..//util/util.js');
 
+const _ = require('lodash');
 const fs = require('fs');
 const readline = require('readline');
 
@@ -28,6 +29,7 @@ class Cape extends Group{
                 this.rating,
                 this.theme,
                 this.allegiance
+                // this.relgion // Later.
             ] = cells;
 
             this.age = Number(this.age);
@@ -208,7 +210,35 @@ class Cape extends Group{
         }
     }
 
+    static async randomCape () {
+        const targetNum = Util.randomUpTo(Cape.COUNT);
+        let soFar = 0;
+
+        return new Promise(
+            (resolve, reject) => {
+                const lineReader = readline.createInterface({
+                    input: fs.createReadStream('./generation/demographics/everyCape.txt')
+                });
+
+                lineReader.on(
+                    'line',
+                    line => {
+                        if (soFar === targetNum) {
+                            resolve(
+                                new Cape(line)
+                            );
+                        }
+
+                        soFar += 1;
+                    }
+                );
+            }
+        );
+    }
+
     static async withTraits (traitsObj) {
+        Util.log(`searching for capes with the following traits: ${Util.stringify(traitsObj)}`);
+
         return new Promise(
             (resolve, reject) => {
                 const selected = [];
@@ -313,6 +343,54 @@ class Cape extends Group{
         return bios;
     }
 
+    // Func that finds a search query with sufficiently few results. Like a interesting spotlight.
+    static async randomGroup () {
+        const spotlighted = await Cape.randomCape();
+        let constraints = _.shuffle(['allegiance', 'classification', 'rating', 'gender']);
+        let set;
+        let tooMany = false;
+
+        Util.log(`We have spotlighted: ${spotlighted.toPrettyBio()}`)
+
+        do {
+            const criteria = {
+                location: spotlighted.location
+            };
+
+            for (const key of constraints) {
+                criteria[key] = spotlighted[key];
+            }
+
+            set = await Cape.withTraits(criteria);
+
+            if (set.length > 10) {
+                tooMany = true;
+                break;
+            }
+
+            if (set.length >= 2) {
+                break;
+            }
+
+            // Delete a random element.
+            // const removeThis = Util.randomUpTo(constraints.length - 1);
+            // constraints = constraints.filter(
+            //     (e, index) => index !== removeThis
+            // );
+            constraints.pop();
+        }
+        while (set.length < 2 && constraints.length >= 1);
+
+        if (tooMany) {
+            return Cape.randomGroup();
+        }
+
+        return {
+            set,
+            constraints
+        };
+    }
+
     static testCsvConversion () {
         for (let i = 0; i < 100; i++) {
             const cape = new Cape();
@@ -346,14 +424,18 @@ class Cape extends Group{
     }
 
     static async run () {
+        // Functionize this as init()
+        Cape.COUNT = 683270;
+
         Cape.WORDS = fs.readFileSync('/usr/share/dict/words', 'utf8')
             .split('\n');
 
         Cape.testCsvConversion();
 
+        // TODO functionize
         // const outStream = fs.createWriteStream(`allCapes-${Util.newId()}.txt`, { flags: 'a' });
 
-        // for (let i = 0; i < 683270; i++) {
+        // for (let i = 0; i < Cape.COUNT; i++) {
         //     const cape = new Cape();
         //     // Cape.EVERYONE.push(cape);
 
@@ -367,12 +449,52 @@ class Cape extends Group{
 
         // outStream.end();
 
-        await Cape.biosWithTraits({
-            allegiance: 'hero',
-            // rating: 9,
-            age: 17,
-            location: ['northAmerica', 'usa', 'newYork', 'newYork', 'manhattan', 'harlem']
-        });
+        // await Cape.biosWithTraits({
+        //     allegiance: 'hero',
+        //     // rating: 9,
+        //     age: 17,
+        //     location: ['northAmerica', 'usa', 'newYork', 'newYork', 'manhattan', 'harlem']
+        // });
+
+        const out = await Cape.randomGroup();
+        const example = out.set[0];
+        const constraintsObj = {};
+        for (const c of out.constraints) {
+            constraintsObj[c] = example[c];
+        }
+
+        const gender = constraintsObj.gender ?
+            constraintsObj.gender + ' ' :
+            '';
+
+        const classification = constraintsObj.classification ?
+            Util.capitalized(constraintsObj.classification) + ' ' :
+            '';
+
+        const allegiance = constraintsObj.allegiance ?
+            constraintsObj.allegiance + ' ' :
+            '';
+
+        const rating = constraintsObj.rating ?
+            `rating ${constraintsObj.rating} or higher ` :
+            '';
+
+        const location = RegionTree.toPrettyString(example.location);
+
+        // female Striker villain of rating 2 or higher in Eurasia / Pakistan
+        const profile = out.constraints.length > 0 ?
+            `each a ${gender}${classification}${allegiance}${rating}in ${location}` :
+            `all based out of ${location}`;
+
+        const fields = out.constraints.join(', ');
+        // Util.log(`These ${out.set.length} capes all have the same location, ${fields}:`);
+        Util.log(`These ${out.set.length} capes are ${profile}:`);
+        Util.log(
+            out.set.map(
+                c => c.toPrettyBio()
+            )
+            .join('\n')
+        );
     }
 };
 
