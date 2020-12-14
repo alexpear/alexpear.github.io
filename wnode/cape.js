@@ -344,6 +344,7 @@ class Cape extends Group{
     }
 
     // Func that finds a search query with sufficiently few results. Like a interesting spotlight.
+    // Later can make a variant that, instead of restarting on tooMany, simply returns a random 5 of the set. In that one, probably dont filter on rating and/or gender.
     static async randomGroup () {
         const spotlighted = await Cape.randomCape();
         let constraints = _.shuffle(['allegiance', 'classification', 'rating', 'gender']);
