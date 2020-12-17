@@ -457,45 +457,47 @@ class Cape extends Group{
         //     location: ['northAmerica', 'usa', 'newYork', 'newYork', 'manhattan', 'harlem']
         // });
 
-        const out = await Cape.randomGroup();
-        const example = out.set[0];
-        const constraintsObj = {};
-        for (const c of out.constraints) {
-            constraintsObj[c] = example[c];
-        }
+        // const out = await Cape.randomGroup();
+        // const example = out.set[0];
+        // const constraintsObj = {};
+        // for (const c of out.constraints) {
+        //     constraintsObj[c] = example[c];
+        // }
 
-        const gender = constraintsObj.gender ?
-            constraintsObj.gender + ' ' :
-            '';
+        // const gender = constraintsObj.gender ?
+        //     constraintsObj.gender + ' ' :
+        //     '';
 
-        const classification = constraintsObj.classification ?
-            Util.capitalized(constraintsObj.classification) + ' ' :
-            '';
+        // const classification = constraintsObj.classification ?
+        //     Util.capitalized(constraintsObj.classification) + ' ' :
+        //     '';
 
-        const allegiance = constraintsObj.allegiance ?
-            constraintsObj.allegiance + ' ' :
-            '';
+        // const allegiance = constraintsObj.allegiance ?
+        //     constraintsObj.allegiance + ' ' :
+        //     '';
 
-        const rating = constraintsObj.rating ?
-            `rating ${constraintsObj.rating} or higher ` :
-            '';
+        // const rating = constraintsObj.rating ?
+        //     `rating ${constraintsObj.rating} or higher ` :
+        //     '';
 
-        const location = RegionTree.toPrettyString(example.location);
+        // const location = RegionTree.toPrettyString(example.location);
 
-        // female Striker villain of rating 2 or higher in Eurasia / Pakistan
-        const profile = out.constraints.length > 0 ?
-            `each a ${gender}${classification}${allegiance}${rating}in ${location}` :
-            `all based out of ${location}`;
+        // // female Striker villain of rating 2 or higher in Eurasia / Pakistan
+        // const profile = out.constraints.length > 0 ?
+        //     `each a ${gender}${classification}${allegiance}${rating}in ${location}` :
+        //     `all based out of ${location}`;
 
-        const fields = out.constraints.join(', ');
-        // Util.log(`These ${out.set.length} capes all have the same location, ${fields}:`);
-        Util.log(`These ${out.set.length} capes are ${profile}:`);
-        Util.log(
-            out.set.map(
-                c => c.toPrettyBio()
-            )
-            .join('\n')
-        );
+        // const fields = out.constraints.join(', ');
+        // // Util.log(`These ${out.set.length} capes all have the same location, ${fields}:`);
+        // Util.log(`These ${out.set.length} capes are ${profile}:`);
+        // Util.log(
+        //     out.set.map(
+        //         c => c.toPrettyBio()
+        //     )
+        //     .join('\n')
+        // );
+
+        Util.log(new Cape().toPrettyBio());
     }
 };
 
