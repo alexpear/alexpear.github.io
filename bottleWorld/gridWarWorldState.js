@@ -204,8 +204,6 @@ class GridWarWorldState extends WorldState {
         const groups = this.activeNodes();
 
         for (const group of groups) {
-            // TODO call a consider() func for the Group. It will set a destination and choose 0-1 actions.
-
             group.act(this);
         }
     }
