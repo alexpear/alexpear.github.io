@@ -544,16 +544,6 @@ class WGenerator {
     }
 
     static loadCodices () {
-        // For now, this is hard coded to one fictional setting.
-        WGenerator.loadHaloCodices();
-        WGenerator.loadSunlightCodices();
-        WGenerator.loadYACodices();
-        WGenerator.loadParahumansCodices();
-    }
-
-    static loadHaloCodices () {
-        // Util.log(`Top of loadHaloCodices(), WGenerator.generators is ${WGenerator.generators}.`, 'debug');
-
         if (! WGenerator.generators) {
             WGenerator.generators = {};
         }
@@ -562,6 +552,22 @@ class WGenerator {
             return;
         }
 
+        // For now, this is hard coded to one fictional setting.
+        WGenerator.load40kCodices();
+        WGenerator.loadHaloCodices();
+        WGenerator.loadParahumansCodices();
+        WGenerator.loadSunlightCodices();
+        WGenerator.loadYACodices();
+    }
+
+    static load40kCodices () {
+        WGenerator.addGenerator(
+            require('../codices/40k/novel'),
+            '40k/novel'
+        );
+    }
+
+    static loadHaloCodices () {
         // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
         // GOTCHA: It's important to load the files describing small components first.
         WGenerator.addGenerator(
@@ -647,15 +653,6 @@ class WGenerator {
     }
 
     static loadSunlightCodices () {
-        if (! WGenerator.generators) {
-            WGenerator.generators = {};
-        }
-        else if (Util.exists( WGenerator.generators['sunlight/warband/item'] )) {
-            // WGenerator.generators already looks loaded.
-            return;
-        }
-
-        // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
         WGenerator.addGenerator(
             require('../codices/sunlight/wiederholungskrieg/carryable'),
             'sunlight/wiederholungskrieg/carryable'
@@ -683,13 +680,6 @@ class WGenerator {
     }
 
     static loadYACodices () {
-        if (! WGenerator.generators) {
-            WGenerator.generators = {};
-        }
-        else if (Util.exists( WGenerator.generators['ya/setting'] )) {
-            return;
-        }
-
         WGenerator.addGenerator(
             require('../codices/ya/setting'),
             'ya/setting'
@@ -697,13 +687,6 @@ class WGenerator {
     }
 
     static loadParahumansCodices () {
-        if (! WGenerator.generators) {
-            WGenerator.generators = {};
-        }
-        else if (Util.exists( WGenerator.generators['parahumans/cape'] )) {
-            return;
-        }
-
         WGenerator.addGenerator(
             require('../codices/parahumans/cape'),
             'parahumans/cape'
