@@ -6,7 +6,7 @@ const Timeline = require('./timeline.js');
 const ArrivalEvent = require('./events/arrivalEvent.js');
 const ActionReadyEvent = require('./events/actionReadyEvent.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
-const B20Group = require('../battle20/group.js');
+const BattleGroup = require('../battle20/battleGroup.js');
 const BEvent = require('../bottleWorld/bEvent.js');
 const TAG = require('../codices/tags.js');
 const Alignment = require('../dnd/alignment.js');
@@ -162,7 +162,7 @@ class WorldState {
 
         const combinedTemplate = this.getAggregatedTemplate(nodeTree);
 
-        const group = new B20Group(combinedTemplate, quantity);
+        const group = new BattleGroup(combinedTemplate, quantity);
         group.nodeTree = nodeTree;
 
         return group;

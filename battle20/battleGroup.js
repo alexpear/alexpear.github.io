@@ -2,7 +2,7 @@
 
 // A group of creatures in a bottle world.
 // Instanced in memory.
-// Individual creatures (eg dragons, hermits) will still be a Group of 1.
+// Individual creatures (eg dragons, hermits) will still be a BattleGroup of 1.
 // This is for ecology and procedural narrative simulations based on simplified D&D rules.
 
 const Alignment = require('../dnd/alignment.js');
@@ -12,7 +12,7 @@ const Event = require('./event.js');
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
-class Group {
+class BattleGroup {
     constructor (template, quantity) {
         // TODO am i calling 2 different things 'templates'?
         template = template || 'dwarfAxeThrower';
@@ -22,11 +22,11 @@ class Group {
 
         if (Util.isString(template)) {
             this.templateName = template;
-            this.template = Group.getTemplate(template);
+            this.template = BattleGroup.getTemplate(template);
         } else {
             // Assume it is a template object for now.
             this.templateName = template.templateName;
-            this.template = Group.sanitizedTemplate(template);
+            this.template = BattleGroup.sanitizedTemplate(template);
         }
 
         this.alignment = this.template.alignment || new Alignment('NN');
@@ -336,11 +336,11 @@ class Group {
         if (this.totalSp <= 0) {
             // Negative SP represents less possibility of recovery from injuries.
             this.status = 'eliminated';
-            Util.log(`Group ${ this.toPrettyString() } has been eliminated.`, 'debug');
+            Util.log(`BattleGroup ${ this.toPrettyString() } has been eliminated.`, 'debug');
         }
         else if (this.totalSp <= this.baselineSp * FLEE_THRESHOLD) {
             this.status = 'retreated';
-            Util.log(`Group ${ this.toPrettyString() } has retreated.`, 'debug');
+            Util.log(`BattleGroup ${ this.toPrettyString() } has retreated.`, 'debug');
         }
     }
 
@@ -398,7 +398,7 @@ class Group {
     static example () {
         // For the Tip of the Spear fish tank battle.
         // Later probably use a codex address, like halo/unsc/simple/marineSquad
-        const group = new Group('marineSquad', 12);
+        const group = new BattleGroup('marineSquad', 12);
         group.alignment = 'LN';
         return group;
     }
@@ -415,10 +415,10 @@ class Group {
     }
 
     static test () {
-        console.log(`Group.test() \n`);
+        console.log(`BattleGroup.test() \n`);
 
-        const ga = Group.example();
-        const gb = Group.example();
+        const ga = BattleGroup.example();
+        const gb = BattleGroup.example();
         gb.alignment = 'LE';
 
         // Util.log(mostNumerousFoe([ga, gb, gc]).toPrettyString(), 'debug');
@@ -643,11 +643,11 @@ function mostNumerousFoe (groups, attacker) {
     );
 }
 
-module.exports = Group;
+module.exports = BattleGroup;
 
 
 // Run.
-// Group.test();
+// BattleGroup.test();
 
 
 /* Notes:
