@@ -84,12 +84,12 @@ class ActionTemplate extends NodeTemplate {
 
         // Later maybe rename to a more generic phrase like 'rate'.
         // Can be less than 1:
-        template.shotsPerSecond = 2;
+        template.shotsPerSecond = 3;
 
         // Range is in meters. It is okay to round it heavily.
-        template.range = 80;
+        template.range = 300;
         template.hit = 5;
-        template.damage = 24;
+        template.damage = 40;
 
         // UNSC designated mark rifle
         template.tags = [
