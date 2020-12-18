@@ -123,7 +123,7 @@ class WGenerator {
             }
         );
 
-        Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}.`);
+        // Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}.`);
         // Util.logDebug(`templateObj is ${JSON.stringify(templateObj, undefined, '    ')}`);
    }
 
@@ -142,6 +142,12 @@ class WGenerator {
         );
 
         return nodes;
+    }
+
+    // Returns WNode[]
+    static generateNodes (absolutePath) {
+        return WGenerator.exampleGenerator()
+            .getOutputs(absolutePath);
     }
 
     // Returns ContextString[]
@@ -229,14 +235,21 @@ class WGenerator {
             return new WNode(templateName);
         }
 
+        // Accessing Group from this file gives a tricky 'Group is not a constructor' error, possibly caused by each require()ing the other. (2020 Dec)
+        // Util.logDebug(`WNode: ${typeof WNode} with ${Object.keys(WNode).length} keys and ${Util.stringify(WNode)}`);
+        // Util.logDebug(`Thing: ${typeof Thing} with ${Object.keys(Thing).length} keys and ${Util.stringify(Thing)}`);
+        // Util.logDebug(`Group: ${typeof Group} with ${Object.keys(Group).length} keys and ${Util.stringify(Group)}`);
+
         // TODO This func is choosing screwy JS classes as of 2020 April 20. This partly comes from inconsistent tagging in the codex files, and partly from half-baked logic in battle20/nodeTemplate.js. Also, it's weird that Creature has been removed from this func (comments below discuss this a little).
         // TODO: For RingWorldState, we also want the capacity to create Group instances. 
         // Unanimous option: convert this logic and BEvent logic to use Group of quantity 1 instead of Creature.
           // 2020 January 19: This sounds like a good MRB path to me.
         // toggleable option: The template entry can have a row like 'class: group' to indicate this.
-        if (template.isGroup()) {
-            return new Group(template);
-        }
+        // TODO Group instantiation from this file temporarily disabled to deal with a circular dependency bug. I may need to reinstantiate this later and disentangle the dependency flowchart for some projects.
+
+        // if (template.isGroup()) {
+        //     return new Group(template);
+        // }
 
         if (template.isThing()) {
             return new Thing(template);
