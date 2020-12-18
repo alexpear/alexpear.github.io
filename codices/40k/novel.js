@@ -80,6 +80,7 @@ grasslands
 * alias chaosFaction
 10 traitorLegions
 6 chaosCult
+1 darkMechanicus
 1 beastmen
 1 chaosKnights
 1 fallenSororitas
