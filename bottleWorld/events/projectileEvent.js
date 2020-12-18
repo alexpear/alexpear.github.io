@@ -8,6 +8,7 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 const Creature = require('../../wnode/creature.js');
+const Group = require('../../wnode/group.js');
 
 class ProjectileEvent extends BEvent {
     // protagonist is a input param of type Thing.
@@ -132,7 +133,11 @@ class ProjectileEvent extends BEvent {
         }
 
         const advantage = target.getSize() * actionTemplate.hit / AIM_FUDGE;
-        return advantage / (advantage + distance + 1);
+        const chance = advantage / (advantage + distance + 1);
+
+        // Util.logDebug(`ProjectileEvent.hitChance(): ${advantage} / (${advantage} + ${distance} + 1) === ${chance}`);
+
+        return chance;
     }
 
     static damagePerShot (actionTemplate, target) {
@@ -149,17 +154,23 @@ class ProjectileEvent extends BEvent {
         return damage;
     }
 
+    // Returns summary of expected damage at various ranges.
     // Later could also add a similar func that calculates TTK for range/weap/target combinations
     static testActionDamage (actionTemplate, target) {
         actionTemplate = actionTemplate || ActionTemplate.example();
-        target = target || Creature.example();
+
+        if (! target) {
+            // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
+            target = Group.marineCompany();
+        }
 
         // const exampleSummary = {
         //     actionTemplateName: 'heavyStubber',
         //     targetTemplateName: 'marinePrivate',
         //     1: 2.5,
         //     2: 2.3,
-        //     4: 1.9
+        //     4: 1.9,
+        //     ...
         // };
 
         const summary = {
@@ -172,8 +183,11 @@ class ProjectileEvent extends BEvent {
         const TOO_FAR = 10 * 1000;
         for (let range = 1; range < TOO_FAR; range = range * 2) {
             const expectedHits = shots * ProjectileEvent.hitChance(actionTemplate, target, range);
+            const damage = ProjectileEvent.damagePerShot(actionTemplate, target);
 
-            summary[range] = expectedHits * ProjectileEvent.damagePerShot(actionTemplate, target);
+            // Util.logDebug(`expectedHits is ${expectedHits}. damage is ${damage}.`);
+
+            summary[range] = (expectedHits * damage).toFixed(2);
         }
 
         Util.log(summary);
@@ -181,7 +195,7 @@ class ProjectileEvent extends BEvent {
     }
 };
 
-// Old funcs from battle20 group.js:
+// Old funcs from battle20 battleGroup.js:
 // Actually originally from hobby/warband/gameState.js
 // function hits (distance, targetArea, accuracy) {
 //     // SCALING calibrates which accuracy stats are normal.
@@ -205,4 +219,4 @@ class ProjectileEvent extends BEvent {
 
 module.exports = ProjectileEvent;
 
-// ProjectileEvent.testActionDamage();
+ProjectileEvent.testActionDamage();
