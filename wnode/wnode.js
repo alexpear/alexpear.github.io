@@ -94,6 +94,8 @@ class WNode {
             localTrait
         );
 
+        // Util.logDebug(`traitMax(): max is ${max} and localTrait is ${localTrait}. this.size is ${this.size} and this.template.size is ${this.template ? this.template.size : '<no template>'}. templateName is ${this.templateName}`);
+
         return max || localTrait;
     }
 

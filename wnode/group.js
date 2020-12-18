@@ -5,6 +5,8 @@ const NodeTemplate = require('../battle20/nodeTemplate.js');
 const Util = require('../util/util.js');
 const WNode = require('./wnode.js');
 
+const WGenerator = require('../generation/wgenerator.js');
+
 // Can be very similar to Group from Battle20 / dndBottle
 // .quantity, .template (CreatureTemplate), maybe some a prop for the SP of the sole wounded member.
 // .getWeight(), .getMaxSize(), .getSizeTotal(), .getSpeed() <- only different from template if there is some status condition effect, etc
@@ -12,7 +14,7 @@ const WNode = require('./wnode.js');
 // Similar to the concept of a 'banner' or 'stack' or 'army' in large-scale map-based wargames.
 // Contains a homogenous set of 1+ Creatures
 // These are not instantiated in .components.
-module.exports = class Group extends WNode {
+class Group extends WNode {
     constructor (template, quantity, alignment, coord) {
         super(template);
 
@@ -38,6 +40,37 @@ module.exports = class Group extends WNode {
         const tName = Util.fromCamelCase(this.templateName);
 
         return `${tName} x${this.quantity} (${this.alignmentAsString()} Group)`;
+    }
+
+    // Unit: meters of longest dimension when in storage.
+    getSize () {
+        return this.traitMax('size');
+    }
+
+    // Returns number
+    resistanceTo (tags) {
+        // LATER it's probably more performant to recursively gather a net resistance obj here, instead of multiple times in resistanceToTag()
+        return Util.sum(
+            tags.map(
+                tag => this.resistanceToTag(tag)
+            )
+        );
+    }
+
+    // Returns number
+    resistanceToTag (tag) {
+        const localResistance = (this.template &&
+            this.template.resistance &&
+            this.template.resistance[tag]) ||
+            0;
+
+        return this.components.reduce(
+            (overallResistance, component) => {
+                return localResistance +
+                    (component.resistanceTo && component.resistanceToTag(tag) || 0);
+            },
+            localResistance
+        );
     }
 
     // Later can move this to interface Actor or something.
@@ -89,11 +122,23 @@ module.exports = class Group extends WNode {
     //     );
     // }
 
+    static new (fullCodexPath, quantity, alignment, coord) {
+        // Later can add a func to WGenerator that returns just the template obj instead of WNode[]
+        const nodes = WGenerator.generateNodes(fullCodexPath);
+
+        return new Group(
+            nodes[0].template || fullCodexPath,
+            quantity,
+            alignment,
+            coord
+        );
+    }
+
     static marineCompany () {
-        // const template = WGenerator.getTemplate('halo/unsc/individual/marinePrivate');
+        const company = Group.new('halo/unsc/individual/marinePrivate', 50);
 
-        const company = new Group('halo/unsc/individual/marinePrivate', 50);
-
-        return company
-;    }
+        return company;
+    }
 };
+
+module.exports = Group;
