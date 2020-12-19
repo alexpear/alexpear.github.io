@@ -13,7 +13,7 @@ module.exports = class Thing extends WNode {
         this.coord = coord || Coord.randomOnScreen();
 
         // Init stamina points
-        this.sp = this.findTrait('maxSp') || 1;
+        this.sp = this.findTrait('sp') || 1;
 
         // Unit: timestamp in seconds
         this.lastDamaged = -Infinity;

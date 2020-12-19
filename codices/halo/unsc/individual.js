@@ -14,7 +14,7 @@ weight: 80
 size: 1.7
 speed: 3
 stealth: 10
-maxSp: 10
+sp: 10
 damage: 2
 
 * childrenof human
@@ -84,7 +84,7 @@ unsc/item/jetpack
 tags: creature cyborg
 size: 2
 weight: 120
-maxSp: 20
+sp: 20
 damage: 4
 speed: 5
 stealth: 12
