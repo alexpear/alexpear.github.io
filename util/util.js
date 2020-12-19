@@ -43,7 +43,8 @@ util.legit = (x) =>
     x !== [] &&
     x !== {};
 
-// TODO reconsider this weird function syntax. Maybe declare a class of functions, then assign the field props to it?
+// TODO reconsider this weird function syntax throughout util.js. Maybe declare a class of functions, then assign the field props to it?
+
 util.default = function (input, defaultValue) {
     if (input === undefined) {
         return defaultValue;
