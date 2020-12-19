@@ -194,6 +194,55 @@ class ProjectileEvent extends BEvent {
         Util.log(summary);
         return summary;
     }
+
+    // Simulates 1 second of firing against target, with randomness.
+    static testFire (attacker, actionTemplate, target, range) {
+        // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
+        attacker = attacker || Group.marineCompany();
+        target = target || Group.marineCompany();
+
+        actionTemplate = actionTemplate || ActionTemplate.example();
+        range = Util.exists(range) ?
+            range :
+            100;
+
+        const summary = {
+            attacker: attacker.templateName,
+            action: actionTemplate.name,
+            target: target.templateName,
+            hits: 0,
+        };
+
+        // const bEvent; // Later can output 1 or more BEvents
+
+        // LATER: Note this will give slightly approximated results when shotsPerSecond is less than 1s.
+        summary.shots = attacker.quantity * actionTemplate.shotsPerSecond;
+        summary.hitChance = ProjectileEvent.hitChance(actionTemplate, target, range);
+
+        for (let s = 0; s < summary.shots; s++) {
+            if (Math.random() < summary.hitChance) {
+                summary.hits++;
+            }
+        }
+
+        summary.damagePerShot = ProjectileEvent.damagePerShot(actionTemplate, target);
+
+        summary.totalDamage = summary.hits * summary.damagePerShot;
+        const naiveCasualties = summary.totalDamage / target.template.sp;
+        const remainderCasualties = naiveCasualties - Math.floor(naiveCasualties);
+
+        // Remainder damage that is enough to injure but not KO a final creature.
+        const excessDamage = remainderCasualties * target.template.sp;
+
+        summary.casualties = excessDamage >= target.worstSp ?
+            naiveCasualties + 1 :
+            naiveCasualties;
+
+        Util.logDebug(target.template);
+
+        Util.log(summary);
+        return summary;
+    }
 };
 
 // Old funcs from battle20 battleGroup.js:
@@ -220,4 +269,5 @@ class ProjectileEvent extends BEvent {
 
 module.exports = ProjectileEvent;
 
-ProjectileEvent.testActionDamage();
+// ProjectileEvent.testActionDamage();
+ProjectileEvent.testFire();
