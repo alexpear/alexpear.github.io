@@ -27,7 +27,7 @@ class Group extends WNode {
             template && template.quantity || 1;
 
         this.worstSp = this.template ?
-            this.template.maxSp :
+            this.template.sp :
             1;
 
         this.alignment = alignment;
@@ -99,6 +99,10 @@ class Group extends WNode {
 
     goodTimeToThink (worldState) {
 
+    }
+
+    takeDamage (n) {
+        // TODO
     }
 
     // distanceTo (target) {
