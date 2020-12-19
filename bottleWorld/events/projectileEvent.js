@@ -196,20 +196,20 @@ class ProjectileEvent extends BEvent {
     }
 
     // Simulates 1 second of firing against target, with randomness.
-    static testFire (attacker, actionTemplate, target, range) {
+    static testFire (attacker, actionTemplate, target, range, log) {
         // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
-        attacker = attacker || Group.marineCompany();
-        target = target || Group.marineCompany();
-
-        actionTemplate = actionTemplate || ActionTemplate.example();
-        range = Util.exists(range) ?
-            range :
-            100;
+        attacker = Util.default(attacker, Group.marineCompany());
+        target = Util.default(target, Group.marineCompany());
+        actionTemplate = Util.default(actionTemplate, ActionTemplate.example());
+        range = Util.default(range, 100);
+        log = Util.default(log, true);
 
         const summary = {
             attacker: attacker.templateName,
+            attackerQuantity = attacker.quantity;
             action: actionTemplate.name,
             target: target.templateName,
+            targetQuantity = target.quantity;
             hits: 0,
         };
 
@@ -238,9 +238,64 @@ class ProjectileEvent extends BEvent {
             naiveCasualties + 1 :
             naiveCasualties;
 
-        Util.logDebug(target.template);
+        // Util.logDebug(target.template);
 
         Util.log(summary);
+        return summary;
+    }
+
+    // Tests a fight of arbitrary length between 2 Groups.
+    // Groups do not move for now. Terrain is flat.
+    // Does indeed mutate the Groups.
+    static testEngagement (a, b, range, log) {
+        a = Util.default(a, Group.marineCompany());
+        b = Util.default(b, Group.marineCompany());
+        range = Util.default(range, 100);
+        log = Util.default(log, true);
+
+        const summary = {
+            a: a.templateName,
+            aStartingQuantity: a.quantity,
+            aAction: a.getAttack(), // TODO
+            b: b.templateName,
+            bStartingQuantity: b.quantity,
+            bAction: b.getAttack(),
+            range: range
+        };
+
+        let t;
+        for (t = 0; t < 10000; t++) {
+            const aAttack = ProjectileEvent.testFire(a, summary.aAction, b, range, log);
+            b.takeDamage(aAttack.totalDamage);
+
+            if (log) {
+                // TODO
+            }
+
+            if (! b.active) {
+                continue;
+            }
+
+            const bAttack = ProjectileEvent.testFire(b, summary.bAction, a, range, log);
+            a.takeDamage(bAttack.totalDamage);
+
+            if (log) {
+                // TODO
+            }
+
+            if (! a.active) {
+                continue;
+            }
+        }
+
+        summary.secondsElapsed = t;
+        summary.aFinalQuantity = a.quantity;
+        summary.bFinalQuantity = b.quantity;
+
+        if (log) {
+            Util.log(summary);            
+        }
+
         return summary;
     }
 };
