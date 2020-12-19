@@ -15,6 +15,12 @@ This website include the following prototype projects:
 - Wiederholungskrieg army loadout gen
   - Add carried nonweapon items to carryable.js (and armory node)
 
+- Expand upon weapon test func in ProjectileEvent.js
+  - Func for testing and logging a entire engagement between 2 Groups (a la Grid War or Halo Ring).
+    - They start at a certain range, and can move closer or further during the engagement
+  - Simpler: same but they always move closer.
+  - Simpler: same but they dont move
+
 - Add more files in gridView/images/, and templates mentioning size in individual.js files. 
   - Add images for neutral terrain obstacles. pelicanWreck, warthogWreck, skyscraper, mountain, lake, etc.
 

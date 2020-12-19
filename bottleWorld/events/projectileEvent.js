@@ -122,6 +122,7 @@ class ProjectileEvent extends BEvent {
         );
     }
 
+    // Returns number between 0 and 1
     static hitChance (actionTemplate, target, distance) {
         // Algorithm comes from WCW in hobby/warband/gameState.js
         // LATER gather modifiers of hit, including from creatures like spartan, instead of just base hit stat.
@@ -154,7 +155,7 @@ class ProjectileEvent extends BEvent {
         return damage;
     }
 
-    // Returns summary of expected damage at various ranges.
+    // Returns summary of expected damage over 1 sec of firing at various ranges.
     // Later could also add a similar func that calculates TTK for range/weap/target combinations
     static testActionDamage (actionTemplate, target) {
         actionTemplate = actionTemplate || ActionTemplate.example();
@@ -180,7 +181,7 @@ class ProjectileEvent extends BEvent {
 
         const shots = actionTemplate.shotsPerSecond;
 
-        const TOO_FAR = 10 * 1000;
+        const TOO_FAR = 10 * 1000; // 10km
         for (let range = 1; range < TOO_FAR; range = range * 2) {
             const expectedHits = shots * ProjectileEvent.hitChance(actionTemplate, target, range);
             const damage = ProjectileEvent.damagePerShot(actionTemplate, target);
