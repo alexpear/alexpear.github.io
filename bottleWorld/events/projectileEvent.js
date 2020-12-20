@@ -206,11 +206,11 @@ class ProjectileEvent extends BEvent {
 
         const summary = {
             attacker: attacker.templateName,
-            attackerQuantity = attacker.quantity;
+            attackerQuantity: attacker.quantity,
             action: actionTemplate.name,
             target: target.templateName,
-            targetQuantity = target.quantity;
-            hits: 0,
+            targetQuantity: target.quantity,
+            hits: 0
         };
 
         // const bEvent; // Later can output 1 or more BEvents
@@ -253,38 +253,42 @@ class ProjectileEvent extends BEvent {
         range = Util.default(range, 100);
         log = Util.default(log, true);
 
+        // TODO read from Group instance 'a' instead.
+        const aAction = ActionTemplate.example();
+        const bAction = ActionTemplate.example();
+
         const summary = {
             a: a.templateName,
             aStartingQuantity: a.quantity,
-            aAction: a.getAttack(), // TODO
+            aAction: aAction.name,
             b: b.templateName,
             bStartingQuantity: b.quantity,
-            bAction: b.getAttack(),
+            bAction: bAction.name,
             range: range
         };
 
         let t;
         for (t = 0; t < 10000; t++) {
-            const aAttack = ProjectileEvent.testFire(a, summary.aAction, b, range, log);
-            b.takeDamage(aAttack.totalDamage);
+            const aAttack = ProjectileEvent.testFire(a, aAction, b, range, log);
+            const bOutcome = b.takeDamage(aAttack.totalDamage);
 
             if (log) {
-                // TODO
+                Util.log(`t=${t}. A just fired at B. B now has quantity ${b.quantity}.`)
             }
 
             if (! b.active) {
-                continue;
+                break;
             }
 
-            const bAttack = ProjectileEvent.testFire(b, summary.bAction, a, range, log);
-            a.takeDamage(bAttack.totalDamage);
+            const bAttack = ProjectileEvent.testFire(b, bAction, a, range, log);
+            const aOutcome = a.takeDamage(bAttack.totalDamage);
 
             if (log) {
-                // TODO
+                Util.log(`t=${t}. B just fired at A. A now has quantity ${a.quantity}.`)
             }
 
             if (! a.active) {
-                continue;
+                break;
             }
         }
 
@@ -325,4 +329,5 @@ class ProjectileEvent extends BEvent {
 module.exports = ProjectileEvent;
 
 // ProjectileEvent.testActionDamage();
-ProjectileEvent.testFire();
+// ProjectileEvent.testFire();
+ProjectileEvent.testEngagement();

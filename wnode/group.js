@@ -47,6 +47,10 @@ class Group extends WNode {
         return this.traitMax('size');
     }
 
+    getTotalSp () {
+        return (this.quantity - 1) * this.template.sp + this.worstSp;
+    }
+
     // Returns number
     resistanceTo (tags) {
         // LATER it's probably more performant to recursively gather a net resistance obj here, instead of multiple times in resistanceToTag()
@@ -98,11 +102,56 @@ class Group extends WNode {
     }
 
     goodTimeToThink (worldState) {
-
+        return worldState.t % 10 === 0;
     }
 
-    takeDamage (n) {
-        // TODO
+    takeCasualties (casualties) {
+        const outcome = {
+            casualties,
+            wipedOut: false
+        };
+
+        if (casualties >= this.quantity) {
+            casualties = this.quantity;
+
+            this.active = false;
+            outcome.wipedOut = true;
+        }
+
+        this.quantity -= casualties;
+        outcome.resultingQuantity = this.quantity;
+
+        return outcome;
+    }
+
+    takeDamage (damage) {
+        const outcome = {
+            damage,
+            active: true
+        };
+
+        const startSp = this.getTotalSp();
+
+        let endTotalSp = startSp - damage;
+        if (endTotalSp < 0) {
+            endTotalSp = 0;
+        }
+
+        const endQuantity = Math.ceil(endTotalSp / this.template.sp);
+        const endWorstSp = endTotalSp % this.template.sp;
+
+        this.quantity = endQuantity;
+        this.worstSp = endWorstSp;
+
+        outcome.endQuantity = endQuantity;
+        outcome.endWorstSp = endWorstSp;
+
+        if (this.quantity === 0) {
+            this.active = false;
+            outcome.active = false;
+        }
+
+        return outcome;
     }
 
     // distanceTo (target) {
