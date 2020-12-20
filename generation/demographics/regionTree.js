@@ -6576,9 +6576,9 @@ class RegionTree {
     static run () {
         // RegionTree.printMissingCounts();
         const path = RegionTree.randomLocation();
-        Util.log(path);
+        // Util.log(path);
 
-        Util.log(RegionTree.largestLeaf());
+        // Util.log(RegionTree.largestLeaf());
 
         RegionTree.printInconsistencies();
     }
