@@ -117,7 +117,8 @@ class Cape extends Group{
             Util.capitalized(this.gender),
             `Age ${this.age}`,
             // rName,
-            `${classification} ${this.rating}`,
+            `${classification} ${this.rating}`, // Parahumans-style
+            // `Power Level ${this.rating}`, // Generic style
             `${theme}-themed costume`,
             `Based out of: ${locString}`,
             `Personality type ${mbti}`
@@ -450,12 +451,6 @@ class Cape extends Group{
 
         // outStream.end();
 
-        // await Cape.biosWithTraits({
-        //     allegiance: 'hero',
-        //     // rating: 9,
-        //     age: 17,
-        //     location: ['northAmerica', 'usa', 'newYork', 'newYork', 'manhattan', 'harlem']
-        // });
 
         // const out = await Cape.randomGroup();
         // const example = out.set[0];
@@ -497,7 +492,14 @@ class Cape extends Group{
         //     .join('\n')
         // );
 
-        Util.log(new Cape().toPrettyBio());
+        await Cape.biosWithTraits({
+            allegiance: 'hero',
+            age: 17,
+            location: ['northAmerica', 'usa', 'newYork', 'newYork', 'manhattan', 'harlem']
+        });
+
+        // const manyLines = '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n';
+        // Util.log(manyLines + new Cape().toPrettyBio());
     }
 };
 
