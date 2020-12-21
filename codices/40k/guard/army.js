@@ -6,14 +6,19 @@ module.exports = `
 1 army
 
 * childrenof army
+4x
+2x
+1x
+
+* childrenof oldArmy
 6x
 3x
 1x
 
-* childrenof 6x
+* childrenof 4x
 {unit}
 
-* childrenof 3x
+* childrenof 2x
 {unit}
 
 * childrenof 1x
@@ -57,6 +62,7 @@ module.exports = `
 1 squats
 9 tempestusStormtroopers
 8 motorbikeScouts
+9 roughRiders
 
 * alias vehicle
 9 sentinelWalker
