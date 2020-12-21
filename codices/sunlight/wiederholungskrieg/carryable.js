@@ -5,6 +5,63 @@ module.exports = `* output
 0 heldItem
 0 wornItem
 
+* alias weapon
+20 meleeWeapon
+20 rangedWeapon
+1 bombWeapon
+
+* alias held
+10 {offhand}
+10 {otherGear}
+
+* alias offhand
+10 buckler
+10 steelShield
+10 towerShield
+7 armouredGauntlet
+10 dagger
+3 sickle
+1 whip
+2 pistol
+3 steelClaw
+
+* alias otherGear
+4 targetDesignator
+4 secureDatapad
+4 medkit
+4 demolitionCharges
+4 {giGear}
+4 {commandGear}
+4 jetpack
+2 emp
+2 plasmaRifle
+
+* alias giGear
+4 fragGrenade
+4 portableTent
+4 extraAmmo
+4 extraRations
+4 camoCloak
+3 smokeGrenade
+3 trenchShovel
+3 radiationPills
+2 flashbangGrenade
+2 deployableCover
+2 caffeinePills
+1 medkit
+
+* alias commandGear
+4 targetLocator
+4 secureDatapad
+4 memoryChip
+4 oneTimePad
+4 microwaveAntenna
+3 emp
+2 telescope
+2 binoculars
+1 paperMap
+1 bubbleShield
+
 * childrenof meleeWeapon
 {meleeMod}
 {meleeChassis}

@@ -129,6 +129,7 @@ class WGenerator {
 
     // Returns WNode[]
     getOutputs (key) {
+        // TODO CLI bug. Crashes when input is sunlight/wiederholungskrieg/carryable/rangedWeapon, probably because rangedWeapon is not a alias but is somehow interpreted as one.
         let nodes = this.resolveString(key || '{output}');
 
         if (nodes[0] && nodes[0].templateName === key && ! nodes[0].template && nodes.length === 1) {
@@ -677,6 +678,14 @@ class WGenerator {
         WGenerator.addGenerator(
             require('../codices/sunlight/wiederholungskrieg/species'),
             'sunlight/wiederholungskrieg/species'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wiederholungskrieg/squadType'),
+            'sunlight/wiederholungskrieg/squadType'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wiederholungskrieg/army'),
+            'sunlight/wiederholungskrieg/army'
         );
         WGenerator.addGenerator(
             require('../codices/sunlight/wiederholungskrieg/faction'),
