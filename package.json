@@ -24,7 +24,8 @@
     "server": "http-server",
     "cape": "node wnode/cape.js",
     "test": "npm run testRingWorld",
-    "testWGenerator": "node generation/wgenerator.js",
+    "wgenerator": "node generation/wgenerator.js",
+    "wiederholungskrieg": "node generation/wiederholungskriegArmy.js",
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
     "testRingWorld": "node bottleWorld/ringWorldState.js test"
   },
