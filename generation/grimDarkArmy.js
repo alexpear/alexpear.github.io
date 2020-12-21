@@ -8,11 +8,17 @@ const Util = require('../util/util.js');
 
 const WNode = require('../wnode/wnode.js');
 
+const CODEX_PATHS = [
+    '40k/imp/guard/army',
+    '40k/imp/astartes/army',
+
+];
+
 class GrimDarkArmy extends WNode {
     constructor (genPath) {
         super();
 
-        genPath = genPath || '40k/imp/astartes/army';
+        genPath = genPath || Util.randomOf(CODEX_PATHS);
 
         const army = WGenerator.generators[genPath].getOutputs()[0];
 
@@ -24,7 +30,8 @@ class GrimDarkArmy extends WNode {
 
     // Func to print the 4x node 4 times, etc.
     summary () {
-        const units = this.components[0].components;
+        const armyNode = this.components[0];
+        const units = armyNode.components;
         const output = [];
 
         for (const section of units) {
@@ -35,12 +42,13 @@ class GrimDarkArmy extends WNode {
             }
         }
 
-        return '\n\n' + output.map(
+        const armyName = Util.fromCamelCase(armyNode.templateName);
+
+        return `\n\n${armyName}\n\n` + output.map(
             node => node.toPrettyString()
         ).join('\n');
 
     }
-
 
     static test () {
         const army = new GrimDarkArmy();

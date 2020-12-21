@@ -3,9 +3,9 @@
 module.exports = `
 
 * output
-1 army
+1 imperialGuardArmy
 
-* childrenof army
+* childrenof imperialGuardArmy
 4x
 2x
 1x
