@@ -580,8 +580,8 @@ class WGenerator {
             '40k/novel'
         );
         WGenerator.addGenerator(
-            require('../codices/40k/guard/army'),
-            '40k/guard/army'
+            require('../codices/40k/imp/guard/army'),
+            '40k/imp/guard/army'
         );
     }
 
@@ -853,6 +853,7 @@ class WGenerator {
             }
             else {
                 const path = process.argv[2];
+                // LATER functionize the following:
                 let wgen = WGenerator.fromCodex(path);
 
                 if (! wgen) {

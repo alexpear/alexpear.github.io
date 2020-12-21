@@ -12,13 +12,17 @@ class GrimDarkArmy extends WNode {
     constructor (genPath) {
         super();
 
-        genPath = genPath || '40k/guard/army';
+        genPath = genPath || '40k/imp/guard/army';
 
         const army = WGenerator.generators[genPath].getOutputs()[0];
 
         army.components.reverse();
+
+        // Later make the above to a static factory func or something, to avoid this weird blank root node.
         this.add(army);
     }
+
+    // TODO func to print the 4x node 4 times, etc.
 
     static test () {
         const army = new GrimDarkArmy();
