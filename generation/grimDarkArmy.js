@@ -22,12 +22,30 @@ class GrimDarkArmy extends WNode {
         this.add(army);
     }
 
-    // TODO func to print the 4x node 4 times, etc.
+    // Func to print the 4x node 4 times, etc.
+    summary () {
+        const units = this.components[0].components;
+        const output = [];
+
+        for (const section of units) {
+            const repeats = parseInt(section.templateName);
+
+            for (let i = 0; i < repeats; i++) {
+                output.push(section.components[0]);
+            }
+        }
+
+        return '\n\n' + output.map(
+            node => node.toPrettyString()
+        ).join('\n');
+
+    }
+
 
     static test () {
         const army = new GrimDarkArmy();
 
-        Util.log('\n' + army.toPrettyString());
+        Util.log(army.summary());
     }
 }
 
