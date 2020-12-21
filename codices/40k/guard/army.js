@@ -9,7 +9,7 @@ module.exports = `
 bulk
 support
 unique
-{size}
+unitCount
 
 * childrenof bulk
 {unit}
@@ -26,6 +26,20 @@ unique
 9 1500Points
 9 2000Points
 9 3000Points
+
+* alias unitCount
+9 6Units
+9 10Units
+9 20Units
+9 30Units
+
+* childrenof armyDistribution
+{distributions}
+
+* alias distributions
+9 Bulk x3 Support x2 Unique x1
+9 Bulk x6 Support x3 Unique x1
+9 Bulk x13 Support x6 Unique x1
 
 * alias unit
 9 {infantry}
