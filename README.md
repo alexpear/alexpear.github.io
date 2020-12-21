@@ -31,8 +31,7 @@ This website include the following prototype projects:
       - Ground
 
 - Simple 40k army list gen
-  - MRB1: Bulk / Support / Unique distribution of units
-  - MRB2: Same, but mention how many units in the bulk, how many in the support, etc
+  - Generalize ImperialGuardArmy.js across all factions. Each faction can have its own squadType.js file or similar.
 
 - Expand upon weapon test func in ProjectileEvent.js
   - Func for testing and logging a entire engagement between 2 Groups (a la Grid War or Halo Ring).

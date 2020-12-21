@@ -6,18 +6,17 @@ module.exports = `
 1 army
 
 * childrenof army
-bulk
-support
-unique
-unitCount
+6x
+3x
+1x
 
-* childrenof bulk
+* childrenof 6x
 {unit}
 
-* childrenof support
+* childrenof 3x
 {unit}
 
-* childrenof unique
+* childrenof 1x
 {unit}
 
 * alias size
