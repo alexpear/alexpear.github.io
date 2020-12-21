@@ -14,12 +14,31 @@ This website include the following prototype projects:
 ## To Do:
 - Wiederholungskrieg army loadout gen
   - Add carried nonweapon items to carryable.js (and armory node)
+  - Find images for displaying graphical summaries Wkrieg armies. Silhouettes or other simple icons.
+    - Infantry
+      - Light
+      - Heavy
+      - Melee
+      - Ranged
+      - Combinations
+    - Cavalry
+      - Horse
+      - Heavy Horse
+      - Motorbike
+      - Jetbike
+    - Vehicle
+      - Flying
+      - Ground
+
+- Simple 40k army list gen
+  - MRB1: Bulk / Support / Unique distribution of units
+  - MRB2: Same, but mention how many units in the bulk, how many in the support, etc
 
 - Expand upon weapon test func in ProjectileEvent.js
   - Func for testing and logging a entire engagement between 2 Groups (a la Grid War or Halo Ring).
-    - They start at a certain range, and can move closer or further during the engagement
+    - They start at a certain range, and can move closer or further during the engagement.
   - Simpler: same but they always move closer.
-  - Simpler: same but they dont move
+  - Simpler: same but they dont move.
 
 - In codices/sunlight/, abbreviate wiederholungskrieg to 'wkrieg'.
 

@@ -579,6 +579,10 @@ class WGenerator {
             require('../codices/40k/novel'),
             '40k/novel'
         );
+        WGenerator.addGenerator(
+            require('../codices/40k/imperialGuard/army'),
+            '40k/imperialGuard/army'
+        );
     }
 
     static loadHaloCodices () {
