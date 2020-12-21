@@ -580,8 +580,8 @@ class WGenerator {
             '40k/novel'
         );
         WGenerator.addGenerator(
-            require('../codices/40k/imperialGuard/army'),
-            '40k/imperialGuard/army'
+            require('../codices/40k/guard/army'),
+            '40k/guard/army'
         );
     }
 
@@ -672,28 +672,28 @@ class WGenerator {
 
     static loadSunlightCodices () {
         WGenerator.addGenerator(
-            require('../codices/sunlight/wiederholungskrieg/carryable'),
-            'sunlight/wiederholungskrieg/carryable'
+            require('../codices/sunlight/wkrieg/carryable'),
+            'sunlight/wkrieg/carryable'
         );
         WGenerator.addGenerator(
-            require('../codices/sunlight/wiederholungskrieg/outfit'),
-            'sunlight/wiederholungskrieg/outfit'
+            require('../codices/sunlight/wkrieg/outfit'),
+            'sunlight/wkrieg/outfit'
         );
         WGenerator.addGenerator(
-            require('../codices/sunlight/wiederholungskrieg/species'),
-            'sunlight/wiederholungskrieg/species'
+            require('../codices/sunlight/wkrieg/species'),
+            'sunlight/wkrieg/species'
         );
         WGenerator.addGenerator(
-            require('../codices/sunlight/wiederholungskrieg/squadType'),
-            'sunlight/wiederholungskrieg/squadType'
+            require('../codices/sunlight/wkrieg/squadType'),
+            'sunlight/wkrieg/squadType'
         );
         WGenerator.addGenerator(
-            require('../codices/sunlight/wiederholungskrieg/army'),
-            'sunlight/wiederholungskrieg/army'
+            require('../codices/sunlight/wkrieg/army'),
+            'sunlight/wkrieg/army'
         );
         WGenerator.addGenerator(
-            require('../codices/sunlight/wiederholungskrieg/faction'),
-            'sunlight/wiederholungskrieg/faction'
+            require('../codices/sunlight/wkrieg/faction'),
+            'sunlight/wkrieg/faction'
         );
         WGenerator.addGenerator(
             require('../codices/sunlight/warband/item'),

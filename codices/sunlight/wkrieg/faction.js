@@ -9,7 +9,7 @@ representative
 military
 
 * childrenof populace
-{wiederholungskrieg/species}
+{wkrieg/species}
 
 * childrenof mind 
 {composition}
@@ -42,11 +42,11 @@ military
 4 politics
 
 * childrenof armory
-{wiederholungskrieg/carryable}
-{wiederholungskrieg/carryable}
+{wkrieg/carryable}
+{wkrieg/carryable}
 
 * childrenof representative
-wiederholungskrieg/outfit
+wkrieg/outfit
 {repTitle}
 
 * alias repTitle
@@ -116,7 +116,7 @@ infantry
 reserve
 
 * childrenof infantry
-wiederholungskrieg/outfit
+wkrieg/outfit
 {infantryName}
 {gender}
 
@@ -171,7 +171,7 @@ wiederholungskrieg/outfit
 1 exclusivelyPostgender
 
 * childrenof reserve
-wiederholungskrieg/outfit
+wkrieg/outfit
 {infantryName}
 {gender}
 

@@ -5,8 +5,8 @@ module.exports = `* output
 0 swarm
 
 * childrenof infantry
-{wiederholungskrieg/carryable/weapon}
-{wiederholungskrieg/carryable/held}
+{wkrieg/carryable/weapon}
+{wkrieg/carryable/held}
 {trait}
 {role}
 
@@ -38,8 +38,8 @@ module.exports = `* output
 
 * childrenof cavalry
 {mount}
-{wiederholungskrieg/carryable/weapon}
-{wiederholungskrieg/carryable/held}
+{wkrieg/carryable/weapon}
+{wkrieg/carryable/held}
 {trait}
 {cavalryRole}
 

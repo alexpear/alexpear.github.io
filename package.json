@@ -25,7 +25,7 @@
     "cape": "node wnode/cape.js",
     "test": "npm run testRingWorld",
     "wgenerator": "node generation/wgenerator.js",
-    "wiederholungskrieg": "node generation/wiederholungskriegArmy.js",
+    "wkrieg": "node generation/wkriegArmy.js",
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
     "testRingWorld": "node bottleWorld/ringWorldState.js test"
   },

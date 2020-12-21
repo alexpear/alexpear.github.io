@@ -40,8 +40,6 @@ This website include the following prototype projects:
   - Simpler: same but they always move closer.
   - Simpler: same but they dont move.
 
-- In codices/sunlight/, abbreviate wiederholungskrieg to 'wkrieg'.
-
 - Make variant AliasTable internal storage format that doesnt use so much memory, but is instead similar to regionTree.js. (Iteratively subtrack each weight from a random roll.)
 
 - Add more files in gridView/images/, and templates mentioning size in individual.js files. 

@@ -7,12 +7,12 @@ support
 unique
 
 * childrenof bulk
-{wiederholungskrieg/squadType}
+{wkrieg/squadType}
 
 * childrenof support
-{wiederholungskrieg/squadType}
+{wkrieg/squadType}
 
 * childrenof unique
-{wiederholungskrieg/squadType}
+{wkrieg/squadType}
 
 `;

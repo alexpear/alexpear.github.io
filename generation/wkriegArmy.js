@@ -17,12 +17,12 @@ const FS = require('fs');
 const Yaml = require('js-yaml');
 
 const Arsenal = Yaml.safeLoad(
-    FS.readFileSync('./codices/sunlight/wiederholungskrieg/wiederholungskrieg.yml', 'utf8')
+    FS.readFileSync('./codices/sunlight/wkrieg/wiederholungskrieg.yml', 'utf8')
 );
 
-const factionWGen = WGenerator.generators['sunlight/wiederholungskrieg/faction'];
+const factionWGen = WGenerator.generators['sunlight/wkrieg/faction'];
 
-class WiederholungskriegArmy extends WNode {
+class WkriegArmy extends WNode {
     constructor () {
         super();
 
@@ -75,12 +75,12 @@ class WiederholungskriegArmy extends WNode {
     }
 
     static test () {
-        const army = new WiederholungskriegArmy();
+        const army = new WkriegArmy();
 
         Util.logDebug('\n' + army.toPrettyString());
     }
 }
 
-module.exports = WiederholungskriegArmy;
+module.exports = WkriegArmy;
 
-WiederholungskriegArmy.test();
+WkriegArmy.test();
