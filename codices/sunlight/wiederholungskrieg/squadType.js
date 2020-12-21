@@ -2,6 +2,7 @@ module.exports = `* output
 9 infantry
 6 cavalry
 6 vehicle
+0 swarm
 
 * childrenof infantry
 {wiederholungskrieg/carryable/weapon}
@@ -23,6 +24,9 @@ module.exports = `* output
 20 nothing
 
 * childrenof lightInfantry
+{mobilityGear}
+
+* alias mobilityGear
 70 nothing
 9 hoverboard
 9 hoverboots
@@ -76,6 +80,7 @@ module.exports = `* output
 4 mortar
 9 swords
 3 sledgehammer
+0 TODO: The melee weapons are tricky to visualize. Constrain to mecha?
 
 * alias vehicleRole
 19 troopTransport
@@ -86,5 +91,8 @@ module.exports = `* output
 9 maximumSpeed
 19 radarInvisible
 9 massProduced
+
+* childrenof troopTransport
+infantry
 
 `;
