@@ -217,6 +217,25 @@ class Group extends WNode {
         return outcome;
     }
 
+    // Creates a Group with a template with totally random properties.
+    static randomCreatures () {
+        const template = {
+            size: Math.ceil(Math.random() * 20) / 10,
+            speed: Math.ceil(Math.random() * 3),
+            // ac
+            sp: Math.ceil(Math.random() * 100),
+            // resistance:
+        };
+
+        const group = new Group();
+
+        const quantity = Math.ceil(Math.random() * 100);
+
+        // TODO
+
+        return group;
+    }
+
     // distanceTo (target) {
     //     const targetCoord = target.coord || target;
 
