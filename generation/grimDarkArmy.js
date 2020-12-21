@@ -11,6 +11,7 @@ const WNode = require('../wnode/wnode.js');
 const CODEX_PATHS = [
     '40k/imp/guard/army',
     '40k/imp/astartes/army',
+    '40k/chaos/blackLegion/army',
 
 ];
 

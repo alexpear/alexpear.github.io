@@ -587,6 +587,10 @@ class WGenerator {
             require('../codices/40k/imp/astartes/army'),
             '40k/imp/astartes/army'
         );
+        WGenerator.addGenerator(
+            require('../codices/40k/chaos/blackLegion/army'),
+            '40k/chaos/blackLegion/army'
+        );
     }
 
     static loadHaloCodices () {
