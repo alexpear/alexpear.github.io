@@ -77,6 +77,69 @@ class Group extends WNode {
         );
     }
 
+    // Returns string like '::::.', a visual depiction of this.quantity.
+    // The string can be multiline.
+    dotGrid () {
+        // Making it divisble by 5 could be dropped in future.
+        let columns = Math.ceil(
+            Math.sqrt(this.quantity) / 5
+        ) * 5;
+
+        if (columns > 90) {
+            columns = 90;
+        }
+
+        const rowCount = Math.ceil(
+            this.quantity / columns / 2
+        );
+
+        // Top row can be incomplete and can contain a . instead of just :s
+        // Lower rows are filled with :s
+        // ::.
+        // :::::
+        // :::::
+        // 25
+
+        // When the top row is exactly divisible, we want to fill it with colons.
+        const topRowQuantity = (this.quantity % (columns * 2)) || (columns * 2);
+        const topRowColonCount = Math.floor(topRowQuantity / 2);
+        const topRowColons = ':'.repeat(topRowColonCount);
+        const topRow = topRowQuantity % 2 === 0 ?
+            topRowColons :
+            topRowColons + '.';
+
+        // if (rowCount === 1) {
+        //     return topRow;
+        // }
+
+        const lowerRow = ':'.repeat(columns);
+        const rows = [topRow];
+
+        for (let r = 1; r < rowCount; r++) {
+            rows.push(lowerRow);
+        }
+
+        return rows.join('\n');
+    }
+
+    static testDotGrid () {
+        for (let x = 0; x < 10; x++) {
+            const quantity = Math.ceil(Math.random() * 1000)
+            const grid = new Group(undefined, quantity).dotGrid();
+
+            Util.log(quantity + '\n' + grid);
+
+            const simplified = grid.replace(/\n/g, '');
+            const count = Util.contains(simplified, '.') ?
+                simplified.length * 2 - 1 :
+                simplified.length * 2;
+
+            if (count !== quantity) {
+                throw new Error(`${quantity}, but i see ${count} dots. Simplified grid is: ${simplified}`);
+            }
+        }
+    }
+
     // Later can move this to interface Actor or something.
     act (worldState) {
         this.destination = this.chosenDestination(worldState);
@@ -192,6 +255,12 @@ class Group extends WNode {
 
         return company;
     }
+
+    static run () {
+        // Group.testDotGrid();
+    }
 };
 
 module.exports = Group;
+
+Group.run();
