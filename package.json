@@ -26,6 +26,7 @@
     "test": "npm run testRingWorld",
     "wgenerator": "node generation/wgenerator.js",
     "wkrieg": "node generation/wkriegArmy.js",
+    "40k": "node generation/grimDarkArmy.js",
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
     "testRingWorld": "node bottleWorld/ringWorldState.js test"
   },
