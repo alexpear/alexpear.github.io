@@ -10,6 +10,8 @@ const Util = require('../../util/util.js');
 const Creature = require('../../wnode/creature.js');
 const Group = require('../../wnode/group.js');
 
+const Yaml = require('js-yaml');
+
 class ProjectileEvent extends BEvent {
     // protagonist is a input param of type Thing.
     constructor (protagonist, target, coord, action) {
@@ -240,7 +242,7 @@ class ProjectileEvent extends BEvent {
 
         // Util.logDebug(target.template);
 
-        Util.log(summary);
+        Util.log('\n' + Yaml.dump(summary));
         return summary;
     }
 
@@ -267,13 +269,16 @@ class ProjectileEvent extends BEvent {
             range: range
         };
 
+        const aName = Util.fromCamelCase(a.templateName);
+        const bName = Util.fromCamelCase(b.templateName);
+
         let t;
         for (t = 0; t < 10000; t++) {
             const aAttack = ProjectileEvent.testFire(a, aAction, b, range, log);
             const bOutcome = b.takeDamage(aAttack.totalDamage);
 
             if (log) {
-                Util.log(`t=${t}. A just fired at B. B now has quantity ${b.quantity}.`)
+                Util.log(`t=${t}. A just fired at B.\n${a.dotGrid()}\n${aName} x${a.quantity}\nvs\n${bName} x${b.quantity}\n${b.dotGrid()}`)
             }
 
             if (! b.active) {
@@ -284,7 +289,7 @@ class ProjectileEvent extends BEvent {
             const aOutcome = a.takeDamage(bAttack.totalDamage);
 
             if (log) {
-                Util.log(`t=${t}. B just fired at A. A now has quantity ${a.quantity}.`)
+                Util.log(`t=${t}. B just fired at A.\n${a.dotGrid()}\n${aName} x${a.quantity}\nvs\n${bName} x${b.quantity}\n${b.dotGrid()}`)
             }
 
             if (! a.active) {
@@ -297,7 +302,7 @@ class ProjectileEvent extends BEvent {
         summary.bFinalQuantity = b.quantity;
 
         if (log) {
-            Util.log(summary);            
+            Util.log('\n' + Yaml.dump(summary));            
         }
 
         return summary;
