@@ -12,7 +12,7 @@ class GrimDarkArmy extends WNode {
     constructor (genPath) {
         super();
 
-        genPath = genPath || '40k/imp/guard/army';
+        genPath = genPath || '40k/imp/astartes/army';
 
         const army = WGenerator.generators[genPath].getOutputs()[0];
 
