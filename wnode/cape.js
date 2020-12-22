@@ -430,7 +430,10 @@ class Cape extends Group{
         Cape.COUNT = 683270;
 
         Cape.WORDS = fs.readFileSync('/usr/share/dict/words', 'utf8')
-            .split('\n');
+            .split('\n')
+            .filter(
+                word => word.length <= 10
+            );
 
         Cape.testCsvConversion();
 
