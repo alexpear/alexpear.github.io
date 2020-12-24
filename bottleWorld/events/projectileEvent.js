@@ -252,12 +252,14 @@ class ProjectileEvent extends BEvent {
     static testEngagement (a, b, range, log) {
         a = Util.default(a, Group.marineCompany());
         b = Util.default(b, Group.marineCompany());
-        range = Util.default(range, 100);
+
+        const defaultRange = Math.ceil(Math.random() * 150);
+        range = Util.default(range, defaultRange);
         log = Util.default(log, true);
 
         // TODO read from Group instance 'a' instead.
-        const aAction = ActionTemplate.example();
-        const bAction = ActionTemplate.example();
+        const aAction = a.actions[0] || ActionTemplate.example();
+        const bAction = b.actions[0] || ActionTemplate.example();
 
         const summary = {
             a: a.templateName,
@@ -269,6 +271,8 @@ class ProjectileEvent extends BEvent {
             range: range
         };
 
+        Util.log(a.toDebugString(), b.toDebugString());
+
         const aName = Util.fromCamelCase(a.templateName);
         const bName = Util.fromCamelCase(b.templateName);
 
@@ -278,7 +282,7 @@ class ProjectileEvent extends BEvent {
             const bOutcome = b.takeDamage(aAttack.totalDamage);
 
             if (log) {
-                Util.log(`t=${t}. A just fired at B.\n${a.dotGrid()}\n${aName} x${a.quantity}\nvs\n${bName} x${b.quantity}\n${b.dotGrid()}`)
+                Util.log(`t=${t}. A just fired at B (range ${range}).\n${a.dotGrid()}\n${aName} x${a.quantity}\nvs\n${bName} x${b.quantity}\n${b.dotGrid()}`)
             }
 
             if (! b.active) {
@@ -289,7 +293,7 @@ class ProjectileEvent extends BEvent {
             const aOutcome = a.takeDamage(bAttack.totalDamage);
 
             if (log) {
-                Util.log(`t=${t}. B just fired at A.\n${a.dotGrid()}\n${aName} x${a.quantity}\nvs\n${bName} x${b.quantity}\n${b.dotGrid()}`)
+                Util.log(`t=${t}. B just fired at A (range ${range}).\n${a.dotGrid()}\n${aName} x${a.quantity}\nvs\n${bName} x${b.quantity}\n${b.dotGrid()}`)
             }
 
             if (! a.active) {
@@ -335,4 +339,7 @@ module.exports = ProjectileEvent;
 
 // ProjectileEvent.testActionDamage();
 // ProjectileEvent.testFire();
-ProjectileEvent.testEngagement();
+ProjectileEvent.testEngagement(
+    Group.random(),
+    Group.random()
+);
