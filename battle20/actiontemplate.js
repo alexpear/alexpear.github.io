@@ -62,7 +62,7 @@ class ActionTemplate extends NodeTemplate {
 
     progressBarSummary () {
         const lines = [
-            `Name: ${this.name} (${Util.shortId(this.id)})`,
+            `Name: ${this.name} (${Util.shortId(this.id)}) (${this.points()} points)`,
             `Shots: ${this.propAsProgressBar('shotsPerSecond')}`,
             `Range: ${this.propAsProgressBar('range')}`,
             `Hit:   ${this.propAsProgressBar('hit')}`,
@@ -101,6 +101,28 @@ class ActionTemplate extends NodeTemplate {
         };
 
         return this[propName] / MAXIMA[propName];
+    }
+
+    // Returns numerical estimate of the overall efficacy of the action.
+    points () {
+        const aspects = [
+            this.propOverBenchmark('range'),
+            this.propOverBenchmark('hit'),
+            this.propOverBenchmark('shotsPerSecond'),
+            this.propOverBenchmark('damage')
+        ]
+        .map(
+            n => n * 10
+        );
+
+        return Math.ceil(
+            Util.sum(aspects)
+            // Multiply everything together.
+            // aspects.reduce(
+            //     (product, a) => product * a,
+            //     1
+            // )
+        );
     }
 
     static example () {
