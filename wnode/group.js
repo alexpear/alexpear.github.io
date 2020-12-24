@@ -143,12 +143,19 @@ class Group extends WNode {
     }
 
     progressBarSummary () {
+        const pointsPerIndividual = this.pointsPerIndividual();
+        const points = this.points();
+        const actionNote = this.actions[0] ?
+            ` (inc. action ${ Util.shortId(this.actions[0].id) })` :
+            '';
+
         const lines = [
             `Name: ${this.templateName} (${Util.shortId(this.id)})`,
             `Quant:${this.propAsProgressBar('quantity')}`,
             `Size: ${this.propAsProgressBar('size')}`,
             `SP:   ${this.propAsProgressBar('sp')}`,
-            `AC:   ${this.propAsProgressBar('ac')}`
+            `AC:   ${this.propAsProgressBar('ac')}`,
+            `${this.quantity} combatants at ${pointsPerIndividual} points${actionNote} each = ${points} points.`
         ];
 
         const output = lines.join('\n');
@@ -202,6 +209,19 @@ class Group extends WNode {
         }
 
         return this.template[propName];
+    }
+
+    points () { 
+        return this.pointsPerIndividual() * this.quantity;
+    }
+
+    // Returns numerical estimate of overall efficacy.
+    pointsPerIndividual () {
+        const actionPoints = this.actions[0]
+            && this.actions[0].points()
+            || 0;
+
+        return Math.ceil(this.propOverBenchmark('sp') * 10 + actionPoints);
     }
 
     // Later can move this to interface Actor or something.

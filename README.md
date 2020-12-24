@@ -37,7 +37,9 @@ This website include the following prototype projects:
   - Func for testing and logging a entire engagement between 2 Groups (a la Grid War or Halo Ring).
     - They start at a certain range, and can move closer or further during the engagement.
   - Simpler: same but they always move closer.
-  - Simpler: same but they dont move.
+
+- GridWar funcs:
+  - Codex entries that let us ask WGenerator for a random Group, using a random implemented template.
 
 - Make variant AliasTable internal storage format that doesnt use so much memory, but is instead similar to regionTree.js. (Iteratively subtrack each weight from a random roll.)
 
