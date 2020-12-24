@@ -142,6 +142,69 @@ class Group extends WNode {
         }
     }
 
+    progressBarSummary () {
+        const lines = [
+            `Name: ${this.templateName} (${Util.shortId(this.id)})`,
+            `Quant:${this.propAsProgressBar('quantity')}`,
+            `Size: ${this.propAsProgressBar('size')}`,
+            `SP:   ${this.propAsProgressBar('sp')}`
+        ];
+
+        return lines.join('\n');
+    }
+
+    propAsProgressBar (propName) {
+        const BAR_MAX = 130;
+
+        const barLength = this.propOverBenchmark(propName) * BAR_MAX;
+
+        const displayedLength = Util.constrain(barLength, 1, BAR_MAX);
+
+        const bar = '█'.repeat(displayedLength);
+
+        const decimals = propName === 'size' ?
+            1 :
+            0;
+
+        const fixedLengthValue = this.getProp(propName)
+            .toFixed(decimals)
+            .padStart(4, ' ');
+
+        const output = `${fixedLengthValue} ${bar}`;
+
+        return barLength <= BAR_MAX ?
+            output :
+            output + '...';
+    }
+
+    // Returning 1 would mean the prop's value is equal to the benchmark.
+    propOverBenchmark (propName) {
+        const MAXIMA = {
+            size: 10,
+            quantity: 100,
+            sp: 100
+        };
+
+        return this.getProp(propName) / MAXIMA[propName];
+    }
+
+    // Could later make this more elegant somehow.
+    getProp (propName) {
+        if (propName === 'sp') {
+            return this.template.sp;
+        }
+
+        if (propName === 'size') {
+            return this.template.size;
+        }
+
+        if (propName === 'quantity') {
+            return this.quantity;
+        }
+
+        throw new Error(`Prop name ${propName} does not yet have summary support.`);
+    }
+
     // Later can move this to interface Actor or something.
     act (worldState) {
         this.destination = this.chosenDestination(worldState);
@@ -287,8 +350,8 @@ class Group extends WNode {
 
     static run () {
         // Group.testDotGrid();
-        // const group = Group.random();
-        // Util.log(group.toDebugString());
+        const group = Group.random();
+        Util.log(group.progressBarSummary());
     }
 };
 
