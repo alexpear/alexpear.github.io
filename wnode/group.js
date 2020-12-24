@@ -147,7 +147,8 @@ class Group extends WNode {
             `Name: ${this.templateName} (${Util.shortId(this.id)})`,
             `Quant:${this.propAsProgressBar('quantity')}`,
             `Size: ${this.propAsProgressBar('size')}`,
-            `SP:   ${this.propAsProgressBar('sp')}`
+            `SP:   ${this.propAsProgressBar('sp')}`,
+            `AC:   ${this.propAsProgressBar('ac')}`
         ];
 
         return lines.join('\n');
@@ -182,27 +183,19 @@ class Group extends WNode {
         const MAXIMA = {
             size: 10,
             quantity: 100,
-            sp: 100
+            sp: 100,
+            ac: 30
         };
 
         return this.getProp(propName) / MAXIMA[propName];
     }
 
-    // Could later make this more elegant somehow.
     getProp (propName) {
-        if (propName === 'sp') {
-            return this.template.sp;
-        }
-
-        if (propName === 'size') {
-            return this.template.size;
-        }
-
         if (propName === 'quantity') {
             return this.quantity;
         }
 
-        throw new Error(`Prop name ${propName} does not yet have summary support.`);
+        return this.template[propName];
     }
 
     // Later can move this to interface Actor or something.
