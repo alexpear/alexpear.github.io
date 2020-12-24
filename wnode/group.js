@@ -143,10 +143,14 @@ class Group extends WNode {
     }
 
     progressBarSummary () {
-        const pointsPerIndividual = this.pointsPerIndividual();
+        const pointsPerIndividual = this.pointsEach();
         const points = this.points();
+
+        const actionPoints = this.actions[0] && this.actions[0].points();
+        const pointsBeforeAction = pointsPerIndividual - actionPoints;
+
         const actionNote = this.actions[0] ?
-            ` (inc. action ${ Util.shortId(this.actions[0].id) })` :
+            ` (${pointsBeforeAction} before action ${ Util.shortId(this.actions[0].id) })` :
             '';
 
         const lines = [
@@ -155,6 +159,7 @@ class Group extends WNode {
             `Size: ${this.propAsProgressBar('size')}`,
             `SP:   ${this.propAsProgressBar('sp')}`,
             `AC:   ${this.propAsProgressBar('ac')}`,
+            `Speed:${this.propAsProgressBar('speed')}`,
             `${this.quantity} combatants at ${pointsPerIndividual} points${actionNote} each = ${points} points.`
         ];
 
@@ -197,7 +202,8 @@ class Group extends WNode {
             size: 10,
             quantity: 100,
             sp: 100,
-            ac: 30
+            ac: 30,
+            speed: 30
         };
 
         return this.getProp(propName) / MAXIMA[propName];
@@ -208,20 +214,27 @@ class Group extends WNode {
             return this.quantity;
         }
 
+        if (propName === 'size') {
+            return this.getSize();
+        }
+
         return this.template[propName];
     }
 
     points () { 
-        return this.pointsPerIndividual() * this.quantity;
+        return this.pointsEach() * this.quantity;
     }
 
     // Returns numerical estimate of overall efficacy.
-    pointsPerIndividual () {
+    pointsEach () {
         const actionPoints = this.actions[0]
-            && this.actions[0].points()
-            || 0;
+            && this.actions[0].points();
 
-        return Math.ceil(this.propOverBenchmark('sp') * 10 + actionPoints);
+        return Math.ceil(
+            this.propOverBenchmark('sp') * 10 +
+            this.propOverBenchmark('speed') +
+            (actionPoints || 0)
+        );
     }
 
     // Later can move this to interface Actor or something.
@@ -311,7 +324,7 @@ class Group extends WNode {
         const template = {
             name: 'randomizedCreature',
             size: Math.ceil(Math.random() * 20) / 10,
-            speed: Math.ceil(Math.random() * 3),
+            speed: Math.ceil(Math.random() * 25),
             ac: 10 + Math.ceil(Math.random() * 15),
             sp: Math.ceil(Math.random() * 100),
             // resistance (later)
@@ -332,11 +345,6 @@ class Group extends WNode {
     //     const targetCoord = target.coord || target;
 
     //     return this.coord.manhattanDistanceTo(targetCoord);
-    // }
-
-    // // Unit: meters of longest dimension when in storage.
-    // getSize () {
-    //     return this.traitMax('size');
     // }
 
     // // Unit: kg on Earth's surface.
