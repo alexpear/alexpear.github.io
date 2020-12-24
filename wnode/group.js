@@ -151,7 +151,13 @@ class Group extends WNode {
             `AC:   ${this.propAsProgressBar('ac')}`
         ];
 
-        return lines.join('\n');
+        const output = lines.join('\n');
+
+        const action = this.actions[0];
+        
+        return action ?
+            output + '\nAction:\n' + action.progressBarSummary() :
+            output;    
     }
 
     propAsProgressBar (propName) {
