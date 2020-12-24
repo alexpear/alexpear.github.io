@@ -270,6 +270,7 @@ class ProjectileEvent extends BEvent {
             range: range
         };
 
+        // TODO log a.progressBarSummary()
         Util.log(a.toDebugString(), b.toDebugString());
 
         const aName = Util.fromCamelCase(a.templateName);
@@ -281,7 +282,7 @@ class ProjectileEvent extends BEvent {
             const bOutcome = b.takeDamage(aAttack.totalDamage);
 
             if (log) {
-                Util.log(`t=${t}. A just fired at B (range ${range}).\n${a.dotGrid()}\n${aName} x${a.quantity}\nvs\n${bName} x${b.quantity}\n${b.dotGrid()}`)
+                Util.log(`t=${ t }. A just fired at B (range ${ range }).\n${ a.dotGrid() }\n${ aName } x${ a.quantity }\nvs\n${ bName } x${ b.quantity }\n${ b.dotGrid() }`);
             }
 
             if (! b.active) {
@@ -292,7 +293,7 @@ class ProjectileEvent extends BEvent {
             const aOutcome = a.takeDamage(bAttack.totalDamage);
 
             if (log) {
-                Util.log(`t=${t}. B just fired at A (range ${range}).\n${a.dotGrid()}\n${aName} x${a.quantity}\nvs\n${bName} x${b.quantity}\n${b.dotGrid()}`)
+                Util.log(`t=${ t }. B just fired at A (range ${ range }).\n${ a.dotGrid() }\n${ aName } x${ a.quantity }\nvs\n${ bName } x${ b.quantity }\n${ b.dotGrid() }`);
             }
 
             if (! a.active) {
