@@ -257,7 +257,6 @@ class ProjectileEvent extends BEvent {
         range = Util.default(range, defaultRange);
         log = Util.default(log, true);
 
-        // TODO read from Group instance 'a' instead.
         const aAction = a.actions[0] || ActionTemplate.example();
         const bAction = b.actions[0] || ActionTemplate.example();
 
