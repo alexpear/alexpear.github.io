@@ -73,30 +73,34 @@ class ActionTemplate extends NodeTemplate {
     }
 
     propAsProgressBar (propName) {
-        const MAXIMA = {
-            shotsPerSecond: 5,
-            range: 1000,
-            hit: 10,
-            damage: 200
-        };
+        const BAR_MAX = 200;
 
-        const SCREEN_WIDTH = 90;
-        const value = this[propName];
+        const barLength = this.propOverBenchmark(propName) * BAR_MAX;
 
-        const barLength = value / MAXIMA[propName] * SCREEN_WIDTH;
-
-        const displayedLength = Util.constrain(barLength, 1, SCREEN_WIDTH);
+        const displayedLength = Util.constrain(barLength, 1, BAR_MAX);
 
         const bar = '█'.repeat(displayedLength);
 
-        const fixedLengthValue = value.toFixed(1)
+        const fixedLengthValue = this[propName].toFixed(1)
             .padStart(7, ' ');
 
         const output = `${fixedLengthValue} ${bar}`;
 
-        return barLength <= SCREEN_WIDTH ?
+        return barLength <= BAR_MAX ?
             output :
             output + '...';
+    }
+
+    // Returning 1 would mean the prop's value is equal to the benchmark.
+    propOverBenchmark (propName) {
+        const MAXIMA = {
+            shotsPerSecond: 5,
+            range: 200,
+            hit: 10,
+            damage: 200
+        };
+
+        return this[propName] / MAXIMA[propName];
     }
 
     static example () {
@@ -156,9 +160,11 @@ class ActionTemplate extends NodeTemplate {
     }
 
     static run () {
-        const rando = ActionTemplate.random();
-        const summary = rando.progressBarSummary();
-        Util.log(summary);
+        // Util.logDebug(`Top of ActionTemplate.run(), unique id: ${Util.newId()}.`);
+
+        // const rando = ActionTemplate.random();
+        // const summary = rando.progressBarSummary();
+        // Util.log(summary);
     }
 };
 
