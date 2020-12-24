@@ -88,6 +88,17 @@ util.mean = (array) => {
     return sum / array.length;
 };
 
+util.constrain = (n, minInclusive, maxInclusive) => {
+    if (n <= minInclusive) {
+        return minInclusive;
+    }
+    if (n >= maxInclusive) {
+        return maxInclusive;
+    }
+
+    return n;
+};
+
 util.randomIntBetween = function (minInclusive, maxExclusive) {
     if (! util.exists(minInclusive) || ! util.exists(maxExclusive)) {
         console.log('error: util.randomIntBetween() called with missing parameters.');

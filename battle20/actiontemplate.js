@@ -60,6 +60,45 @@ class ActionTemplate extends NodeTemplate {
         );
     }
 
+    progressBarSummary () {
+        const lines = [
+            `Name: ${this.name} (${Util.shortId(this.id)})`,
+            `Shots: ${this.propAsProgressBar('shotsPerSecond')}`,
+            `Range: ${this.propAsProgressBar('range')}`,
+            `Hit:   ${this.propAsProgressBar('hit')}`,
+            `Dmg:   ${this.propAsProgressBar('damage')}`
+        ];
+
+        return lines.join('\n');
+    }
+
+    propAsProgressBar (propName) {
+        const MAXIMA = {
+            shotsPerSecond: 5,
+            range: 1000,
+            hit: 10,
+            damage: 200
+        };
+
+        const SCREEN_WIDTH = 90;
+        const value = this[propName];
+
+        const barLength = value / MAXIMA[propName] * SCREEN_WIDTH;
+
+        const displayedLength = Util.constrain(barLength, 1, SCREEN_WIDTH);
+
+        const bar = '█'.repeat(displayedLength);
+
+        const fixedLengthValue = value.toFixed(1)
+            .padStart(7, ' ');
+
+        const output = `${fixedLengthValue} ${bar}`;
+
+        return barLength <= SCREEN_WIDTH ?
+            output :
+            output + '...';
+    }
+
     static example () {
         return ActionTemplate.gunExample();
     }
@@ -115,6 +154,14 @@ class ActionTemplate extends NodeTemplate {
 
         return template;
     }
+
+    static run () {
+        const rando = ActionTemplate.random();
+        const summary = rando.progressBarSummary();
+        Util.log(summary);
+    }
 };
 
 module.exports = ActionTemplate;
+
+ActionTemplate.run();
