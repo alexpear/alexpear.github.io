@@ -1,6 +1,7 @@
 'use strict';
 
 const Coord = require('../util/coord.js');
+const ActionTemplate = require('../battle20/actionTemplate.js');
 const NodeTemplate = require('../battle20/nodeTemplate.js');
 const Util = require('../util/util.js');
 const WNode = require('./wnode.js');
@@ -32,8 +33,9 @@ class Group extends WNode {
 
         this.alignment = alignment;
         this.coord = coord;
-        this.destination = undefined;  // Coord
+        this.destination = undefined; // Coord
         this.target = undefined;  // Group
+        this.actions = [];
     }
 
     toAlignmentString () {
@@ -217,21 +219,29 @@ class Group extends WNode {
         return outcome;
     }
 
+    toDebugString () {
+        const yaml = this.toYaml();
+        return '\n' + yaml;
+    }
+
     // Creates a Group with a template with totally random properties.
-    static randomCreatures () {
+    static random () {
         const template = {
+            name: 'randomizedCreature',
             size: Math.ceil(Math.random() * 20) / 10,
             speed: Math.ceil(Math.random() * 3),
-            // ac
+            ac: 10 + Math.ceil(Math.random() * 15),
             sp: Math.ceil(Math.random() * 100),
-            // resistance:
+            // resistance (later)
         };
-
-        const group = new Group();
 
         const quantity = Math.ceil(Math.random() * 100);
 
-        // TODO
+        const group = new Group(template, quantity);
+
+        group.actions.push(
+            ActionTemplate.random()
+        );
 
         return group;
     }
@@ -277,6 +287,8 @@ class Group extends WNode {
 
     static run () {
         // Group.testDotGrid();
+        // const group = Group.random();
+        // Util.log(group.toDebugString());
     }
 };
 

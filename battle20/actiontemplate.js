@@ -4,6 +4,8 @@ const NodeTemplate = require('./nodeTemplate.js');
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
+const _ = require('lodash');
+
 class ActionTemplate extends NodeTemplate {
     constructor (name, range, hit, damage, shotsPerSecond) {
         super(name);
@@ -96,6 +98,20 @@ class ActionTemplate extends NodeTemplate {
             TAG.Bullet,
             TAG.Firearm
         ];
+
+        return template;
+    }
+
+    // Returns a ActionTemplate with totally randomized traits.
+    static random () {
+        // name, range, hit, damage, shotsPerSecond
+        const template = new ActionTemplate(
+            'randomizedAction',
+            Math.ceil(Math.random() * 100),
+            Math.ceil(Math.random() * 5),
+            Math.ceil(Math.random() * 100),
+            _.round(Math.random() * 3, 1)
+        );
 
         return template;
     }
