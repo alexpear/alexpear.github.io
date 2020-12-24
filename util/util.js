@@ -687,7 +687,7 @@ util.log = function (input, tag) {
         util.stringify(input);
 
     // Later: Red error and beacon text
-    console.log(`  ${tagStr} (${ dateTime }) ${ info }\n`);
+    console.log(`  ${tagStr} (${ dateTime }) \n${ info }\n`);
 };
 
 util.logDebug = function (input) {
