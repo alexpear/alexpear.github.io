@@ -27,6 +27,7 @@
     "wgenerator": "node generation/wgenerator.js",
     "wkrieg": "node generation/wkriegArmy.js",
     "40k": "node generation/grimDarkArmy.js",
+    "eclipse": "node wnode/spacebattles/vessel.js",
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
     "testRingWorld": "node bottleWorld/ringWorldState.js test"
   },

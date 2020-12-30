@@ -636,11 +636,11 @@ class Vessel extends Thing {
     // Example: deep copy a ship and see if a.winRate(b) is sufficiently different from b.winRate(a)
     winRate (other) {
         let wins = 0;
-        const FIGHTS = 1000000;
+        const FIGHTS = 400000;
 
         for (let i = 0; i < FIGHTS; i++) {
-            if (i % 100000 === 0) {
-                Util.log(`vessel.winPercent(), iteration ${i}.`);
+            if (i % 100000 === 50000) {
+                Util.log(`vessel.winPercent(), iteration ${i}, ${(wins / i * 100).toFixed(0)}% win rate.`);
             }
 
             if (this.beats(other)) {
@@ -858,8 +858,8 @@ class Vessel extends Thing {
         // Util.logDebug(ship.simpleYaml());
         // Util.logDebug('\n' + ship.traitsString());
 
-        const hero = Vessel.fromChassis('dreadnought');
-        // const hero = Vessel.orionDreadnought();
+        // const hero = Vessel.fromChassis('dreadnought');
+        const hero = Vessel.orionDreadnought();
         const foe = Vessel.fromChassis('ancient');
 
         Util.logDebug(hero.simpleYaml());
