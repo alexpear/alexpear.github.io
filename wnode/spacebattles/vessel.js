@@ -453,7 +453,8 @@ class Vessel extends Thing {
             if (
                 die.outcome === Vessel.DieOutcome.CriticalHit ||
                 die.outcome === Vessel.DieOutcome.Number &&
-                die.value - shieldPenalty >= 6
+                die.value + shieldPenalty >= 6
+                // Note: shieldPenalty is either 0 or negative.
             ) {
                 expectedDamage += die.damage;
             }
@@ -635,7 +636,7 @@ class Vessel extends Thing {
     // Example: deep copy a ship and see if a.winRate(b) is sufficiently different from b.winRate(a)
     winRate (other) {
         let wins = 0;
-        const FIGHTS = 1;//000000;
+        const FIGHTS = 1000000;
 
         for (let i = 0; i < FIGHTS; i++) {
             if (i % 100000 === 0) {
@@ -801,7 +802,7 @@ class Vessel extends Thing {
 
             const shipTemplates = byInitiative[key].map(v => v.template.name);
             const dieSummaries = rolled.map(d => Vessel.rollString(d));
-            Util.logDebug(`In initiative step ${key}${ missileMode ? ' (Missile mode)' : '' }, we have [${shipTemplates}]. They rolled ${rolled.length} dice, as follows: [${dieSummaries}]`);
+            // Util.logDebug(`In initiative step ${key}${ missileMode ? ' (Missile mode)' : '' }, we have [${shipTemplates}]. They rolled ${rolled.length} dice, as follows: [${dieSummaries}]`);
 
             // Assign to targets following the Eclipse rules' heuristics for nonplayer ships (LATER)
             rolled.forEach(die => {
@@ -827,7 +828,7 @@ class Vessel extends Thing {
                 const damage = target.damageFromDice([die]);
                 const subsequentDurability = target.takeDamage(damage);
 
-                Util.log(`In initiative step ${key}, a attack die with damage ${die.damage} & result ${Vessel.rollString(die)} targets ${target.template.name} ${Util.shortId(target.id)}, dealing ${damage} damage and reducing it to ${subsequentDurability} durability.`);
+                // Util.log(`In initiative step ${key}, a attack die with damage ${die.damage} & result ${Vessel.rollString(die)} targets ${target.template.name} ${Util.shortId(target.id)}, dealing ${damage} damage and reducing it to ${subsequentDurability} durability.`);
                 // Later persist info about where the die came from, what its value was, and where it was assigned.
             });
 
