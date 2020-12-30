@@ -37,13 +37,6 @@ human
 4 civilian
 1 {output}
 
-* childrenof marinePrivate
-{unsc/item/giWeapon}
-{unsc/item}
-unsc/item/flakHelmet
-unsc/item/flakArmor
-human
-
 * alias squadLeader
 4 marinePrivate
 4 marineSpecialist
@@ -61,15 +54,6 @@ human
 * childrenof officer
 {unsc/item/smallWeapon}
 unsc/item/leatherCase
-human
-
-* childrenof odst
-{unsc/item/veteranWeapon}
-{unsc/item/smallWeapon}
-{unsc/item/anyGear}
-unsc/item/visrHelmet
-unsc/item/odstArmor
-unsc/item/fragGrenade
 human
 
 * childrenof helljumper
@@ -118,6 +102,10 @@ weight: 1000
 1 spartan
 1 {output}
 
+* alias groupStatted
+4 marinePrivate
+4 odst
+
 * template marinePrivate
 tags: creature
 size: 1
@@ -129,6 +117,13 @@ toHit: 2
 damage: 2
 shots: 3
 comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily. This marine has a SMG.
+
+* childrenof marinePrivate
+{unsc/item/giWeapon}
+{unsc/item}
+unsc/item/flakHelmet
+unsc/item/flakArmor
+human
 
 * template marine
 tags: creature
@@ -156,6 +151,15 @@ damage: 2
 shots: 3
 attacks: 
   SMG: +2 x2, 2 pierce
+
+* childrenof odst
+{unsc/item/veteranWeapon}
+{unsc/item/smallWeapon}
+{unsc/item/anyGear}
+unsc/item/visrHelmet
+unsc/item/odstArmor
+unsc/item/fragGrenade
+human
 
 * template officer
 size: 1

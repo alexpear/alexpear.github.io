@@ -85,6 +85,9 @@ module.exports = `* output
 2 oniChaingun
 1 splinterTurret
 
+* alias stattedWeapon
+4 {giWeapon}
+
 * alias anyGear
 4 targetDesignator
 4 secureDatapad
@@ -225,36 +228,47 @@ resistance: fire 1, piercing 1, impact 1
 tags: armor
 comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
 
+* template reachPistol
+tags: action bullet firearm 1handed
+range: 70
+shotsPerSecond: 2
+hit: 5
+damage: 40
+
 * template smg
 tags: action bullet firearm fullAuto
 range: 20
+shotsPerSecond: 15
 hit: 3
 damage: 7
 
 * template assaultRifle
 tags: action bullet fullAuto
 range: 40
+shotsPerSecond: 15
 hit: 3
-damage: 8
+damage: 11
 
 * template battleRifle
 tags: action bullet
 range: 80
+shotsPerSecond: 7.2
 hit: 3
 damage: 9
 
 * template dmr
 tags: action bullet firearm optics
 range: 100
-shotsPerSecond: 2
+shotsPerSecond: 3
 hit: 3
 damage: 10
 
 * template shotgun
 tags: action bullet
 range: 9
+shotsPerSecond: 1
 hit: 5
-damage: 80
+damage: 90
 attackDelay: 2
 
 `;
