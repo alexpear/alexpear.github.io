@@ -564,6 +564,12 @@ class Vessel extends Thing {
         return part;
     }
 
+    addPart (partName) {
+        this.components.push(
+            Vessel.makePart(partName)
+        );
+    }
+
     static randomEclipseShip () {
         const chassisName = Util.randomOf([
             'interceptor',
@@ -695,7 +701,7 @@ class Vessel extends Thing {
 
         const damagePerRound = this.expectedDamagePerRound(target) * (1 + allyCount);
 
-        return Math.ceil(totalDurability / damagePerRound);
+        return totalDurability / damagePerRound;
     }
 
     // Has side effects
@@ -885,12 +891,15 @@ class Vessel extends Thing {
     static test () {
         // const ship = Vessel.randomEclipseShip();
         // ship.improve();
-        // Util.logDebug(ship.simpleYaml());
-        // Util.logDebug('\n' + ship.traitsString());
 
-        // const hero = Vessel.fromChassis('dreadnought');
+        // const hero = Vessel.fromChassis('cruiser');
+        // hero.addPart('electronComputer');
+
+        // const foe = Vessel.fromChassis('cruiser');
+        // foe.addPart('ionCannon');
+
         const hero = Vessel.orionDreadnought();
-        const foe = Vessel.fromChassis('ancient');
+        const foe = Vessel.fromChassis('advancedAncient');
 
         Util.logDebug(hero.simpleYaml());
         Util.logDebug('\n' + hero.traitsString());
@@ -907,8 +916,8 @@ class Vessel extends Thing {
         // Util.logDebug(`diagnostics: ${Util.stringify(diagnostics)}`);
 
         const percent = hero.winRate(foe) * 100;
-        const heroRounds = hero.expectedRoundsToBeat([foe]);
-        const foeRounds = foe.expectedRoundsToBeat([hero]);
+        const heroRounds = hero.expectedRoundsToBeat([foe]).toFixed(1);
+        const foeRounds = foe.expectedRoundsToBeat([hero]).toFixed(1);
 
         Util.log(`My ${hero.template.name} can beat this ${foe.template.name} ${percent.toFixed(0)}% of the time in a 1v1. \nThe ${hero.template.name} usually takes ${heroRounds} rounds to win, whereas the ${foe.template.name} usually takes ${foeRounds} to win.`);
 
