@@ -16,7 +16,12 @@ class Vessel extends Thing {
     constructor (chassisTemplate, parts, coord) {
         super(chassisTemplate);
 
-        this.components = this.components.concat(parts || []);
+        const startingUpgrades = chassisTemplate.startingUpgrades &&
+            chassisTemplate.startingUpgrades.map(
+                key => Vessel.makePart(key)
+            );
+
+        this.components = this.components.concat(parts || startingUpgrades || []);
 
         if (! this.legal()) {
             throw new Error(`I cannot construct this illegal ship! ${this.debugString()}`);
@@ -176,7 +181,16 @@ class Vessel extends Thing {
 
     getDurability () {
         const trait = 'durability';
-        return 1 +
+
+        // const diagnostics = {
+        //     name: this.template.name,
+        //     bonusDurability: this.template.bonus && this.template.bonus[trait],
+        //     traitSum: this.traitSumFromParts(trait)
+        // };
+        // const diagString = Util.stringify(diagnostics);
+        // Util.logDebug(`getDurability() diagnostics: ${diagString}`);
+
+        return (this.template.durability || 1) +
             (this.template.bonus && this.template.bonus[trait] || 0) +
             (this.traitSumFromParts(trait) || 0);
     }
@@ -359,6 +373,10 @@ class Vessel extends Thing {
         return this.rollAttackDice(true);
     }
 
+    // Returns: {
+    //     outcome: DieOutcome
+    //     value: number
+    // }
     rollDie (damage, modifier, special) {
         const summary = {
             damage: damage
@@ -384,6 +402,18 @@ class Vessel extends Thing {
         summary.value = roll + modifier;
 
         return summary;
+    }
+
+    static rollString (rollSummary) {
+        if (rollSummary.outcome === Vessel.DieOutcome.Miss) {
+            return 'Miss';
+        }
+
+        if (rollSummary.outcome === Vessel.DieOutcome.Miss) {
+            return 'Crit';
+        }
+
+        return rollSummary.value.toString();
     }
 
     getExampleAttackDice () {
@@ -535,12 +565,26 @@ class Vessel extends Thing {
             'starbase',
             // 'ancient',
             // 'guardian',
-            // 'gccs'
+            // 'gcds'
         ]);
 
         const vessel = new Vessel(Chassis[chassisName]);
 
         vessel.randomizeParts();
+
+        return vessel;
+    }
+
+    static fromChassis (chassisName) {
+        return new Vessel(Chassis[chassisName]);
+    }
+
+    static orionDreadnought () {
+        const vessel = Vessel.fromChassis('dreadnought');
+
+        vessel.components.push(
+            Vessel.makePart('gaussShield')
+        );
 
         return vessel;
     }
@@ -629,7 +673,7 @@ class Vessel extends Thing {
 
         // Nonmissile rounds, in init order.
         let t;
-        for (t = 0; t < 100 && activeAttackers.length && activeDefenders.length; t++) {
+        for (t = 0; (t < 100) && activeAttackers.length && activeDefenders.length; t++) {
             Vessel.engagementRound(byInitiative, activeAttackers, activeDefenders);
 
             activeAttackers = WNode.activesAmong(activeAttackers);
@@ -743,7 +787,7 @@ class Vessel extends Thing {
                 const damage = target.damageFromDice([die]);
                 const subsequentDurability = target.takeDamage(damage);
 
-                Util.log(`In initiative step ${key}, a attack die with damage ${die.damage}, value ${die.value}, and outcome ${die.outcome} targets ${target.template.name} ${target.id}, dealing ${damage} damage and reducing it to ${subsequentDurability} durability.`);
+                Util.log(`In initiative step ${key}, a attack die with damage ${die.damage} & result ${Vessel.rollString(die)} targets ${target.template.name} ${Util.shortId(target.id)}, dealing ${damage} damage and reducing it to ${subsequentDurability} durability.`);
                 // Later persist info about where the die came from, what its value was, and where it was assigned.
             });
 
@@ -759,7 +803,7 @@ class Vessel extends Thing {
     // Adds 1 random part, so long as that is legal
     // Returns nothing
     mutate () {
-
+        // Later
     }
 
     repair () {
