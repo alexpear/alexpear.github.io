@@ -546,7 +546,7 @@ util.asBar = (n) => {
     let bar = '';
 
     for (let i = 0; i < n; i++) {
-        bar = bar + 'X';
+        bar = bar + '█';
     }
 
     return bar;
