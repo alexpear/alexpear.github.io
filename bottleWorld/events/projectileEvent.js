@@ -230,6 +230,11 @@ class ProjectileEvent extends BEvent {
         summary.damagePerShot = ProjectileEvent.damagePerShot(actionTemplate, target);
 
         summary.totalDamage = summary.hits * summary.damagePerShot;
+
+        if (! target.template) {
+            Util.logDebug(`ProjectileEvent.testFire(). target.templateName is ${target.templateName}.`);
+        }
+
         const naiveCasualties = summary.totalDamage / target.template.sp;
         const remainderCasualties = naiveCasualties - Math.floor(naiveCasualties);
 
@@ -250,8 +255,8 @@ class ProjectileEvent extends BEvent {
     // Groups do not move for now. Terrain is flat.
     // Does indeed mutate the Groups.
     static testEngagement (a, b, range, log) {
-        a = Util.default(a, Group.marineCompany());
-        b = Util.default(b, Group.marineCompany());
+        a = Util.default(a, Group.randomTemplate());
+        b = Util.default(b, Group.randomTemplate());
 
         const defaultRange = Math.ceil(Math.random() * 150);
         range = Util.default(range, defaultRange);
@@ -340,6 +345,6 @@ module.exports = ProjectileEvent;
 // ProjectileEvent.testActionDamage();
 // ProjectileEvent.testFire();
 ProjectileEvent.testEngagement(
-    Group.random(),
-    Group.random()
+    // Group.random(),
+    // Group.random()
 );
