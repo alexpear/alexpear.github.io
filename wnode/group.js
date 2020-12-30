@@ -237,6 +237,13 @@ class Group extends WNode {
         );
     }
 
+    // Side effect: Sets this.quantity such that the point total approximates the input number.
+    resetQuantity (points) {
+        const target = _.round(points / this.pointsEach());
+
+        this.quantity = target || 1;
+    }
+
     // Later can move this to interface Actor or something.
     act (worldState) {
         this.destination = this.chosenDestination(worldState);
@@ -367,6 +374,14 @@ class Group extends WNode {
             alignment,
             coord
         );
+    }
+
+    // Returns a Group.
+    // Selects a random implemented template.
+    static randomTemplate () {
+        const squad = Group.new('halo/unsc/individual/groupStatted', 5);
+
+        return squad;
     }
 
     static marineCompany () {

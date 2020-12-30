@@ -12,6 +12,10 @@ This website include the following prototype projects:
   - npm run test
 
 ## To Do:
+- GridWar funcs:
+  - Codex entries that let us ask WGenerator for a random Group, using a random implemented template.
+  - Create a Group and a counterpart with a different template. Log about their difference in points and how many of the second would be equal to 10 of the first.
+
 - Wiederholungskrieg army loadout gen
   - Add carried nonweapon items to carryable.js (and armory node)
   - Find images for displaying graphical summaries Wkrieg armies. Silhouettes or other simple icons.
@@ -30,16 +34,10 @@ This website include the following prototype projects:
       - Flying
       - Ground
 
-- Simple 40k army list gen
-  - Generalize ImperialGuardArmy.js across all factions. Each faction can have its own squadType.js file or similar.
-
 - Expand upon weapon test func in ProjectileEvent.js
   - Func for testing and logging a entire engagement between 2 Groups (a la Grid War or Halo Ring).
     - They start at a certain range, and can move closer or further during the engagement.
   - Simpler: same but they always move closer.
-
-- GridWar funcs:
-  - Codex entries that let us ask WGenerator for a random Group, using a random implemented template.
 
 - Make variant AliasTable internal storage format that doesnt use so much memory, but is instead similar to regionTree.js. (Iteratively subtrack each weight from a random roll.)
 
@@ -49,8 +47,6 @@ This website include the following prototype projects:
 - Brainstorm how to make all BEvents compatible with WorldStates of both continuous and grid spatial models. Ideally everything about Coords should call out to the WorldState, so that it can return Coords with appropriate dimensions and values.
 
 - See TODOs in timeline.js
-
-- Func for Parahumans that takes a cape WNode and pretty prints it
 
 - Explore expanding WGenerator to read from yml format.
   - And/or converting existing codex js files into yml format.
