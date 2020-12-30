@@ -631,6 +631,42 @@ class Vessel extends Thing {
         return outcome.attackersWon;
     }
 
+    // TODO add unit tests.
+    // Example: deep copy a ship and see if a.winRate(b) is sufficiently different from b.winRate(a)
+    winRate (other) {
+        let wins = 0;
+        const FIGHTS = 1;//000000;
+
+        for (let i = 0; i < FIGHTS; i++) {
+            if (i % 100000 === 0) {
+                Util.log(`vessel.winPercent(), iteration ${i}.`);
+            }
+
+            if (this.beats(other)) {
+                wins++;
+            }
+
+            this.repair();
+            other.repair();
+        }
+
+        return wins / FIGHTS;
+    }
+
+    // WIP
+    // Nonstochastic estimation.
+    // No side effects.
+    expectedDamage (target) {
+        // Actually maybe assume 1 missile round and 2 normal rounds.
+        const attacks = this.getAllAttacks();
+
+        const damages = attacks.map(
+            a => 1 // LATER implement this func.
+        );
+
+        return Util.sum(damages);
+    }
+
     // Has side effects
     // Does not repair afterwards
     static battle (attackers, defenders) {
@@ -687,20 +723,20 @@ class Vessel extends Thing {
                 Util.log(`The battle was a tie!`);
             }
             else {
-                Util.log(`Attackers win!`);
+                // Util.log(`Attackers win!`);
                 attackersWon = true;
             }
         }
         else {
             if (activeDefenders.length > 0) {
-                Util.log(`Defenders win!`);
+                // Util.log(`Defenders win!`);
             }
             else {
                 Util.log(`There were no survivors on either side!`);
             }
         }
 
-        Util.log(`After ${t} engagement rounds, ${activeAttackers.length} attacking vessels and ${activeDefenders.length} defending vessels survived.`);
+        // Util.log(`After ${t} engagement rounds, ${activeAttackers.length} attacking vessels and ${activeDefenders.length} defending vessels survived.`);
 
         return {
             activeAttackers,
@@ -763,10 +799,14 @@ class Vessel extends Thing {
                 []
             );
 
+            const shipTemplates = byInitiative[key].map(v => v.template.name);
+            const dieSummaries = rolled.map(d => Vessel.rollString(d));
+            Util.logDebug(`In initiative step ${key}${ missileMode ? ' (Missile mode)' : '' }, we have [${shipTemplates}]. They rolled ${rolled.length} dice, as follows: [${dieSummaries}]`);
+
             // Assign to targets following the Eclipse rules' heuristics for nonplayer ships (LATER)
             rolled.forEach(die => {
                 if (die.outcome === Vessel.DieOutcome.Miss) {
-                    Util.log(`In initiative step ${key}, a attack die with damage ${die.damage} has outcome ${die.outcome}.`);
+                    // Util.log(`In initiative step ${key}, a attack die with damage ${die.damage} has outcome ${die.outcome}.`);
                     return;
                 }
 
@@ -812,18 +852,34 @@ class Vessel extends Thing {
     }
 
     static test () {
-        const ship = Vessel.randomEclipseShip();
-
+        // const ship = Vessel.randomEclipseShip();
+        // ship.improve();
         // Util.logDebug(ship.simpleYaml());
-        // Util.logDebug(ship.getTraits());
+        // Util.logDebug('\n' + ship.traitsString());
 
-        ship.improve();
+        const hero = Vessel.fromChassis('dreadnought');
+        // const hero = Vessel.orionDreadnought();
+        const foe = Vessel.fromChassis('ancient');
 
-        Util.logDebug(ship.simpleYaml());
-        Util.logDebug('\n' + ship.traitsString());
+        Util.logDebug(hero.simpleYaml());
+        Util.logDebug('\n' + hero.traitsString());
+        Util.logDebug(foe.simpleYaml());
+        Util.logDebug('\n' + foe.traitsString());
 
-        // Vessel.testSortedInitiative();
-        Vessel.armsRace();
+        // const diagnostics = {
+        //     getDurability: foe.getDurability(),
+        //     maxDurability: foe.maxDurability,
+        //     currentDurability: foe.currentDurability,
+        //     heroGetDurability: hero.getDurability()
+        // };
+
+        // Util.logDebug(`diagnostics: ${Util.stringify(diagnostics)}`);
+
+        const percent = hero.winRate(foe) * 100;
+
+        Util.log(`My ${hero.template.name} can beat this ${foe.template.name} ${percent.toFixed(0)}% of the time in a 1v1.`);
+
+        // Vessel.armsRace();
     }
 };
 
