@@ -114,7 +114,8 @@ class Vessel extends Thing {
                         tech;
 
                     if (! techs.includes(requirement)) {
-                        return false;
+                        continue; // Ignore tech requirements for now.
+                        // return false;
                     }
                 }
 
@@ -237,6 +238,11 @@ class Vessel extends Thing {
         return attacks;
     }
 
+    // Returns something like this: [{
+    //     missile: true,
+    //     dice: 1,
+    //     damage: 4
+    // }]
     getAllAttacks () {
         const fromChassis = this.template.bonus && this.template.bonus.attacks || [];
 
@@ -658,14 +664,38 @@ class Vessel extends Thing {
     // Nonstochastic estimation.
     // No side effects.
     expectedDamage (target) {
-        // Actually maybe assume 1 missile round and 2 normal rounds.
-        const attacks = this.getAllAttacks();
+        const missileDamage = this.expectedDamagePerRound(target, true);
+        const ROUNDS = 2; // A guess
+        const cannonDamage = this.expectedDamagePerRound(target) * ROUNDS;
 
-        const damages = attacks.map(
-            a => 1 // LATER implement this func.
+        return missileDamage + cannonDamage;
+    }
+
+    expectedDamagePerRound (target, missileMode) {
+        const attacks = missileMode ?
+            this.getMissileAttacks() :
+            this.getNormalAttacks();
+
+        // Reminder: The shield penalty is negative.
+        const netModifier = this.getAimingModifier() + target.getShieldPenalty();
+        const faceCount = Util.constrain(netModifier + 1, 1, 5);
+        const chance = faceCount / 6;
+
+        return attacks.reduce(
+            (expected, attack) => expected + (chance * attack.dice * attack.damage),
+            0
         );
+    }
 
-        return Util.sum(damages);
+    // This func does not yet look at missiles.
+    // Allies & target must be homogenous
+    expectedRoundsToBeat (targetArray, allyCount = 0) {
+        const target = targetArray[0];
+        const totalDurability = target.getDurability() * targetArray.length;
+
+        const damagePerRound = this.expectedDamagePerRound(target) * (1 + allyCount);
+
+        return Math.ceil(totalDurability / damagePerRound);
     }
 
     // Has side effects
@@ -877,8 +907,10 @@ class Vessel extends Thing {
         // Util.logDebug(`diagnostics: ${Util.stringify(diagnostics)}`);
 
         const percent = hero.winRate(foe) * 100;
+        const heroRounds = hero.expectedRoundsToBeat([foe]);
+        const foeRounds = foe.expectedRoundsToBeat([hero]);
 
-        Util.log(`My ${hero.template.name} can beat this ${foe.template.name} ${percent.toFixed(0)}% of the time in a 1v1.`);
+        Util.log(`My ${hero.template.name} can beat this ${foe.template.name} ${percent.toFixed(0)}% of the time in a 1v1. \nThe ${hero.template.name} usually takes ${heroRounds} rounds to win, whereas the ${foe.template.name} usually takes ${foeRounds} to win.`);
 
         // Vessel.armsRace();
     }
