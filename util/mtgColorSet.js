@@ -60,15 +60,25 @@ class MtgColorSet {
     }
 
     opinionOf (other) {
+        if (other.colors.length === 0) {
+            return 0;
+        }
+
         let sum = 0;
 
+        // Repeat other.colors until it is length 60 (LCD of 1 thru 5). This way W likes W (aka WWWWWWWWWWWW...) more than GWU.
+        const repetitions = 60 / other.colors.length;
+        let representatives = [];
+
+        for (let i = 0; i < repetitions; i++) {
+            representatives = representatives.concat(other.colors);
+        }
+
         for (let ourColor of this.colors) {
-            for (let theirColor of other.colors) {
+            for (let theirColor of representatives) {
                 sum += MtgColor.opinionOf(ourColor, theirColor);
             }
         }
-
-        // Alternate alg: multiply other.colors until it is length 60 (LCD of 1 thru 5). This way W likes W (aka WWWWWWWWWWWW...) more than GWU.
 
         return sum;
     }
@@ -86,7 +96,7 @@ class MtgColorSet {
                 const reciprocal = them.opinionOf(us);
 
                 if (opinion !== reciprocal) {
-                    throw new Error(`${opinion} different from ${reciprocal}`);
+                    // throw new Error(`${opinion} different from ${reciprocal} when ${us} looks at ${them}`);
                 }
 
                 const relationship = {
