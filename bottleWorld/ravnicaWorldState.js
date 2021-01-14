@@ -21,6 +21,25 @@ class RavnicaWorldState extends WorldState {
         for (let i = 0; i < 3; i++) {
             this.addNode(new RavnicaOrg());
         }
+
+        initOpinions();
+
+        const summary = statusSummary();
+        Util.log(summary);
+    }
+
+    initOpinions () {
+        for (const a of this.activeNodes()) {
+            for (const b of this.activeNodes()) {
+                a.resetOpinionOn(b);
+            }
+        }
+    }
+
+    statusSummary () {
+        // TODO each node in activeNodes(). 
+        // Orgs should say shortId() and .colors.toString()
+        // And their opinion about the other orgs
     }
 
     static example (timeline) {
