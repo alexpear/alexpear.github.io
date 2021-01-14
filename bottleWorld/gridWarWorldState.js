@@ -204,7 +204,9 @@ class GridWarWorldState extends WorldState {
         const groups = this.activeNodes();
 
         for (const group of groups) {
-            group.act(this);
+            if (group.act) {
+                group.act(this);
+            }
         }
     }
 

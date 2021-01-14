@@ -23,18 +23,12 @@ module.exports = class RavnicaOrg extends Organization {
         this.opinionOf = {};
     }
 
-    initOpinions (worldState) {
-        const orgs = worldState.activeNodes()
-            .filter(
-                n => n.constructor.name === 'RavnicaOrg'
-            );
+    initOpinionOn (other) {
+        if (other === this || other.constructor.name !== 'RavnicaOrg') {
+            return;
+        }
 
-        orgs.forEach(
-            o => {
-                
-            }
-        );
-
+        this.opinionOf[other.id] = this.colorOpinionOf(other);
     }
 
     colorOpinionOf (other) {
