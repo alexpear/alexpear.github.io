@@ -57,6 +57,11 @@ class GridView {
             ['sand'];
 
         // Later leave blank squares undrawn, and let a large background image show thru.
+        // if (! templateName) {
+        //     return;
+        // }
+
+        // const terms = templateName.split('/');
 
         const lastTerm = terms[terms.length - 1];
 
