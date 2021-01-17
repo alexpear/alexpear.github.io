@@ -104,7 +104,9 @@ class Vessel extends Thing {
             return false;
         }
 
-        const seen = {};
+        const uniquesSeen = {};
+
+        let hasDrive = this.template.doesntNeedDrive || false;
 
         for (const c of this.components) {
             if (c.template.context === Vessel.ShipPartContext) {
@@ -119,18 +121,22 @@ class Vessel extends Thing {
                     }
                 }
 
-                if (seen[c.template.name]) {
+                if (uniquesSeen[c.template.name]) {
                     // 2 of the same unique part.
                     return false;
                 }
 
                 if (c.template.unique) {
-                    seen[c.template.name] = true;                    
+                    uniquesSeen[c.template.name] = true;                    
+                }
+
+                if (c.template.travel) {
+                    hasDrive = true;
                 }
             }
         }
 
-        return true;
+        return hasDrive;
     }
 
     getTraits () {
@@ -185,6 +191,7 @@ class Vessel extends Thing {
 
         // const diagnostics = {
         //     name: this.template.name,
+        //     durability: this.template.durability,
         //     bonusDurability: this.template.bonus && this.template.bonus[trait],
         //     traitSum: this.traitSumFromParts(trait)
         // };
@@ -479,6 +486,15 @@ class Vessel extends Thing {
         return this.currentDurability;
     }
 
+    // LATER add params here to filter out rareTech or unique (discovery) etc.
+    randomPart () {
+        const partNames = Object.keys(Parts);
+
+        const name = Util.randomOf(partNames);
+
+        return Vessel.makePart(name);
+    }
+
     // Has side effects, returns nothing.
     randomizeParts (techs, maxSurplus) {
         techs = techs || [];
@@ -490,7 +506,7 @@ class Vessel extends Thing {
         );
 
         const partNames = Object.keys(Parts);
-        // const partNames = ['fissionReactor'];
+        // const partNames = ['nuclearSource'];
         let slotsFilled = 0;
 
         let attempts = 0;
@@ -590,6 +606,25 @@ class Vessel extends Thing {
 
     static fromChassis (chassisName) {
         return new Vessel(Chassis[chassisName]);
+    }
+
+    static fromBlankChassis (chassisName) {
+        const v = new Vessel(Chassis[chassisName]);
+
+        v.components = [];
+        return v;
+    }
+
+    static custom (chassisName, parts) {
+        parts = parts || [];
+
+        const v = Vessel.fromBlankChassis(chassisName);
+
+        v.components = parts.map(
+            name => Vessel.makePart(name)
+        );
+
+        return v;
     }
 
     static orionDreadnought () {
@@ -693,15 +728,22 @@ class Vessel extends Thing {
         );
     }
 
-    // This func does not yet look at missiles.
-    // Allies & target must be homogenous
-    expectedRoundsToBeat (targetArray, allyCount = 0) {
-        const target = targetArray[0];
-        const totalDurability = target.getDurability() * targetArray.length;
+    // TODO this func does not yet look at missiles well.
+    // Allies & target must be homogenous. Overkill prediction might be buggy atm.
+    expectedRoundsToBeat (targets, allyCount = 0) {
+        const target = Util.isArray(targets) ?
+            targets[0] :
+            targets;
+
+        const totalDurability = target.getDurability() * (targets.length || 1);
+
+        // Util.logDebug(`totalDurability is ${totalDurability}`)
+
+        const missileDamage = this.expectedDamagePerRound(target, true) * (1 + allyCount);
 
         const damagePerRound = this.expectedDamagePerRound(target) * (1 + allyCount);
 
-        return totalDurability / damagePerRound;
+        return Math.max(totalDurability - missileDamage, 0) / damagePerRound;
     }
 
     // Has side effects
@@ -880,8 +922,53 @@ class Vessel extends Thing {
     // Adds 1 random part, so long as that is legal
     // Returns nothing
     mutate () {
-        // Later
+
     }
+
+    // TODO: Variant that ignores Discovery upgrades
+    // TODO: Variant that ignores rare techs
+    // TODO: Variant that scores based on efficacy tempered by # of techs required.
+    // TODO: Variant that is only uses a certain type of Source upgrade (eg only 6s).
+    evolve () {
+        const ENEMY = Vessel.fromChassis('ancient');
+
+        for (let attempt = 0; attempt < 100000; attempt++) {
+            const oldRounds = this.expectedRoundsToBeat(ENEMY);
+
+            const componentIndex = Util.randomUpTo(this.components.length - 1);
+            const oldPart = this.components[componentIndex];
+
+            const newPart = Vessel.randomPart();
+            this.components[componentIndex] = newPart;
+
+            if (
+                newPart.template.rareTech ||
+                newPart.template.unique || 
+                newPart.template.nonCanon ||
+                Util.contains(['nuclearSource', 'fusionSource'], newPart.template.name) ||
+                ! this.legal()
+            ) {
+                // Revert
+                this.components[componentIndex] = oldPart;
+                continue;
+            }
+
+            const newRounds = this.expectedRoundsToBeat(ENEMY);
+
+            if (oldRounds < newRounds) {
+                // Revert
+                this.components[componentIndex] = oldPart;
+            }
+        }
+    }
+
+    // On second thought, this func seems unnecessary:
+    // // No caution, no rules.
+    // illicitMutate () {
+    //     const index = Math.floor(Math.random() * this.components.length);
+
+    //     this.components[index] = Vessel.randomPart();
+    // }
 
     repair () {
         this.active = true;
@@ -889,6 +976,11 @@ class Vessel extends Thing {
     }
 
     static test () {
+    //     const rounds = smartCruiser.expectedRoundsToBeat(Vessel.fromChassis('ancient'))
+    //         .toFixed(1);
+
+    //     Util.log(`We expect that ship to win in around ${rounds} unmolested rounds.`);
+
         // const ship = Vessel.randomEclipseShip();
         // ship.improve();
 
@@ -898,11 +990,27 @@ class Vessel extends Thing {
         // const foe = Vessel.fromChassis('cruiser');
         // foe.addPart('ionCannon');
 
-        const hero = Vessel.orionDreadnought();
-        const foe = Vessel.fromChassis('advancedAncient');
+        const hero = Vessel.custom(
+            'cruiser',
+            [
+                'fusionSource',
+                'positronComputer',
+                'positronComputer',
+                'ionCannon',
+                'hull',
+                'nuclearDrive'
+            ]
+        );
+        const foe = Vessel.fromChassis('gcds');
 
         Util.logDebug(hero.simpleYaml());
         Util.logDebug('\n' + hero.traitsString());
+
+        hero.evolve();
+
+        Util.logDebug(hero.simpleYaml());
+        Util.logDebug('\n' + hero.traitsString());
+
         Util.logDebug(foe.simpleYaml());
         Util.logDebug('\n' + foe.traitsString());
 

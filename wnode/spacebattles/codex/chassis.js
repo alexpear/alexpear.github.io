@@ -119,7 +119,8 @@ const Chassis = module.exports = {
                     damage: 1
                 }
             ]
-        }
+        },
+        doesntNeedDrive: true
     },
     advancedAncient: {
         name: 'advancedAncient',
@@ -134,7 +135,8 @@ const Chassis = module.exports = {
                     damage: 2
                 }
             ]
-        }
+        },
+        doesntNeedDrive: true
     },
     guardian: {
         name: 'guardian',
@@ -149,7 +151,8 @@ const Chassis = module.exports = {
                     damage: 1
                 }
             ]
-        }
+        },
+        doesntNeedDrive: true
     },
 
     advancedGuardian: {
@@ -170,7 +173,8 @@ const Chassis = module.exports = {
                     damage: 4
                 }
             ]
-        }
+        },
+        doesntNeedDrive: true
     },
     gcds: {
         name: 'gcds',
@@ -184,7 +188,8 @@ const Chassis = module.exports = {
                     damage: 4
                 }
             ]
-        }
+        },
+        doesntNeedDrive: true
     },
     advancedGcds: {
         name: 'advancedGcds',
@@ -204,7 +209,8 @@ const Chassis = module.exports = {
                     damage: 4
                 }
             ]
-        }
+        },
+        doesntNeedDrive: true
     },
 
     // Homebrew concepts

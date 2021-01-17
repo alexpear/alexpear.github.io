@@ -1,10 +1,10 @@
 const Parts = module.exports = {
-    hullArmor: {
+    hull: {
         power: 0,
         weight: 1000,
         durability: 1
     },
-    improvedHullArmor: {
+    improvedHull: {
         power: 0,
         weight: 1000,
         durability: 2
@@ -34,7 +34,7 @@ const Parts = module.exports = {
         unique: true
     },
     plasmaMissile: {
-        power: 0,
+        power: 1,
         attack: {
             missile: true,
             dice: 2,
@@ -48,7 +48,8 @@ const Parts = module.exports = {
             dice: 1,
             damage: 3
         },
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        rareTech: true
     },
     solitonTurret: {
         power: -2,
@@ -57,7 +58,8 @@ const Parts = module.exports = {
             damage: 3
         },
         initiative: -2,
-        unique: true
+        unique: true,
+        nonCanon: true
     },
     solitonMissile: {
         power: 0,
@@ -96,18 +98,18 @@ const Parts = module.exports = {
         shieldPenalty: -2,
         techsRequired: ['this']
     },
-    fissionReactor: {
+    nuclearSource: {
         power: 3
     },
-    fusionReactor: {
+    fusionSource: {
         power: 6,
         techsRequired: ['this']
     },
-    tachyonReactor: {
+    tachyonSource: {
         power: 9,
         techsRequired: ['this']
     },
-    fissionDrive: {
+    nuclearDrive: {
         power: -1,
         initiative: 1,
         travel: 1
@@ -151,34 +153,34 @@ const Parts = module.exports = {
         },
         unique: true
     },
-    riftCannon: {
-        power: -1,
-        attack: {
-            dice: 1,
-            rift: true
-            // 1 ally damage
-            // miss
-            // miss
-            // 1 damage
-            // 2 damage
-            // 3 damage, 1 ally damage
-        },
-        techsRequired: ['this']
-    },
-    riftTurret: {
-        power: -1,
-        attack: {
-            dice: 2,
-            rift: true
-            // 1 ally damage
-            // miss
-            // miss
-            // 1 damage
-            // 2 damage
-            // 3 damage, 1 ally damage
-        },
-        unique: true
-    },
+    // riftCannon: {
+    //     power: -1,
+    //     attack: {
+    //         dice: 1,
+    //         rift: true
+    //         // 1 ally damage
+    //         // miss
+    //         // miss
+    //         // 1 damage
+    //         // 2 damage
+    //         // 3 damage, 1 ally damage
+    //     },
+    //     techsRequired: ['this']
+    // },
+    // riftTurret: {
+    //     power: -1,
+    //     attack: {
+    //         dice: 2,
+    //         rift: true
+    //         // 1 ally damage
+    //         // miss
+    //         // miss
+    //         // 1 damage
+    //         // 2 damage
+    //         // 3 damage, 1 ally damage
+    //     },
+    //     unique: true
+    // },
     axionComputer: {
         power: 0,
         aiming: 3,
@@ -193,7 +195,8 @@ const Parts = module.exports = {
     absorptionShield: {
         power: 4,
         shieldPenalty: -1,
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        rareTech: true
     },
     inversionShield: {
         power: 2,
@@ -210,7 +213,8 @@ const Parts = module.exports = {
         power: 0,
         travel: 3,
         initiative: -1,
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        rareTech: true
     },
     shardHull: {
         power: 0,
@@ -225,18 +229,21 @@ const Parts = module.exports = {
         power: 0,
         durability: 1,
         aiming: 1,
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        rareTech: true
     },
     conifoldField: {
         power: -2,
         durability: 3,
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        rareTech: true
     },
     interceptorBay: {
         power: -2,
         capacity: 2,
         durability: 1,
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        nonCanon: true
     },
     fluxMissile: {
         power: 0,
@@ -246,22 +253,26 @@ const Parts = module.exports = {
             damage: 1
         },
         initiative: 2,
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        rareTech: true
     },
-    zeroPointReactor: {
+    zeroPointSource: {
         power: 12,
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        rareTech: true
     },
     jumpDrive: {
         power: -2,
         jump: true,
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        nonCanon: true
     },
     muonSource: {
         power: 2,
         initiative: 1,
         ignoreSlots: true,
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        unique: true
     },
     morphShield: {
         power: 0,
@@ -277,7 +288,8 @@ const Parts = module.exports = {
             damage: 1
         },
         initiative: 3,
-        techsRequired: ['this']
+        techsRequired: ['this'],
+        unique: true
     },
 
 
@@ -347,25 +359,25 @@ const Parts = module.exports = {
             
     //     ]
     // },
-    cockpit: {
-        power: -1,
-        aiming: 1,
-        initiative: 2,
-        techsRequired: [
-            'lifeSupport'
-        ]
-        // sensors: 3,
-        // comms: 2,
-    },
-    // I guess their cargo makes this fill a whole slot? Not sure.
-    eccentricGenius: {
-        power: 0,
-        aiming: 1,
-        initiative: 1,
-        unique: true,
-        techsRequired: [
-            'lifeSupport'
-        ]
-    }
+    // cockpit: {
+    //     power: -1,
+    //     aiming: 1,
+    //     initiative: 2,
+    //     techsRequired: [
+    //         'lifeSupport'
+    //     ]
+    //     // sensors: 3,
+    //     // comms: 2,
+    // },
+    // // I guess their cargo makes this fill a whole slot? Not sure.
+    // eccentricGenius: {
+    //     power: 0,
+    //     aiming: 1,
+    //     initiative: 1,
+    //     unique: true,
+    //     techsRequired: [
+    //         'lifeSupport'
+    //     ]
+    // }
 
 };
