@@ -111,6 +111,7 @@ util.randomIntBetween = function (minInclusive, maxExclusive) {
     return Math.floor( Math.random() * (maxExclusive - minInclusive) + minInclusive );
 };
 
+// Returns value in range [0, input]
 util.randomUpTo = function (maxInclusive) {
     return util.randomIntBetween(0, maxInclusive + 1);
 };

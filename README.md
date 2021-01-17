@@ -21,6 +21,13 @@ This website include the following prototype projects:
 - Simple Halo codex wgen that outputs a specific location (ie a multiplayer map) and exactly what wtree forces are on it.
   - Make size-filling codex based on Core GridWar column of monster spreadsheet.
     - Or just use a custom JS file to select a total size of combatants.
+  - Prototype visualizing this in GridWar.
+    - Probably start by editing HTML DOM directly in the browser console.
+    - Also get a topdown Blood Gulch image into the sprites dir.
+  - If integrating into GridWar is tricky, i can start with a simple visual nonspatial gen.
+    - Select a location & gen 2 size-appropriate armies.
+    - Output HTML showing the GridWar sprites in simple rows (not on a grid) and a image of the location.
+    - Could even then build a nonspatial battle program using this UI.
 
 - Wiederholungskrieg army loadout gen
   - Add carried nonweapon items to carryable.js (and armory node)
