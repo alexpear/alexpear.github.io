@@ -12,8 +12,8 @@ const Chassis = module.exports = {
         },
         startingUpgrades: [
             'ionCannon',
-            'fissionDrive',
-            'fissionReactor'
+            'nuclearDrive',
+            'nuclearSource'
         ]
     },
     cruiser: {
@@ -29,9 +29,9 @@ const Chassis = module.exports = {
         startingUpgrades: [
             'ionCannon',
             'electronComputer',
-            'hullArmor',
-            'fissionDrive',
-            'fissionReactor'
+            'hull',
+            'nuclearDrive',
+            'nuclearSource'
         ]
     },
     dreadnought: {
@@ -45,10 +45,10 @@ const Chassis = module.exports = {
             'ionCannon',
             'ionCannon',
             'electronComputer',
-            'hullArmor',
-            'hullArmor',
-            'fissionDrive',
-            'fissionReactor'
+            'hull',
+            'hull',
+            'nuclearDrive',
+            'nuclearSource'
         ]
     },
     starbase: {
@@ -66,8 +66,8 @@ const Chassis = module.exports = {
         startingUpgrades: [
             'ionCannon',
             'electronComputer',
-            'hullArmor',
-            'hullArmor'
+            'hull',
+            'hull'
         ],
         cantHave: ['impulse']
     },
@@ -86,9 +86,9 @@ const Chassis = module.exports = {
             'ionCannon',
             'antimatterCannon',
             'electronComputer',
-            'hullArmor',
-            'fissionReactor',
-            'fissionDrive'
+            'hull',
+            'nuclearSource',
+            'nuclearDrive'
         ],
         cantHave: ['impulse']
     },
