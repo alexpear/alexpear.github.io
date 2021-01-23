@@ -78,11 +78,17 @@ class HaloArmy extends WNode {
         Util.log(this.pretty());
     }
 
+    static randomLocation () {
+        return Util.randomOf(
+            Object.keys(HaloArmy.LOCATION)
+        );
+    }
+
     static init () {
         HaloArmy.FACTION = {
             unsc: {
                 // topdown sizes (meters)
-                crew: 1,
+                // crew: 1,
                 marine: 1,
                 odst: 1,
                 spartan: 1.5,
@@ -107,15 +113,66 @@ class HaloArmy extends WNode {
                 infinity: 5700
             },
             cov: {
-
+                grunt: 1,
+                specOpsGrunt: 1,
+                jackal: 1,
+                drone: 1,
+                elite: 2,
+                stealthElite: 2,
+                brute: 2,
+                hunter: 3,
+                ghost: 4,
+                shadeTurret: 4,
+                chopper: 6,
+                banshee: 7,
+                revenant: 7,
+                spectre: 7,
+                prowler: 7,
+                sniperPlatform: 8,
+                wraith: 9,
+                locust: 12,
+                phantom: 33,
+                scarab: 49,
+                lich: 103,
+                kraken: 200,
+                harvester: 278,
+                lightCruiser: 300,
             },
 
-        }
+        };
+
+        HaloArmy.LOCATION = {
+            guardian: 75,
+            lockout: 80,
+            hangEmHigh: 100,
+            battleCreek: 100,
+            boardingAction: 132,
+            complex: 200,
+            sandtrap: 250,
+            sidewinder: 300,
+            spire: 300,
+            relic: 320,
+            temple: 400,
+            skirmishAtDarkstar: 400,
+            deathIsland: 405,
+            bloodGulch: 460,
+            gephyrophobia: 490,
+            raidOnApex7: 500,
+            battleOfNoctus: 500,
+            infinity: 675,
+            marchOnStormbreak: 738,
+            attackOnSanctum: 820,
+            forgeWorld: 1450
+        };
     }
 
     static test () {
-        const army = new HaloArmy('unsc', 1400);
-        army.prettyPrint();
+        const location = HaloArmy.randomLocation();
+        const armySize = HaloArmy.LOCATION[location] / 4;
+        const armyA = new HaloArmy('unsc', armySize);
+        const armyB = new HaloArmy('cov', armySize);
+
+        Util.log(`\n${armyA.pretty()} \n\nis trying to capture ${Util.fromCamelCase(location)} from: \n\n${armyB.pretty()}`);
     }
 }
 
