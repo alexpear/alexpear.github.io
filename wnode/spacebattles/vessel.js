@@ -637,6 +637,96 @@ class Vessel extends Thing {
         return vessel;
     }
 
+    static smartCruiser (powerLevel) {
+        powerLevel = powerLevel || 3;
+
+        const PARTS_LIST = {
+            3: [
+                'fusionSource',
+                'electronComputer',
+                'electronComputer',
+                'electronComputer',
+                'ionCannon',
+                'nuclearDrive'
+            ],
+            6: [
+                'fusionSource',
+                'positronComputer',
+                'positronComputer',
+                'plasmaCannon',
+                'hull',
+                'nuclearDrive'
+            ],
+            9: [
+                'tachyonSource',
+                'positronComputer',
+                'positronComputer',
+                'antimatterCannon',
+                'hull',
+                'nuclearDrive'
+            ],
+            12: [
+                'zeroPointSource',
+                'gluonComputer',
+                'gluonComputer',
+                'antimatterCannon',
+                'conifoldField',
+                'nuclearDrive'
+            ]
+        };
+
+        return Vessel.custom(
+            'cruiser',
+            PARTS_LIST[powerLevel]
+        );
+    }
+
+    static missileCruiser () {
+        return Vessel.custom(
+            'cruiser',
+            [
+                'gluonComputer',
+                'plasmaMissile',
+                'plasmaMissile',
+                'plasmaMissile',
+                'fusionSource',
+                'nuclearDrive'
+            ]
+        );
+    }
+
+    static toughDreadnought () {
+        return Vessel.custom(
+            'dreadnought',
+            [
+                'conifoldField',
+                'conifoldField',
+                'zeroPointSource',
+                'plasmaCannon',
+                'plasmaCannon',
+                'fusionDrive',
+                'phaseShield',
+                'positronComputer'
+            ]
+        );
+    }
+
+    static smartDreadnought () {
+        return Vessel.custom(
+            'dreadnought',
+            [
+                'fusionSource',
+                'fusionSource',
+                'antimatterCannon',
+                'antimatterCannon',
+                'nuclearDrive',
+                'hull',
+                'positronComputer',
+                'positronComputer'
+            ]
+        );
+    }
+
     static allTechs () {
         return Object.keys(Parts);
     }
@@ -687,9 +777,10 @@ class Vessel extends Thing {
 
         for (let i = 0; i < FIGHTS; i++) {
             if (i % 100000 === 50000) {
-                Util.log(`vessel.winPercent(), iteration ${i}, ${(wins / i * 100).toFixed(0)}% win rate.`);
+                Util.log(`vessel.winRate(), iteration ${i}, ${(wins / i * 100).toFixed(0)}% win rate.`);
             }
 
+            // TODO Alternate attacker/defender.
             if (this.beats(other)) {
                 wins++;
             }
@@ -706,7 +797,7 @@ class Vessel extends Thing {
     // No side effects.
     expectedDamage (target) {
         const missileDamage = this.expectedDamagePerRound(target, true);
-        const ROUNDS = 2; // A guess
+        const ROUNDS = 3; // A guess
         const cannonDamage = this.expectedDamagePerRound(target) * ROUNDS;
 
         return missileDamage + cannonDamage;
@@ -799,19 +890,19 @@ class Vessel extends Thing {
 
         if (activeAttackers.length > 0) {
             if (activeDefenders.length > 0) {
-                Util.log(`The battle was a tie!`);
+                Util.log(`The battle was a tie! t=${t}`);
             }
             else {
-                // Util.log(`Attackers win!`);
+                // Util.log(`Attackers win! t=${t}`);
                 attackersWon = true;
             }
         }
         else {
             if (activeDefenders.length > 0) {
-                // Util.log(`Defenders win!`);
+                // Util.log(`Defenders win! t=${t}`);
             }
             else {
-                Util.log(`There were no survivors on either side!`);
+                Util.log(`There were no survivors on either side! t=${t}`);
             }
         }
 
@@ -976,60 +1067,37 @@ class Vessel extends Thing {
     }
 
     static test () {
-    //     const rounds = smartCruiser.expectedRoundsToBeat(Vessel.fromChassis('ancient'))
-    //         .toFixed(1);
-
-    //     Util.log(`We expect that ship to win in around ${rounds} unmolested rounds.`);
-
-        // const ship = Vessel.randomEclipseShip();
-        // ship.improve();
-
-        // const hero = Vessel.fromChassis('cruiser');
-        // hero.addPart('electronComputer');
-
-        // const foe = Vessel.fromChassis('cruiser');
-        // foe.addPart('ionCannon');
-
-        const hero = Vessel.custom(
-            'cruiser',
-            [
-                'fusionSource',
-                'positronComputer',
-                'positronComputer',
-                'ionCannon',
-                'hull',
-                'nuclearDrive'
-            ]
-        );
-        const foe = Vessel.fromChassis('gcds');
+        // const hero = Vessel.custom(
+        //     'cruiser',
+        //     [
+        //         'fusionSource',
+        //         'positronComputer',
+        //         'positronComputer',
+        //         'ionCannon',
+        //         'hull',
+        //         'nuclearDrive'
+        //     ]
+        // );
+        const hero = Vessel.smartDreadnought();
+        const foe = Vessel.toughDreadnought();
 
         Util.logDebug(hero.simpleYaml());
         Util.logDebug('\n' + hero.traitsString());
 
-        hero.evolve();
+        // hero.evolve();
 
-        Util.logDebug(hero.simpleYaml());
-        Util.logDebug('\n' + hero.traitsString());
+        // Util.logDebug(hero.simpleYaml());
+        // Util.logDebug('\n' + hero.traitsString());
 
         Util.logDebug(foe.simpleYaml());
         Util.logDebug('\n' + foe.traitsString());
-
-        // const diagnostics = {
-        //     getDurability: foe.getDurability(),
-        //     maxDurability: foe.maxDurability,
-        //     currentDurability: foe.currentDurability,
-        //     heroGetDurability: hero.getDurability()
-        // };
-
-        // Util.logDebug(`diagnostics: ${Util.stringify(diagnostics)}`);
 
         const percent = hero.winRate(foe) * 100;
         const heroRounds = hero.expectedRoundsToBeat([foe]).toFixed(1);
         const foeRounds = foe.expectedRoundsToBeat([hero]).toFixed(1);
 
         Util.log(`My ${hero.template.name} can beat this ${foe.template.name} ${percent.toFixed(0)}% of the time in a 1v1. \nThe ${hero.template.name} usually takes ${heroRounds} rounds to win, whereas the ${foe.template.name} usually takes ${foeRounds} to win.`);
-
-        // Vessel.armsRace();
+        Util.log(`Expected missile damage: ${foe.expectedDamagePerRound(hero, true)}`);
     }
 };
 
