@@ -483,6 +483,54 @@ class WNode {
         return Util.withProp(nodes, 'active');
     }
 
+    static human () {
+        return new WNode(WNode.humanTemplate());
+        // LATER init from a template, which can have size, weight, and tags such as animal.
+        // LATER could move this to class Thing, Creature, and/or Group.
+    }
+
+    static humanTemplate () {
+        return {
+            name: 'human',
+            size: 1, // topdown
+            weight: 80,
+            speed: 3,
+            individuals: 1,
+            sp: 10,
+            damage: 2,
+            tags: 'creature animal mammal biped terrestrial biological organism'.split(' ')
+        };
+    }
+
+    static impliedTags (tag) {
+        const IMPLICATIONS = {
+            organism: ['thing', 'biological'],
+            plant: 'organism',
+            fungus: 'organism',
+            animal: 'organism',
+            fish: 'animal',
+            reptile: 'animal',
+            bird: 'animal',
+            insect: 'animal',
+            mammal: 'animal',
+            humanoid: 'mammal',
+            human: 'humanoid',
+
+            goblinoid: 'humanoid',
+            goblin: 'goblinoid',
+            dwarf: 'humanoid',
+            elf: 'humanoid',
+
+            item: 'thing',
+            weapon: 'item',
+        };
+
+        // TODO, no, need to iterate on the found tags too.
+        const tags = Util.array(IMPLICATIONS[tag]) || [];
+
+        return [tag].concat(tags);
+    }
+
     static test () {
         // Unit test for toArray()
         const root = new WNode('root');

@@ -132,6 +132,16 @@ util.randomFromObj = function (obj) {
     return obj[key];
 };
 
+// Param: obj, whose values are also objects.
+// Side effect: writes to .name prop of child objs.
+util.randomWithName = (obj) => {
+    const name = _.sample(Object.keys(obj));
+
+    const entry = obj[name];
+    entry.name = name;
+    return entry;
+};
+
 // decimalPlaces param is optional and lodash defaults it to 0.
 util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
     if (maxExclusive < minInclusive) {
