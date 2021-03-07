@@ -11,24 +11,91 @@ chassisList:
 
 
 componentList:
-  binoculars:
-    weight: 1
-
   knife:
-    weight: 2
+    weight: 0.5
     # wait, trditionally childrenOf would specify a alias with certainty, then that would contain a random table.
-    # hmm ... i could just have a childrenChance to represent the nothing dynamic.
+    childrenChance: 0.5
     childrenOf:
-      nothing: 10
       electroMod: 2
+    slot: hand
+    hands: 1
 
       # More exotic tech such as energy weapons can be put into a 'expansion pack' yml file. That file can be merged in in-memory when needed.
 
+  gladius:
+    weight: 1
+    slot: hand
+    hands: 1
+
+  whip:
+    weight: 0.5
+    slot: hand
+    hands: 1
+
+  net:
+    weight: 1
+    slot: hand
+    hands: 1
+
+  chain:
+    weight: 10
+    slot: hand
+    hands: 1
+
+  grapplingHook:
+    weight: 0.5
+    slot: hand
+    hands: 1
+
+  binoculars:
+    weight: 0.5
+    slot: hand
+    hands: 1
+
   lightPistol:
+    weight: 0.5
+    slot: hand
+    hands: 1
+
+  heavyPistol:
+    weight: 2
+    slot: hand
+    hands: 1
+
+  rifle:
     weight: 4
+    slot: hand
+    hands: 2
+
+  javelin:
+    weight: 3
+    slot: hand
+    thrown: true
+    hands: 1
+
+  battleSpear:
+    weight: 4
+    slot: hand
+    hands: 2
+
+  heavyWarhammer:
+    weight: 15
+    slot: hand
+    hands: 2
+
+  smallShield:
+    weight: 10
+    slot: hand
+    hands: 1
+
+  towerShield:
+    weight: 10
+    slot: hand
+    hands: 1
 
   steelBreastplate:
     weight: 30
+    slot: chest
 
 aliasList:
   foo:

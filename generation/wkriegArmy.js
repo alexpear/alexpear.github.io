@@ -74,10 +74,74 @@ class WkriegArmy extends WNode {
         return _.sample(outputs);
     }
 
-    static test () {
-        const army = new WkriegArmy();
+    static acceptable (combatant) {
+        if (combatant.getWeight() > 200) {
+            return false;
+        }
 
-        Util.logDebug('\n' + army.toPrettyString());
+        if (combatant.traitSum('hands') > 4) {
+            // Later exempt thrown weapons and expendable items
+            return false;
+        }
+
+        return true;
+        // check total weight and total size isnt too bulky
+        // potentially count chest/back slots as half weight
+        // (or try out one abstract numerical representation of weight and bulky size, if this gets too fiddly)
+        // check for too many entries in certain slots
+        // 3 of a non-expendable item is too many
+        // perhaps 3 non-expendable weapons is too many
+        // yes but what about Legolas' 2 swords & 1 bow? or 2 pistols & 1 katana?
+        // could allow double pistols as a unit.
+        /* suggested model
+        these are allowable:
+        . up to 2 weapon entries
+          . a weapon entry is either a weapon, or a matched pair of 1-handed weapons, or a shield and a 1-handed weapon
+            . how about 1handed weapon and grappling hook? wrist grapple? torch? flashlight? binoculars? radio? net? reins of a horse? rope?
+            . this suggests allowing mismatched pairs of 1handed items.
+            . so should i cap it at 4 hands worth of items being the max?
+        . various expendable items, such as flintlock pistols or throwing weapons
+        . worn items
+          . maybe these should be generated after weapons, to adapt when a wrist gun is one of the weapons
+
+        v2:
+        . 1 to 4 hands worth of holdable items
+          . MRB2: combatant must have at least 1 weapon 
+
+
+
+        */
+    }
+
+    static weightBasedCombatant () {
+        const combatant = WNode.human();
+        const MAX_ITEMS = 5;
+        
+        for(let i = 0; i < MAX_ITEMS; i++) {
+            const randomTemplate = WkriegArmy.randomWeightBasedItem();
+            const newItem = new WNode(randomTemplate);
+            combatant.add(newItem);
+
+            if (! WkriegArmy.acceptable(combatant)) {
+                // Give up upon invalid addition.
+                combatant.components.pop();
+                return combatant;
+            }
+        }
+
+        return combatant;
+    }
+
+    static randomWeightBasedItem () {
+        return Util.randomWithName(
+            Arsenal.componentList
+        );
+    }
+
+    static test () {
+        const node = WkriegArmy.weightBasedCombatant();
+
+        Util.logDebug('\n' + node.toPrettyString() + node.getWeight() + 'kg');
     }
 }
 
