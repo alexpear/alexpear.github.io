@@ -37,7 +37,7 @@ componentList:
     slot: hand
     hands: 1
 
-  chain:
+  chainWhip:
     weight: 10
     slot: hand
     hands: 1

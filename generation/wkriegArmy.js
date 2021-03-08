@@ -108,6 +108,7 @@ class WkriegArmy extends WNode {
         . 1 to 4 hands worth of holdable items
           . MRB2: combatant must have at least 1 weapon 
 
+        or maybe only allow up to 2 hands of held items, but allow a Inventory node that can contain lots of various things, up to weight 15kg.
 
 
         */
@@ -115,9 +116,9 @@ class WkriegArmy extends WNode {
 
     static weightBasedCombatant () {
         const combatant = WNode.human();
-        const MAX_ITEMS = 5;
+        const maxItems = Util.randomUpTo(5);
         
-        for(let i = 0; i < MAX_ITEMS; i++) {
+        for(let i = 0; i < maxItems; i++) {
             const randomTemplate = WkriegArmy.randomWeightBasedItem();
             const newItem = new WNode(randomTemplate);
             combatant.add(newItem);
@@ -141,7 +142,7 @@ class WkriegArmy extends WNode {
     static test () {
         const node = WkriegArmy.weightBasedCombatant();
 
-        Util.logDebug('\n' + node.toPrettyString() + node.getWeight() + 'kg');
+        Util.logDebug('\n' + node.toPrettyString(0, true, false));
     }
 }
 

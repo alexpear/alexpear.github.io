@@ -197,7 +197,7 @@ class WNode {
     }
 
     // Format that looks like informal YAML but with props above components.
-    toPrettyString (indent, weightMode) {
+    toPrettyString (indent, weightMode, personnel = true) {
         indent = Util.default(indent, 0);
         weightMode = Util.default(weightMode, false);
 
@@ -226,7 +226,7 @@ class WNode {
         }
 
         const headCount = this.headCount();
-        if (headCount) {
+        if (headCount && personnel) {
             outString += furtherLine(`  ${Util.commaNumber(headCount)} personnel`);
         }
 
