@@ -14,6 +14,7 @@ module.exports = class RavnicaOrg extends Organization {
     constructor (colorA, colorB, leaderTemplateName) {
         super();
 
+        // [], not MtgColorSet obj.
         this.colors = colorA ?
             [colorA, colorB] :
             MtgColor.randomSet(2);

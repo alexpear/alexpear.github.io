@@ -7,6 +7,7 @@ class MtgColor {
         return Util.randomOf(MtgColor.COLORS);
     }
 
+    // Returns [], not MtgColorSet obj.
     static randomSet (size) {
         if (size >= 5) {
             return MtgColor.COLORS.slice();

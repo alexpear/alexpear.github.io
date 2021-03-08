@@ -8,6 +8,7 @@ const Timeline = require('./timeline.js');
 const WGenerator = require('../generation/wgenerator.js');
 
 const Coord = require('../util/coord.js');
+const MtgColorSet = require('../util/mtgColorSet.js');
 const Util = require('../util/util.js');
 
 const Group = require('../wnode/group.js');
@@ -22,33 +23,53 @@ class RavnicaWorldState extends WorldState {
             this.addNode(new RavnicaOrg());
         }
 
-        initOpinions();
+        this.initOpinions();
 
-        const summary = statusSummary();
-        Util.log(summary);
+        const summary = this.statusSummary();
+        // Util.log(summary);
     }
 
     initOpinions () {
         for (const a of this.activeNodes()) {
             for (const b of this.activeNodes()) {
-                a.resetOpinionOn(b);
+                const aSet = new MtgColorSet(a.colors);
+                const bSet = new MtgColorSet(b.colors);
+
+                a.opinionOf[b.id] = aSet.opinionOf(bSet);
             }
         }
     }
 
     statusSummary () {
-        // TODO each node in activeNodes(). 
-        // Orgs should say shortId() and .colors.toString()
-        // And their opinion about the other orgs
+        return this.activeNodes()
+            .map(n => {
+                const niceColors = MtgColorSet.toPrettyString(n.colors);
+                // const abrvColors = MtgColorSet.abbreviate(n.colors);
+                const name = `The ${n.shortId()} Office (${niceColors})\n`;
+
+                const opinions = Object.keys(n.opinionOf)
+                    .map(id => {
+                        const otherId = Util.shortId(id);
+                        const other = this.fromId(id);
+                        const otherColorAbrv = MtgColorSet.abbreviate(other.colors);
+
+                        return `  Opinion of ${otherId} (${otherColorAbrv}): ${n.opinionOf[id]}`
+                    })
+                    .join('\n');
+
+                return name + opinions;
+            })
+            .join('\n');
     }
 
     static example (timeline) {
-
+        return new RavnicaWorldState();
     }
 
     static test () {
+        const world = RavnicaWorldState.example();
 
-
+        Util.log(world.statusSummary());
     }
 
     static run () {

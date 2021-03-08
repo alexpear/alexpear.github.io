@@ -399,4 +399,4 @@ class Group extends WNode {
 
 module.exports = Group;
 
-Group.run();
+// Group.run();

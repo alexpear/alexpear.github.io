@@ -263,7 +263,7 @@ class WNode {
 
     // Returns a abbreviation of the ID.
     shortId () {
-        return `${Util.shortId(this.id)}`;
+        return Util.shortId(this.id);
     }
 
     getPropSummary () {

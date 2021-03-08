@@ -18,6 +18,10 @@ class MtgColorSet {
     }
 
     initFromAbbrvs (abbrvs) {
+        if (Util.isArray(abbrvs)) {
+            abbrvs = MtgColorSet.abbreviate(abbrvs);
+        }
+
         abbrvs = abbrvs.toUpperCase();
 
         // Later could use regex to check for invalid input.
@@ -57,6 +61,18 @@ class MtgColorSet {
             c => MtgColor.ABBRVS[c]
         )
         .join('');
+    }
+
+    static abbreviate (array) {
+        return array.map(
+            s => MtgColor.ABBRVS[s]
+        )
+        .join('');
+    }
+
+    static toPrettyString (array) {
+        return array.map(s => Util.capitalized(s))
+            .join(' / ');
     }
 
     opinionOf (other) {
@@ -214,4 +230,4 @@ class MtgColorSet {
 
 module.exports = MtgColorSet;
 
-MtgColorSet.testOpinions();
+// MtgColorSet.testOpinions();
