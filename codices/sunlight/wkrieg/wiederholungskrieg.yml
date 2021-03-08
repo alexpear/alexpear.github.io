@@ -87,6 +87,7 @@ componentList:
     weight: 10
     slot: hand
     hands: 1
+    chance: 30 # default is 10
 
   towerShield:
     weight: 10

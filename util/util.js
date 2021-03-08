@@ -424,6 +424,8 @@ util.arrayCopy = (a) => {
     return a.map(x => x);
 };
 
+util.round = (n) => _.round(n);
+
 util.commaNumber = (n) =>
     commaNumber(n);
 

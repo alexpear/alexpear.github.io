@@ -79,7 +79,7 @@ class WkriegArmy extends WNode {
             return false;
         }
 
-        if (combatant.traitSum('hands') > 4) {
+        if (combatant.traitSum('hands') > 2) {
             // Later exempt thrown weapons and expendable items
             return false;
         }
@@ -116,33 +116,57 @@ class WkriegArmy extends WNode {
 
     static weightBasedCombatant () {
         const combatant = WNode.human();
-        const maxItems = Util.randomUpTo(5);
+
+        const maxItems = 1 + Util.randomUpTo(3);
         
         for(let i = 0; i < maxItems; i++) {
-            const randomTemplate = WkriegArmy.randomWeightBasedItem();
+            const randomTemplate = WkriegArmy.randomWeightBasedItemTemplate();
             const newItem = new WNode(randomTemplate);
             combatant.add(newItem);
 
             if (! WkriegArmy.acceptable(combatant)) {
                 // Give up upon invalid addition.
                 combatant.components.pop();
-                return combatant;
+                break;
             }
         }
+
+        // Plus one carried item, in a sling holster or pack.
+        const item = new WNode(
+            WkriegArmy.randomWeightBasedItemTemplate()
+        );
+
+        const inventory = new WNode('back');
+        inventory.add(item);
+        // combatant.add(inventory);
 
         return combatant;
     }
 
-    static randomWeightBasedItem () {
+    static randomWeightBasedItemTemplate () {
         return Util.randomWithName(
             Arsenal.componentList
         );
     }
 
-    static test () {
+    static testWeightBased () {
         const node = WkriegArmy.weightBasedCombatant();
 
-        Util.logDebug('\n' + node.toPrettyString(0, true, false));
+        const agBonus = Util.round(
+            Math.max(120 - node.getWeight(), 0)
+        );
+
+        const bonus = `Agility: ${'█'.repeat(agBonus)}`;
+
+        Util.logDebug('\n' + node.toPrettyString(0, true, false) + bonus);
+    }
+
+    static test () {
+        WkriegArmy.testWeightBased();
+        WkriegArmy.testWeightBased();
+        WkriegArmy.testWeightBased();
+        WkriegArmy.testWeightBased();
+        WkriegArmy.testWeightBased();
     }
 }
 
