@@ -12,6 +12,9 @@ This website include the following prototype projects:
   - npm run test
 
 ## To Do:
+- No-context Bottle agents
+  - see Ravnica-inspired draft
+
 - GridWar funcs:
   - Codex entries that let us ask WGenerator for a random Group, using a random implemented template.
   - Create a Group and a counterpart with a different template. Log about their difference in points and how many of the second would be equal to 10 of the first.
@@ -19,8 +22,6 @@ This website include the following prototype projects:
 - Have a attempt at class Creature extends Group, and this.quantity always === 1.
 
 - Simple Halo codex wgen that outputs a specific location (ie a multiplayer map) and exactly what wtree forces are on it.
-  - Make size-filling codex based on Core GridWar column of monster spreadsheet.
-    - Or just use a custom JS file to select a total size of combatants.
   - Prototype visualizing this in GridWar.
     - Probably start by editing HTML DOM directly in the browser console.
     - Also get a topdown Blood Gulch image into the sprites dir.
@@ -31,6 +32,8 @@ This website include the following prototype projects:
 
 - Wiederholungskrieg army loadout gen
   - Add carried nonweapon items to carryable.js (and armory node)
+    - See also working loadout draft in WkriegArmy.weightBasedCombatant(), inspired by Mass Effect 3.
+      - almost there, but i want a little more panache in the presentation (2021 March)
   - Find images for displaying graphical summaries Wkrieg armies. Silhouettes or other simple icons.
     - Infantry
       - Light
@@ -51,6 +54,7 @@ This website include the following prototype projects:
   - Func for testing and logging a entire engagement between 2 Groups (a la Grid War or Halo Ring).
     - They start at a certain range, and can move closer or further during the engagement.
   - Simpler: same but they always move closer.
+  - A simple version of this is implemented in ProjectileEvent.js
 
 - Make variant AliasTable internal storage format that doesnt use so much memory, but is instead similar to regionTree.js. (Iteratively subtrack each weight from a random roll.)
 
