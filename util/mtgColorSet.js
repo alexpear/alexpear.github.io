@@ -214,6 +214,46 @@ class MtgColorSet {
             );
     }
 
+    static colorIcon (name) {
+        const colorMap = {
+            white: 'brightWhite',
+            green: 'brightGreen',
+            red: 'brightRed',
+            black: 'black',
+            blue: 'brightBlue',
+        };
+
+        return Util.customColored('*', 'brightGrey', colorMap[name]);
+    }
+
+    static icons (array) {
+        return array.map(
+            name => MtgColorSet.colorIcon(name)
+        )
+        .join('');
+    }
+
+    static sketchColorIcons () {
+        const symbol = '*';
+
+        const viaBackgrounds =
+            Util.customColored(symbol, 'brightGrey', 'brightWhite') +
+            Util.customColored(symbol, 'brightGrey', 'brightGreen') +
+            Util.customColored(symbol, 'brightGrey', 'brightRed') +
+            Util.customColored(symbol, 'brightGrey', 'black') +
+            Util.customColored(symbol, 'brightGrey', 'brightBlue');
+
+        const viaForegrounds =
+            Util.customColored('O', 'brightWhite', 'brightGrey') +
+            Util.customColored('O', 'green', 'brightGrey') +
+            Util.customColored('O', 'red',   'brightGrey') +
+            Util.customColored('O', 'black', 'brightGrey') +
+            Util.customColored('O', 'blue',  'brightGrey');
+
+        Util.log(viaForegrounds);
+        Util.log(viaBackgrounds);
+    }
+
     static testAllSets () {
         for (let i = 0; i <= 5; i++) {
             Util.log(`sets of size ${i}`);
@@ -230,4 +270,4 @@ class MtgColorSet {
 
 module.exports = MtgColorSet;
 
-// MtgColorSet.testOpinions();
+// MtgColorSet.sketchColorIcons();

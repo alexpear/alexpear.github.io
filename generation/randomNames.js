@@ -284,4 +284,4 @@ class RandomNames {
 
 module.exports = RandomNames;
 
-RandomNames.test();
+// RandomNames.test();

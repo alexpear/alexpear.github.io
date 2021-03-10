@@ -23,6 +23,8 @@ module.exports = class RavnicaOrg extends Organization {
             [colorA, colorB] :
             MtgColor.randomSet(2);
 
+        this.colors.sort();
+
         this.wealth = Util.randomUpTo(100);
 
         this.opinionOf = {};

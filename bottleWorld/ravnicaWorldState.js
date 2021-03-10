@@ -43,7 +43,7 @@ class RavnicaWorldState extends WorldState {
     statusSummary () {
         return this.activeNodes()
             .map(n => {
-                const niceColors = MtgColorSet.toPrettyString(n.colors);
+                const niceColors = MtgColorSet.icons(n.colors);
                 // const abrvColors = MtgColorSet.abbreviate(n.colors);
                 const name = `The ${n.displayName} Office (${niceColors})\n`;
 

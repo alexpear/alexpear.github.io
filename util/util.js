@@ -14,15 +14,69 @@ util.DEFAULTS = {
     COLCOUNT: 12
 };
 
-util.colors = {
-    black: '1;37;40m',
-    red: '1;37;41m',
-    green: '1;30;42m',
-    yellow: '1;37;43m',
-    blue: '1;37;44m',
-    purple: '1;37;45m',
-    cyan: '1;30;46m',
-    grey: '1;30;47m'
+// These are like preselected color profiles.
+// The background is as described, and the foreground is black or white, whichever is most visible.
+util.COLORS = {
+    red: '\x1b[1;37;41m',
+    yellow: '\x1b[1;37;43m',
+    green: '\x1b[1;30;42m',
+    cyan: '\x1b[1;30;46m',
+    blue: '\x1b[1;37;44m',
+    purple: '\x1b[1;37;45m',
+    grey: '\x1b[1;30;47m',
+    black: '\x1b[1;37;40m',
+    balance: '\x1b[0m'
+};
+
+util.colored = (str, colorName) => {
+    return (util.COLORS[colorName] || util.COLORS.purple) +
+        str +
+        util.COLORS.balance;
+};
+
+util.customColored = (str, foreground, background) => {
+    const FMAP = {
+        black: 30,
+        red: 31,
+        green: 32,
+        yellow: 33,
+        blue: 34,
+        magenta: 35,
+        cyan: 36,
+        white: 37,
+        brightGrey: 90,
+        brightRed: 91,
+        brightGreen: 92,
+        brightYellow: 93,
+        brightBlue: 94,
+        brightMagenta: 95,
+        brightCyan: 96,
+        brightWhite: 97,
+    };
+
+    const BMAP = {
+        black: 40,
+        red: 41,
+        green: 42,
+        yellow: 44,
+        blue: 44,
+        magenta: 45,
+        cyan: 46,
+        white: 47,
+        brightGrey: 100,
+        brightRed: 101,
+        brightGreen: 102,
+        brightYellow: 103,
+        brightBlue: 104,
+        brightMagenta: 105,
+        brightCyan: 106,
+        brightWhite: 107,
+    };
+
+    const fcode = FMAP[foreground] || FMAP.blue;
+    const bcode = BMAP[background] || BMAP.grey;
+
+    return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
 };
 
 util.NODE_TYPES = {
