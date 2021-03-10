@@ -45,21 +45,25 @@ class RavnicaWorldState extends WorldState {
             .map(n => {
                 const niceColors = MtgColorSet.toPrettyString(n.colors);
                 // const abrvColors = MtgColorSet.abbreviate(n.colors);
-                const name = `The ${n.shortId()} Office (${niceColors})\n`;
+                const name = `The ${n.displayName} Office (${niceColors})\n`;
 
                 const opinions = Object.keys(n.opinionOf)
                     .map(id => {
-                        const otherId = Util.shortId(id);
                         const other = this.fromId(id);
                         const otherColorAbrv = MtgColorSet.abbreviate(other.colors);
 
-                        return `  Opinion of ${otherId} (${otherColorAbrv}): ${n.opinionOf[id]}`
+                        return `  Opinion of ${other.displayName} (${otherColorAbrv}): ${n.opinionOf[id]}`
                     })
                     .join('\n');
 
                 return name + opinions;
             })
             .join('\n');
+    }
+
+    // TODO compute next instant func, assuming that doesnt confuse the superclass.
+    computeNextInstant () {
+
     }
 
     static example (timeline) {

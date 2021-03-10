@@ -14,6 +14,19 @@ This website include the following prototype projects:
 ## To Do:
 - No-context Bottle agents
   - see Ravnica-inspired draft
+  - Generating simple Incidents for Ravnica 
+  - Start with just thefts
+    - Random org initiates
+    - They choose a target
+    - Least favorite org 
+      - Later find a way for the no-context agent to conlude that they should pick Steal from the action list, with their least favorite agent as the target.
+      - If the agent is already familiar with the Steal action in general, this may be good.
+    - Success or failure
+    - Transfer of money
+    - Changes of reputation
+  - Then I can later do another type of incident, the deal. Both participants gain money and mutually increase in rep. 
+  - Start with just 3 orgs. 
+
 
 - GridWar funcs:
   - Codex entries that let us ask WGenerator for a random Group, using a random implemented template.
@@ -24,7 +37,7 @@ This website include the following prototype projects:
 - Simple Halo codex wgen that outputs a specific location (ie a multiplayer map) and exactly what wtree forces are on it.
   - Prototype visualizing this in GridWar.
     - Probably start by editing HTML DOM directly in the browser console.
-    - Also get a topdown Blood Gulch image into the sprites dir.
+    - Also get a topdown Blood Gulch background image into the sprites dir.
   - If integrating into GridWar is tricky, i can start with a simple visual nonspatial gen.
     - Select a location & gen 2 size-appropriate armies.
     - Output HTML showing the GridWar sprites in simple rows (not on a grid) and a image of the location.
@@ -49,6 +62,24 @@ This website include the following prototype projects:
     - Vehicle
       - Flying
       - Ground
+
+- BTH / Space Opera Stellaris-inspired bottle world
+  - Notes in genregen 2 doc
+  - MRB1
+  - 3x3 grid of square sectors
+    - usefulness: number
+    - might: number
+    - a simplification of eg getBannersInSector()
+    - faction: Faction
+  - Faction
+    - civilization (Human, Forerunner, etc)
+    - basically a enum for triggering special rules
+    - combat rating per capita
+
+- Copy & adapt hobby/genregen/fantasy/fantasyworldname/worldname.txt into this repo. 
+  - Connect it up to Util.randomName(), with params for number of words and word length probs.
+  - Probably not compatible with codices/ and wgenerator, because it's based on string concatenation not nested objs.
+  - Better to adapt the JS version of randomtable (used for birddecisions). Grep for it.
 
 - Expand upon weapon test func in ProjectileEvent.js
   - Func for testing and logging a entire engagement between 2 Groups (a la Grid War or Halo Ring).
