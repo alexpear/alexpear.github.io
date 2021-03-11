@@ -210,6 +210,33 @@ util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
     return _.round(unrounded, decimalPlaces);
 };
 
+// Often we want to fill a bag with tokens of different kinds and draw one.
+// More likely outcomes get more tokens and are thus more likely to happen.
+// But all outcomes are possible.
+// Example bag describing St George at a disadvantage:
+// {
+//     stGeorge: 7,
+//     dragon: 12
+// }
+util.randomBagDraw = (bag) => {
+    const total = util.sum(
+        Object.values(bag)
+    );
+
+    let drawn = Math.random() * total;
+
+    let name;
+    for (name in bag) {
+        drawn -= bag[name];
+
+        if (drawn < 0) {
+            return name;
+        }
+    }
+
+    return name;
+};
+
 // Returns string
 util.newId = function () {
     // Later research the most performant way to run this.

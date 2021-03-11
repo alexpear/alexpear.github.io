@@ -71,6 +71,7 @@ module.exports = class Timeline {
 
         // Util.logDebug(`worldstate constructor is named ${this.currentWorldState && this.currentWorldState.constructor.name}`)
 
+        // LATER This func only implemented in subclasses. Will probably need to make this more robust.
         this.currentWorldState.actorTurns();
     }
 

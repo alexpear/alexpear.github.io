@@ -215,5 +215,6 @@ BEvent.TYPES = Util.makeEnum([
     'Explosion',
     'Effect',
     'MoveAll',
+    'Raid',
     'UniversalUpdate'
 ]);

@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 
+const BEvent = require('./bEvent.js');
 const WorldState = require('./worldState.js');
 const Timeline = require('./timeline.js');
 
@@ -17,6 +18,8 @@ const RavnicaOrg = require('../wnode/ravnicaOrg.js');
 class RavnicaWorldState extends WorldState {
     constructor () {
         super();
+
+        this.timeline = new Timeline(this);
 
         // TODO log about it what has been inited.
         for (let i = 0; i < 3; i++) {
@@ -41,6 +44,7 @@ class RavnicaWorldState extends WorldState {
     }
 
     statusSummary () {
+        // TODO also include the t, and each wealth
         return this.activeNodes()
             .map(n => {
                 const niceColors = MtgColorSet.icons(n.colors);
@@ -61,9 +65,67 @@ class RavnicaWorldState extends WorldState {
             .join('\n');
     }
 
-    // TODO compute next instant func, assuming that doesnt confuse the superclass.
-    computeNextInstant () {
+    proceed () {
+        this.activeNodes().forEach(org => {
+            if (org.constructor.name !== 'RavnicaOrg') {
+                return;
+            }
 
+            const action = org.act(this);
+            
+            if (action.type !== 'raid') {
+                return;
+            }
+
+            const target = this.fromId(action.targetId);
+
+            // Later this might be subclass RaidEvent
+            const event = new BEvent(
+                BEvent.TYPES.Raid,
+                org,
+                target,
+                undefined,
+                undefined,
+                this.now()
+            );
+
+            let bag = {};
+            bag[org.id] = org.wealth;
+            bag[target.id] = target.wealth;
+
+            const victor = Util.randomBagDraw(bag);
+            if (victor === target.id) {
+                event.stolen = 0;
+                this.timeline.addEvent(event);
+            }
+
+            const stolen = Math.floor(target.wealth * 0.2);
+            target.wealth -= stolen;
+            org.wealth += stolen;
+            target.opinionOf[org.id] -= 1;
+
+            event.stolen = stolen;
+            event.newTargetOpinion = target.opinionOf[org.id];
+
+            this.timeline.addEvent(event);
+        });
+
+        this.t++;
+    }
+
+    conflictExists () {
+        // This end condition is disabled in this subclass for now.
+        return false;
+    }
+
+    run () {
+        while (this.worthContinuing()) {
+            if (this.t % 1 === 0) {
+                Util.log(this.statusSummary());
+            }
+
+            this.proceed();
+        }
     }
 
     static example (timeline) {
@@ -73,15 +135,15 @@ class RavnicaWorldState extends WorldState {
     static test () {
         const world = RavnicaWorldState.example();
 
-        Util.log(world.statusSummary());
+        world.run();
     }
 
-    static run () {
+    static runFile () {
         return RavnicaWorldState.test();
     }
 }
 
 module.exports = RavnicaWorldState;
 
-RavnicaWorldState.run();
+RavnicaWorldState.runFile();
 

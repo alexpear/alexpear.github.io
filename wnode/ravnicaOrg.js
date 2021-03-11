@@ -48,6 +48,14 @@ module.exports = class RavnicaOrg extends Organization {
 
     // Could rename to chooseAction() or getAction()
     act (worldState) {
+        const RAIDS_PER_DAY = 0.3;
+
+        if (Math.random() > RAIDS_PER_DAY) {
+            return {
+                type: 'wait'
+            };
+        }
+
         let nemesisId;
 
         for (let id in this.opinionOf) {
@@ -61,8 +69,8 @@ module.exports = class RavnicaOrg extends Organization {
         }
 
         return {
-            action: 'stealFrom',
-            target: nemesisId
+            type: 'raid',
+            targetId: nemesisId
         };
     }
 };

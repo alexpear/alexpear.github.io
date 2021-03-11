@@ -27,7 +27,6 @@ This website include the following prototype projects:
   - Then I can later do another type of incident, the deal. Both participants gain money and mutually increase in rep. 
   - Start with just 3 orgs. 
 
-
 - GridWar funcs:
   - Codex entries that let us ask WGenerator for a random Group, using a random implemented template.
   - Create a Group and a counterpart with a different template. Log about their difference in points and how many of the second would be equal to 10 of the first.
@@ -76,16 +75,13 @@ This website include the following prototype projects:
     - basically a enum for triggering special rules
     - combat rating per capita
 
-- Copy & adapt hobby/genregen/fantasy/fantasyworldname/worldname.txt into this repo. 
-  - Connect it up to Util.randomName(), with params for number of words and word length probs.
-  - Probably not compatible with codices/ and wgenerator, because it's based on string concatenation not nested objs.
-  - Better to adapt the JS version of randomtable (used for birddecisions). Grep for it.
-
 - Expand upon weapon test func in ProjectileEvent.js
   - Func for testing and logging a entire engagement between 2 Groups (a la Grid War or Halo Ring).
     - They start at a certain range, and can move closer or further during the engagement.
   - Simpler: same but they always move closer.
   - A simple version of this is implemented in ProjectileEvent.js
+
+- BEvent constructor that uses options param, not list of params.
 
 - Make variant AliasTable internal storage format that doesnt use so much memory, but is instead similar to regionTree.js. (Iteratively subtrack each weight from a random roll.)
 
