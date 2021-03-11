@@ -27,6 +27,12 @@ This website include the following prototype projects:
   - Then I can later do another type of incident, the deal. Both participants gain money and mutually increase in rep. 
   - Start with just 3 orgs. 
 
+- Universal Person class
+  - see notebook
+  - 3-6 adjectives (they can have a 'extremely')
+
+- Functionize the -20 = 'tolerates' opinion mapping from speechLine.js
+
 - GridWar funcs:
   - Codex entries that let us ask WGenerator for a random Group, using a random implemented template.
   - Create a Group and a counterpart with a different template. Log about their difference in points and how many of the second would be equal to 10 of the first.

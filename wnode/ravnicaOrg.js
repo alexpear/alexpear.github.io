@@ -63,7 +63,10 @@ module.exports = class RavnicaOrg extends Organization {
                 continue;
             }
 
-            if (! nemesisId || this.opinionOf[nemesisId] > this.opinionOf[id]) {
+            const lessLiked = this.opinionOf[nemesisId] > this.opinionOf[id];
+            const hasMoney = worldState.fromId(id).wealth > 1;
+
+            if (! nemesisId || (lessLiked && hasMoney)) {
                 nemesisId = id;
             }
         }
@@ -72,5 +75,9 @@ module.exports = class RavnicaOrg extends Organization {
             type: 'raid',
             targetId: nemesisId
         };
+    }
+
+    prettyShortName () {
+        return `${this.displayName} Office (${MtgColorSet.icons(this.colors)}, ${this.wealth} ducats)`;
     }
 };

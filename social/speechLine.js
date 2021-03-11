@@ -50,6 +50,7 @@ class SpeechLine {
             return this.getVerb();
         }
 
+        // TODO i want functionized access to this number/valence mapping via Util
         const adverb = this.getAdverb();
         let output = '';
 
