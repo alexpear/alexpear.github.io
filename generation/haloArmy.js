@@ -169,10 +169,10 @@ class HaloArmy extends WNode {
     static test () {
         const location = HaloArmy.randomLocation();
         const armySize = HaloArmy.LOCATION[location] / 4;
-        const armyA = new HaloArmy('unsc', armySize);
-        const armyB = new HaloArmy('cov', armySize);
+        const armyA = new HaloArmy('cov', armySize);
+        const armyB = new HaloArmy('unsc', armySize);
 
-        Util.log(`\n${armyA.pretty()} \n\nis trying to capture ${Util.fromCamelCase(location)} from: \n\n${armyB.pretty()}`);
+        Util.log(`\nDefenders of ${Util.fromCamelCase(location)}:\n\n${armyA.pretty()} \n\nThose trying to capture it:\n\n${armyB.pretty()}`);
     }
 }
 
