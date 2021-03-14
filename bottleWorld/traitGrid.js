@@ -2,6 +2,8 @@
 
 const Util = require('../util/util.js');
 
+const _ = require('lodash');
+
 // This object represents a set of personality, attitude, or general traits.
 // Each trait is its own axis, with value -1, 1, or neither.
 // This is inspired by the D&D alignment chart, but has arbitrary axes.
@@ -71,11 +73,22 @@ class TraitGrid {
 
     static random (axisCount) {
         // LATER: Only consider a random n axes, controled by axisCount param.
-        const outputs = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 1];
+        // const outputs = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 1];
 
         const grid = new TraitGrid();
 
-        Object.keys(TraitGrid.axisToAdjective).forEach(axis => {
+        let axes = Object.keys(TraitGrid.axisToAdjective);
+        _.shuffle(axes);
+
+        let traits = 0;
+        const desiredTraits = Util.randomIntBetween(3, axes.length + 1);
+
+        for (let axis of axes) {
+            if (traits >= desiredTraits) {
+                Util.logDebug(`We now have ${traits} traits and that's enough.`)
+                break;
+            }
+
             const value = TraitGrid.randomValue(
                 TraitGrid.axisToAdjective[axis].extremeness
             );
@@ -84,8 +97,9 @@ class TraitGrid {
 
             if (value) {
                 grid[axis] = value;
+                traits += 1;
             }
-        });
+        }
 
         // Util.logDebug(`bottom of random(), about to return the following obj: ${JSON.stringify(grid)}`);
 
@@ -104,26 +118,61 @@ class TraitGrid {
     static initStaticProps () {
         // To temporarily disable a axis, just comment it out here.
         TraitGrid.AXES = [
+            // Later age and gender (inc 'other') might be always present
+            // 'young elder 0.5',
+            // 'male female 0.8',
             'plain attractive',
             'short tall',
-            'young elder 0.5',
-            'keen passionate',
-            'lawful chaotic',
+            'shorthaired longhaired',
+            // 'lawful chaotic',
             // 'evil good',
             // 'chthonic sidereal',
             // 'dark radiant',
             // 'cool warm',
-            'standoffish amiable',
-            'steady energetic',
+            'calm energetic',
             'introverted extroverted',
             'married single',
             'timid brave',
             // 'downbeat upbeat',
             'cynical optimistic',
-            'male female 0.8',
             // 'masculine effeminate',
-            'reformist loyal',
+            'reformist loyalist',
             'lowborn highborn',
+            'troublesome orderly', // or rulebreaking, by-the-book
+            // Contradiction: by-the-book and rulebreaking
+            'strange charismatic',
+            'by-the-book clever',
+            'out-of-shape athletic',
+            'incurious curious',
+            'direct graceful',
+            'confrontational harmony-oriented',
+            'private frank', // or open (about self)
+            'monochrome colorful',
+            'absorbed observant',
+            // 'keen passionate', // forgetful what the distinction is. energy vs reason from Blake?
+            'tactless tactful',
+            'asexual horny',
+            // 'standoffish amiable',
+            'tough friendly', // or harsh
+            'withdrawn assertive',
+            'pragmatic bookish', // TODO pragmatic with bookish or creative?
+            // 'pragmatic creative',
+            'thin solid',
+            'serious funny', // or comedic
+            'self-destructive hopeful',
+            'mistrustful trusting',
+            'gentle dangerous', // Contradiction? gentle, pushy, neurotic
+            'respectful pushy',
+            'cautious audacious',
+            'stubborn mercurial', // cut: measured, steady, spontaneous, adaptable, flexible, changeable, chameleonic
+            'tolerant neurotic', // TODO tolerant & mistrustful contradiction?
+            // Also tolerant & stubborn, tolerant & pushy, tolerant & grudge-holding
+            'grudge-holding forgiving', // or vengeful
+            'independent needy', // or attached, dependent
+            'skeptical mystical',
+            // 'homosexual heterosexual',
+            'selfish generous', // or self-oriented commons-oriented, world-oriented
+            'cat-loving dog-loving',
         ];
 
         // Glossary used in translating storage format (-1/1) to a adjective string
@@ -144,7 +193,7 @@ class TraitGrid {
             TraitGrid.axisToAdjective[axisCamel] = {
                 '-1': poles[0],
                 '1': poles[1],
-                extremeness: poles[3] || TraitGrid.DEFAULT_EXTREMENESS
+                extremeness: poles[2] || TraitGrid.DEFAULT_EXTREMENESS
             };
 
             TraitGrid.adjectiveToAxis[poles[0]] = {

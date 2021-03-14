@@ -788,6 +788,10 @@ util.logDebug = function (input) {
     util.log(input, 'debug');
 };
 
+util.logWarn = function (input) {
+    util.log(input, 'warn');
+};
+
 util.logError = function (input) {
     util.log(input, 'error');
 };

@@ -483,6 +483,7 @@ class WNode {
         return Util.withProp(nodes, 'active');
     }
 
+    // LATER this should probably be on a subclass too, like Thing, Creature, CreatureGroup, etc.
     static human () {
         return new WNode(WNode.humanTemplate());
         // LATER init from a template, which can have size, weight, and tags such as animal.
