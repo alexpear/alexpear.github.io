@@ -49,6 +49,36 @@ class TraitGrid {
         });
     }
 
+    hasTrait (trait) {
+        const details = TraitGrid.adjectiveToAxis[trait];
+
+        return this[details.axis] === details.value;
+    }
+
+    opinionOf (other) {
+        let opinion = this.hasTrait('tolerant') ?
+            3 :
+            0;
+
+        for (let axis in TraitGrid.axisToAdjective) {
+            // Util.logDebug(`In TraitGrid.opinionOf(), axis is ${axis} & this[axis] is ${this[axis]}`)
+
+            if (this[axis] && other[axis]) {
+
+                if (this[axis] === other[axis]) {
+                    Util.logDebug(`+ opinion because we are both ${this[axis]} on ${axis}`);
+                    opinion += 2
+                }
+                else if (! Util.contains(TraitGrid.INOFFENSIVE_AXES, axis)) {
+                    Util.logDebug(`- opinion because we are opposite values (${this[axis]} & ${other[axis]}) on ${axis}`);
+                    opinion -= 2;
+                }
+            }
+        }
+
+        return opinion;
+    }
+
     toString() {
         return TraitGrid.AXES.map(
             axisWords => this.formatTrait(Util.toCamelCase(axisWords))
@@ -98,6 +128,8 @@ class TraitGrid {
             if (value) {
                 grid[axis] = value;
                 traits += 1;
+
+                // TODO Desired feature: being 'frank' or 'very frank'
             }
         }
 
@@ -166,7 +198,7 @@ class TraitGrid {
             'cautious audacious',
             'stubborn mercurial', // cut: measured, steady, spontaneous, adaptable, flexible, changeable, chameleonic
             'tolerant neurotic', // TODO tolerant & mistrustful contradiction?
-            // Also tolerant & stubborn, tolerant & pushy, tolerant & grudge-holding
+            // Also tolerant & stubborn, tolerant & pushy, tolerant & grudge-holding, mistrustful & forgiving?
             'grudge-holding forgiving', // or vengeful
             'independent needy', // or attached, dependent
             'skeptical mystical',
@@ -206,6 +238,10 @@ class TraitGrid {
                 value: 1
             };
         });
+
+        TraitGrid.INOFFENSIVE_AXES = [
+            'shorthairedLonghaired'
+        ];
     }
 
     static test () {

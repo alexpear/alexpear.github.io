@@ -13,6 +13,16 @@ class DetailedPerson extends Creature {
         super(template, coord, alignment);
     }
 
+    opinionOf (other) {
+        let opinion = this.traitGrid.opinionOf(other.traitGrid);
+
+        if (this.gender === other.gender) {
+            opinion += 1;
+        }
+
+        return opinion;
+    }
+
     toPrettyString () {
         // Later expand this.
         const name = this.displayName || this.templateName;
@@ -58,10 +68,17 @@ class DetailedPerson extends Creature {
     }
 
     static test () {
+        const ally = DetailedPerson.yaExample();
+        const a = ally.toPrettyString();
         const stranger = DetailedPerson.yaExample();
+        const s = stranger.toPrettyString();
 
-        // TODO these should be on the template instead, not the WNode.
-        Util.log(stranger.toPrettyString());
+        Util.log([
+            `I am a ${a}.`,
+            `My opinion of them is: ${ally.opinionOf(stranger)}.`,
+            `They are a ${s}.`,
+            `Their opinion of me is: ${stranger.opinionOf(ally)}.`
+        ].join('\n'));
     }
 };
 
