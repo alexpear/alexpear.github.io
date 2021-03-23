@@ -27,9 +27,9 @@ This website include the following prototype projects:
   - Then I can later do another type of incident, the deal. Both participants gain money and mutually increase in rep. 
   - Start with just 3 orgs. 
 
-- Universal Person class
-  - see notebook
-  - 3-6 adjectives (they can have a 'extremely')
+- DetailedPerson
+  - Func to generate a group with constraints (eg age)
+  - 'very' (alternately 'extremely') modifier
 
 - Functionize the -20 = 'tolerates' opinion mapping from speechLine.js
 
