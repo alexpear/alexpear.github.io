@@ -4,6 +4,10 @@ const Util = require('../util/util.js');
 
 // This logic came from the old birddecisions site, and could be tidied up later.
 class RandomNames {
+    static name (words = 1) {
+        return RandomNames.genText(words);
+    }
+
     // tableString excludes * but includes name
     static loadTable(tableString) {
         const results = [];
@@ -119,7 +123,19 @@ class RandomNames {
             outputStr = RandomNames.fillBlanks(outputStr, tables);
         }
 
+        outputStr = outputStr.split(' ')
+            .map(
+                word => Util.capitalized(word)
+            )
+            .join(' ');
+
         return outputStr;
+    }
+
+    // This is for a minor fiction setting inspired by the Eightfold Hierarchy world. Everyone has names like Ketove Rehena, 6 conso/vowel pairs. 
+    static syllabicHierarchy (syllables) {
+        syllables = syllables || 6;
+
     }
 
     static nameCodex () {
@@ -128,18 +144,14 @@ class RandomNames {
 4 {word} {word}
 
 * word
-4 {V}{c}
-2 {C}{v}
+4 {v}{c}
+2 {c}{v}
 4 {start}{end}
 6 {start}{syllables}{end}
 
 * vblock
 4 {v}
 1 {v}{vfriend}
-
-* Vblock
-4 {V}
-1 {V}{vfriend}
 
 * v
 4 a
@@ -154,14 +166,6 @@ class RandomNames {
 2 n
 4 r
 2 s
-
-* V
-4 A
-4 E
-4 I
-4 O
-4 U
-3 Y
 
 * c
 4 b
@@ -194,36 +198,6 @@ class RandomNames {
 3 z
 0 {doublec}
 
-* C
-4 B
-3 C
-1 Ch
-4 D
-4 F
-4 G
-3 H
-4 J
-3 K
-1 Kh
-4 L
-4 M
-4 N
-4 P
-2 Ph
-1 Q
-3 Qu
-4 R
-3 S
-2 Sh
-1 Sch
-2 T
-2 Th
-4 V
-3 W
-4 X
-2 Y
-3 Z
-
 * doublec
 4 bb
 3 cc
@@ -247,8 +221,8 @@ class RandomNames {
 3 zz
 
 * start
-4 {V}
-4 {C}{v}
+4 {v}
+4 {c}{v}
 
 * syllables
 5 {syllable}
@@ -271,10 +245,6 @@ class RandomNames {
 7 ion
 6 {v}n
 6 {v}s`;
-    }
-
-    static name (words = 1) {
-        return RandomNames.genText(words);
     }
 
     static test () {
