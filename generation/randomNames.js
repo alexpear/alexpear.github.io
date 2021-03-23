@@ -141,25 +141,25 @@ class RandomNames {
     static nameCodex () {
         return `
 * output
-4 {word} {word}
+4 {word}
 
 * word
-4 {v}{c}
-2 {c}{v}
+1 {v}{c}
+1 {syllable}
 4 {start}{end}
-6 {start}{syllables}{end}
+32 {start}{syllables}{end}
 
 * vblock
 4 {v}
 1 {v}{vfriend}
 
 * v
-4 a
-4 e
-4 i
-4 o
-4 u
-2 y
+6 a
+6 e
+6 i
+6 o
+6 u
+1 y
 
 * vfriend
 2 l
@@ -168,35 +168,35 @@ class RandomNames {
 2 s
 
 * c
-4 b
-3 c
-1 ch
-4 d
-4 f
-4 g
-3 h
+6 b
+2 c
+2 ch
+6 d
+6 f
+6 g
+4 h
 3 j
-3 k
+5 k
 1 kh
-4 l
-4 m
-4 n
-4 p
-1 ph
+6 l
+6 m
+6 n
+6 p
+2 ph
 1 q
-3 qu
-4 r
-3 s
-2 sh
+2 qu
+6 r
+6 s
+3 sh
 1 sch
-2 t
-2 th
-4 v
-3 w
-4 x
-2 y
-3 z
-0 {doublec}
+5 t
+3 th
+5 v
+4 w
+3 x
+1 y
+1 z
+1 {doublec}
 
 * doublec
 4 bb
@@ -222,16 +222,16 @@ class RandomNames {
 
 * start
 4 {v}
-4 {c}{v}
+4 {syllable}
 
 * syllables
-5 {syllable}
-5 {syllable}{syllable}
+15 {syllable}
+15 {syllable}{syllable}
 1 {syllable}{syllable}{syllable}
 0 {syllable}{syllable}{syllable}{syllable}
 
 * syllable
-9 {c}{v}
+1 {c}{vblock}
 
 * end
 4 {c}{endv}
@@ -248,10 +248,10 @@ class RandomNames {
     }
 
     static test () {
-        Util.log(RandomNames.name());
+        Util.log('\n' + RandomNames.name());
     }
 }
 
 module.exports = RandomNames;
 
-// RandomNames.test();
+RandomNames.test();
