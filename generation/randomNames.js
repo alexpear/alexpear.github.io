@@ -249,7 +249,11 @@ class RandomNames {
 6 {v}s`;
     }
 
-    static dictionaryWord () {
+    static dictionaryWord (maxChars) {
+        if (! maxChars || maxChars <= 0) {
+            maxChars = 999;
+        }
+
         if (! RandomNames.DICTIONARY) {
             RandomNames.DICTIONARY = fs.readFileSync(
                 '/usr/share/dict/words', 
@@ -258,7 +262,12 @@ class RandomNames {
             .split('\n');
         }
 
-        return Util.randomOf(RandomNames.DICTIONARY);
+        let chosen = Util.randomOf(RandomNames.DICTIONARY);
+        while (chosen.length > maxChars) {
+            chosen = Util.randomOf(RandomNames.DICTIONARY);
+        }
+
+        return chosen;
     }
 
     static test () {
