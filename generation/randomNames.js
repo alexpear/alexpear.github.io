@@ -2,6 +2,8 @@
 
 const Util = require('../util/util.js');
 
+const fs = require('fs');
+
 // This logic came from the old birddecisions site, and could be tidied up later.
 class RandomNames {
     static name (words = 1) {
@@ -247,8 +249,20 @@ class RandomNames {
 6 {v}s`;
     }
 
+    static dictionaryWord () {
+        if (! RandomNames.DICTIONARY) {
+            RandomNames.DICTIONARY = fs.readFileSync(
+                '/usr/share/dict/words', 
+                'utf8'
+            )
+            .split('\n');
+        }
+
+        return Util.randomOf(RandomNames.DICTIONARY);
+    }
+
     static test () {
-        Util.log('\n' + RandomNames.name());
+        Util.log('\n' + RandomNames.name() + ' ' + RandomNames.dictionaryWord());
     }
 }
 
