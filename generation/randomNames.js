@@ -134,10 +134,47 @@ class RandomNames {
         return outputStr;
     }
 
-    // This is for a minor fiction setting inspired by the Eightfold Hierarchy world. Everyone has names like Ketove Rehena, 6 conso/vowel pairs. 
+    // This is for a minor fiction setting inspired by the Eightfold Hierarchy world. Everyone has names something like Suchaskori Rislochasko, constructed of conso/vowel pairs. 
     static syllabicHierarchy (syllables) {
-        syllables = syllables || 6;
+        syllables = syllables || 4;
 
+        const ALPHABET = [
+            'bu',
+            'do',
+            'fel',
+            'he',
+            'ja',
+            'ko',
+            'lo',
+            'mo',
+            'ni',
+            'per',
+            'ri',
+            'su',
+            'ta',
+            'vo',
+            'we',
+            'the',
+            'shi',
+            'dra',
+            'sto',
+            'ske',
+            'slo',
+            'kle',
+            'flus',
+            'cha'
+        ];
+
+        let output = '';
+        for (let i = 0; i < syllables; i++) {
+            output += Util.randomOf(ALPHABET);
+        }
+
+        return Util.capitalized(output);
+    }
+
+    static hierarchyPerson () {
+        return `\nI am ${RandomNames.syllabicHierarchy(4)} ${RandomNames.syllabicHierarchy(4)}.`
     }
 
     static nameCodex () {
@@ -271,7 +308,8 @@ class RandomNames {
     }
 
     static test () {
-        Util.log('\n' + RandomNames.name() + ' ' + RandomNames.dictionaryWord());
+        Util.log('\n' + RandomNames.name());
+        Util.log(RandomNames.hierarchyPerson())
     }
 }
 
