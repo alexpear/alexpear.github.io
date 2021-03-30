@@ -349,8 +349,8 @@ class ProjectileEvent extends BEvent {
 
         let t;
         for (t = 0; t < 10000; t++) {
-            const aAttack = ProjectileEvent.testFireSp(a, aAction, b, range, log);
-            const bOutcome = b.takeDamage(aAttack.totalDamage);
+            const aAttack = ProjectileEvent.testFire(a, aAction, b, range, log);
+            const bOutcome = b.takeCasualties(aAttack.casualties);
 
             if (log) {
                 Util.log(`t=${ t }. A just fired at B (range ${ range }).\n${ a.dotGrid() }\n${ aName } x${ a.quantity }\nvs\n${ bName } x${ b.quantity }\n${ b.dotGrid() }`);
@@ -360,8 +360,8 @@ class ProjectileEvent extends BEvent {
                 break;
             }
 
-            const bAttack = ProjectileEvent.testFireSp(b, bAction, a, range, log);
-            const aOutcome = a.takeDamage(bAttack.totalDamage);
+            const bAttack = ProjectileEvent.testFire(b, bAction, a, range, log);
+            const aOutcome = a.takeCasualties(bAttack.casualties);
 
             if (log) {
                 Util.log(`t=${ t }. B just fired at A (range ${ range }).\n${ a.dotGrid() }\n${ aName } x${ a.quantity }\nvs\n${ bName } x${ b.quantity }\n${ b.dotGrid() }`);
