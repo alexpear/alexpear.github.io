@@ -223,8 +223,16 @@ class ProjectileEvent extends BEvent {
 
         // const bEvent; // Later can output 1 or more BEvents
 
-        // LATER: Note this will give slightly approximated results when shotsPerSecond is less than 1s. And the for loop will prevent firing in that case if quantity === 1.
-        summary.shots = attacker.quantity * actionTemplate.shotsPerSecond;
+        const shots = attacker.quantity * actionTemplate.shotsPerSecond;
+
+        // Noninteger shot counts are rounded up or down, with chance proportional to remainder.
+        // This means that slow-firing weaps have eg a 20% chance of firing each second.
+        const chanceOfShot = shots % 1;
+
+        summary.shots = Math.random() < chanceOfShot ?
+            Math.ceil(shots) :
+            Math.floor(shots);
+
         summary.hitChance = ProjectileEvent.hitChance(actionTemplate, target, range);
         summary.damagePerShot = ProjectileEvent.damagePerShot(actionTemplate, target);
 
