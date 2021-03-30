@@ -37,8 +37,6 @@ This website include the following prototype projects:
   - Codex entries that let us ask WGenerator for a random Group, using a random implemented template.
   - Create a Group and a counterpart with a different template. Log about their difference in points and how many of the second would be equal to 10 of the first.
 
-- Have a attempt at class Creature extends Group, and this.quantity always === 1.
-
 - Simple Halo codex wgen that outputs a specific location (ie a multiplayer map) and exactly what wtree forces are on it.
   - Prototype visualizing this in GridWar.
     - Probably start by editing HTML DOM directly in the browser console.

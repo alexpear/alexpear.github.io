@@ -379,7 +379,9 @@ class Group extends WNode {
     // Returns a Group.
     // Selects a random implemented template.
     static randomTemplate () {
-        const squad = Group.new('halo/unsc/individual/groupStatted', 5);
+        const squad = Group.new('halo/unsc/individual/marinePrivate', 5);
+        // TODO this alias isnt getting resolved by WGenerator
+        // const squad = Group.new('halo/unsc/individual/groupStatted', 5);
 
         return squad;
     }

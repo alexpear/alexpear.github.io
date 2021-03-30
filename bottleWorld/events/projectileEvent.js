@@ -197,8 +197,73 @@ class ProjectileEvent extends BEvent {
         return summary;
     }
 
+
     // Simulates 1 second of firing against target, with randomness.
+    // Uses the KO state system (non SP based)
+    // Combatants are always in one of the following states: {OK, KO}
     static testFire (attacker, actionTemplate, target, range, log) {
+        // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
+        attacker = Util.default(attacker, Group.marineCompany());
+        target = Util.default(target, Group.marineCompany());
+        actionTemplate = Util.default(actionTemplate, ActionTemplate.example());
+        range = Util.default(range, 100);
+        log = Util.default(log, true);
+
+        const summary = {
+            attacker: attacker.templateName,
+            attackerQuantity: attacker.quantity,
+            action: actionTemplate.name,
+            target: target.templateName,
+            targetQuantity: target.quantity,
+            onTargets: 0,
+            hits: 0,
+            casualties: 0
+        };
+
+        // const bEvent; // Later can output 1 or more BEvents
+
+        // LATER: Note this will give slightly approximated results when shotsPerSecond is less than 1s. And the for loop will prevent firing in that case if quantity === 1.
+        summary.shots = attacker.quantity * actionTemplate.shotsPerSecond;
+        summary.hitChance = ProjectileEvent.hitChance(actionTemplate, target, range);
+        summary.damagePerShot = ProjectileEvent.damagePerShot(actionTemplate, target);
+
+        // Note that durability in the non-SP context means the value that has a 50% chance of KOing you. This is typically half as big as the SP definition of durability.
+        summary.durability = 5; // TODO read from template
+
+        // LATER this will be a function of terrain, size, combat skill, and AoE attacks.
+        summary.coverChance = 0.2;
+
+        for (let s = 0; s < summary.shots; s++) {
+            if (Math.random() > summary.hitChance) {
+                continue; // Miss.
+            }
+
+            summary.onTargets++;
+            
+            if (Math.random() > summary.coverChance) {
+                continue; // Shot hit cover.
+            }
+
+            summary.hits++;
+
+            // Pseudosigmoid
+            const koChance = summary.damagePerShot /
+                (summary.damagePerShot + summary.durability);
+
+            if (Math.random() > koChance) {
+                continue; // Victim not seriously hurt.
+            }
+
+            summary.casualties++;
+        }
+
+        Util.log('\n' + Yaml.dump(summary));
+        return summary;
+    }
+
+    // Simulates 1 second of firing against target, with randomness.
+    // Uses the SP pool system (group.worstSp, etc)
+    static testFireSp (attacker, actionTemplate, target, range, log) {
         // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
         attacker = Util.default(attacker, Group.marineCompany());
         target = Util.default(target, Group.marineCompany());
@@ -232,7 +297,7 @@ class ProjectileEvent extends BEvent {
         summary.totalDamage = summary.hits * summary.damagePerShot;
 
         if (! target.template) {
-            Util.logDebug(`ProjectileEvent.testFire(). target.templateName is ${target.templateName}.`);
+            Util.logDebug(`ProjectileEvent.testFireSp(). target.templateName is ${target.templateName}.`);
         }
 
         const naiveCasualties = summary.totalDamage / target.template.sp;
@@ -249,6 +314,7 @@ class ProjectileEvent extends BEvent {
 
         Util.log('\n' + Yaml.dump(summary));
         return summary;
+        // Then: const bOutcome = b.takeDamage(aAttack.totalDamage);
     }
 
     // Tests a fight of arbitrary length between 2 Groups.
@@ -283,7 +349,7 @@ class ProjectileEvent extends BEvent {
 
         let t;
         for (t = 0; t < 10000; t++) {
-            const aAttack = ProjectileEvent.testFire(a, aAction, b, range, log);
+            const aAttack = ProjectileEvent.testFireSp(a, aAction, b, range, log);
             const bOutcome = b.takeDamage(aAttack.totalDamage);
 
             if (log) {
@@ -294,7 +360,7 @@ class ProjectileEvent extends BEvent {
                 break;
             }
 
-            const bAttack = ProjectileEvent.testFire(b, bAction, a, range, log);
+            const bAttack = ProjectileEvent.testFireSp(b, bAction, a, range, log);
             const aOutcome = a.takeDamage(bAttack.totalDamage);
 
             if (log) {
