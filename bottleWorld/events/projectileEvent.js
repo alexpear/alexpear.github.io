@@ -199,15 +199,16 @@ class ProjectileEvent extends BEvent {
 
 
     // Simulates 1 second of firing against target, with randomness.
+    // No side effects. Returns a summary in the dry-run style.
     // Uses the KO state system (non SP based)
     // Combatants are always in one of the following states: {OK, KO}
-    static testFire (attacker, actionTemplate, target, range, log) {
+    static fireAt (attacker, actionTemplate, target, range, log) {
         // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
-        attacker = Util.default(attacker, Group.marineCompany());
-        target = Util.default(target, Group.marineCompany());
+        attacker       = Util.default(attacker,       Group.marineCompany());
+        target         = Util.default(target,         Group.marineCompany());
         actionTemplate = Util.default(actionTemplate, ActionTemplate.example());
-        range = Util.default(range, 100);
-        log = Util.default(log, true);
+        range          = Util.default(range,          100);
+        log            = Util.default(log,            true);
 
         const summary = {
             attacker: attacker.templateName,
@@ -215,7 +216,7 @@ class ProjectileEvent extends BEvent {
             action: actionTemplate.name,
             target: target.templateName,
             targetQuantity: target.quantity,
-            onTargets: 0,
+            accurateShots: 0,
             hits: 0,
             casualties: 0
         };
@@ -238,7 +239,7 @@ class ProjectileEvent extends BEvent {
                 continue; // Miss.
             }
 
-            summary.onTargets++;
+            summary.accurateShots++;
             
             if (Math.random() > summary.coverChance) {
                 continue; // Shot hit cover.
@@ -349,7 +350,7 @@ class ProjectileEvent extends BEvent {
 
         let t;
         for (t = 0; t < 10000; t++) {
-            const aAttack = ProjectileEvent.testFire(a, aAction, b, range, log);
+            const aAttack = ProjectileEvent.fireAt(a, aAction, b, range, log);
             const bOutcome = b.takeCasualties(aAttack.casualties);
 
             if (log) {
@@ -360,7 +361,7 @@ class ProjectileEvent extends BEvent {
                 break;
             }
 
-            const bAttack = ProjectileEvent.testFire(b, bAction, a, range, log);
+            const bAttack = ProjectileEvent.fireAt(b, bAction, a, range, log);
             const aOutcome = a.takeCasualties(bAttack.casualties);
 
             if (log) {
@@ -408,9 +409,7 @@ class ProjectileEvent extends BEvent {
 
 module.exports = ProjectileEvent;
 
-// ProjectileEvent.testActionDamage();
-// ProjectileEvent.testFire();
-// ProjectileEvent.testEngagement(
-//     // Group.random(),
-//     // Group.random()
-// );
+ProjectileEvent.testEngagement(
+    // Group.random(),
+    // Group.random()
+);
