@@ -112,6 +112,7 @@ size: 1
 speed: 1
 ac: 17
 sp: 10
+durability: 5
 resistance: heat 2, pierce 2
 toHit: 2
 damage: 2
@@ -145,6 +146,7 @@ size: 1
 speed: 1
 ac: 19
 sp: 15
+durability: 8
 resistance: heat 2, pierce 2
 toHit: 2
 damage: 2

@@ -228,7 +228,7 @@ class ProjectileEvent extends BEvent {
         summary.damagePerShot = ProjectileEvent.damagePerShot(actionTemplate, target);
 
         // Note that durability in the non-SP context means the value that has a 50% chance of KOing you. This is typically half as big as the SP definition of durability.
-        summary.durability = 5; // TODO read from template
+        summary.durability = target.template.durability || 5;
 
         // LATER this will be a function of terrain, size, combat skill, and AoE attacks.
         summary.coverChance = 0.2;
