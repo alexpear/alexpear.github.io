@@ -436,23 +436,24 @@ class ProjectileEvent extends BEvent {
                 aTotalSize -= protag.target.getTrait('size') * attack.casualties;
             }
 
+            // later functionize foo(aGroups)
             const aSizes = aGroups.map(
-                g => g.getSize()
+                g => g.getSize().toString().padStart(3, ' ')
             )
             .filter(
-                size => size > 0
+                size => size !== '  0'
             )
-            .join(', ');
+            .join(' ');
 
             const bSizes = bGroups.map(
-                g => g.getSize()
+                g => g.getSize().toString().padStart(3, ' ')
             )
             .filter(
-                size => size > 0
+                size => size !== '  0'
             )
-            .join(', ');
+            .join(' ');
 
-            console.log(`${t}s\n${aSizes}\n${bSizes}\n`);
+            console.log(`----------------------------------------------- ${t}s\n${aSizes}\n${bSizes}\n`);
         }
 
         // TODO populate summary
