@@ -266,7 +266,7 @@ class ProjectileEvent extends BEvent {
             summary.casualties++;
         }
 
-        Util.log('\n' + Yaml.dump(summary));
+        // Util.log('\n' + Yaml.dump(summary));
         return summary;
     }
 
@@ -350,20 +350,21 @@ class ProjectileEvent extends BEvent {
             range: range
         };
 
-        // TODO log a.progressBarSummary()
-        Util.log(a.toDebugString(), b.toDebugString());
+        // LATER maybe log a.progressBarSummary()
+        // Util.log(a.toDebugString() + '\n' + b.toDebugString());
 
         const aName = Util.fromCamelCase(a.templateName);
         const bName = Util.fromCamelCase(b.templateName);
 
         let t;
+
         for (t = 0; t < 10000; t++) {
             const aAttack = ProjectileEvent.fireAt(a, aAction, b, range, log);
             const bOutcome = b.takeCasualties(aAttack.casualties);
 
-            if (log) {
-                Util.log(`t=${ t }. A just fired at B (range ${ range }).\n${ a.dotGrid() }\n${ aName } x${ a.quantity }\nvs\n${ bName } x${ b.quantity }\n${ b.dotGrid() }`);
-            }
+            // if (log) {
+            //     Util.log(`t=${ t }. A just fired at B (range ${ range }).\n${ a.dotGrid() }\n${ aName } x${ a.quantity }\nvs\n${ bName } x${ b.quantity }\n${ b.dotGrid() }`);
+            // }
 
             if (! b.active) {
                 break;
@@ -371,10 +372,10 @@ class ProjectileEvent extends BEvent {
 
             const bAttack = ProjectileEvent.fireAt(b, bAction, a, range, log);
             const aOutcome = a.takeCasualties(bAttack.casualties);
-
-            if (log) {
-                Util.log(`t=${ t }. B just fired at A (range ${ range }).\n${ a.dotGrid() }\n${ aName } x${ a.quantity }\nvs\n${ bName } x${ b.quantity }\n${ b.dotGrid() }`);
-            }
+            
+            // if (log) {
+            //     Util.log(`t=${ t }. B just fired at A (range ${ range }).\n${ a.dotGrid() }\n${ aName } x${ a.quantity }\nvs\n${ bName } x${ b.quantity }\n${ b.dotGrid() }`);
+            // }
 
             if (! a.active) {
                 break;
