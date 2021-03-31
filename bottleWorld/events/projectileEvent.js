@@ -326,11 +326,21 @@ class ProjectileEvent extends BEvent {
         // Then: const bOutcome = b.takeDamage(aAttack.totalDamage);
     }
 
+    static randomGroups (groupCount, sizeEach) {
+        let groups = [];
+
+        for (let i = 0; i < (groupCount || 12); i++) {
+            groups.push(Group.randomTemplate());
+        }
+
+        return groups;
+    }
+
     // Groups do not move for now. Terrain is flat.
     // Does indeed mutate the Groups.
     static resolveBattle (aGroups, bGroups, range, log) {
-        aGroups = Util.default(aGroups, [Group.randomTemplate(), Group.randomTemplate()]);
-        bGroups = Util.default(bGroups, [Group.randomTemplate(), Group.randomTemplate()]);
+        aGroups = Util.default(aGroups, ProjectileEvent.randomGroups());
+        bGroups = Util.default(bGroups, ProjectileEvent.randomGroups());
 
         const defaultRange = Math.ceil(Math.random() * 150);
         range = Util.default(range, defaultRange);
@@ -429,10 +439,16 @@ class ProjectileEvent extends BEvent {
             const aSizes = aGroups.map(
                 g => g.getSize()
             )
+            .filter(
+                size => size > 0
+            )
             .join(', ');
 
             const bSizes = bGroups.map(
                 g => g.getSize()
+            )
+            .filter(
+                size => size > 0
             )
             .join(', ');
 
