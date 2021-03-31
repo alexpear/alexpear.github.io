@@ -372,10 +372,10 @@ class ProjectileEvent extends BEvent {
 
             const bAttack = ProjectileEvent.fireAt(b, bAction, a, range, log);
             const aOutcome = a.takeCasualties(bAttack.casualties);
-            
-            // if (log) {
-            //     Util.log(`t=${ t }. B just fired at A (range ${ range }).\n${ a.dotGrid() }\n${ aName } x${ a.quantity }\nvs\n${ bName } x${ b.quantity }\n${ b.dotGrid() }`);
-            // }
+
+            if (log) {
+                console.log(`${ aName } x${ a.quantity }\n${ a.dotGrid() }\n    vs (${ t }s)\n${ bName } x${ b.quantity }\n${ b.dotGrid() }\n\n\n`);
+            }
 
             if (! a.active) {
                 break;
@@ -387,7 +387,7 @@ class ProjectileEvent extends BEvent {
         summary.bFinalQuantity = b.quantity;
 
         if (log) {
-            Util.log('\n' + Yaml.dump(summary));            
+            // console.log('\n' + Yaml.dump(summary));            
         }
 
         return summary;
@@ -418,7 +418,10 @@ class ProjectileEvent extends BEvent {
 
 module.exports = ProjectileEvent;
 
-ProjectileEvent.testEngagement(
+const outcome = ProjectileEvent.testEngagement(
+    undefined, undefined, undefined, true
     // Group.random(),
     // Group.random()
 );
+
+
