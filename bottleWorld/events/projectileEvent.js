@@ -326,6 +326,113 @@ class ProjectileEvent extends BEvent {
         // Then: const bOutcome = b.takeDamage(aAttack.totalDamage);
     }
 
+    // Groups do not move for now. Terrain is flat.
+    // Does indeed mutate the Groups.
+    static resolveBattle (aGroups, bGroups, range, log) {
+        aGroups = Util.default(aGroups, [Group.randomTemplate(), Group.randomTemplate()]);
+        bGroups = Util.default(bGroups, [Group.randomTemplate(), Group.randomTemplate()]);
+
+        const defaultRange = Math.ceil(Math.random() * 150);
+        range = Util.default(range, defaultRange);
+        log = Util.default(log, true);
+
+        let aTotalSize = Util.sum(
+            aGroups.map(
+                g => g.getSize()
+            )
+        );
+
+        let bTotalSize = Util.sum(
+            bGroups.map(
+                g => g.getSize()
+            )
+        );
+
+        const summary = {
+            // aGroups: array of objs with templateName and quantity
+            // bGroups: same
+            range: range
+        };
+
+        const longerLength = Math.max(aGroups.length, bGroups.length);
+
+        let t;
+
+        for (t = 0; t < 10000; t++) {
+            for (let i = 0; i < longerLength; i++) {
+                let protag;
+
+                if (aGroups[i]) {
+                    protag = aGroups[i];
+
+                    // Util.logDebug(protag.target && protag.target.active);
+
+                    if (! (protag.target && protag.target.active)) {
+                        // Later randomly roll up to bTotalSize, so that big groups get targeted more.
+                        const available = bGroups.filter(
+                            g => g.active
+                        );
+
+                        if (available.length === 0) {
+                            // later update summary
+                            return summary;
+                        }
+
+                        protag.target = Util.randomOf(available);
+                    }
+
+                    const attack = ProjectileEvent.fireAt(
+                        protag,
+                        protag.actions[0],
+                        protag.target,
+                        range,
+                        log
+                    );
+                    const outcome = protag.target.takeCasualties(attack.casualties);
+
+                    // TODO make sure this cant go or start negative.
+                    bTotalSize -= protag.target.getTrait('size') * attack.casualties;
+                }
+
+                if (! bGroups[i]) {
+                    continue;
+                }
+
+                protag = bGroups[i];
+
+                if (! (protag.target && protag.target.active)) {
+                    // Later randomly roll up to aTotalSize
+                    const available = aGroups.filter(
+                        g => g.active
+                    );
+
+                    if (available.length === 0) {
+                        // later update summary
+                        return summary;
+                    }
+
+                    protag.target = Util.randomOf(available);
+                }
+
+                const attack = ProjectileEvent.fireAt(
+                    protag,
+                    protag.actions[0],
+                    protag.target,
+                    range,
+                    log
+                );
+                const outcome = protag.target.takeCasualties(attack.casualties);
+
+                aTotalSize -= protag.target.getTrait('size') * attack.casualties;
+            }
+
+            console.log(`At ${t}s, total sizes are ${aTotalSize} vs ${bTotalSize}`);
+        }
+
+        // TODO populate summary
+        return summary;
+    }
+
     // Tests a fight of arbitrary length between 2 Groups.
     // Groups do not move for now. Terrain is flat.
     // Does indeed mutate the Groups.
@@ -418,10 +525,6 @@ class ProjectileEvent extends BEvent {
 
 module.exports = ProjectileEvent;
 
-const outcome = ProjectileEvent.testEngagement(
-    undefined, undefined, undefined, true
-    // Group.random(),
-    // Group.random()
-);
-
+// const outcome = ProjectileEvent.testEngagement();
+const outcome = ProjectileEvent.resolveBattle();
 

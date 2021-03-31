@@ -46,7 +46,7 @@ class Group extends WNode {
 
     // Unit: meters of longest dimension when in storage.
     getSize () {
-        return this.traitMax('size');
+        return (this.traitMax('size') || 0) * this.quantity;
     }
 
     getTotalSp () {
@@ -209,6 +209,7 @@ class Group extends WNode {
         return this.getProp(propName) / MAXIMA[propName];
     }
 
+    // Note that this and WNode.getTrait() have v similar names.
     getProp (propName) {
         if (propName === 'quantity') {
             return this.quantity;
@@ -379,7 +380,7 @@ class Group extends WNode {
     // Returns a Group.
     // Selects a random implemented template.
     static randomTemplate () {
-        const squad = Group.new('halo/unsc/individual/marinePrivate', 5);
+        const squad = Group.new('halo/unsc/individual/marinePrivate', 30);
         // TODO this alias isnt getting resolved by WGenerator
         // const squad = Group.new('halo/unsc/individual/groupStatted', 5);
 
