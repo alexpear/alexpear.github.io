@@ -74,6 +74,89 @@ class WkriegArmy extends WNode {
         return _.sample(outputs);
     }
 
+    static getTemplate (metatemplateName, sizeClass) {
+        const metatemplates = {
+            building: {
+                minSC: 2,
+                maxSC: 14,
+                multipliers: {
+                    speed: 0
+                },
+            },
+            wheeled: {
+                minSC: 0,
+                maxSC: 7,
+                multipliers: {
+                    speed: 20
+                },
+            },
+            walker: {
+                minSC: 1,
+                maxSC: 8,
+            },
+            flier: {
+                minSC: 0,
+                maxSC: 6,
+                multipliers: {
+                    speed: 100
+                },
+            },
+            hover: {
+                minSC: 0,
+                maxSC: 16,
+                multipliers: {
+                    speed: 20
+                },
+            },
+            waterShip: {
+                minSC: 1,
+                maxSC: 8,
+                multipliers: {
+                    speed: 2
+                },
+            },
+            spaceStation: {
+                minSC: 5,
+                maxSC: 40,
+                multipliers: {
+                    speed: 0
+                },
+            },
+            organicWalker: {
+                minSC: 0,
+                maxSC: 12,
+            },
+        };
+
+        const mt = metatemplates[metatemplateName || 'wheeled'];
+        mt.type = 'vehicle';
+
+        // TODO also we want support for nonchassis templates, such as 'railgun'.
+        //could just put the type field into every metatemplate
+
+        sizeClass = Util.constrain(sizeClass, mt.minSC, mt.maxSC);
+
+        const size = Math.pow(sizeClass, 2);
+
+        const template = {
+            size: size,
+            weight: Math.pow(size / 4, 3),
+            speed: size,
+            powerOutput: size,
+            durability: size * 10,
+        };
+
+        if (! mt.multipliers) {
+            return template;
+        }
+
+        for (let prop in mt.multipliers) {
+            template[prop] = template[prop] * mt.multipliers[prop];
+        }
+
+        return template;
+    }
+
     static acceptable (combatant) {
         if (combatant.getWeight() > 200) {
             return false;
