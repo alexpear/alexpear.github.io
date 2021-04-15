@@ -76,7 +76,15 @@ class WkriegArmy extends WNode {
 
     static getTemplate (metatemplateName, sizeClass) {
         const metatemplates = {
+            object: {
+                minSC: 0,
+                maxSC: 40,
+                multipliers: {
+                    speed: 0
+                },
+            },
             building: {
+                chassis: true,
                 minSC: 2,
                 maxSC: 14,
                 multipliers: {
@@ -84,6 +92,7 @@ class WkriegArmy extends WNode {
                 },
             },
             wheeled: {
+                chassis: true,
                 minSC: 0,
                 maxSC: 7,
                 multipliers: {
@@ -91,24 +100,30 @@ class WkriegArmy extends WNode {
                 },
             },
             walker: {
+                chassis: true,
                 minSC: 1,
                 maxSC: 8,
             },
             flier: {
+                chassis: true,
                 minSC: 0,
                 maxSC: 6,
                 multipliers: {
-                    speed: 100
+                    weight: 0.25,
+                    speed: 100,
                 },
             },
             hover: {
+                chassis: true,
                 minSC: 0,
                 maxSC: 16,
                 multipliers: {
-                    speed: 20
+                    weight: 0.5,
+                    speed: 20,
                 },
             },
             waterShip: {
+                chassis: true,
                 minSC: 1,
                 maxSC: 8,
                 multipliers: {
@@ -116,6 +131,7 @@ class WkriegArmy extends WNode {
                 },
             },
             spaceStation: {
+                chassis: true,
                 minSC: 5,
                 maxSC: 40,
                 multipliers: {
@@ -123,26 +139,29 @@ class WkriegArmy extends WNode {
                 },
             },
             organicWalker: {
+                chassis: true,
                 minSC: 0,
                 maxSC: 12,
             },
         };
 
-        const mt = metatemplates[metatemplateName || 'wheeled'];
-        mt.type = 'vehicle';
-
-        // TODO also we want support for nonchassis templates, such as 'railgun'.
-        //could just put the type field into every metatemplate
+        const mt = metatemplates[metatemplateName || 'object'];
 
         sizeClass = Util.constrain(sizeClass, mt.minSC, mt.maxSC);
 
         const size = Math.pow(sizeClass, 2);
 
+        const power = mt.chassis ?
+            size :
+            size * -0.5;
+
         const template = {
-            size: size,
-            weight: Math.pow(size / 4, 3),
+            metatemplateName,
+            size,
+            power,
+            chassis: mt.chassis || false,
             speed: size,
-            powerOutput: size,
+            weight: Math.pow(size / 4, 3),
             durability: size * 10,
         };
 
