@@ -181,17 +181,17 @@ weapons:
 weaponMods:
   general:
     heavy: 20
+    cheap: 10
     lightweight: 19
     wristMounted: 8 # Incompatible with grenade and bomb, ofc
-    electric: 8
+    electric: 8 # Better against synthetic creatures than organics.
     magnetic: 5
     acid: 5
     toxin: 4
-    ion: 5 # Weapons better against synthetic creatures than organics.
     tracker: 4 # Weapons that embed microtrackers in the target, making them unable to hide.
-    fire: 8
-    thermal: 7
     guided: 7 # It partially aims on its own (homing).
+    fire: 8
+    slag: 7 # Hot molten metal projectiles
     10m: 0 # For tank-sized mecha
     100m: 0
     capitalGrade: 0 # For capital-ship-scale main weapons.
