@@ -74,15 +74,26 @@ class WkriegArmy extends WNode {
         return _.sample(outputs);
     }
 
-    static getTemplate (metatemplateName, sizeClass) {
-        const metatemplates = {
-            object: {
-                minSC: 0,
-                maxSC: 40,
-                multipliers: {
-                    speed: 0
-                },
-            },
+    // Might want later: func that returns filtered subset of the metatemplates obj - which is currently in getTemplate()
+    // Useful for selecting a random component metatemplate, etc.
+    // static metatemplateSubset (category) {
+    //     const metatemplates = {
+    //         // Or maybe separate objs for chassis, component, and ammo modifiers
+    //         // Could potentially use 3 separate funcs instead of metatemplateSubset()
+    //         // Can always retain some 'object' entry in chassis list if that helps for representing loose weapons etc.
+    //         object: {
+    //             minSC: 0,
+    //             maxSC: 40,
+    //             multipliers: {
+    //                 speed: 0
+    //             },
+    //         },
+
+    //     }
+    // }
+
+    static allChassis () {
+        return {
             building: {
                 chassis: true,
                 minSC: 2,
@@ -138,18 +149,128 @@ class WkriegArmy extends WNode {
                     speed: 0
                 },
             },
-            organicWalker: {
-                chassis: true,
-                minSC: 0,
-                maxSC: 12,
+        };
+    }
+
+    static allComponents () {
+        return {
+            cannon: {
+                shotsPerSecond: 0.1,
+                multipliers: {
+                    // high hit means high accuracy
+                    // range is a hard cap (ToW 2021 April)
+                    hit: 2,
+                    range: 2,
+                    damage: 2,
+                },
+                mods: 'ammo'
+            },
+            stubber: {
+                shotsPerSecond: 6,
+                mods: 'ammo'
+            },
+            launcher: {
+                shotsPerSecond: 0.2,
+                multipliers: {
+                    range: 0.5,
+                    damage: 2,
+                    aoe: 2
+                },
+                mods: 'ammo'
+            },
+            sustainedLaser: {
+                shotsPerSecond: 6,
+                multipliers: {
+                    hit: 1.5
+                }
+            },
+            engine: {
+
+            },
+            fuelTank: {
+
+            },
+            legs: {
+
+            },
+            wheels: {
+
+            },
+            locomotion: {
+                // Later we will probably not use this generic component metatemplate.
+            },
+        };
+    }
+
+    static ammoMetatemplates () {
+        return {
+            cheap: {},
+            electric: {},
+            tungsten: {
+                incompatibleWith: ['launcher']
+            },
+            armorPiercing: {},
+            missile: {},
+            magnetized: {},
+            highExplosive: {},
+            fire: {},
+            slag: {},
+            plasma: {},
+            frag: {},
+            concussive: {},
+            toxin: {},
+            acid: {},
+            gas: {},
+            tearGas: {},
+            tracker: {},
+            guided: {},
+            spiderweb: {},
+            stealth: {},
+            deafbang: {},
+            flashblind: {},
+            stun: {},
+            cyberspam: {},
+            nanite: {},
+            nanovirus: {},
+            gravity: {},
+            hardlight: {},
+            void: {},
+            phase: {},
+            timestop: {},
+            transgressor: {},
+        };
+    }
+
+    // Returns generic templates according to size class specification.
+    // Size Class N describes any object 2^N meters long on its longest dimension.
+    // It's fine to modify the returned template afterwards.
+    // Compatible with chassis & component metatemplates.
+    static getTemplate (metatemplateName, sizeClass) {
+        const objectMetatemplate = {
+            minSC: 0,
+            maxSC: 40,
+            multipliers: {
+                speed: 0
             },
         };
 
-        const mt = metatemplates[metatemplateName || 'object'];
+        const organicWalkerMetatemplate = {
+            chassis: true,
+            minSC: 0,
+            maxSC: 12,
+        };
 
-        sizeClass = Util.constrain(sizeClass, mt.minSC, mt.maxSC);
+        let mt = metatemplateName ?
+            WkriegArmy.allChassis()[metatemplateName] :
+            objectMetatemplate;
 
-        const size = Math.pow(sizeClass, 2);
+        if (! mt) {
+            mt = WkriegArmy.allComponents()[metatemplateName];
+        }
+
+        sizeClass = Util.constrain(sizeClass, mt.minSC || 0, mt.maxSC || 100);
+
+        const size = Math.pow(2, sizeClass);
 
         const power = mt.chassis ?
             size :
@@ -157,12 +278,16 @@ class WkriegArmy extends WNode {
 
         const template = {
             metatemplateName,
+            name: 'sc' + sizeClass + metatemplateName,
             size,
+            sizeClass,
             power,
             chassis: mt.chassis || false,
             speed: size,
             weight: Math.pow(size / 4, 3),
             durability: size * 10,
+            shotsPerSecond: mt.shotsPerSecond,
+            mods: mt.mods,
         };
 
         if (! mt.multipliers) {
@@ -174,6 +299,160 @@ class WkriegArmy extends WNode {
         }
 
         return template;
+    }
+
+
+    static nodeFromMetatemplate (metatemplateName, sizeClass) {
+        return new WNode(
+            WkriegArmy.getTemplate(metatemplateName, sizeClass)
+        );
+    }
+
+    static randomVehicle () {
+        const metatemplateName = Util.randomOf(
+            Object.keys(WkriegArmy.allChassis())
+        );
+
+        const sizeClass = Util.randomIntBetween(0, 10);
+
+        const vehicle = WkriegArmy.nodeFromMetatemplate(metatemplateName, sizeClass);
+
+        vehicle.add(
+            WkriegArmy.nodeFromMetatemplate('engine', sizeClass - 2)
+        );
+
+        vehicle.add(
+            WkriegArmy.nodeFromMetatemplate('fuelTank', sizeClass - 2)
+        );
+
+        vehicle.add(
+            // later make this specific to the metatemplate name, eg legs.
+            WkriegArmy.nodeFromMetatemplate('locomotion', sizeClass - 1)
+        );
+
+        let totalSize = vehicle.traitSum('size') - vehicle.template.size;
+
+        const sizeLimit = vehicle.template.size * 0.75
+
+        while (totalSize < sizeLimit) {
+            const sizeLeft = sizeLimit - totalSize;
+
+            // TODO this is null sometimes currently
+            const maxComponentSC = Math.min(
+                Math.floor(
+                    Math.log2(sizeLeft)
+                ),
+                sizeClass - 1
+            );
+
+            Util.logDebug({
+                note: `In WkriegArmy.randomVehicle() near the top`,
+                totalSize,
+                sizeLimit,
+                sizeLeft,
+                maxComponentSC: String(maxComponentSC),
+                metatemplateName,
+                sizeClass,
+                componentsLength: vehicle.components.length,
+            });
+
+            // HMM will we need to reject if randomComponent() is too big ? Is that made impossible by the maxComponentSC logic?
+
+            const newComponent = WkriegArmy.randomComponent(
+                Util.randomUpTo(maxComponentSC)
+            );
+
+            Util.logDebug({
+                note: `In WkriegArmy.randomVehicle() in the midhouse`,
+                totalSize,
+                sizeLimit,
+                sizeLeft,
+                maxComponentSC: String(maxComponentSC),
+                metatemplateName,
+                sizeClass,
+                componentsLength: vehicle.components.length,
+                newComponentSize: newComponent.template.size,
+                newComponentName: newComponent.template.metatemplateName,
+            });
+
+            const newCount = Util.randomIntBetween(
+                1,
+                Math.floor(sizeLeft / newComponent.template.size) + 1
+            );
+
+            Util.logDebug({
+                note: `In WkriegArmy.randomVehicle() in the lowhouse`,
+                totalSize,
+                sizeLimit,
+                sizeLeft,
+                maxComponentSC: String(maxComponentSC),
+                metatemplateName,
+                sizeClass,
+                componentsLength: vehicle.components.length,
+                newComponentSize: newComponent.template.size,
+                newCount,
+                newComponentName: newComponent.template.metatemplateName,
+            });
+
+            for (let i = 0; i < newCount; i++) {
+                vehicle.add(
+                    newComponent.deepCopy()
+                );
+            }
+
+            totalSize = vehicle.traitSum('size') - vehicle.template.size;
+        }
+
+
+        return vehicle;
+    }
+
+    static randomComponent (sizeClass) {
+        const metatemplateName = Util.randomOf(
+            Object.keys(
+                WkriegArmy.allComponents()
+            )
+        );
+
+        const node = WkriegArmy.nodeFromMetatemplate(metatemplateName, sizeClass);
+
+        WkriegArmy.addMod(node);
+
+        return node;
+    }
+
+    // Side effects only.
+    static addMod (componentNode) {
+        if (! componentNode.template.mods) {
+            return;
+        }
+
+        if (! componentNode.template.mods === 'ammo') {
+            return; // Later more types may be supported.
+        }
+
+        const ammoModNames = Object.keys(
+            WkriegArmy.ammoMetatemplates()
+        );
+
+        let modObj;
+        for (let i = 0; i < ammoModNames.length * 2; i++) {
+            // LATER make Util func for random key of obj.
+            const modName = Util.randomOf(ammoModNames);
+
+            modObj = WkriegArmy.ammoMetatemplates()[modName];
+
+            if (! Util.contains(
+                    modObj.incompatibleWith || [],
+                    componentNode.template.metatemplateName
+            )) {
+                modObj.name = modName;
+                modObj.modType = 'ammo';
+                break;
+            }
+        }
+
+        componentNode.addNewComponent(modObj);
     }
 
     static acceptable (combatant) {
@@ -269,6 +548,9 @@ class WkriegArmy extends WNode {
         WkriegArmy.testWeightBased();
         WkriegArmy.testWeightBased();
         WkriegArmy.testWeightBased();
+
+        const vehicle = WkriegArmy.randomVehicle();
+        Util.log(vehicle.toPrettyString());
     }
 }
 

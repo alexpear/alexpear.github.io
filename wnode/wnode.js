@@ -197,6 +197,7 @@ class WNode {
     }
 
     // Format that looks like informal YAML but with props above components.
+    // (prettyPrint etc)
     toPrettyString (indent, weightMode, personnel = true) {
         indent = Util.default(indent, 0);
         weightMode = Util.default(weightMode, false);

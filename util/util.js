@@ -156,10 +156,11 @@ util.constrain = (n, minInclusive, maxInclusive) => {
 util.randomIntBetween = function (minInclusive, maxExclusive) {
     if (! util.exists(minInclusive) || ! util.exists(maxExclusive)) {
         console.log('error: util.randomIntBetween() called with missing parameters.');
-        return -1;
-    } else if (maxExclusive <= minInclusive) {
+        throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
+    }
+    else if (maxExclusive <= minInclusive) {
         console.log('error: util.randomIntBetween() called with max <= min.');
-        return -1;
+        throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
     }
 
     return Math.floor( Math.random() * (maxExclusive - minInclusive) + minInclusive );
@@ -167,7 +168,9 @@ util.randomIntBetween = function (minInclusive, maxExclusive) {
 
 // Returns value in range [0, input]
 util.randomUpTo = function (maxInclusive) {
-    return util.randomIntBetween(0, maxInclusive + 1);
+    return maxInclusive >= 0 ?
+        util.randomIntBetween(0, maxInclusive + 1) :
+        maxInclusive;
 };
 
 util.randomBelow = function (maxExclusive) {
@@ -400,6 +403,8 @@ util.fromCamelCase = (s) => {
     const words = [];
 
     for (let i = 1; i < s.length; i++) {
+        // util.logDebug(`fromCamelCase(), s is ${s}, i is ${i}, s[i] is ${s[i]}`)
+
         if (util.isCapitalized(s[i])) {
             if (util.isCapitalized(s[i-1])) {
                 // Detect acronym words and leave them uppercase.
@@ -411,6 +416,15 @@ util.fromCamelCase = (s) => {
                 }
             }
 
+            wordStarts.push(i);
+
+            const firstLetter = wordStarts[wordStarts.length - 2];
+            const word = s.slice(firstLetter, i);
+            words.push(word);
+        }
+
+        // Also want to consider a digit after a nondigit, or vice versa, to be a word start.
+        else if (util.alphanumericTransition(s, i)) {
             wordStarts.push(i);
 
             const firstLetter = wordStarts[wordStarts.length - 2];
@@ -430,6 +444,19 @@ util.fromCamelCase = (s) => {
             util.capitalized(w)
     )
     .join(' ');
+};
+
+util.alphanumericTransition = (string, i2) => {
+    const digitStart = util.isNumeric(
+        string[i2 - 1]
+    );
+
+    const digitEnd = util.isNumeric(
+        string[i2]
+    );
+
+    return digitStart && ! digitEnd ||
+        ! digitStart && digitEnd;
 };
 
 util.testCamelCase = () => {
@@ -452,6 +479,9 @@ util.testCamelCase = () => {
         }
     });
 };
+
+// True when input is a number or a string containing digits.
+util.isNumeric = (x) => /[0-9]/.test(x);
 
 // Note that typeof NaN is also 'number',
 // but it is still despicable.
