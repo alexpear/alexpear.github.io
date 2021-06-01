@@ -5,6 +5,8 @@ const NodeTemplate = require('./nodeTemplate.js');
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
+const _ = require('lodash');
+
 class ActionTemplate extends NodeTemplate {
     constructor (name, range, hit, damage, shotsPerSecond) {
         super(name);
@@ -59,6 +61,71 @@ class ActionTemplate extends NodeTemplate {
         );
     }
 
+    progressBarSummary () {
+        const lines = [
+            `Name: ${this.name} (${Util.shortId(this.id)}) (${this.points()} points)`,
+            `Shots: ${this.propAsProgressBar('shotsPerSecond')}`,
+            `Range: ${this.propAsProgressBar('range')}`,
+            `Hit:   ${this.propAsProgressBar('hit')}`,
+            `Dmg:   ${this.propAsProgressBar('damage')}`
+        ];
+
+        return lines.join('\n');
+    }
+
+    propAsProgressBar (propName) {
+        const BAR_MAX = 200;
+
+        const barLength = this.propOverBenchmark(propName) * BAR_MAX;
+
+        const displayedLength = Util.constrain(barLength, 1, BAR_MAX);
+
+        const bar = '█'.repeat(displayedLength);
+
+        const fixedLengthValue = this[propName].toFixed(1)
+            .padStart(7, ' ');
+
+        const output = `${fixedLengthValue} ${bar}`;
+
+        return barLength <= BAR_MAX ?
+            output :
+            output + '...';
+    }
+
+    // Returning 1 would mean the prop's value is equal to the benchmark.
+    propOverBenchmark (propName) {
+        const MAXIMA = {
+            shotsPerSecond: 5,
+            range: 200,
+            hit: 10,
+            damage: 200
+        };
+
+        return this[propName] / MAXIMA[propName];
+    }
+
+    // Returns numerical estimate of the overall efficacy of the action.
+    points () {
+        const aspects = [
+            this.propOverBenchmark('range'),
+            this.propOverBenchmark('hit'),
+            this.propOverBenchmark('shotsPerSecond'),
+            this.propOverBenchmark('damage')
+        ]
+        .map(
+            n => n * 10
+        );
+
+        return Math.ceil(
+            Util.sum(aspects)
+            // Multiply everything together.
+            // aspects.reduce(
+            //     (product, a) => product * a,
+            //     1
+            // )
+        );
+    }
+
     static example () {
         return ActionTemplate.gunExample();
     }
@@ -85,12 +152,12 @@ class ActionTemplate extends NodeTemplate {
 
         // Later maybe rename to a more generic phrase like 'rate'.
         // Can be less than 1:
-        template.shotsPerSecond = 2;
+        template.shotsPerSecond = 3;
 
         // Range is in meters. It is okay to round it heavily.
-        template.range = 80;
+        template.range = 300;
         template.hit = 5;
-        template.damage = 24;
+        template.damage = 40;
 
         // UNSC designated mark rifle
         template.tags = [
@@ -100,11 +167,775 @@ class ActionTemplate extends NodeTemplate {
 
         return template;
     }
+
+    // Returns a ActionTemplate with totally randomized traits.
+    static random () {
+        // name, range, hit, damage, shotsPerSecond
+        const template = new ActionTemplate(
+            'randomizedAction',
+            Math.ceil(Math.random() * 100),
+            Math.ceil(Math.random() * 5),
+            Math.ceil(Math.random() * 100),
+            _.round(Math.random() * 3, 1)
+        );
+
+        return template;
+    }
+
+    static run () {
+        // Util.logDebug(`Top of ActionTemplate.run(), unique id: ${Util.newId()}.`);
+
+        // const rando = ActionTemplate.random();
+        // const summary = rando.progressBarSummary();
+        // Util.log(summary);
+    }
 };
 
 module.exports = ActionTemplate;
 
-},{"../codices/tags.js":38,"../util/util.js":81,"./nodeTemplate.js":5}],2:[function(require,module,exports){
+ActionTemplate.run();
+
+},{"../codices/tags.js":49,"../util/util.js":92,"./nodeTemplate.js":6,"lodash":88}],2:[function(require,module,exports){
+arguments[4][1][0].apply(exports,arguments)
+},{"../codices/tags.js":49,"../util/util.js":92,"./nodeTemplate.js":6,"dup":1,"lodash":88}],3:[function(require,module,exports){
+'use strict';
+
+// A group of creatures in a bottle world.
+// Instanced in memory.
+// Individual creatures (eg dragons, hermits) will still be a BattleGroup of 1.
+// This is for ecology and procedural narrative simulations based on simplified D&D rules.
+
+const Alignment = require('../dnd/alignment.js');
+const Coord = require('../util/coord.js');
+const CreatureTemplate = require('./creaturetemplate.js');
+const Event = require('./event.js');
+const TAG = require('../codices/tags.js');
+const Util = require('../util/util.js');
+
+class BattleGroup {
+    constructor (template, quantity) {
+        // TODO am i calling 2 different things 'templates'?
+        template = template || 'dwarfAxeThrower';
+        quantity = quantity || 1;
+
+        this.id = Util.newId();
+
+        if (Util.isString(template)) {
+            this.templateName = template;
+            this.template = BattleGroup.getTemplate(template);
+        } else {
+            // Assume it is a template object for now.
+            this.templateName = template.templateName;
+            this.template = BattleGroup.sanitizedTemplate(template);
+        }
+
+        this.alignment = this.template.alignment || new Alignment('NN');
+
+        this.baselineSp = quantity * this.getStats().sp;
+
+        // SP is stored as a total to make saving group state in replay and Encounter objs simpler.
+        this.totalSp = this.baselineSp;
+
+        // 2d or 3d position in meters.
+        // For spaceless simulations (JRPG style), just use a 1x1 grid.
+        // Battle.metersPerSquare converts between meters and squares.
+        // 1m = Individual / Skirmish = Furniture
+        // 10m = Squad = Garage
+        // 100m = Platoon / Formation = City Block
+        // 1000m = 1km = Battallion / Epic = University Campus
+        this.coord = new Coord();
+
+        this.status = undefined;
+    }
+
+    getStats () {
+        // Later sometimes items or status effects modify the output.
+        return this.template;
+    }
+
+    getFirstAction () {
+        return this.getStats().actions[0];
+    }
+
+    getQuantity () {
+        const quantity = Math.ceil(
+            this.getTotalSp() / this.getStats().sp
+        );
+
+        return Math.max(quantity, 0);
+
+        // Later, figure out how to handle effects like 'Buff: +1 SP'.
+    }
+
+    getTotalSp () {
+        return this.totalSp;
+    }
+
+    getWeakestCreatureSp () {
+        const maxSp = this.getStats().sp;
+        const modulo = this.getTotalSp() % maxSp;
+        const creatureSp = modulo || maxSp;
+        return Math.max(creatureSp, 0);
+    }
+
+    isActive () {
+        const INACTIVE_STATUSES = [
+            'eliminated',
+            'retreated'
+        ];
+
+        return this.getQuantity() > 0 &&
+            ! INACTIVE_STATUSES.includes(this.status);
+    }
+
+    maxDamage (target) {
+        return this.getQuantity() * this.getDamageVs(target);
+    }
+
+    // Note that negative resistance (ie, vulnerability) is indeed supported.
+    getDamageVs (target) {
+        const baseDamage = this.getFirstAction().damage;
+
+        if (! target) {
+            return baseDamage;
+        }
+
+        const attackTags = [];
+        const resistances = target.getStats().resistances;
+        let resisted = 0;
+
+        for (let i = 0; i < attackTags.length; i++) {
+            const tag = attackTags[i];
+            const resistance = resistances[tag];
+            if (Util.exists(resistance)) {
+                resisted += resistance;
+            }
+        }
+
+        // Could log.
+
+        return Math.max(baseDamage - resisted, 0)
+    }
+
+
+    // // from hobby/warband/gameState.js:
+
+    // shoot (shootingSquad, targetSquad) {
+    //     if (! this.canShoot(shootingSquad, targetSquad)) {
+    //         Util.logError('shoot() was called while canShoot() was false');
+    //         return;
+    //     }
+
+    //     // Later, consider adding 40k restriction about being tempted to choose closest enemy target
+
+    //     const distance = shootingSquad.distanceTo(targetSquad);
+
+    //     // Later, will also need to look at the intervening terrain. Also altitude: hills/towers.
+    //     const targetArea = targetSquad.squadArea(
+    //         this.terrainAt(targetSquad.coord)
+    //     );
+
+    //     this.announceEvent({
+    //         type: Event.Types.SHOOT,
+    //         shootingSquad: shootingSquad.prettyName(),
+    //         targetSquad: targetSquad.prettyName()
+    //     });
+
+    //     // Later could rename this func to shots()
+    //     const shotSet = shootingSquad.shoot();
+    //     let shootingSummary = {
+    //         shots: shotSet.length
+    //     };
+
+    //     const hits = shotSet.filter(
+    //         shot => shot.hits(distance, targetArea)
+    //     );
+
+    //     shootingSummary.hits = hits.length;
+
+    //     let outcomes = [];
+    //     for (let shot of hits) {
+    //         const victim = nextVictim(targetSquad, targetArea);
+    //         if (damages(shot, victim)) {
+    //             // Later track who the attacker (firer) of the shot was, somehow.
+    //             outcomes.push(new Outcome(shot, victim));
+    //         }
+    //     }
+
+    //     // Just for logging
+    //     let injuries = {};
+    //     let newCasualties = 0;
+    //     for (let outc of outcomes) {
+    //         const vid = outc.victim.id;
+    //         if (injuries[vid]) {
+    //             injuries[vid] += 1;
+    //         }
+    //         else {
+    //             injuries[vid] = 1;
+    //             newCasualties += 1;
+    //         }
+    //     }
+
+    //     shootingSummary.injuries = Object.values(injuries);
+    //     shootingSummary.casualties = newCasualties;
+
+    //     Util.logDebug({
+    //         context: 'gameState.shoot()',
+    //         summary: shootingSummary
+    //     });
+
+    //     // Later we will need a way to get a WNode from a id.
+    //     for (let outcome of outcomes) {
+    //         let victim = outcome.victim;
+    //         // Later there will be debuffs possible too.
+    //         targetSquad.takeCasualty(victim);
+    //     }
+
+    //     // Util.logBeacon({
+    //     //     context: 'gameState.shoot()',
+    //     //     targetQuantityRemaining: targetSquad.quantity()
+    //     // });
+
+
+    //     // This could become a member of class Squad.
+    //     // However, note that it will later also take input about homing and careful aim.
+    //     function nextVictim (targetSquad, squadArea) {
+    //         squadArea = squadArea || targetSquad.squadArea();
+
+    //         // The shot is assigned to a random victim in the squad.
+    //         // Squad members are weighted by their size.
+    //         // The assginmentRoll indicates which one is hit.
+    //         let assignmentRoll = Math.random() * squadArea;
+    //         let victim = targetSquad.components[0];
+    //         for (let targetIndividual of targetSquad.components) {
+    //             if (targetIndividual.isJunked()) {
+    //                 continue;
+    //             }
+
+    //             // We use iterative subtraction as a quick way to find which member
+    //             // is indicated by the assignmentRoll.
+    //             assignmentRoll -= targetIndividual.size;
+    //             if (assignmentRoll < 0) {
+    //                 victim = targetIndividual;
+    //                 break;
+    //             }
+    //         }
+
+    //         return victim;
+    //     }
+
+    //     // This function could be moved later.
+    //     function damages (shot, victim) {
+    //         // Damage for now means the individual (victim) is converted from a combatant to a casualty.
+    //         const damageDiff = shot.damage - victim.durability + getDamageModifier(shot, victim);
+    //         const SCALING = 0.5; // To make the probabilities feel right
+
+    //         // quasi sigmoid probability curve between 0 and 1.
+    //         const exponentiated = Math.pow(2, SCALING * damageDiff);
+    //         const damageChance = exponentiated / (exponentiated + 1);
+    //         return Math.random() < damageChance;
+    //     }
+
+    //     // Dummy function.
+    //     // Later move to Gamestate, Squad, or WNode
+    //     function getDamageModifier (shot, victim) {
+    //         return 0;
+    //     }
+
+    //     /*
+    //     Shooting outline
+    //     - <trimmed>
+    //     - 2 options for how we will do shot distribution
+    //       - Sim: Each shot hits a random individual, proportional to its modified size
+    //         - Accidental overkill is possible: 2 lethal shots hit the same soldier
+    //         - With this, i might have to add rules for a survivor automatically
+    //           picking up the flamer after the flamer-carrier is shot.
+    //         - What is the computationally quickest way to calc that?
+    //         - Tournament array: Set up a array with 1 element per size point per
+    //           individual in the target squad.
+    //         - Then assign each shot (after rolling if it hits, i think) to a
+    //           random individual using this 'weighted array'.
+    //         - This is basically spending space to save time.
+    //         - This should be cheap, because squads have < 20 individuals
+    //           and because the array is garbage collected after each shot pool.
+    //         - We could probably optimize that. Basically set up any data structure
+    //       - 40k: Each shot hits 1 individual, hitting the least-points ones first
+    //         - Leaves the officers and special equipment soldiers last
+    //     - Roll for the accuracy of each Shot
+    //       - params that increase likelihood it will hit a individual in the target squad:
+    //         - .accuracy of the weapon
+    //             - Also homing, soldier aim bonuses, etc
+    //         - sum ( size of each individual shrunk by cover ) represents the squad's target area
+    //       - params that decrease likelihood of a hit
+    //         - distance between shooter and target
+    //           - Maybe in the same proportions as a circle-arc / radius-area sim, etc
+    //       - preferably quasi sigmoid: hitting and missing are always both possible.
+    //     - Roll for damage i guess
+    //       - For now, each individual is either healthy or a casualty
+    //       - Later, individuals can get Damage debuffs such as Limping
+    //     - Later, morale rules.
+    //       - Maybe the test is taken right before the damaged squad's next activation
+    //       - Requires the squad to remember how many casualties it took recently.
+    //     */
+    // }
+
+
+    // // from squad.js:
+
+    // squadArea (terrain) {
+    //     const effectiveSizes = this.components.map(
+    //         component => component.effectiveSize(terrain)
+    //     );
+
+    //     return Util.sum(effectiveSizes);
+    // }
+
+
+    // // shot.js:
+
+    // hits (distance, targetArea) {
+    //     // SCALING calibrates which accuracy stats are normal.
+    //     const SCALING = 200;
+    //     const advantage = targetArea * this.accuracy / SCALING;
+    //     const shotProbability = advantage / (advantage + distance + 1);
+
+    //     // Util.logDebug({
+    //     //     context: `shot.hits()`,
+    //     //     distance: distance,
+    //     //     targetArea: targetArea,
+    //     //     advantage: advantage,
+    //     //     distance: distance,
+    //     //     shotProbability: shotProbability
+    //     // });
+
+    //     return Math.random() < shotProbability;
+    // }
+
+    highResRandomDamage (target) {
+        let damage = 0;
+
+        const quantity = this.getQuantity();
+        const chance = hitChance(this, target);
+
+        for (let i = 0; i < quantity; i++) {
+            if (Math.random() <= chance) {
+                damage += this.getDamageVs(target);
+            }
+        }
+
+        Util.log(`high res random damage, quantity: ${ quantity }, chance: ${ chance }, actual damage: ${ damage }`, 'debug');
+
+        return damage;
+    }
+
+    takeDamage (n) {
+        this.totalSp -= n;
+
+        const FLEE_THRESHOLD = 0.3;
+
+        if (this.totalSp <= 0) {
+            // Negative SP represents less possibility of recovery from injuries.
+            this.status = 'eliminated';
+            Util.log(`BattleGroup ${ this.toPrettyString() } has been eliminated.`, 'debug');
+        }
+        else if (this.totalSp <= this.baselineSp * FLEE_THRESHOLD) {
+            this.status = 'retreated';
+            Util.log(`BattleGroup ${ this.toPrettyString() } has retreated.`, 'debug');
+        }
+    }
+
+    prettyName () {
+        return Util.fromCamelCase(this.name || this.templateName);
+    }
+
+    toPrettyString () {
+        const name = this.prettyName();
+        const alignment = this.alignment;
+        const statusSuffix = this.status ? ` (${ this.status })` : '';
+
+        // TODO Also mention their most salient items, such as their main weapon.
+
+        return `${ name } (${ alignment }) x${ this.getQuantity() }${ statusSuffix }`;
+    }
+
+    toDetailedString () {
+        const locationStr = `, location ${ this.coord.toString() }`;
+        const idStr = '';  // `, id ${ this.id }`;
+
+        const baseSp = this.getStats().sp;
+
+        const baselineQuantity = Math.ceil(this.baselineSp / baseSp);
+        const casualties = baselineQuantity - this.getQuantity();
+        const deadRatio = Math.round(casualties / baselineQuantity * 100);
+
+        const casualtiesStr = casualties ?
+            `, ${ casualties } casualties (${ deadRatio }%)` :
+            '';
+
+        const curSp = this.getWeakestCreatureSp();
+
+        const injuryStr = curSp === baseSp ?
+            '' :
+            `, individual w/ ${ curSp }/${ baseSp } SP`;
+
+        return `${ this.toPrettyString() }${ locationStr }${ idStr }${ casualtiesStr }${ injuryStr }`;
+    }
+
+    // Returns a copy, sanitized for use as a Battle 20 Group.
+    static sanitizedTemplate (template) {
+        const copy = template.deepCopy();
+
+        copy.alignment = Util.default(copy.alignment, new Alignment('NN'));
+        copy.size = Util.default(copy.size, 1);
+        copy.sp = Util.default(copy.sp, 1);
+        copy.defense = Util.default(copy.defense, 10);
+        copy.actions = Util.default(copy.actions, []);
+        copy.tags = Util.default(copy.tags, []);
+
+        return copy;
+    }
+
+    static example () {
+        // For the Tip of the Spear fish tank battle.
+        // Later probably use a codex address, like halo/unsc/simple/marineSquad
+        const group = new BattleGroup('marineSquad', 12);
+        group.alignment = 'LN';
+        return group;
+    }
+
+    static getTemplate (templateName) {
+        // TODO This is a mock function. Later, read from the template glossary in the WorldState or WGenerator or Glossary object.
+        // Later, would also be interested in aggregated templates, from nodeTrees.
+        const exampleGlossary = {
+            dwarfAxeThrower: CreatureTemplate.example(),
+            'marineSquad': CreatureTemplate.soldierExample()
+        };
+
+        return exampleGlossary[templateName];
+    }
+
+    static test () {
+        console.log(`BattleGroup.test() \n`);
+
+        const ga = BattleGroup.example();
+        const gb = BattleGroup.example();
+        gb.alignment = 'LE';
+
+        // Util.log(mostNumerousFoe([ga, gb, gc]).toPrettyString(), 'debug');
+
+        simpleEncounter([ga, gb], true, 'low');
+
+        // console.log(JSON.stringify(output, undefined, '    '));
+        return ga;
+    }
+}
+
+// TODO: Move all these classes & funcs to battle.js file probably.
+
+function simpleEncounter (groups, random, resolution) {
+    sortByRange(groups);
+
+    let step = 0;
+
+    while (multipleAlignments(groups)) {
+        Util.log(`Step #${ step }`, 'info');
+
+        for (let attacker of groups) {
+            if (! attacker.isActive()) {
+                continue;
+            }
+
+            const target = mostNumerousFoe(groups, attacker);
+            attack(attacker, target);
+
+            if (step % 1 === 0) {
+                Util.log('\n\n' + detailedSummary(groups), 'info');
+            }
+        }
+
+        step += 1;
+    }
+}
+
+// In spaceless battles, long-ranged groups get to attack first.
+function sortByRange (groups) {
+    return groups.sort(
+        (a, b) => b.getFirstAction().range - a.getFirstAction().range
+    );
+}
+
+function prettySummary (groups) {
+    return groups.map(
+        g => g.toPrettyString()
+    )
+    .join('\n');
+}
+
+function detailedSummary (groups) {
+    return groups.map(
+        g => g.toDetailedString()
+    )
+    .join('\n');
+}
+
+function someActive (groups) {
+    return groups.some(
+        g => g.isActive()
+    );
+}
+
+function factionsActive (groups) {
+    const alignments = groups.filter(
+        g => g.isActive()
+    )
+    .map(
+        g => g.alignment
+    );
+
+    return Util.unique(alignments);
+}
+
+// Checks whether the set contains more than 1 alignment.
+// Returns boolean
+function multipleAlignments (groups) {
+    return factionsActive(groups).length >= 2;
+}
+
+// TODO: Implement the Flood's reanimation attack against a casualty Group.
+function attack (groupA, groupB, random, resolution) {
+    if (! groupA.isActive()) {
+        Util.log(`Non-active group cannot attack: ${ groupA.toPrettyString() } (id: ${ groupA.id })`, 'error');
+        return;
+    }
+
+    const event = attackEvent(groupA, groupB, random, resolution);
+    // this.saveEvent(event); // add to Battle replay
+
+    return event;
+}
+
+function attackEvent (groupA, groupB, random, resolution) {
+    random = Util.default(random, true);
+    resolution = Util.default(resolution, 'low');
+
+    const event = new Event(groupA, groupB, 'attack');
+    event.addTag(TAG.Action);
+    event.addTag(TAG.Attack);
+    // Motivation for event tagging: A battle in a airship's gunpowder room
+    // where Attacks of type Fire have a % chance of setting off a explosion.
+
+    const aAction = groupA.getFirstAction();
+    event.addTag(aAction.tags);
+
+    let damage;
+
+    // Later: add the outnumbered rule. (Attacker can only use a quantity up to defender.quantity() * 3. Represents only the front of a large army being able to attack a small group.)
+    if (random) {
+        if (resolution === 'high' || groupA.getQuantity() <= 5) {
+            damage = groupA.highResRandomDamage(groupB);
+        }
+        else {
+            // Low resolution combat simulation.
+            const maxDamage = groupA.maxDamage(groupB);
+            const expectedDamage = maxDamage * hitChance(groupA, groupB);
+            damage = randomlyAdjusted(expectedDamage);
+        }
+    }
+    else {
+        const maxDamage = groupA.maxDamage(groupB);
+        damage = Math.round(
+            maxDamage * hitChance(groupA, groupB)
+        );
+        // Later think about the edge case where this always rounds down to 0 damage, eg in skirmishes.
+    }
+
+    Util.log(`${groupA.toPrettyString()} attacks ${groupB.toPrettyString()} for ${damage} damage.`, 'event');
+
+    if (damage) {
+        // Later count quantity before & after damage to determine how many deaths happened. Relevant to necromancy.
+        groupB.takeDamage(damage);
+        event.addTag(TAG.Damage);
+
+        if (! groupB.isActive()) {
+            event.addTag(TAG.GroupElimination);
+        }
+
+        event.changes[groupB.id] = {
+            totalSp: groupB.getTotalSp()
+        };
+    }
+    else {
+        Util.log('damage is: ' + damage, 'debug');
+    }
+
+    return event;
+}
+
+// TODO I also want a spaceful calculation that cares about distance, for Fish Tank.
+function rollNeeded (groupA, groupB, cover) {
+    cover = cover || 0;
+
+    const attack = groupA.getFirstAction();
+    const defense = groupB.getStats().defense;
+    const adjustedDifficulty = defense + cover - attack.hit;
+
+    // Util.log(`adjustedDifficulty is ${ adjustedDifficulty }`, 'debug');
+
+    if (adjustedDifficulty > 20) {
+        // They need a critical success.
+        return 20;
+    }
+    else if (adjustedDifficulty < 2) {
+        // They need anything except a critical failure.
+        return 2;
+    }
+    else {
+        return adjustedDifficulty;
+    }
+}
+
+function hitChance (groupA, groupB, cover) {
+    const needed = rollNeeded(groupA, groupB, cover);
+
+    return (21 - needed) / 20;
+}
+
+function dieRoll () {
+    return Math.ceiling(
+        Math.random() * 20
+    );
+}
+
+function randomlyAdjusted (n, variance) {
+    return Math.round(
+        n * randomFactor(variance)
+    );
+}
+
+// Used to adjust expected values.
+function randomFactor (variance) {
+    variance = Util.default(variance, 0.5);
+
+    const minimum = 1 - variance;
+    return minimum + (Math.random() * variance * 2);
+}
+
+// This is kindof a rough draft / demo.
+function mostNumerousFoe (groups, attacker) {
+    attacker = attacker || groups[0]; // Pretend they are in a arbitrary position.
+
+    const foes = groups.filter(
+        g => g.alignment !== attacker.alignment &&
+            g.isActive()
+    );
+
+    return foes.reduce(
+        (largest, current) => {
+            if (! largest) {
+                return current;
+            }
+
+            return current.getQuantity() < largest.getQuantity() ?
+                largest :
+                current;
+        },
+        undefined
+    );
+}
+
+module.exports = BattleGroup;
+
+
+// Run.
+// BattleGroup.test();
+
+
+/* Notes:
+
+const e = new Encounter();
+group1.faction = 'CG';
+group2.faction = 'CE';
+e.add(group1);
+e.add(group2);
+const event = e.resolve()
+
+... methodize that as:
+const event = Encounter.between(group1, group2);
+
+
+Dwarf Axe Throwers x100 (CG)
+vs
+Dwarf Axe Throwers x100 (CE)
+
+Dwarf Axe Throwers x100 (CG) go first
+Dwarf Axe Throwers x100 (CG) do 16 damage to Dwarf Axe Throwers x100 (CE).
+Dwarf Axe Throwers x100 (CE) takes 8 casualties and there are now 92 left.
+
+
+Sketch of some relationships between classes:
+BottleUi
+Timeline
+WorldState
+Battle
+Group
+WNode (later)
+
+
+Sketch of a WNode tree that underlies a Group:
+
+Group:
+  getQuantity() === 10
+  template:
+    marine
+      components:
+        smg
+        flakArmor
+
+which comes from a WGenerator output, tree of WNodes:
+
+group
+  .quantity: 10  // How to express this in the .txt codex?
+  components:
+    marine
+      components:
+        smg
+        flakArmor
+
+and i would need to be able to look up 'marine' and 'smg' somewhere and discern their creature and attack stats.
+The intuitive place would be more entries in a .txt codex.
+
+* template marineSquad
+quantity: 10
+
+* template marine
+sp: 2
+defense: 11
+tags: human soldier tech10 unsc
+
+* template flakArmor
+defense: 6
+resistances: fire 1, piercing 1
+tags: armor
+
+* template smg
+tags: bullet fullAuto
+range: 20
+hit: 3
+damage: 1
+
+
+
+
+
+
+
+
+
+*/
+
+
+
+},{"../codices/tags.js":49,"../dnd/alignment.js":51,"../util/coord.js":91,"../util/util.js":92,"./creaturetemplate.js":4,"./event.js":5}],4:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
@@ -449,7 +1280,7 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":38,"../util/util.js":81,"./actiontemplate.js":1,"./nodeTemplate.js":5}],3:[function(require,module,exports){
+},{"../codices/tags.js":49,"../util/util.js":92,"./actiontemplate.js":2,"./nodeTemplate.js":6}],5:[function(require,module,exports){
 'use strict';
 
 const util = require('../util/util.js');
@@ -490,749 +1321,13 @@ class Event {
 
 module.exports = Event;
 
-},{"../util/util.js":81}],4:[function(require,module,exports){
-'use strict';
-
-// A group of creatures in a bottle world.
-// Instanced in memory.
-// Individual creatures (eg dragons, hermits) will still be a Group of 1.
-// This is for ecology and procedural narrative simulations based on simplified D&D rules.
-
-const Alignment = require('../dnd/alignment.js');
-const Coord = require('../util/coord.js');
-const CreatureTemplate = require('./creaturetemplate.js');
-const Event = require('./event.js');
-const TAG = require('../codices/tags.js');
-const Util = require('../util/util.js');
-
-class Group {
-    constructor (template, quantity) {
-        // TODO am i calling 2 different things 'templates'?
-        template = template || 'dwarfAxeThrower';
-        quantity = quantity || 1;
-
-        this.id = Util.newId();
-
-        if (Util.isString(template)) {
-            this.templateName = template;
-            this.template = Group.getTemplate(template);
-        } else {
-            // Assume it is a template object for now.
-            this.templateName = template.templateName;
-            this.template = Group.sanitizedTemplate(template);
-        }
-
-        this.alignment = this.template.alignment || new Alignment('NN');
-
-        this.baselineSp = quantity * this.getStats().sp;
-
-        // SP is stored as a total to make saving group state in replay and Encounter objs simpler.
-        this.totalSp = this.baselineSp;
-
-        // 2d or 3d position in meters.
-        // For spaceless simulations (JRPG style), just use a 1x1 grid.
-        // Battle.metersPerSquare converts between meters and squares.
-        // 1m = Individual / Skirmish = Furniture
-        // 10m = Squad = Garage
-        // 100m = Platoon / Formation = City Block
-        // 1000m = 1km = Battallion / Epic = University Campus
-        this.coord = new Coord();
-
-        this.status = undefined;
-    }
-
-    getStats () {
-        // Later sometimes items or status effects modify the output.
-        return this.template;
-    }
-
-    getFirstAction () {
-        return this.getStats().actions[0];
-    }
-
-    getQuantity () {
-        const quantity = Math.ceil(
-            this.getTotalSp() / this.getStats().sp
-        );
-
-        return Math.max(quantity, 0);
-
-        // Later, figure out how to handle effects like 'Buff: +1 SP'.
-    }
-
-    getTotalSp () {
-        return this.totalSp;
-    }
-
-    getWeakestCreatureSp () {
-        const maxSp = this.getStats().sp;
-        const modulo = this.getTotalSp() % maxSp;
-        const creatureSp = modulo || maxSp;
-        return Math.max(creatureSp, 0);
-    }
-
-    isActive () {
-        const INACTIVE_STATUSES = [
-            'eliminated',
-            'retreated'
-        ];
-
-        return this.getQuantity() > 0 &&
-            ! INACTIVE_STATUSES.includes(this.status);
-    }
-
-    maxDamage (target) {
-        return this.getQuantity() * this.getDamageVs(target);
-    }
-
-    // Note that negative resistance (ie, vulnerability) is indeed supported.
-    getDamageVs (target) {
-        const baseDamage = this.getFirstAction().damage;
-
-        if (! target) {
-            return baseDamage;
-        }
-
-        const attackTags = [];
-        const resistances = target.getStats().resistances;
-        let resisted = 0;
-
-        for (let i = 0; i < attackTags.length; i++) {
-            const tag = attackTags[i];
-            const resistance = resistances[tag];
-            if (Util.exists(resistance)) {
-                resisted += resistance;
-            }
-        }
-
-        // Could log.
-
-        return Math.max(baseDamage - resisted, 0)
-    }
-
-
-    // // from hobby/warband/gameState.js:
-
-    // shoot (shootingSquad, targetSquad) {
-    //     if (! this.canShoot(shootingSquad, targetSquad)) {
-    //         Util.logError('shoot() was called while canShoot() was false');
-    //         return;
-    //     }
-
-    //     // Later, consider adding 40k restriction about being tempted to choose closest enemy target
-
-    //     const distance = shootingSquad.distanceTo(targetSquad);
-
-    //     // Later, will also need to look at the intervening terrain. Also altitude: hills/towers.
-    //     const targetArea = targetSquad.squadArea(
-    //         this.terrainAt(targetSquad.coord)
-    //     );
-
-    //     this.announceEvent({
-    //         type: Event.Types.SHOOT,
-    //         shootingSquad: shootingSquad.prettyName(),
-    //         targetSquad: targetSquad.prettyName()
-    //     });
-
-    //     // Later could rename this func to shots()
-    //     const shotSet = shootingSquad.shoot();
-    //     let shootingSummary = {
-    //         shots: shotSet.length
-    //     };
-
-    //     const hits = shotSet.filter(
-    //         shot => shot.hits(distance, targetArea)
-    //     );
-
-    //     shootingSummary.hits = hits.length;
-
-    //     let outcomes = [];
-    //     for (let shot of hits) {
-    //         const victim = nextVictim(targetSquad, targetArea);
-    //         if (damages(shot, victim)) {
-    //             // Later track who the attacker (firer) of the shot was, somehow.
-    //             outcomes.push(new Outcome(shot, victim));
-    //         }
-    //     }
-
-    //     // Just for logging
-    //     let injuries = {};
-    //     let newCasualties = 0;
-    //     for (let outc of outcomes) {
-    //         const vid = outc.victim.id;
-    //         if (injuries[vid]) {
-    //             injuries[vid] += 1;
-    //         }
-    //         else {
-    //             injuries[vid] = 1;
-    //             newCasualties += 1;
-    //         }
-    //     }
-
-    //     shootingSummary.injuries = Object.values(injuries);
-    //     shootingSummary.casualties = newCasualties;
-
-    //     Util.logDebug({
-    //         context: 'gameState.shoot()',
-    //         summary: shootingSummary
-    //     });
-
-    //     // Later we will need a way to get a WNode from a id.
-    //     for (let outcome of outcomes) {
-    //         let victim = outcome.victim;
-    //         // Later there will be debuffs possible too.
-    //         targetSquad.takeCasualty(victim);
-    //     }
-
-    //     // Util.logBeacon({
-    //     //     context: 'gameState.shoot()',
-    //     //     targetQuantityRemaining: targetSquad.quantity()
-    //     // });
-
-
-    //     // This could become a member of class Squad.
-    //     // However, note that it will later also take input about homing and careful aim.
-    //     function nextVictim (targetSquad, squadArea) {
-    //         squadArea = squadArea || targetSquad.squadArea();
-
-    //         // The shot is assigned to a random victim in the squad.
-    //         // Squad members are weighted by their size.
-    //         // The assginmentRoll indicates which one is hit.
-    //         let assignmentRoll = Math.random() * squadArea;
-    //         let victim = targetSquad.components[0];
-    //         for (let targetIndividual of targetSquad.components) {
-    //             if (targetIndividual.isJunked()) {
-    //                 continue;
-    //             }
-
-    //             // We use iterative subtraction as a quick way to find which member
-    //             // is indicated by the assignmentRoll.
-    //             assignmentRoll -= targetIndividual.size;
-    //             if (assignmentRoll < 0) {
-    //                 victim = targetIndividual;
-    //                 break;
-    //             }
-    //         }
-
-    //         return victim;
-    //     }
-
-    //     // This function could be moved later.
-    //     function damages (shot, victim) {
-    //         // Damage for now means the individual (victim) is converted from a combatant to a casualty.
-    //         const damageDiff = shot.damage - victim.durability + getDamageModifier(shot, victim);
-    //         const SCALING = 0.5; // To make the probabilities feel right
-
-    //         // quasi sigmoid probability curve between 0 and 1.
-    //         const exponentiated = Math.pow(2, SCALING * damageDiff);
-    //         const damageChance = exponentiated / (exponentiated + 1);
-    //         return Math.random() < damageChance;
-    //     }
-
-    //     // Dummy function.
-    //     // Later move to Gamestate, Squad, or WNode
-    //     function getDamageModifier (shot, victim) {
-    //         return 0;
-    //     }
-
-    //     /*
-    //     Shooting outline
-    //     - <trimmed>
-    //     - 2 options for how we will do shot distribution
-    //       - Sim: Each shot hits a random individual, proportional to its modified size
-    //         - Accidental overkill is possible: 2 lethal shots hit the same soldier
-    //         - With this, i might have to add rules for a survivor automatically
-    //           picking up the flamer after the flamer-carrier is shot.
-    //         - What is the computationally quickest way to calc that?
-    //         - Tournament array: Set up a array with 1 element per size point per
-    //           individual in the target squad.
-    //         - Then assign each shot (after rolling if it hits, i think) to a
-    //           random individual using this 'weighted array'.
-    //         - This is basically spending space to save time.
-    //         - This should be cheap, because squads have < 20 individuals
-    //           and because the array is garbage collected after each shot pool.
-    //         - We could probably optimize that. Basically set up any data structure
-    //       - 40k: Each shot hits 1 individual, hitting the least-points ones first
-    //         - Leaves the officers and special equipment soldiers last
-    //     - Roll for the accuracy of each Shot
-    //       - params that increase likelihood it will hit a individual in the target squad:
-    //         - .accuracy of the weapon
-    //             - Also homing, soldier aim bonuses, etc
-    //         - sum ( size of each individual shrunk by cover ) represents the squad's target area
-    //       - params that decrease likelihood of a hit
-    //         - distance between shooter and target
-    //           - Maybe in the same proportions as a circle-arc / radius-area sim, etc
-    //       - preferably quasi sigmoid: hitting and missing are always both possible.
-    //     - Roll for damage i guess
-    //       - For now, each individual is either healthy or a casualty
-    //       - Later, individuals can get Damage debuffs such as Limping
-    //     - Later, morale rules.
-    //       - Maybe the test is taken right before the damaged squad's next activation
-    //       - Requires the squad to remember how many casualties it took recently.
-    //     */
-    // }
-
-
-    // // from squad.js:
-
-    // squadArea (terrain) {
-    //     const effectiveSizes = this.components.map(
-    //         component => component.effectiveSize(terrain)
-    //     );
-
-    //     return Util.sum(effectiveSizes);
-    // }
-
-
-    // // shot.js:
-
-    // hits (distance, targetArea) {
-    //     // SCALING calibrates which accuracy stats are normal.
-    //     const SCALING = 200;
-    //     const advantage = targetArea * this.accuracy / SCALING;
-    //     const shotProbability = advantage / (advantage + distance + 1);
-
-    //     // Util.logDebug({
-    //     //     context: `shot.hits()`,
-    //     //     distance: distance,
-    //     //     targetArea: targetArea,
-    //     //     advantage: advantage,
-    //     //     distance: distance,
-    //     //     shotProbability: shotProbability
-    //     // });
-
-    //     return Math.random() < shotProbability;
-    // }
-
-    highResRandomDamage (target) {
-        let damage = 0;
-
-        const quantity = this.getQuantity();
-        const chance = hitChance(this, target);
-
-        for (let i = 0; i < quantity; i++) {
-            if (Math.random() <= chance) {
-                damage += this.getDamageVs(target);
-            }
-        }
-
-        Util.log(`high res random damage, quantity: ${ quantity }, chance: ${ chance }, actual damage: ${ damage }`, 'debug');
-
-        return damage;
-    }
-
-    takeDamage (n) {
-        this.totalSp -= n;
-
-        const FLEE_THRESHOLD = 0.3;
-
-        if (this.totalSp <= 0) {
-            // Negative SP represents less possibility of recovery from injuries.
-            this.status = 'eliminated';
-            Util.log(`Group ${ this.toPrettyString() } has been eliminated.`, 'debug');
-        }
-        else if (this.totalSp <= this.baselineSp * FLEE_THRESHOLD) {
-            this.status = 'retreated';
-            Util.log(`Group ${ this.toPrettyString() } has retreated.`, 'debug');
-        }
-    }
-
-    prettyName () {
-        return Util.fromCamelCase(this.name || this.templateName);
-    }
-
-    toPrettyString () {
-        const name = this.prettyName();
-        const alignment = this.alignment;
-        const statusSuffix = this.status ? ` (${ this.status })` : '';
-
-        // TODO Also mention their most salient items, such as their main weapon.
-
-        return `${ name } (${ alignment }) x${ this.getQuantity() }${ statusSuffix }`;
-    }
-
-    toDetailedString () {
-        const locationStr = `, location ${ this.coord.toString() }`;
-        const idStr = '';  // `, id ${ this.id }`;
-
-        const baseSp = this.getStats().sp;
-
-        const baselineQuantity = Math.ceil(this.baselineSp / baseSp);
-        const casualties = baselineQuantity - this.getQuantity();
-        const deadRatio = Math.round(casualties / baselineQuantity * 100);
-
-        const casualtiesStr = casualties ?
-            `, ${ casualties } casualties (${ deadRatio }%)` :
-            '';
-
-        const curSp = this.getWeakestCreatureSp();
-
-        const injuryStr = curSp === baseSp ?
-            '' :
-            `, individual w/ ${ curSp }/${ baseSp } SP`;
-
-        return `${ this.toPrettyString() }${ locationStr }${ idStr }${ casualtiesStr }${ injuryStr }`;
-    }
-
-    // Returns a copy, sanitized for use as a Battle 20 Group.
-    static sanitizedTemplate (template) {
-        const copy = template.deepCopy();
-
-        copy.alignment = Util.default(copy.alignment, new Alignment('NN'));
-        copy.size = Util.default(copy.size, 1);
-        copy.sp = Util.default(copy.sp, 1);
-        copy.defense = Util.default(copy.defense, 10);
-        copy.actions = Util.default(copy.actions, []);
-        copy.tags = Util.default(copy.tags, []);
-
-        return copy;
-    }
-
-    static example () {
-        // For the Tip of the Spear fish tank battle.
-        // Later probably use a codex address, like halo/unsc/simple/marineSquad
-        const group = new Group('marineSquad', 12);
-        group.alignment = 'LN';
-        return group;
-    }
-
-    static getTemplate (templateName) {
-        // TODO This is a mock function. Later, read from the template glossary in the WorldState or WGenerator or Glossary object.
-        // Later, would also be interested in aggregated templates, from nodeTrees.
-        const exampleGlossary = {
-            dwarfAxeThrower: CreatureTemplate.example(),
-            'marineSquad': CreatureTemplate.soldierExample()
-        };
-
-        return exampleGlossary[templateName];
-    }
-
-    static test () {
-        console.log(`Group.test() \n`);
-
-        const ga = Group.example();
-        const gb = Group.example();
-        gb.alignment = 'LE';
-
-        // Util.log(mostNumerousFoe([ga, gb, gc]).toPrettyString(), 'debug');
-
-        simpleEncounter([ga, gb], true, 'low');
-
-        // console.log(JSON.stringify(output, undefined, '    '));
-        return ga;
-    }
-}
-
-// TODO: Move all these classes & funcs to battle.js file probably.
-
-function simpleEncounter (groups, random, resolution) {
-    sortByRange(groups);
-
-    let step = 0;
-
-    while (multipleAlignments(groups)) {
-        Util.log(`Step #${ step }`, 'info');
-
-        for (let attacker of groups) {
-            if (! attacker.isActive()) {
-                continue;
-            }
-
-            const target = mostNumerousFoe(groups, attacker);
-            attack(attacker, target);
-
-            if (step % 1 === 0) {
-                Util.log('\n\n' + detailedSummary(groups), 'info');
-            }
-        }
-
-        step += 1;
-    }
-}
-
-// In spaceless battles, long-ranged groups get to attack first.
-function sortByRange (groups) {
-    return groups.sort(
-        (a, b) => b.getFirstAction().range - a.getFirstAction().range
-    );
-}
-
-function prettySummary (groups) {
-    return groups.map(
-        g => g.toPrettyString()
-    )
-    .join('\n');
-}
-
-function detailedSummary (groups) {
-    return groups.map(
-        g => g.toDetailedString()
-    )
-    .join('\n');
-}
-
-function someActive (groups) {
-    return groups.some(
-        g => g.isActive()
-    );
-}
-
-function factionsActive (groups) {
-    const alignments = groups.filter(
-        g => g.isActive()
-    )
-    .map(
-        g => g.alignment
-    );
-
-    return Util.unique(alignments);
-}
-
-// Checks whether the set contains more than 1 alignment.
-// Returns boolean
-function multipleAlignments (groups) {
-    return factionsActive(groups).length >= 2;
-}
-
-// TODO: Implement the Flood's reanimation attack against a casualty Group.
-function attack (groupA, groupB, random, resolution) {
-    if (! groupA.isActive()) {
-        Util.log(`Non-active group cannot attack: ${ groupA.toPrettyString() } (id: ${ groupA.id })`, 'error');
-        return;
-    }
-
-    const event = attackEvent(groupA, groupB, random, resolution);
-    // this.saveEvent(event); // add to Battle replay
-
-    return event;
-}
-
-function attackEvent (groupA, groupB, random, resolution) {
-    random = Util.default(random, true);
-    resolution = Util.default(resolution, 'low');
-
-    const event = new Event(groupA, groupB, 'attack');
-    event.addTag(TAG.Action);
-    event.addTag(TAG.Attack);
-    // Motivation for event tagging: A battle in a airship's gunpowder room
-    // where Attacks of type Fire have a % chance of setting off a explosion.
-
-    const aAction = groupA.getFirstAction();
-    event.addTag(aAction.tags);
-
-    let damage;
-
-    // Later: add the outnumbered rule. (Attacker can only use a quantity up to defender.quantity() * 3. Represents only the front of a large army being able to attack a small group.)
-    if (random) {
-        if (resolution === 'high' || groupA.getQuantity() <= 5) {
-            damage = groupA.highResRandomDamage(groupB);
-        }
-        else {
-            // Low resolution combat simulation.
-            const maxDamage = groupA.maxDamage(groupB);
-            const expectedDamage = maxDamage * hitChance(groupA, groupB);
-            damage = randomlyAdjusted(expectedDamage);
-        }
-    }
-    else {
-        const maxDamage = groupA.maxDamage(groupB);
-        damage = Math.round(
-            maxDamage * hitChance(groupA, groupB)
-        );
-        // Later think about the edge case where this always rounds down to 0 damage, eg in skirmishes.
-    }
-
-    Util.log(`${groupA.toPrettyString()} attacks ${groupB.toPrettyString()} for ${damage} damage.`, 'event');
-
-    if (damage) {
-        // Later count quantity before & after damage to determine how many deaths happened. Relevant to necromancy.
-        groupB.takeDamage(damage);
-        event.addTag(TAG.Damage);
-
-        if (! groupB.isActive()) {
-            event.addTag(TAG.GroupElimination);
-        }
-
-        event.changes[groupB.id] = {
-            totalSp: groupB.getTotalSp()
-        };
-    }
-    else {
-        Util.log('damage is: ' + damage, 'debug');
-    }
-
-    return event;
-}
-
-// TODO I also want a spaceful calculation that cares about distance, for Fish Tank.
-function rollNeeded (groupA, groupB, cover) {
-    cover = cover || 0;
-
-    const attack = groupA.getFirstAction();
-    const defense = groupB.getStats().defense;
-    const adjustedDifficulty = defense + cover - attack.hit;
-
-    // Util.log(`adjustedDifficulty is ${ adjustedDifficulty }`, 'debug');
-
-    if (adjustedDifficulty > 20) {
-        // They need a critical success.
-        return 20;
-    }
-    else if (adjustedDifficulty < 2) {
-        // They need anything except a critical failure.
-        return 2;
-    }
-    else {
-        return adjustedDifficulty;
-    }
-}
-
-function hitChance (groupA, groupB, cover) {
-    const needed = rollNeeded(groupA, groupB, cover);
-
-    return (21 - needed) / 20;
-}
-
-function dieRoll () {
-    return Math.ceiling(
-        Math.random() * 20
-    );
-}
-
-function randomlyAdjusted (n, variance) {
-    return Math.round(
-        n * randomFactor(variance)
-    );
-}
-
-// Used to adjust expected values.
-function randomFactor (variance) {
-    variance = Util.default(variance, 0.5);
-
-    const minimum = 1 - variance;
-    return minimum + (Math.random() * variance * 2);
-}
-
-// This is kindof a rough draft / demo.
-function mostNumerousFoe (groups, attacker) {
-    attacker = attacker || groups[0]; // Pretend they are in a arbitrary position.
-
-    const foes = groups.filter(
-        g => g.alignment !== attacker.alignment &&
-            g.isActive()
-    );
-
-    return foes.reduce(
-        (largest, current) => {
-            if (! largest) {
-                return current;
-            }
-
-            return current.getQuantity() < largest.getQuantity() ?
-                largest :
-                current;
-        },
-        undefined
-    );
-}
-
-module.exports = Group;
-
-
-// Run.
-// Group.test();
-
-
-/* Notes:
-
-const e = new Encounter();
-group1.faction = 'CG';
-group2.faction = 'CE';
-e.add(group1);
-e.add(group2);
-const event = e.resolve()
-
-... methodize that as:
-const event = Encounter.between(group1, group2);
-
-
-Dwarf Axe Throwers x100 (CG)
-vs
-Dwarf Axe Throwers x100 (CE)
-
-Dwarf Axe Throwers x100 (CG) go first
-Dwarf Axe Throwers x100 (CG) do 16 damage to Dwarf Axe Throwers x100 (CE).
-Dwarf Axe Throwers x100 (CE) takes 8 casualties and there are now 92 left.
-
-
-Sketch of some relationships between classes:
-BottleUi
-Timeline
-WorldState
-Battle
-Group
-WNode (later)
-
-
-Sketch of a WNode tree that underlies a Group:
-
-Group:
-  getQuantity() === 10
-  template:
-    marine
-      components:
-        smg
-        flakArmor
-
-which comes from a WGenerator output, tree of WNodes:
-
-group
-  .quantity: 10  // How to express this in the .txt codex?
-  components:
-    marine
-      components:
-        smg
-        flakArmor
-
-and i would need to be able to look up 'marine' and 'smg' somewhere and discern their creature and attack stats.
-The intuitive place would be more entries in a .txt codex.
-
-* template marineSquad
-quantity: 10
-
-* template marine
-sp: 2
-defense: 11
-tags: human soldier tech10 unsc
-
-* template flakArmor
-defense: 6
-resistances: fire 1, piercing 1
-tags: armor
-
-* template smg
-tags: bullet fullAuto
-range: 20
-hit: 3
-damage: 1
-
-
-
-
-
-
-
-
-
-*/
-
-
-
-},{"../codices/tags.js":38,"../dnd/alignment.js":40,"../util/coord.js":80,"../util/util.js":81,"./creaturetemplate.js":2,"./event.js":3}],5:[function(require,module,exports){
+},{"../util/util.js":92}],6:[function(require,module,exports){
 'use strict';
 
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
+
+const Yaml = require('js-yaml');
 
 module.exports = class NodeTemplate {
     constructor (name) {
@@ -1265,13 +1360,19 @@ module.exports = class NodeTemplate {
             Util.hasOverlap(this.tags, ['group', 'force', 'taskForce', 'set', 'squad', 'team']);
     }
 
+    // Returns obj, not string, like all other toJson() funcs in this library.
     toJson () {
         // Already free of circular reference.
         return this;
     }
+
+    //returns str.
+    toYaml () {
+        return Yaml.dump(this.toJson());
+    }
 }
 
-},{"../codices/tags.js":38,"../util/util.js":81}],6:[function(require,module,exports){
+},{"../codices/tags.js":49,"../util/util.js":92,"js-yaml":58}],7:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -1489,10 +1590,11 @@ BEvent.TYPES = Util.makeEnum([
     'Explosion',
     'Effect',
     'MoveAll',
+    'Raid',
     'UniversalUpdate'
 ]);
 
-},{"../util/coord.js":80,"../util/util.js":81}],7:[function(require,module,exports){
+},{"../util/coord.js":91,"../util/util.js":92}],8:[function(require,module,exports){
 'use strict';
 
 const ProjectileEvent = require('./projectileEvent.js');
@@ -1561,7 +1663,7 @@ module.exports = class ActionEvent extends BEvent {
 
 };
 
-},{"../../bottleWorld/worldState.js":14,"../../util/coord.js":80,"../../util/util.js":81,"../bEvent.js":6,"./projectileEvent.js":11}],8:[function(require,module,exports){
+},{"../../bottleWorld/worldState.js":15,"../../util/coord.js":91,"../../util/util.js":92,"../bEvent.js":7,"./projectileEvent.js":12}],9:[function(require,module,exports){
 'use strict';
 
 const ActionEvent = require('./actionEvent.js');
@@ -1618,7 +1720,7 @@ module.exports = class ActionReadyEvent extends BEvent {
     }
 };
 
-},{"../../util/coord.js":80,"../../util/util.js":81,"../bEvent.js":6,"./actionEvent.js":7}],9:[function(require,module,exports){
+},{"../../util/coord.js":91,"../../util/util.js":92,"../bEvent.js":7,"./actionEvent.js":8}],10:[function(require,module,exports){
 'use strict';
 
 const ActionReadyEvent = require('./actionReadyEvent.js');
@@ -1645,9 +1747,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
     }
 
     resolve (worldState) {
-        const arriver = this.templatePath ?
-            worldState.generateNodes(this.templatePath)[0] :
-            worldState.fromId(this.templatePath);
+        const arriver = worldState.generateNodes(this.templatePath || 'unknown')[0];
 
         Util.logDebug('Here is what this ArrivalEvent is creating:' + arriver.typeTreeYaml());
 
@@ -1659,23 +1759,24 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
         // Util.logDebug(`arriver.templateName: ${arriver.templateName}, arriver.template: ${arriver.template}, arriver.constructor.name: ${arriver.constructor.name}, typeof arriver.actions: ${typeof arriver.actions}, typeof arriver.deepCopy: ${typeof arriver.deepCopy}`);
 
+        // TODO i'm inclined to move away from the event-from-event paradigm. I'd rather create most BEvents using a turn loop over all Things that get a turn. It's much easier to visualize a turn loop over a WorldState than this self-propagating event model.
         const actions = Util.isFunction(arriver.getActions) && arriver.getActions();
 
         if (! actions || actions.length === 0) {
-            Util.logDebug(`In ArrivalEvent,
-    worldState.constructor.name: ${worldState.constructor.name},
-    arriver.templateName: ${arriver.templateName},
-    arriver.template: ${arriver.template},
-    arriver.constructor.name: ${arriver.constructor.name},
-    typeof arriver.getActions: ${typeof arriver.getActions},
-    typeof arriver.actions: ${typeof arriver.actions},
-    arriver.template.actions.length: ${arriver.template && arriver.template.actions.length},
-    typeof arriver.deepCopy: ${typeof arriver.deepCopy},
-    arriver.components[0].templateName: ${arriver.components[0] && arriver.components[0].templateName},
-    arriver.components[1].templateName: ${arriver.components[1] && arriver.components[1].templateName},
-    arriver.components[1].constructor.name: ${arriver.components[1] && arriver.components[1].constructor.name},
-    arriver.toJson() is the following:
-    ${arriver.toJson()}`);
+    //         Util.logDebug(`In ArrivalEvent,
+    // worldState.constructor.name: ${worldState.constructor.name},
+    // arriver.templateName: ${arriver.templateName},
+    // arriver.template: ${arriver.template},
+    // arriver.constructor.name: ${arriver.constructor.name},
+    // typeof arriver.getActions: ${typeof arriver.getActions},
+    // typeof arriver.actions: ${typeof arriver.actions},
+    // arriver.template.actions.length: ${arriver.template && arriver.template.actions.length},
+    // typeof arriver.deepCopy: ${typeof arriver.deepCopy},
+    // arriver.components[0].templateName: ${arriver.components[0] && arriver.components[0].templateName},
+    // arriver.components[1].templateName: ${arriver.components[1] && arriver.components[1].templateName},
+    // arriver.components[1].constructor.name: ${arriver.components[1] && arriver.components[1].constructor.name},
+    // arriver.toJson() is the following:
+    // ${arriver.toJson()}`);
 
             // throw new Error(`Debug throwing to figure out why ArrivalEvent receives something with no actions.`);
 
@@ -1696,7 +1797,7 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
 ArrivalEvent.ACTION_DELAY = 1;
 
-},{"../../battle20/actiontemplate.js":1,"../../util/coord.js":80,"../../util/util.js":81,"../bEvent.js":6,"./actionReadyEvent.js":8}],10:[function(require,module,exports){
+},{"../../battle20/actiontemplate.js":2,"../../util/coord.js":91,"../../util/util.js":92,"../bEvent.js":7,"./actionReadyEvent.js":9}],11:[function(require,module,exports){
 'use strict';
 
 // const ActionReadyEvent = require('./actionReadyEvent.js');
@@ -1739,7 +1840,7 @@ const MoveAllEvent = module.exports = class MoveAllEvent extends BEvent {
     }
 };
 
-},{"../../util/coord.js":80,"../../util/util.js":81,"../bEvent.js":6}],11:[function(require,module,exports){
+},{"../../util/coord.js":91,"../../util/util.js":92,"../bEvent.js":7}],12:[function(require,module,exports){
 'use strict';
 
 const BEvent = require('../bEvent.js');
@@ -1750,6 +1851,9 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 const Creature = require('../../wnode/creature.js');
+const Group = require('../../wnode/group.js');
+
+const Yaml = require('js-yaml');
 
 class ProjectileEvent extends BEvent {
     // protagonist is a input param of type Thing.
@@ -1863,6 +1967,7 @@ class ProjectileEvent extends BEvent {
         );
     }
 
+    // Returns number between 0 and 1
     static hitChance (actionTemplate, target, distance) {
         // Algorithm comes from WCW in hobby/warband/gameState.js
         // LATER gather modifiers of hit, including from creatures like spartan, instead of just base hit stat.
@@ -1874,7 +1979,11 @@ class ProjectileEvent extends BEvent {
         }
 
         const advantage = target.getSize() * actionTemplate.hit / AIM_FUDGE;
-        return advantage / (advantage + distance + 1);
+        const chance = advantage / (advantage + distance + 1);
+
+        // Util.logDebug(`ProjectileEvent.hitChance(): ${advantage} / (${advantage} + ${distance} + 1) === ${chance}`);
+
+        return chance;
     }
 
     static damagePerShot (actionTemplate, target) {
@@ -1891,17 +2000,23 @@ class ProjectileEvent extends BEvent {
         return damage;
     }
 
+    // Returns summary of expected damage over 1 sec of firing at various ranges.
     // Later could also add a similar func that calculates TTK for range/weap/target combinations
     static testActionDamage (actionTemplate, target) {
         actionTemplate = actionTemplate || ActionTemplate.example();
-        target = target || Creature.example();
+
+        if (! target) {
+            // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
+            target = Group.marineCompany();
+        }
 
         // const exampleSummary = {
         //     actionTemplateName: 'heavyStubber',
         //     targetTemplateName: 'marinePrivate',
         //     1: 2.5,
         //     2: 2.3,
-        //     4: 1.9
+        //     4: 1.9,
+        //     ...
         // };
 
         const summary = {
@@ -1911,19 +2026,352 @@ class ProjectileEvent extends BEvent {
 
         const shots = actionTemplate.shotsPerSecond;
 
-        const TOO_FAR = 10 * 1000;
+        const TOO_FAR = 10 * 1000; // 10km
         for (let range = 1; range < TOO_FAR; range = range * 2) {
             const expectedHits = shots * ProjectileEvent.hitChance(actionTemplate, target, range);
+            const damage = ProjectileEvent.damagePerShot(actionTemplate, target);
 
-            summary[range] = expectedHits * ProjectileEvent.damagePerShot(actionTemplate, target);
+            // Util.logDebug(`expectedHits is ${expectedHits}. damage is ${damage}.`);
+
+            summary[range] = (expectedHits * damage).toFixed(2);
         }
 
         Util.log(summary);
         return summary;
     }
+
+
+    // Simulates 1 second of firing against target, with randomness.
+    // No side effects. Returns a summary in the dry-run style.
+    // Uses the KO state system (non SP based)
+    // Combatants are always in one of the following states: {OK, KO}
+    static fireAt (attacker, actionTemplate, target, range, log) {
+        // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
+        attacker       = Util.default(attacker,       Group.marineCompany());
+        target         = Util.default(target,         Group.marineCompany());
+        actionTemplate = Util.default(actionTemplate, ActionTemplate.example());
+        range          = Util.default(range,          100);
+        log            = Util.default(log,            true);
+
+        const summary = {
+            attacker: attacker.templateName,
+            attackerQuantity: attacker.quantity,
+            action: actionTemplate.name,
+            target: target.templateName,
+            targetQuantity: target.quantity,
+            accurateShots: 0,
+            hits: 0,
+            casualties: 0
+        };
+
+        // const bEvent; // Later can output 1 or more BEvents
+
+        const shots = attacker.quantity * actionTemplate.shotsPerSecond;
+
+        // Noninteger shot counts are rounded up or down, with chance proportional to remainder.
+        // This means that slow-firing weaps have eg a 20% chance of firing each second.
+        const chanceOfShot = shots % 1;
+
+        summary.shots = Math.random() < chanceOfShot ?
+            Math.ceil(shots) :
+            Math.floor(shots);
+
+        summary.hitChance = ProjectileEvent.hitChance(actionTemplate, target, range);
+        summary.damagePerShot = ProjectileEvent.damagePerShot(actionTemplate, target);
+
+        // Note that durability in the non-SP context means the value that has a 50% chance of KOing you. This is typically half as big as the SP definition of durability.
+        summary.durability = target.template.durability || 5;
+
+        // LATER this will be a function of terrain, size, combat skill, and AoE attacks.
+        summary.coverChance = 0.2;
+
+        for (let s = 0; s < summary.shots; s++) {
+            if (Math.random() > summary.hitChance) {
+                continue; // Miss.
+            }
+
+            summary.accurateShots++;
+            
+            if (Math.random() > summary.coverChance) {
+                continue; // Shot hit cover.
+            }
+
+            summary.hits++;
+
+            // Pseudosigmoid
+            const koChance = summary.damagePerShot /
+                (summary.damagePerShot + summary.durability);
+
+            if (Math.random() > koChance) {
+                continue; // Victim not seriously hurt.
+            }
+
+            summary.casualties++;
+        }
+
+        // Util.log('\n' + Yaml.dump(summary));
+        return summary;
+    }
+
+    // Simulates 1 second of firing against target, with randomness.
+    // Uses the SP pool system (group.worstSp, etc)
+    static testFireSp (attacker, actionTemplate, target, range, log) {
+        // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
+        attacker = Util.default(attacker, Group.marineCompany());
+        target = Util.default(target, Group.marineCompany());
+        actionTemplate = Util.default(actionTemplate, ActionTemplate.example());
+        range = Util.default(range, 100);
+        log = Util.default(log, true);
+
+        const summary = {
+            attacker: attacker.templateName,
+            attackerQuantity: attacker.quantity,
+            action: actionTemplate.name,
+            target: target.templateName,
+            targetQuantity: target.quantity,
+            hits: 0
+        };
+
+        // const bEvent; // Later can output 1 or more BEvents
+
+        // LATER: Note this will give slightly approximated results when shotsPerSecond is less than 1s.
+        summary.shots = attacker.quantity * actionTemplate.shotsPerSecond;
+        summary.hitChance = ProjectileEvent.hitChance(actionTemplate, target, range);
+
+        for (let s = 0; s < summary.shots; s++) {
+            if (Math.random() < summary.hitChance) {
+                summary.hits++;
+            }
+        }
+
+        summary.damagePerShot = ProjectileEvent.damagePerShot(actionTemplate, target);
+
+        summary.totalDamage = summary.hits * summary.damagePerShot;
+
+        if (! target.template) {
+            Util.logDebug(`ProjectileEvent.testFireSp(). target.templateName is ${target.templateName}.`);
+        }
+
+        const naiveCasualties = summary.totalDamage / target.template.sp;
+        const remainderCasualties = naiveCasualties - Math.floor(naiveCasualties);
+
+        // Remainder damage that is enough to injure but not KO a final creature.
+        const excessDamage = remainderCasualties * target.template.sp;
+
+        summary.casualties = excessDamage >= target.worstSp ?
+            naiveCasualties + 1 :
+            naiveCasualties;
+
+        // Util.logDebug(target.template);
+
+        Util.log('\n' + Yaml.dump(summary));
+        return summary;
+        // Then: const bOutcome = b.takeDamage(aAttack.totalDamage);
+    }
+
+    static randomGroups (groupCount, sizeEach) {
+        let groups = [];
+
+        for (let i = 0; i < (groupCount || 12); i++) {
+            groups.push(Group.randomTemplate());
+        }
+
+        return groups;
+    }
+
+    // Groups do not move for now. Terrain is flat.
+    // Does indeed mutate the Groups.
+    static resolveBattle (aGroups, bGroups, range, log) {
+        aGroups = Util.default(aGroups, ProjectileEvent.randomGroups());
+        bGroups = Util.default(bGroups, ProjectileEvent.randomGroups());
+
+        const defaultRange = Math.ceil(Math.random() * 150);
+        range = Util.default(range, defaultRange);
+        log = Util.default(log, true);
+
+        let aTotalSize = Util.sum(
+            aGroups.map(
+                g => g.getSize()
+            )
+        );
+
+        let bTotalSize = Util.sum(
+            bGroups.map(
+                g => g.getSize()
+            )
+        );
+
+        const summary = {
+            // aGroups: array of objs with templateName and quantity
+            // bGroups: same
+            range: range
+        };
+
+        const longerLength = Math.max(aGroups.length, bGroups.length);
+
+        let t;
+
+        for (t = 0; t < 10000; t++) {
+            for (let i = 0; i < longerLength; i++) {
+                let protag;
+
+                if (aGroups[i]) {
+                    protag = aGroups[i];
+
+                    // Util.logDebug(protag.target && protag.target.active);
+
+                    if (! (protag.target && protag.target.active)) {
+                        // Later randomly roll up to bTotalSize, so that big groups get targeted more.
+                        const available = bGroups.filter(
+                            g => g.active
+                        );
+
+                        if (available.length === 0) {
+                            // later update summary
+                            return summary;
+                        }
+
+                        protag.target = Util.randomOf(available);
+                    }
+
+                    const attack = ProjectileEvent.fireAt(
+                        protag,
+                        protag.actions[0],
+                        protag.target,
+                        range,
+                        log
+                    );
+                    const outcome = protag.target.takeCasualties(attack.casualties);
+
+                    // TODO make sure this cant go or start negative.
+                    bTotalSize -= protag.target.getTrait('size') * attack.casualties;
+                }
+
+                if (! bGroups[i]) {
+                    continue;
+                }
+
+                protag = bGroups[i];
+
+                if (! (protag.target && protag.target.active)) {
+                    // Later randomly roll up to aTotalSize
+                    const available = aGroups.filter(
+                        g => g.active
+                    );
+
+                    if (available.length === 0) {
+                        // later update summary
+                        return summary;
+                    }
+
+                    protag.target = Util.randomOf(available);
+                }
+
+                const attack = ProjectileEvent.fireAt(
+                    protag,
+                    protag.actions[0],
+                    protag.target,
+                    range,
+                    log
+                );
+                const outcome = protag.target.takeCasualties(attack.casualties);
+
+                aTotalSize -= protag.target.getTrait('size') * attack.casualties;
+            }
+
+            // later functionize foo(aGroups)
+            const aSizes = aGroups.map(
+                g => g.getSize().toString().padStart(3, ' ')
+            )
+            .filter(
+                size => size !== '  0'
+            )
+            .join(' ');
+
+            const bSizes = bGroups.map(
+                g => g.getSize().toString().padStart(3, ' ')
+            )
+            .filter(
+                size => size !== '  0'
+            )
+            .join(' ');
+
+            console.log(`----------------------------------------------- ${t}s\n${aSizes}\n${bSizes}\n`);
+        }
+
+        // TODO populate summary
+        return summary;
+    }
+
+    // Tests a fight of arbitrary length between 2 Groups.
+    // Groups do not move for now. Terrain is flat.
+    // Does indeed mutate the Groups.
+    static testEngagement (a, b, range, log) {
+        a = Util.default(a, Group.randomTemplate());
+        b = Util.default(b, Group.randomTemplate());
+
+        const defaultRange = Math.ceil(Math.random() * 150);
+        range = Util.default(range, defaultRange);
+        log = Util.default(log, true);
+
+        const aAction = a.actions[0] || ActionTemplate.example();
+        const bAction = b.actions[0] || ActionTemplate.example();
+
+        const summary = {
+            a: a.templateName,
+            aStartingQuantity: a.quantity,
+            aAction: aAction.name,
+            b: b.templateName,
+            bStartingQuantity: b.quantity,
+            bAction: bAction.name,
+            range: range
+        };
+
+        // LATER maybe log a.progressBarSummary()
+        // Util.log(a.toDebugString() + '\n' + b.toDebugString());
+
+        const aName = Util.fromCamelCase(a.templateName);
+        const bName = Util.fromCamelCase(b.templateName);
+
+        let t;
+
+        for (t = 0; t < 10000; t++) {
+            const aAttack = ProjectileEvent.fireAt(a, aAction, b, range, log);
+            const bOutcome = b.takeCasualties(aAttack.casualties);
+
+            // if (log) {
+            //     Util.log(`t=${ t }. A just fired at B (range ${ range }).\n${ a.dotGrid() }\n${ aName } x${ a.quantity }\nvs\n${ bName } x${ b.quantity }\n${ b.dotGrid() }`);
+            // }
+
+            if (! b.active) {
+                break;
+            }
+
+            const bAttack = ProjectileEvent.fireAt(b, bAction, a, range, log);
+            const aOutcome = a.takeCasualties(bAttack.casualties);
+
+            if (log) {
+                console.log(`${ aName } x${ a.quantity }\n${ a.dotGrid() }\n    vs (${ t }s)\n${ bName } x${ b.quantity }\n${ b.dotGrid() }\n\n\n`);
+            }
+
+            if (! a.active) {
+                break;
+            }
+        }
+
+        summary.secondsElapsed = t;
+        summary.aFinalQuantity = a.quantity;
+        summary.bFinalQuantity = b.quantity;
+
+        if (log) {
+            // console.log('\n' + Yaml.dump(summary));            
+        }
+
+        return summary;
+    }
 };
 
-// Old funcs from battle20 group.js:
+// Old funcs from battle20 battleGroup.js:
 // Actually originally from hobby/warband/gameState.js
 // function hits (distance, targetArea, accuracy) {
 //     // SCALING calibrates which accuracy stats are normal.
@@ -1947,9 +2395,11 @@ class ProjectileEvent extends BEvent {
 
 module.exports = ProjectileEvent;
 
-// ProjectileEvent.testActionDamage();
+// const outcome = ProjectileEvent.testEngagement();
+const outcome = ProjectileEvent.resolveBattle();
 
-},{"../../battle20/actiontemplate.js":1,"../../util/coord.js":80,"../../util/util.js":81,"../../wnode/creature.js":82,"../bEvent.js":6}],12:[function(require,module,exports){
+
+},{"../../battle20/actiontemplate.js":2,"../../util/coord.js":91,"../../util/util.js":92,"../../wnode/creature.js":93,"../../wnode/group.js":94,"../bEvent.js":7,"js-yaml":58}],13:[function(require,module,exports){
 'use strict';
 
 const WorldState = require('./worldState.js');
@@ -1964,6 +2414,7 @@ const Util = require('../util/util.js');
 
 const Group = require('../wnode/group.js');
 const Thing = require('../wnode/thing.js');
+const WNode = require('../wnode/wnode.js');
 
 // For use with gridView front end
 // Space is a discrete square grid
@@ -1972,12 +2423,14 @@ const Thing = require('../wnode/thing.js');
 // Larger creatures or objects are not modeled in this system except as several squares of static terrain.
 class GridWarWorldState extends WorldState {
     constructor (scenarioName) {
-        super();
+        super(undefined, 0, undefined, 1000);
 
         // Later dont edit a capitalized prop, because that feels sketchy.
         Coord.DECIMAL_PLACES = 0;
 
         this.universe = 'halo'; // Later we can change this.
+
+        this.timeline = new Timeline(this);
 
         // We model a rectangular battlefield extending from (0,0) to this.farCorner
         this.farCorner = new Coord(GridWarWorldState.WIDTH - 1, GridWarWorldState.HEIGHT - 1);
@@ -2003,7 +2456,7 @@ class GridWarWorldState extends WorldState {
                 const template = this.getTemplate(path);
 
                 if (! template || ! template.size) {
-                    throw new Error(`Can't load size of ${templateName}`);
+                    throw new Error(`Can't load size of ${templateName}. Scenario keys are: ${this.alignments}`);
                 }
 
                 if (template.size > largestSize) {
@@ -2076,6 +2529,11 @@ class GridWarWorldState extends WorldState {
     makeGroups (scenario) {
         for (const alignment in scenario) {
             for (const templateName in scenario[alignment]) {
+                // entry {
+                //     quantity: number,
+                //     totalSize: number
+                //     template: CreatureTemplate
+                // }
                 const entry = scenario[alignment][templateName];
 
                 // example
@@ -2089,25 +2547,34 @@ class GridWarWorldState extends WorldState {
                 Util.logDebug(`Spawning ${templateName} x${entry.quantity} with mPerSquare ${this.mPerSquare}, because entry.template.size is ${entry.template.size}. Will do ${fullGroupCount} Groups of ${maxPerSquare} each, with remainder Group of ${remainder}.`);
 
                 for (let i = 0; i < fullGroupCount; i++) {
-                    this.spawnGroup(entry.template, maxPerSquare, alignment);
+                    this.spawnGroup(templateName, maxPerSquare, alignment);
                 }
 
                 if (remainder > 0) {
                     // Alternatively, could divide combatants evenly between the N groups. For example, if there are 2 groups, split half and half. If 4, split into fourths.
-                    this.spawnGroup(entry.template, remainder, alignment);                    
+                    this.spawnGroup(templateName, remainder, alignment);
                 }
             }
         }
     }
 
-    spawnGroup (template, quantity, alignment) {
+    spawnGroup (templateName, quantity, alignment) {
         // The unit of coord in this WorldState is squares, NOT meters.
         const coord = this.findAvailableSpawn(alignment);
 
-        const newGroup = new Group(template, quantity, alignment, coord);
-        this.nodes.push(newGroup);
+        // TODO these ArrivalEvents are using WGenerator to instantiate WNodes and getting confused.
+        // I could set the path/codices up so that WG does not get confused.
+        const arrivalEvent = new ArrivalEvent(templateName, coord, alignment);
+        arrivalEvent.quantity = quantity;
+        this.timeline.addEvent(arrivalEvent);
 
-        Util.logDebug(`GridWar spawnGroup(). Created ${newGroup.templateName} group with quantity ${newGroup.quantity} and coord ${newGroup.coord}`);
+        Util.logDebug(`GridWar spawnGroup(). Created ArrivalEvent of template name '${arrivalEvent.templatePath}' with quantity ${arrivalEvent.quantity} and coord ${arrivalEvent.coord}`);
+
+        // Old logic that works but doesnt use BEvents.
+        // // const newGroup = new Group(template, quantity, alignment, coord);
+        // // this.nodes.push(newGroup);
+
+        // Util.logDebug(`GridWar spawnGroup(). Created ${newGroup.templateName} group with quantity ${newGroup.quantity} and coord ${newGroup.coord}`);
     }
 
     findAvailableSpawn (alignment) {
@@ -2127,7 +2594,25 @@ class GridWarWorldState extends WorldState {
         throw new Error(`Cant spawn anything for ${alignment} because startBox with cornerA ${startBox.cornerA} is too crowded`);
     }
 
-    static presetArmy (scenario) {
+    // returns WNode[]
+    generateNodes (templatePath) {
+        // Later this can do more sophisticated stuff like look up template stats in codex files (using this.wanderingGenerator.getOutputs() probably).
+        return [new WNode(templatePath)];
+    }
+
+    // Give each actor a turn.
+    actorTurns () {
+        // Later might need to filter this array further.
+        const groups = this.activeNodes();
+
+        for (const group of groups) {
+            if (group.act) {
+                group.act(this);
+            }
+        }
+    }
+
+    static presetArmy (scenarioName) {
         const scenarios = {
             cairoStation: {
                 unsc: {
@@ -2434,47 +2919,42 @@ class GridWarWorldState extends WorldState {
             // Add more later
         };
 
-        // return scenarios[scenario] || scenarios.bruteAssault;
+        if (scenarioName) {
+            return scenarios[scenarioName];
+        }
+
         const randomName = Util.randomOf(Object.keys(scenarios));
         return scenarios[randomName];
     }
 
-    static example (timeline) {
+    static example () {
         const worldState = new GridWarWorldState('tipOfTheSpear');
-
-        timeline = timeline || new Timeline(worldState);
-        timeline.currentWorldState = worldState;
-        worldState.timeline = timeline;
-
-        const context = 'halo/unsc/individual';
-
-        // const startingThings = {
-        //     unsc: {
-        //         start: new Coord(0, 0),
-        //         odst: 3
-        //     },
-        //     cov: {
-        //         start: new Coord(10, 10),
-        //         bruteProwler: 2
-        //     }
-        // };
-
-        // worldState.addNodesByAlignment(startingThings, context);
 
         return worldState;
     }
 
-    static test (input) {
+    static async test (input) {
         Util.logDebug(`Top of GridWarWorldState.test()`);
 
         const worldState = GridWarWorldState.example();
-        const view = new GridView(worldState);
 
+        Util.logDebug(`GridWarWorldState.test(), after example() returned.`);
+
+        const view = new GridView(worldState);
         view.setGridHtml();
+
+        while (worldState.worthContinuing()) {
+            await Util.sleep(1);
+
+            // Util.logDebug('GridWarWorldState, after sleep(1)');
+
+            worldState.timeline.computeNextInstant();
+            view.setGridHtml();
+        }
     }
 
-    static run () {
-        GridWarWorldState.test();
+    static async run () {
+        await GridWarWorldState.test();
     }
 }
 
@@ -2485,7 +2965,39 @@ module.exports = GridWarWorldState;
 
 GridWarWorldState.run();
 
-},{"../gridView/src/gridView.js":45,"../util/box.js":79,"../util/coord.js":80,"../util/util.js":81,"../wnode/group.js":83,"../wnode/thing.js":85,"./events/arrivalEvent.js":9,"./timeline.js":13,"./worldState.js":14}],13:[function(require,module,exports){
+
+/*
+Notes on the transition function.
+2020 Oct
+Currently in other WorldStates, it works like this:
+Timeline.computeNextInstant() looks at the set of all BEvents at time t.
+For each event we call event.resolve(worldState)
+These resolve() calls mutate worldState
+They also set up more BEvents in future ticks.
+
+For MRB1 GridWar (creature movement), do i want to keep this paradigm or not?
+
+One complication is that BEvents are written for continuous space, and GridWar is discrete.
+So the BEvent library as written is actually overly specific.
+Option 1: Make discrete subclasses of individual BEvent classes as needed. MoveAllDiscreteEvent, etc.
+. Well actually MoveAllEvent is already pretty robust, happily. Not very continuous-specific.
+. Altho i may need special logic for saving up movement credit over several seconds.
+. ProjectileEvent too
+
+Okay so maybe i can just move forward with making GridWarWorldState tests being more BEvent-based. Start with ArrivalEvent. Do this in spawnGroup()
+
+Currently we test with npm run refresh and going to:
+http://localhost:8080/gridView/gridView.html
+
+
+
+*/
+
+
+
+
+
+},{"../gridView/src/gridView.js":56,"../util/box.js":90,"../util/coord.js":91,"../util/util.js":92,"../wnode/group.js":94,"../wnode/thing.js":96,"../wnode/wnode.js":97,"./events/arrivalEvent.js":10,"./timeline.js":14,"./worldState.js":15}],14:[function(require,module,exports){
 'use strict';
 
 // Hashmap ({}) of sets of Events
@@ -2504,6 +3016,8 @@ module.exports = class Timeline {
         this.timestamps = {};
         // Later fix a weird bug where new WorldState() throws 'WorldState is not a constructor'.
         this.currentWorldState = worldState || new WorldState(this, 0);
+
+        // Util.logDebug(`Timeline constructor, this.currentWorldState is ${this.currentWorldState}`);
 
         this.addEvent(
             new MoveAllEvent()
@@ -2537,7 +3051,7 @@ module.exports = class Timeline {
     }
 
     computeNextInstant () {
-        Util.logDebug(`Second #${this.currentWorldState.t} had ${this.getEventsAt(this.currentWorldState.t).length} events in it.`);
+        Util.logDebug(`Second #${this.currentWorldState.t} had ${this.getEventsAt(this.currentWorldState.t).length} events in it: ${this.summaryOfInstant(this.currentWorldState.t)}`);
 
         this.currentWorldState.t += SECONDS_PER_TICK;
 
@@ -2555,7 +3069,10 @@ module.exports = class Timeline {
             i++;
         }
 
-        // this.worldState.moveEverything(); // TODO implement this func, which moves all moving Things towards their destinations.
+        // Util.logDebug(`worldstate constructor is named ${this.currentWorldState && this.currentWorldState.constructor.name}`)
+
+        // LATER This func only implemented in subclasses. Will probably need to make this more robust.
+        this.currentWorldState.actorTurns();
     }
 
     printInRealTime () {
@@ -2593,16 +3110,20 @@ module.exports = class Timeline {
         );
     }
 
+    summaryOfInstant (t) {
+        // We do indeed include events where e.happened = false, for the sake of Timeline internal debugging.
+        const events = this.getEventsAt(t)
+            .map(e => Util.capitalized(e.eventType));
+
+        return Util.arraySummary(events);
+    }
+
     toDebugString () {
         let lines = [];
 
         for (let t = 0; t <= this.now(); t++) {
             if (this.timestamps[t]) {
-                // We do indeed include events where e.happened = false, for the sake of Timeline internal debugging.
-                const events = this.getEventsAt(t)
-                    .map(e => Util.capitalized(e.eventType));
-
-                const eventsSummary = Util.arraySummary(events);
+                const eventsSummary = this.summaryOfInstant(t);
 
                 if (
                     lines.length > 0 &&
@@ -2647,7 +3168,7 @@ module.exports = class Timeline {
     }
 };
 
-},{"../util/util.js":81,"./bEvent.js":6,"./events/moveAllEvent.js":10,"./worldState.js":14}],14:[function(require,module,exports){
+},{"../util/util.js":92,"./bEvent.js":7,"./events/moveAllEvent.js":11,"./worldState.js":15}],15:[function(require,module,exports){
 'use strict';
 
 // Represents the world in a Bottle World at one moment.
@@ -2656,7 +3177,7 @@ const Timeline = require('./timeline.js');
 const ArrivalEvent = require('./events/arrivalEvent.js');
 const ActionReadyEvent = require('./events/actionReadyEvent.js');
 const CreatureTemplate = require('../battle20/creaturetemplate.js');
-const B20Group = require('../battle20/group.js');
+const BattleGroup = require('../battle20/battleGroup.js');
 const BEvent = require('../bottleWorld/bEvent.js');
 const TAG = require('../codices/tags.js');
 const Alignment = require('../dnd/alignment.js');
@@ -2812,7 +3333,7 @@ class WorldState {
 
         const combinedTemplate = this.getAggregatedTemplate(nodeTree);
 
-        const group = new B20Group(combinedTemplate, quantity);
+        const group = new BattleGroup(combinedTemplate, quantity);
         group.nodeTree = nodeTree;
 
         return group;
@@ -3330,7 +3851,387 @@ If you want to represent the presence of a extra soldier, special soldier, or ar
 
 */
 
-},{"../battle20/creaturetemplate.js":2,"../battle20/group.js":4,"../bottleWorld/bEvent.js":6,"../codices/tags.js":38,"../dnd/alignment.js":40,"../generation/wgenerator.js":44,"../util/coord.js":80,"../util/util.js":81,"../wnode/creature.js":82,"../wnode/thing.js":85,"../wnode/wnode.js":86,"./events/actionReadyEvent.js":8,"./events/arrivalEvent.js":9,"./timeline.js":13,"js-yaml":47}],15:[function(require,module,exports){
+},{"../battle20/battleGroup.js":3,"../battle20/creaturetemplate.js":4,"../bottleWorld/bEvent.js":7,"../codices/tags.js":49,"../dnd/alignment.js":51,"../generation/wgenerator.js":55,"../util/coord.js":91,"../util/util.js":92,"../wnode/creature.js":93,"../wnode/thing.js":96,"../wnode/wnode.js":97,"./events/actionReadyEvent.js":9,"./events/arrivalEvent.js":10,"./timeline.js":14,"js-yaml":58}],16:[function(require,module,exports){
+'use strict';
+
+module.exports = `
+
+* output
+1 blackLegionArmy
+
+* childrenof blackLegionArmy
+4x
+2x
+1x
+
+* childrenof 4x
+{unit}
+
+* childrenof 2x
+{unit}
+
+* childrenof 1x
+{unit}
+
+* alias unit
+9 {infantry}
+5 {vehicle}
+
+* alias infantry
+9 cultists
+4 traitorMilitia
+4 beastmen
+4 mutants
+9 {astartes}
+9 {daemon}
+5 magosOfTheDarkMechanicum
+
+* alias astartes
+9 traitorAstartes
+9 chosen
+9 possessed
+9 aspiringChampionAndBodyguards
+9 chaosLord
+9 sorcerer
+4 raptors
+2 havocs
+5 obliterators
+9 terminators
+9 noiseMarines
+9 plagueMarines
+9 berserkers
+9 thousandSons
+1 fallenOfCypher
+
+* alias daemon
+9 chaosSpawn
+9 daemonPrince
+9 nurglings
+9 plaguebearers
+9 bloodletters
+5 fleshHounds
+7 juggernaut
+9 daemonettes
+9 flamers
+9 horrors
+9 screamers
+4 furies
+9 keeperOfSecrets
+9 greatUncleanOne
+9 bloodthirster
+9 lordOfChange
+
+* alias vehicle
+9 rhino
+9 predator
+9 defiler
+1 daemonEngine
+9 landRaider
+9 thunderhawkGunship
+9 bikers
+
+* childrenof rhino
+{infantry}
+
+* childrenof landRaider
+{infantry}
+
+* childrenof thunderhawkGunship
+{infantry}
+
+`;
+
+},{}],17:[function(require,module,exports){
+'use strict';
+
+module.exports = `
+
+* output
+1 adeptusAstartesArmy
+
+* childrenof adeptusAstartesArmy
+4x
+2x
+1x
+
+* childrenof 4x
+{unit}
+
+* childrenof 2x
+{unit}
+
+* childrenof 1x
+{unit}
+
+* alias unit
+9 {infantry}
+8 {vehicle}
+
+* alias infantry
+22 tacticalSquad
+9 assaultSquad
+9 devastatorSquad
+5 sniperScouts
+5 shotgunScouts
+4 scoutBikers
+9 bikers
+4 attackBike
+3 vanguardVeterans
+3 sternguardVeterans
+7 techmarine
+4 reclusiamSquad
+4 librarian
+5 commandSquad
+9 terminatorsWithStormShield
+4 terminatorsWithAssaultCannon
+9 primarisSquad
+1 thunderfireCannon
+1 primarisInterceptors
+9 centurions
+
+* alias vehicle
+9 landspeeder
+19 rhino
+2 razorback
+9 landRaider
+7 vindicator
+9 predator
+3 whirlwind
+5 closeCombatDreadnought
+4 lascannonDreadnought
+1 contemptorDreadnought
+9 thunderhawkGunship
+19 dropPod
+1 invictorWarsuit
+1 stormhawkInterceptor
+1 stormravenGunship
+2 stormtalonGunship
+
+* childrenof rhino
+{infantry}
+
+* childrenof razorback
+{infantry}
+
+* childrenof landRaider
+{infantry}
+
+* childrenof dropPod
+{infantry}
+
+* childrenof thunderhawkGunship
+{infantry}
+
+`;
+
+},{}],18:[function(require,module,exports){
+'use strict';
+
+module.exports = `
+
+* output
+1 imperialGuardArmy
+
+* childrenof imperialGuardArmy
+4x
+2x
+1x
+
+* childrenof oldArmy
+6x
+3x
+1x
+
+* childrenof 4x
+{unit}
+
+* childrenof 2x
+{unit}
+
+* childrenof 1x
+{unit}
+
+* alias size
+9 500Points
+5 1000Points
+9 1500Points
+9 2000Points
+9 3000Points
+
+* alias unitCount
+9 6Units
+9 10Units
+9 20Units
+9 30Units
+
+* childrenof armyDistribution
+{distributions}
+
+* alias distributions
+9 Bulk x3 Support x2 Unique x1
+9 Bulk x6 Support x3 Unique x1
+9 Bulk x13 Support x6 Unique x1
+
+* alias unit
+9 {infantry}
+7 {vehicle}
+
+* alias infantry
+20 infantryPlatoon
+9 heavyWeaponsSquad
+7 sniperSquad
+6 specialCommandStaff
+8 sactionedPsyker
+9 freshConscripts
+9 penalLegion
+9 ogyrns
+9 ratlings
+1 squats
+9 tempestusStormtroopers
+8 motorbikeScouts
+9 roughRiders
+
+* alias vehicle
+9 sentinelWalker
+9 lemanRussTank
+3 banebladeSupertank
+9 basiliskArtillery
+9 valkyrie
+
+
+
+`;
+
+},{}],19:[function(require,module,exports){
+'use strict';
+
+module.exports = `
+
+* output
+1 novel
+
+* childrenof novel
+planet
+defenders
+aggressors
+motif
+influences
+sceneLocations
+outcome
+
+* childrenof planet
+terrain
+
+* childrenof terrain
+hot
+grasslands
+
+* childrenof defenders
+{faction}
+
+* childrenof aggressors
+{faction}
+
+* alias faction
+31 {humanFaction}
+10 {eldarFaction}
+5 tau
+6 necrons
+6 orks
+7 tyranids
+
+* alias humanFaction
+10 {imperialFaction}
+5 {chaosFaction}
+
+* alias imperialFaction
+20 adeptusAstartes
+8 inquisition
+20 imperialGuard
+8 adeptusMechanicus
+1 imperialNavy
+1 officioAssassinorum
+1 adeptusArbites
+1 adeptusCustodes
+1 rogueTraders
+1 imperialKnights
+
+* childrenof adeptusAstartes
+{chapter}
+
+* alias chapter
+10 ultramarines
+10 whiteScars
+10 ravenGuard
+10 imperialFists
+10 bloodAngels
+10 darkAngels
+10 ironHands
+10 salamanders
+10 spaceWolves
+8 blackTemplars
+1 silverTemplars
+2 crimsonFists
+1 legionOfTheDamned
+
+* childrenof inquisition
+{ordo}
+
+* alias ordo
+4 ordoHereticus
+4 ordoMalleus
+4 ordoXenos
+
+* alias chaosFaction
+10 traitorLegions
+6 chaosCult
+1 darkMechanicus
+1 beastmen
+1 chaosKnights
+1 fallenSororitas
+
+* childrenof traitorLegions
+{traitorLegion}
+
+* alias traitorLegion
+10 blackLegion
+10 deathGuard
+10 emperorsChildren
+10 thousandSons
+10 worldEaters
+10 nightLords
+10 ironWarriors
+10 wordBearers
+10 alphaLegion
+
+* alias eldarFaction
+8 craftworldEldar
+7 darkEldar
+3 harlequins
+3 ynnari
+1 exodites
+1 outcasts
+
+* childrenof outcome
+{resolution}
+{consequence}
+
+* alias resolution
+4 defendersRepelAggressors
+4 aggressorsConquerPlanet
+1 thisWarIsNotOver
+2 truce
+
+* alias consequence
+4 heavyDefenderCasualties
+4 heavyAggressorCasualties
+1 peaceIsShattered
+4 nothing
+
+
+`;
+
+},{}],20:[function(require,module,exports){
 module.exports = `
 * output
 1 {battalion}
@@ -3580,7 +4481,7 @@ const drafts = `
 
 `;
 
-},{}],16:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -3948,7 +4849,7 @@ size: 348000
 
 `;
 
-},{}],17:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -4089,7 +4990,7 @@ weight: 4
 
 `;
 
-},{}],18:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = `
 * output
 5 {lance}
@@ -4408,7 +5309,7 @@ individual/bruteMinor
 
 `;
 
-},{}],19:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = `
 * output
 100 pod
@@ -4439,7 +5340,7 @@ module.exports = `
 
 `;
 
-},{}],20:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = `
 * output
 150 {infantryPack}
@@ -4513,7 +5414,7 @@ individual/brainForm
 
 `;
 
-},{}],21:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = `
 * output
 1 installationCompany
@@ -4537,7 +5438,7 @@ module.exports = `
 
 `;
 
-},{}],22:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = `
 * output
 50 sentinel
@@ -4599,7 +5500,7 @@ size: 13000
 
 `;
 
-},{}],23:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = `
 * output
 1 {giWeapon}
@@ -4645,7 +5546,7 @@ module.exports = `
 4 prometheanVision
 
 `;
-},{}],24:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = `
 * output
 1 {installationSquad}
@@ -4720,7 +5621,7 @@ Sketching about Forerunner armies
 
 */
 
-},{}],25:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = `
 * output
 4 {halo/unsc/fleet}
@@ -4730,7 +5631,7 @@ module.exports = `
 
 `;
 
-},{}],26:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -4813,7 +5714,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],27:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -4930,7 +5831,7 @@ spaceFighterSquadron
 {unsc/squad/oniSquad}
 
 `;
-},{}],28:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -4954,7 +5855,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],29:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -4971,7 +5872,7 @@ weight: 80
 size: 1.7
 speed: 3
 stealth: 10
-maxSp: 10
+sp: 10
 damage: 2
 
 * childrenof human
@@ -4994,13 +5895,6 @@ human
 4 civilian
 1 {output}
 
-* childrenof marinePrivate
-{unsc/item/giWeapon}
-{unsc/item}
-unsc/item/flakHelmet
-unsc/item/flakArmor
-human
-
 * alias squadLeader
 4 marinePrivate
 4 marineSpecialist
@@ -5020,15 +5914,6 @@ human
 unsc/item/leatherCase
 human
 
-* childrenof odst
-{unsc/item/veteranWeapon}
-{unsc/item/smallWeapon}
-{unsc/item/anyGear}
-unsc/item/visrHelmet
-unsc/item/odstArmor
-unsc/item/fragGrenade
-human
-
 * childrenof helljumper
 unsc/item/jetpack
 {helljumperMember}
@@ -5041,7 +5926,7 @@ unsc/item/jetpack
 tags: creature cyborg
 size: 2
 weight: 120
-maxSp: 20
+sp: 20
 damage: 4
 speed: 5
 stealth: 12
@@ -5075,17 +5960,29 @@ weight: 1000
 1 spartan
 1 {output}
 
+* alias groupStatted
+4 marinePrivate
+4 odst
+
 * template marinePrivate
 tags: creature
 size: 1
 speed: 1
 ac: 17
 sp: 10
+durability: 5
 resistance: heat 2, pierce 2
 toHit: 2
 damage: 2
 shots: 3
 comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily. This marine has a SMG.
+
+* childrenof marinePrivate
+{unsc/item/giWeapon}
+{unsc/item}
+unsc/item/flakHelmet
+unsc/item/flakArmor
+human
 
 * template marine
 tags: creature
@@ -5107,12 +6004,22 @@ size: 1
 speed: 1
 ac: 19
 sp: 15
+durability: 8
 resistance: heat 2, pierce 2
 toHit: 2
 damage: 2
 shots: 3
 attacks: 
   SMG: +2 x2, 2 pierce
+
+* childrenof odst
+{unsc/item/veteranWeapon}
+{unsc/item/smallWeapon}
+{unsc/item/anyGear}
+unsc/item/visrHelmet
+unsc/item/odstArmor
+unsc/item/fragGrenade
+human
 
 * template officer
 size: 1
@@ -5246,7 +6153,7 @@ moveType: hover
 
 `;
 
-},{}],30:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = `* output
 10 {anyWeapon}
 20 {anyGear}
@@ -5333,6 +6240,9 @@ module.exports = `* output
 2 gravityHammer
 2 oniChaingun
 1 splinterTurret
+
+* alias stattedWeapon
+4 {giWeapon}
 
 * alias anyGear
 4 targetDesignator
@@ -5474,41 +6384,52 @@ resistance: fire 1, piercing 1, impact 1
 tags: armor
 comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
 
+* template reachPistol
+tags: action bullet firearm 1handed
+range: 70
+shotsPerSecond: 2
+hit: 5
+damage: 40
+
 * template smg
 tags: action bullet firearm fullAuto
 range: 20
+shotsPerSecond: 15
 hit: 3
 damage: 7
 
 * template assaultRifle
 tags: action bullet fullAuto
 range: 40
+shotsPerSecond: 15
 hit: 3
-damage: 8
+damage: 11
 
 * template battleRifle
 tags: action bullet
 range: 80
+shotsPerSecond: 7.2
 hit: 3
 damage: 9
 
 * template dmr
 tags: action bullet firearm optics
 range: 100
-shotsPerSecond: 2
+shotsPerSecond: 3
 hit: 3
 damage: 10
 
 * template shotgun
 tags: action bullet
 range: 9
+shotsPerSecond: 1
 hit: 5
-damage: 80
+damage: 90
 attackDelay: 2
 
 `;
 
-},{}],31:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -5830,7 +6751,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],32:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -5960,7 +6881,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],33:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -6410,7 +7331,7 @@ comment: used in the Ring Bottle World. Hmm. How to incorporate info from consis
 
 `;
 
-},{}],34:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 module.exports = `
@@ -6461,9 +7382,9 @@ mbti
 1 40YearsOld
  
 * alias gender
-10 female
-9 male
-1 nonbinary
+10 genderFemale
+9 genderMale
+1 genderNonbinary
 
 * childrenof power
 {ratings}
@@ -6525,9 +7446,10 @@ mbti
 {topic}
 
 * alias topic
-4 {animal}
-4 {naturalThing}
-4 {artificialThing}
+2 {animal}
+3 {naturalThing}
+2 {artificialThing}
+15 {generalTopic}
 
 * alias animal
 4 bird
@@ -6552,36 +7474,1036 @@ mbti
 4 air 
 4 water
 4 fire
-4 stone
+2 stone
 4 mountain
-4 lake
+1 lake
 1 cliff
 1 chasm
 4 tree
-4 vine
-4 weather
+1 vine
+3 weather
 
 * alias artificialThing
-4 hammer
-4 sword
+2 hammer
+2 sword
 4 religion
-4 circuitry
+3 circuitry
 1 bonfire
 2 furniture
-4 business
-4 television
-4 car
+2 business
+2 television
+2 car
 4 aviation
 4 space
 4 robotics
 4 steampunk
-4 ageOfSail
-4 clothing
+1 ageOfSail
+1 clothing
 4 toy
 4 military
 4 knight
-4 sports
-4 comics
+3 sports
+1 comics
+
+* alias generalTopic
+4 Sargon of Akkad
+4 Hammurabi
+4 Hatshepsut
+4 Ramesses II
+4 Cyrus the Great
+4 Alexander the Great
+4 Ashoka
+4 Qin Shi Huang
+4 Julius Caesar
+4 Augustus
+4 Charlemagne
+4 Genghis Khan
+4 Joan of Arc
+4 Suleiman the Magnificent
+4 Elizabeth I
+4 Catherine the Great
+4 George Washington
+4 Napoleon
+4 Simón Bolívar
+4 Abraham Lincoln
+4 Mahatma Gandhi
+4 Vladimir Lenin
+4 Winston Churchill
+4 Joseph Stalin
+4 Adolf Hitler
+4 Mao Zedong
+4 Nelson Mandela
+4 Abraham
+4 Moses
+4 Laozi
+4 Gautama Buddha
+4 Jesus
+4 Paul the Apostle
+4 Muhammad
+4 Adi Shankara
+4 Martin Luther
+4 Marco Polo
+4 Ibn Battuta
+4 Zheng He
+4 Christopher Columbus
+4 Vasco da Gama
+4 Ferdinand Magellan
+4 James Cook
+4 Roald Amundsen
+4 Confucius
+4 Herodotus
+4 Socrates
+4 Plato
+4 Aristotle
+4 Avicenna
+4 Thomas Aquinas
+4 Ibn Khaldun
+4 René Descartes
+4 John Locke
+4 Adam Smith
+4 Immanuel Kant
+4 Mary Wollstonecraft
+4 Karl Marx
+4 Friedrich Nietzsche
+4 Sigmund Freud
+4 Homer
+4 Sappho
+4 Sophocles
+4 Virgil
+4 Li Bai
+4 Abu Nuwas
+4 Murasaki Shikibu
+4 Dante Alighieri
+4 Miguel de Cervantes
+4 William Shakespeare
+4 Voltaire
+4 Johann Wolfgang von Goethe
+4 Jane Austen
+4 Charles Dickens
+4 Fyodor Dostoevsky
+4 Leo Tolstoy
+4 Mark Twain
+4 Rabindranath Tagore
+4 James Joyce
+4 Franz Kafka
+4 Johann Sebastian Bach
+4 Wolfgang Amadeus Mozart
+4 Ludwig van Beethoven
+4 Richard Wagner
+4 Louis Armstrong
+4 Elvis Presley
+4 The Beatles
+4 Hippocrates
+4 Jabir ibn Hayyan
+4 Shen Kuo
+4 Johannes Gutenberg
+4 Nicolaus Copernicus
+4 Galileo Galilei
+4 Isaac Newton
+4 Benjamin Franklin
+4 Carl Linnaeus
+4 Antoine Lavoisier
+4 Michael Faraday
+4 Charles Darwin
+4 Louis Pasteur
+4 James Clerk Maxwell
+4 Dmitri Mendeleev
+4 Thomas Edison
+4 Nikola Tesla
+4 Marie Curie
+4 Albert Einstein
+4 Niels Bohr
+4 Archimedes
+4 Euclid
+4 Muhammad ibn Musa al-Khwarizmi
+4 Leonhard Euler
+4 Pierre-Simon Laplace
+4 Carl Friedrich Gauss
+4 Emmy Noether
+4 Kurt Gödel
+4 Alan Turing
+4 Leonardo da Vinci
+4 Michelangelo
+4 Rembrandt
+4 Hokusai
+4 Claude Monet
+4 Vincent van Gogh
+4 Pablo Picasso
+4 Frida Kahlo
+4 Charlie Chaplin
+4 Walt Disney
+4 Henry Ford
+4 History
+4 Human history
+4 Civilization
+4 Archaeology
+4 History of Africa
+4 History of Asia
+4 History of East Asia
+4 History of India
+4 History of the Middle East
+4 History of Europe
+4 History of North America
+4 History of Oceania
+4 History of South America
+4 History of art
+4 History of science
+4 History of agriculture
+4 History of architecture
+4 History of film
+4 History of literature
+4 History of mathematics
+4 History of medicine
+4 History of music
+4 History of technology
+4 Military history
+4 Prehistory
+4 Stone Age
+4 Early human migrations
+4 Neolithic Revolution
+4 Ancient history
+4 Bronze Age
+4 Ancient Egypt
+4 Indus Valley Civilisation
+4 Mesopotamia
+4 Sumer
+4 Assyria
+4 Iron Age
+4 Ancient Greece
+4 Ancient Rome
+4 Achaemenid Empire
+4 Gupta Empire
+4 Han dynasty
+4 Silk Road
+4 Pre-Columbian era
+4 Andean civilizations
+4 Mesoamerica
+4 Maya civilization
+4 Post-classical history
+4 Aztecs
+4 Inca Empire
+4 Islamic Golden Age
+4 Middle Ages
+4 Black Death
+4 Byzantine Empire
+4 Crusades
+4 Holy Roman Empire
+4 Viking Age
+4 Mongol Empire
+4 Ottoman Empire
+4 Tang dynasty
+4 Early modern period
+4 Renaissance
+4 Age of Discovery
+4 European colonization of the Americas
+4 Reformation
+4 Mughal Empire
+4 Scientific Revolution
+4 Age of Enlightenment
+4 Late modern period
+4 Industrial Revolution
+4 French Revolution
+4 Abolitionism
+4 Scramble for Africa
+4 British Empire
+4 Decolonization
+4 World War I
+4 Soviet Union
+4 Great Depression
+4 World War II
+4 Cold War
+4 Space Race
+4 Geography
+4 Continent
+4 Africa
+4 Antarctica
+4 Asia
+4 Europe
+4 North America
+4 South America
+4 Arctic
+4 Middle East
+4 Oceania
+4 City
+4 Beijing
+4 Cairo
+4 Delhi
+4 Hong Kong
+4 Istanbul
+4 Jakarta
+4 Jerusalem
+4 Lagos
+4 London
+4 Mecca
+4 Mexico City
+4 Moscow
+4 Mumbai
+4 New York City
+4 Paris
+4 Rome
+4 São Paulo
+4 Singapore
+4 Tokyo
+4 Country
+4 Argentina
+4 Australia
+4 Bangladesh
+4 Brazil
+4 Canada
+4 China
+4 Colombia
+4 Democratic Republic of the Congo
+4 Egypt
+4 Ethiopia
+4 France
+4 Germany
+4 India
+4 Indonesia
+4 Iran
+4 Israel
+4 Italy
+4 Japan
+4 Kenya
+4 Mexico
+4 Myanmar
+4 Nigeria
+4 Pakistan
+4 Philippines
+4 Poland
+4 Russia
+4 Saudi Arabia
+4 South Africa
+4 South Korea
+4 Spain
+4 Taiwan
+4 Tanzania
+4 Thailand
+4 Turkey
+4 United Kingdom
+4 United States
+4 Vietnam
+4 Sea
+4 Arctic Ocean
+4 Atlantic Ocean
+4 Mediterranean Sea
+4 Indian Ocean
+4 Pacific Ocean
+4 Great Barrier Reef
+4 Lake
+4 Caspian Sea
+4 Great Lakes
+4 Lake Victoria
+4 River
+4 Amazon River
+4 Ganges
+4 Mississippi River
+4 Nile
+4 Yangtze
+4 Land
+4 Desert
+4 Sahara
+4 Forest
+4 Amazon rainforest
+4 Glacier
+4 Grassland
+4 Island
+4 Mountain
+4 Alps
+4 Andes
+4 Himalayas
+4 Rocky Mountains
+4 Grand Canyon
+4 The arts
+4 Art
+4 Prehistoric art
+4 Museum
+4 Abstract art
+4 Modernism
+4 Realism (arts)
+4 Romanticism
+4 Architecture
+4 Great Pyramid of Giza
+4 Great Wall of China
+4 Literature
+4 English literature
+4 Fiction
+4 Novel
+4 Short story
+4 Fairy tale
+4 Poetry
+4 Epic poetry
+4 Music
+4 Musical instrument
+4 Singing
+4 Classical music
+4 Folk music
+4 Jazz
+4 Pop music
+4 Rock music
+4 Performing arts
+4 Dance
+4 Opera
+4 Orchestra
+4 Theatre
+4 Visual arts
+4 Film
+4 Animation
+4 Calligraphy
+4 Comics
+4 Design
+4 Drawing
+4 Painting
+4 Photography
+4 Pottery
+4 Sculpture
+4 Philosophy
+4 Philosophy of science
+4 Aesthetics
+4 Epistemology
+4 Knowledge
+4 Belief
+4 Reason
+4 Truth
+4 Ethics
+4 Good and evil
+4 Logic
+4 Metaphysics
+4 Free will
+4 Ontology
+4 Eastern philosophy
+4 Confucianism
+4 Western philosophy
+4 Ancient Greek philosophy
+4 Contemporary philosophy
+4 Religion
+4 Afterlife
+4 Deity
+4 God
+4 Meditation
+4 Myth
+4 New religious movement
+4 Prayer
+4 Ritual
+4 Shamanism
+4 Soul
+4 Spirituality
+4 Western esotericism
+4 Secularism
+4 Atheism
+4 Buddhism
+4 Mahayana
+4 Theravada
+4 Christianity
+4 Bible
+4 Catholic Church
+4 Eastern Orthodox Church
+4 Protestantism
+4 Hinduism
+4 Vedas
+4 Bhagavad Gita
+4 Islam
+4 Shia Islam
+4 Sunni Islam
+4 Quran
+4 Jainism
+4 Judaism
+4 Talmud
+4 Shinto
+4 Sikhism
+4 Taoism
+4 Clothing
+4 Home
+4 Furniture
+4 Jewellery
+4 Ethnic group
+4 Family
+4 Adult
+4 Old age
+4 Adolescence
+4 Child
+4 Infant
+4 Marriage
+4 Parenting
+4 Friendship
+4 Human sexuality
+4 Sexual orientation
+4 Gender
+4 Man
+4 Woman
+4 Cooking
+4 Food
+4 Bread
+4 Cereal
+4 Wheat
+4 Maize
+4 Rice
+4 Cheese
+4 Fruit
+4 Nut (fruit)
+4 Meat
+4 Salt
+4 Spice
+4 Sugar
+4 Vegetable
+4 Potato
+4 Soybean
+4 Drink
+4 Alcoholic drink
+4 Coffee
+4 Drinking water
+4 Milk
+4 Tea
+4 Entertainment
+4 Play (activity)
+4 Game
+4 Board game
+4 Card game
+4 Gambling
+4 Video game
+4 Sport
+4 Association football
+4 Sport of athletics
+4 Olympic Games
+4 Toy
+4 Martial arts
+4 Swimming
+4 Tourism
+4 Culture
+4 Folklore
+4 Festival
+4 Oral tradition
+4 Popular culture
+4 Society
+4 Community
+4 Power (social and political)
+4 Social class
+4 Communication
+4 Social science
+4 Anthropology
+4 Sociology
+4 Politics
+4 Political party
+4 Political science
+4 Colonialism
+4 Imperialism
+4 Government
+4 Democracy
+4 Dictatorship
+4 Monarchy
+4 Theocracy
+4 Ideology
+4 Anarchism
+4 Capitalism
+4 Communism
+4 Conservatism
+4 Fascism
+4 Liberalism
+4 Nationalism
+4 Socialism
+4 State (polity)
+4 Diplomacy
+4 Military
+4 European Union
+4 International Red Cross and Red Crescent Movement
+4 NATO
+4 United Nations
+4 International Monetary Fund
+4 World Health Organization
+4 World Trade Organization
+4 Genocide
+4 Peace
+4 Terrorism
+4 War
+4 Education
+4 School
+4 Library
+4 Business
+4 Corporation
+4 Management
+4 Marketing
+4 Retail
+4 Trade union
+4 Economics
+4 Trade
+4 Employment
+4 Finance
+4 Bank
+4 Money
+4 Market (economics)
+4 Supply and demand
+4 Tax
+4 Economy
+4 Agriculture
+4 Manufacturing
+4 Construction
+4 Fishing
+4 Hunting
+4 Mining
+4 Abortion
+4 Disability
+4 Discrimination
+4 Racism
+4 Sexism
+4 Environmentalism
+4 Pollution
+4 Famine
+4 Feminism
+4 Women's suffrage
+4 Globalization
+4 Human migration
+4 Human rights
+4 Liberty
+4 Privacy
+4 Slavery
+4 Social equality
+4 Indigenous peoples
+4 Poverty
+4 Welfare
+4 Law
+4 Crime
+4 Constitution
+4 Justice
+4 Police
+4 Property
+4 Psychology
+4 Emotion
+4 Anger
+4 Fear
+4 Happiness
+4 Humour
+4 Love
+4 Mind
+4 Consciousness
+4 Dream
+4 Memory
+4 Thought
+4 Human behavior
+4 Intelligence
+4 Learning
+4 Personality
+4 Language
+4 Arabic
+4 Indo-European languages
+4 Bengali language
+4 English language
+4 French language
+4 German language
+4 Greek language
+4 Hindustani language
+4 Latin
+4 Portuguese language
+4 Russian language
+4 Spanish language
+4 Chinese language
+4 Japanese language
+4 Linguistics
+4 Grammar
+4 Word
+4 Personal name
+4 Speech
+4 Writing
+4 Alphabet
+4 Arabic alphabet
+4 Brahmic scripts
+4 Cyrillic script
+4 Greek alphabet
+4 Latin script
+4 Chinese characters
+4 Mass media
+4 Broadcasting
+4 Journalism
+4 News
+4 Publishing
+4 Disease
+4 Allergy
+4 Asthma
+4 Cancer
+4 Cardiovascular disease
+4 Stroke
+4 Diabetes
+4 Gastroenteritis
+4 Infection
+4 Common cold
+4 Influenza
+4 Malaria
+4 Pneumonia
+4 Sexually transmitted infection
+4 HIV-AIDS
+4 Smallpox
+4 Tuberculosis
+4 Mental disorder
+4 Injury
+4 Medicine
+4 Dentistry
+4 Hospital
+4 Surgery
+4 Ageing
+4 Exercise
+4 Health
+4 Hygiene
+4 Sanitation
+4 Nutrition
+4 Obesity
+4 Drug
+4 Medication
+4 Anesthesia
+4 Antibiotic
+4 Birth control
+4 Vaccine
+4 Addiction
+4 Alcoholism
+4 Smoking
+4 Science
+4 Scientific method
+4 Measurement
+4 International System of Units
+4 Nature
+4 Astronomy
+4 Universe
+4 Solar System
+4 Sun
+4 Mercury (planet)
+4 Venus
+4 Earth
+4 Moon
+4 Mars
+4 Jupiter
+4 Saturn
+4 Uranus
+4 Neptune
+4 Asteroid
+4 Big Bang
+4 Black hole
+4 Comet
+4 Galaxy
+4 Milky Way
+4 Natural satellite
+4 Orbit
+4 Outer space
+4 Physical cosmology
+4 Planet
+4 Star
+4 Supernova
+4 Physics
+4 Energy
+4 Time
+4 Day
+4 Year
+4 Classical mechanics
+4 Mass
+4 Momentum
+4 Motion
+4 Newton's laws of motion
+4 Force
+4 Electromagnetism
+4 Gravity
+4 Strong interaction
+4 Weak interaction
+4 Magnetism
+4 Matter
+4 State of matter
+4 Particle physics
+4 Standard Model
+4 Subatomic particle
+4 Electron
+4 Neutron
+4 Photon
+4 Proton
+4 Quantum mechanics
+4 Radioactive decay
+4 Space
+4 Vacuum
+4 Thermodynamics
+4 Heat
+4 Temperature
+4 Theory of relativity
+4 Wave
+4 Electromagnetic radiation
+4 Light
+4 Color
+4 Optics
+4 Speed of light
+4 Sound
+4 Biology
+4 Life
+4 Cell (biology)
+4 Death
+4 Suicide
+4 Abiogenesis
+4 Evolution
+4 Human evolution
+4 Natural selection
+4 Organism
+4 Animal
+4 Zoology
+4 Amphibian
+4 Arthropod
+4 Insect
+4 Bird
+4 Fish
+4 Mammal
+4 Cat
+4 Cattle
+4 Dog
+4 Horse
+4 Primate
+4 Human
+4 Rodent
+4 Reptile
+4 Dinosaur
+4 Plant
+4 Botany
+4 Flower
+4 Seed
+4 Tree
+4 Algae
+4 Archaea
+4 Bacteria
+4 Eukaryote
+4 Fungus
+4 Virus
+4 Anatomy
+4 Human body
+4 Circulatory system
+4 Blood
+4 Heart
+4 Lung
+4 Digestion
+4 Liver
+4 Immune system
+4 Skin
+4 Muscle
+4 Nervous system
+4 Brain
+4 Ear
+4 Eye
+4 Sense
+4 Skeleton
+4 Ecology
+4 Biodiversity
+4 Ecosystem
+4 Extinction
+4 Genetics
+4 DNA
+4 Gene
+4 Heredity
+4 RNA
+4 Metabolism
+4 Molecular biology
+4 Protein
+4 Paleontology
+4 Photosynthesis
+4 Reproduction
+4 Sex
+4 Pregnancy
+4 Sleep
+4 Taxonomy (biology)
+4 Species
+4 Chemistry
+4 Biochemistry
+4 Inorganic chemistry
+4 Organic chemistry
+4 Physical chemistry
+4 Chemical element
+4 Atom
+4 Periodic table
+4 Aluminium
+4 Carbon
+4 Copper
+4 Gold
+4 Hydrogen
+4 Iron
+4 Nitrogen
+4 Oxygen
+4 Silicon
+4 Silver
+4 Chemical compound
+4 Water
+4 Carbon dioxide
+4 Chemical bond
+4 Molecule
+4 Chemical reaction
+4 Acid-base reaction
+4 Catalysis
+4 Redox
+4 Metal
+4 Alloy
+4 Bronze
+4 Steel
+4 Earth science
+4 History of Earth
+4 Atmosphere
+4 Magma
+4 Season
+4 Flood
+4 Climate
+4 Climate change
+4 Weather
+4 Cloud
+4 Rain
+4 Snow
+4 Tornado
+4 Tropical cyclone
+4 Wind
+4 Geology
+4 Earthquake
+4 Erosion
+4 Mineral
+4 Plate tectonics
+4 Rock (geology)
+4 Soil
+4 Volcano
+4 Technology
+4 Engineering
+4 Civil engineering
+4 Mechanical engineering
+4 Electricity
+4 Electric battery
+4 Fire
+4 Explosive
+4 Gunpowder
+4 Fossil fuel
+4 Coal
+4 Natural gas
+4 Petroleum
+4 Gasoline
+4 Nuclear power
+4 Renewable energy
+4 Hydropower
+4 Solar energy
+4 Wind power
+4 Animal husbandry
+4 Domestication
+4 Biotechnology
+4 Genetic engineering
+4 Fertilizer
+4 Food preservation
+4 Garden
+4 Medical imaging
+4 Refrigeration
+4 Stove
+4 Weapon
+4 Armour
+4 Bow and arrow
+4 Firearm
+4 Knife
+4 Nuclear weapon
+4 Tool
+4 Simple machine
+4 Wheel
+4 Engine
+4 Electric motor
+4 Internal combustion engine
+4 Jet engine
+4 Steam engine
+4 Robotics
+4 Printing
+4 Book
+4 Mail
+4 Telecommunication
+4 Internet
+4 Radio
+4 Telephone
+4 Mobile phone
+4 Video
+4 Television
+4 Computer science
+4 Computer
+4 Artificial intelligence
+4 Cryptography
+4 Electronics
+4 Electric light
+4 Integrated circuit
+4 Semiconductor device
+4 Rocket
+4 Satellite
+4 Space exploration
+4 Spaceflight
+4 Space station
+4 Transport
+4 Aircraft
+4 Bicycle
+4 Car
+4 Rail transport
+4 Ship
+4 Navigation
+4 Compass
+4 Map
+4 Radar
+4 Calendar
+4 Clock
+4 Fortification
+4 Infrastructure
+4 Bridge
+4 Canal
+4 Dam
+4 Road
+4 Concrete
+4 Glass
+4 Masonry
+4 Metallurgy
+4 Natural rubber
+4 Paper
+4 Plastic
+4 Textile
+4 Wood
+4 Camera
+4 Laser
+4 Lens
+4 Microscope
+4 Telescope
+4 Mathematics
+4 Algorithm
+4 Mathematical proof
+4 Set (mathematics)
+4 Function (mathematics)
+4 Combinatorics
+4 Number
+4 Real number
+4 E (mathematical constant)
+4 Pi
+4 Fraction
+4 Integer 
+4 0
+4 Natural number
+4 Complex number
+4 Number theory
+4 Prime number
+4 Algebra
+4 Equation
+4 Variable (mathematics)
+4 Linear algebra
+4 Mathematical analysis
+4 Calculus
+4 Infinity
+4 Limit (mathematics)
+4 Series (mathematics)
+4 Arithmetic
+4 Addition
+4 Subtraction
+4 Multiplication
+4 Division (mathematics)
+4 Exponentiation
+4 Logarithm
+4 Nth root
+4 Geometry
+4 Angle
+4 Trigonometry
+4 Area
+4 Volume
+4 Dimension
+4 Line (geometry)
+4 Plane (geometry)
+4 Shape
+4 Conic section
+4 Circle
+4 Polygon
+4 Triangle
+4 Polyhedron
+4 Sphere
+4 Topology
+4 Probability
+4 Statistics
 
 * alias allegiance
 4 hero
@@ -6590,7 +8512,7 @@ mbti
 
 `;
 
-},{}],35:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 module.exports = `
@@ -6674,7 +8596,7 @@ module.exports = `
 
 `;
 
-},{}],36:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -6878,7 +8800,7 @@ module.exports = `
 
 
 `;
-},{}],37:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -6892,7 +8814,910 @@ module.exports = `
 
 
 `;
-},{}],38:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
+module.exports = `* output
+1 army
+
+* childrenof army
+bulk
+support
+unique
+
+* childrenof bulk
+{wkrieg/squadType}
+
+* childrenof support
+{wkrieg/squadType}
+
+* childrenof unique
+{wkrieg/squadType}
+
+`;
+
+},{}],44:[function(require,module,exports){
+module.exports = `* output
+4 meleeWeapon
+4 rangedWeapon
+1 bombWeapon
+0 heldItem
+0 wornItem
+
+* alias weapon
+20 meleeWeapon
+20 rangedWeapon
+1 bombWeapon
+
+* alias held
+10 {offhand}
+10 {otherGear}
+
+* alias offhand
+10 buckler
+10 steelShield
+10 towerShield
+7 armouredGauntlet
+10 dagger
+3 sickle
+1 whip
+2 pistol
+3 steelClaw
+
+* alias otherGear
+4 targetDesignator
+4 secureDatapad
+4 medkit
+4 demolitionCharges
+4 {giGear}
+4 {commandGear}
+4 jetpack
+2 emp
+2 plasmaRifle
+
+* alias giGear
+4 fragGrenade
+4 portableTent
+4 extraAmmo
+4 extraRations
+4 camoCloak
+3 smokeGrenade
+3 trenchShovel
+3 radiationPills
+2 flashbangGrenade
+2 deployableCover
+2 caffeinePills
+1 medkit
+
+* alias commandGear
+4 targetLocator
+4 secureDatapad
+4 memoryChip
+4 oneTimePad
+4 microwaveAntenna
+3 emp
+2 telescope
+2 binoculars
+1 paperMap
+1 bubbleShield
+
+* childrenof meleeWeapon
+{meleeMod}
+{meleeChassis}
+
+* alias meleeChassis
+6 mace
+6 hammer
+1 glove
+1 claw
+10 knife
+10 sword
+20 spear
+4 pike
+4 glaive
+4 halberd
+6 axe
+1 hatchet
+1 whip
+2 flail
+2 javelin
+0 TODO would be nice if every node from meleeChassis had a prop that indicated it was a chassis.
+
+* template mace
+weight: 7
+slot: hand
+
+* childrenof rangedWeapon
+{rangedMod}
+{rangedChassis}
+
+* alias rangedChassis
+10 pistol
+15 smg
+15 carbine
+8 shotgun
+15 rifle
+10 longrifle
+2 shortbow
+2 longbow
+4 crossbow
+1 harpoon
+4 repeater
+3 chaingun
+3 cannon
+
+* childrenof bombWeapon
+{bombMod}
+{bombChassis}
+
+* alias bombChassis
+4 grenade
+2 grenadeLauncher
+2 bomb
+
+* alias weaponMod
+20 heavy
+19 lightweight
+8 electric
+5 magnetic
+5 acid
+4 toxin
+5 ion
+4 tracker
+8 fire
+7 thermal
+7 guided
+2 concealed
+1 {softScienceMod}
+
+* alias meleeMod
+30 {weaponMod}
+5 wristMounted
+
+* alias rangedMod
+30 {weaponMod}
+4 wristMounted
+3 rail
+10 laser
+6 beam
+4 plasma
+5 spiderweb
+8 scoped
+9 extendedRange
+6 stealth
+6 bayonet
+
+* alias bombMod
+10 {weaponMod}
+1 laser
+1 plasma
+1 spiderweb
+1 flash
+
+* alias softScienceMod
+9 hardlight
+12 stun
+10 nanite
+3 grav
+2 temporal
+1 void
+
+`;
+
+},{}],45:[function(require,module,exports){
+module.exports = `* output
+1 faction
+
+* childrenof faction
+populace
+specialty
+armory
+representative
+military
+
+* childrenof populace
+{wkrieg/species}
+
+* childrenof mind 
+{composition}
+
+* childrenof body
+{composition}
+
+* childrenof specialty
+{topic}
+
+* alias topic
+4 spaceFighters
+2 cruisers
+4 dreadnoughts
+4 fortresses
+5 infantry
+3 weapons
+4 armor
+4 mecha
+4 artillery
+4 economics
+4 archaeology
+4 engineering
+4 research
+4 knowledge
+4 biology
+3 psychology
+4 stealth
+4 espionage
+4 politics
+
+* childrenof armory
+{wkrieg/carryable}
+{wkrieg/carryable}
+
+* childrenof representative
+wkrieg/outfit
+{repTitle}
+
+* alias repTitle
+4 leader 
+4 premier
+4 president
+4 king
+4 queen
+4 sultan
+4 sultana
+4 caliph
+4 calipha
+4 emperor
+4 empress
+4 primeMinister
+4 doctor
+4 senator
+4 representative
+4 governor
+8 chief
+3 chieftain
+4 speaker
+4 viscount
+4 baron
+4 baroness
+4 contessa
+4 countess
+9 lady
+9 lord
+4 regina
+4 rex
+4 dux
+4 duchess
+4 duke
+4 conqueror
+9 citizen
+8 comrade
+9 sir
+8 madame
+9 master
+2 mistress
+4 dictator
+8 consul
+8 princess
+8 prince
+8 emira
+8 emir
+3 raj
+8 elder
+8 oracle
+8 sylph
+5 godtouched
+5 starfriend
+8 ambassador
+7 professor
+8 wanderer
+7 noman
+2 journeyer
+4 guildmaster
+4 archduke
+4 elector
+4 chancellor
+0 TODO later add a name generated from vowel and conosonant sounds, like fantasy worldName in hobby/
+
+* childrenof military
+infantry
+reserve
+
+* childrenof infantry
+wkrieg/outfit
+{infantryName}
+{gender}
+
+* alias infantryName
+9 regulars
+9 irregulars
+9 conscripts
+3 volunteers
+4 guardians
+4 ravagers
+4 reavers
+5 raiders
+2 grenadiers
+4 dragoons
+2 conquistadors
+4 myrmidons
+4 skirmishers
+5 rangers
+4 marines
+2 soldiers
+4 serfs 
+4 peasants
+8 knights
+4 immortals
+4 samurai
+3 sharpeyes
+8 scouts
+4 cavaliers
+3 chevaliers
+4 warriors
+3 spotters
+2 eradicators
+2 vindicators
+2 avengers
+4 praetorians
+4 honorGuard
+4 royalGuard
+4 civicGuard
+4 armyOfThePeople
+4 revolutionaries
+3 guards
+4 clones
+2 replicants
+3 inheritors
+3 torchbearers
+3 braves
+
+* alias gender
+9 mixedGender
+4 exclusivelyFemale
+4 exclusivelyMale 
+1 exclusivelyPostgender
+
+* childrenof reserve
+wkrieg/outfit
+{infantryName}
+{gender}
+
+
+* childrenof oldFaction
+leadership
+personnel
+cognition
+economy
+starships
+groundForces
+
+* childrenof leadership
+{composition}
+
+* childrenof personnel
+{composition}
+
+* childrenof cognition
+{composition}
+
+* childrenof economy
+{composition}
+
+* childrenof starships
+{composition}
+
+* childrenof groundForces
+{composition}
+
+* alias composition
+4 organic
+2 hybrid
+3 synthetic
+
+`;
+
+/*
+Or a faction could simply have 2 Traits, their most notable aspects
+*/
+
+},{}],46:[function(require,module,exports){
+module.exports = `* output
+1 outfit
+
+* childrenof outfit
+{head}
+{base}
+{top}
+{feet}
+colors
+{extra}
+
+* alias head
+4 nothing
+4 pointedHelm
+4 voidproofHelm
+4 featherCrestedHelm
+4 hood
+3 goggles
+
+* alias base
+3 loincloth
+4 furs
+9 fatigues
+9 bodysuit
+1 doublet
+3 leatherArmor
+1 woolShirt, breeches
+4 robe
+1 doubleBreastedJacket
+4 voidsuit
+4 {exoskeleton}
+
+* alias exoskeleton
+4 agilityExoskeleton
+3 enduranceExoskeleton
+4 cqcExoskeleton
+
+* alias top
+9 nothing
+7 breastplate
+5 breastplate, bracers
+3 breastplate, bracers, greaves
+4 breastplate, pauldrons, bracers
+
+* childrenof breastplate
+{materialType}
+
+* alias materialType
+1 wood
+4 bone
+4 ceramic
+3 bronze
+4 iron
+9 steel
+4 plasteel
+4 durasteel
+
+* childrenof colors
+{color}
+{secondaryColor}
+
+* alias color
+1 magenta
+1 salmon
+24 red
+5 crimson
+1 vermillion
+5 scarlet
+24 orange
+8 yellow
+1 lemonYellow
+27 green
+1 limeGreen
+1 lime
+1 brightGreen
+8 oliveGreen
+15 blue
+5 skyBlue
+1 aquamarine
+1 turquoise
+27 purple
+1 violet
+15 white
+1 beige
+1 lightGrey
+7 steel
+9 gunmetal
+10 gunmetalGrey
+4 chrome
+13 bronze
+30 grey
+4 darkGrey
+33 black
+18 brown
+1 tan
+1 olive
+21 silver
+1 opal
+12 gold
+
+* alias secondaryColor
+1 magenta
+1 salmon
+1 red
+1 crimson
+1 vermillion
+5 scarlet
+1 orange
+8 yellow
+1 lemonYellow
+2 green
+1 limeGreen
+1 lime
+1 brightGreen
+8 oliveGreen
+3 blue
+1 skyBlue
+1 aquamarine
+1 turquoise
+1 purple
+1 violet
+15 white
+2 beige
+11 lightGrey
+17 steel
+9 gunmetal
+10 gunmetalGrey
+14 chrome
+13 bronze
+30 grey
+14 darkGrey
+33 black
+18 brown
+11 tan
+5 olive
+21 silver
+5 opal
+12 gold
+
+* alias feet
+18 boots
+3 rocketBoots
+3 hoverBoots
+4 sandals
+1 tennisShoes
+
+* alias extra
+9 nothing
+3 jetpack
+3 cyberwings
+9 cape
+4 rucksack
+3 ammoPouches
+3 bandolier
+
+`;
+
+},{}],47:[function(require,module,exports){
+module.exports = `* output
+9 homoSapiens
+3 organicSpecies
+1 syntheticSpecies
+
+* childrenof organicSpecies
+head
+{arms}
+lowerHalf
+
+* childrenof head
+{animal}
+
+* alias arms
+2 noArms
+1 1Arm
+20 2Arms
+8 4Arms
+10 2ArmsInAdditionToWings
+1 5Arms
+4 6Arms
+2 8Arms
+
+* childrenof lowerHalf
+{animal}
+
+* childrenof syntheticSpecies
+{arms}
+{locomotion}
+
+* alias locomotion
+4 bipedal
+1 sessile
+4 spiderLegs
+3 wheels
+3 levitation
+1 flight
+
+* alias animal
+1 aardvark
+1 adder
+1 albatross
+1 alligator
+1 alpaca
+1 anaconda
+1 armadillo
+1 axolotl
+1 badger
+1 barnOwl
+1 barracuda
+1 baskingShark
+1 beaver
+1 beetle
+1 blackBear
+1 blackMamba
+1 blackbird
+1 bluejay
+1 boar
+1 bobcat
+1 bonobo
+1 brownRecluseSpider
+1 butterfly
+1 buzzard
+1 camel
+1 capybara
+1 cardinal
+1 carp
+1 cassowary
+1 cat
+1 chameleon
+1 cheetah
+1 chicken
+1 chimpanzee
+1 chinchilla
+1 chipmunk
+1 coati
+1 cobra
+1 cockatiel
+1 cod
+1 coelacanth
+1 cougar
+1 cow
+1 coyote
+1 crab
+1 crocodile
+1 crow
+1 cuttlefish
+1 damselfly
+1 deer
+1 desertTortoise
+1 dog
+1 donkey
+1 dragon
+1 dragonfly
+1 duck
+1 eagle
+1 echidna
+1 elephant
+1 elephantSeal
+1 elk
+1 emperorPenguin
+1 emu
+1 firefly
+1 fly
+1 flyingSquirrel
+1 fox
+1 gazelle
+1 gibbon
+1 gilaMonster
+1 giraffe
+1 goat
+1 goose
+1 gorilla
+1 grasshopper
+1 graySquirrel
+1 greatHornedOwl
+1 greatWhiteShark
+1 frog
+1 grizzlyBear
+1 groundhog
+1 grouper
+1 guineafowl
+1 halibut
+1 hammerheadShark
+1 hamster
+1 hare
+1 harpy
+1 hedgehog
+1 hippo
+1 hornbill
+1 horse
+1 horseshoeCrab
+1 hyena
+1 iguana
+1 jackal
+1 jaguar
+1 kangaroo
+1 kestrel
+1 kingsnake
+1 kiwi
+1 koala
+1 lamprey
+1 leech
+1 leopard
+1 leopardSeal
+1 lion
+1 lizard
+1 llama
+1 loon
+1 lorikeet
+1 louse
+1 lynx
+1 magpie
+1 mantaRay
+1 marmot
+1 mink
+1 monarchButterfly
+1 mongoose
+1 monkey
+1 moose
+1 mosquito
+1 moth
+1 mule
+1 narwhal
+1 nautilus
+1 ocelot
+1 octopus
+1 opossum
+1 orangutan
+1 orca
+1 osprey
+1 ostrich
+1 otter
+1 panda
+1 pangolin
+1 parakeet
+1 parrot
+1 penguin
+1 peregrineFalcon
+1 pig
+1 platypus
+1 polarBear
+1 porcupine
+1 puffin
+1 python
+1 rabbit
+1 raccoon
+1 rattlesnake
+1 raven
+1 redPanda
+1 reindeer
+1 rhinoceros
+1 otter
+1 roach
+1 satyr
+1 scorpion
+1 seaOtter
+1 seaSerpent
+1 sheep
+1 skink
+1 skunk
+1 sloth
+1 slug
+1 snail
+1 snappingTurtle
+1 snowyOwl
+1 sparrow
+1 spermWhale
+1 sponge
+1 squid
+1 squirrel
+1 stingray
+1 stoat
+1 swan
+1 swordfish
+1 tapir
+1 tick
+1 tiger
+1 toad
+1 tortoise
+2 tree
+1 tuna
+1 turkey
+1 turtle
+1 unicorn
+1 vulture
+1 walrus
+1 warthog
+1 waterBuffalo
+1 weasel
+1 whaleShark
+1 stork
+1 wolf
+1 wolverine
+1 wombat
+1 wren
+1 yak
+
+`;
+
+},{}],48:[function(require,module,exports){
+module.exports = `* output
+9 infantry
+6 cavalry
+6 vehicle
+0 swarm
+
+* childrenof infantry
+{wkrieg/carryable/weapon}
+{wkrieg/carryable/held}
+{trait}
+{role}
+
+* alias trait
+9 biologicallyEnhanced
+9 veteran
+10 nothing
+
+* alias role
+9 lightInfantry
+9 heavyInfantry
+7 stealthInfantry
+7 shockInfantry
+9 freshlyConscripted
+20 nothing
+
+* childrenof lightInfantry
+{mobilityGear}
+
+* alias mobilityGear
+70 nothing
+9 hoverboard
+9 hoverboots
+9 rocketBoots
+9 grapplingHook
+9 jetpack
+9 combatWings
+4 teleportHarness
+
+* childrenof cavalry
+{mount}
+{wkrieg/carryable/weapon}
+{wkrieg/carryable/held}
+{trait}
+{cavalryRole}
+
+* alias mount
+20 horse
+9 motorcycle
+9 jetbike
+1 cybersphynx
+
+* alias cavalryRole
+9 lightCavalry
+9 heavyCavalry
+9 nothing
+
+* childrenof vehicle
+{locomotion}
+{vehicleWeap}
+{vehicleRole}
+
+* alias locomotion
+9 wheels
+9 treads
+9 {legs}
+7 hoverpods
+6 wings
+5 flightRotor
+
+* alias legs
+9 2Legs
+9 4Legs
+9 6Legs
+2 8Legs
+2 20Legs
+
+* alias vehicleWeap
+9 cannon
+9 machineGuns
+4 mortar
+9 swords
+3 sledgehammer
+0 TODO: The melee weapons are tricky to visualize. Constrain to mecha?
+
+* alias vehicleRole
+19 troopTransport
+9 ultralight
+9 heavyArmor
+9 superheavy
+9 oversized
+9 maximumSpeed
+19 radarInvisible
+9 massProduced
+
+* childrenof troopTransport
+infantry
+
+`;
+
+},{}],49:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -6949,7 +9774,7 @@ module.exports = Util.makeEnum([
     'Covenant'
 ]);
 
-},{"../util/util.js":81}],39:[function(require,module,exports){
+},{"../util/util.js":92}],50:[function(require,module,exports){
 module.exports = `
 * output
 1 setting
@@ -7020,7 +9845,7 @@ module.exports = `
 
 `;
 
-},{}],40:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 
 // similar to hobby/genregen/fantasy/planescape/alignment.js
@@ -7190,7 +10015,7 @@ class Alignment {
 
 module.exports = Alignment;
 
-},{"../util/util.js":81}],41:[function(require,module,exports){
+},{"../util/util.js":92}],52:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -7314,7 +10139,7 @@ AliasTable.STARTERS = [
 
 module.exports = AliasTable;
 
-},{"../util/util.js":81}],42:[function(require,module,exports){
+},{"../util/util.js":92}],53:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -7384,7 +10209,7 @@ ChildTable.STARTERS = [
 
 module.exports = ChildTable;
 
-},{"../util/util.js":81}],43:[function(require,module,exports){
+},{"../util/util.js":92}],54:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -7419,14 +10244,12 @@ class ContextString {
 
 module.exports = ContextString;
 
-},{"../util/util.js":81,"./wgenerator.js":44}],44:[function(require,module,exports){
+},{"../util/util.js":92,"./wgenerator.js":55}],55:[function(require,module,exports){
 (function (process,__dirname){
 'use strict';
 
 // Generator that outputs procedurally generated trees of WNodes (Waffle nodes).
 // These trees represent games states, game elements, narrative elements, and similar concepts.
-
-const fs = require('fs');
 
 // LATER perhaps restructure so that WGenerator doesn't import any Battle20 files.
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
@@ -7443,6 +10266,9 @@ const Group = require('../wnode/group.js');
 const Thing = require('../wnode/thing.js');
 const StorageModes = require('../wnode/storageModes.js');
 const WNode = require('../wnode/wnode.js');
+
+const fs = require('fs');
+const Yaml = require('js-yaml');
 
 class WGenerator {
     // Constructor param will be either a birddecisions-format string or a filename.
@@ -7545,12 +10371,13 @@ class WGenerator {
             }
         );
 
-        Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}.`);
+        // Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}.`);
         // Util.logDebug(`templateObj is ${JSON.stringify(templateObj, undefined, '    ')}`);
    }
 
     // Returns WNode[]
     getOutputs (key) {
+        // TODO CLI bug. Crashes when input is sunlight/wiederholungskrieg/carryable/rangedWeapon, probably because rangedWeapon is not a alias but is somehow interpreted as one.
         let nodes = this.resolveString(key || '{output}');
 
         if (nodes[0] && nodes[0].templateName === key && ! nodes[0].template && nodes.length === 1) {
@@ -7566,9 +10393,19 @@ class WGenerator {
         return nodes;
     }
 
+    // Returns WNode[]
+    static generateNodes (absolutePath) {
+        return WGenerator.exampleGenerator()
+            .getOutputs(absolutePath);
+    }
+
     // Returns ContextString[]
     resolveCommas (inputString) {
         // Util.log(`Top of resolveCommas(), inputString is '${inputString}'`, 'debug');
+
+        if (! inputString) {
+            return [];
+        }
 
         return inputString.trim()
             .split(',')
@@ -7647,14 +10484,21 @@ class WGenerator {
             return new WNode(templateName);
         }
 
+        // Accessing Group from this file gives a tricky 'Group is not a constructor' error, possibly caused by each require()ing the other. (2020 Dec)
+        // Util.logDebug(`WNode: ${typeof WNode} with ${Object.keys(WNode).length} keys and ${Util.stringify(WNode)}`);
+        // Util.logDebug(`Thing: ${typeof Thing} with ${Object.keys(Thing).length} keys and ${Util.stringify(Thing)}`);
+        // Util.logDebug(`Group: ${typeof Group} with ${Object.keys(Group).length} keys and ${Util.stringify(Group)}`);
+
         // TODO This func is choosing screwy JS classes as of 2020 April 20. This partly comes from inconsistent tagging in the codex files, and partly from half-baked logic in battle20/nodeTemplate.js. Also, it's weird that Creature has been removed from this func (comments below discuss this a little).
         // TODO: For RingWorldState, we also want the capacity to create Group instances. 
         // Unanimous option: convert this logic and BEvent logic to use Group of quantity 1 instead of Creature.
           // 2020 January 19: This sounds like a good MRB path to me.
         // toggleable option: The template entry can have a row like 'class: group' to indicate this.
-        if (template.isGroup()) {
-            return new Group(template);
-        }
+        // TODO Group instantiation from this file temporarily disabled to deal with a circular dependency bug. I may need to reinstantiate this later and disentangle the dependency flowchart for some projects.
+
+        // if (template.isGroup()) {
+        //     return new Group(template);
+        // }
 
         if (template.isThing()) {
             return new Thing(template);
@@ -7772,7 +10616,7 @@ class WGenerator {
 
     // Returns ContextString[]
     // No side effects.
-    // Note that this involves randomness.
+    // Note that this can involve randomness.
     maybeResolveAlias (str) {
         str = str.trim();
 
@@ -7962,16 +10806,6 @@ class WGenerator {
     }
 
     static loadCodices () {
-        // For now, this is hard coded to one fictional setting.
-        WGenerator.loadHaloCodices();
-        WGenerator.loadSunlightCodices();
-        WGenerator.loadYACodices();
-        WGenerator.loadParahumansCodices();
-    }
-
-    static loadHaloCodices () {
-        // Util.log(`Top of loadHaloCodices(), WGenerator.generators is ${WGenerator.generators}.`, 'debug');
-
         if (! WGenerator.generators) {
             WGenerator.generators = {};
         }
@@ -7980,6 +10814,34 @@ class WGenerator {
             return;
         }
 
+        // For now, this is hard coded to one fictional setting.
+        WGenerator.load40kCodices();
+        WGenerator.loadHaloCodices();
+        WGenerator.loadParahumansCodices();
+        WGenerator.loadSunlightCodices();
+        WGenerator.loadYACodices();
+    }
+
+    static load40kCodices () {
+        WGenerator.addGenerator(
+            require('../codices/40k/novel'),
+            '40k/novel'
+        );
+        WGenerator.addGenerator(
+            require('../codices/40k/imp/guard/army'),
+            '40k/imp/guard/army'
+        );
+        WGenerator.addGenerator(
+            require('../codices/40k/imp/astartes/army'),
+            '40k/imp/astartes/army'
+        );
+        WGenerator.addGenerator(
+            require('../codices/40k/chaos/blackLegion/army'),
+            '40k/chaos/blackLegion/army'
+        );
+    }
+
+    static loadHaloCodices () {
         // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
         // GOTCHA: It's important to load the files describing small components first.
         WGenerator.addGenerator(
@@ -8065,15 +10927,30 @@ class WGenerator {
     }
 
     static loadSunlightCodices () {
-        if (! WGenerator.generators) {
-            WGenerator.generators = {};
-        }
-        else if (Util.exists( WGenerator.generators['sunlight/warband/item'] )) {
-            // WGenerator.generators already looks loaded.
-            return;
-        }
-
-        // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/carryable'),
+            'sunlight/wkrieg/carryable'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/outfit'),
+            'sunlight/wkrieg/outfit'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/species'),
+            'sunlight/wkrieg/species'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/squadType'),
+            'sunlight/wkrieg/squadType'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/army'),
+            'sunlight/wkrieg/army'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/faction'),
+            'sunlight/wkrieg/faction'
+        );
         WGenerator.addGenerator(
             require('../codices/sunlight/warband/item'),
             'sunlight/warband/item'
@@ -8085,13 +10962,6 @@ class WGenerator {
     }
 
     static loadYACodices () {
-        if (! WGenerator.generators) {
-            WGenerator.generators = {};
-        }
-        else if (Util.exists( WGenerator.generators['ya/setting'] )) {
-            return;
-        }
-
         WGenerator.addGenerator(
             require('../codices/ya/setting'),
             'ya/setting'
@@ -8099,13 +10969,6 @@ class WGenerator {
     }
 
     static loadParahumansCodices () {
-        if (! WGenerator.generators) {
-            WGenerator.generators = {};
-        }
-        else if (Util.exists( WGenerator.generators['parahumans/cape'] )) {
-            return;
-        }
-
         WGenerator.addGenerator(
             require('../codices/parahumans/cape'),
             'parahumans/cape'
@@ -8246,6 +11109,7 @@ class WGenerator {
             }
             else {
                 const path = process.argv[2];
+                // LATER functionize the following:
                 let wgen = WGenerator.fromCodex(path);
 
                 if (! wgen) {
@@ -8263,6 +11127,20 @@ class WGenerator {
                 }
 
                 output = wgen.getOutputs(generatorInput);
+
+
+                // Test yaml conversion
+                const simplifiedGlossary = {};
+                for(let key in wgen.glossary) {
+                    const entry = wgen.glossary[key];
+
+                    simplifiedGlossary[key] = entry.toJson ?
+                        entry.toJson() :
+                        entry.constructor.name;
+                }
+
+                // Util.log('Glossary:');
+                // Util.log(Yaml.dump(simplifiedGlossary));
             }
         }
         else {
@@ -8404,7 +11282,7 @@ halo/unsc/item/externalThing
 */
 
 }).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":2,"../codices/halo/cov/force":15,"../codices/halo/cov/individual":16,"../codices/halo/cov/item":17,"../codices/halo/cov/squad":18,"../codices/halo/flood/individual":19,"../codices/halo/flood/squad":20,"../codices/halo/forerunner/company":21,"../codices/halo/forerunner/individual":22,"../codices/halo/forerunner/item":23,"../codices/halo/forerunner/squad":24,"../codices/halo/presence":25,"../codices/halo/unsc/battalion":26,"../codices/halo/unsc/company":27,"../codices/halo/unsc/fleet":28,"../codices/halo/unsc/individual":29,"../codices/halo/unsc/item":30,"../codices/halo/unsc/patrol":31,"../codices/halo/unsc/patrol.js":31,"../codices/halo/unsc/ship":32,"../codices/halo/unsc/squad":33,"../codices/parahumans/cape":34,"../codices/parahumans/org":35,"../codices/sunlight/warband/item":36,"../codices/sunlight/warband/player":37,"../codices/ya/setting":39,"../util/util.js":81,"../wnode/creature.js":82,"../wnode/group.js":83,"../wnode/storageModes.js":84,"../wnode/thing.js":85,"../wnode/wnode.js":86,"./aliasTable.js":41,"./childTable.js":42,"./contextString.js":43,"_process":88,"fs":87}],45:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":4,"../codices/40k/chaos/blackLegion/army":16,"../codices/40k/imp/astartes/army":17,"../codices/40k/imp/guard/army":18,"../codices/40k/novel":19,"../codices/halo/cov/force":20,"../codices/halo/cov/individual":21,"../codices/halo/cov/item":22,"../codices/halo/cov/squad":23,"../codices/halo/flood/individual":24,"../codices/halo/flood/squad":25,"../codices/halo/forerunner/company":26,"../codices/halo/forerunner/individual":27,"../codices/halo/forerunner/item":28,"../codices/halo/forerunner/squad":29,"../codices/halo/presence":30,"../codices/halo/unsc/battalion":31,"../codices/halo/unsc/company":32,"../codices/halo/unsc/fleet":33,"../codices/halo/unsc/individual":34,"../codices/halo/unsc/item":35,"../codices/halo/unsc/patrol":36,"../codices/halo/unsc/patrol.js":36,"../codices/halo/unsc/ship":37,"../codices/halo/unsc/squad":38,"../codices/parahumans/cape":39,"../codices/parahumans/org":40,"../codices/sunlight/warband/item":41,"../codices/sunlight/warband/player":42,"../codices/sunlight/wkrieg/army":43,"../codices/sunlight/wkrieg/carryable":44,"../codices/sunlight/wkrieg/faction":45,"../codices/sunlight/wkrieg/outfit":46,"../codices/sunlight/wkrieg/species":47,"../codices/sunlight/wkrieg/squadType":48,"../codices/ya/setting":50,"../util/util.js":92,"../wnode/creature.js":93,"../wnode/group.js":94,"../wnode/storageModes.js":95,"../wnode/thing.js":96,"../wnode/wnode.js":97,"./aliasTable.js":52,"./childTable.js":53,"./contextString.js":54,"_process":99,"fs":98,"js-yaml":58}],56:[function(require,module,exports){
 'use strict';
 
 // Here's how we connect js and html.
@@ -8462,6 +11340,13 @@ class GridView {
         const terms = templateName ?
             templateName.split('/') :
             ['sand'];
+
+        // Later leave blank squares undrawn, and let a large background image show thru.
+        // if (! templateName) {
+        //     return;
+        // }
+
+        // const terms = templateName.split('/');
 
         const lastTerm = terms[terms.length - 1];
 
@@ -8530,12 +11415,13 @@ class GridView {
     setGridHtml () {
         const musings = document.getElementById('musings');
 
-        musings.innerHTML = `The scale is ${this.worldState.mPerSquare} meters per square...`;
+        musings.innerHTML = `The scale is ${this.worldState.mPerSquare} meters per square.`;
 
         const table = document.getElementById('grid');
+        // const firstDraw = ! table.rows.length;
 
         for (let r = 0; r < GridView.WINDOW_SQUARES; r++) {
-            const row = table.insertRow();
+            const row = table.rows[r] || table.insertRow();
 
             for (let c = 0; c < GridView.WINDOW_SQUARES; c++) {
                 // Util.logDebug(`top of inner for loop in setGridHtml(). this.worldState.constructor.name is ${this.worldState.constructor.name}.\n  this.worldState.nodes is ${this.worldState.nodes}`)
@@ -8556,7 +11442,13 @@ class GridView {
                     group && group.templateName
                 );
 
-                const cell = row.insertCell();
+                const existingCell = row.cells[c];
+                if (existingCell) {
+                    // Util.logDebug(`GridView, existingCell.childNodes.length is ${existingCell.childNodes.length}`)
+                    existingCell.removeChild(existingCell.childNodes[0]);
+                }
+
+                const cell = existingCell || row.insertCell();
                 cell.appendChild(squareDiv);
                 squareDiv.appendChild(img);
 
@@ -8596,7 +11488,10 @@ module.exports = GridView;
 
 // GridView.run();
 
-},{"../../util/coord.js":80,"../../util/util.js":81,"../../wnode/group.js":83}],46:[function(require,module,exports){
+// TODO Give the html a button to advance time forward 1 second.
+// TODO Give the html a div on the side that will show html text giving more info about the square currently being moused over.
+
+},{"../../util/coord.js":91,"../../util/util.js":92,"../../wnode/group.js":94}],57:[function(require,module,exports){
 'use strict'
 
 // return a string with the provided number formatted with commas.
@@ -8708,7 +11603,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],47:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 'use strict';
 
 
@@ -8717,7 +11612,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":48}],48:[function(require,module,exports){
+},{"./lib/js-yaml.js":59}],59:[function(require,module,exports){
 'use strict';
 
 
@@ -8758,7 +11653,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":50,"./js-yaml/exception":51,"./js-yaml/loader":52,"./js-yaml/schema":54,"./js-yaml/schema/core":55,"./js-yaml/schema/default_full":56,"./js-yaml/schema/default_safe":57,"./js-yaml/schema/failsafe":58,"./js-yaml/schema/json":59,"./js-yaml/type":60}],49:[function(require,module,exports){
+},{"./js-yaml/dumper":61,"./js-yaml/exception":62,"./js-yaml/loader":63,"./js-yaml/schema":65,"./js-yaml/schema/core":66,"./js-yaml/schema/default_full":67,"./js-yaml/schema/default_safe":68,"./js-yaml/schema/failsafe":69,"./js-yaml/schema/json":70,"./js-yaml/type":71}],60:[function(require,module,exports){
 'use strict';
 
 
@@ -8819,7 +11714,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],50:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -9648,7 +12543,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":49,"./exception":51,"./schema/default_full":56,"./schema/default_safe":57}],51:[function(require,module,exports){
+},{"./common":60,"./exception":62,"./schema/default_full":67,"./schema/default_safe":68}],62:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -9693,7 +12588,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],52:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -11320,7 +14215,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":49,"./exception":51,"./mark":53,"./schema/default_full":56,"./schema/default_safe":57}],53:[function(require,module,exports){
+},{"./common":60,"./exception":62,"./mark":64,"./schema/default_full":67,"./schema/default_safe":68}],64:[function(require,module,exports){
 'use strict';
 
 
@@ -11398,7 +14293,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":49}],54:[function(require,module,exports){
+},{"./common":60}],65:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -11508,7 +14403,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":49,"./exception":51,"./type":60}],55:[function(require,module,exports){
+},{"./common":60,"./exception":62,"./type":71}],66:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -11528,7 +14423,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":54,"./json":59}],56:[function(require,module,exports){
+},{"../schema":65,"./json":70}],67:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -11555,7 +14450,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":54,"../type/js/function":65,"../type/js/regexp":66,"../type/js/undefined":67,"./default_safe":57}],57:[function(require,module,exports){
+},{"../schema":65,"../type/js/function":76,"../type/js/regexp":77,"../type/js/undefined":78,"./default_safe":68}],68:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -11585,7 +14480,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":54,"../type/binary":61,"../type/merge":69,"../type/omap":71,"../type/pairs":72,"../type/set":74,"../type/timestamp":76,"./core":55}],58:[function(require,module,exports){
+},{"../schema":65,"../type/binary":72,"../type/merge":80,"../type/omap":82,"../type/pairs":83,"../type/set":85,"../type/timestamp":87,"./core":66}],69:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -11604,7 +14499,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":54,"../type/map":68,"../type/seq":73,"../type/str":75}],59:[function(require,module,exports){
+},{"../schema":65,"../type/map":79,"../type/seq":84,"../type/str":86}],70:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -11631,7 +14526,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":54,"../type/bool":62,"../type/float":63,"../type/int":64,"../type/null":70,"./failsafe":58}],60:[function(require,module,exports){
+},{"../schema":65,"../type/bool":73,"../type/float":74,"../type/int":75,"../type/null":81,"./failsafe":69}],71:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -11694,7 +14589,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":51}],61:[function(require,module,exports){
+},{"./exception":62}],72:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -11834,7 +14729,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":60}],62:[function(require,module,exports){
+},{"../type":71}],73:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -11871,7 +14766,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":60}],63:[function(require,module,exports){
+},{"../type":71}],74:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -11989,7 +14884,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":49,"../type":60}],64:[function(require,module,exports){
+},{"../common":60,"../type":71}],75:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -12164,7 +15059,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":49,"../type":60}],65:[function(require,module,exports){
+},{"../common":60,"../type":71}],76:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -12258,7 +15153,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":60}],66:[function(require,module,exports){
+},{"../../type":71}],77:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -12320,7 +15215,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":60}],67:[function(require,module,exports){
+},{"../../type":71}],78:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -12350,7 +15245,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":60}],68:[function(require,module,exports){
+},{"../../type":71}],79:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12360,7 +15255,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":60}],69:[function(require,module,exports){
+},{"../type":71}],80:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12374,7 +15269,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":60}],70:[function(require,module,exports){
+},{"../type":71}],81:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12410,7 +15305,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":60}],71:[function(require,module,exports){
+},{"../type":71}],82:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12456,7 +15351,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":60}],72:[function(require,module,exports){
+},{"../type":71}],83:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12511,7 +15406,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":60}],73:[function(require,module,exports){
+},{"../type":71}],84:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12521,7 +15416,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":60}],74:[function(require,module,exports){
+},{"../type":71}],85:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12552,7 +15447,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":60}],75:[function(require,module,exports){
+},{"../type":71}],86:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12562,7 +15457,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":60}],76:[function(require,module,exports){
+},{"../type":71}],87:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12652,7 +15547,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":60}],77:[function(require,module,exports){
+},{"../type":71}],88:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -29768,7 +32663,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],78:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -34372,7 +37267,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],79:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -34415,7 +37310,7 @@ module.exports = class Box {
 };
 
 
-},{"../util/coord.js":80,"../util/util.js":81}],80:[function(require,module,exports){
+},{"../util/coord.js":91,"../util/util.js":92}],91:[function(require,module,exports){
 'use strict';
 
 // TODO make this name lowercase.
@@ -34612,7 +37507,7 @@ Coord.DECIMAL_PLACES = 2;
 
 module.exports = Coord;
 
-},{"./util.js":81}],81:[function(require,module,exports){
+},{"./util.js":92}],92:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -34629,15 +37524,69 @@ util.DEFAULTS = {
     COLCOUNT: 12
 };
 
-util.colors = {
-    black: '1;37;40m',
-    red: '1;37;41m',
-    green: '1;30;42m',
-    yellow: '1;37;43m',
-    blue: '1;37;44m',
-    purple: '1;37;45m',
-    cyan: '1;30;46m',
-    grey: '1;30;47m'
+// These are like preselected color profiles.
+// The background is as described, and the foreground is black or white, whichever is most visible.
+util.COLORS = {
+    red: '\x1b[1;37;41m',
+    yellow: '\x1b[1;37;43m',
+    green: '\x1b[1;30;42m',
+    cyan: '\x1b[1;30;46m',
+    blue: '\x1b[1;37;44m',
+    purple: '\x1b[1;37;45m',
+    grey: '\x1b[1;30;47m',
+    black: '\x1b[1;37;40m',
+    balance: '\x1b[0m'
+};
+
+util.colored = (str, colorName) => {
+    return (util.COLORS[colorName] || util.COLORS.purple) +
+        str +
+        util.COLORS.balance;
+};
+
+util.customColored = (str, foreground, background) => {
+    const FMAP = {
+        black: 30,
+        red: 31,
+        green: 32,
+        yellow: 33,
+        blue: 34,
+        magenta: 35,
+        cyan: 36,
+        white: 37,
+        brightGrey: 90,
+        brightRed: 91,
+        brightGreen: 92,
+        brightYellow: 93,
+        brightBlue: 94,
+        brightMagenta: 95,
+        brightCyan: 96,
+        brightWhite: 97,
+    };
+
+    const BMAP = {
+        black: 40,
+        red: 41,
+        green: 42,
+        yellow: 44,
+        blue: 44,
+        magenta: 45,
+        cyan: 46,
+        white: 47,
+        brightGrey: 100,
+        brightRed: 101,
+        brightGreen: 102,
+        brightYellow: 103,
+        brightBlue: 104,
+        brightMagenta: 105,
+        brightCyan: 106,
+        brightWhite: 107,
+    };
+
+    const fcode = FMAP[foreground] || FMAP.blue;
+    const bcode = BMAP[background] || BMAP.grey;
+
+    return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
 };
 
 util.NODE_TYPES = {
@@ -34658,7 +37607,8 @@ util.legit = (x) =>
     x !== [] &&
     x !== {};
 
-// TODO reconsider this weird function syntax. Maybe declare a class of functions, then assign the field props to it?
+// TODO reconsider this weird function syntax throughout util.js. Maybe declare a class of functions, then assign the field props to it?
+
 util.default = function (input, defaultValue) {
     if (input === undefined) {
         return defaultValue;
@@ -34702,20 +37652,35 @@ util.mean = (array) => {
     return sum / array.length;
 };
 
+util.constrain = (n, minInclusive, maxInclusive) => {
+    if (n <= minInclusive) {
+        return minInclusive;
+    }
+    if (n >= maxInclusive) {
+        return maxInclusive;
+    }
+
+    return n;
+};
+
 util.randomIntBetween = function (minInclusive, maxExclusive) {
     if (! util.exists(minInclusive) || ! util.exists(maxExclusive)) {
         console.log('error: util.randomIntBetween() called with missing parameters.');
-        return -1;
-    } else if (maxExclusive <= minInclusive) {
+        throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
+    }
+    else if (maxExclusive <= minInclusive) {
         console.log('error: util.randomIntBetween() called with max <= min.');
-        return -1;
+        throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
     }
 
     return Math.floor( Math.random() * (maxExclusive - minInclusive) + minInclusive );
 };
 
+// Returns value in range [0, input]
 util.randomUpTo = function (maxInclusive) {
-    return util.randomIntBetween(0, maxInclusive + 1);
+    return maxInclusive >= 0 ?
+        util.randomIntBetween(0, maxInclusive + 1) :
+        maxInclusive;
 };
 
 util.randomBelow = function (maxExclusive) {
@@ -34734,6 +37699,16 @@ util.randomFromObj = function (obj) {
     return obj[key];
 };
 
+// Param: obj, whose values are also objects.
+// Side effect: writes to .name prop of child objs.
+util.randomWithName = (obj) => {
+    const name = _.sample(Object.keys(obj));
+
+    const entry = obj[name];
+    entry.name = name;
+    return entry;
+};
+
 // decimalPlaces param is optional and lodash defaults it to 0.
 util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
     if (maxExclusive < minInclusive) {
@@ -34748,9 +37723,32 @@ util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
     return _.round(unrounded, decimalPlaces);
 };
 
-// util.round = function (x, decimalPlaces) {
-//     return 
-// };
+// Often we want to fill a bag with tokens of different kinds and draw one.
+// More likely outcomes get more tokens and are thus more likely to happen.
+// But all outcomes are possible.
+// Example bag describing St George at a disadvantage:
+// {
+//     stGeorge: 7,
+//     dragon: 12
+// }
+util.randomBagDraw = (bag) => {
+    const total = util.sum(
+        Object.values(bag)
+    );
+
+    let drawn = Math.random() * total;
+
+    let name;
+    for (name in bag) {
+        drawn -= bag[name];
+
+        if (drawn < 0) {
+            return name;
+        }
+    }
+
+    return name;
+};
 
 // Returns string
 util.newId = function () {
@@ -34770,7 +37768,7 @@ util.newId = function () {
 // Returns string
 util.shortId = function (id) {
     return id ?
-        `${id.slice(0, 3)}` :
+        `${id.slice(0, 3).toUpperCase()}` :
         '';
 };
 
@@ -34915,6 +37913,8 @@ util.fromCamelCase = (s) => {
     const words = [];
 
     for (let i = 1; i < s.length; i++) {
+        // util.logDebug(`fromCamelCase(), s is ${s}, i is ${i}, s[i] is ${s[i]}`)
+
         if (util.isCapitalized(s[i])) {
             if (util.isCapitalized(s[i-1])) {
                 // Detect acronym words and leave them uppercase.
@@ -34926,6 +37926,15 @@ util.fromCamelCase = (s) => {
                 }
             }
 
+            wordStarts.push(i);
+
+            const firstLetter = wordStarts[wordStarts.length - 2];
+            const word = s.slice(firstLetter, i);
+            words.push(word);
+        }
+
+        // Also want to consider a digit after a nondigit, or vice versa, to be a word start.
+        else if (util.alphanumericTransition(s, i)) {
             wordStarts.push(i);
 
             const firstLetter = wordStarts[wordStarts.length - 2];
@@ -34945,6 +37954,19 @@ util.fromCamelCase = (s) => {
             util.capitalized(w)
     )
     .join(' ');
+};
+
+util.alphanumericTransition = (string, i2) => {
+    const digitStart = util.isNumeric(
+        string[i2 - 1]
+    );
+
+    const digitEnd = util.isNumeric(
+        string[i2]
+    );
+
+    return digitStart && ! digitEnd ||
+        ! digitStart && digitEnd;
 };
 
 util.testCamelCase = () => {
@@ -34967,6 +37989,9 @@ util.testCamelCase = () => {
         }
     });
 };
+
+// True when input is a number or a string containing digits.
+util.isNumeric = (x) => /[0-9]/.test(x);
 
 // Note that typeof NaN is also 'number',
 // but it is still despicable.
@@ -35019,6 +38044,8 @@ util.union = (a1, a2) => {
 util.arrayCopy = (a) => {
     return a.map(x => x);
 };
+
+util.round = (n) => _.round(n);
 
 util.commaNumber = (n) =>
     commaNumber(n);
@@ -35153,7 +38180,7 @@ util.asBar = (n) => {
     let bar = '';
 
     for (let i = 0; i < n; i++) {
-        bar = bar + 'X';
+        bar = bar + '█';
     }
 
     return bar;
@@ -35294,11 +38321,15 @@ util.log = function (input, tag) {
         util.stringify(input);
 
     // Later: Red error and beacon text
-    console.log(`  ${tagStr} (${ dateTime }) ${ info }\n`);
+    console.log(`  ${tagStr} (${ dateTime }) \n${ info }\n`);
 };
 
 util.logDebug = function (input) {
     util.log(input, 'debug');
+};
+
+util.logWarn = function (input) {
+    util.log(input, 'warn');
 };
 
 util.logError = function (input) {
@@ -35362,7 +38393,7 @@ util.testAll = () => {
 
 // util.testAll();
 
-},{"comma-number":46,"lodash":77,"moment":78}],82:[function(require,module,exports){
+},{"comma-number":57,"lodash":88,"moment":89}],93:[function(require,module,exports){
 'use strict';
 
 const Thing = require('./thing.js');
@@ -35379,7 +38410,7 @@ Should share more funcs, perhaps.
 module.exports = class Creature extends Thing {
     constructor (template, coord, alignment) {
         // BTW if this throw statement gets too confusing, comment it and stick with the old inheritance model until there's time for a inheritance refactor.
-        throw new Error(`Let's use Group of quantity 1 instead of Creature for a little while. template param was ${template.name || template}`);
+        Util.logWarn(`Consider using Group of quantity 1 instead of Creature for a little while. template param in current constructor call is: ${template.name || template}`);
 
         super(template, coord);
 
@@ -35441,13 +38472,16 @@ module.exports = class Creature extends Thing {
     }
 };
 
-},{"../util/coord.js":80,"../util/util.js":81,"./thing.js":85}],83:[function(require,module,exports){
+},{"../util/coord.js":91,"../util/util.js":92,"./thing.js":96}],94:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
+const ActionTemplate = require('../battle20/actionTemplate.js');
 const NodeTemplate = require('../battle20/nodeTemplate.js');
 const Util = require('../util/util.js');
 const WNode = require('./wnode.js');
+
+const WGenerator = require('../generation/wgenerator.js');
 
 // Can be very similar to Group from Battle20 / dndBottle
 // .quantity, .template (CreatureTemplate), maybe some a prop for the SP of the sole wounded member.
@@ -35456,7 +38490,7 @@ const WNode = require('./wnode.js');
 // Similar to the concept of a 'banner' or 'stack' or 'army' in large-scale map-based wargames.
 // Contains a homogenous set of 1+ Creatures
 // These are not instantiated in .components.
-module.exports = class Group extends WNode {
+class Group extends WNode {
     constructor (template, quantity, alignment, coord) {
         super(template);
 
@@ -35466,32 +38500,334 @@ module.exports = class Group extends WNode {
 
         this.quantity = Util.exists(quantity) ?
             quantity :
-            template.quantity || 1;
+            template && template.quantity || 1;
 
         this.worstSp = this.template ?
-            this.template.maxSp :
+            this.template.sp :
             1;
 
         this.alignment = alignment;
-
         this.coord = coord;
+        this.destination = undefined; // Coord
+        this.target = undefined;  // Group
+        this.actions = [];
     }
 
-    toAlignmentString() {
+    toAlignmentString () {
         const tName = Util.fromCamelCase(this.templateName);
 
         return `${tName} x${this.quantity} (${this.alignmentAsString()} Group)`;
+    }
+
+    // Unit: meters of longest dimension when in storage.
+    getSize () {
+        return (this.traitMax('size') || 0) * this.quantity;
+    }
+
+    getTotalSp () {
+        return (this.quantity - 1) * this.template.sp + this.worstSp;
+    }
+
+    // Returns number
+    resistanceTo (tags) {
+        // LATER it's probably more performant to recursively gather a net resistance obj here, instead of multiple times in resistanceToTag()
+        return Util.sum(
+            tags.map(
+                tag => this.resistanceToTag(tag)
+            )
+        );
+    }
+
+    // Returns number
+    resistanceToTag (tag) {
+        const localResistance = (this.template &&
+            this.template.resistance &&
+            this.template.resistance[tag]) ||
+            0;
+
+        return this.components.reduce(
+            (overallResistance, component) => {
+                return localResistance +
+                    (component.resistanceTo && component.resistanceToTag(tag) || 0);
+            },
+            localResistance
+        );
+    }
+
+    // Returns string like '::::.', a visual depiction of this.quantity.
+    // The string can be multiline.
+    dotGrid () {
+        // Making it divisble by 5 could be dropped in future.
+        let columns = Math.ceil(
+            Math.sqrt(this.quantity) / 5
+        ) * 5;
+
+        if (columns > 90) {
+            columns = 90;
+        }
+
+        const rowCount = Math.ceil(
+            this.quantity / columns / 2
+        );
+
+        // Top row can be incomplete and can contain a . instead of just :s
+        // Lower rows are filled with :s
+        // ::.
+        // :::::
+        // :::::
+        // 25
+
+        // When the top row is exactly divisible, we want to fill it with colons.
+        const topRowQuantity = (this.quantity % (columns * 2)) || (columns * 2);
+        const topRowColonCount = Math.floor(topRowQuantity / 2);
+        const topRowColons = ':'.repeat(topRowColonCount);
+        const topRow = topRowQuantity % 2 === 0 ?
+            topRowColons :
+            topRowColons + '.';
+
+        // if (rowCount === 1) {
+        //     return topRow;
+        // }
+
+        const lowerRow = ':'.repeat(columns);
+        const rows = [topRow];
+
+        for (let r = 1; r < rowCount; r++) {
+            rows.push(lowerRow);
+        }
+
+        return rows.join('\n');
+    }
+
+    static testDotGrid () {
+        for (let x = 0; x < 10; x++) {
+            const quantity = Math.ceil(Math.random() * 1000)
+            const grid = new Group(undefined, quantity).dotGrid();
+
+            Util.log(quantity + '\n' + grid);
+
+            const simplified = grid.replace(/\n/g, '');
+            const count = Util.contains(simplified, '.') ?
+                simplified.length * 2 - 1 :
+                simplified.length * 2;
+
+            if (count !== quantity) {
+                throw new Error(`${quantity}, but i see ${count} dots. Simplified grid is: ${simplified}`);
+            }
+        }
+    }
+
+    progressBarSummary () {
+        const pointsPerIndividual = this.pointsEach();
+        const points = this.points();
+
+        const actionPoints = this.actions[0] && this.actions[0].points();
+        const pointsBeforeAction = pointsPerIndividual - actionPoints;
+
+        const actionNote = this.actions[0] ?
+            ` (${pointsBeforeAction} before action ${ Util.shortId(this.actions[0].id) })` :
+            '';
+
+        const lines = [
+            `Name: ${this.templateName} (${Util.shortId(this.id)})`,
+            `Quant:${this.propAsProgressBar('quantity')}`,
+            `Size: ${this.propAsProgressBar('size')}`,
+            `SP:   ${this.propAsProgressBar('sp')}`,
+            `AC:   ${this.propAsProgressBar('ac')}`,
+            `Speed:${this.propAsProgressBar('speed')}`,
+            `${this.quantity} combatants at ${pointsPerIndividual} points${actionNote} each = ${points} points.`
+        ];
+
+        const output = lines.join('\n');
+
+        const action = this.actions[0];
+        
+        return action ?
+            output + '\nAction:\n' + action.progressBarSummary() :
+            output;    
+    }
+
+    propAsProgressBar (propName) {
+        const BAR_MAX = 130;
+
+        const barLength = this.propOverBenchmark(propName) * BAR_MAX;
+
+        const displayedLength = Util.constrain(barLength, 1, BAR_MAX);
+
+        const bar = '█'.repeat(displayedLength);
+
+        const decimals = propName === 'size' ?
+            1 :
+            0;
+
+        const fixedLengthValue = this.getProp(propName)
+            .toFixed(decimals)
+            .padStart(4, ' ');
+
+        const output = `${fixedLengthValue} ${bar}`;
+
+        return barLength <= BAR_MAX ?
+            output :
+            output + '...';
+    }
+
+    // Returning 1 would mean the prop's value is equal to the benchmark.
+    propOverBenchmark (propName) {
+        const MAXIMA = {
+            size: 10,
+            quantity: 100,
+            sp: 100,
+            ac: 30,
+            speed: 30
+        };
+
+        return this.getProp(propName) / MAXIMA[propName];
+    }
+
+    // Note that this and WNode.getTrait() have v similar names.
+    getProp (propName) {
+        if (propName === 'quantity') {
+            return this.quantity;
+        }
+
+        if (propName === 'size') {
+            return this.getSize();
+        }
+
+        return this.template[propName];
+    }
+
+    points () { 
+        return this.pointsEach() * this.quantity;
+    }
+
+    // Returns numerical estimate of overall efficacy.
+    pointsEach () {
+        const actionPoints = this.actions[0]
+            && this.actions[0].points();
+
+        return Math.ceil(
+            this.propOverBenchmark('sp') * 10 +
+            this.propOverBenchmark('speed') +
+            (actionPoints || 0)
+        );
+    }
+
+    // Side effect: Sets this.quantity such that the point total approximates the input number.
+    resetQuantity (points) {
+        const target = _.round(points / this.pointsEach());
+
+        this.quantity = target || 1;
+    }
+
+    // Later can move this to interface Actor or something.
+    act (worldState) {
+        this.destination = this.chosenDestination(worldState);
+        this.target = this.chosenTarget(worldState);
+
+        const stoppingPoint = worldState.coordAtEndOfMove(this, this.destination);
+
+        this.moveTo(stoppingPoint, worldState);
+
+        // Consider firing at .target if cooldown allows.
+        //   How is cooldown tracked?
+        if (true) {
+            this.attack(this.target, worldState);
+        }
+
+        // And make sure we persist everything as BEvents in Timeline
+    }
+
+    chosenDestination (worldState) {
+        if (! this.canReach(this.destination)) {
+            
+        }
+    }
+
+    goodTimeToThink (worldState) {
+        return worldState.t % 10 === 0;
+    }
+
+    takeCasualties (casualties) {
+        const outcome = {
+            casualties,
+            wipedOut: false
+        };
+
+        if (casualties >= this.quantity) {
+            casualties = this.quantity;
+
+            this.active = false;
+            outcome.wipedOut = true;
+        }
+
+        this.quantity -= casualties;
+        outcome.resultingQuantity = this.quantity;
+
+        return outcome;
+    }
+
+    takeDamage (damage) {
+        const outcome = {
+            damage,
+            active: true
+        };
+
+        const startSp = this.getTotalSp();
+
+        let endTotalSp = startSp - damage;
+        if (endTotalSp < 0) {
+            endTotalSp = 0;
+        }
+
+        const endQuantity = Math.ceil(endTotalSp / this.template.sp);
+        const endWorstSp = endTotalSp % this.template.sp;
+
+        this.quantity = endQuantity;
+        this.worstSp = endWorstSp;
+
+        outcome.endQuantity = endQuantity;
+        outcome.endWorstSp = endWorstSp;
+
+        if (this.quantity === 0) {
+            this.active = false;
+            outcome.active = false;
+        }
+
+        return outcome;
+    }
+
+    toDebugString () {
+        const yaml = this.toYaml();
+        return '\n' + yaml;
+    }
+
+    // Creates a Group with a template with totally random properties.
+    static random () {
+        const template = {
+            name: 'randomizedCreature',
+            size: Math.ceil(Math.random() * 20) / 10,
+            speed: Math.ceil(Math.random() * 25),
+            ac: 10 + Math.ceil(Math.random() * 15),
+            sp: Math.ceil(Math.random() * 100),
+            // resistance (later)
+        };
+
+        const quantity = Math.ceil(Math.random() * 100);
+
+        const group = new Group(template, quantity);
+
+        group.actions.push(
+            ActionTemplate.random()
+        );
+
+        return group;
     }
 
     // distanceTo (target) {
     //     const targetCoord = target.coord || target;
 
     //     return this.coord.manhattanDistanceTo(targetCoord);
-    // }
-
-    // // Unit: meters of longest dimension when in storage.
-    // getSize () {
-    //     return this.traitMax('size');
     // }
 
     // // Unit: kg on Earth's surface.
@@ -35504,16 +38840,46 @@ module.exports = class Group extends WNode {
     //     );
     // }
 
+    static new (fullCodexPath, quantity, alignment, coord) {
+        // Later can add a func to WGenerator that returns just the template obj instead of WNode[]
+        const nodes = WGenerator.generateNodes(fullCodexPath);
+
+        return new Group(
+            nodes[0].template || fullCodexPath,
+            quantity,
+            alignment,
+            coord
+        );
+    }
+
+    // Returns a Group.
+    // Selects a random implemented template.
+    static randomTemplate () {
+        const squad = Group.new('halo/unsc/individual/marinePrivate', 20);
+        // TODO this alias isnt getting resolved by WGenerator
+        // const squad = Group.new('halo/unsc/individual/groupStatted', 5);
+
+        return squad;
+    }
+
     static marineCompany () {
-        // const template = WGenerator.getTemplate('halo/unsc/individual/marinePrivate');
+        const company = Group.new('halo/unsc/individual/marinePrivate', 50);
 
-        const company = new Group('halo/unsc/individual/marinePrivate', 50);
+        return company;
+    }
 
-        return company
-;    }
+    static run () {
+        // Group.testDotGrid();
+        const group = Group.random();
+        Util.log(group.progressBarSummary());
+    }
 };
 
-},{"../battle20/nodeTemplate.js":5,"../util/coord.js":80,"../util/util.js":81,"./wnode.js":86}],84:[function(require,module,exports){
+module.exports = Group;
+
+// Group.run();
+
+},{"../battle20/actionTemplate.js":1,"../battle20/nodeTemplate.js":6,"../generation/wgenerator.js":55,"../util/coord.js":91,"../util/util.js":92,"./wnode.js":97}],95:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -35524,7 +38890,7 @@ module.exports = Util.makeEnum([
     'Frozen'
 ]);
 
-},{"../util/util.js":81}],85:[function(require,module,exports){
+},{"../util/util.js":92}],96:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -35540,7 +38906,7 @@ module.exports = class Thing extends WNode {
         this.coord = coord || Coord.randomOnScreen();
 
         // Init stamina points
-        this.sp = this.findTrait('maxSp') || 1;
+        this.sp = this.findTrait('sp') || 1;
 
         // Unit: timestamp in seconds
         this.lastDamaged = -Infinity;
@@ -35598,7 +38964,7 @@ module.exports = class Thing extends WNode {
 };
 
 
-},{"../util/coord.js":80,"../util/util.js":81,"./wnode.js":86}],86:[function(require,module,exports){
+},{"../util/coord.js":91,"../util/util.js":92,"./wnode.js":97}],97:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -35648,6 +39014,11 @@ class WNode {
         return this;
     }
 
+    addNewComponent (template) {
+        this.add(new WNode(template));
+        return this;
+    }
+
     deepCopy () {
         const clone = new WNode();
         Object.assign(clone, this);
@@ -35689,6 +39060,8 @@ class WNode {
             (soFar, component) => Math.max(soFar, component.traitMax(propStr)),
             localTrait
         );
+
+        // Util.logDebug(`traitMax(): max is ${max} and localTrait is ${localTrait}. this.size is ${this.size} and this.template.size is ${this.template ? this.template.size : '<no template>'}. templateName is ${this.templateName}`);
 
         return max || localTrait;
     }
@@ -35782,6 +39155,7 @@ class WNode {
             `<WNode with no templateName>`;
 
         if (this.displayName) {
+            // Later this should perhaps recurse on components.
             return `${this.displayName} (${tName})`;
         }
         else {
@@ -35790,8 +39164,10 @@ class WNode {
     }
 
     // Format that looks like informal YAML but with props above components.
-    toPrettyString (indent) {
+    // (prettyPrint etc)
+    toPrettyString (indent, weightMode, personnel = true) {
         indent = Util.default(indent, 0);
+        weightMode = Util.default(weightMode, false);
 
         let outString = furtherLine(Util.formatProp(this, 'name'));
 
@@ -35818,12 +39194,12 @@ class WNode {
         }
 
         const headCount = this.headCount();
-        if (headCount) {
+        if (headCount && personnel) {
             outString += furtherLine(`  ${Util.commaNumber(headCount)} personnel`);
         }
 
         const weight = this.getWeight();
-        if (weight) {
+        if (weightMode && weight) {
             outString += furtherLine(`  ${Util.commaNumber(weight)} kg`);
         }
 
@@ -35838,7 +39214,7 @@ class WNode {
         }
 
         if (this.components.length > 0) {
-            outString += furtherLine('  w/');
+            // outString += furtherLine('  w/');
             for (let component of this.components) {
                 outString += component.toPrettyString(indent + 4);
             }
@@ -35855,7 +39231,7 @@ class WNode {
 
     // Returns a abbreviation of the ID.
     shortId () {
-        return `${Util.shortId(this.id)}`;
+        return Util.shortId(this.id);
     }
 
     getPropSummary () {
@@ -36075,6 +39451,55 @@ class WNode {
         return Util.withProp(nodes, 'active');
     }
 
+    // LATER this should probably be on a subclass too, like Thing, Creature, CreatureGroup, etc.
+    static human () {
+        return new WNode(WNode.humanTemplate());
+        // LATER init from a template, which can have size, weight, and tags such as animal.
+        // LATER could move this to class Thing, Creature, and/or Group.
+    }
+
+    static humanTemplate () {
+        return {
+            name: 'human',
+            size: 1, // topdown
+            weight: 80,
+            speed: 3,
+            individuals: 1,
+            sp: 10,
+            damage: 2,
+            tags: 'creature animal mammal biped terrestrial biological organism'.split(' ')
+        };
+    }
+
+    static impliedTags (tag) {
+        const IMPLICATIONS = {
+            organism: ['thing', 'biological'],
+            plant: 'organism',
+            fungus: 'organism',
+            animal: 'organism',
+            fish: 'animal',
+            reptile: 'animal',
+            bird: 'animal',
+            insect: 'animal',
+            mammal: 'animal',
+            humanoid: 'mammal',
+            human: 'humanoid',
+
+            goblinoid: 'humanoid',
+            goblin: 'goblinoid',
+            dwarf: 'humanoid',
+            elf: 'humanoid',
+
+            item: 'thing',
+            weapon: 'item',
+        };
+
+        // TODO, no, need to iterate on the found tags too.
+        const tags = Util.array(IMPLICATIONS[tag]) || [];
+
+        return [tag].concat(tags);
+    }
+
     static test () {
         // Unit test for toArray()
         const root = new WNode('root');
@@ -36105,9 +39530,9 @@ class WNode {
 
 module.exports = WNode;
 
-},{"../util/util.js":81,"./storageModes.js":84,"js-yaml":47}],87:[function(require,module,exports){
+},{"../util/util.js":92,"./storageModes.js":95,"js-yaml":58}],98:[function(require,module,exports){
 
-},{}],88:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -36293,4 +39718,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[45,12]);
+},{}]},{},[56,13]);

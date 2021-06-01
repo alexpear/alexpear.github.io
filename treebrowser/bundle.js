@@ -5,6 +5,8 @@ const NodeTemplate = require('./nodeTemplate.js');
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
 
+const _ = require('lodash');
+
 class ActionTemplate extends NodeTemplate {
     constructor (name, range, hit, damage, shotsPerSecond) {
         super(name);
@@ -59,6 +61,71 @@ class ActionTemplate extends NodeTemplate {
         );
     }
 
+    progressBarSummary () {
+        const lines = [
+            `Name: ${this.name} (${Util.shortId(this.id)}) (${this.points()} points)`,
+            `Shots: ${this.propAsProgressBar('shotsPerSecond')}`,
+            `Range: ${this.propAsProgressBar('range')}`,
+            `Hit:   ${this.propAsProgressBar('hit')}`,
+            `Dmg:   ${this.propAsProgressBar('damage')}`
+        ];
+
+        return lines.join('\n');
+    }
+
+    propAsProgressBar (propName) {
+        const BAR_MAX = 200;
+
+        const barLength = this.propOverBenchmark(propName) * BAR_MAX;
+
+        const displayedLength = Util.constrain(barLength, 1, BAR_MAX);
+
+        const bar = '█'.repeat(displayedLength);
+
+        const fixedLengthValue = this[propName].toFixed(1)
+            .padStart(7, ' ');
+
+        const output = `${fixedLengthValue} ${bar}`;
+
+        return barLength <= BAR_MAX ?
+            output :
+            output + '...';
+    }
+
+    // Returning 1 would mean the prop's value is equal to the benchmark.
+    propOverBenchmark (propName) {
+        const MAXIMA = {
+            shotsPerSecond: 5,
+            range: 200,
+            hit: 10,
+            damage: 200
+        };
+
+        return this[propName] / MAXIMA[propName];
+    }
+
+    // Returns numerical estimate of the overall efficacy of the action.
+    points () {
+        const aspects = [
+            this.propOverBenchmark('range'),
+            this.propOverBenchmark('hit'),
+            this.propOverBenchmark('shotsPerSecond'),
+            this.propOverBenchmark('damage')
+        ]
+        .map(
+            n => n * 10
+        );
+
+        return Math.ceil(
+            Util.sum(aspects)
+            // Multiply everything together.
+            // aspects.reduce(
+            //     (product, a) => product * a,
+            //     1
+            // )
+        );
+    }
+
     static example () {
         return ActionTemplate.gunExample();
     }
@@ -85,12 +152,12 @@ class ActionTemplate extends NodeTemplate {
 
         // Later maybe rename to a more generic phrase like 'rate'.
         // Can be less than 1:
-        template.shotsPerSecond = 2;
+        template.shotsPerSecond = 3;
 
         // Range is in meters. It is okay to round it heavily.
-        template.range = 80;
+        template.range = 300;
         template.hit = 5;
-        template.damage = 24;
+        template.damage = 40;
 
         // UNSC designated mark rifle
         template.tags = [
@@ -100,11 +167,37 @@ class ActionTemplate extends NodeTemplate {
 
         return template;
     }
+
+    // Returns a ActionTemplate with totally randomized traits.
+    static random () {
+        // name, range, hit, damage, shotsPerSecond
+        const template = new ActionTemplate(
+            'randomizedAction',
+            Math.ceil(Math.random() * 100),
+            Math.ceil(Math.random() * 5),
+            Math.ceil(Math.random() * 100),
+            _.round(Math.random() * 3, 1)
+        );
+
+        return template;
+    }
+
+    static run () {
+        // Util.logDebug(`Top of ActionTemplate.run(), unique id: ${Util.newId()}.`);
+
+        // const rando = ActionTemplate.random();
+        // const summary = rando.progressBarSummary();
+        // Util.log(summary);
+    }
 };
 
 module.exports = ActionTemplate;
 
-},{"../codices/tags.js":27,"../util/util.js":71,"./nodeTemplate.js":3}],2:[function(require,module,exports){
+ActionTemplate.run();
+
+},{"../codices/tags.js":38,"../util/util.js":82,"./nodeTemplate.js":4,"lodash":78}],2:[function(require,module,exports){
+arguments[4][1][0].apply(exports,arguments)
+},{"../codices/tags.js":38,"../util/util.js":82,"./nodeTemplate.js":4,"dup":1,"lodash":78}],3:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
@@ -449,11 +542,13 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":27,"../util/util.js":71,"./actiontemplate.js":1,"./nodeTemplate.js":3}],3:[function(require,module,exports){
+},{"../codices/tags.js":38,"../util/util.js":82,"./actiontemplate.js":2,"./nodeTemplate.js":4}],4:[function(require,module,exports){
 'use strict';
 
 const TAG = require('../codices/tags.js');
 const Util = require('../util/util.js');
+
+const Yaml = require('js-yaml');
 
 module.exports = class NodeTemplate {
     constructor (name) {
@@ -486,13 +581,399 @@ module.exports = class NodeTemplate {
             Util.hasOverlap(this.tags, ['group', 'force', 'taskForce', 'set', 'squad', 'team']);
     }
 
+    // Returns obj, not string, like all other toJson() funcs in this library.
     toJson () {
         // Already free of circular reference.
         return this;
     }
+
+    //returns str.
+    toYaml () {
+        return Yaml.dump(this.toJson());
+    }
 }
 
-},{"../codices/tags.js":27,"../util/util.js":71}],4:[function(require,module,exports){
+},{"../codices/tags.js":38,"../util/util.js":82,"js-yaml":48}],5:[function(require,module,exports){
+'use strict';
+
+module.exports = `
+
+* output
+1 blackLegionArmy
+
+* childrenof blackLegionArmy
+4x
+2x
+1x
+
+* childrenof 4x
+{unit}
+
+* childrenof 2x
+{unit}
+
+* childrenof 1x
+{unit}
+
+* alias unit
+9 {infantry}
+5 {vehicle}
+
+* alias infantry
+9 cultists
+4 traitorMilitia
+4 beastmen
+4 mutants
+9 {astartes}
+9 {daemon}
+5 magosOfTheDarkMechanicum
+
+* alias astartes
+9 traitorAstartes
+9 chosen
+9 possessed
+9 aspiringChampionAndBodyguards
+9 chaosLord
+9 sorcerer
+4 raptors
+2 havocs
+5 obliterators
+9 terminators
+9 noiseMarines
+9 plagueMarines
+9 berserkers
+9 thousandSons
+1 fallenOfCypher
+
+* alias daemon
+9 chaosSpawn
+9 daemonPrince
+9 nurglings
+9 plaguebearers
+9 bloodletters
+5 fleshHounds
+7 juggernaut
+9 daemonettes
+9 flamers
+9 horrors
+9 screamers
+4 furies
+9 keeperOfSecrets
+9 greatUncleanOne
+9 bloodthirster
+9 lordOfChange
+
+* alias vehicle
+9 rhino
+9 predator
+9 defiler
+1 daemonEngine
+9 landRaider
+9 thunderhawkGunship
+9 bikers
+
+* childrenof rhino
+{infantry}
+
+* childrenof landRaider
+{infantry}
+
+* childrenof thunderhawkGunship
+{infantry}
+
+`;
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+module.exports = `
+
+* output
+1 adeptusAstartesArmy
+
+* childrenof adeptusAstartesArmy
+4x
+2x
+1x
+
+* childrenof 4x
+{unit}
+
+* childrenof 2x
+{unit}
+
+* childrenof 1x
+{unit}
+
+* alias unit
+9 {infantry}
+8 {vehicle}
+
+* alias infantry
+22 tacticalSquad
+9 assaultSquad
+9 devastatorSquad
+5 sniperScouts
+5 shotgunScouts
+4 scoutBikers
+9 bikers
+4 attackBike
+3 vanguardVeterans
+3 sternguardVeterans
+7 techmarine
+4 reclusiamSquad
+4 librarian
+5 commandSquad
+9 terminatorsWithStormShield
+4 terminatorsWithAssaultCannon
+9 primarisSquad
+1 thunderfireCannon
+1 primarisInterceptors
+9 centurions
+
+* alias vehicle
+9 landspeeder
+19 rhino
+2 razorback
+9 landRaider
+7 vindicator
+9 predator
+3 whirlwind
+5 closeCombatDreadnought
+4 lascannonDreadnought
+1 contemptorDreadnought
+9 thunderhawkGunship
+19 dropPod
+1 invictorWarsuit
+1 stormhawkInterceptor
+1 stormravenGunship
+2 stormtalonGunship
+
+* childrenof rhino
+{infantry}
+
+* childrenof razorback
+{infantry}
+
+* childrenof landRaider
+{infantry}
+
+* childrenof dropPod
+{infantry}
+
+* childrenof thunderhawkGunship
+{infantry}
+
+`;
+
+},{}],7:[function(require,module,exports){
+'use strict';
+
+module.exports = `
+
+* output
+1 imperialGuardArmy
+
+* childrenof imperialGuardArmy
+4x
+2x
+1x
+
+* childrenof oldArmy
+6x
+3x
+1x
+
+* childrenof 4x
+{unit}
+
+* childrenof 2x
+{unit}
+
+* childrenof 1x
+{unit}
+
+* alias size
+9 500Points
+5 1000Points
+9 1500Points
+9 2000Points
+9 3000Points
+
+* alias unitCount
+9 6Units
+9 10Units
+9 20Units
+9 30Units
+
+* childrenof armyDistribution
+{distributions}
+
+* alias distributions
+9 Bulk x3 Support x2 Unique x1
+9 Bulk x6 Support x3 Unique x1
+9 Bulk x13 Support x6 Unique x1
+
+* alias unit
+9 {infantry}
+7 {vehicle}
+
+* alias infantry
+20 infantryPlatoon
+9 heavyWeaponsSquad
+7 sniperSquad
+6 specialCommandStaff
+8 sactionedPsyker
+9 freshConscripts
+9 penalLegion
+9 ogyrns
+9 ratlings
+1 squats
+9 tempestusStormtroopers
+8 motorbikeScouts
+9 roughRiders
+
+* alias vehicle
+9 sentinelWalker
+9 lemanRussTank
+3 banebladeSupertank
+9 basiliskArtillery
+9 valkyrie
+
+
+
+`;
+
+},{}],8:[function(require,module,exports){
+'use strict';
+
+module.exports = `
+
+* output
+1 novel
+
+* childrenof novel
+planet
+defenders
+aggressors
+motif
+influences
+sceneLocations
+outcome
+
+* childrenof planet
+terrain
+
+* childrenof terrain
+hot
+grasslands
+
+* childrenof defenders
+{faction}
+
+* childrenof aggressors
+{faction}
+
+* alias faction
+31 {humanFaction}
+10 {eldarFaction}
+5 tau
+6 necrons
+6 orks
+7 tyranids
+
+* alias humanFaction
+10 {imperialFaction}
+5 {chaosFaction}
+
+* alias imperialFaction
+20 adeptusAstartes
+8 inquisition
+20 imperialGuard
+8 adeptusMechanicus
+1 imperialNavy
+1 officioAssassinorum
+1 adeptusArbites
+1 adeptusCustodes
+1 rogueTraders
+1 imperialKnights
+
+* childrenof adeptusAstartes
+{chapter}
+
+* alias chapter
+10 ultramarines
+10 whiteScars
+10 ravenGuard
+10 imperialFists
+10 bloodAngels
+10 darkAngels
+10 ironHands
+10 salamanders
+10 spaceWolves
+8 blackTemplars
+1 silverTemplars
+2 crimsonFists
+1 legionOfTheDamned
+
+* childrenof inquisition
+{ordo}
+
+* alias ordo
+4 ordoHereticus
+4 ordoMalleus
+4 ordoXenos
+
+* alias chaosFaction
+10 traitorLegions
+6 chaosCult
+1 darkMechanicus
+1 beastmen
+1 chaosKnights
+1 fallenSororitas
+
+* childrenof traitorLegions
+{traitorLegion}
+
+* alias traitorLegion
+10 blackLegion
+10 deathGuard
+10 emperorsChildren
+10 thousandSons
+10 worldEaters
+10 nightLords
+10 ironWarriors
+10 wordBearers
+10 alphaLegion
+
+* alias eldarFaction
+8 craftworldEldar
+7 darkEldar
+3 harlequins
+3 ynnari
+1 exodites
+1 outcasts
+
+* childrenof outcome
+{resolution}
+{consequence}
+
+* alias resolution
+4 defendersRepelAggressors
+4 aggressorsConquerPlanet
+1 thisWarIsNotOver
+2 truce
+
+* alias consequence
+4 heavyDefenderCasualties
+4 heavyAggressorCasualties
+1 peaceIsShattered
+4 nothing
+
+
+`;
+
+},{}],9:[function(require,module,exports){
 module.exports = `
 * output
 1 {battalion}
@@ -742,7 +1223,7 @@ const drafts = `
 
 `;
 
-},{}],5:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -1110,7 +1591,7 @@ size: 348000
 
 `;
 
-},{}],6:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -1251,7 +1732,7 @@ weight: 4
 
 `;
 
-},{}],7:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = `
 * output
 5 {lance}
@@ -1570,7 +2051,7 @@ individual/bruteMinor
 
 `;
 
-},{}],8:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = `
 * output
 100 pod
@@ -1601,7 +2082,7 @@ module.exports = `
 
 `;
 
-},{}],9:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = `
 * output
 150 {infantryPack}
@@ -1675,7 +2156,7 @@ individual/brainForm
 
 `;
 
-},{}],10:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = `
 * output
 1 installationCompany
@@ -1699,7 +2180,7 @@ module.exports = `
 
 `;
 
-},{}],11:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = `
 * output
 50 sentinel
@@ -1761,7 +2242,7 @@ size: 13000
 
 `;
 
-},{}],12:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = `
 * output
 1 {giWeapon}
@@ -1807,7 +2288,7 @@ module.exports = `
 4 prometheanVision
 
 `;
-},{}],13:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = `
 * output
 1 {installationSquad}
@@ -1882,7 +2363,7 @@ Sketching about Forerunner armies
 
 */
 
-},{}],14:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = `
 * output
 4 {halo/unsc/fleet}
@@ -1892,7 +2373,7 @@ module.exports = `
 
 `;
 
-},{}],15:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -1975,7 +2456,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],16:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -2092,7 +2573,7 @@ spaceFighterSquadron
 {unsc/squad/oniSquad}
 
 `;
-},{}],17:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -2116,7 +2597,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],18:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -2133,7 +2614,7 @@ weight: 80
 size: 1.7
 speed: 3
 stealth: 10
-maxSp: 10
+sp: 10
 damage: 2
 
 * childrenof human
@@ -2156,13 +2637,6 @@ human
 4 civilian
 1 {output}
 
-* childrenof marinePrivate
-{unsc/item/giWeapon}
-{unsc/item}
-unsc/item/flakHelmet
-unsc/item/flakArmor
-human
-
 * alias squadLeader
 4 marinePrivate
 4 marineSpecialist
@@ -2182,15 +2656,6 @@ human
 unsc/item/leatherCase
 human
 
-* childrenof odst
-{unsc/item/veteranWeapon}
-{unsc/item/smallWeapon}
-{unsc/item/anyGear}
-unsc/item/visrHelmet
-unsc/item/odstArmor
-unsc/item/fragGrenade
-human
-
 * childrenof helljumper
 unsc/item/jetpack
 {helljumperMember}
@@ -2203,7 +2668,7 @@ unsc/item/jetpack
 tags: creature cyborg
 size: 2
 weight: 120
-maxSp: 20
+sp: 20
 damage: 4
 speed: 5
 stealth: 12
@@ -2237,17 +2702,29 @@ weight: 1000
 1 spartan
 1 {output}
 
+* alias groupStatted
+4 marinePrivate
+4 odst
+
 * template marinePrivate
 tags: creature
 size: 1
 speed: 1
 ac: 17
 sp: 10
+durability: 5
 resistance: heat 2, pierce 2
 toHit: 2
 damage: 2
 shots: 3
 comment: We are testing Death Planet using marinePrivate and have simplified their weapons temporarily. This marine has a SMG.
+
+* childrenof marinePrivate
+{unsc/item/giWeapon}
+{unsc/item}
+unsc/item/flakHelmet
+unsc/item/flakArmor
+human
 
 * template marine
 tags: creature
@@ -2269,12 +2746,22 @@ size: 1
 speed: 1
 ac: 19
 sp: 15
+durability: 8
 resistance: heat 2, pierce 2
 toHit: 2
 damage: 2
 shots: 3
 attacks: 
   SMG: +2 x2, 2 pierce
+
+* childrenof odst
+{unsc/item/veteranWeapon}
+{unsc/item/smallWeapon}
+{unsc/item/anyGear}
+unsc/item/visrHelmet
+unsc/item/odstArmor
+unsc/item/fragGrenade
+human
 
 * template officer
 size: 1
@@ -2408,7 +2895,7 @@ moveType: hover
 
 `;
 
-},{}],19:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = `* output
 10 {anyWeapon}
 20 {anyGear}
@@ -2495,6 +2982,9 @@ module.exports = `* output
 2 gravityHammer
 2 oniChaingun
 1 splinterTurret
+
+* alias stattedWeapon
+4 {giWeapon}
 
 * alias anyGear
 4 targetDesignator
@@ -2636,41 +3126,52 @@ resistance: fire 1, piercing 1, impact 1
 tags: armor
 comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
 
+* template reachPistol
+tags: action bullet firearm 1handed
+range: 70
+shotsPerSecond: 2
+hit: 5
+damage: 40
+
 * template smg
 tags: action bullet firearm fullAuto
 range: 20
+shotsPerSecond: 15
 hit: 3
 damage: 7
 
 * template assaultRifle
 tags: action bullet fullAuto
 range: 40
+shotsPerSecond: 15
 hit: 3
-damage: 8
+damage: 11
 
 * template battleRifle
 tags: action bullet
 range: 80
+shotsPerSecond: 7.2
 hit: 3
 damage: 9
 
 * template dmr
 tags: action bullet firearm optics
 range: 100
-shotsPerSecond: 2
+shotsPerSecond: 3
 hit: 3
 damage: 10
 
 * template shotgun
 tags: action bullet
 range: 9
+shotsPerSecond: 1
 hit: 5
-damage: 80
+damage: 90
 attackDelay: 2
 
 `;
 
-},{}],20:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -2992,7 +3493,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],21:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -3122,7 +3623,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],22:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -3572,7 +4073,7 @@ comment: used in the Ring Bottle World. Hmm. How to incorporate info from consis
 
 `;
 
-},{}],23:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 module.exports = `
@@ -3623,9 +4124,9 @@ mbti
 1 40YearsOld
  
 * alias gender
-10 female
-9 male
-1 nonbinary
+10 genderFemale
+9 genderMale
+1 genderNonbinary
 
 * childrenof power
 {ratings}
@@ -3687,9 +4188,10 @@ mbti
 {topic}
 
 * alias topic
-4 {animal}
-4 {naturalThing}
-4 {artificialThing}
+2 {animal}
+3 {naturalThing}
+2 {artificialThing}
+15 {generalTopic}
 
 * alias animal
 4 bird
@@ -3714,36 +4216,1036 @@ mbti
 4 air 
 4 water
 4 fire
-4 stone
+2 stone
 4 mountain
-4 lake
+1 lake
 1 cliff
 1 chasm
 4 tree
-4 vine
-4 weather
+1 vine
+3 weather
 
 * alias artificialThing
-4 hammer
-4 sword
+2 hammer
+2 sword
 4 religion
-4 circuitry
+3 circuitry
 1 bonfire
 2 furniture
-4 business
-4 television
-4 car
+2 business
+2 television
+2 car
 4 aviation
 4 space
 4 robotics
 4 steampunk
-4 ageOfSail
-4 clothing
+1 ageOfSail
+1 clothing
 4 toy
 4 military
 4 knight
-4 sports
-4 comics
+3 sports
+1 comics
+
+* alias generalTopic
+4 Sargon of Akkad
+4 Hammurabi
+4 Hatshepsut
+4 Ramesses II
+4 Cyrus the Great
+4 Alexander the Great
+4 Ashoka
+4 Qin Shi Huang
+4 Julius Caesar
+4 Augustus
+4 Charlemagne
+4 Genghis Khan
+4 Joan of Arc
+4 Suleiman the Magnificent
+4 Elizabeth I
+4 Catherine the Great
+4 George Washington
+4 Napoleon
+4 Simón Bolívar
+4 Abraham Lincoln
+4 Mahatma Gandhi
+4 Vladimir Lenin
+4 Winston Churchill
+4 Joseph Stalin
+4 Adolf Hitler
+4 Mao Zedong
+4 Nelson Mandela
+4 Abraham
+4 Moses
+4 Laozi
+4 Gautama Buddha
+4 Jesus
+4 Paul the Apostle
+4 Muhammad
+4 Adi Shankara
+4 Martin Luther
+4 Marco Polo
+4 Ibn Battuta
+4 Zheng He
+4 Christopher Columbus
+4 Vasco da Gama
+4 Ferdinand Magellan
+4 James Cook
+4 Roald Amundsen
+4 Confucius
+4 Herodotus
+4 Socrates
+4 Plato
+4 Aristotle
+4 Avicenna
+4 Thomas Aquinas
+4 Ibn Khaldun
+4 René Descartes
+4 John Locke
+4 Adam Smith
+4 Immanuel Kant
+4 Mary Wollstonecraft
+4 Karl Marx
+4 Friedrich Nietzsche
+4 Sigmund Freud
+4 Homer
+4 Sappho
+4 Sophocles
+4 Virgil
+4 Li Bai
+4 Abu Nuwas
+4 Murasaki Shikibu
+4 Dante Alighieri
+4 Miguel de Cervantes
+4 William Shakespeare
+4 Voltaire
+4 Johann Wolfgang von Goethe
+4 Jane Austen
+4 Charles Dickens
+4 Fyodor Dostoevsky
+4 Leo Tolstoy
+4 Mark Twain
+4 Rabindranath Tagore
+4 James Joyce
+4 Franz Kafka
+4 Johann Sebastian Bach
+4 Wolfgang Amadeus Mozart
+4 Ludwig van Beethoven
+4 Richard Wagner
+4 Louis Armstrong
+4 Elvis Presley
+4 The Beatles
+4 Hippocrates
+4 Jabir ibn Hayyan
+4 Shen Kuo
+4 Johannes Gutenberg
+4 Nicolaus Copernicus
+4 Galileo Galilei
+4 Isaac Newton
+4 Benjamin Franklin
+4 Carl Linnaeus
+4 Antoine Lavoisier
+4 Michael Faraday
+4 Charles Darwin
+4 Louis Pasteur
+4 James Clerk Maxwell
+4 Dmitri Mendeleev
+4 Thomas Edison
+4 Nikola Tesla
+4 Marie Curie
+4 Albert Einstein
+4 Niels Bohr
+4 Archimedes
+4 Euclid
+4 Muhammad ibn Musa al-Khwarizmi
+4 Leonhard Euler
+4 Pierre-Simon Laplace
+4 Carl Friedrich Gauss
+4 Emmy Noether
+4 Kurt Gödel
+4 Alan Turing
+4 Leonardo da Vinci
+4 Michelangelo
+4 Rembrandt
+4 Hokusai
+4 Claude Monet
+4 Vincent van Gogh
+4 Pablo Picasso
+4 Frida Kahlo
+4 Charlie Chaplin
+4 Walt Disney
+4 Henry Ford
+4 History
+4 Human history
+4 Civilization
+4 Archaeology
+4 History of Africa
+4 History of Asia
+4 History of East Asia
+4 History of India
+4 History of the Middle East
+4 History of Europe
+4 History of North America
+4 History of Oceania
+4 History of South America
+4 History of art
+4 History of science
+4 History of agriculture
+4 History of architecture
+4 History of film
+4 History of literature
+4 History of mathematics
+4 History of medicine
+4 History of music
+4 History of technology
+4 Military history
+4 Prehistory
+4 Stone Age
+4 Early human migrations
+4 Neolithic Revolution
+4 Ancient history
+4 Bronze Age
+4 Ancient Egypt
+4 Indus Valley Civilisation
+4 Mesopotamia
+4 Sumer
+4 Assyria
+4 Iron Age
+4 Ancient Greece
+4 Ancient Rome
+4 Achaemenid Empire
+4 Gupta Empire
+4 Han dynasty
+4 Silk Road
+4 Pre-Columbian era
+4 Andean civilizations
+4 Mesoamerica
+4 Maya civilization
+4 Post-classical history
+4 Aztecs
+4 Inca Empire
+4 Islamic Golden Age
+4 Middle Ages
+4 Black Death
+4 Byzantine Empire
+4 Crusades
+4 Holy Roman Empire
+4 Viking Age
+4 Mongol Empire
+4 Ottoman Empire
+4 Tang dynasty
+4 Early modern period
+4 Renaissance
+4 Age of Discovery
+4 European colonization of the Americas
+4 Reformation
+4 Mughal Empire
+4 Scientific Revolution
+4 Age of Enlightenment
+4 Late modern period
+4 Industrial Revolution
+4 French Revolution
+4 Abolitionism
+4 Scramble for Africa
+4 British Empire
+4 Decolonization
+4 World War I
+4 Soviet Union
+4 Great Depression
+4 World War II
+4 Cold War
+4 Space Race
+4 Geography
+4 Continent
+4 Africa
+4 Antarctica
+4 Asia
+4 Europe
+4 North America
+4 South America
+4 Arctic
+4 Middle East
+4 Oceania
+4 City
+4 Beijing
+4 Cairo
+4 Delhi
+4 Hong Kong
+4 Istanbul
+4 Jakarta
+4 Jerusalem
+4 Lagos
+4 London
+4 Mecca
+4 Mexico City
+4 Moscow
+4 Mumbai
+4 New York City
+4 Paris
+4 Rome
+4 São Paulo
+4 Singapore
+4 Tokyo
+4 Country
+4 Argentina
+4 Australia
+4 Bangladesh
+4 Brazil
+4 Canada
+4 China
+4 Colombia
+4 Democratic Republic of the Congo
+4 Egypt
+4 Ethiopia
+4 France
+4 Germany
+4 India
+4 Indonesia
+4 Iran
+4 Israel
+4 Italy
+4 Japan
+4 Kenya
+4 Mexico
+4 Myanmar
+4 Nigeria
+4 Pakistan
+4 Philippines
+4 Poland
+4 Russia
+4 Saudi Arabia
+4 South Africa
+4 South Korea
+4 Spain
+4 Taiwan
+4 Tanzania
+4 Thailand
+4 Turkey
+4 United Kingdom
+4 United States
+4 Vietnam
+4 Sea
+4 Arctic Ocean
+4 Atlantic Ocean
+4 Mediterranean Sea
+4 Indian Ocean
+4 Pacific Ocean
+4 Great Barrier Reef
+4 Lake
+4 Caspian Sea
+4 Great Lakes
+4 Lake Victoria
+4 River
+4 Amazon River
+4 Ganges
+4 Mississippi River
+4 Nile
+4 Yangtze
+4 Land
+4 Desert
+4 Sahara
+4 Forest
+4 Amazon rainforest
+4 Glacier
+4 Grassland
+4 Island
+4 Mountain
+4 Alps
+4 Andes
+4 Himalayas
+4 Rocky Mountains
+4 Grand Canyon
+4 The arts
+4 Art
+4 Prehistoric art
+4 Museum
+4 Abstract art
+4 Modernism
+4 Realism (arts)
+4 Romanticism
+4 Architecture
+4 Great Pyramid of Giza
+4 Great Wall of China
+4 Literature
+4 English literature
+4 Fiction
+4 Novel
+4 Short story
+4 Fairy tale
+4 Poetry
+4 Epic poetry
+4 Music
+4 Musical instrument
+4 Singing
+4 Classical music
+4 Folk music
+4 Jazz
+4 Pop music
+4 Rock music
+4 Performing arts
+4 Dance
+4 Opera
+4 Orchestra
+4 Theatre
+4 Visual arts
+4 Film
+4 Animation
+4 Calligraphy
+4 Comics
+4 Design
+4 Drawing
+4 Painting
+4 Photography
+4 Pottery
+4 Sculpture
+4 Philosophy
+4 Philosophy of science
+4 Aesthetics
+4 Epistemology
+4 Knowledge
+4 Belief
+4 Reason
+4 Truth
+4 Ethics
+4 Good and evil
+4 Logic
+4 Metaphysics
+4 Free will
+4 Ontology
+4 Eastern philosophy
+4 Confucianism
+4 Western philosophy
+4 Ancient Greek philosophy
+4 Contemporary philosophy
+4 Religion
+4 Afterlife
+4 Deity
+4 God
+4 Meditation
+4 Myth
+4 New religious movement
+4 Prayer
+4 Ritual
+4 Shamanism
+4 Soul
+4 Spirituality
+4 Western esotericism
+4 Secularism
+4 Atheism
+4 Buddhism
+4 Mahayana
+4 Theravada
+4 Christianity
+4 Bible
+4 Catholic Church
+4 Eastern Orthodox Church
+4 Protestantism
+4 Hinduism
+4 Vedas
+4 Bhagavad Gita
+4 Islam
+4 Shia Islam
+4 Sunni Islam
+4 Quran
+4 Jainism
+4 Judaism
+4 Talmud
+4 Shinto
+4 Sikhism
+4 Taoism
+4 Clothing
+4 Home
+4 Furniture
+4 Jewellery
+4 Ethnic group
+4 Family
+4 Adult
+4 Old age
+4 Adolescence
+4 Child
+4 Infant
+4 Marriage
+4 Parenting
+4 Friendship
+4 Human sexuality
+4 Sexual orientation
+4 Gender
+4 Man
+4 Woman
+4 Cooking
+4 Food
+4 Bread
+4 Cereal
+4 Wheat
+4 Maize
+4 Rice
+4 Cheese
+4 Fruit
+4 Nut (fruit)
+4 Meat
+4 Salt
+4 Spice
+4 Sugar
+4 Vegetable
+4 Potato
+4 Soybean
+4 Drink
+4 Alcoholic drink
+4 Coffee
+4 Drinking water
+4 Milk
+4 Tea
+4 Entertainment
+4 Play (activity)
+4 Game
+4 Board game
+4 Card game
+4 Gambling
+4 Video game
+4 Sport
+4 Association football
+4 Sport of athletics
+4 Olympic Games
+4 Toy
+4 Martial arts
+4 Swimming
+4 Tourism
+4 Culture
+4 Folklore
+4 Festival
+4 Oral tradition
+4 Popular culture
+4 Society
+4 Community
+4 Power (social and political)
+4 Social class
+4 Communication
+4 Social science
+4 Anthropology
+4 Sociology
+4 Politics
+4 Political party
+4 Political science
+4 Colonialism
+4 Imperialism
+4 Government
+4 Democracy
+4 Dictatorship
+4 Monarchy
+4 Theocracy
+4 Ideology
+4 Anarchism
+4 Capitalism
+4 Communism
+4 Conservatism
+4 Fascism
+4 Liberalism
+4 Nationalism
+4 Socialism
+4 State (polity)
+4 Diplomacy
+4 Military
+4 European Union
+4 International Red Cross and Red Crescent Movement
+4 NATO
+4 United Nations
+4 International Monetary Fund
+4 World Health Organization
+4 World Trade Organization
+4 Genocide
+4 Peace
+4 Terrorism
+4 War
+4 Education
+4 School
+4 Library
+4 Business
+4 Corporation
+4 Management
+4 Marketing
+4 Retail
+4 Trade union
+4 Economics
+4 Trade
+4 Employment
+4 Finance
+4 Bank
+4 Money
+4 Market (economics)
+4 Supply and demand
+4 Tax
+4 Economy
+4 Agriculture
+4 Manufacturing
+4 Construction
+4 Fishing
+4 Hunting
+4 Mining
+4 Abortion
+4 Disability
+4 Discrimination
+4 Racism
+4 Sexism
+4 Environmentalism
+4 Pollution
+4 Famine
+4 Feminism
+4 Women's suffrage
+4 Globalization
+4 Human migration
+4 Human rights
+4 Liberty
+4 Privacy
+4 Slavery
+4 Social equality
+4 Indigenous peoples
+4 Poverty
+4 Welfare
+4 Law
+4 Crime
+4 Constitution
+4 Justice
+4 Police
+4 Property
+4 Psychology
+4 Emotion
+4 Anger
+4 Fear
+4 Happiness
+4 Humour
+4 Love
+4 Mind
+4 Consciousness
+4 Dream
+4 Memory
+4 Thought
+4 Human behavior
+4 Intelligence
+4 Learning
+4 Personality
+4 Language
+4 Arabic
+4 Indo-European languages
+4 Bengali language
+4 English language
+4 French language
+4 German language
+4 Greek language
+4 Hindustani language
+4 Latin
+4 Portuguese language
+4 Russian language
+4 Spanish language
+4 Chinese language
+4 Japanese language
+4 Linguistics
+4 Grammar
+4 Word
+4 Personal name
+4 Speech
+4 Writing
+4 Alphabet
+4 Arabic alphabet
+4 Brahmic scripts
+4 Cyrillic script
+4 Greek alphabet
+4 Latin script
+4 Chinese characters
+4 Mass media
+4 Broadcasting
+4 Journalism
+4 News
+4 Publishing
+4 Disease
+4 Allergy
+4 Asthma
+4 Cancer
+4 Cardiovascular disease
+4 Stroke
+4 Diabetes
+4 Gastroenteritis
+4 Infection
+4 Common cold
+4 Influenza
+4 Malaria
+4 Pneumonia
+4 Sexually transmitted infection
+4 HIV-AIDS
+4 Smallpox
+4 Tuberculosis
+4 Mental disorder
+4 Injury
+4 Medicine
+4 Dentistry
+4 Hospital
+4 Surgery
+4 Ageing
+4 Exercise
+4 Health
+4 Hygiene
+4 Sanitation
+4 Nutrition
+4 Obesity
+4 Drug
+4 Medication
+4 Anesthesia
+4 Antibiotic
+4 Birth control
+4 Vaccine
+4 Addiction
+4 Alcoholism
+4 Smoking
+4 Science
+4 Scientific method
+4 Measurement
+4 International System of Units
+4 Nature
+4 Astronomy
+4 Universe
+4 Solar System
+4 Sun
+4 Mercury (planet)
+4 Venus
+4 Earth
+4 Moon
+4 Mars
+4 Jupiter
+4 Saturn
+4 Uranus
+4 Neptune
+4 Asteroid
+4 Big Bang
+4 Black hole
+4 Comet
+4 Galaxy
+4 Milky Way
+4 Natural satellite
+4 Orbit
+4 Outer space
+4 Physical cosmology
+4 Planet
+4 Star
+4 Supernova
+4 Physics
+4 Energy
+4 Time
+4 Day
+4 Year
+4 Classical mechanics
+4 Mass
+4 Momentum
+4 Motion
+4 Newton's laws of motion
+4 Force
+4 Electromagnetism
+4 Gravity
+4 Strong interaction
+4 Weak interaction
+4 Magnetism
+4 Matter
+4 State of matter
+4 Particle physics
+4 Standard Model
+4 Subatomic particle
+4 Electron
+4 Neutron
+4 Photon
+4 Proton
+4 Quantum mechanics
+4 Radioactive decay
+4 Space
+4 Vacuum
+4 Thermodynamics
+4 Heat
+4 Temperature
+4 Theory of relativity
+4 Wave
+4 Electromagnetic radiation
+4 Light
+4 Color
+4 Optics
+4 Speed of light
+4 Sound
+4 Biology
+4 Life
+4 Cell (biology)
+4 Death
+4 Suicide
+4 Abiogenesis
+4 Evolution
+4 Human evolution
+4 Natural selection
+4 Organism
+4 Animal
+4 Zoology
+4 Amphibian
+4 Arthropod
+4 Insect
+4 Bird
+4 Fish
+4 Mammal
+4 Cat
+4 Cattle
+4 Dog
+4 Horse
+4 Primate
+4 Human
+4 Rodent
+4 Reptile
+4 Dinosaur
+4 Plant
+4 Botany
+4 Flower
+4 Seed
+4 Tree
+4 Algae
+4 Archaea
+4 Bacteria
+4 Eukaryote
+4 Fungus
+4 Virus
+4 Anatomy
+4 Human body
+4 Circulatory system
+4 Blood
+4 Heart
+4 Lung
+4 Digestion
+4 Liver
+4 Immune system
+4 Skin
+4 Muscle
+4 Nervous system
+4 Brain
+4 Ear
+4 Eye
+4 Sense
+4 Skeleton
+4 Ecology
+4 Biodiversity
+4 Ecosystem
+4 Extinction
+4 Genetics
+4 DNA
+4 Gene
+4 Heredity
+4 RNA
+4 Metabolism
+4 Molecular biology
+4 Protein
+4 Paleontology
+4 Photosynthesis
+4 Reproduction
+4 Sex
+4 Pregnancy
+4 Sleep
+4 Taxonomy (biology)
+4 Species
+4 Chemistry
+4 Biochemistry
+4 Inorganic chemistry
+4 Organic chemistry
+4 Physical chemistry
+4 Chemical element
+4 Atom
+4 Periodic table
+4 Aluminium
+4 Carbon
+4 Copper
+4 Gold
+4 Hydrogen
+4 Iron
+4 Nitrogen
+4 Oxygen
+4 Silicon
+4 Silver
+4 Chemical compound
+4 Water
+4 Carbon dioxide
+4 Chemical bond
+4 Molecule
+4 Chemical reaction
+4 Acid-base reaction
+4 Catalysis
+4 Redox
+4 Metal
+4 Alloy
+4 Bronze
+4 Steel
+4 Earth science
+4 History of Earth
+4 Atmosphere
+4 Magma
+4 Season
+4 Flood
+4 Climate
+4 Climate change
+4 Weather
+4 Cloud
+4 Rain
+4 Snow
+4 Tornado
+4 Tropical cyclone
+4 Wind
+4 Geology
+4 Earthquake
+4 Erosion
+4 Mineral
+4 Plate tectonics
+4 Rock (geology)
+4 Soil
+4 Volcano
+4 Technology
+4 Engineering
+4 Civil engineering
+4 Mechanical engineering
+4 Electricity
+4 Electric battery
+4 Fire
+4 Explosive
+4 Gunpowder
+4 Fossil fuel
+4 Coal
+4 Natural gas
+4 Petroleum
+4 Gasoline
+4 Nuclear power
+4 Renewable energy
+4 Hydropower
+4 Solar energy
+4 Wind power
+4 Animal husbandry
+4 Domestication
+4 Biotechnology
+4 Genetic engineering
+4 Fertilizer
+4 Food preservation
+4 Garden
+4 Medical imaging
+4 Refrigeration
+4 Stove
+4 Weapon
+4 Armour
+4 Bow and arrow
+4 Firearm
+4 Knife
+4 Nuclear weapon
+4 Tool
+4 Simple machine
+4 Wheel
+4 Engine
+4 Electric motor
+4 Internal combustion engine
+4 Jet engine
+4 Steam engine
+4 Robotics
+4 Printing
+4 Book
+4 Mail
+4 Telecommunication
+4 Internet
+4 Radio
+4 Telephone
+4 Mobile phone
+4 Video
+4 Television
+4 Computer science
+4 Computer
+4 Artificial intelligence
+4 Cryptography
+4 Electronics
+4 Electric light
+4 Integrated circuit
+4 Semiconductor device
+4 Rocket
+4 Satellite
+4 Space exploration
+4 Spaceflight
+4 Space station
+4 Transport
+4 Aircraft
+4 Bicycle
+4 Car
+4 Rail transport
+4 Ship
+4 Navigation
+4 Compass
+4 Map
+4 Radar
+4 Calendar
+4 Clock
+4 Fortification
+4 Infrastructure
+4 Bridge
+4 Canal
+4 Dam
+4 Road
+4 Concrete
+4 Glass
+4 Masonry
+4 Metallurgy
+4 Natural rubber
+4 Paper
+4 Plastic
+4 Textile
+4 Wood
+4 Camera
+4 Laser
+4 Lens
+4 Microscope
+4 Telescope
+4 Mathematics
+4 Algorithm
+4 Mathematical proof
+4 Set (mathematics)
+4 Function (mathematics)
+4 Combinatorics
+4 Number
+4 Real number
+4 E (mathematical constant)
+4 Pi
+4 Fraction
+4 Integer 
+4 0
+4 Natural number
+4 Complex number
+4 Number theory
+4 Prime number
+4 Algebra
+4 Equation
+4 Variable (mathematics)
+4 Linear algebra
+4 Mathematical analysis
+4 Calculus
+4 Infinity
+4 Limit (mathematics)
+4 Series (mathematics)
+4 Arithmetic
+4 Addition
+4 Subtraction
+4 Multiplication
+4 Division (mathematics)
+4 Exponentiation
+4 Logarithm
+4 Nth root
+4 Geometry
+4 Angle
+4 Trigonometry
+4 Area
+4 Volume
+4 Dimension
+4 Line (geometry)
+4 Plane (geometry)
+4 Shape
+4 Conic section
+4 Circle
+4 Polygon
+4 Triangle
+4 Polyhedron
+4 Sphere
+4 Topology
+4 Probability
+4 Statistics
 
 * alias allegiance
 4 hero
@@ -3752,7 +5254,7 @@ mbti
 
 `;
 
-},{}],24:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 module.exports = `
@@ -3836,7 +5338,7 @@ module.exports = `
 
 `;
 
-},{}],25:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -4040,7 +5542,7 @@ module.exports = `
 
 
 `;
-},{}],26:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -4054,7 +5556,910 @@ module.exports = `
 
 
 `;
-},{}],27:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
+module.exports = `* output
+1 army
+
+* childrenof army
+bulk
+support
+unique
+
+* childrenof bulk
+{wkrieg/squadType}
+
+* childrenof support
+{wkrieg/squadType}
+
+* childrenof unique
+{wkrieg/squadType}
+
+`;
+
+},{}],33:[function(require,module,exports){
+module.exports = `* output
+4 meleeWeapon
+4 rangedWeapon
+1 bombWeapon
+0 heldItem
+0 wornItem
+
+* alias weapon
+20 meleeWeapon
+20 rangedWeapon
+1 bombWeapon
+
+* alias held
+10 {offhand}
+10 {otherGear}
+
+* alias offhand
+10 buckler
+10 steelShield
+10 towerShield
+7 armouredGauntlet
+10 dagger
+3 sickle
+1 whip
+2 pistol
+3 steelClaw
+
+* alias otherGear
+4 targetDesignator
+4 secureDatapad
+4 medkit
+4 demolitionCharges
+4 {giGear}
+4 {commandGear}
+4 jetpack
+2 emp
+2 plasmaRifle
+
+* alias giGear
+4 fragGrenade
+4 portableTent
+4 extraAmmo
+4 extraRations
+4 camoCloak
+3 smokeGrenade
+3 trenchShovel
+3 radiationPills
+2 flashbangGrenade
+2 deployableCover
+2 caffeinePills
+1 medkit
+
+* alias commandGear
+4 targetLocator
+4 secureDatapad
+4 memoryChip
+4 oneTimePad
+4 microwaveAntenna
+3 emp
+2 telescope
+2 binoculars
+1 paperMap
+1 bubbleShield
+
+* childrenof meleeWeapon
+{meleeMod}
+{meleeChassis}
+
+* alias meleeChassis
+6 mace
+6 hammer
+1 glove
+1 claw
+10 knife
+10 sword
+20 spear
+4 pike
+4 glaive
+4 halberd
+6 axe
+1 hatchet
+1 whip
+2 flail
+2 javelin
+0 TODO would be nice if every node from meleeChassis had a prop that indicated it was a chassis.
+
+* template mace
+weight: 7
+slot: hand
+
+* childrenof rangedWeapon
+{rangedMod}
+{rangedChassis}
+
+* alias rangedChassis
+10 pistol
+15 smg
+15 carbine
+8 shotgun
+15 rifle
+10 longrifle
+2 shortbow
+2 longbow
+4 crossbow
+1 harpoon
+4 repeater
+3 chaingun
+3 cannon
+
+* childrenof bombWeapon
+{bombMod}
+{bombChassis}
+
+* alias bombChassis
+4 grenade
+2 grenadeLauncher
+2 bomb
+
+* alias weaponMod
+20 heavy
+19 lightweight
+8 electric
+5 magnetic
+5 acid
+4 toxin
+5 ion
+4 tracker
+8 fire
+7 thermal
+7 guided
+2 concealed
+1 {softScienceMod}
+
+* alias meleeMod
+30 {weaponMod}
+5 wristMounted
+
+* alias rangedMod
+30 {weaponMod}
+4 wristMounted
+3 rail
+10 laser
+6 beam
+4 plasma
+5 spiderweb
+8 scoped
+9 extendedRange
+6 stealth
+6 bayonet
+
+* alias bombMod
+10 {weaponMod}
+1 laser
+1 plasma
+1 spiderweb
+1 flash
+
+* alias softScienceMod
+9 hardlight
+12 stun
+10 nanite
+3 grav
+2 temporal
+1 void
+
+`;
+
+},{}],34:[function(require,module,exports){
+module.exports = `* output
+1 faction
+
+* childrenof faction
+populace
+specialty
+armory
+representative
+military
+
+* childrenof populace
+{wkrieg/species}
+
+* childrenof mind 
+{composition}
+
+* childrenof body
+{composition}
+
+* childrenof specialty
+{topic}
+
+* alias topic
+4 spaceFighters
+2 cruisers
+4 dreadnoughts
+4 fortresses
+5 infantry
+3 weapons
+4 armor
+4 mecha
+4 artillery
+4 economics
+4 archaeology
+4 engineering
+4 research
+4 knowledge
+4 biology
+3 psychology
+4 stealth
+4 espionage
+4 politics
+
+* childrenof armory
+{wkrieg/carryable}
+{wkrieg/carryable}
+
+* childrenof representative
+wkrieg/outfit
+{repTitle}
+
+* alias repTitle
+4 leader 
+4 premier
+4 president
+4 king
+4 queen
+4 sultan
+4 sultana
+4 caliph
+4 calipha
+4 emperor
+4 empress
+4 primeMinister
+4 doctor
+4 senator
+4 representative
+4 governor
+8 chief
+3 chieftain
+4 speaker
+4 viscount
+4 baron
+4 baroness
+4 contessa
+4 countess
+9 lady
+9 lord
+4 regina
+4 rex
+4 dux
+4 duchess
+4 duke
+4 conqueror
+9 citizen
+8 comrade
+9 sir
+8 madame
+9 master
+2 mistress
+4 dictator
+8 consul
+8 princess
+8 prince
+8 emira
+8 emir
+3 raj
+8 elder
+8 oracle
+8 sylph
+5 godtouched
+5 starfriend
+8 ambassador
+7 professor
+8 wanderer
+7 noman
+2 journeyer
+4 guildmaster
+4 archduke
+4 elector
+4 chancellor
+0 TODO later add a name generated from vowel and conosonant sounds, like fantasy worldName in hobby/
+
+* childrenof military
+infantry
+reserve
+
+* childrenof infantry
+wkrieg/outfit
+{infantryName}
+{gender}
+
+* alias infantryName
+9 regulars
+9 irregulars
+9 conscripts
+3 volunteers
+4 guardians
+4 ravagers
+4 reavers
+5 raiders
+2 grenadiers
+4 dragoons
+2 conquistadors
+4 myrmidons
+4 skirmishers
+5 rangers
+4 marines
+2 soldiers
+4 serfs 
+4 peasants
+8 knights
+4 immortals
+4 samurai
+3 sharpeyes
+8 scouts
+4 cavaliers
+3 chevaliers
+4 warriors
+3 spotters
+2 eradicators
+2 vindicators
+2 avengers
+4 praetorians
+4 honorGuard
+4 royalGuard
+4 civicGuard
+4 armyOfThePeople
+4 revolutionaries
+3 guards
+4 clones
+2 replicants
+3 inheritors
+3 torchbearers
+3 braves
+
+* alias gender
+9 mixedGender
+4 exclusivelyFemale
+4 exclusivelyMale 
+1 exclusivelyPostgender
+
+* childrenof reserve
+wkrieg/outfit
+{infantryName}
+{gender}
+
+
+* childrenof oldFaction
+leadership
+personnel
+cognition
+economy
+starships
+groundForces
+
+* childrenof leadership
+{composition}
+
+* childrenof personnel
+{composition}
+
+* childrenof cognition
+{composition}
+
+* childrenof economy
+{composition}
+
+* childrenof starships
+{composition}
+
+* childrenof groundForces
+{composition}
+
+* alias composition
+4 organic
+2 hybrid
+3 synthetic
+
+`;
+
+/*
+Or a faction could simply have 2 Traits, their most notable aspects
+*/
+
+},{}],35:[function(require,module,exports){
+module.exports = `* output
+1 outfit
+
+* childrenof outfit
+{head}
+{base}
+{top}
+{feet}
+colors
+{extra}
+
+* alias head
+4 nothing
+4 pointedHelm
+4 voidproofHelm
+4 featherCrestedHelm
+4 hood
+3 goggles
+
+* alias base
+3 loincloth
+4 furs
+9 fatigues
+9 bodysuit
+1 doublet
+3 leatherArmor
+1 woolShirt, breeches
+4 robe
+1 doubleBreastedJacket
+4 voidsuit
+4 {exoskeleton}
+
+* alias exoskeleton
+4 agilityExoskeleton
+3 enduranceExoskeleton
+4 cqcExoskeleton
+
+* alias top
+9 nothing
+7 breastplate
+5 breastplate, bracers
+3 breastplate, bracers, greaves
+4 breastplate, pauldrons, bracers
+
+* childrenof breastplate
+{materialType}
+
+* alias materialType
+1 wood
+4 bone
+4 ceramic
+3 bronze
+4 iron
+9 steel
+4 plasteel
+4 durasteel
+
+* childrenof colors
+{color}
+{secondaryColor}
+
+* alias color
+1 magenta
+1 salmon
+24 red
+5 crimson
+1 vermillion
+5 scarlet
+24 orange
+8 yellow
+1 lemonYellow
+27 green
+1 limeGreen
+1 lime
+1 brightGreen
+8 oliveGreen
+15 blue
+5 skyBlue
+1 aquamarine
+1 turquoise
+27 purple
+1 violet
+15 white
+1 beige
+1 lightGrey
+7 steel
+9 gunmetal
+10 gunmetalGrey
+4 chrome
+13 bronze
+30 grey
+4 darkGrey
+33 black
+18 brown
+1 tan
+1 olive
+21 silver
+1 opal
+12 gold
+
+* alias secondaryColor
+1 magenta
+1 salmon
+1 red
+1 crimson
+1 vermillion
+5 scarlet
+1 orange
+8 yellow
+1 lemonYellow
+2 green
+1 limeGreen
+1 lime
+1 brightGreen
+8 oliveGreen
+3 blue
+1 skyBlue
+1 aquamarine
+1 turquoise
+1 purple
+1 violet
+15 white
+2 beige
+11 lightGrey
+17 steel
+9 gunmetal
+10 gunmetalGrey
+14 chrome
+13 bronze
+30 grey
+14 darkGrey
+33 black
+18 brown
+11 tan
+5 olive
+21 silver
+5 opal
+12 gold
+
+* alias feet
+18 boots
+3 rocketBoots
+3 hoverBoots
+4 sandals
+1 tennisShoes
+
+* alias extra
+9 nothing
+3 jetpack
+3 cyberwings
+9 cape
+4 rucksack
+3 ammoPouches
+3 bandolier
+
+`;
+
+},{}],36:[function(require,module,exports){
+module.exports = `* output
+9 homoSapiens
+3 organicSpecies
+1 syntheticSpecies
+
+* childrenof organicSpecies
+head
+{arms}
+lowerHalf
+
+* childrenof head
+{animal}
+
+* alias arms
+2 noArms
+1 1Arm
+20 2Arms
+8 4Arms
+10 2ArmsInAdditionToWings
+1 5Arms
+4 6Arms
+2 8Arms
+
+* childrenof lowerHalf
+{animal}
+
+* childrenof syntheticSpecies
+{arms}
+{locomotion}
+
+* alias locomotion
+4 bipedal
+1 sessile
+4 spiderLegs
+3 wheels
+3 levitation
+1 flight
+
+* alias animal
+1 aardvark
+1 adder
+1 albatross
+1 alligator
+1 alpaca
+1 anaconda
+1 armadillo
+1 axolotl
+1 badger
+1 barnOwl
+1 barracuda
+1 baskingShark
+1 beaver
+1 beetle
+1 blackBear
+1 blackMamba
+1 blackbird
+1 bluejay
+1 boar
+1 bobcat
+1 bonobo
+1 brownRecluseSpider
+1 butterfly
+1 buzzard
+1 camel
+1 capybara
+1 cardinal
+1 carp
+1 cassowary
+1 cat
+1 chameleon
+1 cheetah
+1 chicken
+1 chimpanzee
+1 chinchilla
+1 chipmunk
+1 coati
+1 cobra
+1 cockatiel
+1 cod
+1 coelacanth
+1 cougar
+1 cow
+1 coyote
+1 crab
+1 crocodile
+1 crow
+1 cuttlefish
+1 damselfly
+1 deer
+1 desertTortoise
+1 dog
+1 donkey
+1 dragon
+1 dragonfly
+1 duck
+1 eagle
+1 echidna
+1 elephant
+1 elephantSeal
+1 elk
+1 emperorPenguin
+1 emu
+1 firefly
+1 fly
+1 flyingSquirrel
+1 fox
+1 gazelle
+1 gibbon
+1 gilaMonster
+1 giraffe
+1 goat
+1 goose
+1 gorilla
+1 grasshopper
+1 graySquirrel
+1 greatHornedOwl
+1 greatWhiteShark
+1 frog
+1 grizzlyBear
+1 groundhog
+1 grouper
+1 guineafowl
+1 halibut
+1 hammerheadShark
+1 hamster
+1 hare
+1 harpy
+1 hedgehog
+1 hippo
+1 hornbill
+1 horse
+1 horseshoeCrab
+1 hyena
+1 iguana
+1 jackal
+1 jaguar
+1 kangaroo
+1 kestrel
+1 kingsnake
+1 kiwi
+1 koala
+1 lamprey
+1 leech
+1 leopard
+1 leopardSeal
+1 lion
+1 lizard
+1 llama
+1 loon
+1 lorikeet
+1 louse
+1 lynx
+1 magpie
+1 mantaRay
+1 marmot
+1 mink
+1 monarchButterfly
+1 mongoose
+1 monkey
+1 moose
+1 mosquito
+1 moth
+1 mule
+1 narwhal
+1 nautilus
+1 ocelot
+1 octopus
+1 opossum
+1 orangutan
+1 orca
+1 osprey
+1 ostrich
+1 otter
+1 panda
+1 pangolin
+1 parakeet
+1 parrot
+1 penguin
+1 peregrineFalcon
+1 pig
+1 platypus
+1 polarBear
+1 porcupine
+1 puffin
+1 python
+1 rabbit
+1 raccoon
+1 rattlesnake
+1 raven
+1 redPanda
+1 reindeer
+1 rhinoceros
+1 otter
+1 roach
+1 satyr
+1 scorpion
+1 seaOtter
+1 seaSerpent
+1 sheep
+1 skink
+1 skunk
+1 sloth
+1 slug
+1 snail
+1 snappingTurtle
+1 snowyOwl
+1 sparrow
+1 spermWhale
+1 sponge
+1 squid
+1 squirrel
+1 stingray
+1 stoat
+1 swan
+1 swordfish
+1 tapir
+1 tick
+1 tiger
+1 toad
+1 tortoise
+2 tree
+1 tuna
+1 turkey
+1 turtle
+1 unicorn
+1 vulture
+1 walrus
+1 warthog
+1 waterBuffalo
+1 weasel
+1 whaleShark
+1 stork
+1 wolf
+1 wolverine
+1 wombat
+1 wren
+1 yak
+
+`;
+
+},{}],37:[function(require,module,exports){
+module.exports = `* output
+9 infantry
+6 cavalry
+6 vehicle
+0 swarm
+
+* childrenof infantry
+{wkrieg/carryable/weapon}
+{wkrieg/carryable/held}
+{trait}
+{role}
+
+* alias trait
+9 biologicallyEnhanced
+9 veteran
+10 nothing
+
+* alias role
+9 lightInfantry
+9 heavyInfantry
+7 stealthInfantry
+7 shockInfantry
+9 freshlyConscripted
+20 nothing
+
+* childrenof lightInfantry
+{mobilityGear}
+
+* alias mobilityGear
+70 nothing
+9 hoverboard
+9 hoverboots
+9 rocketBoots
+9 grapplingHook
+9 jetpack
+9 combatWings
+4 teleportHarness
+
+* childrenof cavalry
+{mount}
+{wkrieg/carryable/weapon}
+{wkrieg/carryable/held}
+{trait}
+{cavalryRole}
+
+* alias mount
+20 horse
+9 motorcycle
+9 jetbike
+1 cybersphynx
+
+* alias cavalryRole
+9 lightCavalry
+9 heavyCavalry
+9 nothing
+
+* childrenof vehicle
+{locomotion}
+{vehicleWeap}
+{vehicleRole}
+
+* alias locomotion
+9 wheels
+9 treads
+9 {legs}
+7 hoverpods
+6 wings
+5 flightRotor
+
+* alias legs
+9 2Legs
+9 4Legs
+9 6Legs
+2 8Legs
+2 20Legs
+
+* alias vehicleWeap
+9 cannon
+9 machineGuns
+4 mortar
+9 swords
+3 sledgehammer
+0 TODO: The melee weapons are tricky to visualize. Constrain to mecha?
+
+* alias vehicleRole
+19 troopTransport
+9 ultralight
+9 heavyArmor
+9 superheavy
+9 oversized
+9 maximumSpeed
+19 radarInvisible
+9 massProduced
+
+* childrenof troopTransport
+infantry
+
+`;
+
+},{}],38:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -4111,7 +6516,7 @@ module.exports = Util.makeEnum([
     'Covenant'
 ]);
 
-},{"../util/util.js":71}],28:[function(require,module,exports){
+},{"../util/util.js":82}],39:[function(require,module,exports){
 module.exports = `
 * output
 1 setting
@@ -4182,7 +6587,7 @@ module.exports = `
 
 `;
 
-},{}],29:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -4306,7 +6711,7 @@ AliasTable.STARTERS = [
 
 module.exports = AliasTable;
 
-},{"../util/util.js":71}],30:[function(require,module,exports){
+},{"../util/util.js":82}],41:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -4376,7 +6781,7 @@ ChildTable.STARTERS = [
 
 module.exports = ChildTable;
 
-},{"../util/util.js":71}],31:[function(require,module,exports){
+},{"../util/util.js":82}],42:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -4411,14 +6816,12 @@ class ContextString {
 
 module.exports = ContextString;
 
-},{"../util/util.js":71,"./wgenerator.js":32}],32:[function(require,module,exports){
+},{"../util/util.js":82,"./wgenerator.js":43}],43:[function(require,module,exports){
 (function (process,__dirname){
 'use strict';
 
 // Generator that outputs procedurally generated trees of WNodes (Waffle nodes).
 // These trees represent games states, game elements, narrative elements, and similar concepts.
-
-const fs = require('fs');
 
 // LATER perhaps restructure so that WGenerator doesn't import any Battle20 files.
 // Eg, perhaps CreatureTemplate should not be Battle20-specific?
@@ -4435,6 +6838,9 @@ const Group = require('../wnode/group.js');
 const Thing = require('../wnode/thing.js');
 const StorageModes = require('../wnode/storageModes.js');
 const WNode = require('../wnode/wnode.js');
+
+const fs = require('fs');
+const Yaml = require('js-yaml');
 
 class WGenerator {
     // Constructor param will be either a birddecisions-format string or a filename.
@@ -4537,12 +6943,13 @@ class WGenerator {
             }
         );
 
-        Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}.`);
+        // Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}.`);
         // Util.logDebug(`templateObj is ${JSON.stringify(templateObj, undefined, '    ')}`);
    }
 
     // Returns WNode[]
     getOutputs (key) {
+        // TODO CLI bug. Crashes when input is sunlight/wiederholungskrieg/carryable/rangedWeapon, probably because rangedWeapon is not a alias but is somehow interpreted as one.
         let nodes = this.resolveString(key || '{output}');
 
         if (nodes[0] && nodes[0].templateName === key && ! nodes[0].template && nodes.length === 1) {
@@ -4558,9 +6965,19 @@ class WGenerator {
         return nodes;
     }
 
+    // Returns WNode[]
+    static generateNodes (absolutePath) {
+        return WGenerator.exampleGenerator()
+            .getOutputs(absolutePath);
+    }
+
     // Returns ContextString[]
     resolveCommas (inputString) {
         // Util.log(`Top of resolveCommas(), inputString is '${inputString}'`, 'debug');
+
+        if (! inputString) {
+            return [];
+        }
 
         return inputString.trim()
             .split(',')
@@ -4639,14 +7056,21 @@ class WGenerator {
             return new WNode(templateName);
         }
 
+        // Accessing Group from this file gives a tricky 'Group is not a constructor' error, possibly caused by each require()ing the other. (2020 Dec)
+        // Util.logDebug(`WNode: ${typeof WNode} with ${Object.keys(WNode).length} keys and ${Util.stringify(WNode)}`);
+        // Util.logDebug(`Thing: ${typeof Thing} with ${Object.keys(Thing).length} keys and ${Util.stringify(Thing)}`);
+        // Util.logDebug(`Group: ${typeof Group} with ${Object.keys(Group).length} keys and ${Util.stringify(Group)}`);
+
         // TODO This func is choosing screwy JS classes as of 2020 April 20. This partly comes from inconsistent tagging in the codex files, and partly from half-baked logic in battle20/nodeTemplate.js. Also, it's weird that Creature has been removed from this func (comments below discuss this a little).
         // TODO: For RingWorldState, we also want the capacity to create Group instances. 
         // Unanimous option: convert this logic and BEvent logic to use Group of quantity 1 instead of Creature.
           // 2020 January 19: This sounds like a good MRB path to me.
         // toggleable option: The template entry can have a row like 'class: group' to indicate this.
-        if (template.isGroup()) {
-            return new Group(template);
-        }
+        // TODO Group instantiation from this file temporarily disabled to deal with a circular dependency bug. I may need to reinstantiate this later and disentangle the dependency flowchart for some projects.
+
+        // if (template.isGroup()) {
+        //     return new Group(template);
+        // }
 
         if (template.isThing()) {
             return new Thing(template);
@@ -4764,7 +7188,7 @@ class WGenerator {
 
     // Returns ContextString[]
     // No side effects.
-    // Note that this involves randomness.
+    // Note that this can involve randomness.
     maybeResolveAlias (str) {
         str = str.trim();
 
@@ -4954,16 +7378,6 @@ class WGenerator {
     }
 
     static loadCodices () {
-        // For now, this is hard coded to one fictional setting.
-        WGenerator.loadHaloCodices();
-        WGenerator.loadSunlightCodices();
-        WGenerator.loadYACodices();
-        WGenerator.loadParahumansCodices();
-    }
-
-    static loadHaloCodices () {
-        // Util.log(`Top of loadHaloCodices(), WGenerator.generators is ${WGenerator.generators}.`, 'debug');
-
         if (! WGenerator.generators) {
             WGenerator.generators = {};
         }
@@ -4972,6 +7386,34 @@ class WGenerator {
             return;
         }
 
+        // For now, this is hard coded to one fictional setting.
+        WGenerator.load40kCodices();
+        WGenerator.loadHaloCodices();
+        WGenerator.loadParahumansCodices();
+        WGenerator.loadSunlightCodices();
+        WGenerator.loadYACodices();
+    }
+
+    static load40kCodices () {
+        WGenerator.addGenerator(
+            require('../codices/40k/novel'),
+            '40k/novel'
+        );
+        WGenerator.addGenerator(
+            require('../codices/40k/imp/guard/army'),
+            '40k/imp/guard/army'
+        );
+        WGenerator.addGenerator(
+            require('../codices/40k/imp/astartes/army'),
+            '40k/imp/astartes/army'
+        );
+        WGenerator.addGenerator(
+            require('../codices/40k/chaos/blackLegion/army'),
+            '40k/chaos/blackLegion/army'
+        );
+    }
+
+    static loadHaloCodices () {
         // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
         // GOTCHA: It's important to load the files describing small components first.
         WGenerator.addGenerator(
@@ -5057,15 +7499,30 @@ class WGenerator {
     }
 
     static loadSunlightCodices () {
-        if (! WGenerator.generators) {
-            WGenerator.generators = {};
-        }
-        else if (Util.exists( WGenerator.generators['sunlight/warband/item'] )) {
-            // WGenerator.generators already looks loaded.
-            return;
-        }
-
-        // This awkward repeated-string-literal style is because browserify can only see require statements with string literals in them. Make this more beautiful later.
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/carryable'),
+            'sunlight/wkrieg/carryable'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/outfit'),
+            'sunlight/wkrieg/outfit'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/species'),
+            'sunlight/wkrieg/species'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/squadType'),
+            'sunlight/wkrieg/squadType'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/army'),
+            'sunlight/wkrieg/army'
+        );
+        WGenerator.addGenerator(
+            require('../codices/sunlight/wkrieg/faction'),
+            'sunlight/wkrieg/faction'
+        );
         WGenerator.addGenerator(
             require('../codices/sunlight/warband/item'),
             'sunlight/warband/item'
@@ -5077,13 +7534,6 @@ class WGenerator {
     }
 
     static loadYACodices () {
-        if (! WGenerator.generators) {
-            WGenerator.generators = {};
-        }
-        else if (Util.exists( WGenerator.generators['ya/setting'] )) {
-            return;
-        }
-
         WGenerator.addGenerator(
             require('../codices/ya/setting'),
             'ya/setting'
@@ -5091,13 +7541,6 @@ class WGenerator {
     }
 
     static loadParahumansCodices () {
-        if (! WGenerator.generators) {
-            WGenerator.generators = {};
-        }
-        else if (Util.exists( WGenerator.generators['parahumans/cape'] )) {
-            return;
-        }
-
         WGenerator.addGenerator(
             require('../codices/parahumans/cape'),
             'parahumans/cape'
@@ -5238,6 +7681,7 @@ class WGenerator {
             }
             else {
                 const path = process.argv[2];
+                // LATER functionize the following:
                 let wgen = WGenerator.fromCodex(path);
 
                 if (! wgen) {
@@ -5255,6 +7699,20 @@ class WGenerator {
                 }
 
                 output = wgen.getOutputs(generatorInput);
+
+
+                // Test yaml conversion
+                const simplifiedGlossary = {};
+                for(let key in wgen.glossary) {
+                    const entry = wgen.glossary[key];
+
+                    simplifiedGlossary[key] = entry.toJson ?
+                        entry.toJson() :
+                        entry.constructor.name;
+                }
+
+                // Util.log('Glossary:');
+                // Util.log(Yaml.dump(simplifiedGlossary));
             }
         }
         else {
@@ -5396,7 +7854,7 @@ halo/unsc/item/externalThing
 */
 
 }).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":2,"../codices/halo/cov/force":4,"../codices/halo/cov/individual":5,"../codices/halo/cov/item":6,"../codices/halo/cov/squad":7,"../codices/halo/flood/individual":8,"../codices/halo/flood/squad":9,"../codices/halo/forerunner/company":10,"../codices/halo/forerunner/individual":11,"../codices/halo/forerunner/item":12,"../codices/halo/forerunner/squad":13,"../codices/halo/presence":14,"../codices/halo/unsc/battalion":15,"../codices/halo/unsc/company":16,"../codices/halo/unsc/fleet":17,"../codices/halo/unsc/individual":18,"../codices/halo/unsc/item":19,"../codices/halo/unsc/patrol":20,"../codices/halo/unsc/patrol.js":20,"../codices/halo/unsc/ship":21,"../codices/halo/unsc/squad":22,"../codices/parahumans/cape":23,"../codices/parahumans/org":24,"../codices/sunlight/warband/item":25,"../codices/sunlight/warband/player":26,"../codices/ya/setting":28,"../util/util.js":71,"../wnode/creature.js":72,"../wnode/group.js":73,"../wnode/storageModes.js":74,"../wnode/thing.js":75,"../wnode/wnode.js":76,"./aliasTable.js":29,"./childTable.js":30,"./contextString.js":31,"_process":78,"fs":77}],33:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":3,"../codices/40k/chaos/blackLegion/army":5,"../codices/40k/imp/astartes/army":6,"../codices/40k/imp/guard/army":7,"../codices/40k/novel":8,"../codices/halo/cov/force":9,"../codices/halo/cov/individual":10,"../codices/halo/cov/item":11,"../codices/halo/cov/squad":12,"../codices/halo/flood/individual":13,"../codices/halo/flood/squad":14,"../codices/halo/forerunner/company":15,"../codices/halo/forerunner/individual":16,"../codices/halo/forerunner/item":17,"../codices/halo/forerunner/squad":18,"../codices/halo/presence":19,"../codices/halo/unsc/battalion":20,"../codices/halo/unsc/company":21,"../codices/halo/unsc/fleet":22,"../codices/halo/unsc/individual":23,"../codices/halo/unsc/item":24,"../codices/halo/unsc/patrol":25,"../codices/halo/unsc/patrol.js":25,"../codices/halo/unsc/ship":26,"../codices/halo/unsc/squad":27,"../codices/parahumans/cape":28,"../codices/parahumans/org":29,"../codices/sunlight/warband/item":30,"../codices/sunlight/warband/player":31,"../codices/sunlight/wkrieg/army":32,"../codices/sunlight/wkrieg/carryable":33,"../codices/sunlight/wkrieg/faction":34,"../codices/sunlight/wkrieg/outfit":35,"../codices/sunlight/wkrieg/species":36,"../codices/sunlight/wkrieg/squadType":37,"../codices/ya/setting":39,"../util/util.js":82,"../wnode/creature.js":83,"../wnode/group.js":84,"../wnode/storageModes.js":85,"../wnode/thing.js":86,"../wnode/wnode.js":87,"./aliasTable.js":40,"./childTable.js":41,"./contextString.js":42,"_process":89,"fs":88,"js-yaml":48}],44:[function(require,module,exports){
 'use strict'
 
 // return a string with the provided number formatted with commas.
@@ -5508,7 +7966,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],34:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /*!
  * hotkeys-js v3.7.6
  * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies.
@@ -6060,10 +8518,10 @@ if (typeof window !== 'undefined') {
 
 module.exports = hotkeys;
 
-},{}],35:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /*! hotkeys-js v3.7.6 | MIT (c) 2020 kenny wong <wowohoo@qq.com> | http://jaywcjlove.github.io/hotkeys */
 "use strict";var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,t,o){e.addEventListener?e.addEventListener(t,o,!1):e.attachEvent&&e.attachEvent("on".concat(t),function(){o(window.event)})}function getMods(e,t){for(var o=t.slice(0,t.length-1),n=0;n<o.length;n++)o[n]=e[o[n].toLowerCase()];return o}function getKeys(e){"string"!=typeof e&&(e="");for(var t=(e=e.replace(/\s/g,"")).split(","),o=t.lastIndexOf("");0<=o;)t[o-1]+=",",t.splice(o,1),o=t.lastIndexOf("");return t}function compareArray(e,t){for(var o=e.length<t.length?t:e,n=e.length<t.length?e:t,s=!0,r=0;r<o.length;r++)~n.indexOf(o[r])||(s=!1);return s}for(var _keyMap={backspace:8,tab:9,clear:12,enter:13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":91,cmd:91,command:91},modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey",91:"metaKey",shiftKey:16,ctrlKey:17,altKey:18,metaKey:91},_mods={16:!1,18:!1,17:!1,91:!1},_handlers={},k=1;k<20;k++)_keyMap["f".concat(k)]=111+k;var _downKeys=[],_scope="all",elementHasBindEvent=[],code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function filter(e){var t=e.target||e.srcElement,o=t.tagName,n=!0;return!t.isContentEditable&&("INPUT"!==o&&"TEXTAREA"!==o||t.readOnly)||(n=!1),n}function isPressed(e){return"string"==typeof e&&(e=code(e)),!!~_downKeys.indexOf(e)}function deleteScope(e,t){var o,n;for(var s in e=e||getScope(),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,s))for(o=_handlers[s],n=0;n<o.length;)o[n].scope===e?o.splice(n,1):n++;getScope()===e&&setScope(t||"all")}function clearModifier(e){var t=e.keyCode||e.which||e.charCode,o=_downKeys.indexOf(t);if(o<0||_downKeys.splice(o,1),e.key&&"meta"==e.key.toLowerCase()&&_downKeys.splice(0,_downKeys.length),93!==t&&224!==t||(t=91),t in _mods)for(var n in _mods[t]=!1,_modifier)_modifier[n]===t&&(hotkeys[n]=!1)}function unbind(e){if(e){if(Array.isArray(e))e.forEach(function(e){e.key&&eachUnbind(e)});else if("object"==typeof e)e.key&&eachUnbind(e);else if("string"==typeof e){for(var t=arguments.length,o=Array(1<t?t-1:0),n=1;n<t;n++)o[n-1]=arguments[n];var s=o[0],r=o[1];"function"==typeof s&&(r=s,s=""),eachUnbind({key:e,scope:s,method:r,splitKey:"+"})}}else Object.keys(_handlers).forEach(function(e){return delete _handlers[e]})}var eachUnbind=function(e){var i=e.scope,d=e.method,t=e.splitKey,a=void 0===t?"+":t;getKeys(e.key).forEach(function(e){var t=e.split(a),o=t.length,n=t[o-1],s="*"===n?"*":code(n);if(_handlers[s]){i=i||getScope();var r=1<o?getMods(_modifier,t):[];_handlers[s]=_handlers[s].map(function(e){return d&&e.method!==d||e.scope!==i||!compareArray(e.mods,r)?e:{}})}})};function eventHandler(e,t,o){var n;if(t.scope===o||"all"===t.scope){for(var s in n=0<t.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,s)&&(!_mods[s]&&~t.mods.indexOf(+s)||_mods[s]&&!~t.mods.indexOf(+s))&&(n=!1);(0!==t.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!n&&"*"!==t.shortcut||!1===t.method(e,t)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(o){var e=_handlers["*"],t=o.keyCode||o.which||o.charCode;if(hotkeys.filter.call(this,o)){if(93!==t&&224!==t||(t=91),~_downKeys.indexOf(t)||229===t||_downKeys.push(t),["ctrlKey","altKey","shiftKey","metaKey"].forEach(function(e){var t=modifierMap[e];o[e]&&!~_downKeys.indexOf(t)?_downKeys.push(t):!o[e]&&~_downKeys.indexOf(t)&&_downKeys.splice(_downKeys.indexOf(t),1)}),t in _mods){for(var n in _mods[t]=!0,_modifier)_modifier[n]===t&&(hotkeys[n]=!0);if(!e)return}for(var s in _mods)Object.prototype.hasOwnProperty.call(_mods,s)&&(_mods[s]=o[modifierMap[s]]);o.getModifierState&&(!o.altKey||o.ctrlKey)&&o.getModifierState("AltGraph")&&(~_downKeys.indexOf(17)||_downKeys.push(17),~_downKeys.indexOf(18)||_downKeys.push(18),_mods[17]=!0,_mods[18]=!0);var r=getScope();if(e)for(var i=0;i<e.length;i++)e[i].scope===r&&("keydown"===o.type&&e[i].keydown||"keyup"===o.type&&e[i].keyup)&&eventHandler(o,e[i],r);if(t in _handlers)for(var d=0;d<_handlers[t].length;d++)if(("keydown"===o.type&&_handlers[t][d].keydown||"keyup"===o.type&&_handlers[t][d].keyup)&&_handlers[t][d].key){for(var a=_handlers[t][d],c=a.key.split(a.splitKey),l=[],f=0;f<c.length;f++)l.push(code(c[f]));l.sort().join("")===_downKeys.sort().join("")&&eventHandler(o,a,r)}}}function isElementBind(e){return!!~elementHasBindEvent.indexOf(e)}function hotkeys(e,t,o){_downKeys=[];var n=getKeys(e),s=[],r="all",i=document,d=0,a=!1,c=!0,l="+";for(void 0===o&&"function"==typeof t&&(o=t),"[object Object]"===Object.prototype.toString.call(t)&&(t.scope&&(r=t.scope),t.element&&(i=t.element),t.keyup&&(a=t.keyup),void 0!==t.keydown&&(c=t.keydown),"string"==typeof t.splitKey&&(l=t.splitKey)),"string"==typeof t&&(r=t);d<n.length;d++)s=[],1<(e=n[d].split(l)).length&&(s=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({keyup:a,keydown:c,scope:r,mods:s,shortcut:n[d],method:o,key:n[d],splitKey:l});void 0!==i&&!isElementBind(i)&&window&&(elementHasBindEvent.push(i),addEvent(i,"keydown",function(e){dispatch(e)}),addEvent(window,"focus",function(){_downKeys=[]}),addEvent(i,"keyup",function(e){dispatch(e),clearModifier(e)}))}var _api={setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,unbind:unbind};for(var a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);if("undefined"!=typeof window){var _hotkeys=window.hotkeys;hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys}module.exports=hotkeys;
-},{}],36:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (process){
 
 if (process.env.NODE_ENV === 'production') {
@@ -6073,7 +8531,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this,require('_process'))
-},{"./dist/hotkeys.common.js":34,"./dist/hotkeys.common.min.js":35,"_process":78}],37:[function(require,module,exports){
+},{"./dist/hotkeys.common.js":45,"./dist/hotkeys.common.min.js":46,"_process":89}],48:[function(require,module,exports){
 'use strict';
 
 
@@ -6082,7 +8540,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":38}],38:[function(require,module,exports){
+},{"./lib/js-yaml.js":49}],49:[function(require,module,exports){
 'use strict';
 
 
@@ -6123,7 +8581,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":40,"./js-yaml/exception":41,"./js-yaml/loader":42,"./js-yaml/schema":44,"./js-yaml/schema/core":45,"./js-yaml/schema/default_full":46,"./js-yaml/schema/default_safe":47,"./js-yaml/schema/failsafe":48,"./js-yaml/schema/json":49,"./js-yaml/type":50}],39:[function(require,module,exports){
+},{"./js-yaml/dumper":51,"./js-yaml/exception":52,"./js-yaml/loader":53,"./js-yaml/schema":55,"./js-yaml/schema/core":56,"./js-yaml/schema/default_full":57,"./js-yaml/schema/default_safe":58,"./js-yaml/schema/failsafe":59,"./js-yaml/schema/json":60,"./js-yaml/type":61}],50:[function(require,module,exports){
 'use strict';
 
 
@@ -6184,7 +8642,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],40:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -7013,7 +9471,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":39,"./exception":41,"./schema/default_full":46,"./schema/default_safe":47}],41:[function(require,module,exports){
+},{"./common":50,"./exception":52,"./schema/default_full":57,"./schema/default_safe":58}],52:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -7058,7 +9516,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],42:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -8685,7 +11143,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":39,"./exception":41,"./mark":43,"./schema/default_full":46,"./schema/default_safe":47}],43:[function(require,module,exports){
+},{"./common":50,"./exception":52,"./mark":54,"./schema/default_full":57,"./schema/default_safe":58}],54:[function(require,module,exports){
 'use strict';
 
 
@@ -8763,7 +11221,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":39}],44:[function(require,module,exports){
+},{"./common":50}],55:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -8873,7 +11331,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":39,"./exception":41,"./type":50}],45:[function(require,module,exports){
+},{"./common":50,"./exception":52,"./type":61}],56:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -8893,7 +11351,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":44,"./json":49}],46:[function(require,module,exports){
+},{"../schema":55,"./json":60}],57:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -8920,7 +11378,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":44,"../type/js/function":55,"../type/js/regexp":56,"../type/js/undefined":57,"./default_safe":47}],47:[function(require,module,exports){
+},{"../schema":55,"../type/js/function":66,"../type/js/regexp":67,"../type/js/undefined":68,"./default_safe":58}],58:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -8950,7 +11408,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":44,"../type/binary":51,"../type/merge":59,"../type/omap":61,"../type/pairs":62,"../type/set":64,"../type/timestamp":66,"./core":45}],48:[function(require,module,exports){
+},{"../schema":55,"../type/binary":62,"../type/merge":70,"../type/omap":72,"../type/pairs":73,"../type/set":75,"../type/timestamp":77,"./core":56}],59:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -8969,7 +11427,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":44,"../type/map":58,"../type/seq":63,"../type/str":65}],49:[function(require,module,exports){
+},{"../schema":55,"../type/map":69,"../type/seq":74,"../type/str":76}],60:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -8996,7 +11454,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":44,"../type/bool":52,"../type/float":53,"../type/int":54,"../type/null":60,"./failsafe":48}],50:[function(require,module,exports){
+},{"../schema":55,"../type/bool":63,"../type/float":64,"../type/int":65,"../type/null":71,"./failsafe":59}],61:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -9059,7 +11517,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":41}],51:[function(require,module,exports){
+},{"./exception":52}],62:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -9199,7 +11657,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":50}],52:[function(require,module,exports){
+},{"../type":61}],63:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9236,7 +11694,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":50}],53:[function(require,module,exports){
+},{"../type":61}],64:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -9354,7 +11812,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":39,"../type":50}],54:[function(require,module,exports){
+},{"../common":50,"../type":61}],65:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -9529,7 +11987,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":39,"../type":50}],55:[function(require,module,exports){
+},{"../common":50,"../type":61}],66:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -9623,7 +12081,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":50}],56:[function(require,module,exports){
+},{"../../type":61}],67:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -9685,7 +12143,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":50}],57:[function(require,module,exports){
+},{"../../type":61}],68:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -9715,7 +12173,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":50}],58:[function(require,module,exports){
+},{"../../type":61}],69:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9725,7 +12183,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":50}],59:[function(require,module,exports){
+},{"../type":61}],70:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9739,7 +12197,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":50}],60:[function(require,module,exports){
+},{"../type":61}],71:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9775,7 +12233,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":50}],61:[function(require,module,exports){
+},{"../type":61}],72:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9821,7 +12279,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":50}],62:[function(require,module,exports){
+},{"../type":61}],73:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9876,7 +12334,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":50}],63:[function(require,module,exports){
+},{"../type":61}],74:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9886,7 +12344,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":50}],64:[function(require,module,exports){
+},{"../type":61}],75:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9917,7 +12375,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":50}],65:[function(require,module,exports){
+},{"../type":61}],76:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -9927,7 +12385,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":50}],66:[function(require,module,exports){
+},{"../type":61}],77:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -10017,7 +12475,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":50}],67:[function(require,module,exports){
+},{"../type":61}],78:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -27133,7 +29591,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],68:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -31737,7 +34195,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],69:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 'use strict';
 
 const StorageModes = require('../wnode/storageModes.js');
@@ -31955,7 +34413,7 @@ function init () {
 
 init();
 
-},{"../generation/wgenerator.js":32,"../util/util.js":71,"../wnode/storageModes.js":74,"../wnode/wnode.js":76,"hotkeys-js":36}],70:[function(require,module,exports){
+},{"../generation/wgenerator.js":43,"../util/util.js":82,"../wnode/storageModes.js":85,"../wnode/wnode.js":87,"hotkeys-js":47}],81:[function(require,module,exports){
 'use strict';
 
 // TODO make this name lowercase.
@@ -32152,7 +34610,7 @@ Coord.DECIMAL_PLACES = 2;
 
 module.exports = Coord;
 
-},{"./util.js":71}],71:[function(require,module,exports){
+},{"./util.js":82}],82:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -32169,15 +34627,69 @@ util.DEFAULTS = {
     COLCOUNT: 12
 };
 
-util.colors = {
-    black: '1;37;40m',
-    red: '1;37;41m',
-    green: '1;30;42m',
-    yellow: '1;37;43m',
-    blue: '1;37;44m',
-    purple: '1;37;45m',
-    cyan: '1;30;46m',
-    grey: '1;30;47m'
+// These are like preselected color profiles.
+// The background is as described, and the foreground is black or white, whichever is most visible.
+util.COLORS = {
+    red: '\x1b[1;37;41m',
+    yellow: '\x1b[1;37;43m',
+    green: '\x1b[1;30;42m',
+    cyan: '\x1b[1;30;46m',
+    blue: '\x1b[1;37;44m',
+    purple: '\x1b[1;37;45m',
+    grey: '\x1b[1;30;47m',
+    black: '\x1b[1;37;40m',
+    balance: '\x1b[0m'
+};
+
+util.colored = (str, colorName) => {
+    return (util.COLORS[colorName] || util.COLORS.purple) +
+        str +
+        util.COLORS.balance;
+};
+
+util.customColored = (str, foreground, background) => {
+    const FMAP = {
+        black: 30,
+        red: 31,
+        green: 32,
+        yellow: 33,
+        blue: 34,
+        magenta: 35,
+        cyan: 36,
+        white: 37,
+        brightGrey: 90,
+        brightRed: 91,
+        brightGreen: 92,
+        brightYellow: 93,
+        brightBlue: 94,
+        brightMagenta: 95,
+        brightCyan: 96,
+        brightWhite: 97,
+    };
+
+    const BMAP = {
+        black: 40,
+        red: 41,
+        green: 42,
+        yellow: 44,
+        blue: 44,
+        magenta: 45,
+        cyan: 46,
+        white: 47,
+        brightGrey: 100,
+        brightRed: 101,
+        brightGreen: 102,
+        brightYellow: 103,
+        brightBlue: 104,
+        brightMagenta: 105,
+        brightCyan: 106,
+        brightWhite: 107,
+    };
+
+    const fcode = FMAP[foreground] || FMAP.blue;
+    const bcode = BMAP[background] || BMAP.grey;
+
+    return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
 };
 
 util.NODE_TYPES = {
@@ -32198,7 +34710,8 @@ util.legit = (x) =>
     x !== [] &&
     x !== {};
 
-// TODO reconsider this weird function syntax. Maybe declare a class of functions, then assign the field props to it?
+// TODO reconsider this weird function syntax throughout util.js. Maybe declare a class of functions, then assign the field props to it?
+
 util.default = function (input, defaultValue) {
     if (input === undefined) {
         return defaultValue;
@@ -32242,20 +34755,35 @@ util.mean = (array) => {
     return sum / array.length;
 };
 
+util.constrain = (n, minInclusive, maxInclusive) => {
+    if (n <= minInclusive) {
+        return minInclusive;
+    }
+    if (n >= maxInclusive) {
+        return maxInclusive;
+    }
+
+    return n;
+};
+
 util.randomIntBetween = function (minInclusive, maxExclusive) {
     if (! util.exists(minInclusive) || ! util.exists(maxExclusive)) {
         console.log('error: util.randomIntBetween() called with missing parameters.');
-        return -1;
-    } else if (maxExclusive <= minInclusive) {
+        throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
+    }
+    else if (maxExclusive <= minInclusive) {
         console.log('error: util.randomIntBetween() called with max <= min.');
-        return -1;
+        throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
     }
 
     return Math.floor( Math.random() * (maxExclusive - minInclusive) + minInclusive );
 };
 
+// Returns value in range [0, input]
 util.randomUpTo = function (maxInclusive) {
-    return util.randomIntBetween(0, maxInclusive + 1);
+    return maxInclusive >= 0 ?
+        util.randomIntBetween(0, maxInclusive + 1) :
+        maxInclusive;
 };
 
 util.randomBelow = function (maxExclusive) {
@@ -32274,6 +34802,16 @@ util.randomFromObj = function (obj) {
     return obj[key];
 };
 
+// Param: obj, whose values are also objects.
+// Side effect: writes to .name prop of child objs.
+util.randomWithName = (obj) => {
+    const name = _.sample(Object.keys(obj));
+
+    const entry = obj[name];
+    entry.name = name;
+    return entry;
+};
+
 // decimalPlaces param is optional and lodash defaults it to 0.
 util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
     if (maxExclusive < minInclusive) {
@@ -32288,9 +34826,32 @@ util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
     return _.round(unrounded, decimalPlaces);
 };
 
-// util.round = function (x, decimalPlaces) {
-//     return 
-// };
+// Often we want to fill a bag with tokens of different kinds and draw one.
+// More likely outcomes get more tokens and are thus more likely to happen.
+// But all outcomes are possible.
+// Example bag describing St George at a disadvantage:
+// {
+//     stGeorge: 7,
+//     dragon: 12
+// }
+util.randomBagDraw = (bag) => {
+    const total = util.sum(
+        Object.values(bag)
+    );
+
+    let drawn = Math.random() * total;
+
+    let name;
+    for (name in bag) {
+        drawn -= bag[name];
+
+        if (drawn < 0) {
+            return name;
+        }
+    }
+
+    return name;
+};
 
 // Returns string
 util.newId = function () {
@@ -32310,7 +34871,7 @@ util.newId = function () {
 // Returns string
 util.shortId = function (id) {
     return id ?
-        `${id.slice(0, 3)}` :
+        `${id.slice(0, 3).toUpperCase()}` :
         '';
 };
 
@@ -32455,6 +35016,8 @@ util.fromCamelCase = (s) => {
     const words = [];
 
     for (let i = 1; i < s.length; i++) {
+        // util.logDebug(`fromCamelCase(), s is ${s}, i is ${i}, s[i] is ${s[i]}`)
+
         if (util.isCapitalized(s[i])) {
             if (util.isCapitalized(s[i-1])) {
                 // Detect acronym words and leave them uppercase.
@@ -32466,6 +35029,15 @@ util.fromCamelCase = (s) => {
                 }
             }
 
+            wordStarts.push(i);
+
+            const firstLetter = wordStarts[wordStarts.length - 2];
+            const word = s.slice(firstLetter, i);
+            words.push(word);
+        }
+
+        // Also want to consider a digit after a nondigit, or vice versa, to be a word start.
+        else if (util.alphanumericTransition(s, i)) {
             wordStarts.push(i);
 
             const firstLetter = wordStarts[wordStarts.length - 2];
@@ -32485,6 +35057,19 @@ util.fromCamelCase = (s) => {
             util.capitalized(w)
     )
     .join(' ');
+};
+
+util.alphanumericTransition = (string, i2) => {
+    const digitStart = util.isNumeric(
+        string[i2 - 1]
+    );
+
+    const digitEnd = util.isNumeric(
+        string[i2]
+    );
+
+    return digitStart && ! digitEnd ||
+        ! digitStart && digitEnd;
 };
 
 util.testCamelCase = () => {
@@ -32507,6 +35092,9 @@ util.testCamelCase = () => {
         }
     });
 };
+
+// True when input is a number or a string containing digits.
+util.isNumeric = (x) => /[0-9]/.test(x);
 
 // Note that typeof NaN is also 'number',
 // but it is still despicable.
@@ -32559,6 +35147,8 @@ util.union = (a1, a2) => {
 util.arrayCopy = (a) => {
     return a.map(x => x);
 };
+
+util.round = (n) => _.round(n);
 
 util.commaNumber = (n) =>
     commaNumber(n);
@@ -32693,7 +35283,7 @@ util.asBar = (n) => {
     let bar = '';
 
     for (let i = 0; i < n; i++) {
-        bar = bar + 'X';
+        bar = bar + '█';
     }
 
     return bar;
@@ -32834,11 +35424,15 @@ util.log = function (input, tag) {
         util.stringify(input);
 
     // Later: Red error and beacon text
-    console.log(`  ${tagStr} (${ dateTime }) ${ info }\n`);
+    console.log(`  ${tagStr} (${ dateTime }) \n${ info }\n`);
 };
 
 util.logDebug = function (input) {
     util.log(input, 'debug');
+};
+
+util.logWarn = function (input) {
+    util.log(input, 'warn');
 };
 
 util.logError = function (input) {
@@ -32902,7 +35496,7 @@ util.testAll = () => {
 
 // util.testAll();
 
-},{"comma-number":33,"lodash":67,"moment":68}],72:[function(require,module,exports){
+},{"comma-number":44,"lodash":78,"moment":79}],83:[function(require,module,exports){
 'use strict';
 
 const Thing = require('./thing.js');
@@ -32919,7 +35513,7 @@ Should share more funcs, perhaps.
 module.exports = class Creature extends Thing {
     constructor (template, coord, alignment) {
         // BTW if this throw statement gets too confusing, comment it and stick with the old inheritance model until there's time for a inheritance refactor.
-        throw new Error(`Let's use Group of quantity 1 instead of Creature for a little while. template param was ${template.name || template}`);
+        Util.logWarn(`Consider using Group of quantity 1 instead of Creature for a little while. template param in current constructor call is: ${template.name || template}`);
 
         super(template, coord);
 
@@ -32981,13 +35575,16 @@ module.exports = class Creature extends Thing {
     }
 };
 
-},{"../util/coord.js":70,"../util/util.js":71,"./thing.js":75}],73:[function(require,module,exports){
+},{"../util/coord.js":81,"../util/util.js":82,"./thing.js":86}],84:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
+const ActionTemplate = require('../battle20/actionTemplate.js');
 const NodeTemplate = require('../battle20/nodeTemplate.js');
 const Util = require('../util/util.js');
 const WNode = require('./wnode.js');
+
+const WGenerator = require('../generation/wgenerator.js');
 
 // Can be very similar to Group from Battle20 / dndBottle
 // .quantity, .template (CreatureTemplate), maybe some a prop for the SP of the sole wounded member.
@@ -32996,7 +35593,7 @@ const WNode = require('./wnode.js');
 // Similar to the concept of a 'banner' or 'stack' or 'army' in large-scale map-based wargames.
 // Contains a homogenous set of 1+ Creatures
 // These are not instantiated in .components.
-module.exports = class Group extends WNode {
+class Group extends WNode {
     constructor (template, quantity, alignment, coord) {
         super(template);
 
@@ -33006,32 +35603,334 @@ module.exports = class Group extends WNode {
 
         this.quantity = Util.exists(quantity) ?
             quantity :
-            template.quantity || 1;
+            template && template.quantity || 1;
 
         this.worstSp = this.template ?
-            this.template.maxSp :
+            this.template.sp :
             1;
 
         this.alignment = alignment;
-
         this.coord = coord;
+        this.destination = undefined; // Coord
+        this.target = undefined;  // Group
+        this.actions = [];
     }
 
-    toAlignmentString() {
+    toAlignmentString () {
         const tName = Util.fromCamelCase(this.templateName);
 
         return `${tName} x${this.quantity} (${this.alignmentAsString()} Group)`;
+    }
+
+    // Unit: meters of longest dimension when in storage.
+    getSize () {
+        return (this.traitMax('size') || 0) * this.quantity;
+    }
+
+    getTotalSp () {
+        return (this.quantity - 1) * this.template.sp + this.worstSp;
+    }
+
+    // Returns number
+    resistanceTo (tags) {
+        // LATER it's probably more performant to recursively gather a net resistance obj here, instead of multiple times in resistanceToTag()
+        return Util.sum(
+            tags.map(
+                tag => this.resistanceToTag(tag)
+            )
+        );
+    }
+
+    // Returns number
+    resistanceToTag (tag) {
+        const localResistance = (this.template &&
+            this.template.resistance &&
+            this.template.resistance[tag]) ||
+            0;
+
+        return this.components.reduce(
+            (overallResistance, component) => {
+                return localResistance +
+                    (component.resistanceTo && component.resistanceToTag(tag) || 0);
+            },
+            localResistance
+        );
+    }
+
+    // Returns string like '::::.', a visual depiction of this.quantity.
+    // The string can be multiline.
+    dotGrid () {
+        // Making it divisble by 5 could be dropped in future.
+        let columns = Math.ceil(
+            Math.sqrt(this.quantity) / 5
+        ) * 5;
+
+        if (columns > 90) {
+            columns = 90;
+        }
+
+        const rowCount = Math.ceil(
+            this.quantity / columns / 2
+        );
+
+        // Top row can be incomplete and can contain a . instead of just :s
+        // Lower rows are filled with :s
+        // ::.
+        // :::::
+        // :::::
+        // 25
+
+        // When the top row is exactly divisible, we want to fill it with colons.
+        const topRowQuantity = (this.quantity % (columns * 2)) || (columns * 2);
+        const topRowColonCount = Math.floor(topRowQuantity / 2);
+        const topRowColons = ':'.repeat(topRowColonCount);
+        const topRow = topRowQuantity % 2 === 0 ?
+            topRowColons :
+            topRowColons + '.';
+
+        // if (rowCount === 1) {
+        //     return topRow;
+        // }
+
+        const lowerRow = ':'.repeat(columns);
+        const rows = [topRow];
+
+        for (let r = 1; r < rowCount; r++) {
+            rows.push(lowerRow);
+        }
+
+        return rows.join('\n');
+    }
+
+    static testDotGrid () {
+        for (let x = 0; x < 10; x++) {
+            const quantity = Math.ceil(Math.random() * 1000)
+            const grid = new Group(undefined, quantity).dotGrid();
+
+            Util.log(quantity + '\n' + grid);
+
+            const simplified = grid.replace(/\n/g, '');
+            const count = Util.contains(simplified, '.') ?
+                simplified.length * 2 - 1 :
+                simplified.length * 2;
+
+            if (count !== quantity) {
+                throw new Error(`${quantity}, but i see ${count} dots. Simplified grid is: ${simplified}`);
+            }
+        }
+    }
+
+    progressBarSummary () {
+        const pointsPerIndividual = this.pointsEach();
+        const points = this.points();
+
+        const actionPoints = this.actions[0] && this.actions[0].points();
+        const pointsBeforeAction = pointsPerIndividual - actionPoints;
+
+        const actionNote = this.actions[0] ?
+            ` (${pointsBeforeAction} before action ${ Util.shortId(this.actions[0].id) })` :
+            '';
+
+        const lines = [
+            `Name: ${this.templateName} (${Util.shortId(this.id)})`,
+            `Quant:${this.propAsProgressBar('quantity')}`,
+            `Size: ${this.propAsProgressBar('size')}`,
+            `SP:   ${this.propAsProgressBar('sp')}`,
+            `AC:   ${this.propAsProgressBar('ac')}`,
+            `Speed:${this.propAsProgressBar('speed')}`,
+            `${this.quantity} combatants at ${pointsPerIndividual} points${actionNote} each = ${points} points.`
+        ];
+
+        const output = lines.join('\n');
+
+        const action = this.actions[0];
+        
+        return action ?
+            output + '\nAction:\n' + action.progressBarSummary() :
+            output;    
+    }
+
+    propAsProgressBar (propName) {
+        const BAR_MAX = 130;
+
+        const barLength = this.propOverBenchmark(propName) * BAR_MAX;
+
+        const displayedLength = Util.constrain(barLength, 1, BAR_MAX);
+
+        const bar = '█'.repeat(displayedLength);
+
+        const decimals = propName === 'size' ?
+            1 :
+            0;
+
+        const fixedLengthValue = this.getProp(propName)
+            .toFixed(decimals)
+            .padStart(4, ' ');
+
+        const output = `${fixedLengthValue} ${bar}`;
+
+        return barLength <= BAR_MAX ?
+            output :
+            output + '...';
+    }
+
+    // Returning 1 would mean the prop's value is equal to the benchmark.
+    propOverBenchmark (propName) {
+        const MAXIMA = {
+            size: 10,
+            quantity: 100,
+            sp: 100,
+            ac: 30,
+            speed: 30
+        };
+
+        return this.getProp(propName) / MAXIMA[propName];
+    }
+
+    // Note that this and WNode.getTrait() have v similar names.
+    getProp (propName) {
+        if (propName === 'quantity') {
+            return this.quantity;
+        }
+
+        if (propName === 'size') {
+            return this.getSize();
+        }
+
+        return this.template[propName];
+    }
+
+    points () { 
+        return this.pointsEach() * this.quantity;
+    }
+
+    // Returns numerical estimate of overall efficacy.
+    pointsEach () {
+        const actionPoints = this.actions[0]
+            && this.actions[0].points();
+
+        return Math.ceil(
+            this.propOverBenchmark('sp') * 10 +
+            this.propOverBenchmark('speed') +
+            (actionPoints || 0)
+        );
+    }
+
+    // Side effect: Sets this.quantity such that the point total approximates the input number.
+    resetQuantity (points) {
+        const target = _.round(points / this.pointsEach());
+
+        this.quantity = target || 1;
+    }
+
+    // Later can move this to interface Actor or something.
+    act (worldState) {
+        this.destination = this.chosenDestination(worldState);
+        this.target = this.chosenTarget(worldState);
+
+        const stoppingPoint = worldState.coordAtEndOfMove(this, this.destination);
+
+        this.moveTo(stoppingPoint, worldState);
+
+        // Consider firing at .target if cooldown allows.
+        //   How is cooldown tracked?
+        if (true) {
+            this.attack(this.target, worldState);
+        }
+
+        // And make sure we persist everything as BEvents in Timeline
+    }
+
+    chosenDestination (worldState) {
+        if (! this.canReach(this.destination)) {
+            
+        }
+    }
+
+    goodTimeToThink (worldState) {
+        return worldState.t % 10 === 0;
+    }
+
+    takeCasualties (casualties) {
+        const outcome = {
+            casualties,
+            wipedOut: false
+        };
+
+        if (casualties >= this.quantity) {
+            casualties = this.quantity;
+
+            this.active = false;
+            outcome.wipedOut = true;
+        }
+
+        this.quantity -= casualties;
+        outcome.resultingQuantity = this.quantity;
+
+        return outcome;
+    }
+
+    takeDamage (damage) {
+        const outcome = {
+            damage,
+            active: true
+        };
+
+        const startSp = this.getTotalSp();
+
+        let endTotalSp = startSp - damage;
+        if (endTotalSp < 0) {
+            endTotalSp = 0;
+        }
+
+        const endQuantity = Math.ceil(endTotalSp / this.template.sp);
+        const endWorstSp = endTotalSp % this.template.sp;
+
+        this.quantity = endQuantity;
+        this.worstSp = endWorstSp;
+
+        outcome.endQuantity = endQuantity;
+        outcome.endWorstSp = endWorstSp;
+
+        if (this.quantity === 0) {
+            this.active = false;
+            outcome.active = false;
+        }
+
+        return outcome;
+    }
+
+    toDebugString () {
+        const yaml = this.toYaml();
+        return '\n' + yaml;
+    }
+
+    // Creates a Group with a template with totally random properties.
+    static random () {
+        const template = {
+            name: 'randomizedCreature',
+            size: Math.ceil(Math.random() * 20) / 10,
+            speed: Math.ceil(Math.random() * 25),
+            ac: 10 + Math.ceil(Math.random() * 15),
+            sp: Math.ceil(Math.random() * 100),
+            // resistance (later)
+        };
+
+        const quantity = Math.ceil(Math.random() * 100);
+
+        const group = new Group(template, quantity);
+
+        group.actions.push(
+            ActionTemplate.random()
+        );
+
+        return group;
     }
 
     // distanceTo (target) {
     //     const targetCoord = target.coord || target;
 
     //     return this.coord.manhattanDistanceTo(targetCoord);
-    // }
-
-    // // Unit: meters of longest dimension when in storage.
-    // getSize () {
-    //     return this.traitMax('size');
     // }
 
     // // Unit: kg on Earth's surface.
@@ -33044,16 +35943,46 @@ module.exports = class Group extends WNode {
     //     );
     // }
 
+    static new (fullCodexPath, quantity, alignment, coord) {
+        // Later can add a func to WGenerator that returns just the template obj instead of WNode[]
+        const nodes = WGenerator.generateNodes(fullCodexPath);
+
+        return new Group(
+            nodes[0].template || fullCodexPath,
+            quantity,
+            alignment,
+            coord
+        );
+    }
+
+    // Returns a Group.
+    // Selects a random implemented template.
+    static randomTemplate () {
+        const squad = Group.new('halo/unsc/individual/marinePrivate', 20);
+        // TODO this alias isnt getting resolved by WGenerator
+        // const squad = Group.new('halo/unsc/individual/groupStatted', 5);
+
+        return squad;
+    }
+
     static marineCompany () {
-        // const template = WGenerator.getTemplate('halo/unsc/individual/marinePrivate');
+        const company = Group.new('halo/unsc/individual/marinePrivate', 50);
 
-        const company = new Group('halo/unsc/individual/marinePrivate', 50);
+        return company;
+    }
 
-        return company
-;    }
+    static run () {
+        // Group.testDotGrid();
+        const group = Group.random();
+        Util.log(group.progressBarSummary());
+    }
 };
 
-},{"../battle20/nodeTemplate.js":3,"../util/coord.js":70,"../util/util.js":71,"./wnode.js":76}],74:[function(require,module,exports){
+module.exports = Group;
+
+// Group.run();
+
+},{"../battle20/actionTemplate.js":1,"../battle20/nodeTemplate.js":4,"../generation/wgenerator.js":43,"../util/coord.js":81,"../util/util.js":82,"./wnode.js":87}],85:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -33064,7 +35993,7 @@ module.exports = Util.makeEnum([
     'Frozen'
 ]);
 
-},{"../util/util.js":71}],75:[function(require,module,exports){
+},{"../util/util.js":82}],86:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -33080,7 +36009,7 @@ module.exports = class Thing extends WNode {
         this.coord = coord || Coord.randomOnScreen();
 
         // Init stamina points
-        this.sp = this.findTrait('maxSp') || 1;
+        this.sp = this.findTrait('sp') || 1;
 
         // Unit: timestamp in seconds
         this.lastDamaged = -Infinity;
@@ -33138,7 +36067,7 @@ module.exports = class Thing extends WNode {
 };
 
 
-},{"../util/coord.js":70,"../util/util.js":71,"./wnode.js":76}],76:[function(require,module,exports){
+},{"../util/coord.js":81,"../util/util.js":82,"./wnode.js":87}],87:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -33188,6 +36117,11 @@ class WNode {
         return this;
     }
 
+    addNewComponent (template) {
+        this.add(new WNode(template));
+        return this;
+    }
+
     deepCopy () {
         const clone = new WNode();
         Object.assign(clone, this);
@@ -33229,6 +36163,8 @@ class WNode {
             (soFar, component) => Math.max(soFar, component.traitMax(propStr)),
             localTrait
         );
+
+        // Util.logDebug(`traitMax(): max is ${max} and localTrait is ${localTrait}. this.size is ${this.size} and this.template.size is ${this.template ? this.template.size : '<no template>'}. templateName is ${this.templateName}`);
 
         return max || localTrait;
     }
@@ -33322,6 +36258,7 @@ class WNode {
             `<WNode with no templateName>`;
 
         if (this.displayName) {
+            // Later this should perhaps recurse on components.
             return `${this.displayName} (${tName})`;
         }
         else {
@@ -33330,8 +36267,10 @@ class WNode {
     }
 
     // Format that looks like informal YAML but with props above components.
-    toPrettyString (indent) {
+    // (prettyPrint etc)
+    toPrettyString (indent, weightMode, personnel = true) {
         indent = Util.default(indent, 0);
+        weightMode = Util.default(weightMode, false);
 
         let outString = furtherLine(Util.formatProp(this, 'name'));
 
@@ -33358,12 +36297,12 @@ class WNode {
         }
 
         const headCount = this.headCount();
-        if (headCount) {
+        if (headCount && personnel) {
             outString += furtherLine(`  ${Util.commaNumber(headCount)} personnel`);
         }
 
         const weight = this.getWeight();
-        if (weight) {
+        if (weightMode && weight) {
             outString += furtherLine(`  ${Util.commaNumber(weight)} kg`);
         }
 
@@ -33378,7 +36317,7 @@ class WNode {
         }
 
         if (this.components.length > 0) {
-            outString += furtherLine('  w/');
+            // outString += furtherLine('  w/');
             for (let component of this.components) {
                 outString += component.toPrettyString(indent + 4);
             }
@@ -33395,7 +36334,7 @@ class WNode {
 
     // Returns a abbreviation of the ID.
     shortId () {
-        return `${Util.shortId(this.id)}`;
+        return Util.shortId(this.id);
     }
 
     getPropSummary () {
@@ -33615,6 +36554,55 @@ class WNode {
         return Util.withProp(nodes, 'active');
     }
 
+    // LATER this should probably be on a subclass too, like Thing, Creature, CreatureGroup, etc.
+    static human () {
+        return new WNode(WNode.humanTemplate());
+        // LATER init from a template, which can have size, weight, and tags such as animal.
+        // LATER could move this to class Thing, Creature, and/or Group.
+    }
+
+    static humanTemplate () {
+        return {
+            name: 'human',
+            size: 1, // topdown
+            weight: 80,
+            speed: 3,
+            individuals: 1,
+            sp: 10,
+            damage: 2,
+            tags: 'creature animal mammal biped terrestrial biological organism'.split(' ')
+        };
+    }
+
+    static impliedTags (tag) {
+        const IMPLICATIONS = {
+            organism: ['thing', 'biological'],
+            plant: 'organism',
+            fungus: 'organism',
+            animal: 'organism',
+            fish: 'animal',
+            reptile: 'animal',
+            bird: 'animal',
+            insect: 'animal',
+            mammal: 'animal',
+            humanoid: 'mammal',
+            human: 'humanoid',
+
+            goblinoid: 'humanoid',
+            goblin: 'goblinoid',
+            dwarf: 'humanoid',
+            elf: 'humanoid',
+
+            item: 'thing',
+            weapon: 'item',
+        };
+
+        // TODO, no, need to iterate on the found tags too.
+        const tags = Util.array(IMPLICATIONS[tag]) || [];
+
+        return [tag].concat(tags);
+    }
+
     static test () {
         // Unit test for toArray()
         const root = new WNode('root');
@@ -33645,9 +36633,9 @@ class WNode {
 
 module.exports = WNode;
 
-},{"../util/util.js":71,"./storageModes.js":74,"js-yaml":37}],77:[function(require,module,exports){
+},{"../util/util.js":82,"./storageModes.js":85,"js-yaml":48}],88:[function(require,module,exports){
 
-},{}],78:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -33833,4 +36821,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[69]);
+},{}]},{},[80]);
