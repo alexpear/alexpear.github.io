@@ -185,7 +185,7 @@ class WkriegArmy extends WNode {
                 }
             },
             engine: {
-
+                // TODO add a prop here to make 2nd engines rare.
             },
             fuelTank: {
 
@@ -318,11 +318,11 @@ class WkriegArmy extends WNode {
         const vehicle = WkriegArmy.nodeFromMetatemplate(metatemplateName, sizeClass);
 
         vehicle.add(
-            WkriegArmy.nodeFromMetatemplate('engine', sizeClass - 2)
+            WkriegArmy.nodeFromMetatemplate('engine', sizeClass - 3)
         );
 
         vehicle.add(
-            WkriegArmy.nodeFromMetatemplate('fuelTank', sizeClass - 2)
+            WkriegArmy.nodeFromMetatemplate('fuelTank', sizeClass - 3)
         );
 
         vehicle.add(
@@ -333,6 +333,17 @@ class WkriegArmy extends WNode {
         let totalSize = vehicle.traitSum('size') - vehicle.template.size;
 
         const sizeLimit = vehicle.template.size * 0.75
+
+        Util.logDebug({
+            note: `In WkriegArmy.randomVehicle(), above the while`,
+            totalSize,
+            sizeLimit,
+            metatemplateName,
+            sizeClass,
+            componentsLength: vehicle.components.length,
+            vehicleChassisSize: vehicle.template.size,
+            vehicleSizeSumOverall: vehicle.traitSum('size'),
+        });
 
         while (totalSize < sizeLimit) {
             const sizeLeft = sizeLimit - totalSize;
@@ -346,7 +357,7 @@ class WkriegArmy extends WNode {
             );
 
             Util.logDebug({
-                note: `In WkriegArmy.randomVehicle() near the top`,
+                note: `In WkriegArmy.randomVehicle() near the top of while`,
                 totalSize,
                 sizeLimit,
                 sizeLeft,
@@ -543,11 +554,11 @@ class WkriegArmy extends WNode {
     }
 
     static test () {
-        WkriegArmy.testWeightBased();
-        WkriegArmy.testWeightBased();
-        WkriegArmy.testWeightBased();
-        WkriegArmy.testWeightBased();
-        WkriegArmy.testWeightBased();
+        // WkriegArmy.testWeightBased();
+        // WkriegArmy.testWeightBased();
+        // WkriegArmy.testWeightBased();
+        // WkriegArmy.testWeightBased();
+        // WkriegArmy.testWeightBased();
 
         const vehicle = WkriegArmy.randomVehicle();
         Util.log(vehicle.toPrettyString());
