@@ -446,6 +446,46 @@ util.fromCamelCase = (s) => {
     .join(' ');
 };
 
+// center-aligns string in spaces, to a specified total length.
+// ('foo', 7) => '  foo  '
+util.padSides = (string, length) => {
+    length = Math.floor(length);
+
+    const leftover = length - string.length;
+
+    if (leftover <= 0) {
+        return string.slice(0, length);
+    }
+
+    const padAmount = leftover / 2;
+    const left = ' '.repeat(
+        Math.floor(padAmount)
+    );
+
+    const right = ' '.repeat(
+        Math.ceil(padAmount)
+    );
+    
+    return left + string + right;
+};
+
+util.testPadSides = () => {
+    for (let l = 1; l < 10; l++) {
+
+        for (let sl = 0; sl < 10; sl++) {
+            const input = 'x'.repeat(sl);
+            const output = util.padSides(input, l);
+
+            const summary = `padSides(${input}, ${l}) => \n'${output}'`;
+            console.log(summary);
+
+            if (output.length !== l) {
+                throw new Error(summary);
+            }
+        }
+    }
+};
+
 util.alphanumericTransition = (string, i2) => {
     const digitStart = util.isNumeric(
         string[i2 - 1]
@@ -877,6 +917,7 @@ util.mbti = () => {
 util.testAll = () => {
     util.testPrettyDistance();
     util.testCamelCase();
+    util.testPadSides();
     util.testSigfigRound();
     util.logDebug(`Done with unit tests for Util module :)`);
 };
