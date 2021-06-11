@@ -540,6 +540,10 @@ class TitleGen {
             wives
         `;
 
+        /* Known issues
+        * The word 'Universe' is prefaced with 'an' not 'a'.
+        */
+
         window.titleGen = new TitleGen();
 
         console.log(`window.titleGen is ${window.titleGen}`);
