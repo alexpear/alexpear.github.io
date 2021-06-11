@@ -1,0 +1,37 @@
+<html>
+
+<head>
+  <style>
+    html * {
+      display: block;
+      text-align: center;
+      margin: 0 auto 0 auto;
+    }
+
+    body {
+      background: #DD3277;
+      color: #FFFFFF;
+      font-size: 24px;
+    }
+
+    style {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="navigatorWindow">
+
+    <h3 id="uiTitle">Unwritten Books</h3>
+    <br>
+
+    <h1 id="titleText">?</h4>
+
+    <input id="genButton" type="button" class="iconButton group" onclick="window.titleGen.setHtml()">
+  </div>
+</body>
+</html>
+
+<!-- browserify titleGen.js -o bundle.js -->
+<script src="bundle.js"></script>
