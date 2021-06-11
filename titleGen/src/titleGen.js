@@ -546,7 +546,7 @@ class TitleGen {
 
         window.titleGen = new TitleGen();
 
-        console.log(`window.titleGen is ${window.titleGen}`);
+        // console.log(`window.titleGen is ${window.titleGen}`);
 
         window.titleGen.setHtml();
     }
@@ -575,7 +575,7 @@ class TitleGen {
     setHtml () {
         const element = document.getElementById('titleText');
 
-        element.innerHTML = this.next();
+        element.innerHTML = this.verticalHtml();
     }
 
     static cleanArray (rawStr) {
@@ -649,7 +649,7 @@ class TitleGen {
         Forgotten
     */
 
-    printVertical () {
+    verticalLines () {
         const title = this.next();
 
         const lines = title.toUpperCase()
@@ -661,7 +661,19 @@ class TitleGen {
         lines[0] = lines[0].toLowerCase();
         lines[2] = lines[2].toLowerCase();
 
-        console.log(lines.join('\n') + '\n');
+        return lines;
+    }
+
+    verticalText () {
+        return this.verticalLines().join('\n');
+    }
+
+    verticalHtml () {
+        return this.verticalLines().join('<br>');
+    }
+
+    printVertical () {
+        console.log(this.verticalText() + '\n');
     }
 
     static test () {
