@@ -1,6 +1,6 @@
 'use strict';
 
-const Util = require('../../../../util.js');
+const Util = require('../../util/util.js');
 
 const _ = require('lodash');
 
@@ -541,6 +541,10 @@ class TitleGen {
         `;
 
         window.titleGen = new TitleGen();
+
+        console.log(`window.titleGen is ${window.titleGen}`);
+
+        window.titleGen.setHtml();
     }
 
     next () {
@@ -666,9 +670,14 @@ class TitleGen {
             gen.printVertical();
         }
     }
+
+    static run () {
+        console.log('TitleGen.run() top')
+        TitleGen.init();
+    }
 }
 
 module.export = TitleGen;
 
-TitleGen.test();
+TitleGen.run();
 
