@@ -392,7 +392,7 @@ class TitleGen {
             spells
 
             song
-            ballad
+            ballads
             whispers
             screams
             wails
