@@ -80,19 +80,13 @@ util.customColored = (str, foreground, background) => {
 };
 
 util.randomPastel = () => {
-    const min = 0x60;
+    const min = 0x70;
 
     let hexCode = '#';
 
-    // for (let i = 0; i < 3; i++) {
-    //     const decimal = util.randomIntBetween(min, 0x100);
-    //     hexCode += hexString(decimal); // TODO func
-    // }
-
-    // or janky version because i'm offline atm: Tidy later.
-    const ALPHABET = ['6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
-    for (let j = 0; j < 6; j++) {
-        hexCode += util.randomOf(ALPHABET);
+    for (let i = 0; i < 3; i++) {
+        const decimal = util.randomIntBetween(min, 0x100);
+        hexCode += decimal.toString(16);
     }
 
     return hexCode;

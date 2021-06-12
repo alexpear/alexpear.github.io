@@ -541,7 +541,7 @@ class TitleGen {
         `;
 
         /* Known issues
-        * The word 'Universe' is prefaced with 'an' not 'a'.
+        * The words 'Universe' & 'University' are prefaced with 'an' not 'a'.
         */
 
         window.titleGen = new TitleGen();
@@ -581,7 +581,8 @@ class TitleGen {
         // Perhaps constrain to pastels. Each of the 3 hex values must be over a threshold, eg 0x80.
         const cover = document.getElementById('coverDiv');
 
-        // cover.addAttribute('style="background: ' + Util.randomPastel() + '"');
+        // Orig background was #444761 btw
+        cover.style = 'width: 470px; height: 650px; border-style: solid; background: ' + Util.randomPastel() + ';';
     }
 
     static cleanArray (rawStr) {
