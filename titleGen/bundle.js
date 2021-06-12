@@ -22374,7 +22374,7 @@ class TitleGen {
         `;
 
         /* Known issues
-        * The word 'Universe' is prefaced with 'an' not 'a'.
+        * The words 'Universe' & 'University' are prefaced with 'an' not 'a'.
         */
 
         window.titleGen = new TitleGen();
@@ -22414,7 +22414,8 @@ class TitleGen {
         // Perhaps constrain to pastels. Each of the 3 hex values must be over a threshold, eg 0x80.
         const cover = document.getElementById('coverDiv');
 
-        // cover.addAttribute('style="background: ' + Util.randomPastel() + '"');
+        // Orig background was #444761 btw
+        cover.style = 'width: 470px; height: 650px; border-style: solid; background: ' + Util.randomPastel() + ';';
     }
 
     static cleanArray (rawStr) {
@@ -22620,20 +22621,20 @@ util.customColored = (str, foreground, background) => {
 };
 
 util.randomPastel = () => {
-    const min = 0x60;
+    const min = 0x70;
 
     let hexCode = '#';
 
-    // for (let i = 0; i < 3; i++) {
-    //     const decimal = util.randomIntBetween(min, 0x100);
-    //     hexCode += hexString(decimal); // TODO func
-    // }
-
-    // or janky version because i'm offline atm: Tidy later.
-    const ALPHABET = ['6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
-    for (let j = 0; j < 6; j++) {
-        hexCode += util.randomOf(ALPHABET);
+    for (let i = 0; i < 3; i++) {
+        const decimal = util.randomIntBetween(min, 0x100);
+        hexCode += decimal.toString(16);
     }
+
+    // // or janky version because i'm offline atm: Tidy later.
+    // const ALPHABET = ['6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+    // for (let j = 0; j < 6; j++) {
+    //     hexCode += util.randomOf(ALPHABET);
+    // }
 
     return hexCode;
 };
