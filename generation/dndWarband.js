@@ -397,7 +397,7 @@ class DndWarband {
             return;
         }
 
-        DndWarband.test();
+        // DndWarband.test();
     }
 
     static test () {
@@ -426,7 +426,7 @@ module.exports = DndWarband;
 
 // Run
 // DndWarband.run();
-DndWarband.test();
+// DndWarband.test();
 
 // TODO make class and func: DndWorldState.battle(warbandA, warbandB);
 
