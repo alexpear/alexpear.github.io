@@ -184,8 +184,9 @@ class DndWorldState extends WorldState {
         }
     }
 
-    static computeNextInstant () {
+    computeNextInstant () {
         // Travelers might arrive
+        
         // Migrations
         // Reproduction
     }
