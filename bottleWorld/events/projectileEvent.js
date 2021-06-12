@@ -553,5 +553,6 @@ class ProjectileEvent extends BEvent {
 module.exports = ProjectileEvent;
 
 // const outcome = ProjectileEvent.testEngagement();
-const outcome = ProjectileEvent.resolveBattle();
+// TODO Add hurdle so we only run test logic if this file is run with 'node projectileEvent.js'
+// const outcome = ProjectileEvent.resolveBattle();
 

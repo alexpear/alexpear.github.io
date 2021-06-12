@@ -23,7 +23,10 @@ class DndWorldState extends WorldState {
         DndWorldState.SCREEN_HEIGHT = 44;
         DndWorldState.SCREEN_WIDTH = 150;
 
-        const HORIZ_WALL = '-'.repeat(DndWorldState.SCREEN_WIDTH);
+        const colCount = this.grid[0].length;
+        const rightExcess = (DndWorldState.SCREEN_WIDTH - 1) % colCount;
+
+        const HORIZ_WALL = '-'.repeat(DndWorldState.SCREEN_WIDTH - rightExcess);
         let lines = [HORIZ_WALL];
 
         for (let r = 0; r < this.grid.length; r++) {
@@ -45,6 +48,7 @@ class DndWorldState extends WorldState {
     }
 
     boxAsLines (row, column) {
+        // TODO 1 char too high when there is only 1 row.
         const boxHeight = Math.floor(
             (DndWorldState.SCREEN_HEIGHT - this.grid.length - 1) / this.grid.length
         );
@@ -151,6 +155,12 @@ class DndWorldState extends WorldState {
 
         worldState.grid = grid;
 
+        // Overwrites the grid, tidy later
+        worldState.makeGrid(
+            Util.randomIntBetween(1, 11),
+            Util.randomIntBetween(1, 11)
+        );
+
         timeline = timeline || new Timeline(worldState);
         timeline.currentWorldState = worldState;
         worldState.timeline = timeline;
@@ -158,6 +168,27 @@ class DndWorldState extends WorldState {
         // worldState.addStartingGroups(startingGroups);
 
         return worldState;
+    }
+
+    makeGrid (rowCount, colCount) {
+        this.grid = [];
+
+        for (let r = 0; r < rowCount; r++) {
+            this.grid.push([]);
+
+            for (let c = 0; c < colCount; c++) {
+                this.grid[r].push({
+                    terrain: Util.randomOf(DndWorldState.terrains()),
+                    components: []
+                });
+            }
+        }
+    }
+
+    static computeNextInstant () {
+        // Travelers might arrive
+        // Migrations
+        // Reproduction
     }
 
     static newGroup () {
@@ -215,6 +246,17 @@ class DndWorldState extends WorldState {
                 cr: 17,
                 alignment: 'NN'
             }
+        ];
+    }
+
+    static terrains () {
+        return [
+            'forest',
+            'islands',
+            'mountain',
+            'grassland',
+            'desert',
+            'steppe'
         ];
     }
 
