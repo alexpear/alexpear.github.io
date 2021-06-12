@@ -22225,7 +22225,7 @@ class TitleGen {
             spells
 
             song
-            ballad
+            ballads
             whispers
             screams
             wails
@@ -22373,9 +22373,13 @@ class TitleGen {
             wives
         `;
 
+        /* Known issues
+        * The word 'Universe' is prefaced with 'an' not 'a'.
+        */
+
         window.titleGen = new TitleGen();
 
-        console.log(`window.titleGen is ${window.titleGen}`);
+        // console.log(`window.titleGen is ${window.titleGen}`);
 
         window.titleGen.setHtml();
     }
@@ -22404,7 +22408,13 @@ class TitleGen {
     setHtml () {
         const element = document.getElementById('titleText');
 
-        element.innerHTML = this.next();
+        element.innerHTML = this.verticalHtml();
+
+        // Later could also set book cover to a random color.
+        // Perhaps constrain to pastels. Each of the 3 hex values must be over a threshold, eg 0x80.
+        const cover = document.getElementById('coverDiv');
+
+        // cover.addAttribute('style="background: ' + Util.randomPastel() + '"');
     }
 
     static cleanArray (rawStr) {
@@ -22478,7 +22488,7 @@ class TitleGen {
         Forgotten
     */
 
-    printVertical () {
+    verticalLines () {
         const title = this.next();
 
         const lines = title.toUpperCase()
@@ -22490,7 +22500,19 @@ class TitleGen {
         lines[0] = lines[0].toLowerCase();
         lines[2] = lines[2].toLowerCase();
 
-        console.log(lines.join('\n') + '\n');
+        return lines;
+    }
+
+    verticalText () {
+        return this.verticalLines().join('\n');
+    }
+
+    verticalHtml () {
+        return this.verticalLines().join('<br>');
+    }
+
+    printVertical () {
+        console.log(this.verticalText() + '\n');
     }
 
     static test () {
@@ -22595,6 +22617,25 @@ util.customColored = (str, foreground, background) => {
     const bcode = BMAP[background] || BMAP.grey;
 
     return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
+};
+
+util.randomPastel = () => {
+    const min = 0x60;
+
+    let hexCode = '#';
+
+    // for (let i = 0; i < 3; i++) {
+    //     const decimal = util.randomIntBetween(min, 0x100);
+    //     hexCode += hexString(decimal); // TODO func
+    // }
+
+    // or janky version because i'm offline atm: Tidy later.
+    const ALPHABET = ['6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+    for (let j = 0; j < 6; j++) {
+        hexCode += util.randomOf(ALPHABET);
+    }
+
+    return hexCode;
 };
 
 util.NODE_TYPES = {
