@@ -5,14 +5,25 @@
     html * {
       display: block;
       text-align: center;
-      margin: 0 auto 0 auto;
+      margin: auto auto auto auto;
     }
 
     body {
-      background: #DD5599;
+      background: #e294bb;
       color: #FFFFFF;
       font-size: 24px;
       font-family: cursive;
+    }
+
+    .cover {
+      background: #444761;
+      width: 470px;
+      height: 650px;
+    }
+
+    #titleText {
+      padding-top: 30px;
+      line-height: 90px;
     }
 
     style {
@@ -27,7 +38,9 @@
     <h3 id="uiTitle">Unwritten Books</h3>
     <br>
 
-    <h1 id="titleText">?</h4>
+    <div class="cover">
+      <h1 id="titleText">?</h4>
+    </div>
     <br>
 
     <input id="genButton" type="button" class="iconButton group" value="Next!" onclick="window.titleGen.setHtml()">
