@@ -79,6 +79,25 @@ util.customColored = (str, foreground, background) => {
     return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
 };
 
+util.randomPastel = () => {
+    const min = 0x60;
+
+    let hexCode = '#';
+
+    // for (let i = 0; i < 3; i++) {
+    //     const decimal = util.randomIntBetween(min, 0x100);
+    //     hexCode += hexString(decimal); // TODO func
+    // }
+
+    // or janky version because i'm offline atm: Tidy later.
+    const ALPHABET = ['6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+    for (let j = 0; j < 6; j++) {
+        hexCode += util.randomOf(ALPHABET);
+    }
+
+    return hexCode;
+};
+
 util.NODE_TYPES = {
     region: 'region',
     location: 'location'  // deprecated

@@ -576,6 +576,12 @@ class TitleGen {
         const element = document.getElementById('titleText');
 
         element.innerHTML = this.verticalHtml();
+
+        // Later could also set book cover to a random color.
+        // Perhaps constrain to pastels. Each of the 3 hex values must be over a threshold, eg 0x80.
+        const cover = document.getElementById('coverDiv');
+
+        // cover.addAttribute('style="background: ' + Util.randomPastel() + '"');
     }
 
     static cleanArray (rawStr) {
