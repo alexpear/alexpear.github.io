@@ -20,7 +20,7 @@ class DndWorldState extends WorldState {
     }
 
     textGrid () {
-        DndWorldState.SCREEN_HEIGHT = 44;
+        DndWorldState.SCREEN_HEIGHT = 43;
         DndWorldState.SCREEN_WIDTH = 150;
 
         const colCount = this.grid[0].length;
@@ -48,7 +48,6 @@ class DndWorldState extends WorldState {
     }
 
     boxAsLines (row, column) {
-        // TODO 1 char too high when there is only 1 row.
         const boxHeight = Math.floor(
             (DndWorldState.SCREEN_HEIGHT - this.grid.length - 1) / this.grid.length
         );
