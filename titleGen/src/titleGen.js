@@ -198,7 +198,6 @@ class TitleGen {
             heartbeats
             blood
             tears
-            shit
 
             flowers
             thorns
@@ -538,6 +537,7 @@ class TitleGen {
             cubes
             sphere
             wives
+            shit
         `;
 
         /* Known issues
