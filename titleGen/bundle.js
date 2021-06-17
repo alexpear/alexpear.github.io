@@ -22031,7 +22031,6 @@ class TitleGen {
             heartbeats
             blood
             tears
-            shit
 
             flowers
             thorns
@@ -22371,6 +22370,7 @@ class TitleGen {
             cubes
             sphere
             wives
+            shit
         `;
 
         /* Known issues
@@ -22629,12 +22629,6 @@ util.randomPastel = () => {
         const decimal = util.randomIntBetween(min, 0x100);
         hexCode += decimal.toString(16);
     }
-
-    // // or janky version because i'm offline atm: Tidy later.
-    // const ALPHABET = ['6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
-    // for (let j = 0; j < 6; j++) {
-    //     hexCode += util.randomOf(ALPHABET);
-    // }
 
     return hexCode;
 };
