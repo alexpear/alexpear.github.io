@@ -139,6 +139,7 @@ class TitleGen {
             harvest
             history
             story
+            tale
             theatre
             myth
             legend
