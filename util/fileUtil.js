@@ -2,18 +2,28 @@
 
 const Util = require('./util.js');
 
+const FS = require('fs');
+
 class FileUtil {
     static init () {
         FileUtil.clearCache();
         FileUtil.DUPLICATE = 'duplicate';
     }
 
+    // TODO replace placeholder funcs in this file with real filesystem calls.
+
     static flattenDir () {
         // Might cache all checksums in target dir.
         FileUtil.init();
 
-        // TODO replace placeholder funcs in this file with real filesystem calls.
-        const targetPath = pwd();
+        const targetPath = process.cwd();
+        Util.logDebug(`process.cwd() is ${process.cwd()}`);
+        // Okay, so process.cwd() is where you run the node command from, and it does not end in '/', at least on MacOS.
+
+        if (! FS.existsSync(targetPath + '/' + FileUtil.DUPLICATE)) {
+            Util.logDebug('going to create duplicate dir');
+            // FS.mkdirSync(FileUtil.DUPLICATE);
+        }
 
         FileUtil.flattenTo(targetPath, targetPath);
 
@@ -21,11 +31,15 @@ class FileUtil {
     }
 
     // Helper func
-    static flattenTo (unflattenedPath, targetPath) {
-        for (let item in ls(unflattenedPath)) {
-            const itemPath = unflattenedPath + '/' + item;
+    static flattenTo (notFlatPath, targetPath) {
+        const items = FS.readdirSync(notFlatPath);
+        for (let item of items) {
+            // Util.logDebug(`${item} in ${notFlatPath} has typeof ${typeof item}`);
 
-            if (isDir(item)) {
+            const itemPath = notFlatPath + '/' + item;
+            Util.logDebug(`itemPath is ${itemPath}`);
+
+            if (FS.lstatSync(itemPath).isDirectory()) {
                 if (item === FileUtil.DUPLICATE) {
                     continue;
                 }
@@ -40,6 +54,9 @@ class FileUtil {
     }
 
     static moveSafely (itemPath, targetPath) {
+        Util.logDebug(`moveSafely(${itemPath}, ${targetPath}) called.`);
+        return; // remove later
+
         const checksum = checksum(item);
 
         if (FileUtil.cache[checksum]) {
@@ -48,10 +65,10 @@ class FileUtil {
             return;
         }
 
-        if (ls(targetPath).indexOf(item) >= 0) {
+        if (FS.existsSync(pathAndFile)) {
             // Name collision
             itemName = FileUtil.appendHash(item);
-            rename(itemPath, itemName);
+            FS.renameSync(itemPath, itemName);
             itemPath
         }
 
@@ -81,10 +98,18 @@ class FileUtil {
     }
 
     static run () {
-        FileUtil.flattenDir(;
+        FileUtil.flattenDir();
     }
 }
 
 FileUtil.run();
+
+/*
+Notes
+Useful funcs
+fs.mkdirSync()
+fs.opendirSync()
+fs.renameSync()
+*/
 
 
