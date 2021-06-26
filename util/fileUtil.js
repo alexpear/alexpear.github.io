@@ -2,6 +2,7 @@
 
 const Util = require('./util.js');
 
+const Crypto = require('crypto');
 const FS = require('fs');
 
 class FileUtil {
@@ -22,7 +23,7 @@ class FileUtil {
 
         if (! FS.existsSync(targetPath + '/' + FileUtil.DUPLICATE)) {
             Util.logDebug('going to create duplicate dir');
-            // FS.mkdirSync(FileUtil.DUPLICATE);
+            FS.mkdirSync(FileUtil.DUPLICATE);
         }
 
         FileUtil.flattenTo(targetPath, targetPath);
@@ -37,12 +38,15 @@ class FileUtil {
             // Util.logDebug(`${item} in ${notFlatPath} has typeof ${typeof item}`);
 
             const itemPath = notFlatPath + '/' + item;
-            Util.logDebug(`itemPath is ${itemPath}`);
+            console.log(`  itemPath is ${itemPath}`);
 
             if (FS.lstatSync(itemPath).isDirectory()) {
                 if (item === FileUtil.DUPLICATE) {
+                    console.log('    duplicate/ dir detected');
                     continue;
                 }
+
+                console.log('    dir detected');
 
                 // Make sure to not get confused between item name and path TODO
                 FileUtil.flattenTo(itemPath, targetPath);
@@ -54,27 +58,40 @@ class FileUtil {
     }
 
     static moveSafely (itemPath, targetPath) {
-        Util.logDebug(`moveSafely(${itemPath}, ${targetPath}) called.`);
-        return; // remove later
+        console.log(`    moveSafely(${itemPath}, ${targetPath}) called.`);
 
-        const checksum = checksum(item);
+        const contents = FS.readFileSync(itemPath);
+        const checksum = FileUtil.checksum(contents);
+        console.log(`      checksum is ${checksum}`);
 
         if (FileUtil.cache[checksum]) {
             // File already present in target dir.
-            mv(item, targetPath + FileUtil.DUPLICATE);
+            const dupPath = targetPath + '/' + FileUtil.DUPLICATE;
+            console.log(`      dupPath is ${dupPath}`);
+            return;
+            FS.renameSync(itemPath, dupPath);
             return;
         }
 
+        return; // remove later
+
         if (FS.existsSync(pathAndFile)) {
             // Name collision
+            // TODO we dont have item presently, just itemPath
             itemName = FileUtil.appendHash(item);
-            FS.renameSync(itemPath, itemName);
-            itemPath
+            // TODO 2nd param needs to be a full path
+            // FS.renameSync(itemPath, itemName);
         }
 
-        mv(item, targetPath);
+        // FS.renameSync(itemPath, targetPath + '/' + item);
 
         FileUtil.cache[checksum] = item;
+    }
+
+    static checksum (str) {
+        return Crypto.createHash('md5')
+            .update(str, 'utf8')
+            .digest('hex');
     }
 
     static appendHash (str) {
