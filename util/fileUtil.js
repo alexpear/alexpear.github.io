@@ -99,22 +99,18 @@ class FileUtil {
 
     // No side effects
     static appendHash (str) {
-        const parts = str.split('.');
-
-        console.log(`      parts are ${parts}`);
-
         const hash = '-' + Util.newId(5);
+        // console.log(`      hash is ${hash}`);
 
-        console.log(`      hash is ${hash}`);
+        const doti = str.lastIndexOf('.');
 
-        if (parts.length === 1) {
+        if (doti < 0) {
             return str + hash;
         }
 
-        const penult = parts.length - 2;
-        parts[penult] = parts[penult] + hash;
-
-        return parts.join('');
+        return str.slice(0, doti) +
+            hash +
+            str.slice(doti, str.length);
     }
 
     static clearCache () {
