@@ -44,7 +44,7 @@ class FileUtil {
                     continue;
                 }
 
-                console.log('    dir detected');
+                // console.log('    dir detected');
 
                 FileUtil.flattenTo(itemPath, targetPath);
             }
@@ -72,7 +72,6 @@ class FileUtil {
             // File already present in target dir.
             const dupPath = targetPath + '/' + FileUtil.DUPLICATE + '/' + itemName;
             console.log(`      dupPath is ${dupPath}`);
-            return; // remove later
             FS.renameSync(itemPath, dupPath);
             return;
         }
@@ -85,8 +84,8 @@ class FileUtil {
 
         console.log(`      About to call FS.renameSync(${itemPath}, ${targetPath + '/' + itemName})`);
 
-        // TODO will this work when the filename has a space in it? Or similar special char?
-        // FS.renameSync(itemPath, targetPath + '/' + itemName);
+        // This seems to work even when the filename has a space in it.
+        FS.renameSync(itemPath, targetPath + '/' + itemName);
 
         FileUtil.cache[checksum] = itemName;
     }
@@ -127,9 +126,7 @@ FileUtil.run();
 /*
 Notes
 Useful funcs
-fs.mkdirSync()
 fs.opendirSync()
-fs.renameSync()
 */
 
 
