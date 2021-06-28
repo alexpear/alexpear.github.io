@@ -60,32 +60,39 @@ class FileUtil {
     static moveSafely (itemPath, targetPath) {
         console.log(`    moveSafely(${itemPath}, ${targetPath}) called.`);
 
+        const parts = itemPath.split('/');
+        let itemName = parts[parts.length - 1];
+
         const contents = FS.readFileSync(itemPath);
         const checksum = FileUtil.checksum(contents);
         console.log(`      checksum is ${checksum}`);
 
         if (FileUtil.cache[checksum]) {
             // File already present in target dir.
-            const dupPath = targetPath + '/' + FileUtil.DUPLICATE;
+            const dupPath = targetPath + '/' + FileUtil.DUPLICATE + '/' + itemName;
             console.log(`      dupPath is ${dupPath}`);
-            return;
+            return; // remove later
             FS.renameSync(itemPath, dupPath);
             return;
         }
 
-        return; // remove later
+        // TODO what about the case of files that start in the target dir? They dont need hashes appended.
+        // TODO also need to preserve file extensions.
+        const fileAtTarget = targetPath + '/' + itemName;
 
-        if (FS.existsSync(pathAndFile)) {
+        if (fileAtTarget !== itemPath && FS.existsSync(fileAtTarget)) {
             // Name collision
             // TODO we dont have item presently, just itemPath
-            itemName = FileUtil.appendHash(item);
-            // TODO 2nd param needs to be a full path
-            // FS.renameSync(itemPath, itemName);
+            itemName = FileUtil.appendHash(itemName);
+            console.log(`      new itemName is ${itemName}`);
         }
 
-        // FS.renameSync(itemPath, targetPath + '/' + item);
+        console.log(`      About to call FS.renameSync(${itemPath}, ${targetPath + '/' + itemName})`);
 
-        FileUtil.cache[checksum] = item;
+        // TODO will this work when the filename has a space in it? Or similar special char?
+        // FS.renameSync(itemPath, targetPath + '/' + itemName);
+
+        FileUtil.cache[checksum] = itemName;
     }
 
     static checksum (str) {
@@ -94,11 +101,15 @@ class FileUtil {
             .digest('hex');
     }
 
+    // No side effects
     static appendHash (str) {
         const parts = str.split('.');
 
-        // Later could make this shorter
-        const hash = Util.newId();
+        console.log(`      parts are ${parts}`);
+
+        const hash = '-' + Util.newId(5);
+
+        console.log(`      hash is ${hash}`);
 
         if (parts.length === 1) {
             return str + hash;
