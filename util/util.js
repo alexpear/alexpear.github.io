@@ -254,13 +254,13 @@ util.randomBagDraw = (bag) => {
 };
 
 // Returns string
-util.newId = function () {
+util.newId = function (idLength) {
     // Later research the most performant way to run this.
+    // Later could remove similar characters like 1i0O, maybe 5S
     const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const ID_LENGTH = 50;
 
     let id = '';
-    for (let i = 0; i < ID_LENGTH; i++) {
+    for (let i = 0; i < (idLength || 50); i++) {
         const index = Math.floor( Math.random() * ALPHABET.length );
         id += ALPHABET[index];
     }
