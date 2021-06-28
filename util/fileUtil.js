@@ -11,8 +11,6 @@ class FileUtil {
         FileUtil.DUPLICATE = 'duplicate';
     }
 
-    // TODO replace placeholder funcs in this file with real filesystem calls.
-
     static flattenDir () {
         // Might cache all checksums in target dir.
         FileUtil.init();
@@ -38,7 +36,7 @@ class FileUtil {
             // Util.logDebug(`${item} in ${notFlatPath} has typeof ${typeof item}`);
 
             const itemPath = notFlatPath + '/' + item;
-            console.log(`  itemPath is ${itemPath}`);
+            // console.log(`  itemPath is ${itemPath}`);
 
             if (FS.lstatSync(itemPath).isDirectory()) {
                 if (item === FileUtil.DUPLICATE) {
@@ -48,9 +46,7 @@ class FileUtil {
 
                 console.log('    dir detected');
 
-                // Make sure to not get confused between item name and path TODO
                 FileUtil.flattenTo(itemPath, targetPath);
-                continue;
             }
 
             FileUtil.moveSafely(itemPath, targetPath);
@@ -58,14 +54,19 @@ class FileUtil {
     }
 
     static moveSafely (itemPath, targetPath) {
-        console.log(`    moveSafely(${itemPath}, ${targetPath}) called.`);
+        // console.log(`    moveSafely(${itemPath}, ${targetPath}) called.`);
 
         const parts = itemPath.split('/');
         let itemName = parts[parts.length - 1];
+        const fileAtTarget = targetPath + '/' + itemName;
+
+        if (itemPath === fileAtTarget) {
+            return;
+        }
 
         const contents = FS.readFileSync(itemPath);
         const checksum = FileUtil.checksum(contents);
-        console.log(`      checksum is ${checksum}`);
+        // console.log(`      checksum is ${checksum}`);
 
         if (FileUtil.cache[checksum]) {
             // File already present in target dir.
@@ -76,13 +77,8 @@ class FileUtil {
             return;
         }
 
-        // TODO what about the case of files that start in the target dir? They dont need hashes appended.
-        // TODO also need to preserve file extensions.
-        const fileAtTarget = targetPath + '/' + itemName;
-
-        if (fileAtTarget !== itemPath && FS.existsSync(fileAtTarget)) {
+        if (FS.existsSync(fileAtTarget)) {
             // Name collision
-            // TODO we dont have item presently, just itemPath
             itemName = FileUtil.appendHash(itemName);
             console.log(`      new itemName is ${itemName}`);
         }
