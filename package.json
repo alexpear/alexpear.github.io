@@ -11,7 +11,8 @@
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
-    "phaser": "^3.16.2"
+    "phaser": "^3.16.2",
+    "webpack": "^5.43.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -32,7 +33,8 @@
     "40k": "node generation/grimDarkArmy.js",
     "eclipse": "node wnode/spacebattles/vessel.js",
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
-    "testRingWorld": "node bottleWorld/ringWorldState.js test"
+    "testRingWorld": "node bottleWorld/ringWorldState.js test",
+    "imageSorter": "webpack && qode util/imageSorter.ts"
   },
   "repository": {
     "type": "git",
