@@ -541,14 +541,14 @@ class GridWarWorldState extends WorldState {
         const view = new GridView(worldState);
         view.setGridHtml();
 
-        while (worldState.worthContinuing()) {
+        // while (worldState.worthContinuing()) {
             await Util.sleep(1);
 
             // Util.logDebug('GridWarWorldState, after sleep(1)');
 
             worldState.timeline.computeNextInstant();
             view.setGridHtml();
-        }
+        // }
     }
 
     static async run () {

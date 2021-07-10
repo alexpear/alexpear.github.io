@@ -1753,6 +1753,8 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
         arriver.alignment = this.alignment || Util.randomOf(worldState.allAlignments());
 
+        arriver.quantity = arriver.quantity || this.quantity;
+
         worldState.addNode(arriver, this.coord);
 
         // Util.logDebug(worldState.wanderingGenerator.toJson());
@@ -2396,7 +2398,8 @@ class ProjectileEvent extends BEvent {
 module.exports = ProjectileEvent;
 
 // const outcome = ProjectileEvent.testEngagement();
-const outcome = ProjectileEvent.resolveBattle();
+// TODO Add hurdle so we only run test logic if this file is run with 'node projectileEvent.js'
+// const outcome = ProjectileEvent.resolveBattle();
 
 
 },{"../../battle20/actiontemplate.js":2,"../../util/coord.js":91,"../../util/util.js":92,"../../wnode/creature.js":93,"../../wnode/group.js":94,"../bEvent.js":7,"js-yaml":58}],13:[function(require,module,exports){
@@ -2943,14 +2946,14 @@ class GridWarWorldState extends WorldState {
         const view = new GridView(worldState);
         view.setGridHtml();
 
-        while (worldState.worthContinuing()) {
+        // while (worldState.worthContinuing()) {
             await Util.sleep(1);
 
             // Util.logDebug('GridWarWorldState, after sleep(1)');
 
             worldState.timeline.computeNextInstant();
             view.setGridHtml();
-        }
+        // }
     }
 
     static async run () {
@@ -37589,6 +37592,19 @@ util.customColored = (str, foreground, background) => {
     return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
 };
 
+util.randomPastel = () => {
+    const min = 0x70;
+
+    let hexCode = '#';
+
+    for (let i = 0; i < 3; i++) {
+        const decimal = util.randomIntBetween(min, 0x100);
+        hexCode += decimal.toString(16);
+    }
+
+    return hexCode;
+};
+
 util.NODE_TYPES = {
     region: 'region',
     location: 'location'  // deprecated
@@ -37751,13 +37767,13 @@ util.randomBagDraw = (bag) => {
 };
 
 // Returns string
-util.newId = function () {
+util.newId = function (idLength) {
     // Later research the most performant way to run this.
+    // Later could remove similar characters like 1i0O, maybe 5S
     const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const ID_LENGTH = 50;
 
     let id = '';
-    for (let i = 0; i < ID_LENGTH; i++) {
+    for (let i = 0; i < (idLength || 50); i++) {
         const index = Math.floor( Math.random() * ALPHABET.length );
         id += ALPHABET[index];
     }
@@ -37954,6 +37970,46 @@ util.fromCamelCase = (s) => {
             util.capitalized(w)
     )
     .join(' ');
+};
+
+// center-aligns string in spaces, to a specified total length.
+// ('foo', 7) => '  foo  '
+util.padSides = (string, length) => {
+    length = Math.floor(length);
+
+    const leftover = length - string.length;
+
+    if (leftover <= 0) {
+        return string.slice(0, length);
+    }
+
+    const padAmount = leftover / 2;
+    const left = ' '.repeat(
+        Math.floor(padAmount)
+    );
+
+    const right = ' '.repeat(
+        Math.ceil(padAmount)
+    );
+    
+    return left + string + right;
+};
+
+util.testPadSides = () => {
+    for (let l = 1; l < 10; l++) {
+
+        for (let sl = 0; sl < 10; sl++) {
+            const input = 'x'.repeat(sl);
+            const output = util.padSides(input, l);
+
+            const summary = `padSides(${input}, ${l}) => \n'${output}'`;
+            console.log(summary);
+
+            if (output.length !== l) {
+                throw new Error(summary);
+            }
+        }
+    }
 };
 
 util.alphanumericTransition = (string, i2) => {
@@ -38387,6 +38443,7 @@ util.mbti = () => {
 util.testAll = () => {
     util.testPrettyDistance();
     util.testCamelCase();
+    util.testPadSides();
     util.testSigfigRound();
     util.logDebug(`Done with unit tests for Util module :)`);
 };

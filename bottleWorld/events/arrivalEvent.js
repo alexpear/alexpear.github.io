@@ -30,6 +30,8 @@ const ArrivalEvent = module.exports = class ArrivalEvent extends BEvent {
 
         arriver.alignment = this.alignment || Util.randomOf(worldState.allAlignments());
 
+        arriver.quantity = arriver.quantity || this.quantity;
+
         worldState.addNode(arriver, this.coord);
 
         // Util.logDebug(worldState.wanderingGenerator.toJson());
