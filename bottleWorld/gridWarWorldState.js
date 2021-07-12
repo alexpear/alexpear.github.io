@@ -210,6 +210,42 @@ class GridWarWorldState extends WorldState {
         }
     }
 
+    static fromJson (json) {
+
+    }
+
+    static exampleJsonInput () {
+        return {
+            location: {
+                name: 'Blood Gulch'
+                // Later add info about width, height, mPerSquare, & other context.
+            },
+            factions: {
+                unsc: [
+                    {
+                        template: 'falcon',
+                        x: 30,
+                        y: 50
+                    },
+                    {
+                        template: 'spartan',
+                        quantity: 2,
+                        x: 25,
+                        y: 55
+                    }
+                ],
+                covenant: [
+                    {
+                        template: 'grunt',
+                        quantity: 15,
+                        x: 130,
+                        y: 60
+                    }
+                ]
+            }
+        };
+    }
+
     static presetArmy (scenarioName) {
         const scenarios = {
             cairoStation: {

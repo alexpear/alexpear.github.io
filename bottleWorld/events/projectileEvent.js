@@ -526,6 +526,15 @@ class ProjectileEvent extends BEvent {
 
         return summary;
     }
+
+    static run () {
+        // Only run test logic if the console command was something like 'node projectileEvent.js'
+        if (! process.argv[1].endsWith('projectileEvent.js')) {
+            return;
+        }
+
+        const outcome = ProjectileEvent.resolveBattle();
+    }
 };
 
 // Old funcs from battle20 battleGroup.js:
@@ -554,5 +563,6 @@ module.exports = ProjectileEvent;
 
 // const outcome = ProjectileEvent.testEngagement();
 // TODO Add hurdle so we only run test logic if this file is run with 'node projectileEvent.js'
-// const outcome = ProjectileEvent.resolveBattle();
+
+ProjectileEvent.run();
 
