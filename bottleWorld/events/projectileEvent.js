@@ -206,11 +206,11 @@ class ProjectileEvent extends BEvent {
     // Uses the KO state system (non SP based)
     // Combatants are always in one of the following states: {OK, KO}
     static fireAt (attacker, actionTemplate, target, range, log) {
-        // Util.logDebug(`fireAt(${attacker && attacker.templateName || ' '}, ${actionTemplate && actionTemplate.name || ' '}, ${target && target.templateName || ' '}, ${range || ' '}, ${log})`)
+        // Util.logDebug(`fireAt(${attacker && attacker.templateName || ' '}, ${actionTemplate && actionTemplate.name || ' '}, ${target && target.templateName || ' '}, ${range || ' '}, ${log})`);
 
         // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
         attacker       = Util.default(attacker,       WGenerator.marineCompany());
-        actionTemplate = Util.default(actionTemplate, WGenerator.ids[attacker.template.weapon || 'assaultRifle']);
+        actionTemplate = Util.default(actionTemplate, WGenerator.ids[attacker.template && attacker.template.weapon || 'assaultRifle']);
         target         = Util.default(target,         WGenerator.marineCompany());
         range          = Util.default(range,          100);
         log            = Util.default(log,            true);
@@ -221,10 +221,13 @@ class ProjectileEvent extends BEvent {
             action: actionTemplate.name,
             target: target.templateName,
             targetQuantity: target.quantity,
+            range,
             accurateShots: 0,
             hits: 0,
             casualties: 0
         };
+
+        // Util.logDebug(`fireAt(), actionTemplate: ${actionTemplate && actionTemplate.name}, attacker.template: ${attacker.template}, attacker.template.weapon: ${attacker.template.weapon}, WGenerator.ids[assaultRifle]: ${WGenerator.ids['assaultRifle']}`);
 
         // const bEvent; // Later can output 1 or more BEvents
 
@@ -246,6 +249,8 @@ class ProjectileEvent extends BEvent {
 
         // LATER this will be a function of terrain, size, combat skill, and AoE attacks.
         summary.coverChance = 0.2;
+
+        // console.log(Yaml.dump(summary));
 
         for (let s = 0; s < summary.shots; s++) {
             if (Math.random() > summary.hitChance) {
@@ -347,7 +352,8 @@ class ProjectileEvent extends BEvent {
         aGroups = Util.default(aGroups, ProjectileEvent.randomGroups());
         bGroups = Util.default(bGroups, ProjectileEvent.randomGroups());
 
-        const defaultRange = Math.ceil(Math.random() * 150);
+        // Do note that if we set the range high, groups might be unable to deal damage!
+        const defaultRange = Math.ceil(Math.random() * 50);
         range = Util.default(range, defaultRange);
         log = Util.default(log, true);
 
@@ -400,11 +406,12 @@ class ProjectileEvent extends BEvent {
 
                     const attack = ProjectileEvent.fireAt(
                         protag,
-                        protag.actions[0],
+                        undefined,
                         protag.target,
                         range,
                         log
                     );
+
                     const outcome = protag.target.takeCasualties(attack.casualties);
 
                     // TODO make sure this cant go or start negative.
@@ -435,7 +442,7 @@ class ProjectileEvent extends BEvent {
 
                 const attack = ProjectileEvent.fireAt(
                     protag,
-                    protag.actions[0],
+                    undefined,
                     protag.target,
                     range,
                     log

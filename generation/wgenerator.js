@@ -170,9 +170,12 @@ class WGenerator {
     // Returns a Group.
     // Selects a random implemented template.
     static randomTemplate () {
-        // TODO randomize between a few ready templates
-        // TODO this Group.new() call is ending up with a empty .actions array.
-        const squad = WGenerator.newGroup('halo/unsc/individual/marinePrivate', 10);
+        const path = Util.randomOf([
+            'halo/unsc/individual/marinePrivate',
+            'halo/unsc/individual/odst'
+        ]);
+
+        const squad = WGenerator.newGroup(path, 10);
         // TODO this alias isnt getting resolved by WGenerator
         // const squad = Group.new('halo/unsc/individual/groupStatted', 5);
 

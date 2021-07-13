@@ -114,6 +114,7 @@ ac: 17
 sp: 10
 durability: 5
 resistance: heat 2, pierce 2
+weapon: assaultRifle
 toHit: 2
 damage: 2
 shots: 3
