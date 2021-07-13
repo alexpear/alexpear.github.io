@@ -4,6 +4,8 @@ const BEvent = require('../bEvent.js');
 
 const ActionTemplate = require('../../battle20/actiontemplate.js');
 
+const WGenerator = require('../../generation/wgenerator.js');
+
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
@@ -165,7 +167,7 @@ class ProjectileEvent extends BEvent {
 
         if (! target) {
             // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
-            target = Group.marineCompany();
+            target = WGenerator.marineCompany();
         }
 
         // const exampleSummary = {
@@ -207,9 +209,9 @@ class ProjectileEvent extends BEvent {
         // Util.logDebug(`fireAt(${attacker && attacker.templateName || ' '}, ${actionTemplate && actionTemplate.name || ' '}, ${target && target.templateName || ' '}, ${range || ' '}, ${log})`)
 
         // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
-        attacker       = Util.default(attacker,       Group.marineCompany());
-        actionTemplate = Util.default(actionTemplate, ActionTemplate.example());
-        target         = Util.default(target,         Group.marineCompany());
+        attacker       = Util.default(attacker,       WGenerator.marineCompany());
+        actionTemplate = Util.default(actionTemplate, WGenerator.ids[attacker.template.weapon || 'assaultRifle']);
+        target         = Util.default(target,         WGenerator.marineCompany());
         range          = Util.default(range,          100);
         log            = Util.default(log,            true);
 
@@ -277,8 +279,8 @@ class ProjectileEvent extends BEvent {
     // Uses the SP pool system (group.worstSp, etc)
     static testFireSp (attacker, actionTemplate, target, range, log) {
         // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
-        attacker = Util.default(attacker, Group.marineCompany());
-        target = Util.default(target, Group.marineCompany());
+        attacker = Util.default(attacker, WGenerator.marineCompany());
+        target = Util.default(target, WGenerator.marineCompany());
         actionTemplate = Util.default(actionTemplate, ActionTemplate.example());
         range = Util.default(range, 100);
         log = Util.default(log, true);
@@ -333,7 +335,7 @@ class ProjectileEvent extends BEvent {
         let groups = [];
 
         for (let i = 0; i < (groupCount || 12); i++) {
-            groups.push(Group.randomTemplate());
+            groups.push(WGenerator.randomTemplate());
         }
 
         return groups;
@@ -502,8 +504,8 @@ class ProjectileEvent extends BEvent {
     // Groups do not move for now. Terrain is flat.
     // Does indeed mutate the Groups.
     static testEngagement (a, b, range, log) {
-        a = Util.default(a, Group.randomTemplate());
-        b = Util.default(b, Group.randomTemplate());
+        a = Util.default(a, WGenerator.randomTemplate());
+        b = Util.default(b, WGenerator.randomTemplate());
 
         const defaultRange = Math.ceil(Math.random() * 150);
         range = Util.default(range, defaultRange);

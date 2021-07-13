@@ -6,8 +6,6 @@ const NodeTemplate = require('../battle20/nodeTemplate.js');
 const Util = require('../util/util.js');
 const WNode = require('./wnode.js');
 
-const WGenerator = require('../generation/wgenerator.js');
-
 // Can be very similar to Group from Battle20 / dndBottle
 // .quantity, .template (CreatureTemplate), maybe some a prop for the SP of the sole wounded member.
 // .getWeight(), .getMaxSize(), .getSizeTotal(), .getSpeed() <- only different from template if there is some status condition effect, etc
@@ -365,35 +363,7 @@ class Group extends WNode {
     //     );
     // }
 
-    static new (fullCodexPath, quantity, alignment, coord) {
-        // Later can add a func to WGenerator that returns just the template obj instead of WNode[]
-        const nodes = WGenerator.generateNodes(fullCodexPath);
-
-        return new Group(
-            nodes[0].template || fullCodexPath,
-            quantity,
-            alignment,
-            coord
-        );
-    }
-
-    // Returns a Group.
-    // Selects a random implemented template.
-    static randomTemplate () {
-        // TODO randomize between a few ready templates
-        // TODO this Group.new() call is ending up with a empty .actions array.
-        const squad = Group.new('halo/unsc/individual/marinePrivate', 10);
-        // TODO this alias isnt getting resolved by WGenerator
-        // const squad = Group.new('halo/unsc/individual/groupStatted', 5);
-
-        return squad;
-    }
-
-    static marineCompany () {
-        const company = Group.new('halo/unsc/individual/marinePrivate', 50);
-
-        return company;
-    }
+    // NOTE: Group.new() has been moved to WGenerator.newGroup()
 
     static run () {
         // Group.testDotGrid();

@@ -151,6 +151,36 @@ class WGenerator {
             .getOutputs(absolutePath);
     }
 
+    static newGroup (fullCodexPath, quantity, alignment, coord) {
+        // Later can add a func to WGenerator that returns just the template obj instead of WNode[]
+        const nodes = WGenerator.generateNodes(fullCodexPath);
+
+        return new Group(
+            nodes[0].template || fullCodexPath,
+            quantity,
+            alignment,
+            coord
+        );
+    }
+
+    // Returns a Group.
+    // Selects a random implemented template.
+    static randomTemplate () {
+        // TODO randomize between a few ready templates
+        // TODO this Group.new() call is ending up with a empty .actions array.
+        const squad = WGenerator.newGroup('halo/unsc/individual/marinePrivate', 10);
+        // TODO this alias isnt getting resolved by WGenerator
+        // const squad = Group.new('halo/unsc/individual/groupStatted', 5);
+
+        return squad;
+    }
+
+    static marineCompany () {
+        const company = WGenerator.newGroup('halo/unsc/individual/marinePrivate', 50);
+
+        return company;
+    }
+
     // Returns ContextString[]
     resolveCommas (inputString) {
         // Util.log(`Top of resolveCommas(), inputString is '${inputString}'`, 'debug');
