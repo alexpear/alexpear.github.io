@@ -387,6 +387,8 @@ class ProjectileEvent extends BEvent {
                         );
 
                         if (available.length === 0) {
+                            console.log(ProjectileEvent.spacelessBattleString(aGroups, bGroups, t));
+
                             // later update summary
                             return summary;
                         }
@@ -420,6 +422,8 @@ class ProjectileEvent extends BEvent {
                     );
 
                     if (available.length === 0) {
+                        console.log(ProjectileEvent.spacelessBattleString(aGroups, bGroups, t));
+
                         // later update summary
                         return summary;
                     }
@@ -439,28 +443,59 @@ class ProjectileEvent extends BEvent {
                 aTotalSize -= protag.target.getTrait('size') * attack.casualties;
             }
 
-            // later functionize foo(aGroups)
-            const aSizes = aGroups.map(
-                g => g.getSize().toString().padStart(3, ' ')
-            )
-            .filter(
-                size => size !== '  0'
-            )
-            .join(' ');
-
-            const bSizes = bGroups.map(
-                g => g.getSize().toString().padStart(3, ' ')
-            )
-            .filter(
-                size => size !== '  0'
-            )
-            .join(' ');
-
-            console.log(`----------------------------------------------- ${t}s\n${aSizes}\n${bSizes}\n`);
+            console.log(ProjectileEvent.spacelessBattleString(aGroups, bGroups, t));
         }
 
         // TODO populate summary
         return summary;
+    }
+
+    // Only one number per group - the total size.
+    static spacelessSizeString (aGroups, bGroups, t) {
+        const aSizes = aGroups.map(
+            g => g.getSize().toString().padStart(3, ' ')
+        )
+        .filter(
+            size => size !== '  0'
+        )
+        .join(' ');
+
+        const bSizes = bGroups.map(
+            g => g.getSize().toString().padStart(3, ' ')
+        )
+        .filter(
+            size => size !== '  0'
+        )
+        .join(' ');
+
+        return `----------------------------------------------- ${t}s\n${aSizes}\n${bSizes}\n`;
+    }
+
+    // Later could combine this with Group.dotGrid() rectangle of dots.
+    // Log each group like '6x Marine'
+    static spacelessBattleString (aGroups, bGroups, t) {
+        const COL_WIDTH = 50;
+
+        const lines = [];
+
+        for (let i = 0; i < Math.max(aGroups.length, bGroups.length); i++) {
+            const ag = aGroups[i];
+            const aText = ag && ag.active ?
+                `${ag.quantity}x ${Util.capitalized(ag.templateName)}` :
+                '';
+
+            const bg = bGroups[i];
+            const bText = bg && bg.active ?
+                `${bg.quantity}x ${Util.capitalized(bg.templateName)}` :
+                '';
+
+            lines.push(
+                aText.padEnd(COL_WIDTH, ' ') + bText
+            );
+        }
+
+        return `\n-------------------------------------------------------------------------- ${t}s\n` +
+            lines.join('\n');
     }
 
     // Tests a fight of arbitrary length between 2 Groups.
