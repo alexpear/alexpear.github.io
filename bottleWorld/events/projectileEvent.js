@@ -143,18 +143,19 @@ class ProjectileEvent extends BEvent {
         return chance;
     }
 
+    // Non SP based combat model.
     static damagePerShot (actionTemplate, target) {
         const damage = actionTemplate.damage - target.resistanceTo(actionTemplate.tags);
 
-        // Min and max damage per projectile.
-        if (damage < 1) {
-            return 1;
-        }
-        else if (damage > target.sp) {
-            return target.sp;
-        }
+        // Min damage per projectile.
+        return Math.max(1, damage);
+    }
 
-        return damage;
+    static damagePerShotSp (actionTemplate, target) {
+        const damage = ProjectileEvent.damagePerShot(actionTemplate, target);
+
+        // Max damage per projectile
+        return Math.min(damage, target.sp);
     }
 
     // Returns summary of expected damage over 1 sec of firing at various ranges.
@@ -203,10 +204,12 @@ class ProjectileEvent extends BEvent {
     // Uses the KO state system (non SP based)
     // Combatants are always in one of the following states: {OK, KO}
     static fireAt (attacker, actionTemplate, target, range, log) {
+        // Util.logDebug(`fireAt(${attacker && attacker.templateName || ' '}, ${actionTemplate && actionTemplate.name || ' '}, ${target && target.templateName || ' '}, ${range || ' '}, ${log})`)
+
         // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
         attacker       = Util.default(attacker,       Group.marineCompany());
-        target         = Util.default(target,         Group.marineCompany());
         actionTemplate = Util.default(actionTemplate, ActionTemplate.example());
+        target         = Util.default(target,         Group.marineCompany());
         range          = Util.default(range,          100);
         log            = Util.default(log,            true);
 
