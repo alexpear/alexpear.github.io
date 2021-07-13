@@ -147,12 +147,14 @@ speed: 1
 ac: 19
 sp: 15
 durability: 8
-resistance: heat 2, pierce 2
+resistance: heat 2, pierce 3
 toHit: 2
 damage: 2
 shots: 3
+weapon: battleRifle
 attacks: 
-  SMG: +2 x2, 2 pierce
+  battleRifle: +2 x2, 2 pierce
+comment: I believe nothing reads the 'attacks' section yet.
 
 * childrenof odst
 {unsc/item/veteranWeapon}
