@@ -116,10 +116,14 @@ class WGenerator {
         }
 
         this.glossary[key] = templateObj;
+        // TODO or unify glossaries and WGenerator.ids. Hashmap as static prop of WGenerator, keyed by codex path and/or id
 
+        // Currently, all template entries tagged with 'action' get a ActionTemplate pushed into creatureTemplate.actions
+        // See CreatureTeplate.fromRaw() & .setUpAction()
         templateObj.actions.forEach(
             actionTemplate => {
                 WGenerator.ids[actionTemplate.id] = actionTemplate;
+                WGenerator.ids[actionTemplate.name] = actionTemplate; // Later key this by full codex path.
             }
         );
 
