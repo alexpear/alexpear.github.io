@@ -35,7 +35,7 @@ class Group extends WNode {
         this.coord = coord;
         this.destination = undefined; // Coord
         this.target = undefined;  // Group
-        this.actions = [];
+        this.actions = this.actions || [];
     }
 
     toAlignmentString () {
@@ -380,6 +380,8 @@ class Group extends WNode {
     // Returns a Group.
     // Selects a random implemented template.
     static randomTemplate () {
+        // TODO randomize between a few ready templates
+        // TODO this Group.new() call is ending up with a empty .actions array.
         const squad = Group.new('halo/unsc/individual/marinePrivate', 10);
         // TODO this alias isnt getting resolved by WGenerator
         // const squad = Group.new('halo/unsc/individual/groupStatted', 5);
