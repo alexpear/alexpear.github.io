@@ -128,12 +128,22 @@ module.exports = `
 
 
 * template plasmaRifle
+tags: action plasma fullAuto
 size: 0.6
 weight: 6
+range: 40
+shotsPerSecond: 10
+hit: 4
+damage: 10
 
 * template plasmaPistol
+tags: action plasma
 size: 0.4
 weight: 4
+range: 40
+shotsPerSecond: 9
+hit: 3
+damage: 9
 
 
 `;

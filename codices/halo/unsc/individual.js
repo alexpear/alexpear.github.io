@@ -66,12 +66,14 @@ unsc/item/jetpack
 
 * template spartan
 tags: creature cyborg
-size: 2
+size: 1.5
 weight: 120
 sp: 20
+durability: 22
 damage: 4
 speed: 5
 stealth: 12
+weapon: dmr
 
 * childrenof spartan
 {unsc/item/anyWeapon}
@@ -113,7 +115,7 @@ speed: 1
 ac: 17
 sp: 10
 durability: 5
-resistance: heat 2, pierce 2
+resistance: heat 2, pierce 1
 weapon: assaultRifle
 toHit: 2
 damage: 2

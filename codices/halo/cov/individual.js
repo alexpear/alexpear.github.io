@@ -113,9 +113,11 @@ size: 1.5
 weight: 250
 individuals: 1
 maxSp: 20
+durability: 3
 damage: 1
 attackDelay: 2
 speed: 2
+weapon: plasmaPistol
 
 * childrenof gruntMinor
 {item/gruntWeapon}
@@ -150,10 +152,12 @@ size: 1
 speed: 1
 ac: 19
 sp: 50
+durability: 10
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaPistol
 
 * template drone
 size: 1
@@ -163,10 +167,12 @@ size: 2
 speed: 1
 ac: 19
 sp: 50
+durability: 20
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaRifle
 
 * template brute
 size: 2

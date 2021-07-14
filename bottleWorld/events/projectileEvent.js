@@ -160,6 +160,10 @@ class ProjectileEvent extends BEvent {
         return Math.min(damage, target.sp);
     }
 
+    static ttk (actionTemplate, target) {
+
+    }
+
     // Returns summary of expected damage over 1 sec of firing at various ranges.
     // Later could also add a similar func that calculates TTK for range/weap/target combinations
     static testActionDamage (actionTemplate, target) {
@@ -200,6 +204,85 @@ class ProjectileEvent extends BEvent {
         return summary;
     }
 
+    // Display damage effectiveness numbers, for calibrating & balancing
+    static koGrid () {
+        // Later probably make these full codex paths
+        const attacks = [
+            'assaultRifle',
+            'battleRifle',
+            'plasmaRifle',
+            'plasmaPistol',
+        ];
+
+        const templateNames = [
+            'halo/unsc/individual/marinePrivate',
+            'halo/unsc/individual/odst',
+            'halo/unsc/individual/spartan',
+            'halo/cov/individual/elite',
+            'halo/cov/individual/gruntMinor',
+            'halo/cov/individual/jackal',
+        ];
+
+        const grid = [];
+
+        for (let a = 0; a < attacks.length; a++) {
+            grid.push([]);
+
+            for (let t = 0; t < templateNames.length; t++) {
+                const action = WGenerator.ids[attacks[a]];
+                const target = WGenerator.newGroup(templateNames[t], 4);
+
+                Util.logDebug(`action name ${attacks[a]} \n action is ${action} \n template name ${templateNames[t]} \n target is ${target}`);
+
+                grid[a].push(ProjectileEvent.koChance(action, target));
+            }
+        }
+
+        // Now log grid
+        const templateCaption = templateNames.map(
+            path => path.slice(
+                path.lastIndexOf('/') + 1,
+                path.length
+            )
+            .padEnd(14)
+        )
+        .join(' ');
+
+        const lines = [];
+        for (let a = 0; a < attacks.length; a++) {
+            const entries = grid[a].map(
+                c => (c * 100).toFixed(0) + '%'
+            )
+            .join(' '.repeat(12));
+
+            lines.push(attacks[a].padEnd(20, ' ') + ' ' + entries);
+        }
+
+        // const lines = grid.map(
+        //     chances => chances.map(
+        //         c => c.toFixed(2)
+        //     )
+        //     .join('  ')
+        // );
+
+        const str = ' '.repeat(21) + templateCaption + '\n' + lines.join('\n');
+
+        console.log(str);
+
+        return grid;
+    }
+
+    static koChance (actionTemplate, target) {
+        return ProjectileEvent.koChanceByDamage(
+            ProjectileEvent.damagePerShot(actionTemplate, target),
+            target.template.durability
+        );
+    }
+
+    static koChanceByDamage (damagePerShot, durability) {
+        return damagePerShot /
+            (damagePerShot + durability);
+    }
 
     // Simulates 1 second of firing against target, with randomness.
     // No side effects. Returns a summary in the dry-run style.
@@ -242,13 +325,17 @@ class ProjectileEvent extends BEvent {
             Math.floor(shots);
 
         summary.hitChance = ProjectileEvent.hitChance(actionTemplate, target, range);
-        summary.damagePerShot = ProjectileEvent.damagePerShot(actionTemplate, target);
 
-        // Note that durability in the non-SP context means the value that has a 50% chance of KOing you. This is typically half as big as the SP definition of durability.
-        summary.durability = target.template.durability || 5;
 
         // LATER this will be a function of terrain, size, combat skill, and AoE attacks.
         summary.coverChance = 0.2;
+
+        // Note that durability in the non-SP context means the value that has a 50% chance of KOing you. This is typically half as big as the SP definition of durability.
+        summary.durability = target.template.durability || 5;
+        summary.damagePerShot = ProjectileEvent.damagePerShot(actionTemplate, target);
+
+        // Pseudosigmoid
+        summary.koChance = ProjectileEvent.koChanceByDamage(summary.damagePerShot, summary.durability);
 
         // console.log(Yaml.dump(summary));
 
@@ -265,11 +352,7 @@ class ProjectileEvent extends BEvent {
 
             summary.hits++;
 
-            // Pseudosigmoid
-            const koChance = summary.damagePerShot /
-                (summary.damagePerShot + summary.durability);
-
-            if (Math.random() > koChance) {
+            if (Math.random() > summary.koChance) {
                 continue; // Victim not seriously hurt.
             }
 
@@ -580,7 +663,9 @@ class ProjectileEvent extends BEvent {
             return;
         }
 
-        const outcome = ProjectileEvent.resolveBattle();
+        // const outcome = ProjectileEvent.resolveBattle();
+
+        ProjectileEvent.koGrid();
     }
 };
 
