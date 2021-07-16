@@ -92,6 +92,24 @@ util.randomPastel = () => {
     return hexCode;
 };
 
+util.colorDiff = (hex1, hex2) => {
+    // later standardize inputs to strings
+    let diff = 0;
+
+    for (let i = 0; i < 6; i += 2) {
+        const str1 = hex1.slice(i, i + 2);
+        const color1 = util.hexStringToNumber(str1); // later implement func https://stackoverflow.com/questions/52261494/hex-to-string-string-to-hex-conversion-in-nodejs
+
+        const str2 = hex2.slice(i, i + 2);
+        const color2 = util.hexStringToNumber(str2);
+
+        diff += Math.abs(color1 - color2);
+    }
+
+    // Max value is 256 * 3 = 768
+    return diff;
+};
+
 util.NODE_TYPES = {
     region: 'region',
     location: 'location'  // deprecated
