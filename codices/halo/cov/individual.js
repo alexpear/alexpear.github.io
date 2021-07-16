@@ -138,22 +138,25 @@ individuals: 1
 item/bombHarness
 
 * template grunt
+cost: 4
 size: 1
 speed: 1
 ac: 19
-sp: 50
-resistance: heat 2
+sp: 30
+durability: 30
 toHit: 3
 damage: 9
 shots: 2
+weapon: needler
 
 * template jackal
+cost: 7
 size: 1
 speed: 1
 ac: 19
 sp: 50
-durability: 10
-resistance: heat 2
+durability: 50
+resistance: fire 2 pierce 5
 toHit: 3
 damage: 9
 shots: 2
@@ -163,12 +166,13 @@ weapon: plasmaPistol
 size: 1
 
 * template elite
+cost: 10
 size: 2
 speed: 1
 ac: 19
-sp: 50
-durability: 20
-resistance: heat 2
+sp: 190
+durability: 190
+resistance: fire 1 impact 1
 toHit: 3
 damage: 9
 shots: 2
@@ -179,6 +183,7 @@ size: 2
 speed: 1
 ac: 19
 sp: 50
+durability: 50
 resistance: heat 2
 toHit: 3
 damage: 9
@@ -192,6 +197,7 @@ size: 3
 speed: 1
 ac: 19
 sp: 50
+durability: 50
 resistance: heat 2
 toHit: 3
 damage: 9
@@ -204,6 +210,7 @@ speed: 25
 moveType: skimmer
 ac: 19
 sp: 50
+durability: 50
 resistance: heat 2
 toHit: 3
 damage: 9

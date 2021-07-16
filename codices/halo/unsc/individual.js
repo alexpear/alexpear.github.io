@@ -69,7 +69,7 @@ tags: creature cyborg
 size: 1.5
 weight: 120
 sp: 20
-durability: 22
+durability: 28
 damage: 4
 speed: 5
 stealth: 12
@@ -113,8 +113,8 @@ tags: creature
 size: 1
 speed: 1
 ac: 17
-sp: 10
-durability: 5
+sp: 70
+durability: 70
 resistance: heat 2, pierce 1
 weapon: assaultRifle
 toHit: 2
@@ -148,8 +148,8 @@ tags: creature
 size: 1
 speed: 1
 ac: 19
-sp: 15
-durability: 8
+sp: 100
+durability: 100
 resistance: heat 2, pierce 3
 toHit: 2
 damage: 2

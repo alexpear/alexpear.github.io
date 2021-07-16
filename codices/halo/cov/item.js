@@ -128,22 +128,35 @@ module.exports = `
 
 
 * template plasmaRifle
+cost: 4
 tags: action plasma fullAuto
 size: 0.6
 weight: 6
 range: 40
 shotsPerSecond: 10
 hit: 4
-damage: 10
+damage: 17
 
 * template plasmaPistol
+cost: 3
 tags: action plasma
 size: 0.4
 weight: 4
 range: 40
 shotsPerSecond: 9
 hit: 3
-damage: 9
+damage: 11
+
+* template needler
+cost: 4
+tags: action needle
+size: 0.5
+weight: 5
+range: 40
+shotsPerSecond: 9
+hit: 6
+damage: 23
+
 
 
 `;

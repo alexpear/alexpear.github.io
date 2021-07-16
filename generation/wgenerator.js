@@ -123,6 +123,8 @@ class WGenerator {
         templateObj.actions.forEach(
             actionTemplate => {
                 WGenerator.ids[actionTemplate.id] = actionTemplate;
+
+                console.log(`Loading action ${actionTemplate.name}`);
                 WGenerator.ids[actionTemplate.name] = actionTemplate; // Later key this by full codex path.
             }
         );

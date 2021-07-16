@@ -291,9 +291,12 @@ class ProjectileEvent extends BEvent {
     static fireAt (attacker, actionTemplate, target, range, log) {
         // Util.logDebug(`fireAt(${attacker && attacker.templateName || ' '}, ${actionTemplate && actionTemplate.name || ' '}, ${target && target.templateName || ' '}, ${range || ' '}, ${log})`);
 
-        // NOTE: Saw a weird error here involving WGenerator.makeNode(), possibly caused by the fact that Group and WGenerator both require() each other (circular dependency, 2020 Dec).
+        const defaultAction = WGenerator.ids[
+            attacker.template && attacker.template.weapon || 'assaultRifle'
+        ];
+
         attacker       = Util.default(attacker,       WGenerator.marineCompany());
-        actionTemplate = Util.default(actionTemplate, WGenerator.ids[attacker.template && attacker.template.weapon || 'assaultRifle']);
+        actionTemplate = Util.default(actionTemplate, defaultAction);
         target         = Util.default(target,         WGenerator.marineCompany());
         range          = Util.default(range,          100);
         log            = Util.default(log,            true);
@@ -429,13 +432,27 @@ class ProjectileEvent extends BEvent {
         return groups;
     }
 
+    static islandBattle () {
+        const unsc = [
+            WGenerator.newGroup('halo/unsc/individual/marinePrivate', 10),
+            WGenerator.newGroup('halo/unsc/individual/odst', 10),
+        ];
+
+        const cov = [
+            WGenerator.newGroup('halo/cov/individual/grunt', 10),
+            WGenerator.newGroup('halo/cov/individual/elite', 10),
+        ];
+
+        return ProjectileEvent.resolveBattle(unsc, cov, 30);
+    }
+
     // Groups do not move for now. Terrain is flat.
     // Does indeed mutate the Groups.
     static resolveBattle (aGroups, bGroups, range, log) {
         aGroups = Util.default(aGroups, ProjectileEvent.randomGroups());
         bGroups = Util.default(bGroups, ProjectileEvent.randomGroups());
 
-        // Do note that if we set the range high, groups might be unable to deal damage!
+        // Do note that if we set the range high, some groups might be unable to deal damage!
         const defaultRange = Math.ceil(Math.random() * 50);
         range = Util.default(range, defaultRange);
         log = Util.default(log, true);
@@ -663,9 +680,9 @@ class ProjectileEvent extends BEvent {
             return;
         }
 
-        // const outcome = ProjectileEvent.resolveBattle();
+        const outcome = ProjectileEvent.islandBattle();
 
-        ProjectileEvent.koGrid();
+        // ProjectileEvent.koGrid();
     }
 };
 

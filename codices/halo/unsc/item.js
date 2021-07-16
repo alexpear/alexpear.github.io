@@ -244,6 +244,7 @@ damage: 7
 
 * template assaultRifle
 tags: action bullet fullAuto
+cost: 7
 range: 40
 shotsPerSecond: 15
 hit: 3
@@ -251,10 +252,11 @@ damage: 11
 
 * template battleRifle
 tags: action bullet
-range: 80
+cost: 8
+range: 90
 shotsPerSecond: 7.2
 hit: 3
-damage: 9
+damage: 5
 
 * template dmr
 tags: action bullet firearm optics
