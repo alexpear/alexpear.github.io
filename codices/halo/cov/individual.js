@@ -166,7 +166,7 @@ weapon: plasmaPistol
 size: 1
 
 * template elite
-cost: 10
+cost: 15
 size: 2
 speed: 1
 ac: 19

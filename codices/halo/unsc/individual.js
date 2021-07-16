@@ -109,6 +109,7 @@ weight: 1000
 4 odst
 
 * template marinePrivate
+cost: 9
 tags: creature
 size: 1
 speed: 1
@@ -135,7 +136,7 @@ size: 1
 speed: 1
 ac: 17
 sp: 10
-resistance: heat 2, pierce 2
+resistance: fire 2, pierce 2
 toHit: 2
 damage: 2
 shots: 3
@@ -144,13 +145,14 @@ attacks:
 comment: GridWar calls them 'marine', not 'marinePrivate'. This marine has a SMG.
 
 * template odst
+cost: 11
 tags: creature
 size: 1
 speed: 1
 ac: 19
 sp: 100
 durability: 100
-resistance: heat 2, pierce 3
+resistance: fire 2, pierce 3
 toHit: 2
 damage: 2
 shots: 3

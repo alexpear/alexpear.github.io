@@ -443,7 +443,23 @@ class ProjectileEvent extends BEvent {
             WGenerator.newGroup('halo/cov/individual/elite', 10),
         ];
 
-        return ProjectileEvent.resolveBattle(unsc, cov, 30);
+        const startCosts = [unsc, cov].map(ProjectileEvent.totalCost);
+
+        const outcome = ProjectileEvent.resolveBattle(unsc, cov, 30);
+
+        const endCosts = [unsc, cov].map(ProjectileEvent.totalCost);
+
+        console.log(`\n  UNSC ${endCosts[0]}/${startCosts[0]} pts, Covenant ${endCosts[1]}/${startCosts[1]} pts \n`);
+
+        return outcome;
+    }
+
+    static totalCost (groups) {
+        return Util.sum(
+            groups.map(
+                g => (g.template.cost || 4) * g.quantity
+            )
+        );
     }
 
     // Groups do not move for now. Terrain is flat.
