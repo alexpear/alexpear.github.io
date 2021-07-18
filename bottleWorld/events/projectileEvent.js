@@ -491,11 +491,13 @@ class ProjectileEvent extends BEvent {
             range: range
         };
 
+        console.log(ProjectileEvent.spacelessBattleString(aGroups, bGroups, 0));
+
         const longerLength = Math.max(aGroups.length, bGroups.length);
 
         let t;
 
-        for (t = 0; t < 10000; t++) {
+        for (t = 1; t < 10000; t++) {
             for (let i = 0; i < longerLength; i++) {
                 let protag;
 
