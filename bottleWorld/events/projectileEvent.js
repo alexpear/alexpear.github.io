@@ -284,6 +284,81 @@ class ProjectileEvent extends BEvent {
             (damagePerShot + durability);
     }
 
+    // Assumed to start at the greater of their 2 ranges.
+    // No side effects
+    // Returns boolean
+    static likelyBeats (groupA, groupB) {
+        const aStartingQuantity = groupA.quantity;
+        const bStartingQuantity = groupB.quantity;
+        let beats;
+
+        const attackA = WGenerator.ids[groupA.template.weapon];
+        const attackB = WGenerator.ids[groupB.template.weapon];
+
+        let longRangedGroup;
+        let shortRangedGroup;
+        let longRange;
+        let shortRange;
+
+        if (attackA.range < attackB.range) {
+            longRangedGroup = groupB;
+            longRange = attackB.range;
+            shortRangedGroup = groupA;
+            shortRange = attackA.range;
+        }
+        else {
+            longRangedGroup = groupA;
+            longRange = attackA.range;
+            shortRangedGroup = groupB;
+            shortRange = attackB.range;
+        }
+
+        let range = longRange;
+
+        for (let t = 1; t < 10000; t++) {
+            // TODO both attack, decrease range by shortranged's speed, etc
+
+            const bCasualties = ProjectileEvent.lucklessCasualties(attackA, groupB, range) * groupA.quantity;
+
+
+
+
+            if (groupA.quantity <= 0) {
+                if (groupB.quantity < groupA.quantity) {
+                    // If B also went negative just now, and is more deeply negative.
+                    beats = true;
+                    break;
+                }
+
+                beats = false;
+                break;
+            }
+
+            if (groupB.quantity <= 0) {
+                beats = true;
+                break;
+            }
+        }
+
+        groupA.quantity = aStartingQuantity;
+        groupA.active = true;
+
+        groupB.quantity = bStartingQuantity;
+        groupB.active = true;
+
+        return beats;
+    }
+
+    // Per shooter.
+    static lucklessCasualties (actionTemplate, targetGroup, range) {
+        const hitChance = ProjectileEvent.hitChance(actionTemplate, targetGroup, range);
+        const coverChance = 0.2;
+        const damagePerShot = ProjectileEvent.damagePerShot(actionTemplate, targetGroup);
+        const koChance = ProjectileEvent.koChanceByDamage(damagePerShot, targetGroup.template.durability);
+
+        return actionTemplate.shotsPerSecond * hitChance * (1 - coverChance) * koChance;
+    }
+
     // Simulates 1 second of firing against target, with randomness.
     // No side effects. Returns a summary in the dry-run style.
     // Uses the KO state system (non SP based)
