@@ -6,7 +6,7 @@ module.exports = `* output
 10 marathonClassCruiser
 2 gladiusClassCorvette
 2 phoenixClassCarrier
-1 infinityClassSupercarrier
+1 infinity
 
 * template frigate
 weight: 200000000
@@ -73,10 +73,10 @@ unsc/squad/bridgeCrew
 {navalCargo}
 {navalCargo}
 
-* template infinityClassSupercarrier
+* template infinity
 weight: 907000000000
 
-* childrenof infinityClassSupercarrier
+* childrenof infinity
 unsc/item/infinityMac
 unsc/squad/missileBattery
 unsc/squad/missileBattery

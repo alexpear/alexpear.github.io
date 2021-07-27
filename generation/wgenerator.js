@@ -596,6 +596,18 @@ class WGenerator {
         return `${ __dirname }/../codices`;
     }
 
+    static codexPathsWithPrefix (prefix) {
+        let out = [];
+
+        for (let path in WGenerator.generators) {
+            if (path.startsWith(prefix)) {
+                out.push(path);
+            }
+        }
+
+        return out;
+    }
+
     static loadCodices () {
         if (! WGenerator.generators) {
             WGenerator.generators = {};

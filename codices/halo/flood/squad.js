@@ -34,7 +34,7 @@ individual/pod
 individual/pod
 
 * template podGroup
-tags: group
+tags: group ringBottle
 consistsOf: individual/pod
 quantity: 13
 speed: 4

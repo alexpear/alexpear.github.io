@@ -4,44 +4,92 @@ const WorldState = require('./worldState.js');
 
 const WGenerator = require('../generation/wgenerator.js');
 
-// 
+const Util = require('../util/util.js');
+
+// Originally created to support Spaceless Halo Island project.
 class HaloWorldState extends WorldState {
+    // constructor () {
+    //     super();
 
 
+    // }
 
+    static codexCompleteness () {
+        const haloPaths = WGenerator.codexPathsWithPrefix('halo');
 
+        for (let path of haloPaths) {
+            const glossary = WGenerator.generators[path].glossary;
 
-
+            for (let templateName in glossary) {
+                HaloWorldState.goodTemplate(glossary[templateName]);
+            }
+        }
+    }
 
     static goodTemplate (creatureTemplate) {
+        const IGNORE_TAGS = ['fleetGen', 'ringBottle'];
+
+        if (Util.hasOverlap(IGNORE_TAGS, creatureTemplate.tags)) {
+            return true;
+        }
+
         const missing = [];
 
-        checkProps(
-            ['cost', 'size', 'speed', 'durability'],
-            // 'terrainCategory'
-            creatureTemplate,
-            missing
-        );
+        if (Util.contains(creatureTemplate.tags, 'action')) {
+          // It is a weapon, not a creature
+
+          // TODO CreatureTemplate.fromRaw() is returning something weird
+        /*
+        {
+            name: plasmaRifle
+            id:...PM0
+            weight: 6
+            tags: []
+            actions: [{
+                name: plasmaRifle
+                id: ...IVx
+                tags: [
+                    plasma
+                    fullAuto
+                ]
+                range: 40
+                etc
+            }]
+            }
+        }
+        */
+
+          checkProps(
+                ['cost', 'range', 'canTarget', 'shotsPerSecond', 'hit', 'damage', 'damageType'],
+                // 'terrainCategory'
+                creatureTemplate,
+                missing
+            );
+        }
+        else {
+            Util.logDebug(`template ${creatureTemplate.name} tags are ${creatureTemplate.tags}`);
+
+            checkProps(
+                ['cost', 'size', 'speed', 'durability', 'moveType'],
+                // 'terrainCategory'
+                creatureTemplate,
+                missing
+            );
+        }
 
         const attack = WGenerator.ids[creatureTemplate.weapon];
 
         if (! attack) {
             missing.push('attackInWGenerator');
         }
-        else {
-            checkProps(
-                ['range', 'hit', 'damage', 'shotsPerSecond', 'damageType'],
-                // 'targetCategories'
-                creatureTemplate,
-                missing
-            );
-        }
 
         if (missing.length === 0) {
             return true;
         }
 
-        Util.logError(`ProjectileEvent: template is missing these: ${missing.join(' ')}`);
+        const messageStart = `Template ${creatureTemplate.name} is missing these:`;
+
+        console.log(`${messageStart.padEnd(50)}${missing.join(' ')}`);
         return false;
 
         function checkProps (keys, template, output) {
@@ -51,11 +99,17 @@ class HaloWorldState extends WorldState {
         }
 
         function checkProp (key, template, output) {
-            if (! template[key]) {
+            if (! Util.exists(template[key])) {
                 output.push(key);
             }
         }
     }
+
+    static run () {
+        return HaloWorldState.codexCompleteness();
+    }
 }
 
 module.exports = HaloWorldState;
+
+HaloWorldState.run();

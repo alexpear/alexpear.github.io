@@ -190,6 +190,10 @@ class CreatureTemplate extends NodeTemplate {
         creatureTemplate.name = CreatureTemplate.templateKey(tableRaw);
         creatureTemplate.setUpAction();
 
+        if (tableRaw.startsWith('template plasmaRifle')) {
+            Util.logDebug(`CreatureTemplate.fromRaw() returning: ${Util.stringify(creatureTemplate)}`);
+        }
+
         return creatureTemplate;
     }
 

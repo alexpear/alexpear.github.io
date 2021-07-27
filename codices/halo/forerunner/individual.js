@@ -33,28 +33,46 @@ forerunner/item/boltshot
 
 * template sentinel
 size: 2
+weapon: sentinelBeam
 
 * template enforcer
 size: 7
+weapon: bruteShot
 
 * template crawler
 size: 1
+speed: 18
+durability: 70
+weapon: boltshot
 
 * template soldier
 size: 1
+speed: 23
+durability: 100
+weapon: lightrifle
 
 * template knight
 size: 3
+speed: 12
+durability: 400
+weapon: incinerationCannon
 
 * template survivor
 size: 3
 
 * template phaeton
 size: 10
+speed: 28
+durability: 1400
+weapon: phaetonCannon
+
+* template phaetonCannon
+tags: action
+hit: 2
 
 * template keyship
 size: 13000
-
+durability: 20000000
 
 
 `;

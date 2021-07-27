@@ -145,6 +145,10 @@ util.contains = function (array, fugitive) {
 util.includes = util.contains;
 
 util.hasOverlap = function (arrayA, arrayB) {
+    if (! arrayA || ! arrayB) {
+        return false;
+    }
+
     for (let i = 0; i < arrayA.length; i++) {
         if (util.contains(arrayB, arrayA[i])) {
             return true;
