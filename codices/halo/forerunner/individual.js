@@ -38,7 +38,9 @@ weapon: sentinelBeam
 
 * template enforcer
 size: 7
+speed: 8
 moveType: air
+durability: 1500
 weapon: bruteShot
 
 * template crawler
@@ -66,6 +68,8 @@ weapon: incinerationCannon
 size: 3
 speed: 13
 moveType: infantry
+durability: 2000
+weapon: boltshot
 
 * template phaeton
 size: 10

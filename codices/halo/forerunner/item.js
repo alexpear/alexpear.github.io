@@ -42,4 +42,42 @@ module.exports = `
 4 regenerationField
 4 prometheanVision
 
+* template sentinelBeam
+tags: action
+size: 1
+range: 80
+shotsPerSecond: 1
+hit: 6
+damage: 50
+damageType: fire
+
+* template boltshot
+tags: action
+size: 0.4
+range: 40
+shotsPerSecond: 4
+hit: 7
+damage: 30
+damageType: fire
+comment: Halo 5
+
+* template lightrifle
+tags: action
+size: 1.1
+range: 90
+shotsPerSecond: 3
+hit: 7
+damage: 40
+damageType: fire
+
+* template incinerationCannon
+tags: action
+size: 2
+range: 80
+shotsPerSecond: 0.3
+hit: 5
+damage: 450
+damageType: fire
+
+
 `;

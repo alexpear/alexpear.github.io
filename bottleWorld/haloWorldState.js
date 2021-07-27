@@ -38,14 +38,14 @@ class HaloWorldState extends WorldState {
         if (Util.contains(creatureTemplate.tags, 'action')) {
           // It is a weapon, not a creature
           checkProps(
-                ['cost', 'range', 'canTarget', 'shotsPerSecond', 'hit', 'damage', 'damageType'],
+                ['cost', 'range', /*'canTarget',*/ 'shotsPerSecond', 'hit', 'damage', 'damageType'],
                 // 'terrainCategory'
                 creatureTemplate,
                 missing
             );
         }
         else {
-            Util.logDebug(`template ${creatureTemplate.name} tags are ${creatureTemplate.tags}`);
+            // Util.logDebug(`template ${creatureTemplate.name} tags are ${creatureTemplate.tags}`);
 
             checkProps(
                 ['cost', 'size', 'speed', 'durability', 'moveType'],
@@ -53,12 +53,12 @@ class HaloWorldState extends WorldState {
                 creatureTemplate,
                 missing
             );
-        }
 
-        const attack = WGenerator.ids[creatureTemplate.weapon];
+            const attack = WGenerator.ids[creatureTemplate.weapon];
 
-        if (! attack) {
-            missing.push('attackInWGenerator');
+            if (! attack) {
+                missing.push('attackInWGenerator');
+            }
         }
 
         if (missing.length === 0) {
