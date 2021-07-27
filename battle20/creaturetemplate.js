@@ -115,6 +115,41 @@ class CreatureTemplate extends NodeTemplate {
     // If so, transforms this CreatureTemplate to have a ActionTemplate with the relevant stats.
     // Also removes the old modifiers and tag.
     setUpAction () {
+        // TODO CreatureTemplate.fromRaw() is returning something weird
+        // Do i even want to call setUpAction() anymore?
+        // What was the original motive?
+        // Opts
+        // . reference .actions[0] in Halo Bottle
+        // . produce a flat weapon obj in memory somehow
+        // . make the outer obj usable by Halo Bottle
+        /*
+        However, i need whichever part i'm using in Halo Bottle to be included in WGenerator.ids
+        Should i draw a paper diagram?
+        Maybe i should just deactivate the inner-action system, & stop calling setUpAction. TODO
+        I'm not sure it's live anyway.
+
+        Maybe i should have goodTemplate() try to evaluate each template as a weapon or as a creature, and focus on whichever seems to be the intent.
+        Or maybe i should call goodCreatureTemplate() on the individual.js files, and goodAttackTemplate() on the item.js files. TODO
+
+
+        {
+            name: plasmaRifle
+            id:...PM0
+            weight: 6
+            tags: []
+            actions: [{
+                name: plasmaRifle
+                id: ...IVx
+                tags: [
+                    plasma
+                    fullAuto
+                ]
+                range: 40
+                etc
+            }]
+        }
+        */
+
         const actionTagIndex = this.tags && this.tags.indexOf('action');
 
         if (actionTagIndex >= 0) {

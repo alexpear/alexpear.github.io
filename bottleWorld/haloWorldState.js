@@ -37,28 +37,6 @@ class HaloWorldState extends WorldState {
 
         if (Util.contains(creatureTemplate.tags, 'action')) {
           // It is a weapon, not a creature
-
-          // TODO CreatureTemplate.fromRaw() is returning something weird
-        /*
-        {
-            name: plasmaRifle
-            id:...PM0
-            weight: 6
-            tags: []
-            actions: [{
-                name: plasmaRifle
-                id: ...IVx
-                tags: [
-                    plasma
-                    fullAuto
-                ]
-                range: 40
-                etc
-            }]
-            }
-        }
-        */
-
           checkProps(
                 ['cost', 'range', 'canTarget', 'shotsPerSecond', 'hit', 'damage', 'damageType'],
                 // 'terrainCategory'
