@@ -297,6 +297,16 @@ util.shortId = function (id) {
         '';
 };
 
+// Input 2d array of strings or stringables
+// Output string formatted like a spreadsheet, suitable for printing
+util.toChartString = (grid) => {
+    // LATER
+
+    // In each column, format each cell as String(cell).padEnd(Math.max(lengths of column))
+
+};
+
+
 // Input string[]
 // Returns string summarizing redundancies
 util.arraySummary = (a) => {
