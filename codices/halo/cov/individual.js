@@ -300,7 +300,7 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
-weapon: plasmaCannon
+weapon: plasmaTurret
 
 * template wraith
 size: 9

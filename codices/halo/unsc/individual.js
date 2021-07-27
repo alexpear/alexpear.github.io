@@ -8,7 +8,7 @@ module.exports = `
 1 spartan
 
 * template human
-tags: creature animal biped terrestrial biological
+tags: creature animal biped terrestrial biological fleetGen
 individuals: 1
 weight: 80
 size: 1.7
@@ -67,12 +67,13 @@ unsc/item/jetpack
 * template spartan
 tags: creature cyborg
 size: 1.5
+speed: 5
+moveType: infantry
+stealth: 12
 weight: 120
 sp: 20
 durability: 28
 damage: 4
-speed: 5
-stealth: 12
 weapon: dmr
 
 * childrenof spartan
@@ -92,7 +93,7 @@ human
 1 spartan
 
 * template dropPod
-tags: thing vehicle
+tags: thing vehicle fleetGen
 weight: 1000
 
 * childrenof dropPod
@@ -110,7 +111,7 @@ weight: 1000
 
 * template marinePrivate
 cost: 9
-tags: creature
+tags: creature fleetGen
 size: 1
 speed: 1
 ac: 17
@@ -133,22 +134,26 @@ human
 * template marine
 tags: creature
 size: 1
-speed: 1
+speed: 9
+moveType: infantry
 ac: 17
-sp: 10
+sp: 70
+durability: 70
 resistance: fire 2, pierce 2
 toHit: 2
 damage: 2
 shots: 3
-attacks: 
+attacks:
   SMG: +2 x2, 2 pierce
-comment: GridWar calls them 'marine', not 'marinePrivate'. This marine has a SMG.
+weapon: assaultRifle
+comment: GridWar calls them 'marine', not 'marinePrivate'.
 
 * template odst
 cost: 11
 tags: creature
 size: 1
-speed: 1
+speed: 9
+moveType: infantry
 ac: 19
 sp: 100
 durability: 100
@@ -171,78 +176,106 @@ unsc/item/fragGrenade
 human
 
 * template officer
+tags: creature
 size: 1
-speed: 1
-sp: 5
+speed: 9
+moveType: infantry
+sp: 14
+durability: 14
+weapon: lightPistol
 
 * template mongoose
 size: 4
 speed: 2
+moveType: wheeled
 ac: 21
-sp: 150
-resistance: heat 2
+sp: 80
+durability: 80
+resistance: heat 2 pierce 1
 toHit: 1
 damage: 50
 shots: 0.5
+weapon: smg
 
 * template warthog
 size: 6
 speed: 25
+moveType: wheeled
 ac: 19
-sp: 50
+sp: 400
+durability: 400
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: chaingun
 comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
 
 * template transportWarthog
 size: 6
+tags: fleetGen
 comment: 'Later this would benefit from template inheritance.'
 
 * template mantis
 size: 4
+speed: 9
+moveType: infantry
+durability: 2000
+weapon: chaingun
 
 * template hornet
 size: 10
 speed: 25
 moveType: hover
 ac: 19
-sp: 50
+sp: 350
+durability: 350
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: rocketLauncher
 
 * template wasp
 size: 9
+speed: 40
+moveType: hover
+durability: 350
+weapon: rocketLauncher
 
 * template scorpion
 size: 10
-speed: 2
+speed: 15
+moveType: wheeled
 ac: 21
-sp: 150
-resistance: heat 2
+sp: 2200
+durability: 2200
+resistance: heat 1 pierce 4
 toHit: 1
 damage: 50
 shots: 0.5
+weapon: tankCannon
 
 * template elephant
 size: 25
-speed: 25
+speed: 9
+moveType: wheeled
 ac: 19
-sp: 50
-resistance: heat 2
+sp: 2000
+durability: 2000
+resistance: heat 2 pierce 5
 toHit: 3
 damage: 9
 shots: 2
+weapon: chaingun
 
 * template falcon
 size: 10
 speed: 25
 moveType: hover
 ac: 19
-sp: 50
+sp: 360
+durability: 360
 resistance: heat 2
 toHit: 3
 damage: 9
@@ -254,6 +287,7 @@ speed: 25
 moveType: hover
 ac: 19
 sp: 50
+durability: 1400
 resistance: heat 2
 toHit: 3
 damage: 9
@@ -262,8 +296,10 @@ shots: 2
 * template mammoth
 size: 68
 speed: 25
+moveType: wheeled
 ac: 19
 sp: 50
+durability: 10000
 resistance: heat 2
 toHit: 3
 damage: 9
@@ -272,8 +308,10 @@ shots: 2
 * template missileSilo
 size: 40
 speed: 0
+moveType: wheeled
 ac: 19
-sp: 50
+sp: 3000
+durability: 3000
 resistance: heat 2
 toHit: 3
 damage: 99
@@ -284,19 +322,25 @@ size: 500
 speed: 25
 moveType: hover
 ac: 19
-sp: 50
+sp: 30000
+durability: 30000
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: frigateMac
 
 * template marathonCruiser
+tags: fleetGen
 size: 1170
+comment: possibly rename to cruiser
 
 * template spiritOfFire
+tags: fleetGen
 size: 2500
 
 * template infinity
+tags: fleetGen
 size: 5000
 moveType: hover
 

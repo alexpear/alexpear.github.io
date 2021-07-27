@@ -115,19 +115,17 @@ class WGenerator {
             throw new Error(`template key '${ key }' appears twice`);
         }
 
+        WGenerator.ids[templateObj.id] = templateObj;
         this.glossary[key] = templateObj;
-        // TODO or unify glossaries and WGenerator.ids. Hashmap as static prop of WGenerator, keyed by codex path and/or id
+        // LATER might unify glossaries and WGenerator.ids. Hashmap as static prop of WGenerator, keyed by codex path and/or id
+        // Or at least have a central static getter func, that can take both codex paths & ids.
 
-        // Currently, all template entries tagged with 'action' get a ActionTemplate pushed into creatureTemplate.actions
-        // See CreatureTeplate.fromRaw() & .setUpAction()
-        templateObj.actions.forEach(
-            actionTemplate => {
-                WGenerator.ids[actionTemplate.id] = actionTemplate;
-
-                console.log(`Loading action ${actionTemplate.name}`);
-                WGenerator.ids[actionTemplate.name] = actionTemplate; // Later key this by full codex path.
-            }
-        );
+        if (Util.contains(templateObj.tags, 'action')) {
+            console.log(`Loading action ${templateObj.name}`);
+            WGenerator.ids[templateObj.name] = templateObj;
+            // Later key this by full codex path.
+            // Will require constructing the appropriate faction codex path when reading 'weapon' fields of HaloWorldSTate templates.
+        }
 
         // Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}.`);
         // Util.logDebug(`templateObj is ${JSON.stringify(templateObj, undefined, '    ')}`);

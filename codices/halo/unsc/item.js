@@ -180,8 +180,8 @@ module.exports = `* output
 * template mjolnirArmor
 weight: 454
 sp: 40
-resistance: fire 4, piercing 4, impact 3, vacuum 10
-tags: armor
+resistance: fire 4, pierce 4, impact 3, vacuum 10
+tags: armor fleetGen
 
 * alias armorMod
 4 armorLock
@@ -224,9 +224,18 @@ tags: armor
 
 * template flakArmor
 sp: 20
-resistance: fire 1, piercing 1, impact 1
-tags: armor
+resistance: fire 1, pierce 1, impact 1
+tags: armor fleetGen
 comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
+
+* template lightPistol
+tags: action firearm 1handed
+cost: 4
+range: 20
+shotsPerSecond: 6
+hit: 0
+damage: 17
+damageType: pierce
 
 * template reachPistol
 tags: action bullet firearm 1handed
@@ -234,13 +243,24 @@ range: 70
 shotsPerSecond: 2
 hit: 5
 damage: 40
+damageType: pierce
+
+* template heavyPistol
+tags: action firearm 1handed
+range: 70
+shotsPerSecond: 2
+hit: 4
+damage: 60
+damageType: pierce
 
 * template smg
 tags: action bullet firearm fullAuto
+canTarget: all
 range: 20
 shotsPerSecond: 15
 hit: 3
 damage: 7
+damageType: pierce
 
 * template assaultRifle
 tags: action bullet fullAuto
@@ -249,6 +269,7 @@ range: 40
 shotsPerSecond: 15
 hit: 3
 damage: 11
+damageType: pierce
 
 * template battleRifle
 tags: action bullet
@@ -257,6 +278,7 @@ range: 90
 shotsPerSecond: 7.2
 hit: 3
 damage: 5
+damageType: pierce
 
 * template dmr
 tags: action bullet firearm optics
@@ -264,6 +286,7 @@ range: 100
 shotsPerSecond: 3
 hit: 3
 damage: 10
+damageType: pierce
 
 * template shotgun
 tags: action bullet
@@ -271,6 +294,48 @@ range: 9
 shotsPerSecond: 1
 hit: 5
 damage: 90
+damageType: pierce
 attackDelay: 2
+
+* template sniperRifle
+tags: action firearm
+range: 800
+shotsPerSecond: 1.1
+hit: 20
+damage: 150
+damageType: pierce
+
+* template rocketLauncher
+tags: action heavy
+cost: 4
+range: 150
+shotsPerSecond: 0.3
+hit: 2
+damage: 500
+damageType: impact
+
+* template chaingun
+tags: action firearm
+range: 60
+shotsPerSecond: 5
+hit: 2
+damage: 25
+damageType: pierce
+
+* template tankCannon
+tags: action firearm
+range: 3000
+shotsPerSecond: 0.3
+hit: 16
+damage: 700
+damageType: impact
+
+* template macTurret
+tags: action
+range: 4000
+shotsPerSecond: 0.1
+hit: 10
+damage: 3000
+damageType: pierce
 
 `;

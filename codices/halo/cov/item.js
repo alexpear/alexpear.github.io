@@ -129,23 +129,25 @@ module.exports = `
 
 * template plasmaRifle
 cost: 4
-tags: action plasma fullAuto
+tags: action plasma 1handed
 size: 0.6
 weight: 6
 range: 40
 shotsPerSecond: 10
 hit: 4
 damage: 17
+damageType: fire
 
 * template plasmaPistol
 cost: 3
-tags: action plasma
+tags: action plasma 1handed
 size: 0.4
 weight: 4
 range: 40
 shotsPerSecond: 9
 hit: 3
 damage: 11
+damageType: fire
 
 * template needler
 cost: 4
@@ -156,7 +158,96 @@ range: 40
 shotsPerSecond: 9
 hit: 6
 damage: 23
+damageType: pierce
 
+* template carbine
+tags: action
+size: 1
+range: 80
+shotsPerSecond: 6
+hit: 4
+damage: 16
+damageType: pierce
 
+* template beamRifle
+tags: action
+size: 1.8
+range: 200
+shotsPerSecond: 1
+hit: 20
+damage: 150
+damageType: pierce
 
+* template fuelRodCannon
+tags: action
+size: 1.4
+range: 60
+shotsPerSecond: 2
+hit: 2
+damage: 160
+damageType: impact
+
+* template plasmaTurret
+tags: action
+size: 1.2
+range: 70
+shotsPerSecond: 8
+hit: 3
+damage: 40
+damageType: fire
+
+* template shadeCannon
+tags: action
+size: 1.6
+range: 300
+shotsPerSecond: 3
+hit: 3
+damage: 20
+damageType: fire
+
+* template plasmaMortar
+tags: action
+size: 3
+range: 3000
+shotsPerSecond: 0.3
+hit: 2
+damage: 900
+damageType: impact
+
+* template scarabCannon
+tags: action
+size: 4
+range: 800
+shotsPerSecond: 0.2
+hit: 6
+damage: 2000
+damageType: fire
+
+* template spiker
+tags: action
+size: 0.5
+range: 30
+shotsPerSecond: 8
+hit: 1
+damage: 14
+damageType: pierce
+
+* template bruteShot
+tags: action
+size: 1
+canTarget: ground
+range: 50
+shotsPerSecond: 2
+hit: 3
+damage: 90
+damageType: impact
+
+* template gravityHammer
+tags: action
+size: 2.5
+range: 3
+shotsPerSecond: 1.3
+hit: 10
+damage: 250
+damageType: impact
 `;

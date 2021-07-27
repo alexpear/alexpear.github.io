@@ -142,6 +142,7 @@ mongoose
 mongoose
 
 * template mongoose
+tags: fleetGen
 weight: 406
 
 * childrenof mongoose
@@ -153,6 +154,7 @@ gungoose
 gungoose
 
 * template gungoose
+tags: fleetGen
 weight: 420
 
 * childrenof gungoose
@@ -185,6 +187,7 @@ chaingun
 1 decoyLauncher
 
 * template warthogChassis
+tags: fleetGen
 weight: 3000
 defense: 10
 tags: vehicle
@@ -215,9 +218,11 @@ warthogChassis
 1 needleTurret
 
 * template chaingun
+tags: fleetGen
 weight: 100
 
 * template missilePod
+tags: fleetGen
 weight: 200
 
 * alias aircraft
@@ -237,15 +242,19 @@ weight: 200
 1 pelican
 
 * template falcon
+tags: fleetGen
 weight: 1500
 
 * template hornet
+tags: fleetGen
 weight: 1000
 
 * template wasp
+tags: fleetGen
 weight: 1000
 
 * template pelican
+tags: fleetGen
 weight: 138000
 
 * children of pelican
@@ -264,6 +273,7 @@ weight: 138000
 1 scorpion
 
 * template mantis
+tags: fleetGen
 weight: 5200
 
 * children of mantis
@@ -272,10 +282,12 @@ weight: 5200
 {turret}
 
 * template scorpion
+tags: fleetGen
 weight: 35000
 armor: 20
 
 * template elephant
+tags: fleetGen
 weight: 205000
 
 * children of elephant
@@ -298,6 +310,7 @@ marineFireteam
 4 scorpion
 
 * template mammoth
+tags: fleetGen
 weight: 484000
 
 * children of mammoth
@@ -439,7 +452,7 @@ forklift
 {unsc/individual/squadLeader}
 
 * template marineGroup
-tags: group
+tags: group fleetGen
 quantity: 8
 speed: 3
 consistsOf: individual/marinePrivate
