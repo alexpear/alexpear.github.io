@@ -55,8 +55,8 @@ class CreatureTemplate extends NodeTemplate {
         let combinedTemplate = this.deepCopy();
 
         // (Necessary if the root is a weapon or tool.)
-        combinedTemplate.setUpAction();
-        other.setUpAction();
+        // combinedTemplate.setUpAction();
+        // other.setUpAction();
 
         combinedTemplate.actions = Util.union(combinedTemplate.actions, other.actions);
         combinedTemplate.applyActionModifiers(other);
@@ -115,7 +115,7 @@ class CreatureTemplate extends NodeTemplate {
     // If so, transforms this CreatureTemplate to have a ActionTemplate with the relevant stats.
     // Also removes the old modifiers and tag.
     setUpAction () {
-        // TODO CreatureTemplate.fromRaw() is returning something weird
+        //  CreatureTemplate.fromRaw() is returning something weird
         // Do i even want to call setUpAction() anymore?
         // What was the original motive?
         // Opts
@@ -125,12 +125,11 @@ class CreatureTemplate extends NodeTemplate {
         /*
         However, i need whichever part i'm using in Halo Bottle to be included in WGenerator.ids
         Should i draw a paper diagram?
-        Maybe i should just deactivate the inner-action system, & stop calling setUpAction. TODO
+        Maybe i should just deactivate the inner-action system, & stop calling setUpAction.
         I'm not sure it's live anyway.
 
         Maybe i should have goodTemplate() try to evaluate each template as a weapon or as a creature, and focus on whichever seems to be the intent.
-        Or maybe i should call goodCreatureTemplate() on the individual.js files, and goodAttackTemplate() on the item.js files. TODO
-
+        Or maybe i should call goodCreatureTemplate() on the individual.js files, and goodAttackTemplate() on the item.js files.
 
         {
             name: plasmaRifle
@@ -223,7 +222,7 @@ class CreatureTemplate extends NodeTemplate {
             );
 
         creatureTemplate.name = CreatureTemplate.templateKey(tableRaw);
-        creatureTemplate.setUpAction();
+        // creatureTemplate.setUpAction();
 
         if (tableRaw.startsWith('template plasmaRifle')) {
             Util.logDebug(`CreatureTemplate.fromRaw() returning: ${Util.stringify(creatureTemplate)}`);
