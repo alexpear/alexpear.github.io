@@ -233,7 +233,7 @@ tags: action firearm 1handed
 cost: 4
 range: 20
 shotsPerSecond: 6
-hit: 0
+hit: 1
 damage: 17
 damageType: pierce
 

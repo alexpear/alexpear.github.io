@@ -14,6 +14,39 @@ class HaloWorldState extends WorldState {
 
     // }
 
+    static hitAnalysis () {
+        const grid = [];
+
+        const distances = [''];
+
+        for (let c = 1; c <= 28; c++) {
+            distances.push(10 * (c - 1) + 1);
+        }
+
+        // Header row
+        grid.push(distances);
+
+        for (let r = 1; r <= 36; r++) {
+            const row = [r / 2];
+
+            for (let c = 1; c < distances.length; c++) {
+                // Shooting at a group of Spartans
+                const advantage = row[0] * 4;
+                
+                const chance = advantage / (advantage + distances[c] + 1);
+
+                row.push(((chance * 100).toFixed(0)).padStart(2) + '% ');
+            }
+
+            grid.push(row);
+        }
+
+        const str = Util.toChartString(grid);
+        console.log('\nhit% by Hit stat & distance:\n' + str);
+
+        return grid;
+    }
+
     static codexCompleteness () {
         const haloPaths = WGenerator.codexPathsWithPrefix('halo');
 
@@ -84,7 +117,9 @@ class HaloWorldState extends WorldState {
     }
 
     static run () {
-        return HaloWorldState.codexCompleteness();
+        HaloWorldState.codexCompleteness();
+
+        HaloWorldState.hitAnalysis();
     }
 }
 

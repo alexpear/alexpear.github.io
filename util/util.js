@@ -300,10 +300,26 @@ util.shortId = function (id) {
 // Input 2d array of strings or stringables
 // Output string formatted like a spreadsheet, suitable for printing
 util.toChartString = (grid) => {
-    // LATER
+    let maxLengths = new Array(grid[0].length).fill(1);
 
-    // In each column, format each cell as String(cell).padEnd(Math.max(lengths of column))
+    for (let r = 0; r < grid.length; r++) {
 
+        for (let c = 0; c < grid[4].length; c++) {
+            const len = String(grid[r][c]).length;
+
+            if (maxLengths[c] < len) {
+                maxLengths[c] = len;
+            }
+        }
+    }
+
+    return grid.map(
+        row => row.map(
+            (cell, c) => String(cell).padEnd(maxLengths[c])
+        )
+        .join(' ')
+    )
+    .join('\n');
 };
 
 
