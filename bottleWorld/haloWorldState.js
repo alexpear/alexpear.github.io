@@ -20,14 +20,14 @@ class HaloWorldState extends WorldState {
         const distances = [''];
 
         for (let c = 1; c <= 28; c++) {
-            distances.push(10 * (c - 1) + 1);
+            distances.push(5 * (c - 1) + 1);
         }
 
         // Header row
         grid.push(distances);
 
         for (let r = 1; r <= 36; r++) {
-            const row = [r / 2];
+            const row = [r * 1]; //[r / 2];
 
             for (let c = 1; c < distances.length; c++) {
                 // Shooting at a group of Spartans

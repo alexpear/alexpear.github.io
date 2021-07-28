@@ -140,6 +140,8 @@ class ProjectileEvent extends BEvent {
         const advantage = target.getSize() * actionTemplate.hit / AIM_FUDGE;
         const chance = advantage / (advantage + distance + 1);
 
+        // LATER could treat ranges under 10m as 10m in this calculation, to indicate that ability to hit is complicated by the chaos of close combat.
+
         // Util.logDebug(`ProjectileEvent.hitChance(): ${advantage} / (${advantage} + ${distance} + 1) === ${chance}`);
 
         return chance;

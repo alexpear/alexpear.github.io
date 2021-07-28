@@ -241,7 +241,7 @@ damageType: pierce
 tags: action bullet firearm 1handed
 range: 70
 shotsPerSecond: 2
-hit: 5
+hit: 11
 damage: 40
 damageType: pierce
 
@@ -249,7 +249,7 @@ damageType: pierce
 tags: action firearm 1handed
 range: 70
 shotsPerSecond: 2
-hit: 4
+hit: 14
 damage: 60
 damageType: pierce
 
@@ -258,7 +258,7 @@ tags: action bullet firearm fullAuto
 canTarget: all
 range: 20
 shotsPerSecond: 15
-hit: 3
+hit: 6
 damage: 7
 damageType: pierce
 
@@ -267,7 +267,7 @@ tags: action bullet fullAuto
 cost: 7
 range: 40
 shotsPerSecond: 15
-hit: 3
+hit: 8
 damage: 11
 damageType: pierce
 
@@ -276,7 +276,7 @@ tags: action bullet
 cost: 8
 range: 90
 shotsPerSecond: 7.2
-hit: 3
+hit: 13
 damage: 5
 damageType: pierce
 
@@ -284,7 +284,7 @@ damageType: pierce
 tags: action bullet firearm optics
 range: 100
 shotsPerSecond: 3
-hit: 3
+hit: 90
 damage: 10
 damageType: pierce
 
@@ -301,7 +301,7 @@ attackDelay: 2
 tags: action firearm
 range: 800
 shotsPerSecond: 1.1
-hit: 20
+hit: 100
 damage: 150
 damageType: pierce
 
@@ -310,7 +310,7 @@ tags: action heavy
 cost: 4
 range: 150
 shotsPerSecond: 0.3
-hit: 2
+hit: 9
 damage: 500
 damageType: impact
 
@@ -318,7 +318,7 @@ damageType: impact
 tags: action firearm
 range: 60
 shotsPerSecond: 5
-hit: 2
+hit: 10
 damage: 25
 damageType: pierce
 
@@ -326,7 +326,7 @@ damageType: pierce
 tags: action firearm
 range: 3000
 shotsPerSecond: 0.3
-hit: 16
+hit: 80
 damage: 700
 damageType: impact
 
@@ -334,7 +334,7 @@ damageType: impact
 tags: action
 range: 4000
 shotsPerSecond: 0.1
-hit: 10
+hit: 80
 damage: 3000
 damageType: pierce
 
