@@ -286,11 +286,45 @@ class ProjectileEvent extends BEvent {
             (damagePerShot + durability);
     }
 
+    static costRatio (pathA, pathB) {
+        const groupA = WGenerator.newGroup(pathA, 5);
+        const groupB = WGenerator.newGroup(pathB, 5);
+
+        let aScore = ProjectileEvent.performance(groupA, groupB);
+
+        if (aScore === 0) {
+            return 1;
+        }
+
+        const startedPositive = aScore > 0;
+
+        while (startedPositive ? aScore > 0 : aScore < 0) {
+
+            if (startedPositive) {
+                groupB.quantity += 1;
+            }
+            else {
+                groupA.quantity += 1;
+            }
+
+            aScore = ProjectileEvent.performance(groupA, groupB);
+        }
+
+        return groupA.quantity / groupB.quantity;
+    }
+
+    static performance (groupA, groupB) {
+        return (
+            ProjectileEvent.performanceOrdered(groupA, groupB) +
+            ProjectileEvent.performanceOrdered(groupB, groupA) * -1
+        ) / 2;
+    }
+
     // Assumed that A goes first. This func should probably be called twice, with switched inputs.
     // Assumed to start at the greater of their 2 ranges.
     // No side effects
     // Returns total remaining durability, negative if B survives.
-    static performance (groupA, groupB) {
+    static performanceOrdered (groupA, groupB) {
         const aStartingQuantity = groupA.quantity;
         const bStartingQuantity = groupB.quantity;
 
@@ -340,6 +374,16 @@ class ProjectileEvent extends BEvent {
             if (groupA.quantity <= 0 || groupB.quantity <= 0) {
                 aScore = groupA.totalDurability() - groupB.totalDurability();
                 break;
+            }
+
+            // Move.
+            if (range > shortRange) {
+                // Speed unit is m/s
+                range -= shortRangedGroup.template.speed;
+
+                if (range < shortRange) {
+                    range = shortRange;
+                }
             }
         }
 
