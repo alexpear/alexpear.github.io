@@ -137,7 +137,12 @@ class ProjectileEvent extends BEvent {
             return 0;
         }
 
-        const advantage = target.getSize() * actionTemplate.hit / AIM_FUDGE;
+        // In luckless calculations, quantity may be 0.2, but we treat that as 1 here.
+        let size = target.quantity >= 1 ?
+            target.getSize() :
+            target.traitMax('size');
+
+        const advantage = size * actionTemplate.hit / AIM_FUDGE;
         const chance = advantage / (advantage + distance + 1);
 
         // LATER could treat ranges under 10m as 10m in this calculation, to indicate that ability to hit is complicated by the chaos of close combat.
@@ -311,6 +316,8 @@ class ProjectileEvent extends BEvent {
 
             prevScore = aScore;
             aScore = ProjectileEvent.performance(groupA, groupB);
+
+            console.log(`aScore from both: ${aScore}`);
         }
 
         // Eg 20 / 10 => return ratio 2
@@ -319,6 +326,7 @@ class ProjectileEvent extends BEvent {
     }
 
     static performance (groupA, groupB) {
+        // Convert 2nd call to be from A's perspective, then average the two.
         return (
             ProjectileEvent.performanceOrdered(groupA, groupB) +
             ProjectileEvent.performanceOrdered(groupB, groupA) * -1
@@ -333,7 +341,7 @@ class ProjectileEvent extends BEvent {
         const aStartingQuantity = groupA.quantity;
         const bStartingQuantity = groupB.quantity;
 
-        console.log(`performanceOrdered( ${groupA.toSimpleString()} , ${groupB.toSimpleString()} )`);
+        console.log(`  performanceOrdered( ${groupA.toSimpleString()} , ${groupB.toSimpleString()} )`);
 
         // Outcome var. If B has 2 survivors of durability 4 each, it would be -8.
         let aScore;
@@ -345,6 +353,8 @@ class ProjectileEvent extends BEvent {
         let shortRangedGroup;
         let longRange;
         let shortRange;
+
+        const MIN_QUANTITY = 0.1;
 
         if (attackA.range < attackB.range) {
             longRangedGroup = groupB;
@@ -362,14 +372,13 @@ class ProjectileEvent extends BEvent {
         let range = longRange;
 
         for (let t = 1; t < 10000; t++) {
-            // TODO decrease range by shortranged's speed, etc
-            // Or maybe should say long ranged group goes first
+            console.log(`    debug, top of performanceOrdered() loop: a quantity ${groupA.quantity}, b quantity ${groupB.quantity}, range ${range}`);
 
             const bCasualties = ProjectileEvent.lucklessCasualties(attackA, groupB, range) * groupA.quantity;
 
             groupB.quantity -= bCasualties;
 
-            if (groupA.quantity <= 0 || groupB.quantity <= 0) {
+            if (groupA.quantity < MIN_QUANTITY || groupB.quantity < MIN_QUANTITY) {
                 aScore = groupA.totalDurability() - groupB.totalDurability();
                 break;
             }
@@ -378,7 +387,7 @@ class ProjectileEvent extends BEvent {
 
             groupA.quantity -= aCasualties;
 
-            if (groupA.quantity <= 0 || groupB.quantity <= 0) {
+            if (groupA.quantity < MIN_QUANTITY || groupB.quantity < MIN_QUANTITY) {
                 aScore = groupA.totalDurability() - groupB.totalDurability();
                 break;
             }
@@ -399,6 +408,8 @@ class ProjectileEvent extends BEvent {
 
         groupB.quantity = bStartingQuantity;
         groupB.active = true;
+
+        console.log(`    aScore = ${aScore}`);
 
         return aScore;
     }
@@ -829,8 +840,11 @@ class ProjectileEvent extends BEvent {
 
         // const outcome = ProjectileEvent.islandBattle();
 
-        const ratio = ProjectileEvent.costRatio('halo/unsc/individual/marine', 'halo/cov/individual/grunt');
-        console.log(`Ratio is ${ratio}`);
+
+        const aName = 'gruntTest';
+        const bName = 'grunt';
+        const ratio = ProjectileEvent.costRatio(`halo/cov/individual/${aName}`, `halo/cov/individual/${bName}`);
+        console.log(`1 ${aName} is worth ${ratio} ${bName}s`);
     }
 };
 

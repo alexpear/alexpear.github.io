@@ -128,7 +128,7 @@ module.exports = `
 
 
 * template plasmaRifle
-cost: 4
+cost: 3
 tags: action plasma 1handed
 size: 0.6
 weight: 6
@@ -151,7 +151,7 @@ damageType: fire
 
 * template needler
 cost: 4
-tags: action needle
+tags: action needle 1handed
 size: 0.5
 weight: 5
 range: 40

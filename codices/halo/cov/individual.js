@@ -173,6 +173,14 @@ damage: 9
 shots: 2
 weapon: needler
 
+* template gruntTest
+cost: 4
+size: 1
+speed: 8
+moveType: infantry
+durability: 30
+weapon: fuelRodCannon
+
 * template jackal
 cost: 7
 size: 1
