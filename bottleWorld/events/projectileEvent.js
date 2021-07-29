@@ -287,10 +287,12 @@ class ProjectileEvent extends BEvent {
     }
 
     static costRatio (pathA, pathB) {
-        const groupA = WGenerator.newGroup(pathA, 5);
-        const groupB = WGenerator.newGroup(pathB, 5);
+        const groupA = WGenerator.newGroup(pathA, 10);
+        const groupB = WGenerator.newGroup(pathB, 10);
 
         let aScore = ProjectileEvent.performance(groupA, groupB);
+        let prevScore = aScore;
+        // prevScore could be used later to make a more precise estimate.
 
         if (aScore === 0) {
             return 1;
@@ -307,10 +309,13 @@ class ProjectileEvent extends BEvent {
                 groupA.quantity += 1;
             }
 
+            prevScore = aScore;
             aScore = ProjectileEvent.performance(groupA, groupB);
         }
 
-        return groupA.quantity / groupB.quantity;
+        // Eg 20 / 10 => return ratio 2
+        // So if A costs 4 then B should cost around 2
+        return groupB.quantity / groupA.quantity;
     }
 
     static performance (groupA, groupB) {
@@ -327,6 +332,8 @@ class ProjectileEvent extends BEvent {
     static performanceOrdered (groupA, groupB) {
         const aStartingQuantity = groupA.quantity;
         const bStartingQuantity = groupB.quantity;
+
+        console.log(`performanceOrdered( ${groupA.toSimpleString()} , ${groupB.toSimpleString()} )`);
 
         // Outcome var. If B has 2 survivors of durability 4 each, it would be -8.
         let aScore;
@@ -820,9 +827,10 @@ class ProjectileEvent extends BEvent {
             return;
         }
 
-        const outcome = ProjectileEvent.islandBattle();
+        // const outcome = ProjectileEvent.islandBattle();
 
-        // ProjectileEvent.koGrid();
+        const ratio = ProjectileEvent.costRatio('halo/unsc/individual/marine', 'halo/cov/individual/grunt');
+        console.log(`Ratio is ${ratio}`);
     }
 };
 

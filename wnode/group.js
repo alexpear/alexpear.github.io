@@ -36,6 +36,12 @@ class Group extends WNode {
         this.actions = this.actions || [];
     }
 
+    toSimpleString () {
+        const tName = Util.fromCamelCase(this.templateName);
+
+        return `${tName} x${this.quantity}`;
+    }
+
     toAlignmentString () {
         const tName = Util.fromCamelCase(this.templateName);
 
@@ -49,6 +55,11 @@ class Group extends WNode {
 
     getTotalSp () {
         return (this.quantity - 1) * this.template.sp + this.worstSp;
+    }
+
+    // Heuristic for describing the group.
+    totalDurability () {
+        return this.quantity * this.template.durability;
     }
 
     // Returns number
