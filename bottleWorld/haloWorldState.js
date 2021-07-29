@@ -2,6 +2,8 @@
 
 const WorldState = require('./worldState.js');
 
+const ProjectileEvent = require('../bottleWorld/events/projectileEvent.js');
+
 const WGenerator = require('../generation/wgenerator.js');
 
 const Util = require('../util/util.js');

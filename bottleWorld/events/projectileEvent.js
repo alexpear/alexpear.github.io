@@ -286,13 +286,16 @@ class ProjectileEvent extends BEvent {
             (damagePerShot + durability);
     }
 
+    // Assumed that A goes first. This func should probably be called twice, with switched inputs.
     // Assumed to start at the greater of their 2 ranges.
     // No side effects
-    // Returns boolean
-    static likelyBeats (groupA, groupB) {
+    // Returns total remaining durability, negative if B survives.
+    static performance (groupA, groupB) {
         const aStartingQuantity = groupA.quantity;
         const bStartingQuantity = groupB.quantity;
-        let beats;
+
+        // Outcome var. If B has 2 survivors of durability 4 each, it would be -8.
+        let aScore;
 
         const attackA = WGenerator.ids[groupA.template.weapon];
         const attackB = WGenerator.ids[groupB.template.weapon];
@@ -318,26 +321,24 @@ class ProjectileEvent extends BEvent {
         let range = longRange;
 
         for (let t = 1; t < 10000; t++) {
-            // TODO both attack, decrease range by shortranged's speed, etc
+            // TODO decrease range by shortranged's speed, etc
+            // Or maybe should say long ranged group goes first
 
             const bCasualties = ProjectileEvent.lucklessCasualties(attackA, groupB, range) * groupA.quantity;
 
+            groupB.quantity -= bCasualties;
 
-
-
-            if (groupA.quantity <= 0) {
-                if (groupB.quantity < groupA.quantity) {
-                    // If B also went negative just now, and is more deeply negative.
-                    beats = true;
-                    break;
-                }
-
-                beats = false;
+            if (groupA.quantity <= 0 || groupB.quantity <= 0) {
+                aScore = groupA.totalDurability() - groupB.totalDurability();
                 break;
             }
 
-            if (groupB.quantity <= 0) {
-                beats = true;
+            const aCasualties = ProjectileEvent.lucklessCasualties(attackB, groupA, range) * groupB.quantity;
+
+            groupA.quantity -= aCasualties;
+
+            if (groupA.quantity <= 0 || groupB.quantity <= 0) {
+                aScore = groupA.totalDurability() - groupB.totalDurability();
                 break;
             }
         }
@@ -348,7 +349,7 @@ class ProjectileEvent extends BEvent {
         groupB.quantity = bStartingQuantity;
         groupB.active = true;
 
-        return beats;
+        return aScore;
     }
 
     // Per shooter.
