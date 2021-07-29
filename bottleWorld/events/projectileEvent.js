@@ -845,6 +845,9 @@ class ProjectileEvent extends BEvent {
         const bName = 'grunt';
         const ratio = ProjectileEvent.costRatio(`halo/cov/individual/${aName}`, `halo/cov/individual/${bName}`);
         console.log(`1 ${aName} is worth ${ratio} ${bName}s`);
+
+        const testCost = 6 * ratio;
+        console.log(`That's ${testCost} (${testCost - 1} for the weapon) to a grunt's 6 (1+5 needler)`);
     }
 };
 

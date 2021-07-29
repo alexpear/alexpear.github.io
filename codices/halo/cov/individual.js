@@ -179,7 +179,7 @@ size: 1
 speed: 8
 moveType: infantry
 durability: 30
-weapon: fuelRodCannon
+weapon: rocketLauncher
 
 * template jackal
 cost: 7

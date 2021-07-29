@@ -128,7 +128,7 @@ module.exports = `
 
 
 * template plasmaRifle
-cost: 3
+cost: 4
 tags: action plasma 1handed
 size: 0.6
 weight: 6
@@ -150,7 +150,7 @@ damage: 11
 damageType: fire
 
 * template needler
-cost: 4
+cost: 5
 tags: action needle 1handed
 size: 0.5
 weight: 5
@@ -161,6 +161,7 @@ damage: 23
 damageType: pierce
 
 * template carbine
+cost: 38
 tags: action
 size: 1
 range: 80
@@ -179,6 +180,7 @@ damage: 150
 damageType: pierce
 
 * template fuelRodCannon
+cost: 7
 tags: action
 size: 1.4
 range: 60
@@ -189,6 +191,7 @@ damageType: impact
 
 * template plasmaTurret
 tags: action
+cost: 73
 size: 1.2
 range: 70
 shotsPerSecond: 8
@@ -234,6 +237,7 @@ damageType: pierce
 
 * template bruteShot
 tags: action
+cost: 9
 size: 1
 canTarget: ground
 range: 50

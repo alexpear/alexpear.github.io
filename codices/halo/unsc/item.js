@@ -239,6 +239,7 @@ damageType: pierce
 
 * template reachPistol
 tags: action bullet firearm 1handed
+cost: 21
 range: 70
 shotsPerSecond: 2
 hit: 11
@@ -247,7 +248,7 @@ damageType: pierce
 
 * template heavyPistol
 tags: action firearm 1handed
-range: 70
+range: 26
 shotsPerSecond: 2
 hit: 14
 damage: 60
@@ -264,7 +265,7 @@ damageType: pierce
 
 * template assaultRifle
 tags: action bullet fullAuto
-cost: 7
+cost: 6
 range: 40
 shotsPerSecond: 15
 hit: 8
@@ -273,7 +274,7 @@ damageType: pierce
 
 * template battleRifle
 tags: action bullet
-cost: 8
+cost: 33
 range: 90
 shotsPerSecond: 7.2
 hit: 13
@@ -307,7 +308,7 @@ damageType: pierce
 
 * template rocketLauncher
 tags: action heavy
-cost: 4
+cost: 9
 range: 150
 shotsPerSecond: 0.3
 hit: 9
@@ -316,6 +317,7 @@ damageType: impact
 
 * template chaingun
 tags: action firearm
+cost: 33
 range: 60
 shotsPerSecond: 5
 hit: 10
