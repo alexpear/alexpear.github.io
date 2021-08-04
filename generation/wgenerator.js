@@ -117,6 +117,11 @@ class WGenerator {
 
         WGenerator.ids[templateObj.id] = templateObj;
         this.glossary[key] = templateObj;
+
+        if (key === undefined) {
+            Util.logError(`Bug in WGenerator.addTemplate(): undefined name. tableRaw is: ${tableRaw}`);
+        }
+
         // LATER might unify glossaries and WGenerator.ids. Hashmap as static prop of WGenerator, keyed by codex path and/or id
         // Or at least have a central static getter func, that can take both codex paths & ids.
 

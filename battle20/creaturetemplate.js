@@ -208,12 +208,16 @@ class CreatureTemplate extends NodeTemplate {
                     const parsed = CreatureTemplate.parseTemplateLine(line);
                     const key = parsed.key;
 
-                    if (
-                        key in creatureTemplate &&
-                        ! ['tags', 'actions', 'resistance'].includes(key)
+                    if (key in creatureTemplate &&
+                        ! (
+                            key === 'tags' && creatureTemplate.tags.length === 0 ||
+                            key === 'actions' && creatureTemplate.actions.length === 0 ||
+                            key === 'resistance' && Object.keys(creatureTemplate.resistance).length === 0
+                        )
                     ) {
+
                         throw new Error(`fromRaw(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
-                    }
+                   }
 
                     creatureTemplate[key] = parsed.value;
 

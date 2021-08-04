@@ -49,6 +49,94 @@ class HaloWorldState extends WorldState {
         return grid;
     }
 
+    static templateSpotCheck () {
+        console.log();
+        const haloPaths = WGenerator.codexPathsWithPrefix('halo')
+            .filter(
+                p => p.endsWith('individual')
+            );
+
+        const gens = haloPaths.map(
+            path => WGenerator.generators[path]
+        )
+        .filter(
+            gen => Object.keys(gen.glossary).length >= 1
+            // LATER could also do the filtering below - does it have any nonignored templates?
+        );
+
+        const genA = Util.randomOf(gens);
+
+        const codexPathA = genA.codexPath;
+        const glossA = genA.glossary;
+
+        const aTemplates = Object.keys(glossA).map(
+            name => glossA[name]
+        )
+        .filter(
+            t => (! HaloWorldState.ignoreTemplate(t)) && ! Util.contains(t.tags, 'action')
+        );
+
+        const templateA = Util.randomOf(aTemplates);
+        const nameA = templateA && templateA.name;
+
+        const missingA = HaloWorldState.missingStats(templateA);
+
+        const genB = Util.randomOf(gens);
+
+        const codexPathB = genB.codexPath;
+        const glossB = genB.glossary;
+
+        const bTemplates = Object.keys(glossB).map(
+            name => glossB[name]
+        )
+        .filter(
+            t => (! HaloWorldState.ignoreTemplate(t)) && ! Util.contains(t.tags, 'action')
+        );
+
+        const templateB = Util.randomOf(bTemplates);
+        const nameB = templateB && templateB.name;
+        const missingB = HaloWorldState.missingStats(templateB);
+
+        if (
+            ! templateA ||
+            missingA.length > 1 ||
+            (missingA[0] && missingA[0] !== 'cost') ||
+            Object.keys(glossA).length === 0 ||
+            ! templateB ||
+            missingB.length > 1 ||
+            (missingB[0] && missingB[0] !== 'cost') ||
+            Object.keys(glossB).length === 0
+        ) {
+            const glossANote = glossA ?
+                '' :
+                ' (glossary missing)';
+
+            const glossBNote = glossB ?
+                '' :
+                ' (glossary missing)';
+
+            console.log(`\n${nameA} from ${codexPathA + glossANote} (template count is ${aTemplates.length})\n or ${nameB} from ${codexPathB + glossBNote} (template count is ${bTemplates.length}) has problems.`)
+            return 'invalid';
+        }
+
+        const ratio = ProjectileEvent.costRatio(nameA, nameB);
+        const stringA = HaloWorldState.costString(templateA);
+        const stringB = HaloWorldState.costString(templateB);
+
+        console.log(`Codex spot check: \n${templateA.name} has cost ${stringA} \n ratio is ${ratio} \n${templateB.name} has cost ${stringB}`);
+    }
+
+    static costString (template) {
+        const base = template.cost;
+        const weaponTemplate = WGenerator.ids[template.weapon];
+        const weaponCost = weaponTemplate ? weaponTemplate.cost : '?';
+        const total = Util.isNumber(base) && Util.isNumber(weaponCost) ?
+            base + weaponCost :
+            '?';
+
+        return `${total} (${base} + ${weaponCost} for ${template.weapon})`;
+    }
+
     static codexCompleteness () {
         const haloPaths = WGenerator.codexPathsWithPrefix('halo');
 
@@ -62,11 +150,21 @@ class HaloWorldState extends WorldState {
     }
 
     static goodTemplate (creatureTemplate) {
+        return HaloWorldState.missingStats(creatureTemplate).length === 0;
+    }
+
+    static ignoreTemplate (template) {
         const IGNORE_TAGS = ['fleetGen', 'ringBottle'];
 
-        if (Util.hasOverlap(IGNORE_TAGS, creatureTemplate.tags)) {
-            return true;
+        return (! template) || Util.hasOverlap(IGNORE_TAGS, template.tags);
+    }
+
+    static missingStats (creatureTemplate) {
+        if (HaloWorldState.ignoreTemplate(creatureTemplate)) {
+            return [];
         }
+
+        // console.log(`missingStats(): template tags are still: ${creatureTemplate.tags}`);
 
         const missing = [];
 
@@ -97,13 +195,13 @@ class HaloWorldState extends WorldState {
         }
 
         if (missing.length === 0) {
-            return true;
+            return missing;
         }
 
         const messageStart = `Template ${creatureTemplate.name} is missing these:`;
 
         console.log(`${messageStart.padEnd(50)}${missing.join(' ')}`);
-        return false;
+        return missing;
 
         function checkProps (keys, template, output) {
             for (let key of keys) {
@@ -121,7 +219,13 @@ class HaloWorldState extends WorldState {
     static run () {
         HaloWorldState.codexCompleteness();
 
-        HaloWorldState.hitAnalysis();
+        // HaloWorldState.hitAnalysis();
+
+        let outcome = HaloWorldState.templateSpotCheck();
+
+        // while (outcome === 'invalid') {
+        //     outcome = HaloWorldState.templateSpotCheck();
+        // }
     }
 }
 
