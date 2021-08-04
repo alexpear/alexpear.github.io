@@ -4,6 +4,7 @@
   "description": "graph model for procedurally generated narrative",
   "main": "WGenerator.js",
   "dependencies": {
+    "@nodegui/nodegui": "^0.34.0",
     "comma-number": "^2.0.0",
     "crypto": "^1.0.1",
     "d20": "^1.4.1",
@@ -14,7 +15,9 @@
     "phaser": "^3.16.2",
     "webpack": "^5.43.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack-cli": "^4.7.2"
+  },
   "scripts": {
     "start": "npm i && npm run buildAll && npm run test",
     "firstTimeSetup": "npm install -g browserify && npm install -g http-server && npm start",
@@ -34,7 +37,9 @@
     "eclipse": "node wnode/spacebattles/vessel.js",
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
     "testRingWorld": "node bottleWorld/ringWorldState.js test",
-    "imageSorter": "webpack && qode util/imageSorter.ts"
+    "buildImageSorter": "webpack -p",
+    "startImageSorter": "tsc ./util/imageSorter/imageSorter.ts && webpack && qode ./util/imageSorter.ts",
+    "debugImageSorter": "webpack && qode --inspect ./dist/imageSorter.js"
   },
   "repository": {
     "type": "git",
