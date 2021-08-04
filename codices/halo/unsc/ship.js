@@ -9,6 +9,7 @@ module.exports = `* output
 1 infinity
 
 * template frigate
+tags: fleetGen
 weight: 200000000
 
 * childrenof frigate
@@ -25,6 +26,7 @@ unsc/squad/bridgeCrew
 4 unsc/squad/logisticalCargo
 
 * template prowler
+tags: fleetGen
 weight: 907000
 
 * childrenof prowler
@@ -33,6 +35,7 @@ unsc/squad/bridgeCrew
 {unsc/company}
 
 * template gladiusClassCorvette
+tags: fleetGen
 weight: 36000000
 
 * childrenof gladiusClassCorvette
@@ -41,6 +44,7 @@ unsc/item/frigateMac
 {navalCargo}
 
 * template orbitalDefensePlatform
+tags: fleetGen
 weight: 2900000000
 
 * childrenof orbitalDefensePlatform
@@ -53,6 +57,7 @@ unsc/squad/crewFireteam
 unsc/squad/crewFireteam
 
 * template marathonClassCruiser
+tags: fleetGen
 weight: 9000000000
 
 * childrenof marathonClassCruiser
@@ -62,6 +67,7 @@ unsc/squad/bridgeCrew
 {navalCargo}
 
 * template phoenixClassCarrier
+tags: fleetGen
 weight: 44000000000
 
 * childrenof phoenixClassCarrier
@@ -74,6 +80,7 @@ unsc/squad/bridgeCrew
 {navalCargo}
 
 * template infinity
+tags: fleetGen
 weight: 907000000000
 
 * childrenof infinity

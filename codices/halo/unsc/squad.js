@@ -187,10 +187,9 @@ chaingun
 1 decoyLauncher
 
 * template warthogChassis
-tags: fleetGen
+tags: fleetGen vehicle
 weight: 3000
 defense: 10
-tags: vehicle
 
 * children of scoutWarthog
 {unsc/individual/driver}

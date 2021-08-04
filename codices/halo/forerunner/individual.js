@@ -32,11 +32,15 @@ forerunner/item/boltshot
 {forerunner/item/gear}
 
 * template sentinel
+cost: 10
 size: 2
+speed: 25
+durability: 120
 moveType: air
 weapon: sentinelBeam
 
 * template enforcer
+cost: 140
 size: 7
 speed: 8
 moveType: air
@@ -44,6 +48,7 @@ durability: 1500
 weapon: bruteShot
 
 * template crawler
+cost: 2
 size: 1
 speed: 18
 moveType: infantry
@@ -51,6 +56,7 @@ durability: 70
 weapon: boltshot
 
 * template soldier
+cost: 3
 size: 1
 speed: 23
 moveType: infantry
@@ -58,13 +64,16 @@ durability: 100
 weapon: lightrifle
 
 * template knight
+cost: 145
 size: 3
 speed: 12
 moveType: infantry
 durability: 400
 weapon: incinerationCannon
+comments: TODO There is a bug where it gets confused about what a incinerationCannon is.
 
 * template survivor
+cost: 100
 size: 3
 speed: 13
 moveType: infantry
@@ -72,17 +81,15 @@ durability: 2000
 weapon: boltshot
 
 * template phaeton
+cost: 600
 size: 10
 speed: 28
 moveType: air
 durability: 1400
 weapon: phaetonCannon
 
-* template phaetonCannon
-tags: action
-hit: 2
-
 * template keyship
+tags: fleetGen
 size: 13000
 moveType: air
 durability: 20000000

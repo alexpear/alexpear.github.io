@@ -44,6 +44,7 @@ module.exports = `
 
 * template sentinelBeam
 tags: action
+cost: 10
 size: 1
 range: 80
 shotsPerSecond: 1
@@ -53,6 +54,7 @@ damageType: fire
 
 * template boltshot
 tags: action
+cost: 7
 size: 0.4
 range: 40
 shotsPerSecond: 4
@@ -63,6 +65,7 @@ comment: Halo 5
 
 * template lightrifle
 tags: action
+cost: 9
 size: 1.1
 range: 90
 shotsPerSecond: 3
@@ -72,6 +75,7 @@ damageType: fire
 
 * template incinerationCannon
 tags: action
+cost: 14
 size: 2
 range: 80
 shotsPerSecond: 0.3
@@ -79,5 +83,14 @@ hit: 5
 damage: 450
 damageType: fire
 
+* template phaetonCannon
+tags: action
+cost: 30
+size: 10
+range: 100
+shotsPerSecond: 0.5
+hit: 8
+damage: 400
+damageType: fire
 
 `;

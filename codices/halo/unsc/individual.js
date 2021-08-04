@@ -66,6 +66,7 @@ unsc/item/jetpack
 
 * template spartan
 tags: creature cyborg
+cost: 35
 size: 1.5
 speed: 5
 moveType: infantry
@@ -133,6 +134,7 @@ human
 
 * template marine
 tags: creature
+cost: 2
 size: 1
 speed: 9
 moveType: infantry
@@ -176,7 +178,7 @@ unsc/item/fragGrenade
 human
 
 * template officer
-tags: creature
+tags: creature fleetGen
 size: 1
 speed: 9
 moveType: infantry
@@ -185,6 +187,7 @@ durability: 14
 weapon: lightPistol
 
 * template mongoose
+cost: 3
 size: 4
 speed: 2
 moveType: wheeled
@@ -198,6 +201,7 @@ shots: 0.5
 weapon: smg
 
 * template warthog
+cost: 190
 size: 6
 speed: 25
 moveType: wheeled
@@ -217,6 +221,7 @@ tags: fleetGen
 comment: 'Later this would benefit from template inheritance.'
 
 * template mantis
+cost: 240
 size: 4
 speed: 9
 moveType: infantry
@@ -224,6 +229,7 @@ durability: 2000
 weapon: chaingun
 
 * template hornet
+cost: 300
 size: 10
 speed: 25
 moveType: hover
@@ -237,6 +243,7 @@ shots: 2
 weapon: rocketLauncher
 
 * template wasp
+cost: 300
 size: 9
 speed: 40
 moveType: hover
@@ -244,6 +251,7 @@ durability: 350
 weapon: rocketLauncher
 
 * template scorpion
+cost: 500
 size: 10
 speed: 15
 moveType: wheeled
@@ -257,6 +265,7 @@ shots: 0.5
 weapon: tankCannon
 
 * template elephant
+cost: 300
 size: 25
 speed: 9
 moveType: wheeled
@@ -270,6 +279,7 @@ shots: 2
 weapon: chaingun
 
 * template falcon
+cost: 300
 size: 10
 speed: 25
 moveType: hover
@@ -277,11 +287,10 @@ ac: 19
 sp: 360
 durability: 360
 resistance: heat 2
-toHit: 3
-damage: 9
-shots: 2
+weapon: chaingun
 
 * template pelican
+cost: 350
 size: 31
 speed: 25
 moveType: hover
@@ -292,8 +301,10 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: chaingun
 
 * template mammoth
+cost: 400
 size: 68
 speed: 25
 moveType: wheeled
@@ -304,8 +315,11 @@ resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: tacticalMac
 
 * template missileSilo
+tags: fleetGen
+cost: 2000
 size: 40
 speed: 0
 moveType: wheeled
@@ -313,11 +327,18 @@ ac: 19
 sp: 3000
 durability: 3000
 resistance: heat 2
-toHit: 3
-damage: 99
-shots: 2
+weapon: icbm
+
+* template macTurret
+cost: 1
+size: 30
+speed: 0
+moveType: wheeled
+durability: 400
+weapon: tacticalMac
 
 * template frigate
+cost: 10000
 size: 500
 speed: 25
 moveType: hover

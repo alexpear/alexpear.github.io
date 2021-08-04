@@ -172,6 +172,7 @@ damageType: pierce
 
 * template beamRifle
 tags: action
+cost: 11
 size: 1.8
 range: 200
 shotsPerSecond: 1
@@ -201,6 +202,7 @@ damageType: fire
 
 * template shadeCannon
 tags: action
+cost: 8
 size: 1.6
 range: 300
 shotsPerSecond: 3
@@ -210,6 +212,7 @@ damageType: fire
 
 * template plasmaMortar
 tags: action
+cost: 30
 size: 3
 range: 3000
 shotsPerSecond: 0.3
@@ -219,6 +222,7 @@ damageType: impact
 
 * template scarabCannon
 tags: action
+cost: 100
 size: 4
 range: 800
 shotsPerSecond: 0.2
@@ -228,6 +232,7 @@ damageType: fire
 
 * template spiker
 tags: action
+cost: 4
 size: 0.5
 range: 30
 shotsPerSecond: 8
@@ -248,6 +253,7 @@ damageType: impact
 
 * template gravityHammer
 tags: action
+cost: 5
 size: 2.5
 range: 3
 shotsPerSecond: 1.3

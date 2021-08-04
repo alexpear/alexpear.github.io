@@ -248,6 +248,7 @@ damageType: pierce
 
 * template heavyPistol
 tags: action firearm 1handed
+cost: 8
 range: 26
 shotsPerSecond: 2
 hit: 14
@@ -256,6 +257,7 @@ damageType: pierce
 
 * template smg
 tags: action bullet firearm fullAuto
+cost: 6
 canTarget: all
 range: 20
 shotsPerSecond: 15
@@ -274,7 +276,7 @@ damageType: pierce
 
 * template battleRifle
 tags: action bullet
-cost: 33
+cost: 8
 range: 90
 shotsPerSecond: 7.2
 hit: 13
@@ -283,6 +285,7 @@ damageType: pierce
 
 * template dmr
 tags: action bullet firearm optics
+cost: 10
 range: 100
 shotsPerSecond: 3
 hit: 90
@@ -291,6 +294,7 @@ damageType: pierce
 
 * template shotgun
 tags: action bullet
+cost: 8
 range: 9
 shotsPerSecond: 1
 hit: 5
@@ -300,6 +304,7 @@ attackDelay: 2
 
 * template sniperRifle
 tags: action firearm
+cost: 13
 range: 800
 shotsPerSecond: 1.1
 hit: 100
@@ -308,7 +313,7 @@ damageType: pierce
 
 * template rocketLauncher
 tags: action heavy
-cost: 9
+cost: 10
 range: 150
 shotsPerSecond: 0.3
 hit: 9
@@ -317,7 +322,7 @@ damageType: impact
 
 * template chaingun
 tags: action firearm
-cost: 33
+cost: 12
 range: 60
 shotsPerSecond: 5
 hit: 10
@@ -326,18 +331,29 @@ damageType: pierce
 
 * template tankCannon
 tags: action firearm
+cost: 30
 range: 3000
 shotsPerSecond: 0.3
 hit: 80
 damage: 700
 damageType: impact
 
-* template macTurret
+* template tacticalMac
+cost: 1000
 tags: action
 range: 4000
 shotsPerSecond: 0.1
 hit: 80
 damage: 3000
+damageType: pierce
+
+* template frigateMac
+cost: 10000
+tags: action
+range: 40000
+shotsPerSecond: 0.01
+hit: 100
+damage: 30000
 damageType: pierce
 
 `;
