@@ -177,6 +177,7 @@ shots: 2
 weapon: needler
 
 * template gruntTest
+tags: test
 cost: 4
 size: 1
 speed: 8

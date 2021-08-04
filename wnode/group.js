@@ -231,6 +231,15 @@ class Group extends WNode {
         return this.template[propName];
     }
 
+    cost () {
+        if (! Util.exists(this.template.cost)) {
+            throw new Error(`Cant evalute cost of template ${this.template.codexPath}/${this.template.name} with no cost`);
+        }
+
+        return this.template.cost * this.quantity;
+    }
+
+    // From the SP era, deprecated in favor of cost()
     points () { 
         return this.pointsEach() * this.quantity;
     }

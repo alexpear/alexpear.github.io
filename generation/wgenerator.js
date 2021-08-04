@@ -109,6 +109,8 @@ class WGenerator {
 
     addTemplate (tableRaw) {
         const templateObj = CreatureTemplate.fromRaw(tableRaw);
+        templateObj.codexPath = this.codexPath;
+
         const key = templateObj.name;
 
         if (key in this.glossary) {

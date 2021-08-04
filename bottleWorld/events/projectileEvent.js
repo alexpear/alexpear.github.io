@@ -741,6 +741,8 @@ class ProjectileEvent extends BEvent {
     // Later could combine this with Group.dotGrid() rectangle of dots.
     // Log each group like '6x Marine'
     static spacelessBattleString (aGroups, bGroups, t) {
+        bGroups = bGroups || [];
+
         const COL_WIDTH = 50;
 
         const lines = [];
@@ -748,12 +750,12 @@ class ProjectileEvent extends BEvent {
         for (let i = 0; i < Math.max(aGroups.length, bGroups.length); i++) {
             const ag = aGroups[i];
             const aText = ag && ag.active ?
-                `${ag.quantity}x ${Util.capitalized(ag.templateName)}` :
+                `${ag.quantity}x ${Util.fromCamelCase(ag.templateName)}` :
                 '';
 
             const bg = bGroups[i];
             const bText = bg && bg.active ?
-                `${bg.quantity}x ${Util.capitalized(bg.templateName)}` :
+                `${bg.quantity}x ${Util.fromCamelCase(bg.templateName)}` :
                 '';
 
             lines.push(

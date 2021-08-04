@@ -49,6 +49,90 @@ class HaloWorldState extends WorldState {
         return grid;
     }
 
+    static randomFaction () {
+        return Util.randomOf([
+            'unsc',
+            'cov',
+            'forerunner',
+            // 'flood'
+        ]);
+    }
+
+    static randomArmy (cost) {
+        cost = cost || 700;
+
+        const faction = HaloWorldState.randomFaction();
+
+        const groups = [];
+
+        // 200 attempts
+        for (let i = 0; i < 200; i++) {
+            const newTemplate = HaloWorldState.randomTemplate(faction);
+
+            const currentTotal = HaloWorldState.totalCost(groups);
+            const costAvailable = cost - currentTotal;
+
+            if (newTemplate.cost > costAvailable) {
+                continue;
+            }
+
+            const maxThatFit = Math.floor(costAvailable / newTemplate.cost);
+
+            const newQuantity = Math.ceil(Math.random() * maxThatFit);
+
+            groups.push(
+                WGenerator.newGroup(
+                    newTemplate.codexPath + '/' + newTemplate.name,
+                    newQuantity,
+                    faction
+                )
+            );
+
+            if (costAvailable - newQuantity * newTemplate.cost <= 10) {
+                // Good enough.
+                break;
+            }
+        }
+
+        return groups.sort(
+            (a, b) => {
+                if (a.template.name < b.template.name) {
+                    return -1;
+                }
+                if (b.template.name < a.template.name) {
+                    return 1;
+                }
+                return 0;
+            }
+        );
+
+    }
+
+    static totalCost (groups) {
+        return Util.sum(
+            groups.map(
+                g => g.cost()
+            )
+        );
+    }
+
+    static randomTemplate (faction) {
+        const path = 'halo/' + faction + '/individual';
+
+        // console.log(path);
+
+        const glossary = WGenerator.generators[path].glossary;
+
+        const templates = Object.keys(glossary).map(
+            name => glossary[name]
+        )
+        .filter(
+            t => (! HaloWorldState.ignoreTemplate(t)) && ! Util.contains(t.tags, 'action')
+        );
+
+        return Util.randomOf(templates);
+    }
+
     static templateSpotCheck () {
         console.log();
         const haloPaths = WGenerator.codexPathsWithPrefix('halo')
@@ -119,7 +203,7 @@ class HaloWorldState extends WorldState {
             return 'invalid';
         }
 
-        const ratio = ProjectileEvent.costRatio(nameA, nameB);
+        const ratio = 'WIP';// ProjectileEvent.costRatio(nameA, nameB);
         const stringA = HaloWorldState.costString(templateA);
         const stringB = HaloWorldState.costString(templateB);
 
@@ -154,7 +238,7 @@ class HaloWorldState extends WorldState {
     }
 
     static ignoreTemplate (template) {
-        const IGNORE_TAGS = ['fleetGen', 'ringBottle'];
+        const IGNORE_TAGS = ['fleetGen', 'ringBottle', 'test'];
 
         return (! template) || Util.hasOverlap(IGNORE_TAGS, template.tags);
     }
@@ -223,9 +307,9 @@ class HaloWorldState extends WorldState {
 
         let outcome = HaloWorldState.templateSpotCheck();
 
-        // while (outcome === 'invalid') {
-        //     outcome = HaloWorldState.templateSpotCheck();
-        // }
+        const army = HaloWorldState.randomArmy();
+
+        console.log(`\n${ProjectileEvent.spacelessBattleString(army, undefined, 0)}`);
     }
 }
 
