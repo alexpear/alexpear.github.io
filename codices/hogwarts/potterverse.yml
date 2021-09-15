@@ -2,7 +2,78 @@ canon:
   characters:
     uk:
       # Started Hogwarts in year:
+      1984:
+        gryffindor:
+          male:
+            - Charlie Weasley
+        hufflepuff:
+          female:
+            - Nymphadora Tonks
+      1985:
+        slytherin:
+          male:
+            - Terrence Higgs
+      
+      1987:
+        ravenclaw:
+          female:
+            - Penelope Clearwater
+        gryffindor: 
+          male:
+            - Percy Weasley
+        slytherin:
+          male:
+            - Marcus Flint
+      1988:
+        slytherin:
+          male:
+            - Peregrine Derrick
+      1989:
+        ravenclaw:
+          male:
+            - Roger Davies
+        gryffindor:
+          female:
+            - Angelina Johnson
+            - Alicia Spinnet
+          male:
+            - Fred Weasley
+            - George Weasley
+            - Lee Jordan
+        slytherin:
+          male:
+            - Adrian Pucey
+        hufflepuff:
+          male:
+            - Cedric Diggory
+      1990:
+        ravenclaw:
+          female:
+            - Cho Chang
+            - Crystal Chambers
+            - Marietta Edgecombe
+          male:
+            - Marcus Belby
+        gryffindor:
+          female:
+            - Katie Bell
+          male:
+            - Cormac McLaggen
+        hufflepuff:
+          male:
+            - Zacharias Smith
+            - Corinthus Cadwallader
+            - Simon Summerby
       1991:
+        ravenclaw:
+          female:
+            - Padma Patil
+            - Leanne Carlyle
+            - Sally-Anne Perks
+          male:
+            - Terry Boot
+            - Anthony Goldstein
+            - Michael Corner
         gryffindor:
           female:
             - Hermione Granger
@@ -16,6 +87,41 @@ canon:
             - Neville Longbottom
             - Seamus Finnegan
             - Dean Thomas
+        slytherin:
+          female:
+            - Pansy Parkinson
+            - Millicent Bulstrode
+            - Daphne Greengrass
+            - Morag MacDougal
+            - Lauretta Moon
+          male:
+            - Draco Malfoy
+            - Vincent Crabbe
+            - Gregory Goyle
+            - Blaise Zabini
+            - Theodore Nott
+        hufflepuff:
+          female:
+            - Susan Bones
+            - Hannah Abbott
+            - Eloise Midgen
+          male:
+            - Ernie Macmillan
+            - Justin Finch-Fletchley
+      1992:
         ravenclaw:
           female:
-            - Padma Patil
+            - Luna Lovegood
+        gryffindor:
+          female:
+            - Ginny Weasley
+          male:
+            - Colin Creevey
+        slytherin:
+          male:
+            - Erik Urquhart
+            - Maximillian Harper
+      1993:
+        slytherin:
+          female:
+            - Astoria Greengrass

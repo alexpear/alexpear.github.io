@@ -19,7 +19,7 @@ class HogwartsWorldState extends WorldState {
     constructor () {
         super();
 
-        this.year = 1991
+        this.year = 1993;
 
         this.init();
     }
@@ -119,6 +119,19 @@ class HogwartsWorldState extends WorldState {
             for (let h = 0; h < 4; h++) {
                 const house = HogwartsWorldState.HOUSES()[h];
 
+                // later could functionize:
+                let houseColor;
+                switch(house) {
+                    case 'ravenclaw':
+                        houseColor = 'blue'; break;
+                    case 'gryffindor':
+                        houseColor = 'red'; break;
+                    case 'slytherin':
+                        houseColor = 'green'; break;
+                    default:
+                        houseColor = 'yellow';
+                }
+
                 const girls = this.peopleWith({
                     gender: 'female',
                     house: house,
@@ -134,17 +147,20 @@ class HogwartsWorldState extends WorldState {
                 const all = girls.concat(boys);
 
                 // debug
-                if (house === 'gryffindor' && this.year - y === 1991) {
-                    const names = all.map(p => p.name);
+                // if (house === 'gryffindor' && this.year - y === 1991) {
+                //     const names = all.map(p => p.name);
 
-                    // Util.logDebug(`hogwarts WS, names is ${Util.stringify(names)}, \nthis.people.length is ${this.people.length}`);
-                }
+                //     // Util.logDebug(`hogwarts WS, names is ${Util.stringify(names)}, \nthis.people.length is ${this.people.length}`);
+                // }
+
+                const multiline = all.map(
+                    p => p.name
+                )
+                .join('\n');
 
                 grid[y].push(
-                    all.map(
-                        p => p.name
-                    )
-                    .join('\n')
+                    // Util.customColored(multiline, 'black', houseColor)
+                    multiline
                 );
             }
         }
