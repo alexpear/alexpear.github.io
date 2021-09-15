@@ -7,29 +7,38 @@ const WizardingName = require('../generation/wizardingName.js');
 const Util = require('../util/util.js');
 
 class WizardingPerson extends DetailedPerson {
-    constructor (startedSchool, gender, house) {
+    constructor (startingYear, gender, house, name) {
         super();
 
-        this.startedSchool = startedSchool || this.startedSchool;
-        this.gender = gender || this.gender;
-        this.house = house || this.house;
+        this.startingYear = startingYear;
+        this.gender = gender;
+        this.house = house;
+        this.name = name;
     }
 
-    static random (startedSchool, gender, house) {
-        const p = new WizardingPerson(startedSchool, gender, house);
+    static random (startingYear, gender, house) {
+        const p = new WizardingPerson(startingYear, gender, house);
         p.fillBlanks();
         return p;
     }
 
     fillBlanks () {
-        this.name = this.name || wizardingName.random();
+        this.name = this.name || WizardingName.random();
 
-        this.startedSchool = this.startedSchool ||
+        this.startingYear = this.startingYear ||
             (1980 + Util.randomUpTo(20));
 
-        this.gender = this.gender || Util.randomOf('female', 'male');
-        this.house = this.house || Util.randomOf('ravenclaw', 'slytherin', 'gryffindor', 'hufflepuff');
+        this.gender = this.gender || Util.randomOf(['female', 'male']);
+        this.house = this.house || Util.randomOf(['ravenclaw', 'slytherin', 'gryffindor', 'hufflepuff']);
+    }
+
+    static test () {
+        const p = WizardingPerson.random();
+        Util.logDebug(p);
     }
 };
 
 module.exports = WizardingPerson;
+
+// WizardingPerson.test();
+

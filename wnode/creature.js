@@ -14,7 +14,7 @@ Should share more funcs, perhaps.
 module.exports = class Creature extends Thing {
     constructor (template, coord, alignment) {
         // BTW if this throw statement gets too confusing, comment it and stick with the old inheritance model until there's time for a inheritance refactor.
-        Util.logWarn(`Consider using Group of quantity 1 instead of Creature for a little while. template param in current constructor call is: ${template.name || template}`);
+        // Util.logWarn(`Consider using Group of quantity 1 instead of Creature for a little while. template param in current constructor call is: ${template && template.name || template}`);
 
         super(template, coord);
 

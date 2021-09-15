@@ -323,10 +323,10 @@ util.toChartString = (grid) => {
 };
 
 // grid is of type string[][]
-util.textGrid = (grid) => {
+util.textGrid = (grid, width, height) => {
     // These currently need to be set to the dimensions shown in the top of the terminal window.
-    util.SCREEN_WIDTH = 139;
-    util.SCREEN_HEIGHT = 37;
+    util.SCREEN_WIDTH = width || 139;
+    util.SCREEN_HEIGHT = height || 37;
 
     const colCount = grid[0].length;
     const rightExcess = (util.SCREEN_WIDTH - 1) % colCount;

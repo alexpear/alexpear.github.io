@@ -481,4 +481,4 @@ class WizardingName {
 
 module.exports = WizardingName;
 
-WizardingName.test();
+// WizardingName.test();

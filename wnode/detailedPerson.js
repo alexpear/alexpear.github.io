@@ -84,4 +84,4 @@ class DetailedPerson extends Creature {
 
 module.exports = DetailedPerson;
 
-DetailedPerson.test();
+// DetailedPerson.test();
