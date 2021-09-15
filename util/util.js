@@ -322,6 +322,90 @@ util.toChartString = (grid) => {
     .join('\n');
 };
 
+// grid is of type string[][]
+util.textGrid = (grid) => {
+    // These currently need to be set to the dimensions shown in the top of the terminal window.
+    util.SCREEN_WIDTH = 139;
+    util.SCREEN_HEIGHT = 37;
+
+    const colCount = grid[0].length;
+    const rightExcess = (util.SCREEN_WIDTH - 1) % colCount;
+
+    const HORIZ_WALL = '-'.repeat(util.SCREEN_WIDTH - rightExcess);
+    let lines = [HORIZ_WALL];
+
+    for (let r = 0; r < grid.length; r++) {
+        const lineSets = [];
+
+        for (let c = 0; c < grid[0].length; c++) {
+            lineSets.push(
+                util.boxAsLines(grid, r, c)
+            );
+
+            // util.logDebug(`Util.textGrid(), lineSets is ${util.stringify(lineSets)}`);
+        }
+
+        const rowLines = util.stitchBoxRow(lineSets);
+        rowLines.push(HORIZ_WALL);
+
+        lines = lines.concat(rowLines);
+    }
+
+    return lines.join('\n');
+};
+
+util.boxAsLines = (grid, row, column) => {
+    const boxHeight = Math.floor(
+        (util.SCREEN_HEIGHT - grid.length - 1) / grid.length
+    );
+
+    const topRow = grid[0];
+
+    const boxWidth = Math.floor(
+        (util.SCREEN_WIDTH - topRow.length - 1) / topRow.length
+    );
+
+    const boxLines = grid[row][column].split('\n');
+    const outLines = [];
+
+    // Util.logDebug('lines[0].length is ' + lines[0].length + ', and boxWidth is ' + boxWidth);
+
+    for (let i = 0; i < boxHeight - 1; i++) {
+        outLines.push(
+            util.padSides(boxLines[i], boxWidth)
+        );
+    }
+
+    if (boxLines[boxHeight - 1]) {
+        outLines.push(
+            util.padSides('...', boxWidth)
+        );
+    }
+
+    // util.logDebug(`Util.boxAsLines(), current box contains: ${grid[row][column]}. boxLines is ${JSON.stringify(boxLines, undefined, '    ')},\n  outLines is ${JSON.stringify(outLines, undefined, '    ')}`)
+
+    return outLines;
+};
+
+util.stitchBoxRow = (lineSets) => {
+    const WALL = '|';
+    const lines = [];
+
+    for (let r = 0; r < lineSets[0].length; r++) {
+        let line = WALL;
+
+        for (let i = 0; i < lineSets.length; i++) {
+            line += lineSets[i][r] + WALL;
+
+            // util.logDebug(`Util.stitchBoxRow(), lineSets[i][r] is ${lineSets[i][r]}`)
+        }
+
+        lines.push(line);
+    }
+
+    return lines;
+};
+
 
 // Input string[]
 // Returns string summarizing redundancies
@@ -510,6 +594,8 @@ util.fromCamelCase = (s) => {
 // center-aligns string in spaces, to a specified total length.
 // ('foo', 7) => '  foo  '
 util.padSides = (string, length) => {
+    // Later could detect if 'string' is a nonstring and convert it.
+    string = string || '';
     length = Math.floor(length);
 
     const leftover = length - string.length;

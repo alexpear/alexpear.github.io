@@ -20,89 +20,35 @@ class DndWorldState extends WorldState {
     }
 
     textGrid () {
-        DndWorldState.SCREEN_HEIGHT = 43;
-        DndWorldState.SCREEN_WIDTH = 150;
-
-        const colCount = this.grid[0].length;
-        const rightExcess = (DndWorldState.SCREEN_WIDTH - 1) % colCount;
-
-        const HORIZ_WALL = '-'.repeat(DndWorldState.SCREEN_WIDTH - rightExcess);
-        let lines = [HORIZ_WALL];
+        const stringGrid = [];
 
         for (let r = 0; r < this.grid.length; r++) {
-            const lineSets = [];
+            stringGrid.push([]);
 
             for (let c = 0; c < this.grid[0].length; c++) {
-                lineSets.push(
-                    this.boxAsLines(r, c)
+                const box = this.grid[r][c];
+                let componentsString;
+
+                if ((! box.components) || box.components.length === 0) {
+                    componentsString = '';
+                }
+                else {
+                    componentsString = box.components.map(
+                        group => `${group.template.name} x${group.quantity}`
+                    )
+                    .join('\n');
+
+                    // Util.logDebug(`DndWorldState.textGrid(), box.components[0].template.name is ${box.components[0] && box.components[0].template.name} ... componentsString is ${componentsString}`);
+                }
+
+                stringGrid[r].push(
+                    (box.terrain || '') +
+                        componentsString
                 );
             }
-
-            const rowLines = this.stitchBoxRow(lineSets);
-            rowLines.push(HORIZ_WALL);
-
-            lines = lines.concat(rowLines);
         }
 
-        return lines.join('\n');
-    }
-
-    boxAsLines (row, column) {
-        const boxHeight = Math.floor(
-            (DndWorldState.SCREEN_HEIGHT - this.grid.length - 1) / this.grid.length
-        );
-
-        const topRow = this.grid[0];
-
-        const boxWidth = Math.floor(
-            (DndWorldState.SCREEN_WIDTH - topRow.length - 1) / topRow.length
-        );
-
-        const box = this.grid[row][column];
-        const lines = [
-            Util.padSides(box.terrain, boxWidth)
-        ];
-
-        // Util.logDebug('lines[0].length is ' + lines[0].length + ', and boxWidth is ' + boxWidth);
-
-        for (let i = 1; i < boxHeight - 1; i++) {
-            const group =
-                box.components &&
-                box.components[i - 1];
-
-            const groupString = group ?
-                `${group.template.name} x${group.quantity}` :
-                '';
-
-            lines.push(
-                Util.padSides(groupString, boxWidth)
-            );
-        }
-
-        if (box.components && box.components[boxHeight - 1]) {
-            lines.push(
-                Util.padSides('...', boxWidth)
-            );
-        }
-
-        return lines;
-    }
-
-    stitchBoxRow (lineSets) {
-        const WALL = '|';
-        const lines = [];
-
-        for (let r = 0; r < lineSets[0].length; r++) {
-            let line = WALL;
-
-            for (let i = 0; i < lineSets.length; i++) {
-                line += lineSets[i][r] + WALL;
-            }
-
-            lines.push(line);
-        }
-
-        return lines;
+        return Util.textGrid(stringGrid);
     }
 
     static example (timeline, giveUpTime) {
@@ -137,26 +83,26 @@ class DndWorldState extends WorldState {
                 }
             ]
         ];
-    //     const startingGroups = [
-    //         // TODO Perhaps the string templateName given to WGenerator should be sufficient for it to know when to create a Creature and when a Group. the template entry in the generator txt file could specify this.
-    //         {
-    //             templatePath: 'halo/unsc/squad/marineGroup',
-    //             alignment: 'UNSC'
-    //         },
-    //         {
-    //             templatePath: 'halo/flood/squad/podGroup',
-    //             alignment: 'Flood'
-    //         }
-    //     ];
+        //     const startingGroups = [
+        //         // TODO Perhaps the string templateName given to WGenerator should be sufficient for it to know when to create a Creature and when a Group. the template entry in the generator txt file could specify this.
+        //         {
+        //             templatePath: 'halo/unsc/squad/marineGroup',
+        //             alignment: 'UNSC'
+        //         },
+        //         {
+        //             templatePath: 'halo/flood/squad/podGroup',
+        //             alignment: 'Flood'
+        //         }
+        //     ];
 
-    //     // Eventually should functionize this timeline initialization:
+        //     // Eventually should functionize this timeline initialization:
         const worldState = new DndWorldState(); //[], RingWorldState.CIRCUMFERENCE, giveUpTime);
 
         worldState.grid = grid;
 
         // Overwrites the grid, tidy later
         worldState.makeGrid(
-            Util.randomIntBetween(1, 11),
+            Util.randomIntBetween(1, 10),
             Util.randomIntBetween(1, 11)
         );
 
