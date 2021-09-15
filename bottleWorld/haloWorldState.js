@@ -203,20 +203,42 @@ class HaloWorldState extends WorldState {
             return 'invalid';
         }
 
-        const ratio = 'WIP';// ProjectileEvent.costRatio(nameA, nameB);
+        const ratio = ProjectileEvent.costRatio(codexPathA + '/' + nameA, codexPathB + '/' + nameB);
+        const costsA = HaloWorldState.costObj(templateA);
+        const costsB = HaloWorldState.costObj(templateB);
         const stringA = HaloWorldState.costString(templateA);
         const stringB = HaloWorldState.costString(templateB);
 
-        console.log(`Codex spot check: \n${templateA.name} has cost ${stringA} \n ratio is ${ratio} \n${templateB.name} has cost ${stringB}`);
+        const adjustedA = costsB.total ?
+            costsB.total * ratio :
+            '?';
+
+        const adjustedB = costsA.total ?
+            costsA.total / ratio :
+            '?';
+
+        console.log(`\nCodex spot check: \n${templateA.name} has cost ${stringA} (ratio indicates ${adjustedA}) \n ratio is ${ratio} \n${templateB.name} has cost ${stringB} (ratio indicates ${adjustedB})`);
+    }
+
+    static costObj (template) {
+        const weaponTemplate = WGenerator.ids[template.weapon];
+        const weaponCost = weaponTemplate && weaponTemplate.cost;
+
+        return {
+            base: template.cost,
+            weapon: weaponCost,
+            total: Util.exists(template.cost) && Util.exists(weaponCost) ?
+                template.cost + weaponCost :
+                undefined
+        };
     }
 
     static costString (template) {
-        const base = template.cost;
-        const weaponTemplate = WGenerator.ids[template.weapon];
-        const weaponCost = weaponTemplate ? weaponTemplate.cost : '?';
-        const total = Util.isNumber(base) && Util.isNumber(weaponCost) ?
-            base + weaponCost :
-            '?';
+        const costs = HaloWorldState.costObj(template);
+
+        const total = costs.total || '?';
+        const base = costs.base || '?';
+        const weaponCost = costs.weapon || '?';
 
         return `${total} (${base} + ${weaponCost} for ${template.weapon})`;
     }

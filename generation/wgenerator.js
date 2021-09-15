@@ -162,12 +162,25 @@ class WGenerator {
             .getOutputs(absolutePath);
     }
 
+    static getTemplate (absolutePath) {
+        const lastSlash = absolutePath.lastIndexOf('/');
+        const codexPath = absolutePath.slice(0, lastSlash);
+
+        // console.log(absolutePath);
+
+        const gen = WGenerator.generators[codexPath];
+        const templateName = absolutePath.slice(lastSlash + 1);
+
+        // console.log(templateName);
+
+        return gen.glossary[templateName];
+    }
+
     static newGroup (fullCodexPath, quantity, alignment, coord) {
-        // Later can add a func to WGenerator that returns just the template obj instead of WNode[]
-        const nodes = WGenerator.generateNodes(fullCodexPath);
+        const template = WGenerator.getTemplate(fullCodexPath);
 
         return new Group(
-            nodes[0].template || fullCodexPath,
+            template || fullCodexPath,
             quantity,
             alignment,
             coord
@@ -226,7 +239,7 @@ class WGenerator {
 
     // Returns WNode[]
     // Returned nodes have .storageMode === Partial and lack children of their own.
-    // Non-recursive variant of resolveString(), used for fractal tree browsing.
+    // Non-recursive variant of resolveString(), used for fractal browsing.
     resolveStringOnly (inputString) {
         const nodes = this.resolveCommas(inputString)
             .map(contextString => this.makePartialNode(contextString));

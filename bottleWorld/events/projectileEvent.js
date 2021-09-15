@@ -738,6 +738,8 @@ class ProjectileEvent extends BEvent {
         return `----------------------------------------------- ${t}s\n${aSizes}\n${bSizes}\n`;
     }
 
+    // TODO i want a func like spacelessBattleString but also with total cost of each Group (inc weapon costs)
+
     // Later could combine this with Group.dotGrid() rectangle of dots.
     // Log each group like '6x Marine'
     static spacelessBattleString (aGroups, bGroups, t) {
