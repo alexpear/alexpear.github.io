@@ -1,0 +1,21 @@
+canon:
+  characters:
+    britain:
+      # Started Hogwarts in year:
+      1991:
+        gryffindor:
+          female:
+            Hermione Granger
+            Lavender Brown
+            Parvati Patil
+            Fay Dunbar
+            Kellah Lloyd
+          male:
+            Harry Potter
+            Ron Weasley
+            Neville Longbottom
+            Seamus Finnegan
+            Dean Thomas
+        ravenclaw:
+          female:
+            Padma Patil
