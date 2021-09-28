@@ -22,46 +22,59 @@ class WorldPopGrid {
     }
 
     loadRaw () {
-        const hemisphereRaws = [];
+        const eighthGrids = [];
 
         for (let i = 0; i < 4; i++) {
-            hemisphereRaws[i] = FS.readFileSync(
-                './data/unpopgrid/gpw_v4_population_count_adjusted_to_2015_unwpp_country_totals_rev11_2020_30_sec_' +
-                    (i + 1) +
-                    '.asc',
-                'utf8'
-            );
-
-            // TODO save memory by loading then converting from string to number[][]
-
-            console.log(`Loaded raw file ${i + 1}`);
+            eighthGrids.push(this.loadEighth(i + 1));
         }
 
-        this.loadHemisphere(hemisphereRaws);
+        this.loadHemisphere(eighthGrids);
 
         for (let i = 4; i < 8; i++) {
-            hemisphereRaws[i] = FS.readFileSync(
-                './data/unpopgrid/gpw_v4_population_count_adjusted_to_2015_unwpp_country_totals_rev11_2020_30_sec_' +
-                    (i + 1) +
-                    '.asc',
-                'utf8'
-            );
+            eighthGrids.push(this.loadEighth(i + 1));
         }
 
-        this.loadHemisphere(hemisphereRaws);
+        this.loadHemisphere(eighthGrids);
     }
 
-    loadHemisphere (hemisphereRaws) {
-        const lineSets = hemisphereRaws.map(
-            eighth => eighth.split('\n')
-                .slice(7)
+    // returns number[][]
+    loadEighth (n) {
+        const raw = FS.readFileSync(
+            './data/unpopgrid/gpw_v4_population_count_adjusted_to_2015_unwpp_country_totals_rev11_2020_30_sec_' +
+                n +
+                '.asc',
+            'utf8'
         );
+
+        console.log(`Loaded raw file ${n}`);
+
+        const lines = raw.split('\n')
+            .slice(7);
+
+        let debugCount = 1;
+
+        return lines.map(
+            line => {
+                console.log(`line ${debugCount}`);
+                debugCount++;
+
+                return line.split(' ')
+                    .map(Number);
+            }
+        );
+    }
+
+    loadHemisphere (eighthGrids) {
+        // const lineSets = hemisphereRaws.map(
+        //     eighth => eighth.split('\n')
+        //         .slice(7)
+        // );
 
         for (let r = 0; r < 10800; r++) {
             console.log(`Loading ${r}...`);
 
-            const fourLines = lineSets.map(
-                set => set[r].split(' ')
+            const fourLines = eighthGrids.map(
+                set => set[r]
             );
 
             this.grid.push(
