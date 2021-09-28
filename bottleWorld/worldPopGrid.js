@@ -12,38 +12,65 @@
 // -9999 represents blank
 // The numbers are a estimate of the number of people in that trapezoidal cell
 // There are way too many decimal places, but whatever.
+// A final \n ends the file
 
 const FS = require('fs');
 
 class WorldPopGrid {
     constructor () {
-
+        this.grid = [];
     }
 
-    load () {
-        const rawStr = FS.readFileSync('./data/unpopgrid/' +
-            'gpw_v4_population_count_adjusted_to_2015_unwpp_country_totals_rev11_2020_30_sec_' +
-            '1' +
-            '.asc',
-            'utf8');
+    loadRaw () {
+        const hemisphereRaws = [];
 
-        const lines = rawStr.split('\n');
-        console.log('lines length: ' + lines.length);
+        for (let i = 0; i < 4; i++) {
+            hemisphereRaws[i] = FS.readFileSync(
+                './data/unpopgrid/gpw_v4_population_count_adjusted_to_2015_unwpp_country_totals_rev11_2020_30_sec_' +
+                    (i + 1) +
+                    '.asc',
+                'utf8'
+            );
 
-        const firstLineParts = lines[0].split(' ');
-        const cols = firstLineParts[firstLineParts.length - 1];
-        console.log('cols value: ' + cols);
+            // TODO save memory by loading then converting from string to number[][]
 
-        const dataStr = lines[6];
-        const cells = dataStr.split(' ');
-        console.log('cells length: ' + cells.length);
+            console.log(`Loaded raw file ${i + 1}`);
+        }
 
-        // for (let r = 5000; r < 5100; r++) {
-        //     const cells = lines[r].split(' ');
+        this.loadHemisphere(hemisphereRaws);
 
-        //     const max = Math.max(...cells);
-        //     // console.log(`line ${r} has ${cells.length} cells, & max ${max}`);
-        // }
+        for (let i = 4; i < 8; i++) {
+            hemisphereRaws[i] = FS.readFileSync(
+                './data/unpopgrid/gpw_v4_population_count_adjusted_to_2015_unwpp_country_totals_rev11_2020_30_sec_' +
+                    (i + 1) +
+                    '.asc',
+                'utf8'
+            );
+        }
+
+        this.loadHemisphere(hemisphereRaws);
+    }
+
+    loadHemisphere (hemisphereRaws) {
+        const lineSets = hemisphereRaws.map(
+            eighth => eighth.split('\n')
+                .slice(7)
+        );
+
+        for (let r = 0; r < 10800; r++) {
+            console.log(`Loading ${r}...`);
+
+            const fourLines = lineSets.map(
+                set => set[r].split(' ')
+            );
+
+            this.grid.push(
+                fourLines.reduce(
+                    (outLine, eighthLine) => outLine.concat(eighthLine),
+                    []
+                )
+            );
+        }
     }
 
     // Returns 2d array of pixels
@@ -58,7 +85,9 @@ class WorldPopGrid {
 
     static run () {
         const g = new WorldPopGrid();
-        g.load();
+        g.loadRaw();
+
+        console.log(`${g.grid.length} rows & ${g.grid[0].length} cols`);
     }
 }
 
