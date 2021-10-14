@@ -6470,11 +6470,25 @@ class RegionTree {
             const nonrandomCount = output.length;
 
             // Now distribute the rest of the things randomly, by weighted lottery.
+            // const peopleUnaccountedFor = curNode.total - (count - countLeft) * everyNPeople;
+
+            let peopleUnaccountedFor = 0;
+            for (let sumKey in k2p) {
+                peopleUnaccountedFor += k2p[sumKey] % everyNPeople;
+            }
+
+            // if (sum !== peopleUnaccountedFor) {
+            //     throw new Error(`peopleUnaccountedFor is ${peopleUnaccountedFor} but sum is ${sum}`);
+            // }
+
             for (let i = 0; i < countLeft; i++) {
-                let roll = Math.random() * curNode.total;
+                let roll = Math.random() * peopleUnaccountedFor;
 
                 for (const key in k2p) {
-                    roll -= k2p[key];
+                    // Random distribution is done proportional to those people in the region who are not already accounted for by the nonrandom distribution.
+                    const remainingPop = k2p[key] % everyNPeople;
+
+                    roll -= remainingPop;
 
                     if (roll <= 0) {
                         let child;
@@ -6511,7 +6525,7 @@ class RegionTree {
                     }
                 }
 
-                console.log(`  Roll is now ${roll}, nonrandomCount is ${nonrandomCount}, output.length is ${output.length}, pathSoFar is ${pathSoFar.join(' ')}`);
+                console.log(`  Roll is now ${roll}, nonrandomCount is ${nonrandomCount}, output.length is ${output.length}, countLeft is ${countLeft}, i is ${i}, pathSoFar is ${pathSoFar.join(' ')}`);
             }
 
             if (output.length !== count) {
