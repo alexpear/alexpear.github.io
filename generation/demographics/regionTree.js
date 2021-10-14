@@ -6411,6 +6411,9 @@ class RegionTree {
 
             let countLeft = count;
 
+            // TODO might want to use or imitate getKeysToPopulationObj() here
+            const k2p = RegionTree.getKeysToPopulationObj(curNode);
+
             for (const key in curNode) {
                 if (RegionTree.isLeafyKey(key)) {
                     continue;
@@ -6443,7 +6446,7 @@ class RegionTree {
 
                 const childPath = pathSoFar.concat(key);
 
-                console.log(`  Nonrandom distribution, childPath is ${childPath.join(' ')}, fitCount is ${fitCount}:`);
+                console.log(`  Nonrandom distribution: ${childPath.join(' ')}, ${fitCount}`);
 
                 const newPaths = selectPaths(
                     child,
@@ -6459,6 +6462,8 @@ class RegionTree {
                 // IE if Turkey can fit 2.1 things, we should give it 2 nonrandomly, and then have its lottery weight for a 3rd be proportional to 0.1
                 // Note: Be careful editing child.total fields, since those are not always deep copied.
             }
+
+            const nonrandomCount = output.length;
 
             // Now distribute the rest of the things by weighted lottery.
             for (let i = 0; i < countLeft; i++) {
@@ -6478,6 +6483,8 @@ class RegionTree {
                         break;
                     }
                 }
+
+                console.log(`  Roll is now ${roll}, nonrandomCount is ${nonrandomCount}, output.length is ${output.length}, pathSoFar is ${pathSoFar.join(' ')}`);
             }
 
             if (output.length !== count) {
