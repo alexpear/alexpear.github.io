@@ -6385,7 +6385,7 @@ class RegionTree {
         function selectPaths (curNode, pathSoFar, count) {
             let output = [];
 
-            console.log(`selectPaths(foo, ${pathSoFar.join(' ')}, ${count})`);
+            console.log(`selectPaths({${curNode._name || '?'}}, ${pathSoFar.join(' ')}, ${count})`);
 
             if (RegionTree.isLeaf(curNode)) {
 
@@ -6394,10 +6394,22 @@ class RegionTree {
                     output.push([...pathSoFar]);
                 }
 
+                if (output.length !== count) {
+                    throw new Error(`Leaf case. pathSoFar is ${pathSoFar.join(' ')}. Expected ${count} paths, got ${output.length} paths:\n${pathsStr}`);
+                }
+
+                console.log(`  Returning ${output.length} copies of this leaf: ${output[0].join(' ')}`);
+
                 return output;
             }
 
             const children = [];
+
+            if (output.length > 0) {
+                throw new Error(`Top of nonleaf case. pathSoFar is ${pathSoFar.join(' ')}. Expected ${count} paths, got ${output.length} paths:\n${pathsStr}`);
+            }
+
+            let countLeft = count;
 
             for (const key in curNode) {
                 if (RegionTree.isLeafyKey(key)) {
@@ -6405,15 +6417,18 @@ class RegionTree {
                 }
 
                 const value = curNode[key];
+                let child;
 
-                const pop = Util.isNumber(value) ?
-                    value :
-                    value.total;
-
-                const child = {
-                    _name: key,
-                    total: pop
-                };
+                if (Util.isNumber(value)) {
+                    child = {
+                        total: value,
+                        _name: key
+                    };
+                }
+                else {
+                    child = value;
+                    child._name = key;
+                }
 
                 children.push(child);
 
@@ -6424,22 +6439,29 @@ class RegionTree {
                     continue;
                 }
 
-                count -= fitCount;
+                countLeft -= fitCount;
 
-                console.log(`  Nonrandom distribution:`);
+                const childPath = pathSoFar.concat(key);
 
-                output = output.concat(selectPaths(
+                console.log(`  Nonrandom distribution, childPath is ${childPath.join(' ')}, fitCount is ${fitCount}:`);
+
+                const newPaths = selectPaths(
                     child,
-                    pathSoFar.concat(key),
+                    childPath,
                     fitCount
-                ));
+                );
+
+                // if (newPaths.length !== fitCount)
+
+                output = output.concat(newPaths);
 
                 // TODO should probably decrement local child totals when they get nonrandom assignments, for the purpose of later weighted lottery.
                 // IE if Turkey can fit 2.1 things, we should give it 2 nonrandomly, and then have its lottery weight for a 3rd be proportional to 0.1
+                // Note: Be careful editing child.total fields, since those are not always deep copied.
             }
 
-            // Now distribute the rest of <count> by weighted lottery.
-            for (let i = 0; i < count; i++) {
+            // Now distribute the rest of the things by weighted lottery.
+            for (let i = 0; i < countLeft; i++) {
                 let roll = Math.random() * curNode.total;
 
                 for (const child of children) {
@@ -6458,15 +6480,17 @@ class RegionTree {
                 }
             }
 
-            // TODO bug: output is twice as long as expected.
+            if (output.length !== count) {
+                const pathsStr = RegionTree.prettyPaths(output.sort());
+
+                throw new Error(`pathSoFar is ${pathSoFar.join(' ')}. Expected ${count} paths, got ${output.length} paths:\n${pathsStr}`);
+            }
 
             return output.sort();
         }
     }
 
-    static prettyPathsAtRate (everyNPeople) {
-        const paths = RegionTree.pathsAtRate(everyNPeople);
-
+    static prettyPaths (paths) {
         return paths.map(
             p => p.join(' ')
         )
@@ -6689,7 +6713,8 @@ class RegionTree {
 
     static run () {
         // RegionTree.printMissingCounts();
-        const out = RegionTree.prettyPathsAtRate(71_000_000);
+        const paths = RegionTree.pathsAtRate(71_000_000);
+        const out = RegionTree.prettyPaths(paths);
         Util.log(out);
 
         // Util.log(RegionTree.largestLeaf());
