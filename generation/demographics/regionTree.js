@@ -116,8 +116,8 @@ class RegionTree {
                 india: {
                     total: 1_354_000_000,
                     uttarPradesh: {
-                        total: 199800000,
-                        lucknow: 3500000
+                        total: 199_800_000,
+                        lucknow: 3_500_000
                     },
                     maharashtra: {
                         total: 112000000
@@ -6382,10 +6382,12 @@ class RegionTree {
         // Similarly, when count is 1, assign randomly between branches
         // Return array of paths
 
-        function selectPaths (curNode, pathSoFar, count) {
+        function selectPaths (curNode, pathSoFar, count, random = false) {
             let output = [];
 
-            console.log(`selectPaths({${curNode._name || '?'}}, ${pathSoFar.join(' ')}, ${count})`);
+            // if (pathSoFar.length >= 3 && pathSoFar[1] === 'uttarPradesh') {
+                console.log(`selectPaths({${curNode._name || '?'}}, ${pathSoFar.join(' ')}, ${count})`);
+            // }
 
             if (RegionTree.isLeaf(curNode)) {
 
@@ -6403,37 +6405,39 @@ class RegionTree {
                 return output;
             }
 
-            const children = [];
-
             if (output.length > 0) {
                 throw new Error(`Top of nonleaf case. pathSoFar is ${pathSoFar.join(' ')}. Expected ${count} paths, got ${output.length} paths:\n${pathsStr}`);
             }
 
             let countLeft = count;
 
-            // TODO might want to use or imitate getKeysToPopulationObj() here
             const k2p = RegionTree.getKeysToPopulationObj(curNode);
 
-            for (const key in curNode) {
-                if (RegionTree.isLeafyKey(key)) {
-                    continue;
+            // Nonrandom section
+            for (const key in k2p) {
+                if (random) {
+                    // Some recursor calls are random placements. These skip the nonrandom step.
+                    break;
                 }
 
-                const value = curNode[key];
                 let child;
 
-                if (Util.isNumber(value)) {
+                if (key === 'other') {
                     child = {
-                        total: value,
-                        _name: key
+                        total: k2p.other
                     };
                 }
                 else {
-                    child = value;
-                    child._name = key;
+                    const value = curNode[key];
+
+                    child = Util.isNumber(value) ?
+                        {
+                            total: value
+                        } :
+                        value;
                 }
 
-                children.push(child);
+                child._name = key;
 
                 // Distribute those that clearly fit into large regions, nonrandomly.
                 const fitCount = Math.floor(child.total / everyNPeople);
@@ -6465,18 +6469,41 @@ class RegionTree {
 
             const nonrandomCount = output.length;
 
-            // Now distribute the rest of the things by weighted lottery.
+            // Now distribute the rest of the things randomly, by weighted lottery.
             for (let i = 0; i < countLeft; i++) {
                 let roll = Math.random() * curNode.total;
 
-                for (const child of children) {
-                    roll -= child.total;
+                for (const key in k2p) {
+                    roll -= k2p[key];
 
                     if (roll <= 0) {
+                        let child;
+
+                        // TODO functionize this repeated logic
+                        if (key === 'other') {
+                            child = {
+                                _name: 'other',
+                                total: k2p.other
+                            };
+                        }
+                        else {
+                            child = curNode[key];
+
+                            if (Util.isNumber(child)) {
+                                const value = child;
+                                child = {
+                                    total: value
+                                };
+                            }
+
+                            child._name = key;
+                        }
+
                         const newPaths = selectPaths(
                             child,
-                            pathSoFar.concat(child._name),
-                            1
+                            pathSoFar.concat(key),
+                            1,
+                            true
                         );
 
                         output = output.concat(newPaths);
