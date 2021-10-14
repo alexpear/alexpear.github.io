@@ -7,11 +7,11 @@ const Util = require('../../util/util.js');
 class RegionTree {
     static fullTree () {
         return {
-            total: 7715214000,
+            total: 7_715_214_000,
             eurasia: {
-                total: 5360000000,
+                total: 5_360_000_000,
                 china: {
-                    total: 1400000000,
+                    total: 1_400_000_000,
                     guangdong: {
                         total: 104000000
                     },
@@ -114,7 +114,7 @@ class RegionTree {
                     // https://en.wikipedia.org/wiki/Provinces_of_China...
                 },
                 india: {
-                    total: 1354000000,
+                    total: 1_354_000_000,
                     uttarPradesh: {
                         total: 199800000,
                         lucknow: 3500000
@@ -494,10 +494,9 @@ class RegionTree {
                 bahrain: {
                     total: 1569439
                 },
-
             },
             africa: {
-                total: 1294211893,
+                total: 1_294_211_893,
                 nigeria: {
                     total: 196000000
                 },
@@ -658,12 +657,12 @@ class RegionTree {
                 },
             },
             northAmerica: {
-                total: 587000000,
+                total: 587_000_000,
                 canada: {
-                    total: 37000000
+                    total: 37_000_000
                 },
                 usa: {
-                    total: 331679950,
+                    total: 331_679_950,
                     alabama: {
                         total: 4900000,
                         montgomery: {
@@ -5983,7 +5982,7 @@ class RegionTree {
                 }
             },
             southAmerica: {
-                total: 433000000,
+                total: 433_000_000,
                 brazil: {
                     total: 211000000,
                     north: {
@@ -6038,9 +6037,9 @@ class RegionTree {
                 // ...
             },
             oceania: {
-                total: 41000000,
+                total: 41_000_000,
                 australia: {
-                    total: 24982688
+                    total: 24_982_688
                 },
                 newZealand: {
                     total: 4841000
@@ -6359,12 +6358,127 @@ class RegionTree {
         }
     }
 
+    static selectN (n) {
+        const locations = [];
+
+        for (let i = 0; i < n; i++) {
+            locations.push(RegionTree.randomLocation());
+        }
+
+        return locations;
+    }
+
+    // Input number of people per path
+    // Output array of paths, evenly distributed
+    // Eg, input 71,000,000 to see where all the wizard schools are.
+    static pathsAtRate (everyNPeople) {
+        const tree = RegionTree.fullTree();
+        const count = Math.round(tree.total / everyNPeople);
+
+        return selectPaths(tree, [], count);
+
+        // Then recurse down tree, splitting up count proportionally between branches
+        // Remainders should be assigned randomly between branches
+        // Similarly, when count is 1, assign randomly between branches
+        // Return array of paths
+
+        function selectPaths (curNode, pathSoFar, count) {
+            let output = [];
+
+            console.log(`selectPaths(foo, ${pathSoFar.join(' ')}, ${count})`);
+
+            if (RegionTree.isLeaf(curNode)) {
+
+                for (let i = 0; i < count; i++) {
+                    // Return <count> copies of path.
+                    output.push([...pathSoFar]);
+                }
+
+                return output;
+            }
+
+            const children = [];
+
+            for (const key in curNode) {
+                if (RegionTree.isLeafyKey(key)) {
+                    continue;
+                }
+
+                const value = curNode[key];
+
+                const pop = Util.isNumber(value) ?
+                    value :
+                    value.total;
+
+                const child = {
+                    _name: key,
+                    total: pop
+                };
+
+                children.push(child);
+
+                // Distribute those that clearly fit into large regions, nonrandomly.
+                const fitCount = Math.floor(child.total / everyNPeople);
+
+                if (fitCount === 0) {
+                    continue;
+                }
+
+                count -= fitCount;
+
+                console.log(`  Nonrandom distribution:`);
+
+                output = output.concat(selectPaths(
+                    child,
+                    pathSoFar.concat(key),
+                    fitCount
+                ));
+
+                // TODO should probably decrement local child totals when they get nonrandom assignments, for the purpose of later weighted lottery.
+                // IE if Turkey can fit 2.1 things, we should give it 2 nonrandomly, and then have its lottery weight for a 3rd be proportional to 0.1
+            }
+
+            // Now distribute the rest of <count> by weighted lottery.
+            for (let i = 0; i < count; i++) {
+                let roll = Math.random() * curNode.total;
+
+                for (const child of children) {
+                    roll -= child.total;
+
+                    if (roll <= 0) {
+                        const newPaths = selectPaths(
+                            child,
+                            pathSoFar.concat(child._name),
+                            1
+                        );
+
+                        output = output.concat(newPaths);
+                        break;
+                    }
+                }
+            }
+
+            // TODO bug: output is twice as long as expected.
+
+            return output.sort();
+        }
+    }
+
+    static prettyPathsAtRate (everyNPeople) {
+        const paths = RegionTree.pathsAtRate(everyNPeople);
+
+        return paths.map(
+            p => p.join(' ')
+        )
+        .join('\n');
+    }
+
     // static missingCount () {
 
     // }
 
     static isLeafyKey (input) {
-        return Util.contains(['total', 'latitude', 'longitude'], input);
+        return Util.contains(['total', 'latitude', 'longitude', '_name'], input);
     }
 
     static isLeaf (node) {
@@ -6575,8 +6689,8 @@ class RegionTree {
 
     static run () {
         // RegionTree.printMissingCounts();
-        const path = RegionTree.randomLocation();
-        // Util.log(path);
+        const out = RegionTree.prettyPathsAtRate(71_000_000);
+        Util.log(out);
 
         // Util.log(RegionTree.largestLeaf());
 
