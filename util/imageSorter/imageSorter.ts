@@ -86,8 +86,8 @@ class ImageSorter {
   
   setRandomPaths (): void {
     // TDOO implement
-    this.path1 = '/Users/mm76408/scratch/nodegui-starter/assets/1-24-red-handfish.jpg';
-    this.path2 = '/Users/mm76408/scratch/nodegui-starter/assets/3zfhoa.jpg';
+    this.path1 = '/Users/mm76408/scratch/imageTest/1-24-red-handfish.jpg';
+    this.path2 = '/Users/mm76408/scratch/imageTest/3zfhoa.jpg';
 
     console.log(`curPath is ${this.curPath}`);
     const everything = FS.readdirSync(this.curPath);
@@ -151,3 +151,6 @@ class ImageSorter {
 }
 
 const sorter = new ImageSorter();
+
+// TODOs
+// webpack: Module not found: Error: Can't resolve './src' in...

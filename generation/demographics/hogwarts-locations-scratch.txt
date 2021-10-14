@@ -1,0 +1,109 @@
+africa algeria
+africa burundi
+africa cameroon
+africa drc
+africa egypt
+africa ethiopia
+africa gambia
+africa lesotho
+africa liberia
+africa madagascar
+africa nigeria
+africa nigeria
+africa nigeria
+africa rwanda
+africa somalia
+africa southAfrica
+africa southAfrica
+africa southSudan
+eurasia bangladesh
+eurasia bangladesh
+eurasia belarus
+eurasia china anhui
+eurasia china chongqing
+eurasia china fujian
+eurasia china guangdong
+eurasia china guangxiZhuang
+eurasia china guizhou
+eurasia china hebei
+eurasia china heilongjiang
+eurasia china henan
+eurasia china hunan
+eurasia china jiangsu
+eurasia china other
+eurasia china other
+eurasia china shandong
+eurasia china shanghai
+eurasia china shanxi
+eurasia china sichuan
+eurasia china xinjiangUyghurAutonomousRegion
+eurasia china yunnan
+eurasia china zhejiang
+eurasia france
+eurasia france
+eurasia germany
+eurasia india bihar
+eurasia india bihar
+eurasia india gujarat
+eurasia india gujarat
+eurasia india jharkhand
+eurasia india jharkhand
+eurasia india madhyaPradesh
+eurasia india maharashtra
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india rajasthan
+eurasia india tamilNadu
+eurasia india telangala
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india westBengal
+eurasia india westBengal
+eurasia indonesia centralJava
+eurasia indonesia other
+eurasia indonesia other
+eurasia iran
+eurasia japan other
+eurasia other
+eurasia pakistan balochistan
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia philippines
+eurasia philippines
+eurasia philippines
+eurasia philippines
+eurasia philippines
+eurasia russia
+eurasia russia
+eurasia saudiArabia
+eurasia spain
+eurasia syria
+eurasia syria
+eurasia thailand
+eurasia turkey
+eurasia turkey
+eurasia turkmenistan
+eurasia uk england
+eurasia uk england
+eurasia ukraine
+eurasia ukraine
+eurasia uzbekistan
+eurasia vietnam
+northAmerica canada
+northAmerica cuba
+northAmerica mexico
+northAmerica mexico
+northAmerica mexico
+northAmerica usa alabama other
+northAmerica usa california sacramento
+northAmerica usa georgia columbus
+northAmerica usa illinois evanston
+oceania australia
+southAmerica argentina
+southAmerica brazil northeast
+southAmerica brazil south
+southAmerica brazil southeast
+southAmerica colombia
+southAmerica colombia

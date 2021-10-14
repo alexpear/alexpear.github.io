@@ -2,6 +2,8 @@
 
 const DetailedPerson = require('./detailedPerson.js');
 
+const TraitGrid = require('../bottleWorld/traitGrid.js');
+
 const WizardingName = require('../generation/wizardingName.js');
 
 const Util = require('../util/util.js');
@@ -14,6 +16,7 @@ class WizardingPerson extends DetailedPerson {
         this.gender = gender;
         this.house = house;
         this.name = name;
+        this.traitGrid = TraitGrid.random();
     }
 
     static random (startingYear, gender, house) {
@@ -30,6 +33,10 @@ class WizardingPerson extends DetailedPerson {
 
         this.gender = this.gender || Util.randomOf(['female', 'male']);
         this.house = this.house || Util.randomOf(['ravenclaw', 'slytherin', 'gryffindor', 'hufflepuff']);
+    }
+
+    lastFirst () {
+        return WizardingName.lastFirst(this.name);
     }
 
     static test () {

@@ -61,8 +61,8 @@ var ImageSorter = /** @class */ (function () {
     };
     ImageSorter.prototype.setRandomPaths = function () {
         // TDOO implement
-        this.path1 = '/Users/mm76408/scratch/nodegui-starter/assets/1-24-red-handfish.jpg';
-        this.path2 = '/Users/mm76408/scratch/nodegui-starter/assets/3zfhoa.jpg';
+        this.path1 = '/Users/mm76408/scratch/imageTest/1-24-red-handfish.jpg';
+        this.path2 = '/Users/mm76408/scratch/imageTest/3zfhoa.jpg';
         console.log("curPath is " + this.curPath);
         var everything = FS.readdirSync(this.curPath);
         everything.forEach(function (item) { return console.log(item); });
@@ -106,3 +106,5 @@ var ImageSorter = /** @class */ (function () {
     return ImageSorter;
 }());
 var sorter = new ImageSorter();
+// npm script error 2021 Oct 3
+// Module not found: Error: Can't resolve './src' in...

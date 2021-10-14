@@ -22,13 +22,21 @@ class WorldPopGrid {
     }
 
     loadRaw () {
-        const eighthGrids = [];
+        let eighthGrids = [];
 
         for (let i = 0; i < 4; i++) {
             eighthGrids.push(this.loadEighth(i + 1));
+
+            console.log(`\n${eighthGrids[i].length} rows & ${eighthGrids[i][0].length} cols`);
+            // performance issue, allocation failure scavenge might not succeed
+            // node --max_old_space_size=8192 --optimize_for_size --max_executable_size=4096 --stack_size=4096 bottleWorld/worldPopGrid.js
         }
 
+        this.outStream = FS.createWriteStream('worldPopGrid.txt', { flags: 'a' });
+
         this.loadHemisphere(eighthGrids);
+
+        eighthGrids = [];
 
         for (let i = 4; i < 8; i++) {
             eighthGrids.push(this.loadEighth(i + 1));
@@ -46,7 +54,7 @@ class WorldPopGrid {
             'utf8'
         );
 
-        console.log(`Loaded raw file ${n}`);
+        FS.writeSync(process.stdout.fd, `\nLoaded raw file ${n}\n`);
 
         const lines = raw.split('\n')
             .slice(7);
@@ -55,11 +63,21 @@ class WorldPopGrid {
 
         return lines.map(
             line => {
-                console.log(`line ${debugCount}`);
+                if (debugCount % 100 === 0) {
+                    FS.writeSync(process.stdout.fd, `${debugCount}\t`);
+                }
                 debugCount++;
 
                 return line.split(' ')
-                    .map(Number);
+                    .map(
+                        str => {
+                            const n = Number(str);
+
+                            return n === -9999 ?
+                                -1 :
+                                n;
+                        }
+                    );
             }
         );
     }
@@ -70,19 +88,24 @@ class WorldPopGrid {
         //         .slice(7)
         // );
 
+        FS.writeSync(process.stdout.fd, `\n`);
+
         for (let r = 0; r < 10800; r++) {
-            console.log(`Loading ${r}...`);
+            if (r % 100 === 0) {
+                FS.writeSync(process.stdout.fd, `${r}\t`);
+            }
 
             const fourLines = eighthGrids.map(
                 set => set[r]
             );
 
-            this.grid.push(
-                fourLines.reduce(
-                    (outLine, eighthLine) => outLine.concat(eighthLine),
-                    []
-                )
+            const flatRow = fourLines.reduce(
+                (outLine, eighthLine) => outLine.concat(eighthLine),
+                []
             );
+
+            // this.grid.push(flatRow);
+            this.outStream.write(flatRow.join(' ') + '\n');
         }
     }
 
@@ -100,7 +123,7 @@ class WorldPopGrid {
         const g = new WorldPopGrid();
         g.loadRaw();
 
-        console.log(`${g.grid.length} rows & ${g.grid[0].length} cols`);
+        // FS.writeSync(process.stdout.fd, `${g.grid.length} rows & ${g.grid[0].length} cols`);
     }
 }
 

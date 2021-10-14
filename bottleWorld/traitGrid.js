@@ -115,7 +115,7 @@ class TraitGrid {
 
         for (let axis of axes) {
             if (traits >= desiredTraits) {
-                Util.logDebug(`We now have ${traits} traits and that's enough.`)
+                // Util.logDebug(`We now have ${traits} traits and that's enough.`)
                 break;
             }
 
@@ -187,6 +187,7 @@ class TraitGrid {
             // 'standoffish amiable',
             'tough friendly', // or harsh
             'withdrawn assertive',
+            'celebrated overlooked',
             'pragmatic bookish', // TODO pragmatic with bookish or creative?
             // 'pragmatic creative',
             'thin solid',

@@ -16,7 +16,7 @@
     "webpack": "^5.43.0"
   },
   "devDependencies": {
-    "webpack-cli": "^4.7.2"
+    "webpack-cli": "^4.8.0"
   },
   "scripts": {
     "start": "npm i && npm run buildAll && npm run test",
@@ -38,7 +38,7 @@
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
     "testRingWorld": "node bottleWorld/ringWorldState.js test",
     "buildImageSorter": "webpack -p",
-    "startImageSorter": "tsc ./util/imageSorter/imageSorter.ts && webpack && qode ./util/imageSorter.ts",
+    "startImageSorter": "tsc ./util/imageSorter/imageSorter.ts && webpack -p && qode ./util/imageSorter.ts",
     "debugImageSorter": "webpack && qode --inspect ./dist/imageSorter.js"
   },
   "repository": {
