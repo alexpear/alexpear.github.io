@@ -61,6 +61,12 @@ class HogwartsWorldState extends WorldState {
 
                     // Util.logDebug(`addCanonCharacters(), name is ${name}, p.name is ${p.name}`)
 
+                    // debug
+                    if (! p.traitGrid) {
+                        Util.logDebug(p);
+                        console.log('addCanonCharacters()');
+                    }
+
                     this.people.push(p);
                 }
             }
@@ -80,6 +86,12 @@ class HogwartsWorldState extends WorldState {
         for (let i = 0; i < spots; i++) {
             const student = new WizardingPerson(startingYear, undefined, house);
             student.fillBlanks();
+
+            // debug
+            if (! student.traitGrid) {
+                Util.logDebug(student);
+                console.log('fillHouseYear()')
+            }
 
             this.people.push(student);
         }
@@ -154,7 +166,7 @@ class HogwartsWorldState extends WorldState {
                 // }
 
                 const multiline = all.map(
-                    p => p.name
+                    p => p.lastFirst()
                 )
                 .join('\n');
 
@@ -175,6 +187,35 @@ class HogwartsWorldState extends WorldState {
         console.log(text);
     }
 
+    rankClassmates () {
+        const house = 'gryffindor';
+        const startingYear = 1991;
+
+        const fullClass = this.peopleWith({
+            house,
+            startingYear
+        });
+
+        const pov = fullClass[0];
+
+        const opinionMap = {};
+
+        for (let student of fullClass) {
+
+            // debug
+            if (! student.traitGrid) {
+                console.log('rankClassmates()')
+                Util.logDebug(student);
+            }
+
+            const opinion = pov.traitGrid.opinionOf(student.traitGrid);
+
+            opinionMap[student.name] = opinion;
+        }
+
+        Util.log(opinionMap);
+    }
+
     static HOUSES () {
         return [
             'ravenclaw',
@@ -187,6 +228,8 @@ class HogwartsWorldState extends WorldState {
     static test () {
         const ws = new HogwartsWorldState();
         ws.printGrid();
+
+        ws.rankClassmates();
     }
 
 }
