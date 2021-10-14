@@ -659,7 +659,11 @@ class RegionTree {
             northAmerica: {
                 total: 587_000_000,
                 canada: {
-                    total: 37_000_000
+                    total: 37_000_000,
+                    ontario: {
+                        total: 13_448_000,
+                        toronto: 2_732_000
+                    } 
                 },
                 usa: {
                     total: 331_679_950,
@@ -5942,7 +5946,9 @@ class RegionTree {
                     americanSamoa: 49000
                 },
                 mexico: {
-                    total: 131000000
+                    total: 131_000_000,
+                    mexicoState: 16_992_000,
+                    mexicoCity: 9_210_000
                 },
                 cuba: {
                     total: 11338138
