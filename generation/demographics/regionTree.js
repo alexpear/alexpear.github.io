@@ -78,13 +78,13 @@ class RegionTree {
                     gansu: {
                         total: 26000000
                     },
-                    innerMongoliaAutonomousRegion: {
+                    innerMongolia: {
                         total: 25000000
                     },
                     shanghai: {
                         total: 23000000
                     },
-                    xinjiangUyghurAutonomousRegion: {
+                    xinjiangUyghur: {
                         total: 22000000
                     },
                     beijing: {
@@ -99,7 +99,7 @@ class RegionTree {
                     hongKong: {
                         total: 7000000
                     },
-                    ningxiaHuiAutonomousRegion: {
+                    ningxiaHui: {
                         total: 6000000
                     },
                     qinghai: {
@@ -120,7 +120,8 @@ class RegionTree {
                         lucknow: 3_500_000
                     },
                     maharashtra: {
-                        total: 112000000
+                        total: 112000000,
+                        mumbai: 20_748_000
                     },
                     bihar: {
                         total: 104000000
@@ -200,6 +201,7 @@ class RegionTree {
                     sikkim: {
                         total: 610000
                     },
+                    delhi: 16_787_000
                     // https://en.wikipedia.org/wiki/States_and_union_territories_of_India#States...
                 },
                 pakistan: {
@@ -212,19 +214,25 @@ class RegionTree {
                     azadKashmir: 4600000,
                     islamabad: 2900000
                 },
-                bangladesh: 166000000,
+                bangladesh: {
+                    total: 166000000,
+                    dhaka: 19_579_000
+                },
                 vietnam: 97000000,
                 japan: {
                     total: 127000000,
                     tokyo: {
-                        total: 38140000
-                    }
+                        total: 39_105_000
+                    },
+                    osaka: 15_490_000
                 },
                 southKorea: {
-                    total: 51000000
+                    total: 51_000_000,
+                    seoul: 22_394_000
                 },
                 philippines: {
-                    total: 107000000
+                    total: 107_000_000,
+                    manila: 23_971_000
                 },
                 indonesia: {
                     total: 267000000,
@@ -237,24 +245,31 @@ class RegionTree {
                     total: 82000000
                 },
                 turkey: {
-                    total: 82000000
+                    total: 82000000,
+                    istanbul: 15_311_000
                 },
                 russia: {
-                    total: 144000000
+                    total: 144_000_000,
+                    moscow: 17_693_000
                 },
                 germany: {
-                    total: 82000000
+                    total: 82000000,
+                    berlin: 6_144_000
                 },
                 france: {
-                    total: 67000000
+                    total: 67000000,
+                    paris: 2_176_000
                 },
                 uk: {
                     total: 66800000,
                     england: {
-                        total: 55619400
+                        total: 55619400,
+                        london: 8_962_000
                     },
                     scotland: {
-                        total: 5424800
+                        total: 5_424_800,
+                        edinburgh: 512_000,
+                        glasgow: 985_000
                     },
                     wales: {
                         total: 3139000
@@ -264,10 +279,40 @@ class RegionTree {
                     },
                 },
                 thailand: {
-                    total: 67000000
+                    total: 67_000_000,
+                    bangkok: 17_573_000
                 },
                 italy: {
-                    total: 60000000
+                    total: 60_000_000,
+                    lombardy: {
+                        total: 10_000_000,
+                        milan: 1_396_000
+                    },
+                    lazio: {
+                        total: 5_700_000,
+                        roma: 2_837_000
+                    },
+                    campania: {
+                        total: 5_700_000,
+                        napoli: 962_000
+                    },
+                    veneto: {
+                        total: 4_800_000,
+                        venezia: 259_000,
+                        verona: 260_000
+                    },
+                    sicilia: {
+                        total: 4_800_000,
+                        palermo: 658_000
+                    },
+                    piemonte: {
+                        total: 4_200_000,
+                        turin: 870_000
+                    },
+                    toscana: {
+                        total: 3_700_000,
+                        firenze: 372_000
+                    },
                 },
                 myanmar: {
                     total: 55000000
@@ -336,7 +381,8 @@ class RegionTree {
                     total: 38433600
                 },
                 ireland: {
-                    total: 4867309
+                    total: 4867309,
+                    dublin: 1_905_000
                 },
                 israel: {
                     total: 8882800
@@ -498,7 +544,8 @@ class RegionTree {
             africa: {
                 total: 1_294_211_893,
                 nigeria: {
-                    total: 196000000
+                    total: 196000000,
+                    lagos: 15_487_000
                 },
                 ethiopia: {
                     total: 108000000
@@ -507,7 +554,8 @@ class RegionTree {
                     total: 51000000
                 },
                 egypt: {
-                    total: 99000000
+                    total: 99_000_000,
+                    cairo: 20_076_000
                 },
                 tanzania: 59000000,
                 drc: 101900000,
@@ -788,6 +836,7 @@ class RegionTree {
                                 total: 2360000,
                                 rockaway: 130000,
                                 flushing: 176000,
+                                corona: 112_000,
                                 astoria: 78800,
                                 longIslandCity: 20030,
                                 jamaica: 217000
@@ -5948,7 +5997,7 @@ class RegionTree {
                 mexico: {
                     total: 131_000_000,
                     mexicoState: 16_992_000,
-                    mexicoCity: 9_210_000
+                    mexicoCity: 21_505_000
                 },
                 cuba: {
                     total: 11338138
@@ -6008,7 +6057,8 @@ class RegionTree {
                     }
                 },
                 argentina: {
-                    total: 44494502
+                    total: 44_494_502,
+                    buenosAires: 16_216_000
                 },
                 panama: {
                     total: 4176873
@@ -6045,7 +6095,11 @@ class RegionTree {
             oceania: {
                 total: 41_000_000,
                 australia: {
-                    total: 24_982_688
+                    total: 24_982_688,
+                    newSouthWales: {
+                        total: 8_176_000,
+                        sydney:5_367_000
+                    }
                 },
                 newZealand: {
                     total: 4841000
@@ -6377,8 +6431,8 @@ class RegionTree {
     // Input number of people per path
     // Output array of paths, evenly distributed
     // Eg, input 71,000,000 to see where all the wizard schools are.
-    static pathsAtRate (everyNPeople) {
-        const tree = RegionTree.fullTree();
+    static pathsAtRate (everyNPeople, tree) {
+        tree = tree || RegionTree.fullTree();
         const count = Math.round(tree.total / everyNPeople);
 
         return selectPaths(tree, [], count);
@@ -6767,7 +6821,11 @@ class RegionTree {
 
     static run () {
         // RegionTree.printMissingCounts();
-        const paths = RegionTree.pathsAtRate(71_000_000);
+        // const nyc = RegionTree.fullTree().northAmerica.usa.newYork.newYork;
+        // const paths = RegionTree.pathsAtRate(80_000, nyc);
+
+        // 1000, evenly distributed
+        const paths = RegionTree.pathsAtRate(7_600_000);
         const out = RegionTree.prettyPaths(paths);
         Util.log(out);
 
