@@ -255,8 +255,8 @@ class CreatureTemplate extends NodeTemplate {
         let combinedTemplate = this.deepCopy();
 
         // (Necessary if the root is a weapon or tool.)
-        combinedTemplate.setUpAction();
-        other.setUpAction();
+        // combinedTemplate.setUpAction();
+        // other.setUpAction();
 
         combinedTemplate.actions = Util.union(combinedTemplate.actions, other.actions);
         combinedTemplate.applyActionModifiers(other);
@@ -315,6 +315,40 @@ class CreatureTemplate extends NodeTemplate {
     // If so, transforms this CreatureTemplate to have a ActionTemplate with the relevant stats.
     // Also removes the old modifiers and tag.
     setUpAction () {
+        //  CreatureTemplate.fromRaw() is returning something weird
+        // Do i even want to call setUpAction() anymore?
+        // What was the original motive?
+        // Opts
+        // . reference .actions[0] in Halo Bottle
+        // . produce a flat weapon obj in memory somehow
+        // . make the outer obj usable by Halo Bottle
+        /*
+        However, i need whichever part i'm using in Halo Bottle to be included in WGenerator.ids
+        Should i draw a paper diagram?
+        Maybe i should just deactivate the inner-action system, & stop calling setUpAction.
+        I'm not sure it's live anyway.
+
+        Maybe i should have goodTemplate() try to evaluate each template as a weapon or as a creature, and focus on whichever seems to be the intent.
+        Or maybe i should call goodCreatureTemplate() on the individual.js files, and goodAttackTemplate() on the item.js files.
+
+        {
+            name: plasmaRifle
+            id:...PM0
+            weight: 6
+            tags: []
+            actions: [{
+                name: plasmaRifle
+                id: ...IVx
+                tags: [
+                    plasma
+                    fullAuto
+                ]
+                range: 40
+                etc
+            }]
+        }
+        */
+
         const actionTagIndex = this.tags && this.tags.indexOf('action');
 
         if (actionTagIndex >= 0) {
@@ -374,12 +408,16 @@ class CreatureTemplate extends NodeTemplate {
                     const parsed = CreatureTemplate.parseTemplateLine(line);
                     const key = parsed.key;
 
-                    if (
-                        key in creatureTemplate &&
-                        ! ['tags', 'actions', 'resistance'].includes(key)
+                    if (key in creatureTemplate &&
+                        ! (
+                            key === 'tags' && creatureTemplate.tags.length === 0 ||
+                            key === 'actions' && creatureTemplate.actions.length === 0 ||
+                            key === 'resistance' && Object.keys(creatureTemplate.resistance).length === 0
+                        )
                     ) {
+
                         throw new Error(`fromRaw(): duplicate key '${ key }' in line '${ line }'. Full template is as follows:\n${ tableRaw }`);
-                    }
+                   }
 
                     creatureTemplate[key] = parsed.value;
 
@@ -388,7 +426,11 @@ class CreatureTemplate extends NodeTemplate {
             );
 
         creatureTemplate.name = CreatureTemplate.templateKey(tableRaw);
-        creatureTemplate.setUpAction();
+        // creatureTemplate.setUpAction();
+
+        if (tableRaw.startsWith('template plasmaRifle')) {
+            Util.logDebug(`CreatureTemplate.fromRaw() returning: ${Util.stringify(creatureTemplate)}`);
+        }
 
         return creatureTemplate;
     }
@@ -1268,9 +1310,8 @@ module.exports = `
 4 gruntMinor
 1 bruteMinor
 
-
 * template eliteMinor
-tags: elite infantry
+tags: elite infantry fleetGen
 size: 2
 weight: 350
 individuals: 1
@@ -1287,7 +1328,7 @@ item/hunterCannon
 item/hunterShield
 
 * template bruteMinor
-tags: brute infantry
+tags: brute infantry fleetGen
 size: 2
 weight: 600
 individuals: 1
@@ -1303,10 +1344,16 @@ item/flameGrenade
 item/activeCamoflage
 
 * template shieldJackal
-tags: jackal infantry
+tags: jackal infantry gridWar
 weight: 80
-size: 1.5
+cost: 1
+size: 1
 individuals: 1
+speed: 12
+moveType: infantry
+durability: 150
+resistance: pierce 3 fire 2
+weapon: plasmaPistol
 
 * childrenof shieldJackal
 item/handShield
@@ -1314,9 +1361,14 @@ item/plasmaPistol
 
 * template rifleJackal
 tags: jackal infantry
+cost: 1
 weight: 80
 size: 1
 individuals: 1
+speed: 13
+moveType: infantry
+durability: 60
+weapon: carbine
 
 * childrenof rifleJackal
 {item/jackalRifle}
@@ -1324,30 +1376,44 @@ item/plasmaPistol
 
 * template sniperJackal
 size: 1
+cost: 1
+speed: 13
+moveType: infantry
+durability: 60
+weapon: beamRifle
 
 * template skirmisherJackal
 tags: jackal infantry
 weight: 80
 size: 1.5
 individuals: 1
+cost: 2
+speed: 13
+moveType: infantry
+durability: 60
+weapon: beamRifle
 
 * childrenof skirmisherJackal
 {item/skirmisherWeapon}
 
 * template gruntMinor
+tags: fleetGen
 size: 1.5
 weight: 250
 individuals: 1
 maxSp: 20
+durability: 3
 damage: 1
 attackDelay: 2
 speed: 2
+weapon: plasmaPistol
 
 * childrenof gruntMinor
 {item/gruntWeapon}
 plasmaGrenade
 
 * template droneMinor
+tags: fleetGen
 size: 1.5
 individuals: 1
 
@@ -1355,238 +1421,336 @@ individuals: 1
 {item/droneWeapon}
 
 * template engineer
+tags: fleetGen
 size: 1.5
+cost: 10
 individuals: 1
+speed: 7
+durability: 50
 
 * childrenof engineer
 item/bombHarness
 
 * template grunt
+cost: 4
 size: 1
-speed: 1
+speed: 8
+moveType: infantry
 ac: 19
-sp: 50
-resistance: heat 2
+sp: 30
+durability: 30
 toHit: 3
 damage: 9
 shots: 2
+weapon: needler
+
+* template gruntTest
+tags: test
+cost: 4
+size: 1
+speed: 8
+moveType: infantry
+durability: 30
+weapon: rocketLauncher
 
 * template jackal
+cost: 7
 size: 1
 speed: 1
+moveType: infantry
 ac: 19
 sp: 50
-resistance: heat 2
+durability: 50
+resistance: fire 2 pierce 5
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaPistol
 
 * template drone
+cost: 5
 size: 1
+speed: 30
+moveType: air
+durability: 30
+weapon: plasmaPistol
 
 * template elite
+cost: 15
 size: 2
-speed: 1
+speed: 15
+moveType: infantry
 ac: 19
-sp: 50
-resistance: heat 2
+sp: 190
+durability: 190
+resistance: fire 1 impact 1
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaRifle
 
 * template brute
+cost: 20
 size: 2
-speed: 1
+speed: 9
+moveType: infantry
 ac: 19
-sp: 50
+sp: 190
+durability: 190
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: spiker
 
 * template bruteChieftain
+cost: 200
 size: 2
+speed: 14
+moveType: infantry
+durability: 450
+weapon: gravityHammer
 
 * template hunter
+cost: 140
 size: 3
-speed: 1
+speed: 8
+moveType: infantry
 ac: 19
-sp: 50
+sp: 450
+durability: 450
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
 individuals: 1
+weapon: fuelRodCannon
 
 * template ghost
+cost: 140
 size: 4
-speed: 25
+speed: 35
 moveType: skimmer
 ac: 19
-sp: 50
+sp: 350
+durability: 350
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaTurret
 comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
 
 * template shade
+cost: 15
 size: 4
+speed: 0
+moveType: infantry
+durability: 200
+weapon: shadeCannon
 
 * template spectre
+cost: 200
 size: 7
-speed: 25
+speed: 24
 moveType: skimmer
 ac: 19
-sp: 50
+sp: 400
+durability: 400
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaTurret
 
 * template chopper
+cost: 135
 size: 6
-speed: 25
+speed: 28
+moveType: wheeled
 ac: 19
-sp: 50
+sp: 350
+durability: 350
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: bruteShot
 
 * template bruteProwler
+cost: 190
 size: 7
-speed: 25
+speed: 24
 moveType: skimmer
 ac: 19
-sp: 50
+sp: 400
+durability: 400
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaTurret
 
 * template wraith
+cost: 500
 size: 9
-speed: 25
+speed: 18
 moveType: skimmer
 ac: 19
-sp: 50
+sp: 2500
+durability: 2500
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaMortar
 
 * template banshee
+cost: 410
 size: 7
-speed: 25
-moveType: flight
+speed: 60
+moveType: air
 ac: 19
-sp: 50
+sp: 400
+durability: 400
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: fuelRodCannon
 
 * template phantom
+cost: 240
 size: 33
 speed: 25
-moveType: hover
+moveType: air
 ac: 19
-sp: 50
+sp: 3500
+durability: 3500
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: shadeCannon
 
 * template spirit
+cost: 235
 size: 33
 speed: 25
-moveType: hover
+moveType: air
 ac: 19
-sp: 50
+sp: 3500
+durability: 3400
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: shadeCannon
 
 * template scarab
+cost: 1400
 size: 49
-speed: 25
+speed: 8
+moveType: infantry
 ac: 19
-sp: 50
+sp: 10000
+durability: 10000
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: scarabCannon
 
 * template spire
+tags: fleetGen
 size: 50
 speed: 25
-moveType: hover
+moveType: air
 ac: 19
 sp: 50
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaTurret
 
 * template lich
 size: 103
+cost: 2000
 speed: 25
-moveType: hover
+moveType: air
 ac: 19
-sp: 50
+sp: 20000
+durability: 20000
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: shadeCannon
 
 * template kraken
+cost: 4500
 size: 200
 speed: 25
+moveType: infantry
 ac: 19
-sp: 50
+sp: 30000
+durability: 30000
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaMortar
 
 * template harvester
+cost: 6000
 size: 278
 speed: 25
+moveType: infantry
 ac: 19
-sp: 50
+sp: 40000
+durability: 30000
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: scarabCannon
 
 * template corvette
+cost: 10000
 size: 980
 speed: 25
-moveType: hover
+moveType: air
 ac: 19
-sp: 50
+sp: 20000
+durability: 20000
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: plasmaMortar
 
 * template ccsLightCruiser
+cost: 20000
 size: 300
 speed: 25
-moveType: hover
+durability: 500000
+moveType: air
 ac: 19
 sp: 50
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: scarabCannon
 
 * template supercarrier
+tags: fleetGen
 size: 29000
+durability: 10000000
 
 * template highCharity
+tags: fleetGen
 size: 348000
 
 `;
@@ -1722,14 +1886,138 @@ module.exports = `
 
 
 * template plasmaRifle
+cost: 4
+tags: action plasma 1handed
 size: 0.6
 weight: 6
+range: 40
+shotsPerSecond: 10
+hit: 4
+damage: 17
+damageType: fire
 
 * template plasmaPistol
+cost: 3
+tags: action plasma 1handed
 size: 0.4
 weight: 4
+range: 40
+shotsPerSecond: 9
+hit: 3
+damage: 11
+damageType: fire
 
+* template needler
+cost: 5
+tags: action needle 1handed
+size: 0.5
+weight: 5
+range: 40
+shotsPerSecond: 9
+hit: 6
+damage: 23
+damageType: pierce
 
+* template carbine
+cost: 38
+tags: action
+size: 1
+range: 80
+shotsPerSecond: 6
+hit: 4
+damage: 16
+damageType: pierce
+
+* template beamRifle
+tags: action
+cost: 11
+size: 1.8
+range: 200
+shotsPerSecond: 1
+hit: 20
+damage: 150
+damageType: pierce
+
+* template fuelRodCannon
+cost: 7
+tags: action
+size: 1.4
+range: 60
+shotsPerSecond: 2
+hit: 2
+damage: 160
+damageType: impact
+
+* template plasmaTurret
+tags: action
+cost: 73
+size: 1.2
+range: 70
+shotsPerSecond: 8
+hit: 3
+damage: 40
+damageType: fire
+
+* template shadeCannon
+tags: action
+cost: 8
+size: 1.6
+range: 300
+shotsPerSecond: 3
+hit: 3
+damage: 20
+damageType: fire
+
+* template plasmaMortar
+tags: action
+cost: 30
+size: 3
+range: 3000
+shotsPerSecond: 0.3
+hit: 2
+damage: 900
+damageType: impact
+
+* template scarabCannon
+tags: action
+cost: 100
+size: 4
+range: 800
+shotsPerSecond: 0.2
+hit: 6
+damage: 2000
+damageType: fire
+
+* template spiker
+tags: action
+cost: 4
+size: 0.5
+range: 30
+shotsPerSecond: 8
+hit: 1
+damage: 14
+damageType: pierce
+
+* template bruteShot
+tags: action
+cost: 9
+size: 1
+canTarget: ground
+range: 50
+shotsPerSecond: 2
+hit: 3
+damage: 90
+damageType: impact
+
+* template gravityHammer
+tags: action
+cost: 5
+size: 2.5
+range: 3
+shotsPerSecond: 1.3
+hit: 10
+damage: 250
+damageType: impact
 `;
 
 },{}],12:[function(require,module,exports){
@@ -2119,7 +2407,7 @@ individual/pod
 individual/pod
 
 * template podGroup
-tags: group
+tags: group ringBottle
 consistsOf: individual/pod
 quantity: 13
 speed: 4
@@ -2215,29 +2503,67 @@ forerunner/item/boltshot
 {forerunner/item/gear}
 
 * template sentinel
+cost: 10
 size: 2
+speed: 25
+durability: 120
+moveType: air
+weapon: sentinelBeam
 
 * template enforcer
+cost: 140
 size: 7
+speed: 8
+moveType: air
+durability: 1500
+weapon: bruteShot
 
 * template crawler
+cost: 2
 size: 1
+speed: 18
+moveType: infantry
+durability: 70
+weapon: boltshot
 
 * template soldier
+cost: 3
 size: 1
+speed: 23
+moveType: infantry
+durability: 100
+weapon: lightrifle
 
 * template knight
+cost: 145
 size: 3
+speed: 12
+moveType: infantry
+durability: 400
+weapon: incinerationCannon
+comments: TODO There is a bug where it gets confused about what a incinerationCannon is.
 
 * template survivor
+cost: 100
 size: 3
+speed: 13
+moveType: infantry
+durability: 2000
+weapon: boltshot
 
 * template phaeton
+cost: 600
 size: 10
+speed: 28
+moveType: air
+durability: 1400
+weapon: phaetonCannon
 
 * template keyship
+tags: fleetGen
 size: 13000
-
+moveType: air
+durability: 20000000
 
 
 `;
@@ -2286,6 +2612,57 @@ module.exports = `
 4 autoturret
 4 regenerationField
 4 prometheanVision
+
+* template sentinelBeam
+tags: action
+cost: 10
+size: 1
+range: 80
+shotsPerSecond: 1
+hit: 6
+damage: 50
+damageType: fire
+
+* template boltshot
+tags: action
+cost: 7
+size: 0.4
+range: 40
+shotsPerSecond: 4
+hit: 7
+damage: 30
+damageType: fire
+comment: Halo 5
+
+* template lightrifle
+tags: action
+cost: 9
+size: 1.1
+range: 90
+shotsPerSecond: 3
+hit: 7
+damage: 40
+damageType: fire
+
+* template incinerationCannon
+tags: action
+cost: 14
+size: 2
+range: 80
+shotsPerSecond: 0.3
+hit: 5
+damage: 450
+damageType: fire
+
+* template phaetonCannon
+tags: action
+cost: 30
+size: 10
+range: 100
+shotsPerSecond: 0.5
+hit: 8
+damage: 400
+damageType: fire
 
 `;
 },{}],18:[function(require,module,exports){
@@ -2608,7 +2985,7 @@ module.exports = `
 1 spartan
 
 * template human
-tags: creature animal biped terrestrial biological
+tags: creature animal biped terrestrial biological fleetGen
 individuals: 1
 weight: 80
 size: 1.7
@@ -2666,12 +3043,16 @@ unsc/item/jetpack
 
 * template spartan
 tags: creature cyborg
-size: 2
+cost: 35
+size: 1.5
+speed: 5
+moveType: infantry
+stealth: 12
 weight: 120
 sp: 20
+durability: 28
 damage: 4
-speed: 5
-stealth: 12
+weapon: dmr
 
 * childrenof spartan
 {unsc/item/anyWeapon}
@@ -2690,7 +3071,7 @@ human
 1 spartan
 
 * template dropPod
-tags: thing vehicle
+tags: thing vehicle fleetGen
 weight: 1000
 
 * childrenof dropPod
@@ -2707,13 +3088,15 @@ weight: 1000
 4 odst
 
 * template marinePrivate
-tags: creature
+cost: 9
+tags: creature fleetGen
 size: 1
 speed: 1
 ac: 17
-sp: 10
-durability: 5
-resistance: heat 2, pierce 2
+sp: 70
+durability: 70
+resistance: heat 2, pierce 1
+weapon: assaultRifle
 toHit: 2
 damage: 2
 shots: 3
@@ -2728,31 +3111,39 @@ human
 
 * template marine
 tags: creature
+cost: 2
 size: 1
-speed: 1
+speed: 9
+moveType: infantry
 ac: 17
-sp: 10
-resistance: heat 2, pierce 2
+sp: 70
+durability: 70
+resistance: fire 2, pierce 2
 toHit: 2
 damage: 2
 shots: 3
-attacks: 
+attacks:
   SMG: +2 x2, 2 pierce
-comment: GridWar calls them 'marine', not 'marinePrivate'. This marine has a SMG.
+weapon: assaultRifle
+comment: GridWar calls them 'marine', not 'marinePrivate'.
 
 * template odst
+cost: 11
 tags: creature
 size: 1
-speed: 1
+speed: 9
+moveType: infantry
 ac: 19
-sp: 15
-durability: 8
-resistance: heat 2, pierce 2
+sp: 100
+durability: 100
+resistance: fire 2, pierce 3
 toHit: 2
 damage: 2
 shots: 3
+weapon: battleRifle
 attacks: 
-  SMG: +2 x2, 2 pierce
+  battleRifle: +2 x2, 2 pierce
+comment: I believe nothing reads the 'attacks' section yet.
 
 * childrenof odst
 {unsc/item/veteranWeapon}
@@ -2764,132 +3155,190 @@ unsc/item/fragGrenade
 human
 
 * template officer
+tags: creature fleetGen
 size: 1
-speed: 1
-sp: 5
+speed: 9
+moveType: infantry
+sp: 14
+durability: 14
+weapon: lightPistol
 
 * template mongoose
+cost: 3
 size: 4
 speed: 2
+moveType: wheeled
 ac: 21
-sp: 150
-resistance: heat 2
+sp: 80
+durability: 80
+resistance: heat 2 pierce 1
 toHit: 1
 damage: 50
 shots: 0.5
+weapon: smg
 
 * template warthog
+cost: 190
 size: 6
 speed: 25
+moveType: wheeled
 ac: 19
-sp: 50
+sp: 400
+durability: 400
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: chaingun
 comment: 'vehicle templates in files named individual.txt are used to store Group traits in the GridWar bottle world.'
 
 * template transportWarthog
 size: 6
+tags: fleetGen
 comment: 'Later this would benefit from template inheritance.'
 
 * template mantis
+cost: 240
 size: 4
+speed: 9
+moveType: infantry
+durability: 2000
+weapon: chaingun
 
 * template hornet
+cost: 300
 size: 10
 speed: 25
 moveType: hover
 ac: 19
-sp: 50
+sp: 350
+durability: 350
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: rocketLauncher
 
 * template wasp
+cost: 300
 size: 9
+speed: 40
+moveType: hover
+durability: 350
+weapon: rocketLauncher
 
 * template scorpion
+cost: 500
 size: 10
-speed: 2
+speed: 15
+moveType: wheeled
 ac: 21
-sp: 150
-resistance: heat 2
+sp: 2200
+durability: 2200
+resistance: heat 1 pierce 4
 toHit: 1
 damage: 50
 shots: 0.5
+weapon: tankCannon
 
 * template elephant
+cost: 300
 size: 25
-speed: 25
+speed: 9
+moveType: wheeled
 ac: 19
-sp: 50
-resistance: heat 2
+sp: 2000
+durability: 2000
+resistance: heat 2 pierce 5
 toHit: 3
 damage: 9
 shots: 2
+weapon: chaingun
 
 * template falcon
+cost: 300
 size: 10
 speed: 25
 moveType: hover
 ac: 19
-sp: 50
+sp: 360
+durability: 360
 resistance: heat 2
-toHit: 3
-damage: 9
-shots: 2
+weapon: chaingun
 
 * template pelican
+cost: 350
 size: 31
 speed: 25
 moveType: hover
 ac: 19
 sp: 50
+durability: 1400
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: chaingun
 
 * template mammoth
+cost: 400
 size: 68
 speed: 25
+moveType: wheeled
 ac: 19
 sp: 50
+durability: 10000
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: tacticalMac
 
 * template missileSilo
+tags: fleetGen
+cost: 2000
 size: 40
 speed: 0
+moveType: wheeled
 ac: 19
-sp: 50
+sp: 3000
+durability: 3000
 resistance: heat 2
-toHit: 3
-damage: 99
-shots: 2
+weapon: icbm
+
+* template macTurret
+cost: 1
+size: 30
+speed: 0
+moveType: wheeled
+durability: 400
+weapon: tacticalMac
 
 * template frigate
+cost: 10000
 size: 500
 speed: 25
 moveType: hover
 ac: 19
-sp: 50
+sp: 30000
+durability: 30000
 resistance: heat 2
 toHit: 3
 damage: 9
 shots: 2
+weapon: frigateMac
 
 * template marathonCruiser
+tags: fleetGen
 size: 1170
+comment: possibly rename to cruiser
 
 * template spiritOfFire
+tags: fleetGen
 size: 2500
 
 * template infinity
+tags: fleetGen
 size: 5000
 moveType: hover
 
@@ -3078,8 +3527,8 @@ module.exports = `* output
 * template mjolnirArmor
 weight: 454
 sp: 40
-resistance: fire 4, piercing 4, impact 3, vacuum 10
-tags: armor
+resistance: fire 4, pierce 4, impact 3, vacuum 10
+tags: armor fleetGen
 
 * alias armorMod
 4 armorLock
@@ -3122,52 +3571,137 @@ tags: armor
 
 * template flakArmor
 sp: 20
-resistance: fire 1, piercing 1, impact 1
-tags: armor
+resistance: fire 1, pierce 1, impact 1
+tags: armor fleetGen
 comment: Later we can model armor using resistances. But for MRB1 we can just use a big SP bonus.
+
+* template lightPistol
+tags: action firearm 1handed
+cost: 4
+range: 20
+shotsPerSecond: 6
+hit: 1
+damage: 17
+damageType: pierce
 
 * template reachPistol
 tags: action bullet firearm 1handed
+cost: 21
 range: 70
 shotsPerSecond: 2
-hit: 5
+hit: 11
 damage: 40
+damageType: pierce
+
+* template heavyPistol
+tags: action firearm 1handed
+cost: 8
+range: 26
+shotsPerSecond: 2
+hit: 14
+damage: 60
+damageType: pierce
 
 * template smg
 tags: action bullet firearm fullAuto
+cost: 6
+canTarget: all
 range: 20
 shotsPerSecond: 15
-hit: 3
+hit: 6
 damage: 7
+damageType: pierce
 
 * template assaultRifle
 tags: action bullet fullAuto
+cost: 6
 range: 40
 shotsPerSecond: 15
-hit: 3
+hit: 8
 damage: 11
+damageType: pierce
 
 * template battleRifle
 tags: action bullet
-range: 80
+cost: 8
+range: 90
 shotsPerSecond: 7.2
-hit: 3
-damage: 9
+hit: 13
+damage: 5
+damageType: pierce
 
 * template dmr
 tags: action bullet firearm optics
+cost: 10
 range: 100
 shotsPerSecond: 3
-hit: 3
+hit: 90
 damage: 10
+damageType: pierce
 
 * template shotgun
 tags: action bullet
+cost: 8
 range: 9
 shotsPerSecond: 1
 hit: 5
 damage: 90
+damageType: pierce
 attackDelay: 2
+
+* template sniperRifle
+tags: action firearm
+cost: 13
+range: 800
+shotsPerSecond: 1.1
+hit: 100
+damage: 150
+damageType: pierce
+
+* template rocketLauncher
+tags: action heavy
+cost: 10
+range: 150
+shotsPerSecond: 0.3
+hit: 9
+damage: 500
+damageType: impact
+
+* template chaingun
+tags: action firearm
+cost: 12
+range: 60
+shotsPerSecond: 5
+hit: 10
+damage: 25
+damageType: pierce
+
+* template tankCannon
+tags: action firearm
+cost: 30
+range: 3000
+shotsPerSecond: 0.3
+hit: 80
+damage: 700
+damageType: impact
+
+* template tacticalMac
+cost: 1000
+tags: action
+range: 4000
+shotsPerSecond: 0.1
+hit: 80
+damage: 3000
+damageType: pierce
+
+* template frigateMac
+cost: 10000
+tags: action
+range: 40000
+shotsPerSecond: 0.01
+hit: 100
+damage: 30000
+damageType: pierce
 
 `;
 
@@ -3502,9 +4036,10 @@ module.exports = `* output
 10 marathonClassCruiser
 2 gladiusClassCorvette
 2 phoenixClassCarrier
-1 infinityClassSupercarrier
+1 infinity
 
 * template frigate
+tags: fleetGen
 weight: 200000000
 
 * childrenof frigate
@@ -3521,6 +4056,7 @@ unsc/squad/bridgeCrew
 4 unsc/squad/logisticalCargo
 
 * template prowler
+tags: fleetGen
 weight: 907000
 
 * childrenof prowler
@@ -3529,6 +4065,7 @@ unsc/squad/bridgeCrew
 {unsc/company}
 
 * template gladiusClassCorvette
+tags: fleetGen
 weight: 36000000
 
 * childrenof gladiusClassCorvette
@@ -3537,6 +4074,7 @@ unsc/item/frigateMac
 {navalCargo}
 
 * template orbitalDefensePlatform
+tags: fleetGen
 weight: 2900000000
 
 * childrenof orbitalDefensePlatform
@@ -3549,6 +4087,7 @@ unsc/squad/crewFireteam
 unsc/squad/crewFireteam
 
 * template marathonClassCruiser
+tags: fleetGen
 weight: 9000000000
 
 * childrenof marathonClassCruiser
@@ -3558,6 +4097,7 @@ unsc/squad/bridgeCrew
 {navalCargo}
 
 * template phoenixClassCarrier
+tags: fleetGen
 weight: 44000000000
 
 * childrenof phoenixClassCarrier
@@ -3569,10 +4109,11 @@ unsc/squad/bridgeCrew
 {navalCargo}
 {navalCargo}
 
-* template infinityClassSupercarrier
+* template infinity
+tags: fleetGen
 weight: 907000000000
 
-* childrenof infinityClassSupercarrier
+* childrenof infinity
 unsc/item/infinityMac
 unsc/squad/missileBattery
 unsc/squad/missileBattery
@@ -3768,6 +4309,7 @@ mongoose
 mongoose
 
 * template mongoose
+tags: fleetGen
 weight: 406
 
 * childrenof mongoose
@@ -3779,6 +4321,7 @@ gungoose
 gungoose
 
 * template gungoose
+tags: fleetGen
 weight: 420
 
 * childrenof gungoose
@@ -3811,9 +4354,9 @@ chaingun
 1 decoyLauncher
 
 * template warthogChassis
+tags: fleetGen vehicle
 weight: 3000
 defense: 10
-tags: vehicle
 
 * children of scoutWarthog
 {unsc/individual/driver}
@@ -3841,9 +4384,11 @@ warthogChassis
 1 needleTurret
 
 * template chaingun
+tags: fleetGen
 weight: 100
 
 * template missilePod
+tags: fleetGen
 weight: 200
 
 * alias aircraft
@@ -3863,15 +4408,19 @@ weight: 200
 1 pelican
 
 * template falcon
+tags: fleetGen
 weight: 1500
 
 * template hornet
+tags: fleetGen
 weight: 1000
 
 * template wasp
+tags: fleetGen
 weight: 1000
 
 * template pelican
+tags: fleetGen
 weight: 138000
 
 * children of pelican
@@ -3890,6 +4439,7 @@ weight: 138000
 1 scorpion
 
 * template mantis
+tags: fleetGen
 weight: 5200
 
 * children of mantis
@@ -3898,10 +4448,12 @@ weight: 5200
 {turret}
 
 * template scorpion
+tags: fleetGen
 weight: 35000
 armor: 20
 
 * template elephant
+tags: fleetGen
 weight: 205000
 
 * children of elephant
@@ -3924,6 +4476,7 @@ marineFireteam
 4 scorpion
 
 * template mammoth
+tags: fleetGen
 weight: 484000
 
 * children of mammoth
@@ -4065,7 +4618,7 @@ forklift
 {unsc/individual/squadLeader}
 
 * template marineGroup
-tags: group
+tags: group fleetGen
 quantity: 8
 speed: 3
 consistsOf: individual/marinePrivate
@@ -6929,19 +7482,30 @@ class WGenerator {
 
     addTemplate (tableRaw) {
         const templateObj = CreatureTemplate.fromRaw(tableRaw);
+        templateObj.codexPath = this.codexPath;
+
         const key = templateObj.name;
 
         if (key in this.glossary) {
             throw new Error(`template key '${ key }' appears twice`);
         }
 
+        WGenerator.ids[templateObj.id] = templateObj;
         this.glossary[key] = templateObj;
 
-        templateObj.actions.forEach(
-            actionTemplate => {
-                WGenerator.ids[actionTemplate.id] = actionTemplate;
-            }
-        );
+        if (key === undefined) {
+            Util.logError(`Bug in WGenerator.addTemplate(): undefined name. tableRaw is: ${tableRaw}`);
+        }
+
+        // LATER might unify glossaries and WGenerator.ids. Hashmap as static prop of WGenerator, keyed by codex path and/or id
+        // Or at least have a central static getter func, that can take both codex paths & ids.
+
+        if (Util.contains(templateObj.tags, 'action')) {
+            console.log(`Loading action ${templateObj.name}`);
+            WGenerator.ids[templateObj.name] = templateObj;
+            // Later key this by full codex path.
+            // Will require constructing the appropriate faction codex path when reading 'weapon' fields of HaloWorldSTate templates.
+        }
 
         // Util.logDebug(`In WGenerator.addTemplate(), at the bottom. Just added ${key}, which had ${templateObj.actions.length} actions. actions[0].id is ${templateObj.actions[0] && templateObj.actions[0].id}.`);
         // Util.logDebug(`templateObj is ${JSON.stringify(templateObj, undefined, '    ')}`);
@@ -6969,6 +7533,52 @@ class WGenerator {
     static generateNodes (absolutePath) {
         return WGenerator.exampleGenerator()
             .getOutputs(absolutePath);
+    }
+
+    static getTemplate (absolutePath) {
+        const lastSlash = absolutePath.lastIndexOf('/');
+        const codexPath = absolutePath.slice(0, lastSlash);
+
+        // console.log(absolutePath);
+
+        const gen = WGenerator.generators[codexPath];
+        const templateName = absolutePath.slice(lastSlash + 1);
+
+        // console.log(templateName);
+
+        return gen.glossary[templateName];
+    }
+
+    static newGroup (fullCodexPath, quantity, alignment, coord) {
+        const template = WGenerator.getTemplate(fullCodexPath);
+
+        return new Group(
+            template || fullCodexPath,
+            quantity,
+            alignment,
+            coord
+        );
+    }
+
+    // Returns a Group.
+    // Selects a random implemented template.
+    static randomTemplate () {
+        const path = Util.randomOf([
+            'halo/unsc/individual/marinePrivate',
+            'halo/unsc/individual/odst'
+        ]);
+
+        const squad = WGenerator.newGroup(path, 10);
+        // TODO this alias isnt getting resolved by WGenerator
+        // const squad = Group.new('halo/unsc/individual/groupStatted', 5);
+
+        return squad;
+    }
+
+    static marineCompany () {
+        const company = WGenerator.newGroup('halo/unsc/individual/marinePrivate', 50);
+
+        return company;
     }
 
     // Returns ContextString[]
@@ -7002,7 +7612,7 @@ class WGenerator {
 
     // Returns WNode[]
     // Returned nodes have .storageMode === Partial and lack children of their own.
-    // Non-recursive variant of resolveString(), used for fractal tree browsing.
+    // Non-recursive variant of resolveString(), used for fractal browsing.
     resolveStringOnly (inputString) {
         const nodes = this.resolveCommas(inputString)
             .map(contextString => this.makePartialNode(contextString));
@@ -7375,6 +7985,18 @@ class WGenerator {
 
     static codicesDir () {
         return `${ __dirname }/../codices`;
+    }
+
+    static codexPathsWithPrefix (prefix) {
+        let out = [];
+
+        for (let path in WGenerator.generators) {
+            if (path.startsWith(prefix)) {
+                out.push(path);
+            }
+        }
+
+        return out;
     }
 
     static loadCodices () {
@@ -34692,6 +35314,37 @@ util.customColored = (str, foreground, background) => {
     return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
 };
 
+util.randomPastel = () => {
+    const min = 0x70;
+
+    let hexCode = '#';
+
+    for (let i = 0; i < 3; i++) {
+        const decimal = util.randomIntBetween(min, 0x100);
+        hexCode += decimal.toString(16);
+    }
+
+    return hexCode;
+};
+
+util.colorDiff = (hex1, hex2) => {
+    // later standardize inputs to strings
+    let diff = 0;
+
+    for (let i = 0; i < 6; i += 2) {
+        const str1 = hex1.slice(i, i + 2);
+        const color1 = util.hexStringToNumber(str1); // later implement func https://stackoverflow.com/questions/52261494/hex-to-string-string-to-hex-conversion-in-nodejs
+
+        const str2 = hex2.slice(i, i + 2);
+        const color2 = util.hexStringToNumber(str2);
+
+        diff += Math.abs(color1 - color2);
+    }
+
+    // Max value is 256 * 3 = 768
+    return diff;
+};
+
 util.NODE_TYPES = {
     region: 'region',
     location: 'location'  // deprecated
@@ -34727,6 +35380,10 @@ util.contains = function (array, fugitive) {
 util.includes = util.contains;
 
 util.hasOverlap = function (arrayA, arrayB) {
+    if (! arrayA || ! arrayB) {
+        return false;
+    }
+
     for (let i = 0; i < arrayA.length; i++) {
         if (util.contains(arrayB, arrayA[i])) {
             return true;
@@ -34854,13 +35511,13 @@ util.randomBagDraw = (bag) => {
 };
 
 // Returns string
-util.newId = function () {
+util.newId = function (idLength) {
     // Later research the most performant way to run this.
+    // Later could remove similar characters like 1i0O, maybe 5S
     const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const ID_LENGTH = 50;
 
     let id = '';
-    for (let i = 0; i < ID_LENGTH; i++) {
+    for (let i = 0; i < (idLength || 50); i++) {
         const index = Math.floor( Math.random() * ALPHABET.length );
         id += ALPHABET[index];
     }
@@ -34874,6 +35531,116 @@ util.shortId = function (id) {
         `${id.slice(0, 3).toUpperCase()}` :
         '';
 };
+
+// Input 2d array of strings or stringables
+// Output string formatted like a spreadsheet, suitable for printing
+util.toChartString = (grid) => {
+    let maxLengths = new Array(grid[0].length).fill(1);
+
+    for (let r = 0; r < grid.length; r++) {
+
+        for (let c = 0; c < grid[4].length; c++) {
+            const len = String(grid[r][c]).length;
+
+            if (maxLengths[c] < len) {
+                maxLengths[c] = len;
+            }
+        }
+    }
+
+    return grid.map(
+        row => row.map(
+            (cell, c) => String(cell).padEnd(maxLengths[c])
+        )
+        .join(' ')
+    )
+    .join('\n');
+};
+
+// grid is of type string[][]
+util.textGrid = (grid, width, height) => {
+    // These currently need to be set to the dimensions shown in the top of the terminal window.
+    util.SCREEN_WIDTH = width || 139;
+    util.SCREEN_HEIGHT = height || 37;
+
+    const colCount = grid[0].length;
+    const rightExcess = (util.SCREEN_WIDTH - 1) % colCount;
+
+    const HORIZ_WALL = '-'.repeat(util.SCREEN_WIDTH - rightExcess);
+    let lines = [HORIZ_WALL];
+
+    for (let r = 0; r < grid.length; r++) {
+        const lineSets = [];
+
+        for (let c = 0; c < grid[0].length; c++) {
+            lineSets.push(
+                util.boxAsLines(grid, r, c)
+            );
+
+            // util.logDebug(`Util.textGrid(), lineSets is ${util.stringify(lineSets)}`);
+        }
+
+        const rowLines = util.stitchBoxRow(lineSets);
+        rowLines.push(HORIZ_WALL);
+
+        lines = lines.concat(rowLines);
+    }
+
+    return lines.join('\n');
+};
+
+util.boxAsLines = (grid, row, column) => {
+    const boxHeight = Math.floor(
+        (util.SCREEN_HEIGHT - grid.length - 1) / grid.length
+    );
+
+    const topRow = grid[0];
+
+    const boxWidth = Math.floor(
+        (util.SCREEN_WIDTH - topRow.length - 1) / topRow.length
+    );
+
+    const boxLines = grid[row][column].split('\n');
+    const outLines = [];
+
+    // Util.logDebug('lines[0].length is ' + lines[0].length + ', and boxWidth is ' + boxWidth);
+
+    for (let i = 0; i < boxHeight - 1; i++) {
+        outLines.push(
+            util.padSides(boxLines[i], boxWidth)
+        );
+    }
+
+    if (boxLines[boxHeight - 1]) {
+        outLines.push(
+            util.padSides('...', boxWidth)
+        );
+    }
+
+    // util.logDebug(`Util.boxAsLines(), current box contains: ${grid[row][column]}. boxLines is ${JSON.stringify(boxLines, undefined, '    ')},\n  outLines is ${JSON.stringify(outLines, undefined, '    ')}`)
+
+    return outLines;
+};
+
+util.stitchBoxRow = (lineSets) => {
+    const WALL = '|';
+    const lines = [];
+
+    for (let r = 0; r < lineSets[0].length; r++) {
+        let line = WALL;
+
+        for (let i = 0; i < lineSets.length; i++) {
+            line += lineSets[i][r] + WALL;
+
+            // util.logDebug(`Util.stitchBoxRow(), lineSets[i][r] is ${lineSets[i][r]}`)
+        }
+
+        lines.push(line);
+    }
+
+    return lines;
+};
+
 
 // Input string[]
 // Returns string summarizing redundancies
@@ -35057,6 +35824,48 @@ util.fromCamelCase = (s) => {
             util.capitalized(w)
     )
     .join(' ');
+};
+
+// center-aligns string in spaces, to a specified total length.
+// ('foo', 7) => '  foo  '
+util.padSides = (string, length) => {
+    // Later could detect if 'string' is a nonstring and convert it.
+    string = string || '';
+    length = Math.floor(length);
+
+    const leftover = length - string.length;
+
+    if (leftover <= 0) {
+        return string.slice(0, length);
+    }
+
+    const padAmount = leftover / 2;
+    const left = ' '.repeat(
+        Math.floor(padAmount)
+    );
+
+    const right = ' '.repeat(
+        Math.ceil(padAmount)
+    );
+    
+    return left + string + right;
+};
+
+util.testPadSides = () => {
+    for (let l = 1; l < 10; l++) {
+
+        for (let sl = 0; sl < 10; sl++) {
+            const input = 'x'.repeat(sl);
+            const output = util.padSides(input, l);
+
+            const summary = `padSides(${input}, ${l}) => \n'${output}'`;
+            console.log(summary);
+
+            if (output.length !== l) {
+                throw new Error(summary);
+            }
+        }
+    }
 };
 
 util.alphanumericTransition = (string, i2) => {
@@ -35490,6 +36299,7 @@ util.mbti = () => {
 util.testAll = () => {
     util.testPrettyDistance();
     util.testCamelCase();
+    util.testPadSides();
     util.testSigfigRound();
     util.logDebug(`Done with unit tests for Util module :)`);
 };
@@ -35513,7 +36323,7 @@ Should share more funcs, perhaps.
 module.exports = class Creature extends Thing {
     constructor (template, coord, alignment) {
         // BTW if this throw statement gets too confusing, comment it and stick with the old inheritance model until there's time for a inheritance refactor.
-        Util.logWarn(`Consider using Group of quantity 1 instead of Creature for a little while. template param in current constructor call is: ${template.name || template}`);
+        // Util.logWarn(`Consider using Group of quantity 1 instead of Creature for a little while. template param in current constructor call is: ${template && template.name || template}`);
 
         super(template, coord);
 
@@ -35584,8 +36394,6 @@ const NodeTemplate = require('../battle20/nodeTemplate.js');
 const Util = require('../util/util.js');
 const WNode = require('./wnode.js');
 
-const WGenerator = require('../generation/wgenerator.js');
-
 // Can be very similar to Group from Battle20 / dndBottle
 // .quantity, .template (CreatureTemplate), maybe some a prop for the SP of the sole wounded member.
 // .getWeight(), .getMaxSize(), .getSizeTotal(), .getSpeed() <- only different from template if there is some status condition effect, etc
@@ -35613,7 +36421,13 @@ class Group extends WNode {
         this.coord = coord;
         this.destination = undefined; // Coord
         this.target = undefined;  // Group
-        this.actions = [];
+        this.actions = this.actions || [];
+    }
+
+    toSimpleString () {
+        const tName = Util.fromCamelCase(this.templateName);
+
+        return `${tName} x${this.quantity}`;
     }
 
     toAlignmentString () {
@@ -35629,6 +36443,11 @@ class Group extends WNode {
 
     getTotalSp () {
         return (this.quantity - 1) * this.template.sp + this.worstSp;
+    }
+
+    // Heuristic for describing the group.
+    totalDurability () {
+        return this.quantity * this.template.durability;
     }
 
     // Returns number
@@ -35800,6 +36619,15 @@ class Group extends WNode {
         return this.template[propName];
     }
 
+    cost () {
+        if (! Util.exists(this.template.cost)) {
+            throw new Error(`Cant evalute cost of template ${this.template.codexPath}/${this.template.name} with no cost`);
+        }
+
+        return this.template.cost * this.quantity;
+    }
+
+    // From the SP era, deprecated in favor of cost()
     points () { 
         return this.pointsEach() * this.quantity;
     }
@@ -35943,33 +36771,7 @@ class Group extends WNode {
     //     );
     // }
 
-    static new (fullCodexPath, quantity, alignment, coord) {
-        // Later can add a func to WGenerator that returns just the template obj instead of WNode[]
-        const nodes = WGenerator.generateNodes(fullCodexPath);
-
-        return new Group(
-            nodes[0].template || fullCodexPath,
-            quantity,
-            alignment,
-            coord
-        );
-    }
-
-    // Returns a Group.
-    // Selects a random implemented template.
-    static randomTemplate () {
-        const squad = Group.new('halo/unsc/individual/marinePrivate', 20);
-        // TODO this alias isnt getting resolved by WGenerator
-        // const squad = Group.new('halo/unsc/individual/groupStatted', 5);
-
-        return squad;
-    }
-
-    static marineCompany () {
-        const company = Group.new('halo/unsc/individual/marinePrivate', 50);
-
-        return company;
-    }
+    // NOTE: Group.new() has been moved to WGenerator.newGroup()
 
     static run () {
         // Group.testDotGrid();
@@ -35982,7 +36784,7 @@ module.exports = Group;
 
 // Group.run();
 
-},{"../battle20/actionTemplate.js":1,"../battle20/nodeTemplate.js":4,"../generation/wgenerator.js":43,"../util/coord.js":81,"../util/util.js":82,"./wnode.js":87}],85:[function(require,module,exports){
+},{"../battle20/actionTemplate.js":1,"../battle20/nodeTemplate.js":4,"../util/coord.js":81,"../util/util.js":82,"./wnode.js":87}],85:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
