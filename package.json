@@ -4,19 +4,31 @@
   "description": "graph model for procedurally generated narrative",
   "main": "WGenerator.js",
   "dependencies": {
-    "@nodegui/nodegui": "^0.34.0",
+    "@nodegui/nodegui": "^0.30.0",
     "comma-number": "^2.0.0",
     "crypto": "^1.0.1",
     "d20": "^1.4.1",
+    "fs": "0.0.1-security",
     "hotkeys-js": "^3.4.3",
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
+    "native-addon-loader": "^2.0.1",
     "phaser": "^3.16.2",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.4",
     "webpack": "^5.43.0"
   },
   "devDependencies": {
-    "webpack-cli": "^4.8.0"
+    "@nodegui/packer": "^1.4.1",
+    "@types/node": "^14.14.31",
+    "clean-webpack-plugin": "^3.0.0",
+    "file-loader": "^6.2.0",
+    "native-addon-loader": "^2.0.1",
+    "ts-loader": "^8.0.17",
+    "typescript": "^4.2.2",
+    "webpack": "^5.24.2",
+    "webpack-cli": "^4.5.0"
   },
   "scripts": {
     "start": "npm i && npm run buildAll && npm run test",
@@ -38,7 +50,7 @@
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
     "testRingWorld": "node bottleWorld/ringWorldState.js test",
     "buildImageSorter": "webpack -p",
-    "startImageSorter": "tsc ./util/imageSorter/imageSorter.ts && webpack -p && qode ./util/imageSorter.ts",
+    "startImageSorter": "tsc ./util/imageSorter/imageSorter.ts && webpack && qode ./util/imageSorter.ts",
     "debugImageSorter": "webpack && qode --inspect ./dist/imageSorter.js"
   },
   "repository": {

@@ -106,5 +106,5 @@ var ImageSorter = /** @class */ (function () {
     return ImageSorter;
 }());
 var sorter = new ImageSorter();
-// npm script error 2021 Oct 3
-// Module not found: Error: Can't resolve './src' in...
+// TODOs
+// webpack: Module not found: Error: Can't resolve './src' in...
