@@ -13,7 +13,7 @@ class Story {
     constructor (options) {
         options = options || {};
 
-        const castSize = Util.randomIntBetween(1, 6);
+        const castSize = Util.randomIntBetween(1, 7);
         const povCount = Util.randomIntBetween(1, 4);
         this.characters = [];
 
@@ -35,7 +35,8 @@ class Story {
     }
 
     toPrettyString () {
-        return this.characters.map(c => c.toPrettyString())
+        return '\n' + 
+            this.characters.map(c => c.toPrettyString())
             .join('\n');
     }
 

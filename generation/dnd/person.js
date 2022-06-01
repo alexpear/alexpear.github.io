@@ -10,12 +10,13 @@ class Person {
     constructor (options) {
         options = options || {};
 
-        this.name = '<name>';
+        // TODO call that vowel-consonant name gen.
+        this.name = this.simpleName();
         this.alignment = Util.randomOf([
-            'Lawful Radiant',
-            'Lawful Dark',
-            'Chaotic Radiant',
-            'Chaotic Dark'
+            '📖 Lawful Radiant',
+            '💎 Lawful Dark',
+            '🔥 Chaotic Radiant',
+            '👁  Chaotic Dark'
         ]);
         this.gender = Util.randomOf([
             'female',
@@ -28,7 +29,7 @@ class Person {
             'elf',
             // 'faerie',
             // 'vampire'
-            // TODO vampires should not be radiant
+            // LATER ensure vampires should not be radiant
         ]);
         this.class = Util.randomOf([
             'commoner',
@@ -45,16 +46,61 @@ class Person {
         this.relationships = [];
     }
 
+    simpleName () {
+        const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+
+        let output = '';
+
+        for (let i = 0; i < 1; i++) {
+            output += alphabet[Math.floor(Math.random() * alphabet.length)].toUpperCase();
+        }
+
+        return output
+        // return output[0].toUpperCase() + output[1];
+    }
+
     toString () {
         return JSON.stringify(this, undefined, '    ');
     }
 
     toPrettyString () {
         const povText = this.pov ?
-            ', PoV character' :
+            ' (PoV character)' :
             '';
 
-        return `${this.name}, a ${this.gender} ${this.alignment} ${this.species} ${this.class} (age ${this.age}${povText})`;
+        return `${this.name}, a ${this.alignment} ${this.genderAgeNoun()} of ${this.age} (${this.class})${povText}`;
+    }
+
+    genderAgeNoun () {
+        if (! Util.exists(this.age) || ! this.gender) {
+            throw new Error(`Weird demographic values.`);
+        }
+
+        const ageChart = [
+            {
+                // This number or higher
+                minimum: 0,
+                female: 'girl',
+                male: 'boy'
+            },
+            {
+                minimum: 17,
+                female: 'young woman',
+                male: 'young man'
+            },
+            {
+                minimum: 30,
+                female: 'woman',
+                male: 'man'
+            }
+        ];
+
+        for (let i = ageChart.length - 1; i >= 0; i--) {
+            const entry = ageChart[i];
+            if (entry.minimum <= this.age) {
+                return entry[this.gender];
+            }
+        }
     }
 
     toJson () {
