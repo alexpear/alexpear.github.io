@@ -133,6 +133,30 @@ class DndWorldState extends WorldState {
         }
     }
 
+    randomAdjacentCoord (r, c) {
+        const candidateDirs = [];
+
+        if (r > 0) {
+            candidateDirs.push([-1, 0]);
+        }
+        if (r < this.grid.length - 1) {
+            candidateDirs.push([1, 0]);
+        }
+        if (c > 0) {
+            candidateDirs.push([0, -1]);
+        }
+        if (c < this.grid[0].length - 1) {
+            candidateDirs.push([0, 1]);
+        }
+
+        const choice = Util.randomOf(candidateDirs);
+
+        const newR = r + choice[0];
+        const newC = c + choice[1];
+
+        return this.grid[newR][newC];
+    }
+
     computeNextInstant () {
         for (let r = 0; r < this.grid.length; r++) {
             for (let c = 0; c < this.grid[0].length; c++) {
@@ -141,7 +165,24 @@ class DndWorldState extends WorldState {
                 
                 for (let group of box.components) {
                     // Migrations
+                    const CHANCE = 0; // 0.1;
+                    if (Math.random() <= CHANCE) {
+                        const migrants = group.split();
+                        // LATER: Chance of slight alignment shift.
 
+                        const destination = this.randomAdjacentCoord(r,c);
+
+                        Util.log(`${migrants.toEcoString()} have split off & are migrating from ${box.terrain} to ${destination.terrain}.`);
+
+                        const incompatibleGroups = destination.components.filter(
+                            denizen => ! Group.compatibleAlignments(group.alignment, denizen.alignment)
+                        );
+
+                        if (incompatibleGroups.length > 0) {
+                            this.simulateConflict(migrants, incompatibleGroups); // TODO
+                        }
+
+                    }
 
                     // Growth
                     const factor = 1 + 0.4 * Math.random();

@@ -53,6 +53,17 @@ class Group extends WNode {
         // Util.logDebug(`wnode/group.js parseAlignment(): ${this.alignment} ${this.templateName}, input was ${alignmentString}.`);
     }
 
+    split (schismaticPortion = 0.5) {
+        if (this.quantity === 1) {
+            return;
+        }
+
+        const schismaticQuantity = Math.floor(this.quantity);
+        this.quantity = Math.ceil(this.quantity);
+
+        return new Group(this.template, schismaticQuantity, this.alignment, this.coord);
+    }
+
     static compatibleAlignments (a, b) {
         for (let i=0; i < a.length; i++) {
             if (a[i] === 'N' || b[i] === 'N') {
