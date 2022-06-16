@@ -61,7 +61,6 @@ class DndWorldState extends WorldState {
                 {
                     terrain: 'forest',
                     components: [
-                        DndWorldState.newGroup(),
                         DndWorldState.newGroup()
                     ]
                 },
@@ -135,10 +134,34 @@ class DndWorldState extends WorldState {
     }
 
     computeNextInstant () {
-        // Travelers might arrive
-        
-        // Migrations
-        // Reproduction
+        for (let r = 0; r < this.grid.length; r++) {
+            for (let c = 0; c < this.grid[0].length; c++) {
+                const box = this.grid[r][c];
+                // LATER: Newcomers might arrive, if this is a edge box.
+                
+                for (let group of box.components) {
+                    // Migrations
+
+
+                    // Growth
+                    const factor = 1 + 0.4 * Math.random();
+                    group.quantity = Math.ceil(group.quantity * factor);
+
+                    const k = group.template.terrains[box.terrain] || 0;
+                    if (group.quantity > k) {
+                        group.quantity = k;
+
+                        if (group.quantity <= 0) {
+                            // Delete group.
+                            box.components = box.components.filter(
+                                g => g !== group
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     static newGroup () {
@@ -280,7 +303,12 @@ class DndWorldState extends WorldState {
 
         const ws = DndWorldState.example();
 
-        console.log(ws.textGrid());
+        for (let t = 0; t < 3; t++) {
+            Util.log(`t=${t}`);
+            console.log(ws.textGrid() + '\n');
+
+            ws.computeNextInstant();
+        }
 
     //     // Unit tests
     //     RingWorldState.testDistanceBetween();

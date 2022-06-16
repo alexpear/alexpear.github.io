@@ -53,6 +53,20 @@ class Group extends WNode {
         // Util.logDebug(`wnode/group.js parseAlignment(): ${this.alignment} ${this.templateName}, input was ${alignmentString}.`);
     }
 
+    static compatibleAlignments (a, b) {
+        for (let i=0; i < a.length; i++) {
+            if (a[i] === 'N' || b[i] === 'N') {
+                continue;
+            }
+
+            if (a[i] !== b[i]) {
+                return false; // Conflict
+            }
+        }
+
+        return true;
+    }
+
     toSimpleString () {
         const tName = Util.fromCamelCase(this.templateName);
 
