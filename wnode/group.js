@@ -15,6 +15,8 @@ const WNode = require('./wnode.js');
 // These are not instantiated in .components.
 class Group extends WNode {
     constructor (template, quantity, alignment, coord) {
+        Util.logDebug(`wnode/group.js: constructor called with template.name ${template && template.name}, quantity ${quantity}, alignment ${alignment}`)
+
         super(template);
 
         if (quantity === 0) {
@@ -29,11 +31,26 @@ class Group extends WNode {
             this.template.sp :
             1;
 
-        this.alignment = alignment;
+        this.parseAlignment(alignment);
         this.coord = coord;
         this.destination = undefined; // Coord
         this.target = undefined;  // Group
         this.actions = this.actions || [];
+    }
+
+    parseAlignment (alignmentString) {
+        alignmentString = alignmentString.trim().toUpperCase();
+
+        const ALIGNMENTS = ['LG', 'LN', 'LE', 'NG', 'NN', 'NE', 'CG', 'CN', 'CE'];
+
+        const candidates = alignmentString === 'ANY' ?
+            ALIGNMENTS :
+            alignmentString.split(' ')
+                .filter(a => ALIGNMENTS.includes(a));
+
+        this.alignment = Util.randomOf(candidates) || 'NN';
+
+        // Util.logDebug(`wnode/group.js parseAlignment(): ${this.alignment} ${this.templateName}, input was ${alignmentString}.`);
     }
 
     toSimpleString () {
@@ -46,6 +63,12 @@ class Group extends WNode {
         const tName = Util.fromCamelCase(this.templateName);
 
         return `${tName} x${this.quantity} (${this.alignmentAsString()} Group)`;
+    }
+
+    toEcoString () {
+        const tName = Util.fromCamelCase(this.templateName);
+
+        return `${this.alignmentAsString()} ${tName} x${this.quantity}`;
     }
 
     // Unit: meters of longest dimension when in storage.

@@ -34,16 +34,20 @@ class DndWorldState extends WorldState {
                 }
                 else {
                     componentsString = box.components.map(
-                        group => `${group.template.name} x${group.quantity}`
+                        // group => `${group.template.name} x${group.quantity}`
+                        group => group.toEcoString()
                     )
                     .join('\n');
 
                     // Util.logDebug(`DndWorldState.textGrid(), box.components[0].template.name is ${box.components[0] && box.components[0].template.name} ... componentsString is ${componentsString}`);
                 }
 
+                const terrainStr = box.terrain ?
+                    Util.capitalized(box.terrain) + '\n' :
+                    '';
+
                 stringGrid[r].push(
-                    (box.terrain || '') +
-                        componentsString
+                    terrainStr + componentsString
                 );
             }
         }
@@ -62,7 +66,7 @@ class DndWorldState extends WorldState {
                     ]
                 },
                 {
-                    terrain: 'islands',
+                    terrain: 'sea',
                     components: [
                         DndWorldState.newGroup()
                     ]
@@ -100,11 +104,11 @@ class DndWorldState extends WorldState {
 
         worldState.grid = grid;
 
-        // Overwrites the grid, tidy later
-        worldState.makeGrid(
-            Util.randomIntBetween(1, 10),
-            Util.randomIntBetween(1, 11)
-        );
+        // Quick test. Overwrites the grid.
+        // worldState.makeGrid(
+        //     Util.randomIntBetween(1, 10),
+        //     Util.randomIntBetween(1, 11)
+        // );
 
         timeline = timeline || new Timeline(worldState);
         timeline.currentWorldState = worldState;
@@ -138,61 +142,126 @@ class DndWorldState extends WorldState {
     }
 
     static newGroup () {
-        const template = Util.randomOf(DndWorldState.creatureTemplates());
-        const totalCr = Math.random() * 50;
-        const quantity = Math.ceil(totalCr / template.cr);
+        const templates = DndWorldState.creatureTemplates();
+        const keys = Object.keys(templates);
+        const name = Util.randomOf(keys);
+        const template = templates[name];
+        template.name = name;
 
-        return new Group(template, quantity, template.alignment);
+        const totalChallenge = Math.random() * 50;
+        const quantity = Math.ceil(totalChallenge / template.challenge);
+
+        return new Group(template, quantity, template.alignments);
     }
 
     static creatureTemplates () {
-        return [
-            {
-                name: 'knight',
-                cr: 3,
-                alignment: 'LG'
+        // Later, read these from a data file in codices/ dir.
+        return {
+            human: {
+                challenge: 0.25,
+                alignments: 'any',
+                terrains: {
+                    forest: 1000,
+                    mountain: 200,
+                    plains: 1_000_000,
+                    desert: 100
+                }
             },
-            {
-                name: 'sphynx',
-                cr: 12,
-                alignment: 'LN'
+            elf: {
+                challenge: 1,
+                alignments: 'any',
+                terrains: {
+                    forest: 2000,
+                    mountain: 100,
+                    plains: 200,
+                    desert: 100
+                }
             },
-            {
-                name: 'lich',
-                cr: 22,
-                alignment: 'LE'
+            knight: {
+                challenge: 3,
+                alignments: 'lg ln le',
+                terrains: {
+                    forest: 1000,
+                    mountain: 200,
+                    plains: 1_000_000,
+                    desert: 100
+                }
             },
-            {
-                name: 'skeleton',
-                cr: 0.25,
-                alignment: 'NE'
+            sphynx: {
+                challenge: 150,
+                alignments: 'ln lg',
+                terrains: {
+                    forest: 1000,
+                    mountain: 200,
+                    plains: 1_000,
+                    desert: 100
+                }
             },
-            {
-                name: 'dragon',
-                cr: 17,
-                alignment: 'CE'
+            lich: {
+                challenge: 200,
+                alignments: 'le ne ce',
+                terrains: {
+                    forest: 1,
+                    mountain: 1,
+                    plains: 1,
+                    desert: 1,
+                    sea: 1
+                }
             },
-            {
-                name: 'kobold',
-                cr: 0.125,
-                alignment: 'CN'
+            archmage: {
+                challenge: 190,
+                alignments: 'any',
+                terrains: {
+                    forest: 1,
+                    mountain: 1,
+                    plains: 1,
+                    desert: 1,
+                    sea: 1
+                }
             },
-            {
-                name: 'scoundrel',
-                cr: 0.25,
-                alignment: 'CG'
+            skeleton: {
+                challenge: 0.25,
+                alignments: 'ne',
+                terrains: {
+                    forest: 1_000_000,
+                    mountain: 1_000_000,
+                    plains: 1_000_000,
+                    desert: 1_000_000,
+                    sea: 1_000_000
+                }
             },
-            {
-                name: 'angel',
-                cr: 16,
-                alignment: 'NG'
+            dragon: {
+                challenge: 200,
+                alignments: 'any',
+                terrains: {
+                    forest: 1,
+                    mountain: 1,
+                    plains: 1,
+                    desert: 1
+                }
             },
-            {
-                name: 'uberelemental',
-                cr: 17,
-                alignment: 'NN'
+            kobold: {
+                challenge: 0.125,
+                alignments: 'cn ce ne',
+                terrains: {
+                    forest: 1_000_000,
+                    mountain: 1_000_000,
+                    plains: 1_000_000,
+                    desert: 1_000_000
+                }
+            },
+            angel: {
+                challenge: 50,
+                alignments: 'lg ng',
+                terrains: {
+                    forest: 100,
+                    mountain: 100,
+                    plains: 100,
+                    desert: 100
+                }
             }
-        ];
+
+        };
     }
 
     static terrains () {
