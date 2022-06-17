@@ -33,6 +33,8 @@ class DndWorldState extends WorldState {
                     componentsString = '';
                 }
                 else {
+                    box.components.sort((a, b) => a.alignment.localeCompare(b.alignment));
+
                     componentsString = box.components.map(
                         // group => `${group.template.name} x${group.quantity}`
                         group => group.toEcoString()
@@ -127,7 +129,7 @@ class DndWorldState extends WorldState {
             for (let c = 0; c < colCount; c++) {
                 this.grid[r].push({
                     terrain: Util.randomOf(DndWorldState.terrains()),
-                    components: []
+                    components: [DndWorldState.newGroup()]
                 });
             }
         }
@@ -440,18 +442,18 @@ class DndWorldState extends WorldState {
     static terrains () {
         return [
             'forest',
-            'islands',
             'mountain',
-            'grassland',
             'desert',
-            'steppe'
+            'plains',
+            'sea'
         ];
     }
 
     static test () {
         Util.log(`Beginning the DndWorldState test...`, `debug`);
 
-        const ws = DndWorldState.example();
+        const ws = new DndWorldState();
+        ws.makeGrid(3, 4);
 
         for (let t = 0; t < 100; t++) {
             Util.log(`t=${t}`);
