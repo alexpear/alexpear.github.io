@@ -165,23 +165,41 @@ class DndWorldState extends WorldState {
                 
                 for (let group of box.components) {
                     // Migrations
-                    const CHANCE = 0; // 0.1;
-                    if (Math.random() <= CHANCE) {
+                    const CHANCE = 0.91;
+
+                    // LATER, Let solitary creatures migrate
+                    if (group.quantity > 1 && Math.random() <= CHANCE) {
                         const migrants = group.split();
-                        // LATER: Chance of slight alignment shift.
 
                         const destination = this.randomAdjacentCoord(r,c);
-
-                        Util.log(`${migrants.toEcoString()} have split off & are migrating from ${box.terrain} to ${destination.terrain}.`);
 
                         const incompatibleGroups = destination.components.filter(
                             denizen => ! Group.compatibleAlignments(group.alignment, denizen.alignment)
                         );
 
                         if (incompatibleGroups.length > 0) {
-                            this.simulateConflict(migrants, incompatibleGroups); // TODO
-                        }
+                            const incompatibleNames = incompatibleGroups.map(g => g.templateName).join(', ');
+                            Util.log(`${migrants.toEcoString()} from the ${box.terrain} are fighting denizens of the ${destination.terrain} (${incompatibleNames}).`);
 
+                            this.simulateConflict(migrants, incompatibleGroups);
+
+                            // Filter out any extinct groups
+                            destination.components = destination.components.filter(g => g.quantity > 0);
+
+                            if (migrants.quantity > 0) {
+                                if (incompatibleGroups.some(g => g.quantity > 0)) {
+                                    // Merge migrants back where they started.
+                                    group.quantity += migrants.quantity;
+                                    migrants.quantity = 0;
+                                }
+                                else {
+                                    // Complete the migration.
+                                    destination.components.push(migrants);
+
+                                    Util.log(`${migrants.toEcoString()} have migrated from the ${box.terrain} to the ${destination.terrain}.`);
+                                }
+                            }
+                        }
                     }
 
                     // Growth
@@ -203,6 +221,70 @@ class DndWorldState extends WorldState {
             }
         }
 
+    }
+
+    // Old
+    // migrantChallenge <= denizenChallenge ||
+    // migrantChallenge - migrants.template.challenge < denizenChallenge
+
+    // if all incompatible denizens now gone, migrants move in
+    // else they rejoin their starting location
+    // Might need to return a outcome obj for that. TODO
+
+    simulateConflict (migrants, denizens) {
+        const migrantChallenge = migrants.quantity * migrants.template.challenge;
+        const denizenChallenge = Util.sum(
+            denizens.map(g => g.quantity * g.template.challenge)
+        );
+
+        const total = migrantChallenge + denizenChallenge;
+        const migrantsWon = Math.random() * total > denizenChallenge;
+
+        if (migrantsWon) {
+            // Loser takes casualties equal to winner's challenge total (round up the damage)
+            this.damageGroups(denizens, migrantChallenge, true);
+
+            // Winner takes 10% casualties (round down the damage)
+            migrants.quantity = Math.ceil(migrants.quantity * 0.9);
+
+        }
+        else {
+            // Loser takes casualties equal to winner's challenge total (round up the damage)
+            migrants.quantity = Math.floor((migrantChallenge - denizenChallenge) / migrants.template.challenge);
+
+            // Winner takes 10% casualties (round down the damage)
+            this.damageGroups(denizens, denizenChallenge * 0.1, false);
+        }
+
+        // if (migrants.quantity > 0 && denizens.some(d => d.quantity > 0)) {
+        //     return { migrantsRetreat: true };
+        // }
+    }
+
+    // Shrink the groups until a total of challengeDue worth of challenge points has been removed.
+    // You'll need to separately filter out quantity==0 groups afterwards.
+    damageGroups (groups, challengeDue, roundUpDamage) {
+        // Sort from low to high template challenge.
+        groups.sort(
+            (a, b) => a.template.challenge - b.template.challenge
+        );
+
+        for (let group of groups) {
+            const groupChallenge = group.quantity * group.template.challenge;
+
+            if (groupChallenge < challengeDue) {
+                group.quantity = 0;
+                challengeDue -= groupChallenge;
+            }
+            else {
+                const newQuantity = group.quantity - challengeDue / group.template.challenge;
+                group.quantity = roundUpDamage ?
+                    Math.floor(newQuantity) :
+                    Math.ceil(newQuantity);
+
+                break;
+            }
+        }
     }
 
     static newGroup () {
