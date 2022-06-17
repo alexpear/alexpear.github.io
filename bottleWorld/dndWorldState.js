@@ -79,7 +79,7 @@ class DndWorldState extends WorldState {
                     ]
                 },
                 {
-                    terrain: 'desert',
+                    terrain: 'plains',
                     components: [
                         DndWorldState.newGroup()
                     ]
@@ -165,11 +165,15 @@ class DndWorldState extends WorldState {
                 
                 for (let group of box.components) {
                     // Migrations
-                    const CHANCE = 0.91;
+                    const CHANCE = 0.1;
+                    const roll = Math.random();
+                    // Util.logDebug(`roll is ${roll}`);
+                    // Util.logDebug(`Thinking about whether ${group.toEcoString()} should migrate. They have lastMigrated ${group.lastMigrated} and the current t is ${this.t}`)
 
                     // LATER, Let solitary creatures migrate
-                    if (group.quantity > 1 && Math.random() <= CHANCE) {
+                    if (group.quantity > 1 && roll <= CHANCE && group.lastMigrated < this.t) {
                         const migrants = group.split();
+                        migrants.lastMigrated = this.t;
 
                         const destination = this.randomAdjacentCoord(r,c);
 
@@ -185,19 +189,19 @@ class DndWorldState extends WorldState {
 
                             // Filter out any extinct groups
                             destination.components = destination.components.filter(g => g.quantity > 0);
+                        }
 
-                            if (migrants.quantity > 0) {
-                                if (incompatibleGroups.some(g => g.quantity > 0)) {
-                                    // Merge migrants back where they started.
-                                    group.quantity += migrants.quantity;
-                                    migrants.quantity = 0;
-                                }
-                                else {
-                                    // Complete the migration.
-                                    destination.components.push(migrants);
+                        if (migrants.quantity > 0) {
+                            if (incompatibleGroups.some(g => g.quantity > 0)) {
+                                // Merge migrants back where they started.
+                                group.quantity += migrants.quantity;
+                                migrants.quantity = 0;
+                            }
+                            else {
+                                // Complete the migration.
+                                Util.log(`${migrants.toEcoString()} have migrated from the ${box.terrain} to the ${destination.terrain}.`);
 
-                                    Util.log(`${migrants.toEcoString()} have migrated from the ${box.terrain} to the ${destination.terrain}.`);
-                                }
+                                this.addGroup(migrants, destination);
                             }
                         }
                     }
@@ -207,6 +211,8 @@ class DndWorldState extends WorldState {
                     group.quantity = Math.ceil(group.quantity * factor);
 
                     const k = group.template.terrains[box.terrain] || 0;
+
+                    // TODO: 2 groups of same species & diff alignments should probably share a K.
                     if (group.quantity > k) {
                         group.quantity = k;
 
@@ -220,7 +226,6 @@ class DndWorldState extends WorldState {
                 }
             }
         }
-
     }
 
     // Old
@@ -287,6 +292,25 @@ class DndWorldState extends WorldState {
         }
     }
 
+    addGroup (newcomers, destination) {
+        const templateName = newcomers.templateName;
+
+        const fellows = destination.components.filter(
+            g => g.templateName === templateName && g.alignment === newcomers.alignment
+        );
+
+        if (fellows.length === 0) {
+            destination.components.push(newcomers);
+        }
+        else if (fellows.length === 1) {
+            fellows[0].quantity += newcomers.quantity;
+            newcomers.quantity = 0;
+        }
+        else {
+            throw new Error(`Duplicate found in box: ${fellows.length} copies of ${fellows[0].alignment} ${fellows[0].templateName}, terrain ${destination.terrain}`);
+        }
+    }
+
     static newGroup () {
         const templates = DndWorldState.creatureTemplates();
         const keys = Object.keys(templates);
@@ -297,7 +321,10 @@ class DndWorldState extends WorldState {
         const totalChallenge = Math.random() * 50;
         const quantity = Math.ceil(totalChallenge / template.challenge);
 
-        return new Group(template, quantity, template.alignments);
+        const group = new Group(template, quantity, template.alignments);
+
+        group.lastMigrated = -1;
+        return group;
     }
 
     static creatureTemplates () {
@@ -426,8 +453,9 @@ class DndWorldState extends WorldState {
 
         const ws = DndWorldState.example();
 
-        for (let t = 0; t < 3; t++) {
+        for (let t = 0; t < 100; t++) {
             Util.log(`t=${t}`);
+            ws.t = t;
             console.log(ws.textGrid() + '\n');
 
             ws.computeNextInstant();

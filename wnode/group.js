@@ -15,7 +15,7 @@ const WNode = require('./wnode.js');
 // These are not instantiated in .components.
 class Group extends WNode {
     constructor (template, quantity, alignment, coord) {
-        Util.logDebug(`wnode/group.js: constructor called with template.name ${template && template.name}, quantity ${quantity}, alignment ${alignment}`)
+        // Util.logDebug(`wnode/group.js: constructor called with template.name ${template && template.name}, quantity ${quantity}, alignment ${alignment}`)
 
         super(template);
 
@@ -58,10 +58,11 @@ class Group extends WNode {
             return;
         }
 
-        const schismaticQuantity = Math.floor(this.quantity);
-        this.quantity = Math.ceil(this.quantity);
+        const schismaticQuantity = Math.floor(this.quantity / 2);
+        this.quantity = Math.ceil(this.quantity / 2);
 
-        return new Group(this.template, schismaticQuantity, this.alignment, this.coord);
+        const schismatics = new Group(this.template, schismaticQuantity, this.alignment, this.coord);
+        return schismatics;
     }
 
     static compatibleAlignments (a, b) {
