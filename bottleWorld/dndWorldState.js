@@ -45,7 +45,7 @@ class DndWorldState extends WorldState {
                 }
 
                 const terrainStr = box.terrain ?
-                    Util.capitalized(box.terrain) + '\n' :
+                    DndWorldState.toSymbolString(box.terrain) + '\n' :
                     '';
 
                 stringGrid[r].push(
@@ -338,7 +338,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 1000,
                     mountain: 200,
-                    plains: 1_000_000,
+                    plains: 100_000,
                     desert: 100
                 }
             },
@@ -358,7 +358,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 1000,
                     mountain: 200,
-                    plains: 1_000_000,
+                    plains: 10_000,
                     desert: 100
                 }
             },
@@ -398,11 +398,11 @@ class DndWorldState extends WorldState {
                 challenge: 0.25,
                 alignments: 'ne',
                 terrains: {
-                    forest: 1_000_000,
-                    mountain: 1_000_000,
-                    plains: 1_000_000,
-                    desert: 1_000_000,
-                    sea: 1_000_000
+                    forest: 100_000,
+                    mountain: 100_000,
+                    plains: 100_000,
+                    desert: 100_000,
+                    sea: 10_000
                 }
             },
             dragon: {
@@ -419,10 +419,10 @@ class DndWorldState extends WorldState {
                 challenge: 0.125,
                 alignments: 'cn ce ne',
                 terrains: {
-                    forest: 1_000_000,
-                    mountain: 1_000_000,
-                    plains: 1_000_000,
-                    desert: 1_000_000
+                    forest: 100_000,
+                    mountain: 100_000,
+                    plains: 100_000,
+                    desert: 100_000
                 }
             },
             angel: {
@@ -447,6 +447,23 @@ class DndWorldState extends WorldState {
             'plains',
             'sea'
         ];
+    }
+
+    // Could combine with WNode.alignmentAsString(), which does something similar.
+    static toSymbolString (input) {
+        const symbols = {
+            forest: '🌲',
+            mountain: '🗻',
+            desert: '🌵',
+            plains: '🌽',
+            sea: '🌊'
+        };
+
+        const symbol = symbols[input];
+
+        return symbol ?
+            symbol + ' ' + Util.capitalized(input) :
+            input;
     }
 
     static test () {

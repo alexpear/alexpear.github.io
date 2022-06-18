@@ -155,9 +155,22 @@ class WNode {
     }
 
     alignmentAsString () {
-        return this.alignment ?
+        const output = this.alignment ?
             Util.capitalized(this.alignment) :
             'Unaligned';
+
+        const embellishments = {
+            LG: '📖',
+            LE: '💎',
+            CE: '👁',
+            CG: '🔥'
+        };
+
+        const prefix = embellishments[output];
+
+        return prefix ?
+            prefix + ' ' + output :
+            output;
     }
 
     // A pretty-string func.
