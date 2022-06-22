@@ -451,6 +451,14 @@ class DndWorldState extends WorldState {
 
     // Could combine with WNode.alignmentAsString(), which does something similar.
     static toSymbolString (input) {
+        const symbol = DndWorldState.getSymbol(input);
+
+        return symbol ?
+            symbol + ' ' + Util.capitalized(input) :
+            input;
+    }
+
+    static getSymbol (input) {
         const symbols = {
             forest: '🌲',
             mountain: '🗻',
@@ -459,11 +467,7 @@ class DndWorldState extends WorldState {
             sea: '🌊'
         };
 
-        const symbol = symbols[input];
-
-        return symbol ?
-            symbol + ' ' + Util.capitalized(input) :
-            input;
+        return symbols[input];
     }
 
     static test () {

@@ -161,8 +161,8 @@ class WNode {
 
         const embellishments = {
             LG: '📖',
-            LE: '💎',
-            CE: '👁',
+            LE: '💎 ',
+            CE: '👁 ',
             CG: '🔥'
         };
 
