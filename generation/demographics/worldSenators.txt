@@ -1,0 +1,2260 @@
+selectPaths({?}, , 1015)
+  Nonrandom distribution: eurasia, 705
+selectPaths({eurasia}, eurasia, 705)
+  Nonrandom distribution: eurasia china, 184
+selectPaths({china}, eurasia china, 184)
+  Nonrandom distribution: eurasia china guangdong, 13
+selectPaths({guangdong}, eurasia china guangdong, 13)
+  Returning 13 copies of this leaf: eurasia china guangdong
+  Nonrandom distribution: eurasia china shandong, 12
+selectPaths({shandong}, eurasia china shandong, 12)
+  Returning 12 copies of this leaf: eurasia china shandong
+  Nonrandom distribution: eurasia china henan, 12
+selectPaths({henan}, eurasia china henan, 12)
+  Returning 12 copies of this leaf: eurasia china henan
+  Nonrandom distribution: eurasia china sichuan, 10
+selectPaths({sichuan}, eurasia china sichuan, 10)
+  Returning 10 copies of this leaf: eurasia china sichuan
+  Nonrandom distribution: eurasia china jiangsu, 10
+selectPaths({jiangsu}, eurasia china jiangsu, 10)
+  Returning 10 copies of this leaf: eurasia china jiangsu
+  Nonrandom distribution: eurasia china hebei, 9
+selectPaths({hebei}, eurasia china hebei, 9)
+  Returning 9 copies of this leaf: eurasia china hebei
+  Nonrandom distribution: eurasia china hunan, 8
+selectPaths({hunan}, eurasia china hunan, 8)
+  Returning 8 copies of this leaf: eurasia china hunan
+  Nonrandom distribution: eurasia china anhui, 7
+selectPaths({anhui}, eurasia china anhui, 7)
+  Returning 7 copies of this leaf: eurasia china anhui
+  Nonrandom distribution: eurasia china hubei, 7
+selectPaths({hubei}, eurasia china hubei, 7)
+  Returning 7 copies of this leaf: eurasia china hubei
+  Nonrandom distribution: eurasia china zhejiang, 7
+selectPaths({zhejiang}, eurasia china zhejiang, 7)
+  Returning 7 copies of this leaf: eurasia china zhejiang
+  Nonrandom distribution: eurasia china guangxiZhuang, 6
+selectPaths({guangxiZhuang}, eurasia china guangxiZhuang, 6)
+  Returning 6 copies of this leaf: eurasia china guangxiZhuang
+  Nonrandom distribution: eurasia china yunnan, 6
+selectPaths({yunnan}, eurasia china yunnan, 6)
+  Returning 6 copies of this leaf: eurasia china yunnan
+  Nonrandom distribution: eurasia china jiangxi, 5
+selectPaths({jiangxi}, eurasia china jiangxi, 5)
+  Returning 5 copies of this leaf: eurasia china jiangxi
+  Nonrandom distribution: eurasia china liaoning, 5
+selectPaths({liaoning}, eurasia china liaoning, 5)
+  Returning 5 copies of this leaf: eurasia china liaoning
+  Nonrandom distribution: eurasia china heilongjiang, 5
+selectPaths({heilongjiang}, eurasia china heilongjiang, 5)
+  Returning 5 copies of this leaf: eurasia china heilongjiang
+  Nonrandom distribution: eurasia china shaanxi, 4
+selectPaths({shaanxi}, eurasia china shaanxi, 4)
+  Returning 4 copies of this leaf: eurasia china shaanxi
+  Nonrandom distribution: eurasia china fujian, 4
+selectPaths({fujian}, eurasia china fujian, 4)
+  Returning 4 copies of this leaf: eurasia china fujian
+  Nonrandom distribution: eurasia china shanxi, 4
+selectPaths({shanxi}, eurasia china shanxi, 4)
+  Returning 4 copies of this leaf: eurasia china shanxi
+  Nonrandom distribution: eurasia china guizhou, 4
+selectPaths({guizhou}, eurasia china guizhou, 4)
+  Returning 4 copies of this leaf: eurasia china guizhou
+  Nonrandom distribution: eurasia china chongqing, 3
+selectPaths({chongqing}, eurasia china chongqing, 3)
+  Returning 3 copies of this leaf: eurasia china chongqing
+  Nonrandom distribution: eurasia china jilin, 3
+selectPaths({jilin}, eurasia china jilin, 3)
+  Returning 3 copies of this leaf: eurasia china jilin
+  Nonrandom distribution: eurasia china gansu, 3
+selectPaths({gansu}, eurasia china gansu, 3)
+  Returning 3 copies of this leaf: eurasia china gansu
+  Nonrandom distribution: eurasia china innerMongolia, 3
+selectPaths({innerMongolia}, eurasia china innerMongolia, 3)
+  Returning 3 copies of this leaf: eurasia china innerMongolia
+  Nonrandom distribution: eurasia china shanghai, 3
+selectPaths({shanghai}, eurasia china shanghai, 3)
+  Returning 3 copies of this leaf: eurasia china shanghai
+  Nonrandom distribution: eurasia china xinjiangUyghur, 2
+selectPaths({xinjiangUyghur}, eurasia china xinjiangUyghur, 2)
+  Returning 2 copies of this leaf: eurasia china xinjiangUyghur
+  Nonrandom distribution: eurasia china beijing, 2
+selectPaths({beijing}, eurasia china beijing, 2)
+  Returning 2 copies of this leaf: eurasia china beijing
+  Nonrandom distribution: eurasia china tianjin, 1
+selectPaths({tianjin}, eurasia china tianjin, 1)
+  Returning 1 copies of this leaf: eurasia china tianjin
+  Nonrandom distribution: eurasia china hainan, 1
+selectPaths({hainan}, eurasia china hainan, 1)
+  Returning 1 copies of this leaf: eurasia china hainan
+  Nonrandom distribution: eurasia china other, 7
+selectPaths({other}, eurasia china other, 7)
+  Returning 7 copies of this leaf: eurasia china other
+selectPaths({hebei}, eurasia china hebei, 1)
+  Returning 1 copies of this leaf: eurasia china hebei
+  Roll is now -3454732.4619379304, nonrandomCount is 166, output.length is 167, countLeft is 18, i is 0, pathSoFar is eurasia china
+selectPaths({gansu}, eurasia china gansu, 1)
+  Returning 1 copies of this leaf: eurasia china gansu
+  Roll is now -2859157.484202802, nonrandomCount is 166, output.length is 168, countLeft is 18, i is 1, pathSoFar is eurasia china
+selectPaths({jiangxi}, eurasia china jiangxi, 1)
+  Returning 1 copies of this leaf: eurasia china jiangxi
+  Roll is now -4341592.814079799, nonrandomCount is 166, output.length is 169, countLeft is 18, i is 2, pathSoFar is eurasia china
+selectPaths({shandong}, eurasia china shandong, 1)
+  Returning 1 copies of this leaf: eurasia china shandong
+  Roll is now -2351859.1000955757, nonrandomCount is 166, output.length is 170, countLeft is 18, i is 3, pathSoFar is eurasia china
+selectPaths({tianjin}, eurasia china tianjin, 1)
+  Returning 1 copies of this leaf: eurasia china tianjin
+  Roll is now -2850439.234873727, nonrandomCount is 166, output.length is 171, countLeft is 18, i is 4, pathSoFar is eurasia china
+selectPaths({hongKong}, eurasia china hongKong, 1)
+  Returning 1 copies of this leaf: eurasia china hongKong
+  Roll is now -4848970.875341237, nonrandomCount is 166, output.length is 172, countLeft is 18, i is 5, pathSoFar is eurasia china
+selectPaths({shaanxi}, eurasia china shaanxi, 1)
+  Returning 1 copies of this leaf: eurasia china shaanxi
+  Roll is now -6223586.632818043, nonrandomCount is 166, output.length is 173, countLeft is 18, i is 6, pathSoFar is eurasia china
+selectPaths({innerMongolia}, eurasia china innerMongolia, 1)
+  Returning 1 copies of this leaf: eurasia china innerMongolia
+  Roll is now -935444.4519602805, nonrandomCount is 166, output.length is 174, countLeft is 18, i is 7, pathSoFar is eurasia china
+selectPaths({ningxiaHui}, eurasia china ningxiaHui, 1)
+  Returning 1 copies of this leaf: eurasia china ningxiaHui
+  Roll is now -2302300.269588873, nonrandomCount is 166, output.length is 175, countLeft is 18, i is 8, pathSoFar is eurasia china
+selectPaths({beijing}, eurasia china beijing, 1)
+  Returning 1 copies of this leaf: eurasia china beijing
+  Roll is now -793561.1743225902, nonrandomCount is 166, output.length is 176, countLeft is 18, i is 9, pathSoFar is eurasia china
+selectPaths({henan}, eurasia china henan, 1)
+  Returning 1 copies of this leaf: eurasia china henan
+  Roll is now -2737373.1640772894, nonrandomCount is 166, output.length is 177, countLeft is 18, i is 10, pathSoFar is eurasia china
+selectPaths({gansu}, eurasia china gansu, 1)
+  Returning 1 copies of this leaf: eurasia china gansu
+  Roll is now -963949.4935911596, nonrandomCount is 166, output.length is 178, countLeft is 18, i is 11, pathSoFar is eurasia china
+selectPaths({innerMongolia}, eurasia china innerMongolia, 1)
+  Returning 1 copies of this leaf: eurasia china innerMongolia
+  Roll is now -1529013.2566735297, nonrandomCount is 166, output.length is 179, countLeft is 18, i is 12, pathSoFar is eurasia china
+selectPaths({liaoning}, eurasia china liaoning, 1)
+  Returning 1 copies of this leaf: eurasia china liaoning
+  Roll is now -2353771.381534219, nonrandomCount is 166, output.length is 180, countLeft is 18, i is 13, pathSoFar is eurasia china
+selectPaths({innerMongolia}, eurasia china innerMongolia, 1)
+  Returning 1 copies of this leaf: eurasia china innerMongolia
+  Roll is now -1102884.0257029682, nonrandomCount is 166, output.length is 181, countLeft is 18, i is 14, pathSoFar is eurasia china
+selectPaths({fujian}, eurasia china fujian, 1)
+  Returning 1 copies of this leaf: eurasia china fujian
+  Roll is now -5095921.18985454, nonrandomCount is 166, output.length is 182, countLeft is 18, i is 15, pathSoFar is eurasia china
+selectPaths({gansu}, eurasia china gansu, 1)
+  Returning 1 copies of this leaf: eurasia china gansu
+  Roll is now -3192294.9712514877, nonrandomCount is 166, output.length is 183, countLeft is 18, i is 16, pathSoFar is eurasia china
+selectPaths({innerMongolia}, eurasia china innerMongolia, 1)
+  Returning 1 copies of this leaf: eurasia china innerMongolia
+  Roll is now -1410300.1230856478, nonrandomCount is 166, output.length is 184, countLeft is 18, i is 17, pathSoFar is eurasia china
+  Nonrandom distribution: eurasia india, 178
+selectPaths({india}, eurasia india, 178)
+  Nonrandom distribution: eurasia india uttarPradesh, 26
+selectPaths({uttarPradesh}, eurasia india uttarPradesh, 26)
+  Nonrandom distribution: eurasia india uttarPradesh other, 25
+selectPaths({other}, eurasia india uttarPradesh other, 25)
+  Returning 25 copies of this leaf: eurasia india uttarPradesh other
+selectPaths({other}, eurasia india uttarPradesh other, 1)
+  Returning 1 copies of this leaf: eurasia india uttarPradesh other
+  Roll is now -3091837.538232497, nonrandomCount is 25, output.length is 26, countLeft is 1, i is 0, pathSoFar is eurasia india uttarPradesh
+  Nonrandom distribution: eurasia india maharashtra, 14
+selectPaths({maharashtra}, eurasia india maharashtra, 14)
+  Nonrandom distribution: eurasia india maharashtra mumbai, 2
+selectPaths({mumbai}, eurasia india maharashtra mumbai, 2)
+  Returning 2 copies of this leaf: eurasia india maharashtra mumbai
+  Nonrandom distribution: eurasia india maharashtra other, 12
+selectPaths({other}, eurasia india maharashtra other, 12)
+  Returning 12 copies of this leaf: eurasia india maharashtra other
+  Nonrandom distribution: eurasia india bihar, 13
+selectPaths({bihar}, eurasia india bihar, 13)
+  Returning 13 copies of this leaf: eurasia india bihar
+  Nonrandom distribution: eurasia india westBengal, 11
+selectPaths({westBengal}, eurasia india westBengal, 11)
+  Returning 11 copies of this leaf: eurasia india westBengal
+  Nonrandom distribution: eurasia india madhyaPradesh, 9
+selectPaths({madhyaPradesh}, eurasia india madhyaPradesh, 9)
+  Returning 9 copies of this leaf: eurasia india madhyaPradesh
+  Nonrandom distribution: eurasia india tamilNadu, 9
+selectPaths({tamilNadu}, eurasia india tamilNadu, 9)
+  Returning 9 copies of this leaf: eurasia india tamilNadu
+  Nonrandom distribution: eurasia india rajasthan, 9
+selectPaths({rajasthan}, eurasia india rajasthan, 9)
+  Returning 9 copies of this leaf: eurasia india rajasthan
+  Nonrandom distribution: eurasia india karnataka, 8
+selectPaths({karnataka}, eurasia india karnataka, 8)
+  Returning 8 copies of this leaf: eurasia india karnataka
+  Nonrandom distribution: eurasia india gujarat, 7
+selectPaths({gujarat}, eurasia india gujarat, 7)
+  Returning 7 copies of this leaf: eurasia india gujarat
+  Nonrandom distribution: eurasia india andhraPradesh, 6
+selectPaths({andhraPradesh}, eurasia india andhraPradesh, 6)
+  Returning 6 copies of this leaf: eurasia india andhraPradesh
+  Nonrandom distribution: eurasia india odisha, 5
+selectPaths({odisha}, eurasia india odisha, 5)
+  Returning 5 copies of this leaf: eurasia india odisha
+  Nonrandom distribution: eurasia india telangala, 4
+selectPaths({telangala}, eurasia india telangala, 4)
+  Returning 4 copies of this leaf: eurasia india telangala
+  Nonrandom distribution: eurasia india kerala, 4
+selectPaths({kerala}, eurasia india kerala, 4)
+  Returning 4 copies of this leaf: eurasia india kerala
+  Nonrandom distribution: eurasia india jharkhand, 4
+selectPaths({jharkhand}, eurasia india jharkhand, 4)
+  Returning 4 copies of this leaf: eurasia india jharkhand
+  Nonrandom distribution: eurasia india assam, 4
+selectPaths({assam}, eurasia india assam, 4)
+  Returning 4 copies of this leaf: eurasia india assam
+  Nonrandom distribution: eurasia india punjab, 3
+selectPaths({punjab}, eurasia india punjab, 3)
+  Returning 3 copies of this leaf: eurasia india punjab
+  Nonrandom distribution: eurasia india chhattisgarh, 3
+selectPaths({chhattisgarh}, eurasia india chhattisgarh, 3)
+  Returning 3 copies of this leaf: eurasia india chhattisgarh
+  Nonrandom distribution: eurasia india haryana, 3
+selectPaths({haryana}, eurasia india haryana, 3)
+  Returning 3 copies of this leaf: eurasia india haryana
+  Nonrandom distribution: eurasia india uttarakhand, 1
+selectPaths({uttarakhand}, eurasia india uttarakhand, 1)
+  Returning 1 copies of this leaf: eurasia india uttarakhand
+  Nonrandom distribution: eurasia india delhi, 2
+selectPaths({delhi}, eurasia india delhi, 2)
+  Returning 2 copies of this leaf: eurasia india delhi
+  Nonrandom distribution: eurasia india other, 20
+selectPaths({other}, eurasia india other, 20)
+  Returning 20 copies of this leaf: eurasia india other
+selectPaths({kerala}, eurasia india kerala, 1)
+  Returning 1 copies of this leaf: eurasia india kerala
+  Roll is now -2067297.355273202, nonrandomCount is 165, output.length is 166, countLeft is 13, i is 0, pathSoFar is eurasia india
+selectPaths({andhraPradesh}, eurasia india andhraPradesh, 1)
+  Returning 1 copies of this leaf: eurasia india andhraPradesh
+  Roll is now -2895762.4060881212, nonrandomCount is 165, output.length is 167, countLeft is 13, i is 1, pathSoFar is eurasia india
+selectPaths({meghalaya}, eurasia india meghalaya, 1)
+  Returning 1 copies of this leaf: eurasia india meghalaya
+  Roll is now -2567609.902755797, nonrandomCount is 165, output.length is 168, countLeft is 13, i is 2, pathSoFar is eurasia india
+selectPaths({meghalaya}, eurasia india meghalaya, 1)
+  Returning 1 copies of this leaf: eurasia india meghalaya
+  Roll is now -144268.0619995594, nonrandomCount is 165, output.length is 169, countLeft is 13, i is 3, pathSoFar is eurasia india
+selectPaths({other}, eurasia india other, 1)
+  Returning 1 copies of this leaf: eurasia india other
+  Roll is now -2886451.6744876653, nonrandomCount is 165, output.length is 170, countLeft is 13, i is 4, pathSoFar is eurasia india
+selectPaths({odisha}, eurasia india odisha, 1)
+  Returning 1 copies of this leaf: eurasia india odisha
+  Roll is now -2094696.7068178803, nonrandomCount is 165, output.length is 171, countLeft is 13, i is 5, pathSoFar is eurasia india
+selectPaths({andhraPradesh}, eurasia india andhraPradesh, 1)
+  Returning 1 copies of this leaf: eurasia india andhraPradesh
+  Roll is now -2492140.3885873705, nonrandomCount is 165, output.length is 172, countLeft is 13, i is 6, pathSoFar is eurasia india
+selectPaths({bihar}, eurasia india bihar, 1)
+  Returning 1 copies of this leaf: eurasia india bihar
+  Roll is now -742089.3755200822, nonrandomCount is 165, output.length is 173, countLeft is 13, i is 7, pathSoFar is eurasia india
+selectPaths({goa}, eurasia india goa, 1)
+  Returning 1 copies of this leaf: eurasia india goa
+  Roll is now -298481.6831228286, nonrandomCount is 165, output.length is 174, countLeft is 13, i is 8, pathSoFar is eurasia india
+selectPaths({delhi}, eurasia india delhi, 1)
+  Returning 1 copies of this leaf: eurasia india delhi
+  Roll is now -7843.188774868846, nonrandomCount is 165, output.length is 175, countLeft is 13, i is 9, pathSoFar is eurasia india
+selectPaths({punjab}, eurasia india punjab, 1)
+  Returning 1 copies of this leaf: eurasia india punjab
+  Roll is now -4890650.571235202, nonrandomCount is 165, output.length is 176, countLeft is 13, i is 10, pathSoFar is eurasia india
+selectPaths({other}, eurasia india other, 1)
+  Returning 1 copies of this leaf: eurasia india other
+  Roll is now -5819397.321106389, nonrandomCount is 165, output.length is 177, countLeft is 13, i is 11, pathSoFar is eurasia india
+selectPaths({maharashtra}, eurasia india maharashtra, 1)
+selectPaths({mumbai}, eurasia india maharashtra mumbai, 1)
+  Returning 1 copies of this leaf: eurasia india maharashtra mumbai
+  Roll is now -3974345.3894957295, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia india maharashtra
+  Roll is now -770378.0705647627, nonrandomCount is 165, output.length is 178, countLeft is 13, i is 12, pathSoFar is eurasia india
+  Nonrandom distribution: eurasia pakistan, 28
+selectPaths({pakistan}, eurasia pakistan, 28)
+  Nonrandom distribution: eurasia pakistan balochistan, 1
+selectPaths({balochistan}, eurasia pakistan balochistan, 1)
+  Returning 1 copies of this leaf: eurasia pakistan balochistan
+  Nonrandom distribution: eurasia pakistan punjab, 14
+selectPaths({punjab}, eurasia pakistan punjab, 14)
+  Returning 14 copies of this leaf: eurasia pakistan punjab
+  Nonrandom distribution: eurasia pakistan sindh, 6
+selectPaths({sindh}, eurasia pakistan sindh, 6)
+  Returning 6 copies of this leaf: eurasia pakistan sindh
+  Nonrandom distribution: eurasia pakistan khyberPakhtunkhwa, 5
+selectPaths({khyberPakhtunkhwa}, eurasia pakistan khyberPakhtunkhwa, 5)
+  Returning 5 copies of this leaf: eurasia pakistan khyberPakhtunkhwa
+selectPaths({sindh}, eurasia pakistan sindh, 1)
+  Returning 1 copies of this leaf: eurasia pakistan sindh
+  Roll is now -993093.0297616199, nonrandomCount is 26, output.length is 27, countLeft is 2, i is 0, pathSoFar is eurasia pakistan
+selectPaths({azadKashmir}, eurasia pakistan azadKashmir, 1)
+  Returning 1 copies of this leaf: eurasia pakistan azadKashmir
+  Roll is now -178862.2409373857, nonrandomCount is 26, output.length is 28, countLeft is 2, i is 1, pathSoFar is eurasia pakistan
+  Nonrandom distribution: eurasia bangladesh, 21
+selectPaths({bangladesh}, eurasia bangladesh, 21)
+  Nonrandom distribution: eurasia bangladesh dhaka, 2
+selectPaths({dhaka}, eurasia bangladesh dhaka, 2)
+  Returning 2 copies of this leaf: eurasia bangladesh dhaka
+  Nonrandom distribution: eurasia bangladesh other, 19
+selectPaths({other}, eurasia bangladesh other, 19)
+  Returning 19 copies of this leaf: eurasia bangladesh other
+  Nonrandom distribution: eurasia vietnam, 12
+selectPaths({vietnam}, eurasia vietnam, 12)
+  Returning 12 copies of this leaf: eurasia vietnam
+  Nonrandom distribution: eurasia japan, 16
+selectPaths({japan}, eurasia japan, 16)
+  Nonrandom distribution: eurasia japan tokyo, 5
+selectPaths({tokyo}, eurasia japan tokyo, 5)
+  Returning 5 copies of this leaf: eurasia japan tokyo
+  Nonrandom distribution: eurasia japan osaka, 2
+selectPaths({osaka}, eurasia japan osaka, 2)
+  Returning 2 copies of this leaf: eurasia japan osaka
+  Nonrandom distribution: eurasia japan other, 9
+selectPaths({other}, eurasia japan other, 9)
+  Returning 9 copies of this leaf: eurasia japan other
+  Nonrandom distribution: eurasia southKorea, 6
+selectPaths({southKorea}, eurasia southKorea, 6)
+  Nonrandom distribution: eurasia southKorea seoul, 2
+selectPaths({seoul}, eurasia southKorea seoul, 2)
+  Returning 2 copies of this leaf: eurasia southKorea seoul
+  Nonrandom distribution: eurasia southKorea other, 3
+selectPaths({other}, eurasia southKorea other, 3)
+  Returning 3 copies of this leaf: eurasia southKorea other
+selectPaths({seoul}, eurasia southKorea seoul, 1)
+  Returning 1 copies of this leaf: eurasia southKorea seoul
+  Roll is now -6280708.271436894, nonrandomCount is 5, output.length is 6, countLeft is 1, i is 0, pathSoFar is eurasia southKorea
+  Nonrandom distribution: eurasia philippines, 14
+selectPaths({philippines}, eurasia philippines, 14)
+  Nonrandom distribution: eurasia philippines manila, 3
+selectPaths({manila}, eurasia philippines manila, 3)
+  Returning 3 copies of this leaf: eurasia philippines manila
+  Nonrandom distribution: eurasia philippines other, 10
+selectPaths({other}, eurasia philippines other, 10)
+  Returning 10 copies of this leaf: eurasia philippines other
+selectPaths({other}, eurasia philippines other, 1)
+  Returning 1 copies of this leaf: eurasia philippines other
+  Roll is now -3405035.514648648, nonrandomCount is 13, output.length is 14, countLeft is 1, i is 0, pathSoFar is eurasia philippines
+  Nonrandom distribution: eurasia indonesia, 35
+selectPaths({indonesia}, eurasia indonesia, 35)
+  Nonrandom distribution: eurasia indonesia jakarta, 1
+selectPaths({jakarta}, eurasia indonesia jakarta, 1)
+  Returning 1 copies of this leaf: eurasia indonesia jakarta
+  Nonrandom distribution: eurasia indonesia westJava, 6
+selectPaths({westJava}, eurasia indonesia westJava, 6)
+  Returning 6 copies of this leaf: eurasia indonesia westJava
+  Nonrandom distribution: eurasia indonesia eastJava, 5
+selectPaths({eastJava}, eurasia indonesia eastJava, 5)
+  Returning 5 copies of this leaf: eurasia indonesia eastJava
+  Nonrandom distribution: eurasia indonesia centralJava, 4
+selectPaths({centralJava}, eurasia indonesia centralJava, 4)
+  Returning 4 copies of this leaf: eurasia indonesia centralJava
+  Nonrandom distribution: eurasia indonesia other, 18
+selectPaths({other}, eurasia indonesia other, 18)
+  Returning 18 copies of this leaf: eurasia indonesia other
+selectPaths({other}, eurasia indonesia other, 1)
+  Returning 1 copies of this leaf: eurasia indonesia other
+  Roll is now -416576.16783086676, nonrandomCount is 34, output.length is 35, countLeft is 1, i is 0, pathSoFar is eurasia indonesia
+  Nonrandom distribution: eurasia iran, 10
+selectPaths({iran}, eurasia iran, 10)
+  Returning 10 copies of this leaf: eurasia iran
+  Nonrandom distribution: eurasia turkey, 10
+selectPaths({turkey}, eurasia turkey, 10)
+  Nonrandom distribution: eurasia turkey istanbul, 2
+selectPaths({istanbul}, eurasia turkey istanbul, 2)
+  Returning 2 copies of this leaf: eurasia turkey istanbul
+  Nonrandom distribution: eurasia turkey other, 8
+selectPaths({other}, eurasia turkey other, 8)
+  Returning 8 copies of this leaf: eurasia turkey other
+  Nonrandom distribution: eurasia russia, 18
+selectPaths({russia}, eurasia russia, 18)
+  Nonrandom distribution: eurasia russia moscow, 2
+selectPaths({moscow}, eurasia russia moscow, 2)
+  Returning 2 copies of this leaf: eurasia russia moscow
+  Nonrandom distribution: eurasia russia other, 16
+selectPaths({other}, eurasia russia other, 16)
+  Returning 16 copies of this leaf: eurasia russia other
+  Nonrandom distribution: eurasia germany, 10
+selectPaths({germany}, eurasia germany, 10)
+  Nonrandom distribution: eurasia germany other, 9
+selectPaths({other}, eurasia germany other, 9)
+  Returning 9 copies of this leaf: eurasia germany other
+selectPaths({berlin}, eurasia germany berlin, 1)
+  Returning 1 copies of this leaf: eurasia germany berlin
+  Roll is now -5754635.998304698, nonrandomCount is 9, output.length is 10, countLeft is 1, i is 0, pathSoFar is eurasia germany
+  Nonrandom distribution: eurasia france, 8
+selectPaths({france}, eurasia france, 8)
+  Nonrandom distribution: eurasia france other, 8
+selectPaths({other}, eurasia france other, 8)
+  Returning 8 copies of this leaf: eurasia france other
+  Nonrandom distribution: eurasia uk, 8
+selectPaths({uk}, eurasia uk, 8)
+  Nonrandom distribution: eurasia uk england, 7
+selectPaths({england}, eurasia uk england, 7)
+  Nonrandom distribution: eurasia uk england london, 1
+selectPaths({london}, eurasia uk england london, 1)
+  Returning 1 copies of this leaf: eurasia uk england london
+  Nonrandom distribution: eurasia uk england other, 6
+selectPaths({other}, eurasia uk england other, 6)
+  Returning 6 copies of this leaf: eurasia uk england other
+selectPaths({wales}, eurasia uk wales, 1)
+  Returning 1 copies of this leaf: eurasia uk wales
+  Roll is now -1688151.5732076522, nonrandomCount is 7, output.length is 8, countLeft is 1, i is 0, pathSoFar is eurasia uk
+  Nonrandom distribution: eurasia thailand, 8
+selectPaths({thailand}, eurasia thailand, 8)
+  Nonrandom distribution: eurasia thailand bangkok, 2
+selectPaths({bangkok}, eurasia thailand bangkok, 2)
+  Returning 2 copies of this leaf: eurasia thailand bangkok
+  Nonrandom distribution: eurasia thailand other, 6
+selectPaths({other}, eurasia thailand other, 6)
+  Returning 6 copies of this leaf: eurasia thailand other
+  Nonrandom distribution: eurasia italy, 7
+selectPaths({italy}, eurasia italy, 7)
+  Nonrandom distribution: eurasia italy lombardy, 1
+selectPaths({lombardy}, eurasia italy lombardy, 1)
+  Nonrandom distribution: eurasia italy lombardy other, 1
+selectPaths({other}, eurasia italy lombardy other, 1)
+  Returning 1 copies of this leaf: eurasia italy lombardy other
+  Nonrandom distribution: eurasia italy other, 2
+selectPaths({other}, eurasia italy other, 2)
+  Returning 2 copies of this leaf: eurasia italy other
+selectPaths({other}, eurasia italy other, 1)
+  Returning 1 copies of this leaf: eurasia italy other
+  Roll is now -1481460.4007319137, nonrandomCount is 3, output.length is 4, countLeft is 4, i is 0, pathSoFar is eurasia italy
+selectPaths({lombardy}, eurasia italy lombardy, 1)
+selectPaths({milan}, eurasia italy lombardy milan, 1)
+  Returning 1 copies of this leaf: eurasia italy lombardy milan
+  Roll is now -602034.470996719, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia italy lombardy
+  Roll is now -1225494.1360935052, nonrandomCount is 3, output.length is 5, countLeft is 4, i is 1, pathSoFar is eurasia italy
+selectPaths({veneto}, eurasia italy veneto, 1)
+selectPaths({other}, eurasia italy veneto other, 1)
+  Returning 1 copies of this leaf: eurasia italy veneto other
+  Roll is now -1451154.5815268513, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia italy veneto
+  Roll is now -3428989.1640313864, nonrandomCount is 3, output.length is 6, countLeft is 4, i is 2, pathSoFar is eurasia italy
+selectPaths({sicilia}, eurasia italy sicilia, 1)
+selectPaths({other}, eurasia italy sicilia other, 1)
+  Returning 1 copies of this leaf: eurasia italy sicilia other
+  Roll is now -3138056.673067102, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia italy sicilia
+  Roll is now -2440244.857969936, nonrandomCount is 3, output.length is 7, countLeft is 4, i is 3, pathSoFar is eurasia italy
+  Nonrandom distribution: eurasia myanmar, 7
+selectPaths({myanmar}, eurasia myanmar, 7)
+  Returning 7 copies of this leaf: eurasia myanmar
+  Nonrandom distribution: eurasia spain, 6
+selectPaths({spain}, eurasia spain, 6)
+  Returning 6 copies of this leaf: eurasia spain
+  Nonrandom distribution: eurasia afghanistan, 4
+selectPaths({afghanistan}, eurasia afghanistan, 4)
+  Returning 4 copies of this leaf: eurasia afghanistan
+  Nonrandom distribution: eurasia austria, 1
+selectPaths({austria}, eurasia austria, 1)
+  Returning 1 copies of this leaf: eurasia austria
+  Nonrandom distribution: eurasia azerbaijan, 1
+selectPaths({azerbaijan}, eurasia azerbaijan, 1)
+  Returning 1 copies of this leaf: eurasia azerbaijan
+  Nonrandom distribution: eurasia belarus, 1
+selectPaths({belarus}, eurasia belarus, 1)
+  Returning 1 copies of this leaf: eurasia belarus
+  Nonrandom distribution: eurasia belgium, 1
+selectPaths({belgium}, eurasia belgium, 1)
+  Returning 1 copies of this leaf: eurasia belgium
+  Nonrandom distribution: eurasia cambodia, 2
+selectPaths({cambodia}, eurasia cambodia, 2)
+  Returning 2 copies of this leaf: eurasia cambodia
+  Nonrandom distribution: eurasia czechRepublic, 1
+selectPaths({czechRepublic}, eurasia czechRepublic, 1)
+  Returning 1 copies of this leaf: eurasia czechRepublic
+  Nonrandom distribution: eurasia hungary, 1
+selectPaths({hungary}, eurasia hungary, 1)
+  Returning 1 copies of this leaf: eurasia hungary
+  Nonrandom distribution: eurasia iraq, 5
+selectPaths({iraq}, eurasia iraq, 5)
+  Returning 5 copies of this leaf: eurasia iraq
+  Nonrandom distribution: eurasia israel, 1
+selectPaths({israel}, eurasia israel, 1)
+  Returning 1 copies of this leaf: eurasia israel
+  Nonrandom distribution: eurasia malaysia, 4
+selectPaths({malaysia}, eurasia malaysia, 4)
+  Returning 4 copies of this leaf: eurasia malaysia
+  Nonrandom distribution: eurasia uae, 1
+selectPaths({uae}, eurasia uae, 1)
+  Returning 1 copies of this leaf: eurasia uae
+  Nonrandom distribution: eurasia uzbekistan, 4
+selectPaths({uzbekistan}, eurasia uzbekistan, 4)
+  Returning 4 copies of this leaf: eurasia uzbekistan
+  Nonrandom distribution: eurasia ukraine, 5
+selectPaths({ukraine}, eurasia ukraine, 5)
+  Returning 5 copies of this leaf: eurasia ukraine
+  Nonrandom distribution: eurasia poland, 4
+selectPaths({poland}, eurasia poland, 4)
+  Returning 4 copies of this leaf: eurasia poland
+  Nonrandom distribution: eurasia portugal, 1
+selectPaths({portugal}, eurasia portugal, 1)
+  Returning 1 copies of this leaf: eurasia portugal
+  Nonrandom distribution: eurasia saudiArabia, 4
+selectPaths({saudiArabia}, eurasia saudiArabia, 4)
+  Returning 4 copies of this leaf: eurasia saudiArabia
+  Nonrandom distribution: eurasia jordan, 1
+selectPaths({jordan}, eurasia jordan, 1)
+  Returning 1 copies of this leaf: eurasia jordan
+  Nonrandom distribution: eurasia kazakhstan, 2
+selectPaths({kazakhstan}, eurasia kazakhstan, 2)
+  Returning 2 copies of this leaf: eurasia kazakhstan
+  Nonrandom distribution: eurasia northKorea, 3
+selectPaths({northKorea}, eurasia northKorea, 3)
+  Returning 3 copies of this leaf: eurasia northKorea
+  Nonrandom distribution: eurasia sweden, 1
+selectPaths({sweden}, eurasia sweden, 1)
+  Returning 1 copies of this leaf: eurasia sweden
+  Nonrandom distribution: eurasia switzerland, 1
+selectPaths({switzerland}, eurasia switzerland, 1)
+  Returning 1 copies of this leaf: eurasia switzerland
+  Nonrandom distribution: eurasia syria, 2
+selectPaths({syria}, eurasia syria, 2)
+  Returning 2 copies of this leaf: eurasia syria
+  Nonrandom distribution: eurasia tajikistan, 1
+selectPaths({tajikistan}, eurasia tajikistan, 1)
+  Returning 1 copies of this leaf: eurasia tajikistan
+  Nonrandom distribution: eurasia yemen, 3
+selectPaths({yemen}, eurasia yemen, 3)
+  Returning 3 copies of this leaf: eurasia yemen
+  Nonrandom distribution: eurasia greece, 1
+selectPaths({greece}, eurasia greece, 1)
+  Returning 1 copies of this leaf: eurasia greece
+  Nonrandom distribution: eurasia srilanka, 2
+selectPaths({srilanka}, eurasia srilanka, 2)
+  Returning 2 copies of this leaf: eurasia srilanka
+  Nonrandom distribution: eurasia romania, 2
+selectPaths({romania}, eurasia romania, 2)
+  Returning 2 copies of this leaf: eurasia romania
+  Nonrandom distribution: eurasia nepal, 3
+selectPaths({nepal}, eurasia nepal, 3)
+  Returning 3 copies of this leaf: eurasia nepal
+  Nonrandom distribution: eurasia netherlands, 2
+selectPaths({netherlands}, eurasia netherlands, 2)
+  Returning 2 copies of this leaf: eurasia netherlands
+  Nonrandom distribution: eurasia other, 13
+selectPaths({other}, eurasia other, 13)
+  Returning 13 copies of this leaf: eurasia other
+selectPaths({croatia}, eurasia croatia, 1)
+  Returning 1 copies of this leaf: eurasia croatia
+  Roll is now -3448288.0302016437, nonrandomCount is 664, output.length is 665, countLeft is 41, i is 0, pathSoFar is eurasia
+selectPaths({nepal}, eurasia nepal, 1)
+  Returning 1 copies of this leaf: eurasia nepal
+  Roll is now -965304.662019968, nonrandomCount is 664, output.length is 666, countLeft is 41, i is 1, pathSoFar is eurasia
+selectPaths({kazakhstan}, eurasia kazakhstan, 1)
+  Returning 1 copies of this leaf: eurasia kazakhstan
+  Roll is now -1417138.8137765229, nonrandomCount is 664, output.length is 667, countLeft is 41, i is 2, pathSoFar is eurasia
+selectPaths({myanmar}, eurasia myanmar, 1)
+  Returning 1 copies of this leaf: eurasia myanmar
+  Roll is now -186195.26345010102, nonrandomCount is 664, output.length is 668, countLeft is 41, i is 3, pathSoFar is eurasia
+selectPaths({netherlands}, eurasia netherlands, 1)
+  Returning 1 copies of this leaf: eurasia netherlands
+  Roll is now -505435.25604093075, nonrandomCount is 664, output.length is 669, countLeft is 41, i is 4, pathSoFar is eurasia
+selectPaths({france}, eurasia france, 1)
+selectPaths({other}, eurasia france other, 1)
+  Returning 1 copies of this leaf: eurasia france other
+  Roll is now -1858416.9667237662, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia france
+  Roll is now -242435.47031901777, nonrandomCount is 664, output.length is 670, countLeft is 41, i is 5, pathSoFar is eurasia
+selectPaths({italy}, eurasia italy, 1)
+selectPaths({toscana}, eurasia italy toscana, 1)
+selectPaths({other}, eurasia italy toscana other, 1)
+  Returning 1 copies of this leaf: eurasia italy toscana other
+  Roll is now -3078925.084889799, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia italy toscana
+  Roll is now -2246532.3386024684, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia italy
+  Roll is now -6568715.657290041, nonrandomCount is 664, output.length is 671, countLeft is 41, i is 6, pathSoFar is eurasia
+selectPaths({saudiArabia}, eurasia saudiArabia, 1)
+  Returning 1 copies of this leaf: eurasia saudiArabia
+  Roll is now -1320968.8020783663, nonrandomCount is 664, output.length is 672, countLeft is 41, i is 7, pathSoFar is eurasia
+selectPaths({thailand}, eurasia thailand, 1)
+selectPaths({other}, eurasia thailand other, 1)
+  Returning 1 copies of this leaf: eurasia thailand other
+  Roll is now -1737784.679282643, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia thailand
+  Roll is now -356215.3312858492, nonrandomCount is 664, output.length is 673, countLeft is 41, i is 8, pathSoFar is eurasia
+selectPaths({hungary}, eurasia hungary, 1)
+  Returning 1 copies of this leaf: eurasia hungary
+  Roll is now -1764623.0219737291, nonrandomCount is 664, output.length is 674, countLeft is 41, i is 9, pathSoFar is eurasia
+selectPaths({philippines}, eurasia philippines, 1)
+selectPaths({other}, eurasia philippines other, 1)
+  Returning 1 copies of this leaf: eurasia philippines other
+  Roll is now -5578990.543612779, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia philippines
+  Roll is now -389412.4236180447, nonrandomCount is 664, output.length is 675, countLeft is 41, i is 10, pathSoFar is eurasia
+selectPaths({yemen}, eurasia yemen, 1)
+  Returning 1 copies of this leaf: eurasia yemen
+  Roll is now -2503334.651371509, nonrandomCount is 664, output.length is 676, countLeft is 41, i is 11, pathSoFar is eurasia
+selectPaths({azerbaijan}, eurasia azerbaijan, 1)
+  Returning 1 copies of this leaf: eurasia azerbaijan
+  Roll is now -1675852.0495278537, nonrandomCount is 664, output.length is 677, countLeft is 41, i is 12, pathSoFar is eurasia
+selectPaths({romania}, eurasia romania, 1)
+  Returning 1 copies of this leaf: eurasia romania
+  Roll is now -85969.93097501993, nonrandomCount is 664, output.length is 678, countLeft is 41, i is 13, pathSoFar is eurasia
+selectPaths({bahrain}, eurasia bahrain, 1)
+  Returning 1 copies of this leaf: eurasia bahrain
+  Roll is now -1149817.1150474548, nonrandomCount is 664, output.length is 679, countLeft is 41, i is 14, pathSoFar is eurasia
+selectPaths({greece}, eurasia greece, 1)
+  Returning 1 copies of this leaf: eurasia greece
+  Roll is now -794875.573761791, nonrandomCount is 664, output.length is 680, countLeft is 41, i is 15, pathSoFar is eurasia
+selectPaths({laos}, eurasia laos, 1)
+  Returning 1 copies of this leaf: eurasia laos
+  Roll is now -6414858.3622766435, nonrandomCount is 664, output.length is 681, countLeft is 41, i is 16, pathSoFar is eurasia
+selectPaths({czechRepublic}, eurasia czechRepublic, 1)
+  Returning 1 copies of this leaf: eurasia czechRepublic
+  Roll is now -1656010.6137392074, nonrandomCount is 664, output.length is 682, countLeft is 41, i is 17, pathSoFar is eurasia
+selectPaths({albania}, eurasia albania, 1)
+  Returning 1 copies of this leaf: eurasia albania
+  Roll is now -417368.7874815762, nonrandomCount is 664, output.length is 683, countLeft is 41, i is 18, pathSoFar is eurasia
+selectPaths({lebanon}, eurasia lebanon, 1)
+  Returning 1 copies of this leaf: eurasia lebanon
+  Roll is now -2397653.5097391903, nonrandomCount is 664, output.length is 684, countLeft is 41, i is 19, pathSoFar is eurasia
+selectPaths({thailand}, eurasia thailand, 1)
+selectPaths({bangkok}, eurasia thailand bangkok, 1)
+  Returning 1 copies of this leaf: eurasia thailand bangkok
+  Roll is now -637382.4467521824, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia thailand
+  Roll is now -2317111.132699564, nonrandomCount is 664, output.length is 685, countLeft is 41, i is 20, pathSoFar is eurasia
+selectPaths({italy}, eurasia italy, 1)
+selectPaths({lazio}, eurasia italy lazio, 1)
+selectPaths({roma}, eurasia italy lazio roma, 1)
+  Returning 1 copies of this leaf: eurasia italy lazio roma
+  Roll is now -177724.0742065208, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia italy lazio
+  Roll is now -1573615.1589175258, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia italy
+  Roll is now -1590266.588667959, nonrandomCount is 664, output.length is 686, countLeft is 41, i is 21, pathSoFar is eurasia
+selectPaths({germany}, eurasia germany, 1)
+selectPaths({berlin}, eurasia germany berlin, 1)
+  Returning 1 copies of this leaf: eurasia germany berlin
+  Roll is now -392834.16336839646, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia germany
+  Roll is now -5576795.239298992, nonrandomCount is 664, output.length is 687, countLeft is 41, i is 22, pathSoFar is eurasia
+selectPaths({italy}, eurasia italy, 1)
+selectPaths({campania}, eurasia italy campania, 1)
+selectPaths({other}, eurasia italy campania other, 1)
+  Returning 1 copies of this leaf: eurasia italy campania other
+  Roll is now -633598.0389972068, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia italy campania
+  Roll is now -4490973.70756053, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia italy
+  Roll is now -4246934.202849954, nonrandomCount is 664, output.length is 688, countLeft is 41, i is 23, pathSoFar is eurasia
+selectPaths({finland}, eurasia finland, 1)
+  Returning 1 copies of this leaf: eurasia finland
+  Roll is now -2508758.0768253207, nonrandomCount is 664, output.length is 689, countLeft is 41, i is 24, pathSoFar is eurasia
+selectPaths({thailand}, eurasia thailand, 1)
+selectPaths({bangkok}, eurasia thailand bangkok, 1)
+  Returning 1 copies of this leaf: eurasia thailand bangkok
+  Roll is now -969403.0968034312, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia thailand
+  Roll is now -3087336.7221515477, nonrandomCount is 664, output.length is 690, countLeft is 41, i is 25, pathSoFar is eurasia
+selectPaths({india}, eurasia india, 1)
+selectPaths({mizoram}, eurasia india mizoram, 1)
+  Returning 1 copies of this leaf: eurasia india mizoram
+  Roll is now -796156.1217271537, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia india
+  Roll is now -77955.41762423143, nonrandomCount is 664, output.length is 691, countLeft is 41, i is 26, pathSoFar is eurasia
+selectPaths({saudiArabia}, eurasia saudiArabia, 1)
+  Returning 1 copies of this leaf: eurasia saudiArabia
+  Roll is now -1150872.5764864385, nonrandomCount is 664, output.length is 692, countLeft is 41, i is 27, pathSoFar is eurasia
+selectPaths({japan}, eurasia japan, 1)
+selectPaths({other}, eurasia japan other, 1)
+  Returning 1 copies of this leaf: eurasia japan other
+  Roll is now -3978320.1529012974, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia japan
+  Roll is now -108176.6458298415, nonrandomCount is 664, output.length is 693, countLeft is 41, i is 28, pathSoFar is eurasia
+selectPaths({bangladesh}, eurasia bangladesh, 1)
+selectPaths({dhaka}, eurasia bangladesh dhaka, 1)
+  Returning 1 copies of this leaf: eurasia bangladesh dhaka
+  Roll is now -2620422.2446937617, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia bangladesh
+  Roll is now -1645216.994085623, nonrandomCount is 664, output.length is 694, countLeft is 41, i is 29, pathSoFar is eurasia
+selectPaths({belgium}, eurasia belgium, 1)
+  Returning 1 copies of this leaf: eurasia belgium
+  Roll is now -10879.192073777318, nonrandomCount is 664, output.length is 695, countLeft is 41, i is 30, pathSoFar is eurasia
+selectPaths({nepal}, eurasia nepal, 1)
+  Returning 1 copies of this leaf: eurasia nepal
+  Roll is now -3653976.2086711526, nonrandomCount is 664, output.length is 696, countLeft is 41, i is 31, pathSoFar is eurasia
+selectPaths({netherlands}, eurasia netherlands, 1)
+  Returning 1 copies of this leaf: eurasia netherlands
+  Roll is now -2008378.6513530612, nonrandomCount is 664, output.length is 697, countLeft is 41, i is 32, pathSoFar is eurasia
+selectPaths({pakistan}, eurasia pakistan, 1)
+selectPaths({balochistan}, eurasia pakistan balochistan, 1)
+  Returning 1 copies of this leaf: eurasia pakistan balochistan
+  Roll is now -4034970.5623030597, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia pakistan
+  Roll is now -3901726.411405191, nonrandomCount is 664, output.length is 698, countLeft is 41, i is 33, pathSoFar is eurasia
+selectPaths({lebanon}, eurasia lebanon, 1)
+  Returning 1 copies of this leaf: eurasia lebanon
+  Roll is now -721013.3343559504, nonrandomCount is 664, output.length is 699, countLeft is 41, i is 34, pathSoFar is eurasia
+selectPaths({myanmar}, eurasia myanmar, 1)
+  Returning 1 copies of this leaf: eurasia myanmar
+  Roll is now -435144.74963381886, nonrandomCount is 664, output.length is 700, countLeft is 41, i is 35, pathSoFar is eurasia
+selectPaths({russia}, eurasia russia, 1)
+selectPaths({moscow}, eurasia russia moscow, 1)
+  Returning 1 copies of this leaf: eurasia russia moscow
+  Roll is now -2208700.934197948, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia russia
+  Roll is now -5196312.726034254, nonrandomCount is 664, output.length is 701, countLeft is 41, i is 36, pathSoFar is eurasia
+selectPaths({ukraine}, eurasia ukraine, 1)
+  Returning 1 copies of this leaf: eurasia ukraine
+  Roll is now -6291427.250400662, nonrandomCount is 664, output.length is 702, countLeft is 41, i is 37, pathSoFar is eurasia
+selectPaths({ireland}, eurasia ireland, 1)
+selectPaths({dublin}, eurasia ireland dublin, 1)
+  Returning 1 copies of this leaf: eurasia ireland dublin
+  Roll is now -1336782.9128155075, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is eurasia ireland
+  Roll is now -1874162.2887497544, nonrandomCount is 664, output.length is 703, countLeft is 41, i is 38, pathSoFar is eurasia
+selectPaths({netherlands}, eurasia netherlands, 1)
+  Returning 1 copies of this leaf: eurasia netherlands
+  Roll is now -565045.6715235114, nonrandomCount is 664, output.length is 704, countLeft is 41, i is 39, pathSoFar is eurasia
+selectPaths({bulgaria}, eurasia bulgaria, 1)
+  Returning 1 copies of this leaf: eurasia bulgaria
+  Roll is now -6550405.898749098, nonrandomCount is 664, output.length is 705, countLeft is 41, i is 40, pathSoFar is eurasia
+  Nonrandom distribution: africa, 170
+selectPaths({africa}, africa, 170)
+  Nonrandom distribution: africa nigeria, 25
+selectPaths({nigeria}, africa nigeria, 25)
+  Nonrandom distribution: africa nigeria lagos, 2
+selectPaths({lagos}, africa nigeria lagos, 2)
+  Returning 2 copies of this leaf: africa nigeria lagos
+  Nonrandom distribution: africa nigeria other, 23
+selectPaths({other}, africa nigeria other, 23)
+  Returning 23 copies of this leaf: africa nigeria other
+  Nonrandom distribution: africa ethiopia, 14
+selectPaths({ethiopia}, africa ethiopia, 14)
+  Returning 14 copies of this leaf: africa ethiopia
+  Nonrandom distribution: africa kenya, 6
+selectPaths({kenya}, africa kenya, 6)
+  Returning 6 copies of this leaf: africa kenya
+  Nonrandom distribution: africa egypt, 13
+selectPaths({egypt}, africa egypt, 13)
+  Nonrandom distribution: africa egypt cairo, 2
+selectPaths({cairo}, africa egypt cairo, 2)
+  Returning 2 copies of this leaf: africa egypt cairo
+  Nonrandom distribution: africa egypt other, 10
+selectPaths({other}, africa egypt other, 10)
+  Returning 10 copies of this leaf: africa egypt other
+selectPaths({cairo}, africa egypt cairo, 1)
+  Returning 1 copies of this leaf: africa egypt cairo
+  Roll is now -3323222.932947591, nonrandomCount is 12, output.length is 13, countLeft is 1, i is 0, pathSoFar is africa egypt
+  Nonrandom distribution: africa tanzania, 7
+selectPaths({tanzania}, africa tanzania, 7)
+  Returning 7 copies of this leaf: africa tanzania
+  Nonrandom distribution: africa drc, 13
+selectPaths({drc}, africa drc, 13)
+  Returning 13 copies of this leaf: africa drc
+  Nonrandom distribution: africa algeria, 5
+selectPaths({algeria}, africa algeria, 5)
+  Returning 5 copies of this leaf: africa algeria
+  Nonrandom distribution: africa angola, 4
+selectPaths({angola}, africa angola, 4)
+  Returning 4 copies of this leaf: africa angola
+  Nonrandom distribution: africa benin, 1
+selectPaths({benin}, africa benin, 1)
+  Returning 1 copies of this leaf: africa benin
+  Nonrandom distribution: africa chad, 2
+selectPaths({chad}, africa chad, 2)
+  Returning 2 copies of this leaf: africa chad
+  Nonrandom distribution: africa burkinaFaso, 2
+selectPaths({burkinaFaso}, africa burkinaFaso, 2)
+  Returning 2 copies of this leaf: africa burkinaFaso
+  Nonrandom distribution: africa burundi, 1
+selectPaths({burundi}, africa burundi, 1)
+  Returning 1 copies of this leaf: africa burundi
+  Nonrandom distribution: africa cameroon, 3
+selectPaths({cameroon}, africa cameroon, 3)
+  Returning 3 copies of this leaf: africa cameroon
+  Nonrandom distribution: africa ghana, 3
+selectPaths({ghana}, africa ghana, 3)
+  Returning 3 copies of this leaf: africa ghana
+  Nonrandom distribution: africa somalia, 1
+selectPaths({somalia}, africa somalia, 1)
+  Returning 1 copies of this leaf: africa somalia
+  Nonrandom distribution: africa southAfrica, 7
+selectPaths({southAfrica}, africa southAfrica, 7)
+  Returning 7 copies of this leaf: africa southAfrica
+  Nonrandom distribution: africa southSudan, 1
+selectPaths({southSudan}, africa southSudan, 1)
+  Returning 1 copies of this leaf: africa southSudan
+  Nonrandom distribution: africa sudan, 5
+selectPaths({sudan}, africa sudan, 5)
+  Returning 5 copies of this leaf: africa sudan
+  Nonrandom distribution: africa ivoryCoast, 3
+selectPaths({ivoryCoast}, africa ivoryCoast, 3)
+  Returning 3 copies of this leaf: africa ivoryCoast
+  Nonrandom distribution: africa mali, 2
+selectPaths({mali}, africa mali, 2)
+  Returning 2 copies of this leaf: africa mali
+  Nonrandom distribution: africa morocco, 4
+selectPaths({morocco}, africa morocco, 4)
+  Returning 4 copies of this leaf: africa morocco
+  Nonrandom distribution: africa mozambique, 3
+selectPaths({mozambique}, africa mozambique, 3)
+  Returning 3 copies of this leaf: africa mozambique
+  Nonrandom distribution: africa niger, 2
+selectPaths({niger}, africa niger, 2)
+  Returning 2 copies of this leaf: africa niger
+  Nonrandom distribution: africa rwanda, 1
+selectPaths({rwanda}, africa rwanda, 1)
+  Returning 1 copies of this leaf: africa rwanda
+  Nonrandom distribution: africa sierraLeone, 1
+selectPaths({sierraLeone}, africa sierraLeone, 1)
+  Returning 1 copies of this leaf: africa sierraLeone
+  Nonrandom distribution: africa senegal, 2
+selectPaths({senegal}, africa senegal, 2)
+  Returning 2 copies of this leaf: africa senegal
+  Nonrandom distribution: africa togo, 1
+selectPaths({togo}, africa togo, 1)
+  Returning 1 copies of this leaf: africa togo
+  Nonrandom distribution: africa uganda, 5
+selectPaths({uganda}, africa uganda, 5)
+  Returning 5 copies of this leaf: africa uganda
+  Nonrandom distribution: africa zambia, 2
+selectPaths({zambia}, africa zambia, 2)
+  Returning 2 copies of this leaf: africa zambia
+  Nonrandom distribution: africa zimbabwe, 1
+selectPaths({zimbabwe}, africa zimbabwe, 1)
+  Returning 1 copies of this leaf: africa zimbabwe
+  Nonrandom distribution: africa guinea, 1
+selectPaths({guinea}, africa guinea, 1)
+  Returning 1 copies of this leaf: africa guinea
+  Nonrandom distribution: africa madagascar, 3
+selectPaths({madagascar}, africa madagascar, 3)
+  Returning 3 copies of this leaf: africa madagascar
+  Nonrandom distribution: africa malawi, 2
+selectPaths({malawi}, africa malawi, 2)
+  Returning 2 copies of this leaf: africa malawi
+  Nonrandom distribution: africa tunisia, 1
+selectPaths({tunisia}, africa tunisia, 1)
+  Returning 1 copies of this leaf: africa tunisia
+selectPaths({mali}, africa mali, 1)
+  Returning 1 copies of this leaf: africa mali
+  Roll is now -2124713.381799996, nonrandomCount is 147, output.length is 148, countLeft is 23, i is 0, pathSoFar is africa
+selectPaths({botswana}, africa botswana, 1)
+  Returning 1 copies of this leaf: africa botswana
+  Roll is now -346973.8020072356, nonrandomCount is 147, output.length is 149, countLeft is 23, i is 1, pathSoFar is africa
+selectPaths({mali}, africa mali, 1)
+  Returning 1 copies of this leaf: africa mali
+  Roll is now -2475772.14050743, nonrandomCount is 147, output.length is 150, countLeft is 23, i is 2, pathSoFar is africa
+selectPaths({malawi}, africa malawi, 1)
+  Returning 1 copies of this leaf: africa malawi
+  Roll is now -1482421.8235974014, nonrandomCount is 147, output.length is 151, countLeft is 23, i is 3, pathSoFar is africa
+selectPaths({centralAfricanRepublic}, africa centralAfricanRepublic, 1)
+  Returning 1 copies of this leaf: africa centralAfricanRepublic
+  Roll is now -4062945.305101283, nonrandomCount is 147, output.length is 152, countLeft is 23, i is 4, pathSoFar is africa
+selectPaths({tunisia}, africa tunisia, 1)
+  Returning 1 copies of this leaf: africa tunisia
+  Roll is now -1956945.2685952485, nonrandomCount is 147, output.length is 153, countLeft is 23, i is 5, pathSoFar is africa
+selectPaths({zimbabwe}, africa zimbabwe, 1)
+  Returning 1 copies of this leaf: africa zimbabwe
+  Roll is now -3324304.884591013, nonrandomCount is 147, output.length is 154, countLeft is 23, i is 6, pathSoFar is africa
+selectPaths({madagascar}, africa madagascar, 1)
+  Returning 1 copies of this leaf: africa madagascar
+  Roll is now -2391737.4536536634, nonrandomCount is 147, output.length is 155, countLeft is 23, i is 7, pathSoFar is africa
+selectPaths({uganda}, africa uganda, 1)
+  Returning 1 copies of this leaf: africa uganda
+  Roll is now -2887516.067616299, nonrandomCount is 147, output.length is 156, countLeft is 23, i is 8, pathSoFar is africa
+selectPaths({mozambique}, africa mozambique, 1)
+  Returning 1 copies of this leaf: africa mozambique
+  Roll is now -4579576.163537607, nonrandomCount is 147, output.length is 157, countLeft is 23, i is 9, pathSoFar is africa
+selectPaths({niger}, africa niger, 1)
+  Returning 1 copies of this leaf: africa niger
+  Roll is now -3782369.7697662115, nonrandomCount is 147, output.length is 158, countLeft is 23, i is 10, pathSoFar is africa
+selectPaths({sudan}, africa sudan, 1)
+  Returning 1 copies of this leaf: africa sudan
+  Roll is now -929840.8910004795, nonrandomCount is 147, output.length is 159, countLeft is 23, i is 11, pathSoFar is africa
+selectPaths({nigeria}, africa nigeria, 1)
+selectPaths({other}, africa nigeria other, 1)
+  Returning 1 copies of this leaf: africa nigeria other
+  Roll is now -2883609.297169423, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is africa nigeria
+  Roll is now -4927057.814484002, nonrandomCount is 147, output.length is 160, countLeft is 23, i is 12, pathSoFar is africa
+selectPaths({libya}, africa libya, 1)
+  Returning 1 copies of this leaf: africa libya
+  Roll is now -4009730.521523297, nonrandomCount is 147, output.length is 161, countLeft is 23, i is 13, pathSoFar is africa
+selectPaths({drc}, africa drc, 1)
+  Returning 1 copies of this leaf: africa drc
+  Roll is now -2845371.816731151, nonrandomCount is 147, output.length is 162, countLeft is 23, i is 14, pathSoFar is africa
+selectPaths({eritrea}, africa eritrea, 1)
+  Returning 1 copies of this leaf: africa eritrea
+  Roll is now -2150721.987221092, nonrandomCount is 147, output.length is 163, countLeft is 23, i is 15, pathSoFar is africa
+selectPaths({mauritius}, africa mauritius, 1)
+  Returning 1 copies of this leaf: africa mauritius
+  Roll is now -994055.4433819354, nonrandomCount is 147, output.length is 164, countLeft is 23, i is 16, pathSoFar is africa
+selectPaths({ivoryCoast}, africa ivoryCoast, 1)
+  Returning 1 copies of this leaf: africa ivoryCoast
+  Roll is now -1935009.7878699303, nonrandomCount is 147, output.length is 165, countLeft is 23, i is 17, pathSoFar is africa
+selectPaths({eritrea}, africa eritrea, 1)
+  Returning 1 copies of this leaf: africa eritrea
+  Roll is now -296866.81891545653, nonrandomCount is 147, output.length is 166, countLeft is 23, i is 18, pathSoFar is africa
+selectPaths({djibouti}, africa djibouti, 1)
+  Returning 1 copies of this leaf: africa djibouti
+  Roll is now -76317.42006805539, nonrandomCount is 147, output.length is 167, countLeft is 23, i is 19, pathSoFar is africa
+selectPaths({drc}, africa drc, 1)
+  Returning 1 copies of this leaf: africa drc
+  Roll is now -1519023.7811853886, nonrandomCount is 147, output.length is 168, countLeft is 23, i is 20, pathSoFar is africa
+selectPaths({niger}, africa niger, 1)
+  Returning 1 copies of this leaf: africa niger
+  Roll is now -2233170.3629895747, nonrandomCount is 147, output.length is 169, countLeft is 23, i is 21, pathSoFar is africa
+selectPaths({ivoryCoast}, africa ivoryCoast, 1)
+  Returning 1 copies of this leaf: africa ivoryCoast
+  Roll is now -2253823.177694604, nonrandomCount is 147, output.length is 170, countLeft is 23, i is 22, pathSoFar is africa
+  Nonrandom distribution: northAmerica, 77
+selectPaths({northAmerica}, northAmerica, 77)
+  Nonrandom distribution: northAmerica canada, 4
+selectPaths({canada}, northAmerica canada, 4)
+  Nonrandom distribution: northAmerica canada ontario, 1
+selectPaths({ontario}, northAmerica canada ontario, 1)
+  Nonrandom distribution: northAmerica canada ontario other, 1
+selectPaths({other}, northAmerica canada ontario other, 1)
+  Returning 1 copies of this leaf: northAmerica canada ontario other
+  Nonrandom distribution: northAmerica canada other, 3
+selectPaths({other}, northAmerica canada other, 3)
+  Returning 3 copies of this leaf: northAmerica canada other
+  Nonrandom distribution: northAmerica usa, 43
+selectPaths({usa}, northAmerica usa, 43)
+  Nonrandom distribution: northAmerica usa newYork, 2
+selectPaths({newYork}, northAmerica usa newYork, 2)
+  Nonrandom distribution: northAmerica usa newYork newYork, 1
+selectPaths({newYork}, northAmerica usa newYork newYork, 1)
+selectPaths({manhattan}, northAmerica usa newYork newYork manhattan, 1)
+selectPaths({upperEastSide}, northAmerica usa newYork newYork manhattan upperEastSide, 1)
+  Returning 1 copies of this leaf: northAmerica usa newYork newYork manhattan upperEastSide
+  Roll is now -226354.51475083688, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa newYork newYork manhattan
+  Roll is now -1229995.8180626319, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa newYork newYork
+  Nonrandom distribution: northAmerica usa newYork other, 1
+selectPaths({other}, northAmerica usa newYork other, 1)
+  Returning 1 copies of this leaf: northAmerica usa newYork other
+  Nonrandom distribution: northAmerica usa california, 5
+selectPaths({california}, northAmerica usa california, 5)
+  Nonrandom distribution: northAmerica usa california other, 1
+selectPaths({other}, northAmerica usa california other, 1)
+  Returning 1 copies of this leaf: northAmerica usa california other
+selectPaths({sanDiego}, northAmerica usa california sanDiego, 1)
+  Returning 1 copies of this leaf: northAmerica usa california sanDiego
+  Roll is now -158247.36569933593, nonrandomCount is 1, output.length is 2, countLeft is 4, i is 0, pathSoFar is northAmerica usa california
+selectPaths({other}, northAmerica usa california other, 1)
+  Returning 1 copies of this leaf: northAmerica usa california other
+  Roll is now -956410.9441540092, nonrandomCount is 1, output.length is 3, countLeft is 4, i is 1, pathSoFar is northAmerica usa california
+selectPaths({sanDiego}, northAmerica usa california sanDiego, 1)
+  Returning 1 copies of this leaf: northAmerica usa california sanDiego
+  Roll is now -1060868.3667432112, nonrandomCount is 1, output.length is 4, countLeft is 4, i is 2, pathSoFar is northAmerica usa california
+selectPaths({longBeach}, northAmerica usa california longBeach, 1)
+  Returning 1 copies of this leaf: northAmerica usa california longBeach
+  Roll is now -311618.84232761804, nonrandomCount is 1, output.length is 5, countLeft is 4, i is 3, pathSoFar is northAmerica usa california
+  Nonrandom distribution: northAmerica usa illinois, 1
+selectPaths({illinois}, northAmerica usa illinois, 1)
+selectPaths({chicago}, northAmerica usa illinois chicago, 1)
+  Returning 1 copies of this leaf: northAmerica usa illinois chicago
+  Roll is now -617167.1696337713, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa illinois
+  Nonrandom distribution: northAmerica usa texas, 3
+selectPaths({texas}, northAmerica usa texas, 3)
+  Nonrandom distribution: northAmerica usa texas other, 1
+selectPaths({other}, northAmerica usa texas other, 1)
+  Returning 1 copies of this leaf: northAmerica usa texas other
+selectPaths({other}, northAmerica usa texas other, 1)
+  Returning 1 copies of this leaf: northAmerica usa texas other
+  Roll is now -4079946.332290154, nonrandomCount is 1, output.length is 2, countLeft is 2, i is 0, pathSoFar is northAmerica usa texas
+selectPaths({other}, northAmerica usa texas other, 1)
+  Returning 1 copies of this leaf: northAmerica usa texas other
+  Roll is now -3326062.7592557, nonrandomCount is 1, output.length is 3, countLeft is 2, i is 1, pathSoFar is northAmerica usa texas
+  Nonrandom distribution: northAmerica usa pennsylvania, 1
+selectPaths({pennsylvania}, northAmerica usa pennsylvania, 1)
+  Nonrandom distribution: northAmerica usa pennsylvania other, 1
+selectPaths({other}, northAmerica usa pennsylvania other, 1)
+  Returning 1 copies of this leaf: northAmerica usa pennsylvania other
+  Nonrandom distribution: northAmerica usa florida, 2
+selectPaths({florida}, northAmerica usa florida, 2)
+  Nonrandom distribution: northAmerica usa florida other, 1
+selectPaths({other}, northAmerica usa florida other, 1)
+  Returning 1 copies of this leaf: northAmerica usa florida other
+selectPaths({miramar}, northAmerica usa florida miramar, 1)
+  Returning 1 copies of this leaf: northAmerica usa florida miramar
+  Roll is now -62212.38858863572, nonrandomCount is 1, output.length is 2, countLeft is 1, i is 0, pathSoFar is northAmerica usa florida
+  Nonrandom distribution: northAmerica usa ohio, 1
+selectPaths({ohio}, northAmerica usa ohio, 1)
+  Nonrandom distribution: northAmerica usa ohio other, 1
+selectPaths({other}, northAmerica usa ohio other, 1)
+  Returning 1 copies of this leaf: northAmerica usa ohio other
+  Nonrandom distribution: northAmerica usa northCarolina, 1
+selectPaths({northCarolina}, northAmerica usa northCarolina, 1)
+selectPaths({other}, northAmerica usa northCarolina other, 1)
+  Returning 1 copies of this leaf: northAmerica usa northCarolina other
+  Roll is now -4812771.499158891, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa northCarolina
+  Nonrandom distribution: northAmerica usa michigan, 1
+selectPaths({michigan}, northAmerica usa michigan, 1)
+selectPaths({other}, northAmerica usa michigan other, 1)
+  Returning 1 copies of this leaf: northAmerica usa michigan other
+  Roll is now -1237285.9897514004, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa michigan
+  Nonrandom distribution: northAmerica usa washington, 1
+selectPaths({washington}, northAmerica usa washington, 1)
+selectPaths({bellingham}, northAmerica usa washington bellingham, 1)
+  Returning 1 copies of this leaf: northAmerica usa washington bellingham
+  Roll is now -7744.8167663444765, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa washington
+  Nonrandom distribution: northAmerica usa virginia, 1
+selectPaths({virginia}, northAmerica usa virginia, 1)
+selectPaths({other}, northAmerica usa virginia other, 1)
+  Returning 1 copies of this leaf: northAmerica usa virginia other
+  Roll is now -2915931.0435348665, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa virginia
+  Nonrandom distribution: northAmerica usa georgia, 1
+selectPaths({georgia}, northAmerica usa georgia, 1)
+  Nonrandom distribution: northAmerica usa georgia other, 1
+selectPaths({other}, northAmerica usa georgia other, 1)
+  Returning 1 copies of this leaf: northAmerica usa georgia other
+  Nonrandom distribution: northAmerica usa newJersey, 1
+selectPaths({newJersey}, northAmerica usa newJersey, 1)
+selectPaths({other}, northAmerica usa newJersey other, 1)
+  Returning 1 copies of this leaf: northAmerica usa newJersey other
+  Roll is now -613254.6258734902, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa newJersey
+selectPaths({nebraska}, northAmerica usa nebraska, 1)
+selectPaths({other}, northAmerica usa nebraska other, 1)
+  Returning 1 copies of this leaf: northAmerica usa nebraska other
+  Roll is now -286424.9576689182, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa nebraska
+  Roll is now -1047741.9315150231, nonrandomCount is 21, output.length is 22, countLeft is 22, i is 0, pathSoFar is northAmerica usa
+selectPaths({iowa}, northAmerica usa iowa, 1)
+selectPaths({other}, northAmerica usa iowa other, 1)
+  Returning 1 copies of this leaf: northAmerica usa iowa other
+  Roll is now -644181.9121489138, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa iowa
+  Roll is now -550071.0311250985, nonrandomCount is 21, output.length is 23, countLeft is 22, i is 1, pathSoFar is northAmerica usa
+selectPaths({ohio}, northAmerica usa ohio, 1)
+selectPaths({toledo}, northAmerica usa ohio toledo, 1)
+  Returning 1 copies of this leaf: northAmerica usa ohio toledo
+  Roll is now -65262.100268529495, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa ohio
+  Roll is now -2811239.434203185, nonrandomCount is 21, output.length is 24, countLeft is 22, i is 2, pathSoFar is northAmerica usa
+selectPaths({wyoming}, northAmerica usa wyoming, 1)
+selectPaths({other}, northAmerica usa wyoming other, 1)
+  Returning 1 copies of this leaf: northAmerica usa wyoming other
+  Roll is now -143737.76466878067, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa wyoming
+  Roll is now -274169.94114002585, nonrandomCount is 21, output.length is 25, countLeft is 22, i is 3, pathSoFar is northAmerica usa
+selectPaths({maryland}, northAmerica usa maryland, 1)
+selectPaths({other}, northAmerica usa maryland other, 1)
+  Returning 1 copies of this leaf: northAmerica usa maryland other
+  Roll is now -2299081.4482617658, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa maryland
+  Roll is now -5667954.9492366165, nonrandomCount is 21, output.length is 26, countLeft is 22, i is 4, pathSoFar is northAmerica usa
+selectPaths({tennessee}, northAmerica usa tennessee, 1)
+selectPaths({nashvilleDavidson}, northAmerica usa tennessee nashvilleDavidson, 1)
+  Returning 1 copies of this leaf: northAmerica usa tennessee nashvilleDavidson
+  Roll is now -315188.99117034173, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa tennessee
+  Roll is now -5175665.737077884, nonrandomCount is 21, output.length is 27, countLeft is 22, i is 5, pathSoFar is northAmerica usa
+selectPaths({arizona}, northAmerica usa arizona, 1)
+selectPaths({other}, northAmerica usa arizona other, 1)
+  Returning 1 copies of this leaf: northAmerica usa arizona other
+  Roll is now -2486053.8107070234, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa arizona
+  Roll is now -4220575.483563527, nonrandomCount is 21, output.length is 28, countLeft is 22, i is 6, pathSoFar is northAmerica usa
+selectPaths({arkansas}, northAmerica usa arkansas, 1)
+selectPaths({other}, northAmerica usa arkansas other, 1)
+  Returning 1 copies of this leaf: northAmerica usa arkansas other
+  Roll is now -261890.32105015684, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa arkansas
+  Roll is now -1468591.9222851396, nonrandomCount is 21, output.length is 29, countLeft is 22, i is 7, pathSoFar is northAmerica usa
+selectPaths({ohio}, northAmerica usa ohio, 1)
+selectPaths({other}, northAmerica usa ohio other, 1)
+  Returning 1 copies of this leaf: northAmerica usa ohio other
+  Roll is now -6409.889028566424, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa ohio
+  Roll is now -1121804.6881291121, nonrandomCount is 21, output.length is 30, countLeft is 22, i is 8, pathSoFar is northAmerica usa
+selectPaths({oregon}, northAmerica usa oregon, 1)
+selectPaths({hillsboro}, northAmerica usa oregon hillsboro, 1)
+  Returning 1 copies of this leaf: northAmerica usa oregon hillsboro
+  Roll is now -4016.195495187305, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa oregon
+  Roll is now -138076.8756225556, nonrandomCount is 21, output.length is 31, countLeft is 22, i is 9, pathSoFar is northAmerica usa
+selectPaths({oklahoma}, northAmerica usa oklahoma, 1)
+selectPaths({other}, northAmerica usa oklahoma other, 1)
+  Returning 1 copies of this leaf: northAmerica usa oklahoma other
+  Roll is now -1809227.3275462673, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa oklahoma
+  Roll is now -629959.2951175123, nonrandomCount is 21, output.length is 32, countLeft is 22, i is 10, pathSoFar is northAmerica usa
+selectPaths({tennessee}, northAmerica usa tennessee, 1)
+selectPaths({nashvilleDavidson}, northAmerica usa tennessee nashvilleDavidson, 1)
+  Returning 1 copies of this leaf: northAmerica usa tennessee nashvilleDavidson
+  Roll is now -316026.27138554235, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa tennessee
+  Roll is now -6012911.943975732, nonrandomCount is 21, output.length is 33, countLeft is 22, i is 11, pathSoFar is northAmerica usa
+selectPaths({massachusetts}, northAmerica usa massachusetts, 1)
+selectPaths({other}, northAmerica usa massachusetts other, 1)
+  Returning 1 copies of this leaf: northAmerica usa massachusetts other
+  Roll is now -2218630.184735801, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa massachusetts
+  Roll is now -5495687.090496391, nonrandomCount is 21, output.length is 34, countLeft is 22, i is 12, pathSoFar is northAmerica usa
+selectPaths({arizona}, northAmerica usa arizona, 1)
+selectPaths({phoenix}, northAmerica usa arizona phoenix, 1)
+  Returning 1 copies of this leaf: northAmerica usa arizona phoenix
+  Roll is now -481330.26437907293, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa arizona
+  Roll is now -3888100.2295359783, nonrandomCount is 21, output.length is 35, countLeft is 22, i is 13, pathSoFar is northAmerica usa
+selectPaths({virginia}, northAmerica usa virginia, 1)
+selectPaths({norfolk}, northAmerica usa virginia norfolk, 1)
+  Returning 1 copies of this leaf: northAmerica usa virginia norfolk
+  Roll is now -228459.51895485463, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa virginia
+  Roll is now -629688.1090687364, nonrandomCount is 21, output.length is 36, countLeft is 22, i is 14, pathSoFar is northAmerica usa
+selectPaths({colorado}, northAmerica usa colorado, 1)
+selectPaths({aurora}, northAmerica usa colorado aurora, 1)
+  Returning 1 copies of this leaf: northAmerica usa colorado aurora
+  Roll is now -260531.71689211205, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa colorado
+  Roll is now -3713874.881976135, nonrandomCount is 21, output.length is 37, countLeft is 22, i is 15, pathSoFar is northAmerica usa
+selectPaths({southDakota}, northAmerica usa southDakota, 1)
+selectPaths({other}, northAmerica usa southDakota other, 1)
+  Returning 1 copies of this leaf: northAmerica usa southDakota other
+  Roll is now -418432.61007003, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa southDakota
+  Roll is now -296364.6567659378, nonrandomCount is 21, output.length is 38, countLeft is 22, i is 16, pathSoFar is northAmerica usa
+selectPaths({minnesota}, northAmerica usa minnesota, 1)
+selectPaths({other}, northAmerica usa minnesota other, 1)
+  Returning 1 copies of this leaf: northAmerica usa minnesota other
+  Roll is now -2815594.756728617, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa minnesota
+  Roll is now -4382473.5938335955, nonrandomCount is 21, output.length is 39, countLeft is 22, i is 17, pathSoFar is northAmerica usa
+selectPaths({minnesota}, northAmerica usa minnesota, 1)
+selectPaths({other}, northAmerica usa minnesota other, 1)
+  Returning 1 copies of this leaf: northAmerica usa minnesota other
+  Roll is now -1443201.2197865555, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa minnesota
+  Roll is now -1625788.9331574887, nonrandomCount is 21, output.length is 40, countLeft is 22, i is 18, pathSoFar is northAmerica usa
+selectPaths({montana}, northAmerica usa montana, 1)
+selectPaths({other}, northAmerica usa montana other, 1)
+  Returning 1 copies of this leaf: northAmerica usa montana other
+  Roll is now -418438.12537225196, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa montana
+  Roll is now -740174.1235774457, nonrandomCount is 21, output.length is 41, countLeft is 22, i is 19, pathSoFar is northAmerica usa
+selectPaths({oklahoma}, northAmerica usa oklahoma, 1)
+selectPaths({other}, northAmerica usa oklahoma other, 1)
+  Returning 1 copies of this leaf: northAmerica usa oklahoma other
+  Roll is now -1694486.8322692919, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa oklahoma
+  Roll is now -965609.9621694535, nonrandomCount is 21, output.length is 42, countLeft is 22, i is 20, pathSoFar is northAmerica usa
+selectPaths({utah}, northAmerica usa utah, 1)
+selectPaths({westValleyCity}, northAmerica usa utah westValleyCity, 1)
+  Returning 1 copies of this leaf: northAmerica usa utah westValleyCity
+  Roll is now -109123.56498248503, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa utah
+  Roll is now -2440464.3869920075, nonrandomCount is 21, output.length is 43, countLeft is 22, i is 21, pathSoFar is northAmerica usa
+  Nonrandom distribution: northAmerica mexico, 17
+selectPaths({mexico}, northAmerica mexico, 17)
+  Nonrandom distribution: northAmerica mexico mexicoState, 2
+selectPaths({mexicoState}, northAmerica mexico mexicoState, 2)
+  Returning 2 copies of this leaf: northAmerica mexico mexicoState
+  Nonrandom distribution: northAmerica mexico mexicoCity, 2
+selectPaths({mexicoCity}, northAmerica mexico mexicoCity, 2)
+  Returning 2 copies of this leaf: northAmerica mexico mexicoCity
+  Nonrandom distribution: northAmerica mexico other, 12
+selectPaths({other}, northAmerica mexico other, 12)
+  Returning 12 copies of this leaf: northAmerica mexico other
+selectPaths({other}, northAmerica mexico other, 1)
+  Returning 1 copies of this leaf: northAmerica mexico other
+  Roll is now -66867.37109070271, nonrandomCount is 16, output.length is 17, countLeft is 1, i is 0, pathSoFar is northAmerica mexico
+  Nonrandom distribution: northAmerica cuba, 1
+selectPaths({cuba}, northAmerica cuba, 1)
+  Returning 1 copies of this leaf: northAmerica cuba
+  Nonrandom distribution: northAmerica dominicanRepublic, 1
+selectPaths({dominicanRepublic}, northAmerica dominicanRepublic, 1)
+  Returning 1 copies of this leaf: northAmerica dominicanRepublic
+  Nonrandom distribution: northAmerica haiti, 1
+selectPaths({haiti}, northAmerica haiti, 1)
+  Returning 1 copies of this leaf: northAmerica haiti
+  Nonrandom distribution: northAmerica honduras, 1
+selectPaths({honduras}, northAmerica honduras, 1)
+  Returning 1 copies of this leaf: northAmerica honduras
+  Nonrandom distribution: northAmerica guatemala, 2
+selectPaths({guatemala}, northAmerica guatemala, 2)
+  Returning 2 copies of this leaf: northAmerica guatemala
+  Nonrandom distribution: northAmerica other, 1
+selectPaths({other}, northAmerica other, 1)
+  Returning 1 copies of this leaf: northAmerica other
+selectPaths({nicaragua}, northAmerica nicaragua, 1)
+  Returning 1 copies of this leaf: northAmerica nicaragua
+  Roll is now -417342.4865243137, nonrandomCount is 71, output.length is 72, countLeft is 6, i is 0, pathSoFar is northAmerica
+selectPaths({trinidadAndTobago}, northAmerica trinidadAndTobago, 1)
+  Returning 1 copies of this leaf: northAmerica trinidadAndTobago
+  Roll is now -382553.2585253641, nonrandomCount is 71, output.length is 73, countLeft is 6, i is 1, pathSoFar is northAmerica
+selectPaths({jamaica}, northAmerica jamaica, 1)
+  Returning 1 copies of this leaf: northAmerica jamaica
+  Roll is now -901130.3669323027, nonrandomCount is 71, output.length is 74, countLeft is 6, i is 2, pathSoFar is northAmerica
+selectPaths({usa}, northAmerica usa, 1)
+selectPaths({nebraska}, northAmerica usa nebraska, 1)
+selectPaths({lincoln}, northAmerica usa nebraska lincoln, 1)
+  Returning 1 copies of this leaf: northAmerica usa nebraska lincoln
+  Roll is now -246710.32030990033, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa nebraska
+  Roll is now -547026.4751286507, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is northAmerica usa
+  Roll is now -3965986.9456515126, nonrandomCount is 71, output.length is 75, countLeft is 6, i is 3, pathSoFar is northAmerica
+selectPaths({haiti}, northAmerica haiti, 1)
+  Returning 1 copies of this leaf: northAmerica haiti
+  Roll is now -2682723.7072849423, nonrandomCount is 71, output.length is 76, countLeft is 6, i is 4, pathSoFar is northAmerica
+selectPaths({cuba}, northAmerica cuba, 1)
+  Returning 1 copies of this leaf: northAmerica cuba
+  Roll is now -2663687.9704506174, nonrandomCount is 71, output.length is 77, countLeft is 6, i is 5, pathSoFar is northAmerica
+  Nonrandom distribution: southAmerica, 56
+selectPaths({southAmerica}, southAmerica, 56)
+  Nonrandom distribution: southAmerica brazil, 27
+selectPaths({brazil}, southAmerica brazil, 27)
+  Nonrandom distribution: southAmerica brazil north, 2
+selectPaths({north}, southAmerica brazil north, 2)
+  Returning 2 copies of this leaf: southAmerica brazil north
+  Nonrandom distribution: southAmerica brazil northeast, 7
+selectPaths({northeast}, southAmerica brazil northeast, 7)
+  Returning 7 copies of this leaf: southAmerica brazil northeast
+  Nonrandom distribution: southAmerica brazil centralWest, 2
+selectPaths({centralWest}, southAmerica brazil centralWest, 2)
+  Returning 2 copies of this leaf: southAmerica brazil centralWest
+  Nonrandom distribution: southAmerica brazil southeast, 11
+selectPaths({southeast}, southAmerica brazil southeast, 11)
+  Returning 11 copies of this leaf: southAmerica brazil southeast
+  Nonrandom distribution: southAmerica brazil south, 3
+selectPaths({south}, southAmerica brazil south, 3)
+  Returning 3 copies of this leaf: southAmerica brazil south
+selectPaths({south}, southAmerica brazil south, 1)
+  Returning 1 copies of this leaf: southAmerica brazil south
+  Roll is now -1591674.5567493401, nonrandomCount is 25, output.length is 26, countLeft is 2, i is 0, pathSoFar is southAmerica brazil
+selectPaths({northeast}, southAmerica brazil northeast, 1)
+  Returning 1 copies of this leaf: southAmerica brazil northeast
+  Roll is now -352007.4004561603, nonrandomCount is 25, output.length is 27, countLeft is 2, i is 1, pathSoFar is southAmerica brazil
+  Nonrandom distribution: southAmerica argentina, 5
+selectPaths({argentina}, southAmerica argentina, 5)
+  Nonrandom distribution: southAmerica argentina buenosAires, 2
+selectPaths({buenosAires}, southAmerica argentina buenosAires, 2)
+  Returning 2 copies of this leaf: southAmerica argentina buenosAires
+  Nonrandom distribution: southAmerica argentina other, 3
+selectPaths({other}, southAmerica argentina other, 3)
+  Returning 3 copies of this leaf: southAmerica argentina other
+  Nonrandom distribution: southAmerica peru, 4
+selectPaths({peru}, southAmerica peru, 4)
+  Returning 4 copies of this leaf: southAmerica peru
+  Nonrandom distribution: southAmerica venezuela, 3
+selectPaths({venezuela}, southAmerica venezuela, 3)
+  Returning 3 copies of this leaf: southAmerica venezuela
+  Nonrandom distribution: southAmerica bolivia, 1
+selectPaths({bolivia}, southAmerica bolivia, 1)
+  Returning 1 copies of this leaf: southAmerica bolivia
+  Nonrandom distribution: southAmerica chile, 2
+selectPaths({chile}, southAmerica chile, 2)
+  Returning 2 copies of this leaf: southAmerica chile
+  Nonrandom distribution: southAmerica colombia, 6
+selectPaths({colombia}, southAmerica colombia, 6)
+  Returning 6 copies of this leaf: southAmerica colombia
+  Nonrandom distribution: southAmerica ecuador, 2
+selectPaths({ecuador}, southAmerica ecuador, 2)
+  Returning 2 copies of this leaf: southAmerica ecuador
+selectPaths({colombia}, southAmerica colombia, 1)
+  Returning 1 copies of this leaf: southAmerica colombia
+  Roll is now -1516694.0908445194, nonrandomCount is 50, output.length is 51, countLeft is 6, i is 0, pathSoFar is southAmerica
+selectPaths({paraguay}, southAmerica paraguay, 1)
+  Returning 1 copies of this leaf: southAmerica paraguay
+  Roll is now -4598641.252982315, nonrandomCount is 50, output.length is 52, countLeft is 6, i is 1, pathSoFar is southAmerica
+selectPaths({brazil}, southAmerica brazil, 1)
+selectPaths({north}, southAmerica brazil north, 1)
+  Returning 1 copies of this leaf: southAmerica brazil north
+  Roll is now -617879.3236130495, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is southAmerica brazil
+  Roll is now -2523623.616451452, nonrandomCount is 50, output.length is 53, countLeft is 6, i is 2, pathSoFar is southAmerica
+selectPaths({paraguay}, southAmerica paraguay, 1)
+  Returning 1 copies of this leaf: southAmerica paraguay
+  Roll is now -4100431.4135923274, nonrandomCount is 50, output.length is 54, countLeft is 6, i is 3, pathSoFar is southAmerica
+selectPaths({ecuador}, southAmerica ecuador, 1)
+  Returning 1 copies of this leaf: southAmerica ecuador
+  Roll is now -1512959.6148706973, nonrandomCount is 50, output.length is 55, countLeft is 6, i is 4, pathSoFar is southAmerica
+selectPaths({uruguay}, southAmerica uruguay, 1)
+  Returning 1 copies of this leaf: southAmerica uruguay
+  Roll is now -1612944.9241964482, nonrandomCount is 50, output.length is 56, countLeft is 6, i is 5, pathSoFar is southAmerica
+  Nonrandom distribution: oceania, 5
+selectPaths({oceania}, oceania, 5)
+  Nonrandom distribution: oceania australia, 3
+selectPaths({australia}, oceania australia, 3)
+  Nonrandom distribution: oceania australia newSouthWales, 1
+selectPaths({newSouthWales}, oceania australia newSouthWales, 1)
+selectPaths({sydney}, oceania australia newSouthWales sydney, 1)
+  Returning 1 copies of this leaf: oceania australia newSouthWales sydney
+  Roll is now -4508286.489654724, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is oceania australia newSouthWales
+  Nonrandom distribution: oceania australia other, 2
+selectPaths({other}, oceania australia other, 2)
+  Returning 2 copies of this leaf: oceania australia other
+  Nonrandom distribution: oceania papuaNewGuinea, 1
+selectPaths({papuaNewGuinea}, oceania papuaNewGuinea, 1)
+  Returning 1 copies of this leaf: oceania papuaNewGuinea
+selectPaths({newZealand}, oceania newZealand, 1)
+  Returning 1 copies of this leaf: oceania newZealand
+  Roll is now -4538508.5127394255, nonrandomCount is 4, output.length is 5, countLeft is 1, i is 0, pathSoFar is oceania
+selectPaths({oceania}, oceania, 1)
+selectPaths({newZealand}, oceania newZealand, 1)
+  Returning 1 copies of this leaf: oceania newZealand
+  Roll is now -2763859.9462324707, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is oceania
+  Roll is now -1346821.7347325776, nonrandomCount is 1013, output.length is 1014, countLeft is 2, i is 0, pathSoFar is 
+selectPaths({southAmerica}, southAmerica, 1)
+selectPaths({uruguay}, southAmerica uruguay, 1)
+  Returning 1 copies of this leaf: southAmerica uruguay
+  Roll is now -58737.2135790959, nonrandomCount is 0, output.length is 1, countLeft is 1, i is 0, pathSoFar is southAmerica
+  Roll is now -1945599.546747785, nonrandomCount is 1013, output.length is 1015, countLeft is 2, i is 1, pathSoFar is 
+  EVENT (2023 Jan 2 06:54:05.0) 
+africa algeria
+africa algeria
+africa algeria
+africa algeria
+africa algeria
+africa angola
+africa angola
+africa angola
+africa angola
+africa benin
+africa botswana
+africa burkinaFaso
+africa burkinaFaso
+africa burundi
+africa cameroon
+africa cameroon
+africa cameroon
+africa centralAfricanRepublic
+africa chad
+africa chad
+africa djibouti
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa drc
+africa egypt cairo
+africa egypt cairo
+africa egypt cairo
+africa egypt other
+africa egypt other
+africa egypt other
+africa egypt other
+africa egypt other
+africa egypt other
+africa egypt other
+africa egypt other
+africa egypt other
+africa egypt other
+africa eritrea
+africa eritrea
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ethiopia
+africa ghana
+africa ghana
+africa ghana
+africa guinea
+africa ivoryCoast
+africa ivoryCoast
+africa ivoryCoast
+africa ivoryCoast
+africa ivoryCoast
+africa kenya
+africa kenya
+africa kenya
+africa kenya
+africa kenya
+africa kenya
+africa libya
+africa madagascar
+africa madagascar
+africa madagascar
+africa madagascar
+africa malawi
+africa malawi
+africa malawi
+africa mali
+africa mali
+africa mali
+africa mali
+africa mauritius
+africa morocco
+africa morocco
+africa morocco
+africa morocco
+africa mozambique
+africa mozambique
+africa mozambique
+africa mozambique
+africa niger
+africa niger
+africa niger
+africa niger
+africa nigeria lagos
+africa nigeria lagos
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa nigeria other
+africa rwanda
+africa senegal
+africa senegal
+africa sierraLeone
+africa somalia
+africa southAfrica
+africa southAfrica
+africa southAfrica
+africa southAfrica
+africa southAfrica
+africa southAfrica
+africa southAfrica
+africa southSudan
+africa sudan
+africa sudan
+africa sudan
+africa sudan
+africa sudan
+africa sudan
+africa tanzania
+africa tanzania
+africa tanzania
+africa tanzania
+africa tanzania
+africa tanzania
+africa tanzania
+africa togo
+africa tunisia
+africa tunisia
+africa uganda
+africa uganda
+africa uganda
+africa uganda
+africa uganda
+africa uganda
+africa zambia
+africa zambia
+africa zimbabwe
+africa zimbabwe
+eurasia afghanistan
+eurasia afghanistan
+eurasia afghanistan
+eurasia afghanistan
+eurasia albania
+eurasia austria
+eurasia azerbaijan
+eurasia azerbaijan
+eurasia bahrain
+eurasia bangladesh dhaka
+eurasia bangladesh dhaka
+eurasia bangladesh dhaka
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia bangladesh other
+eurasia belarus
+eurasia belgium
+eurasia belgium
+eurasia bulgaria
+eurasia cambodia
+eurasia cambodia
+eurasia china anhui
+eurasia china anhui
+eurasia china anhui
+eurasia china anhui
+eurasia china anhui
+eurasia china anhui
+eurasia china anhui
+eurasia china beijing
+eurasia china beijing
+eurasia china beijing
+eurasia china chongqing
+eurasia china chongqing
+eurasia china chongqing
+eurasia china fujian
+eurasia china fujian
+eurasia china fujian
+eurasia china fujian
+eurasia china fujian
+eurasia china gansu
+eurasia china gansu
+eurasia china gansu
+eurasia china gansu
+eurasia china gansu
+eurasia china gansu
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangdong
+eurasia china guangxiZhuang
+eurasia china guangxiZhuang
+eurasia china guangxiZhuang
+eurasia china guangxiZhuang
+eurasia china guangxiZhuang
+eurasia china guangxiZhuang
+eurasia china guizhou
+eurasia china guizhou
+eurasia china guizhou
+eurasia china guizhou
+eurasia china hainan
+eurasia china hebei
+eurasia china hebei
+eurasia china hebei
+eurasia china hebei
+eurasia china hebei
+eurasia china hebei
+eurasia china hebei
+eurasia china hebei
+eurasia china hebei
+eurasia china hebei
+eurasia china heilongjiang
+eurasia china heilongjiang
+eurasia china heilongjiang
+eurasia china heilongjiang
+eurasia china heilongjiang
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china henan
+eurasia china hongKong
+eurasia china hubei
+eurasia china hubei
+eurasia china hubei
+eurasia china hubei
+eurasia china hubei
+eurasia china hubei
+eurasia china hubei
+eurasia china hunan
+eurasia china hunan
+eurasia china hunan
+eurasia china hunan
+eurasia china hunan
+eurasia china hunan
+eurasia china hunan
+eurasia china hunan
+eurasia china innerMongolia
+eurasia china innerMongolia
+eurasia china innerMongolia
+eurasia china innerMongolia
+eurasia china innerMongolia
+eurasia china innerMongolia
+eurasia china innerMongolia
+eurasia china jiangsu
+eurasia china jiangsu
+eurasia china jiangsu
+eurasia china jiangsu
+eurasia china jiangsu
+eurasia china jiangsu
+eurasia china jiangsu
+eurasia china jiangsu
+eurasia china jiangsu
+eurasia china jiangsu
+eurasia china jiangxi
+eurasia china jiangxi
+eurasia china jiangxi
+eurasia china jiangxi
+eurasia china jiangxi
+eurasia china jiangxi
+eurasia china jilin
+eurasia china jilin
+eurasia china jilin
+eurasia china liaoning
+eurasia china liaoning
+eurasia china liaoning
+eurasia china liaoning
+eurasia china liaoning
+eurasia china liaoning
+eurasia china ningxiaHui
+eurasia china other
+eurasia china other
+eurasia china other
+eurasia china other
+eurasia china other
+eurasia china other
+eurasia china other
+eurasia china shaanxi
+eurasia china shaanxi
+eurasia china shaanxi
+eurasia china shaanxi
+eurasia china shaanxi
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shandong
+eurasia china shanghai
+eurasia china shanghai
+eurasia china shanghai
+eurasia china shanxi
+eurasia china shanxi
+eurasia china shanxi
+eurasia china shanxi
+eurasia china sichuan
+eurasia china sichuan
+eurasia china sichuan
+eurasia china sichuan
+eurasia china sichuan
+eurasia china sichuan
+eurasia china sichuan
+eurasia china sichuan
+eurasia china sichuan
+eurasia china sichuan
+eurasia china tianjin
+eurasia china tianjin
+eurasia china xinjiangUyghur
+eurasia china xinjiangUyghur
+eurasia china yunnan
+eurasia china yunnan
+eurasia china yunnan
+eurasia china yunnan
+eurasia china yunnan
+eurasia china yunnan
+eurasia china zhejiang
+eurasia china zhejiang
+eurasia china zhejiang
+eurasia china zhejiang
+eurasia china zhejiang
+eurasia china zhejiang
+eurasia china zhejiang
+eurasia croatia
+eurasia czechRepublic
+eurasia czechRepublic
+eurasia finland
+eurasia france other
+eurasia france other
+eurasia france other
+eurasia france other
+eurasia france other
+eurasia france other
+eurasia france other
+eurasia france other
+eurasia france other
+eurasia germany berlin
+eurasia germany berlin
+eurasia germany other
+eurasia germany other
+eurasia germany other
+eurasia germany other
+eurasia germany other
+eurasia germany other
+eurasia germany other
+eurasia germany other
+eurasia germany other
+eurasia greece
+eurasia greece
+eurasia hungary
+eurasia hungary
+eurasia india andhraPradesh
+eurasia india andhraPradesh
+eurasia india andhraPradesh
+eurasia india andhraPradesh
+eurasia india andhraPradesh
+eurasia india andhraPradesh
+eurasia india andhraPradesh
+eurasia india andhraPradesh
+eurasia india assam
+eurasia india assam
+eurasia india assam
+eurasia india assam
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india bihar
+eurasia india chhattisgarh
+eurasia india chhattisgarh
+eurasia india chhattisgarh
+eurasia india delhi
+eurasia india delhi
+eurasia india delhi
+eurasia india goa
+eurasia india gujarat
+eurasia india gujarat
+eurasia india gujarat
+eurasia india gujarat
+eurasia india gujarat
+eurasia india gujarat
+eurasia india gujarat
+eurasia india haryana
+eurasia india haryana
+eurasia india haryana
+eurasia india jharkhand
+eurasia india jharkhand
+eurasia india jharkhand
+eurasia india jharkhand
+eurasia india karnataka
+eurasia india karnataka
+eurasia india karnataka
+eurasia india karnataka
+eurasia india karnataka
+eurasia india karnataka
+eurasia india karnataka
+eurasia india karnataka
+eurasia india kerala
+eurasia india kerala
+eurasia india kerala
+eurasia india kerala
+eurasia india kerala
+eurasia india madhyaPradesh
+eurasia india madhyaPradesh
+eurasia india madhyaPradesh
+eurasia india madhyaPradesh
+eurasia india madhyaPradesh
+eurasia india madhyaPradesh
+eurasia india madhyaPradesh
+eurasia india madhyaPradesh
+eurasia india madhyaPradesh
+eurasia india maharashtra mumbai
+eurasia india maharashtra mumbai
+eurasia india maharashtra mumbai
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india maharashtra other
+eurasia india meghalaya
+eurasia india meghalaya
+eurasia india mizoram
+eurasia india odisha
+eurasia india odisha
+eurasia india odisha
+eurasia india odisha
+eurasia india odisha
+eurasia india odisha
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india other
+eurasia india punjab
+eurasia india punjab
+eurasia india punjab
+eurasia india punjab
+eurasia india rajasthan
+eurasia india rajasthan
+eurasia india rajasthan
+eurasia india rajasthan
+eurasia india rajasthan
+eurasia india rajasthan
+eurasia india rajasthan
+eurasia india rajasthan
+eurasia india rajasthan
+eurasia india tamilNadu
+eurasia india tamilNadu
+eurasia india tamilNadu
+eurasia india tamilNadu
+eurasia india tamilNadu
+eurasia india tamilNadu
+eurasia india tamilNadu
+eurasia india tamilNadu
+eurasia india tamilNadu
+eurasia india telangala
+eurasia india telangala
+eurasia india telangala
+eurasia india telangala
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarPradesh other
+eurasia india uttarakhand
+eurasia india westBengal
+eurasia india westBengal
+eurasia india westBengal
+eurasia india westBengal
+eurasia india westBengal
+eurasia india westBengal
+eurasia india westBengal
+eurasia india westBengal
+eurasia india westBengal
+eurasia india westBengal
+eurasia india westBengal
+eurasia indonesia centralJava
+eurasia indonesia centralJava
+eurasia indonesia centralJava
+eurasia indonesia centralJava
+eurasia indonesia eastJava
+eurasia indonesia eastJava
+eurasia indonesia eastJava
+eurasia indonesia eastJava
+eurasia indonesia eastJava
+eurasia indonesia jakarta
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia other
+eurasia indonesia westJava
+eurasia indonesia westJava
+eurasia indonesia westJava
+eurasia indonesia westJava
+eurasia indonesia westJava
+eurasia indonesia westJava
+eurasia iran
+eurasia iran
+eurasia iran
+eurasia iran
+eurasia iran
+eurasia iran
+eurasia iran
+eurasia iran
+eurasia iran
+eurasia iran
+eurasia iraq
+eurasia iraq
+eurasia iraq
+eurasia iraq
+eurasia iraq
+eurasia ireland dublin
+eurasia israel
+eurasia italy campania other
+eurasia italy lazio roma
+eurasia italy lombardy milan
+eurasia italy lombardy other
+eurasia italy other
+eurasia italy other
+eurasia italy other
+eurasia italy sicilia other
+eurasia italy toscana other
+eurasia italy veneto other
+eurasia japan osaka
+eurasia japan osaka
+eurasia japan other
+eurasia japan other
+eurasia japan other
+eurasia japan other
+eurasia japan other
+eurasia japan other
+eurasia japan other
+eurasia japan other
+eurasia japan other
+eurasia japan other
+eurasia japan tokyo
+eurasia japan tokyo
+eurasia japan tokyo
+eurasia japan tokyo
+eurasia japan tokyo
+eurasia jordan
+eurasia kazakhstan
+eurasia kazakhstan
+eurasia kazakhstan
+eurasia laos
+eurasia lebanon
+eurasia lebanon
+eurasia malaysia
+eurasia malaysia
+eurasia malaysia
+eurasia malaysia
+eurasia myanmar
+eurasia myanmar
+eurasia myanmar
+eurasia myanmar
+eurasia myanmar
+eurasia myanmar
+eurasia myanmar
+eurasia myanmar
+eurasia myanmar
+eurasia nepal
+eurasia nepal
+eurasia nepal
+eurasia nepal
+eurasia nepal
+eurasia netherlands
+eurasia netherlands
+eurasia netherlands
+eurasia netherlands
+eurasia netherlands
+eurasia northKorea
+eurasia northKorea
+eurasia northKorea
+eurasia other
+eurasia other
+eurasia other
+eurasia other
+eurasia other
+eurasia other
+eurasia other
+eurasia other
+eurasia other
+eurasia other
+eurasia other
+eurasia other
+eurasia other
+eurasia pakistan azadKashmir
+eurasia pakistan balochistan
+eurasia pakistan balochistan
+eurasia pakistan khyberPakhtunkhwa
+eurasia pakistan khyberPakhtunkhwa
+eurasia pakistan khyberPakhtunkhwa
+eurasia pakistan khyberPakhtunkhwa
+eurasia pakistan khyberPakhtunkhwa
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan punjab
+eurasia pakistan sindh
+eurasia pakistan sindh
+eurasia pakistan sindh
+eurasia pakistan sindh
+eurasia pakistan sindh
+eurasia pakistan sindh
+eurasia pakistan sindh
+eurasia philippines manila
+eurasia philippines manila
+eurasia philippines manila
+eurasia philippines other
+eurasia philippines other
+eurasia philippines other
+eurasia philippines other
+eurasia philippines other
+eurasia philippines other
+eurasia philippines other
+eurasia philippines other
+eurasia philippines other
+eurasia philippines other
+eurasia philippines other
+eurasia philippines other
+eurasia poland
+eurasia poland
+eurasia poland
+eurasia poland
+eurasia portugal
+eurasia romania
+eurasia romania
+eurasia romania
+eurasia russia moscow
+eurasia russia moscow
+eurasia russia moscow
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia russia other
+eurasia saudiArabia
+eurasia saudiArabia
+eurasia saudiArabia
+eurasia saudiArabia
+eurasia saudiArabia
+eurasia saudiArabia
+eurasia southKorea other
+eurasia southKorea other
+eurasia southKorea other
+eurasia southKorea seoul
+eurasia southKorea seoul
+eurasia southKorea seoul
+eurasia spain
+eurasia spain
+eurasia spain
+eurasia spain
+eurasia spain
+eurasia spain
+eurasia srilanka
+eurasia srilanka
+eurasia sweden
+eurasia switzerland
+eurasia syria
+eurasia syria
+eurasia tajikistan
+eurasia thailand bangkok
+eurasia thailand bangkok
+eurasia thailand bangkok
+eurasia thailand bangkok
+eurasia thailand other
+eurasia thailand other
+eurasia thailand other
+eurasia thailand other
+eurasia thailand other
+eurasia thailand other
+eurasia thailand other
+eurasia turkey istanbul
+eurasia turkey istanbul
+eurasia turkey other
+eurasia turkey other
+eurasia turkey other
+eurasia turkey other
+eurasia turkey other
+eurasia turkey other
+eurasia turkey other
+eurasia turkey other
+eurasia uae
+eurasia uk england london
+eurasia uk england other
+eurasia uk england other
+eurasia uk england other
+eurasia uk england other
+eurasia uk england other
+eurasia uk england other
+eurasia uk wales
+eurasia ukraine
+eurasia ukraine
+eurasia ukraine
+eurasia ukraine
+eurasia ukraine
+eurasia ukraine
+eurasia uzbekistan
+eurasia uzbekistan
+eurasia uzbekistan
+eurasia uzbekistan
+eurasia vietnam
+eurasia vietnam
+eurasia vietnam
+eurasia vietnam
+eurasia vietnam
+eurasia vietnam
+eurasia vietnam
+eurasia vietnam
+eurasia vietnam
+eurasia vietnam
+eurasia vietnam
+eurasia vietnam
+eurasia yemen
+eurasia yemen
+eurasia yemen
+eurasia yemen
+northAmerica canada ontario other
+northAmerica canada other
+northAmerica canada other
+northAmerica canada other
+northAmerica cuba
+northAmerica cuba
+northAmerica dominicanRepublic
+northAmerica guatemala
+northAmerica guatemala
+northAmerica haiti
+northAmerica haiti
+northAmerica honduras
+northAmerica jamaica
+northAmerica mexico mexicoCity
+northAmerica mexico mexicoCity
+northAmerica mexico mexicoState
+northAmerica mexico mexicoState
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica mexico other
+northAmerica nicaragua
+northAmerica other
+northAmerica trinidadAndTobago
+northAmerica usa arizona other
+northAmerica usa arizona phoenix
+northAmerica usa arkansas other
+northAmerica usa california longBeach
+northAmerica usa california other
+northAmerica usa california other
+northAmerica usa california sanDiego
+northAmerica usa california sanDiego
+northAmerica usa colorado aurora
+northAmerica usa florida miramar
+northAmerica usa florida other
+northAmerica usa georgia other
+northAmerica usa illinois chicago
+northAmerica usa iowa other
+northAmerica usa maryland other
+northAmerica usa massachusetts other
+northAmerica usa michigan other
+northAmerica usa minnesota other
+northAmerica usa minnesota other
+northAmerica usa montana other
+northAmerica usa nebraska lincoln
+northAmerica usa nebraska other
+northAmerica usa newJersey other
+northAmerica usa newYork newYork manhattan upperEastSide
+northAmerica usa newYork other
+northAmerica usa northCarolina other
+northAmerica usa ohio other
+northAmerica usa ohio other
+northAmerica usa ohio toledo
+northAmerica usa oklahoma other
+northAmerica usa oklahoma other
+northAmerica usa oregon hillsboro
+northAmerica usa pennsylvania other
+northAmerica usa southDakota other
+northAmerica usa tennessee nashvilleDavidson
+northAmerica usa tennessee nashvilleDavidson
+northAmerica usa texas other
+northAmerica usa texas other
+northAmerica usa texas other
+northAmerica usa utah westValleyCity
+northAmerica usa virginia norfolk
+northAmerica usa virginia other
+northAmerica usa washington bellingham
+northAmerica usa wyoming other
+oceania australia newSouthWales sydney
+oceania australia other
+oceania australia other
+oceania newZealand
+oceania newZealand
+oceania papuaNewGuinea
+southAmerica argentina buenosAires
+southAmerica argentina buenosAires
+southAmerica argentina other
+southAmerica argentina other
+southAmerica argentina other
+southAmerica bolivia
+southAmerica brazil centralWest
+southAmerica brazil centralWest
+southAmerica brazil north
+southAmerica brazil north
+southAmerica brazil north
+southAmerica brazil northeast
+southAmerica brazil northeast
+southAmerica brazil northeast
+southAmerica brazil northeast
+southAmerica brazil northeast
+southAmerica brazil northeast
+southAmerica brazil northeast
+southAmerica brazil northeast
+southAmerica brazil south
+southAmerica brazil south
+southAmerica brazil south
+southAmerica brazil south
+southAmerica brazil southeast
+southAmerica brazil southeast
+southAmerica brazil southeast
+southAmerica brazil southeast
+southAmerica brazil southeast
+southAmerica brazil southeast
+southAmerica brazil southeast
+southAmerica brazil southeast
+southAmerica brazil southeast
+southAmerica brazil southeast
+southAmerica brazil southeast
+southAmerica chile
+southAmerica chile
+southAmerica colombia
+southAmerica colombia
+southAmerica colombia
+southAmerica colombia
+southAmerica colombia
+southAmerica colombia
+southAmerica colombia
+southAmerica ecuador
+southAmerica ecuador
+southAmerica ecuador
+southAmerica paraguay
+southAmerica paraguay
+southAmerica peru
+southAmerica peru
+southAmerica peru
+southAmerica peru
+southAmerica uruguay
+southAmerica uruguay
+southAmerica venezuela
+southAmerica venezuela
+southAmerica venezuela
+
