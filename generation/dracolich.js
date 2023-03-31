@@ -105,6 +105,7 @@ ScienceFantasy.PREFICES = [
     'xeno',
     'exo',
     'super',
+    'power',
     'archaeo',
     'aqua',
     'litho',
@@ -279,6 +280,7 @@ ScienceFantasy.PREFICES = [
     'Ur-',
     'engine-',
     'raven',
+    'owl',
     'forge',
 ];
 
@@ -412,7 +414,7 @@ ScienceFantasy.LOCATIONS = {
     type: 'location',
     content: [
         ['castle', 9],
-        ['-polis', 9], //eh
+        // ['-polis', 9], //eh
         ['city', 9],
         ['fortress', 9],
         ['fort', 9],
@@ -471,6 +473,7 @@ ScienceFantasy.ITEMS = {
         ['wall', 9],
         ['cross', 9],
         ['machina', 9],
+        ['machine', 9],
         ['crux', 9],
         ['core', 9],
         ['spear', 9],
@@ -512,6 +515,7 @@ ScienceFantasy.ABSTRACTS = {
         ['digital', 9],
         ['strain', 9],
         ['curse', 9],
+        ['power', 9],
         ['rage', 9],
         ['fury', 9],
         ['science', 9],
@@ -626,6 +630,11 @@ class Location {
         return Math.random() < 0.5;
     }
 }
+
+// Further ideas
+// Daughter of the Archdragon
+// The infamous Cyberspider 
+// The Neocrux, Prize of the Seven Seas
 
 module.exports = ScienceFantasy;
 
