@@ -5,7 +5,7 @@
    <title>Sleeping Planet Hex</title>
   </head>
   <body>
-    <canvas id="canvas" width="1200" height="1200" style="background-color: #0000FF"/>
+    <canvas id="canvas" width="900" height="850" style="background-color: #0000FF"/>
     <script type="text/javascript">
       
       const canvas = document.getElementById('canvas');
@@ -13,26 +13,49 @@
 
       const SPACE_TYPES = [
         {
-          text: 'Grass',
+          name: 'Grass',
           color: 'green'
         },
         {
-          text: 'Sea',
+          name: 'Sea',
           color: 'blue'
         },
         {
-          text: 'Facility',
+          name: 'Facility',
           color: 'grey'
         },
-        // {
-        //   text: 'Grass',
-        //   color: 'green'
-        // },
       ];
 
+      const FACILITIES = [
+        'Shield',
+        'Bridge',
+        'Ammo',
+        'Cache',
+        'Sentinels',
+        'Bunker',
+        'Cartographer',
+        'Control Room',
+        'Flood',
+        'Reactor',
+        'Override',
+        'Solenoid',
+        'Anti Air',
+        'Portal',
+        'Scanner',
+        'Superluminal',
+      ];
+
+      function randomOf (array) {
+        const i = Math.floor(Math.random() * array.length);
+        return array[i];
+      }
+
       function drawGrid () {
-        const GRIDWIDTH = 8;
-        const SPACEWIDTH = 100;
+        const GRIDWIDTH = 7;
+        const SPACEWIDTH = 110;
+
+        ctx.textAlign = 'center';
+        ctx.font = '16px Arial';
 
         for (let r = 0; r < GRIDWIDTH; r++) {
           for (let c = 0; c < GRIDWIDTH; c++) {
@@ -43,8 +66,7 @@
               x += Math.floor(SPACEWIDTH / 2);
             }
 
-            const i = Math.floor(Math.random() * SPACE_TYPES.length);
-            const type = SPACE_TYPES[i];
+            const type = randomOf(SPACE_TYPES);
 
             ctx.beginPath();
             ctx.rect(x, y, SPACEWIDTH, SPACEWIDTH);
@@ -52,7 +74,12 @@
             ctx.fill();
             ctx.stroke();
 
-            //TODO: Random contents
+            if (type.name === 'Facility') {
+              const text = randomOf(FACILITIES);
+
+              ctx.fillStyle = 'black';
+              ctx.fillText(text, x + SPACEWIDTH / 2, y + SPACEWIDTH / 2);
+            }
           }
         }
       }
