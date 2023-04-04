@@ -96,13 +96,44 @@ class BionicleName {
         ]);
     }
 
+    // Outputs a set of 6 names
+    static team () {
+        const output = [];
+
+        const teamSyllables = Util.randomOf([1, 2, 3]);
+        const teamWord = BionicleName.newWord(teamSyllables);
+
+        const uniqueFirst = Math.random() < 0.5;
+
+        for (let i = 0; i < 6; i++) {
+            const individualSyllables = Util.randomOf([1, 2, 3]);
+            const individualWord = BionicleName.newWord(individualSyllables);
+
+            const pair = uniqueFirst
+                ? (individualWord + ' ' + teamWord)
+                : (teamWord + ' ' + individualWord);
+
+            output.push(pair);
+        }
+
+        // console.log(output);
+
+        return output;
+    }
+
+    static demo () {
+        return Math.random() < 0.3
+            ? BionicleName.team().join('\n')
+            : new BionicleName().toString();
+    }
+
     static run () {
-        const TIMES = 36;
+        const TIMES = 1;
         
         for (let i = 0; i < TIMES; i++) {
-            const name = new BionicleName();
+            // const name = new BionicleName();
 
-            console.log(name.toString());            
+            console.log(BionicleName.demo());            
         }
     }
 }
