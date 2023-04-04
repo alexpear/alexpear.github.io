@@ -407,6 +407,7 @@ ScienceFantasy.PEOPLE = {
         ['legion', 9],
         ['cult', 9],
         ['clan', 9],
+        ['clade', 9],
     ]
 };
 
@@ -495,7 +496,6 @@ ScienceFantasy.ITEMS = {
         ['furnace', 9],
         ['shield', 9],
         ['seed', 9],
-        ['clade', 9],
         ['plague', 9],
         ['pox', 9],
         ['map', 9],
