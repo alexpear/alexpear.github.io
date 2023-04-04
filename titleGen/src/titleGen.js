@@ -701,7 +701,7 @@ class TitleGen {
     }
 }
 
-module.export = TitleGen;
+module.exports = TitleGen;
 
 TitleGen.run();
 
