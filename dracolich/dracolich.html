@@ -1,0 +1,64 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    html * {
+      display: block;
+      text-align: left;
+      margin: auto auto auto auto;
+      font-family: cursive;
+    }
+
+    body {
+      background: #bfeab9 /*ffdeea eab5c8 e294bb 6556c8*/;
+      color: #000000;
+      font-size: 24px;
+      font-family: serif;
+    }
+
+    #uiTitle {
+      color: #000000;
+      margin: 15px 20px auto 20px;
+    }
+
+    #description {
+      line-height: 30px;
+    }
+
+    #genButton {
+      width: 100px;
+      height: 50px;
+      text-align: center;
+      font-size: 18pt;
+    }
+
+    #descBox {
+      width: 90%;
+    }
+
+    style {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="navigatorWindow">
+
+    <br>
+    <input id="genButton" type="button" class="iconButton group" value="Next!" onclick="window.sf.setHTML()">
+
+    <h4 id="uiTitle">That way lies ...</h4>
+
+    <!-- <div id="descDiv" style="background: #6556c8"> -->
+    <div id="descBox">
+      <pre id="description">?</pre>
+    </div>
+    <br>
+
+  </div>
+</body>
+</html>
+
+<script src="bundle.js"></script>

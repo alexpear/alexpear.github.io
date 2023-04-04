@@ -1,6 +1,6 @@
 'use strict';
 
-const Util = require('../util/util.js');
+const Util = require('../../util/util.js');
 
 class ScienceFantasy {
     static randomWord (type) {
@@ -74,7 +74,32 @@ class ScienceFantasy {
         return set;
     }
 
-    static test () {
+    static locationProfile () {
+        return new Location().toString();
+    }
+
+    static initUI () {
+        window.sf = new ScienceFantasy();
+        window.sf.setHTML();
+    }
+
+    setHTML () {
+        const element = document.getElementById('description');
+        element.innerHTML = ScienceFantasy.outputHTML();
+    }
+
+    static outputString () {
+        return ScienceFantasy.locationProfile();
+    }
+
+    static outputHTML () {
+        const BREAK = '<br>';
+        const str = ScienceFantasy.outputString();
+
+        return BREAK + str.replaceAll('\n', BREAK) + BREAK + BREAK;
+    }
+
+    static run () {
         // for (let i = 0; i < 20; i++) {
             // const name = ScienceFantasy.randomWord();
             // const name2 = ScienceFantasy.randomWord();
@@ -83,10 +108,11 @@ class ScienceFantasy {
 
             // console.log(`\n${ScienceFantasy.fourLocations()}\n`);
 
-
-            const output = new Location().toString();
+            const output = ScienceFantasy.outputString();
 
             console.log(`\n${output}\n`);
+
+            ScienceFantasy.initUI();
         // }
     }
 }
@@ -110,7 +136,7 @@ ScienceFantasy.PREFICES = [
     'aqua',
     'litho',
     'phyto',
-    'hemo',
+    'haemo',
     'botano',
     'myco',
     'ferro',
@@ -326,6 +352,7 @@ ScienceFantasy.BEASTS = {
         ['mind', 9],
         ['brain', 9],
         ['skull', 9],
+        ['foetus', 9],
         ['wraith', 9],
         ['squid', 9],
         ['snail', 9],
@@ -486,6 +513,8 @@ ScienceFantasy.ITEMS = {
         ['gauntlet', 9],
         ['fist', 9],
         ['boots', 9],
+        ['shoes', 9],
+        ['greaves', 9],
         ['scepter', 9],
         ['glass', 9],
         ['ship', 9],
@@ -638,4 +667,4 @@ class Location {
 
 module.exports = ScienceFantasy;
 
-ScienceFantasy.test();
+ScienceFantasy.run();
