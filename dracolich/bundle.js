@@ -630,7 +630,7 @@ class Location {
         }
 
         if (this.court.length > 0) {
-            output += '\n\n    persons at court:';
+            output += '\n\n    notable residents:';
 
             for (let courtier of this.court) {
                 output += '\n        The ' + courtier.toString();
