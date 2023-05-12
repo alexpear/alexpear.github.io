@@ -520,6 +520,18 @@ util.uncapitalized = (s) => {
         s.slice(1);
 };
 
+util.capitalizedAllWords = (s) => {
+    if (! util.exists(s)) {
+        return '';
+    }
+
+    const words = s.split(' ');
+
+    return words.map(
+        w => util.capitalized(w)
+    ).join(' ');
+};
+
 util.toCamelCase = (s) => {
     if (! util.exists(s)) {
         return '';
