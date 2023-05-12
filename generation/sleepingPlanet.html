@@ -13,45 +13,104 @@
 
       const SPACE_TYPES = [
         {
-          name: 'Grass',
+          name: 'Land',
+          color: 'green'
+        },
+        {
+          name: 'Land',
           color: 'green'
         },
         {
           name: 'Sea',
           color: 'blue'
         },
-        {
-          name: 'Facility',
-          color: 'grey'
-        },
+        // {
+        //   name: 'Facility',
+        //   color: 'grey'
+        // },
       ];
 
       const FACILITIES = [
-        'Shield',
-        'Bridge',
-        'Ammo',
-        'Cache',
-        'Sentinels',
-        'Bunker',
-        'Fortress',
-        'Cartographer',
-        'Control Room',
-        'Flood',
-        'Reactor',
-        'Beacon Tower',
-        'Override',
-        'Solenoid',
-        'Repair',
-        'EMP',
-        'Anti Air',
-        'Portal',
-        'Scanner',
-        'Superluminal',
-        'Crash Site',
-        'Ruins',
-        'Covenant',
-        'Gondola',
-        'Temple',
+        'Battlenet Wiretap',
+        'Hardlight Cannon',
+        'Compromise Evaluator',
+        'Labyrinth',
+        'Connectomic Interface',
+        'Terrestrial Metacogitator',
+        'Knowledge Crater',
+        'Battlenet Relay',
+        'Comms Antenna',
+        'Macron Ansible',
+        'Micron Ansible',
+        'Teleport Terminus',
+        'Teleport Node',
+        'Guardian Exocortex',
+        'Thunderous Cartographer',
+        'Automated Detention Vault',
+        'Automated Detention Vault',
+        'Automated Detention Vault',
+        'Automated Detention Vault',
+        'Automated Detention Vault',
+        'Automated Detention Vault',
+        'Automated Detention Vault',
+        'Universal Capacitator',
+        'Universal Capacitator',
+        'Universal Capacitator',
+        'Universal Capacitator',
+        'Universal Capacitator',
+        'Universal Capacitator',
+        'Universal Capacitator',
+        'Containment Vault',
+        'Amusing Landmark',
+        'Guardian Factory',
+        'Seismic Camshaft',
+        'Vortex Tower',
+        'Pulse Generator',
+        'Coliseum',
+        'Cognitive Override',
+        'Sanctuary',
+        'Mimetic Relay',
+        'Mimetic Relay',
+        'Mimetic Relay',
+        'Mimetic Relay',
+        'Mimetic Relay',
+        'Mimetic Relay',
+        'Mimetic Relay',
+        'Canal Excavator',
+        'Incremental Solenoid',
+        'Incremental Solenoid',
+        'Incremental Solenoid',
+        'Incremental Solenoid',
+        'Incremental Solenoid',
+        'Incremental Solenoid',
+        'Incremental Solenoid',
+        'Patrolled Zone',
+        'Overseer\'s Palace',
+        'Neural Beacon',
+        'Subterranean Axle',
+        'Uplift',
+        'Floodplain Architect',
+        'Friendly Crash Landing',
+        'Actuation Node',
+        'No Tactical Relevance',
+        'Cognitive Phantasmagorium',
+        'Crucible',
+        'Quarantine Zone',
+        'Keynode',
+        'X-Reactor',
+        'X-Reactor',
+        'X-Reactor',
+        'X-Reactor',
+        'X-Reactor',
+        'X-Reactor',
+        'X-Reactor',
+        'Fort',
+        'Fort',
+        'Fort',
+        'Fort',
+        'Fort',
+        'Fort',
+        'Fort',
       ];
 
       function randomOf (array) {
@@ -83,11 +142,24 @@
             ctx.fill();
             ctx.stroke();
 
-            if (type.name === 'Facility') {
-              const text = randomOf(FACILITIES);
+            if (type.name === 'Land') {
+              const words = randomOf(FACILITIES)
+                .split(' ');
 
               ctx.fillStyle = 'black';
-              ctx.fillText(text, x + SPACEWIDTH / 2, y + SPACEWIDTH / 2);
+
+              for (let w = 0; w < words.length; w++) {
+                // const offset = 20 * Math.ceil(words.length / 2 + w - 1); 
+                const offset = -20 * (words.length / 2 - w - 0.5);
+                
+                ctx.fillText(
+                  words[w],
+                  x + SPACEWIDTH / 2,
+                  y + SPACEWIDTH / 2 + offset
+                );
+              }
+
+              // ctx.fillText(text, x + SPACEWIDTH / 2, y + SPACEWIDTH / 2);
             }
           }
         }
