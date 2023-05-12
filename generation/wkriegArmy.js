@@ -332,18 +332,18 @@ class WkriegArmy extends WNode {
 
         let totalSize = vehicle.traitSum('size') - vehicle.template.size;
 
-        const sizeLimit = vehicle.template.size * 0.75
+        const sizeLimit = vehicle.template.size * 0.75;
 
-        Util.logDebug({
-            note: `In WkriegArmy.randomVehicle(), above the while`,
-            totalSize,
-            sizeLimit,
-            metatemplateName,
-            sizeClass,
-            componentsLength: vehicle.components.length,
-            vehicleChassisSize: vehicle.template.size,
-            vehicleSizeSumOverall: vehicle.traitSum('size'),
-        });
+        // Util.logDebug({
+        //     note: `In WkriegArmy.randomVehicle(), above the while`,
+        //     totalSize,
+        //     sizeLimit,
+        //     metatemplateName,
+        //     sizeClass,
+        //     componentsLength: vehicle.components.length,
+        //     vehicleChassisSize: vehicle.template.size,
+        //     vehicleSizeSumOverall: vehicle.traitSum('size'),
+        // });
 
         while (totalSize < sizeLimit) {
             const sizeLeft = sizeLimit - totalSize;
@@ -554,14 +554,14 @@ class WkriegArmy extends WNode {
     }
 
     static test () {
-        // WkriegArmy.testWeightBased();
-        // WkriegArmy.testWeightBased();
-        // WkriegArmy.testWeightBased();
-        // WkriegArmy.testWeightBased();
-        // WkriegArmy.testWeightBased();
+        WkriegArmy.testWeightBased();
+        WkriegArmy.testWeightBased();
+        WkriegArmy.testWeightBased();
+        WkriegArmy.testWeightBased();
+        WkriegArmy.testWeightBased();
 
-        const vehicle = WkriegArmy.randomVehicle();
-        Util.log(vehicle.toPrettyString());
+        // const vehicle = WkriegArmy.randomVehicle();
+        // Util.log(vehicle.toPrettyString());
     }
 }
 
