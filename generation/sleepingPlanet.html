@@ -22,6 +22,10 @@
       .sea {
         background-color: blue;
       }
+
+      .faceup {
+        background-color: darkred;
+      }
     </style>
   </head>
   <body>
@@ -107,6 +111,20 @@
         return array[i];
       }
 
+      function toggleHex(button) {
+        if (button.faceup === true) {
+          button.faceup = false;
+          button.classList.remove('faceup');
+        }
+        else if (button.faceup === false) {
+          button.faceup = true;
+          button.classList.add('faceup');
+        }
+        else {
+          randomizeButton(button);
+        }
+      }
+
       function randomizeButton (button) {
         const type = randomOf(SPACE_TYPES);
 
@@ -116,6 +134,8 @@
           const siteName = randomOf(FACILITIES);
 
           button.innerHTML = siteName;
+
+          button.faceup = false;
         }
       }
 
@@ -146,7 +166,7 @@
             newButton.style.width = BOX_PIXELS;
             newButton.addEventListener(
               'click', 
-              event => randomizeButton(newButton)
+              event => toggleHex(newButton)
             );
 
             rowDiv.appendChild(newButton);
