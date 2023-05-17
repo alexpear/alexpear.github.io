@@ -5,11 +5,12 @@
    <title>Sleeping Planet Hex</title>
   </head>
   <body>
-    <canvas id="canvas" width="900" height="850" style="background-color: #0000FF"/>
+    <div id="gridDiv"/>
+    <!-- <canvas id="canvas" width="900" height="850" style="background-color: #0000FF"/> -->
     <script type="text/javascript">
       
-      const canvas = document.getElementById('canvas');
-      const ctx = canvas.getContext('2d');
+      // const canvas = document.getElementById('canvas');
+      // const ctx = canvas.getContext('2d');
 
       const SPACE_TYPES = [
         {
@@ -30,88 +31,60 @@
         // },
       ];
 
-      const FACILITIES = [
-        'Battlenet Wiretap',
-        'Hardlight Cannon',
-        'Compromise Evaluator',
-        'Labyrinth',
-        'Connectomic Interface',
-        'Terrestrial Metacogitator',
-        'Knowledge Crater',
-        'Battlenet Relay',
-        'Comms Antenna',
-        'Macron Ansible',
-        'Micron Ansible',
-        'Teleport Terminus',
-        'Teleport Node',
-        'Guardian Exocortex',
-        'Thunderous Cartographer',
-        'Automated Detention Vault',
-        'Automated Detention Vault',
-        'Automated Detention Vault',
-        'Automated Detention Vault',
-        'Automated Detention Vault',
-        'Automated Detention Vault',
-        'Automated Detention Vault',
-        'Universal Capacitator',
-        'Universal Capacitator',
-        'Universal Capacitator',
-        'Universal Capacitator',
-        'Universal Capacitator',
-        'Universal Capacitator',
-        'Universal Capacitator',
-        'Containment Vault',
-        'Amusing Landmark',
-        'Guardian Factory',
-        'Seismic Camshaft',
-        'Vortex Tower',
-        'Pulse Generator',
-        'Coliseum',
-        'Cognitive Override',
-        'Sanctuary',
-        'Mimetic Relay',
-        'Mimetic Relay',
-        'Mimetic Relay',
-        'Mimetic Relay',
-        'Mimetic Relay',
-        'Mimetic Relay',
-        'Mimetic Relay',
-        'Canal Excavator',
-        'Incremental Solenoid',
-        'Incremental Solenoid',
-        'Incremental Solenoid',
-        'Incremental Solenoid',
-        'Incremental Solenoid',
-        'Incremental Solenoid',
-        'Incremental Solenoid',
-        'Patrolled Zone',
-        'Overseer\'s Palace',
-        'Neural Beacon',
-        'Subterranean Axle',
-        'Uplift',
-        'Floodplain Architect',
-        'Friendly Crash Landing',
-        'Actuation Node',
-        'No Tactical Relevance',
-        'Cognitive Phantasmagorium',
-        'Crucible',
-        'Quarantine Zone',
-        'Keynode',
-        'X-Reactor',
-        'X-Reactor',
-        'X-Reactor',
-        'X-Reactor',
-        'X-Reactor',
-        'X-Reactor',
-        'X-Reactor',
-        'Fort',
-        'Fort',
-        'Fort',
-        'Fort',
-        'Fort',
-        'Fort',
-        'Fort',
-      ];
+      const FACILITIES_OBJ = {
+        'Battlenet Wiretap': 1,
+        'Hardlight Cannon': 1,
+        'Compromise Evaluator': 1,
+        'Labyrinth': 1,
+        'Connectomic Interface': 1,
+        'Terrestrial Metacogitator': 1,
+        'Knowledge Crater': 1,
+        'Battlenet Relay': 1,
+        'Comms Antenna': 1,
+        'Macron Ansible': 1,
+        'Micron Ansible': 1,
+        'Teleport Broadcaster': 7,
+        'Teleport Node': 7,
+        'Guardian Exocortex': 1,
+        'Thunderous Cartographer': 1,
+        'Automated Detention Vault': 7,
+        'Universal Capacitator': 7,
+        'Containment Vault': 1,
+        'Amusing Landmark': 1,
+        'Guardian Factory': 1,
+        'Seismic Camshaft': 1,
+        'Vortex Tower': 1,
+        'Pulse Generator': 1,
+        'Coliseum': 1,
+        'Cognitive Override': 1,
+        'Sanctuary': 1,
+        'Mimetic Relay': 7,
+        'Canal Excavator': 1,
+        'Incremental Solenoid': 7,
+        'Patrolled Zone': 1,
+        'Overseer\'s Palace': 1,
+        'Neural Beacon': 1,
+        'Subterranean Axle': 1,
+        'Uplift': 1,
+        'Floodplain Architect': 1,
+        'Friendly Crash Landing': 21,
+        'Actuation Node': 1,
+        ' ': 70,
+        'Cognitive Phantasmagorium': 1,
+        'Crucible': 7,
+        'Quarantine Zone': 1,
+        'Keynode': 1,
+        'X-Reactor': 7,
+        'Fort': 7,
+      };
+
+      const FACILITIES = [];
+
+      for (let key in FACILITIES_OBJ) {
+        for (let i = 0; i < FACILITIES_OBJ[key]; i++) {
+          FACILITIES.push(key);
+        }
+      }
 
       function randomOf (array) {
         const i = Math.floor(Math.random() * array.length);
@@ -146,11 +119,11 @@
               const words = randomOf(FACILITIES)
                 .split(' ');
 
-              ctx.fillStyle = 'black';
+              ctx.fillStyle = 'white';
 
               for (let w = 0; w < words.length; w++) {
                 // const offset = 20 * Math.ceil(words.length / 2 + w - 1); 
-                const offset = -20 * (words.length / 2 - w - 0.5);
+                const offset = -20 * (words.length / 2 - w - 0.75);
                 
                 ctx.fillText(
                   words[w],
@@ -165,7 +138,49 @@
         }
       }
 
-      drawGrid();
+      function randomizeButton (button) {
+        alert('clicked something');
+      }
+
+      function makeButtonGrid () {
+        const GRIDWIDTH = 7;
+        const SPACEWIDTH = 100;
+        const WIDTH_STRING = `${SPACEWIDTH}px`;
+        const gridDiv = document.getElementById('gridDiv');
+
+        // ctx.textAlign = 'center';
+        // ctx.font = '16px Arial';
+
+        for (let r = 0; r < GRIDWIDTH; r++) {
+          const rowDiv = document.createElement('div');
+          rowDiv.setAttribute('height', WIDTH_STRING);
+          gridDiv.appendChild(rowDiv);
+
+          for (let c = 0; c < GRIDWIDTH; c++) {
+            if (r % 2 === 1) {
+              // Little invisible div to the left of alternate rows to squash them.
+              const offsetDiv = document.createElement('div');
+              offsetDiv.setAttribute('width', `${SPACEWIDTH / 2}px`);
+              rowDiv.appendChild(offsetDiv);
+            }
+
+            const newButton = document.createElement('button');
+            newButton.setAttribute('width', WIDTH_STRING);
+            newButton.addEventListener(
+              'click', 
+              event => randomizeButton(newButton)
+            );
+
+            rowDiv.appendChild(newButton);
+          }
+        }
+
+      }
+
+      // drawGrid();
+      makeButtonGrid();
+
+
 
     </script>
   </body>
