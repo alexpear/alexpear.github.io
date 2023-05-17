@@ -12,7 +12,7 @@ class PrimarchCards {
             Util.randomOf(PrimarchCards.chassisTypes())
         );
 
-        const gearCount = Util.randomUpTo(4);
+        const gearCount = Util.randomUpTo(3) + 1;
 
         for (let i = 0; i < gearCount; i++) {
             const newGear = Util.randomOf(PrimarchCards.gearTypes());
@@ -42,7 +42,7 @@ class PrimarchCards {
             { name: 'cephalodroid', type: 'vehicle' },
             { name: 'landship', type: 'vehicle' },
             { name: 'insectoid bioform', type: 'bioform' },
-            { name: 'leonine bioform', type: 'bioform' },
+            // { name: 'leonine bioform', type: 'bioform' },
             { name: 'avian bioform', type: 'bioform' },
             { name: 'reptoid bioform', type: 'bioform' },
             { name: 'crustacean bioform', type: 'bioform' },
@@ -101,7 +101,6 @@ class PrimarchCards {
             { name: 'acid weapons', type: 'mod' },
             { name: 'tracker weapons', type: 'mod' },
             { name: 'toxigas weapons', type: 'mod' },
-            { name: 'narcoleptic weapons', type: 'mod' },
             { name: 'laser weapons', type: 'mod' },
             { name: 'rocket-propelled weapons', type: 'mod' },
             { name: 'density weapons', type: 'mod' },
@@ -109,9 +108,9 @@ class PrimarchCards {
             { name: 'tachyon weapons', type: 'mod' },
             { name: 'heat-seeking weapons', type: 'mod' },
             { name: 'spiderweb weapons', type: 'mod' },
-            { name: 'stun weapons', type: 'mod' },
             { name: 'cyberspam weapons', type: 'mod' },
-            { name: 'confusion weapons', type: 'mod' },
+            { name: 'stun weapons', type: 'mod' },
+            { name: 'psychoactive weapons', type: 'mod' },
             { name: 'nanite weapons', type: 'mod' },
             { name: 'nanovirus weapons', type: 'mod' },
             { name: 'hardlight weapons', type: 'mod' },
@@ -120,6 +119,7 @@ class PrimarchCards {
             { name: 'timestop weapons', type: 'mod' },
             { name: 'two weapons', type: 'mod' },
             { name: 'antigrav weapons', type: 'mod' },
+            { name: 'incredible reflexes', type: 'mod' },
 
         ];
     }
@@ -135,7 +135,9 @@ class PrimarchCards {
     static demo () {
         const cardset = PrimarchCards.newCardset();
 
+        console.log();
         console.log(PrimarchCards.asString(cardset));
+        console.log();
     }
 
     static run () {
