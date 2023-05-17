@@ -1,28 +1,44 @@
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
-   <meta charset="UTF-8">
-   <title>Sleeping Planet Hex</title>
+    <meta charset="UTF-8">
+    <title>Sleeping Planet Hex</title>
+    <style>
+      div {
+        vertical-align: middle;
+      }
+
+      button {
+        vertical-align: middle;
+        padding: 0;
+        border: solid;
+        color: white;
+      }
+
+      .land {
+        background-color: green;
+      }
+
+      .sea {
+        background-color: blue;
+      }
+    </style>
   </head>
   <body>
     <div id="gridDiv"/>
-    <!-- <canvas id="canvas" width="900" height="850" style="background-color: #0000FF"/> -->
     <script type="text/javascript">
       
-      // const canvas = document.getElementById('canvas');
-      // const ctx = canvas.getContext('2d');
-
       const SPACE_TYPES = [
         {
-          name: 'Land',
+          name: 'land',
           color: 'green'
         },
         {
-          name: 'Land',
+          name: 'land',
           color: 'green'
         },
         {
-          name: 'Sea',
+          name: 'sea',
           color: 'blue'
         },
         // {
@@ -91,81 +107,43 @@
         return array[i];
       }
 
-      function drawGrid () {
-        const GRIDWIDTH = 7;
-        const SPACEWIDTH = 110;
-
-        ctx.textAlign = 'center';
-        ctx.font = '16px Arial';
-
-        for (let r = 0; r < GRIDWIDTH; r++) {
-          for (let c = 0; c < GRIDWIDTH; c++) {
-            let x = c * SPACEWIDTH + 30;
-            let y = r * SPACEWIDTH + 30;
-
-            if (r % 2 === 1) {
-              x += Math.floor(SPACEWIDTH / 2);
-            }
-
-            const type = randomOf(SPACE_TYPES);
-
-            ctx.beginPath();
-            ctx.rect(x, y, SPACEWIDTH, SPACEWIDTH);
-            ctx.fillStyle = type.color;
-            ctx.fill();
-            ctx.stroke();
-
-            if (type.name === 'Land') {
-              const words = randomOf(FACILITIES)
-                .split(' ');
-
-              ctx.fillStyle = 'white';
-
-              for (let w = 0; w < words.length; w++) {
-                // const offset = 20 * Math.ceil(words.length / 2 + w - 1); 
-                const offset = -20 * (words.length / 2 - w - 0.75);
-                
-                ctx.fillText(
-                  words[w],
-                  x + SPACEWIDTH / 2,
-                  y + SPACEWIDTH / 2 + offset
-                );
-              }
-
-              // ctx.fillText(text, x + SPACEWIDTH / 2, y + SPACEWIDTH / 2);
-            }
-          }
-        }
-      }
-
       function randomizeButton (button) {
-        alert('clicked something');
+        const type = randomOf(SPACE_TYPES);
+
+        button.classList.add(type.name);
+
+        if (type.name === 'land') {
+          const siteName = randomOf(FACILITIES);
+
+          button.innerHTML = siteName;
+        }
       }
 
       function makeButtonGrid () {
         const GRIDWIDTH = 7;
         const SPACEWIDTH = 100;
-        const WIDTH_STRING = `${SPACEWIDTH}px`;
+        const BOX_PIXELS = `${SPACEWIDTH}px`;
         const gridDiv = document.getElementById('gridDiv');
-
-        // ctx.textAlign = 'center';
-        // ctx.font = '16px Arial';
 
         for (let r = 0; r < GRIDWIDTH; r++) {
           const rowDiv = document.createElement('div');
-          rowDiv.setAttribute('height', WIDTH_STRING);
+          rowDiv.style.height = BOX_PIXELS;
           gridDiv.appendChild(rowDiv);
 
-          for (let c = 0; c < GRIDWIDTH; c++) {
-            if (r % 2 === 1) {
-              // Little invisible div to the left of alternate rows to squash them.
-              const offsetDiv = document.createElement('div');
-              offsetDiv.setAttribute('width', `${SPACEWIDTH / 2}px`);
-              rowDiv.appendChild(offsetDiv);
-            }
+          if (r % 2 === 1) {
+            // Little invisible div to the left of alternate rows to squash them.
+            const offsetDiv = document.createElement('div');
+            offsetDiv.style.height = BOX_PIXELS;
+            offsetDiv.style.width = `${SPACEWIDTH / 2}px`;
+            offsetDiv.style.display = 'inline-block';
 
+            rowDiv.appendChild(offsetDiv);
+          }
+
+          for (let c = 0; c < GRIDWIDTH; c++) {
             const newButton = document.createElement('button');
-            newButton.setAttribute('width', WIDTH_STRING);
+            newButton.style.height = BOX_PIXELS;
+            newButton.style.width = BOX_PIXELS;
             newButton.addEventListener(
               'click', 
               event => randomizeButton(newButton)
@@ -174,13 +152,9 @@
             rowDiv.appendChild(newButton);
           }
         }
-
       }
 
-      // drawGrid();
       makeButtonGrid();
-
-
 
     </script>
   </body>
