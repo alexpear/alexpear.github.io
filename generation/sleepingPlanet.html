@@ -140,7 +140,7 @@
       }
 
       function makeButtonGrid () {
-        const GRIDWIDTH = 7;
+        const GRIDWIDTH = 9;
         const SPACEWIDTH = 100;
         const BOX_PIXELS = `${SPACEWIDTH}px`;
         const gridDiv = document.getElementById('gridDiv');
@@ -150,15 +150,13 @@
           rowDiv.style.height = BOX_PIXELS;
           gridDiv.appendChild(rowDiv);
 
-          if (r % 2 === 1) {
-            // Little invisible div to the left of alternate rows to squash them.
-            const offsetDiv = document.createElement('div');
-            offsetDiv.style.height = BOX_PIXELS;
-            offsetDiv.style.width = `${SPACEWIDTH / 2}px`;
-            offsetDiv.style.display = 'inline-block';
+          // Little invisible div to the left of rows to indent them.
+          const offsetDiv = document.createElement('div');
+          offsetDiv.style.height = BOX_PIXELS;
+          offsetDiv.style.width = `${SPACEWIDTH * (GRIDWIDTH - r) / 2}px`;
+          offsetDiv.style.display = 'inline-block';
 
-            rowDiv.appendChild(offsetDiv);
-          }
+          rowDiv.appendChild(offsetDiv);          
 
           for (let c = 0; c < GRIDWIDTH; c++) {
             const newButton = document.createElement('button');
