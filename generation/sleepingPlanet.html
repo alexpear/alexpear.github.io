@@ -8,11 +8,22 @@
         vertical-align: middle;
       }
 
+      .offsetDiv {
+        display: inline-block;
+      }
+
       button {
         vertical-align: middle;
         padding: 0;
         border: solid;
         color: white;
+        display: inline-block;
+      }
+
+      .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
       }
 
       .land {
@@ -21,6 +32,12 @@
 
       .sea {
         background-color: blue;
+      }
+
+      .directionIndicator {
+        background-color: purple;
+        width: 10%;
+        height: 50%;
       }
 
       .faceup {
@@ -125,17 +142,48 @@
         }
       }
 
+      function withArrow (siteName) {
+        if (siteName.trim().length === 0) {
+          return siteName;
+        }
+
+        const arrows = [
+          '--------------^^^',
+          '^^^--------------',
+          '------------------>',
+          '<------------------',
+          '--------------vvv',
+          'vvv--------------'
+        ];
+
+        const i = Math.floor(Math.random() * 6);
+        const arrow = arrows[i];
+
+        // if (i <= 3) {
+          return `${arrow} ${siteName}`;
+        // }
+        // else {
+        //   return `${siteName} ${arrow}`;
+        // }
+      }
+
       function randomizeButton (button) {
         const type = randomOf(SPACE_TYPES);
 
         button.classList.add(type.name);
+        // button.classList.add('clearfix');
 
         if (type.name === 'land') {
-          const siteName = randomOf(FACILITIES);
-
-          button.innerHTML = siteName;
-
           button.faceup = false;
+
+          const textElement = document.createElement('p');
+          const siteName = randomOf(FACILITIES);
+          textElement.setHTML(withArrow(siteName));
+          button.appendChild(textElement);
+
+          const directionDiv = document.createElement('div');
+          directionDiv.classList.add('directionIndicator');
+          // button.appendChild(directionDiv);
         }
       }
 
@@ -152,9 +200,10 @@
 
           // Little invisible div to the left of rows to indent them.
           const offsetDiv = document.createElement('div');
+          offsetDiv.classList.add('offsetDiv');
           offsetDiv.style.height = BOX_PIXELS;
           offsetDiv.style.width = `${SPACEWIDTH * (GRIDWIDTH - r) / 2}px`;
-          offsetDiv.style.display = 'inline-block';
+          // offsetDiv.style.display = 'inline-block';
 
           rowDiv.appendChild(offsetDiv);          
 
