@@ -1,8 +1,9 @@
 'use strict';
 
-const Util = require('../util/util.js');
+const Util = require('../../util/util.js');
 
 class TextGen {
+
     substrings () {
         return [
             '☰',
@@ -31,20 +32,33 @@ class TextGen {
         return parts.join(' ');
     }
 
+    static outputHTML () {
+        const str = new this().output();
+
+        const BREAK = '<br>';
+        const html = str.replaceAll('\n', BREAK);
+
+        return BREAK + html + BREAK + BREAK;
+    }
+
     static run () {
         const gen = new TextGen();
-        return gen.output();
+        const output = gen.output();
+        console.log(output);
+        return output;
     }
 }
 
 module.exports = TextGen;
 
+// TextGen.run();
+
 // examples
 // class BionicleNameGen extends TextGen {
 //   output () {
-
+//
 //   }
 // }
-
+//
 // const gen = new BionicleNameGen();
 // const str = gen.output();

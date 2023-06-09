@@ -47,9 +47,12 @@
   <div id="navigatorWindow">
 
     <br>
-    <input id="genButton" type="button" class="iconButton group" value="Next!" onclick="window.sf.setHTML()">
+    <label for="genDropdown">Select a text generator:</label>
+    <select name="genDropdown" id="genDropdown">
+      <option value="dracolich">Dracolich - Fantastical locations</option>
+    </select>
 
-    <h4 id="uiTitle">That way lies ...</h4>
+    <input id="genButton" type="button" class="iconButton group" value="Next!" onclick="window.presenter.setHTML()">
 
     <!-- <div id="descDiv" style="background: #6556c8"> -->
     <div id="descBox">

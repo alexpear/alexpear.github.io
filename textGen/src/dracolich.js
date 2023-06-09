@@ -1,8 +1,9 @@
 'use strict';
 
+const TextGen = require('./textGen.js');
 const Util = require('../../util/util.js');
 
-class ScienceFantasy {
+class ScienceFantasy extends TextGen {
     static randomWord (type) {
         // console.log(`at top of randomWord(), type is ${type}, PEOPLE? ${!! ScienceFantasy.PEOPLE}`);
 
@@ -75,28 +76,22 @@ class ScienceFantasy {
     }
 
     static locationProfile () {
-        return new Location().toString();
+        return '    That way lies...\n' +
+            new Location().toString();
     }
 
-    static initUI () {
-        window.sf = new ScienceFantasy();
-        window.sf.setHTML();
-    }
+    // static initUI () {
+    //     window.sf = new ScienceFantasy();
+    //     window.sf.setHTML();
+    // }
 
-    setHTML () {
-        const element = document.getElementById('description');
-        element.innerHTML = ScienceFantasy.outputHTML();
-    }
+    // setHTML () {
+    //     const element = document.getElementById('description');
+    //     element.innerHTML = ScienceFantasy.outputHTML();
+    // }
 
-    static outputString () {
+    output () {
         return ScienceFantasy.locationProfile();
-    }
-
-    static outputHTML () {
-        const BREAK = '<br>';
-        const str = ScienceFantasy.outputString();
-
-        return BREAK + str.replaceAll('\n', BREAK) + BREAK + BREAK;
     }
 
     static run () {
@@ -108,11 +103,11 @@ class ScienceFantasy {
 
             // console.log(`\n${ScienceFantasy.fourLocations()}\n`);
 
-            const output = ScienceFantasy.outputString();
+            const output = new ScienceFantasy().output();
 
             console.log(`\n${output}\n`);
 
-            ScienceFantasy.initUI();
+            // ScienceFantasy.initUI();
         // }
     }
 }
@@ -667,4 +662,4 @@ class Location {
 
 module.exports = ScienceFantasy;
 
-ScienceFantasy.run();
+// ScienceFantasy.run();
