@@ -195,9 +195,7 @@ module.exports = ActionTemplate;
 
 ActionTemplate.run();
 
-},{"../codices/tags.js":38,"../util/util.js":84,"./nodeTemplate.js":4,"lodash":79}],2:[function(require,module,exports){
-arguments[4][1][0].apply(exports,arguments)
-},{"../codices/tags.js":38,"../util/util.js":84,"./nodeTemplate.js":4,"dup":1,"lodash":79}],3:[function(require,module,exports){
+},{"../codices/tags.js":37,"../util/util.js":83,"./nodeTemplate.js":3,"lodash":78}],2:[function(require,module,exports){
 'use strict';
 
 // A stat block for a certain creature type.
@@ -584,7 +582,7 @@ CreatureTemplate.UNCOPIED_KEYS = [
 
 module.exports = CreatureTemplate;
 
-},{"../codices/tags.js":38,"../util/util.js":84,"./actiontemplate.js":2,"./nodeTemplate.js":4}],4:[function(require,module,exports){
+},{"../codices/tags.js":37,"../util/util.js":83,"./actiontemplate.js":1,"./nodeTemplate.js":3}],3:[function(require,module,exports){
 'use strict';
 
 const TAG = require('../codices/tags.js');
@@ -635,7 +633,7 @@ module.exports = class NodeTemplate {
     }
 }
 
-},{"../codices/tags.js":38,"../util/util.js":84,"js-yaml":49}],5:[function(require,module,exports){
+},{"../codices/tags.js":37,"../util/util.js":83,"js-yaml":48}],4:[function(require,module,exports){
 'use strict';
 
 module.exports = `
@@ -725,7 +723,7 @@ module.exports = `
 
 `;
 
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 module.exports = `
@@ -808,7 +806,7 @@ module.exports = `
 
 `;
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 module.exports = `
@@ -886,7 +884,7 @@ module.exports = `
 
 `;
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = `
@@ -1015,7 +1013,7 @@ grasslands
 
 `;
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = `
 * output
 1 {battalion}
@@ -1265,7 +1263,7 @@ const drafts = `
 
 `;
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -1755,7 +1753,7 @@ size: 348000
 
 `;
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -2020,7 +2018,7 @@ damage: 250
 damageType: impact
 `;
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = `
 * output
 5 {lance}
@@ -2339,7 +2337,7 @@ individual/bruteMinor
 
 `;
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = `
 * output
 100 pod
@@ -2370,7 +2368,7 @@ module.exports = `
 
 `;
 
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = `
 * output
 150 {infantryPack}
@@ -2444,7 +2442,7 @@ individual/brainForm
 
 `;
 
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = `
 * output
 1 installationCompany
@@ -2468,7 +2466,7 @@ module.exports = `
 
 `;
 
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = `
 * output
 50 sentinel
@@ -2568,7 +2566,7 @@ durability: 20000000
 
 `;
 
-},{}],17:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = `
 * output
 1 {giWeapon}
@@ -2665,7 +2663,7 @@ damage: 400
 damageType: fire
 
 `;
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = `
 * output
 1 {installationSquad}
@@ -2740,7 +2738,7 @@ Sketching about Forerunner armies
 
 */
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = `
 * output
 4 {halo/unsc/fleet}
@@ -2750,7 +2748,7 @@ module.exports = `
 
 `;
 
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = `* output
 1 staticBattalion
 4 slowBattalion
@@ -2833,7 +2831,7 @@ unsc/company/cqcCompany
 
 `;
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = `* output
 1 staticCompany
 1 stealthCompany
@@ -2950,7 +2948,7 @@ spaceFighterSquadron
 {unsc/squad/oniSquad}
 
 `;
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = `
 * output
 1 fleet
@@ -2974,7 +2972,7 @@ module.exports = `
 1 unsc/ship/prowler
 
 `;
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = `
 * output
 5 civilian
@@ -3344,7 +3342,7 @@ moveType: hover
 
 `;
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = `* output
 10 {anyWeapon}
 20 {anyGear}
@@ -3705,7 +3703,7 @@ damageType: pierce
 
 `;
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 // UNSC combat patrol of a few squads/units.
 
 module.exports = `* output
@@ -4027,7 +4025,7 @@ chaingun
 4 classified
 4 predictiveModeling`;
 
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = `* output
 1 {ship}
 
@@ -4164,7 +4162,7 @@ unsc/squad/scienceTeam
 {navalCargo}
 
 `;
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = `* output
 1 {squad}
 
@@ -4626,7 +4624,7 @@ comment: used in the Ring Bottle World. Hmm. How to incorporate info from consis
 
 `;
 
-},{}],28:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 module.exports = `
@@ -5807,7 +5805,7 @@ mbti
 
 `;
 
-},{}],29:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 module.exports = `
@@ -5891,7 +5889,7 @@ module.exports = `
 
 `;
 
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -6095,7 +6093,7 @@ module.exports = `
 
 
 `;
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = `
 
 * output
@@ -6109,7 +6107,7 @@ module.exports = `
 
 
 `;
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = `* output
 1 army
 
@@ -6129,7 +6127,7 @@ unique
 
 `;
 
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = `* output
 4 meleeWeapon
 4 rangedWeapon
@@ -6297,7 +6295,7 @@ slot: hand
 
 `;
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = `* output
 1 faction
 
@@ -6513,7 +6511,7 @@ groundForces
 Or a faction could simply have 2 Traits, their most notable aspects
 */
 
-},{}],35:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = `* output
 1 outfit
 
@@ -6671,7 +6669,7 @@ colors
 
 `;
 
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = `* output
 9 homoSapiens
 3 organicSpecies
@@ -6912,7 +6910,7 @@ lowerHalf
 
 `;
 
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = `* output
 9 infantry
 6 cavalry
@@ -7012,7 +7010,7 @@ infantry
 
 `;
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 // Later, make this YAML or JSON or even custom txt
@@ -7069,7 +7067,7 @@ module.exports = Util.makeEnum([
     'Covenant'
 ]);
 
-},{"../util/util.js":84}],39:[function(require,module,exports){
+},{"../util/util.js":83}],38:[function(require,module,exports){
 module.exports = `
 * output
 1 setting
@@ -7140,7 +7138,7 @@ module.exports = `
 
 `;
 
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -7264,7 +7262,7 @@ AliasTable.STARTERS = [
 
 module.exports = AliasTable;
 
-},{"../util/util.js":84}],41:[function(require,module,exports){
+},{"../util/util.js":83}],40:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -7334,7 +7332,7 @@ ChildTable.STARTERS = [
 
 module.exports = ChildTable;
 
-},{"../util/util.js":84}],42:[function(require,module,exports){
+},{"../util/util.js":83}],41:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -7369,7 +7367,7 @@ class ContextString {
 
 module.exports = ContextString;
 
-},{"../util/util.js":84,"./wgenerator.js":43}],43:[function(require,module,exports){
+},{"../util/util.js":83,"./wgenerator.js":42}],42:[function(require,module,exports){
 (function (process,__dirname){(function (){
 'use strict';
 
@@ -8476,9 +8474,9 @@ halo/unsc/item/externalThing
 */
 
 }).call(this)}).call(this,require('_process'),"/generation")
-},{"../battle20/creaturetemplate.js":3,"../codices/40k/chaos/blackLegion/army":5,"../codices/40k/imp/astartes/army":6,"../codices/40k/imp/guard/army":7,"../codices/40k/novel":8,"../codices/halo/cov/force":9,"../codices/halo/cov/individual":10,"../codices/halo/cov/item":11,"../codices/halo/cov/squad":12,"../codices/halo/flood/individual":13,"../codices/halo/flood/squad":14,"../codices/halo/forerunner/company":15,"../codices/halo/forerunner/individual":16,"../codices/halo/forerunner/item":17,"../codices/halo/forerunner/squad":18,"../codices/halo/presence":19,"../codices/halo/unsc/battalion":20,"../codices/halo/unsc/company":21,"../codices/halo/unsc/fleet":22,"../codices/halo/unsc/individual":23,"../codices/halo/unsc/item":24,"../codices/halo/unsc/patrol":25,"../codices/halo/unsc/patrol.js":25,"../codices/halo/unsc/ship":26,"../codices/halo/unsc/squad":27,"../codices/parahumans/cape":28,"../codices/parahumans/org":29,"../codices/sunlight/warband/item":30,"../codices/sunlight/warband/player":31,"../codices/sunlight/wkrieg/army":32,"../codices/sunlight/wkrieg/carryable":33,"../codices/sunlight/wkrieg/faction":34,"../codices/sunlight/wkrieg/outfit":35,"../codices/sunlight/wkrieg/species":36,"../codices/sunlight/wkrieg/squadType":37,"../codices/ya/setting":39,"../util/util.js":84,"../wnode/creature.js":85,"../wnode/group.js":86,"../wnode/storageModes.js":87,"../wnode/thing.js":88,"../wnode/wnode.js":89,"./aliasTable.js":40,"./childTable.js":41,"./contextString.js":42,"_process":81,"fs":44,"js-yaml":49}],44:[function(require,module,exports){
+},{"../battle20/creaturetemplate.js":2,"../codices/40k/chaos/blackLegion/army":4,"../codices/40k/imp/astartes/army":5,"../codices/40k/imp/guard/army":6,"../codices/40k/novel":7,"../codices/halo/cov/force":8,"../codices/halo/cov/individual":9,"../codices/halo/cov/item":10,"../codices/halo/cov/squad":11,"../codices/halo/flood/individual":12,"../codices/halo/flood/squad":13,"../codices/halo/forerunner/company":14,"../codices/halo/forerunner/individual":15,"../codices/halo/forerunner/item":16,"../codices/halo/forerunner/squad":17,"../codices/halo/presence":18,"../codices/halo/unsc/battalion":19,"../codices/halo/unsc/company":20,"../codices/halo/unsc/fleet":21,"../codices/halo/unsc/individual":22,"../codices/halo/unsc/item":23,"../codices/halo/unsc/patrol":24,"../codices/halo/unsc/patrol.js":24,"../codices/halo/unsc/ship":25,"../codices/halo/unsc/squad":26,"../codices/parahumans/cape":27,"../codices/parahumans/org":28,"../codices/sunlight/warband/item":29,"../codices/sunlight/warband/player":30,"../codices/sunlight/wkrieg/army":31,"../codices/sunlight/wkrieg/carryable":32,"../codices/sunlight/wkrieg/faction":33,"../codices/sunlight/wkrieg/outfit":34,"../codices/sunlight/wkrieg/species":35,"../codices/sunlight/wkrieg/squadType":36,"../codices/ya/setting":38,"../util/util.js":83,"../wnode/creature.js":84,"../wnode/group.js":85,"../wnode/storageModes.js":86,"../wnode/thing.js":87,"../wnode/wnode.js":88,"./aliasTable.js":39,"./childTable.js":40,"./contextString.js":41,"_process":80,"fs":43,"js-yaml":48}],43:[function(require,module,exports){
 
-},{}],45:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict'
 
 // return a string with the provided number formatted with commas.
@@ -8595,12 +8593,12 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],46:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /**! 
- * hotkeys-js v3.10.1 
+ * hotkeys-js v3.10.2 
  * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies. 
  * 
- * Copyright (c) 2022 kenny wong <wowohoo@qq.com> 
+ * Copyright (c) 2023 kenny wong <wowohoo@qq.com> 
  * http://jaywcjlove.github.io/hotkeys 
  * Licensed under the MIT license 
  */
@@ -9220,10 +9218,10 @@ if (typeof window !== 'undefined') {
 
 module.exports = hotkeys;
 
-},{}],47:[function(require,module,exports){
-/*! hotkeys-js v3.10.1 | MIT © 2022 kenny wong <wowohoo@qq.com> http://jaywcjlove.github.io/hotkeys */
+},{}],46:[function(require,module,exports){
+/*! hotkeys-js v3.10.2 | MIT © 2023 kenny wong <wowohoo@qq.com> http://jaywcjlove.github.io/hotkeys */
 "use strict";var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,n,t,o){e.addEventListener?e.addEventListener(n,t,o):e.attachEvent&&e.attachEvent("on".concat(n),function(){t(window.event)})}function getMods(e,n){for(var t=n.slice(0,n.length-1),o=0;o<t.length;o++)t[o]=e[t[o].toLowerCase()];return t}function getKeys(e){for(var n=(e=(e="string"!=typeof e?"":e).replace(/\s/g,"")).split(","),t=n.lastIndexOf("");0<=t;)n[t-1]+=",",n.splice(t,1),t=n.lastIndexOf("");return n}function compareArray(e,n){for(var t=e.length<n.length?n:e,o=e.length<n.length?e:n,r=!0,i=0;i<t.length;i++)~o.indexOf(t[i])||(r=!1);return r}for(var _keyMap={backspace:8,"\u232b":8,tab:9,clear:12,enter:13,"\u21a9":13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,num_0:96,num_1:97,num_2:98,num_3:99,num_4:100,num_5:101,num_6:102,num_7:103,num_8:104,num_9:105,num_multiply:106,num_add:107,num_enter:108,num_subtract:109,num_decimal:110,num_divide:111,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":91,cmd:91,command:91},modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey",91:"metaKey",shiftKey:16,ctrlKey:17,altKey:18,metaKey:91},_mods={16:!1,18:!1,17:!1,91:!1},_handlers={},k=1;k<20;k++)_keyMap["f".concat(k)]=111+k;var _downKeys=[],winListendFocus=!1,_scope="all",elementHasBindEvent=[],code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)},getKey=function(n){return Object.keys(_keyMap).find(function(e){return _keyMap[e]===n})},getModifier=function(n){return Object.keys(_modifier).find(function(e){return _modifier[e]===n})};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function getPressedKeyString(){return _downKeys.map(function(e){return getKey(e)||getModifier(e)||String.fromCharCode(e)})}function filter(e){var e=e.target||e.srcElement,n=e.tagName;return!e.isContentEditable&&("INPUT"!==n&&"TEXTAREA"!==n&&"SELECT"!==n||e.readOnly)?!0:!1}function isPressed(e){return"string"==typeof e&&(e=code(e)),!!~_downKeys.indexOf(e)}function deleteScope(e,n){var t,o,r;for(r in e=e||getScope(),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,r))for(t=_handlers[r],o=0;o<t.length;)t[o].scope===e?t.splice(o,1):o++;getScope()===e&&setScope(n||"all")}function clearModifier(e){var n=e.keyCode||e.which||e.charCode,t=_downKeys.indexOf(n);if(t<0||_downKeys.splice(t,1),e.key&&"meta"==e.key.toLowerCase()&&_downKeys.splice(0,_downKeys.length),(n=93!==n&&224!==n?n:91)in _mods)for(var o in _mods[n]=!1,_modifier)_modifier[o]===n&&(hotkeys[o]=!1)}function unbind(e){if(void 0===e)Object.keys(_handlers).forEach(function(e){return delete _handlers[e]});else if(Array.isArray(e))e.forEach(function(e){e.key&&eachUnbind(e)});else if("object"==typeof e)e.key&&eachUnbind(e);else if("string"==typeof e){for(var n=arguments.length,t=Array(1<n?n-1:0),o=1;o<n;o++)t[o-1]=arguments[o];var r=t[0],i=t[1];"function"==typeof r&&(i=r,r=""),eachUnbind({key:e,scope:r,method:i,splitKey:"+"})}}var eachUnbind=function(e){var r=e.scope,i=e.method,n=e.splitKey,s=void 0===n?"+":n;getKeys(e.key).forEach(function(e){var n,e=e.split(s),t=e.length,o=e[t-1],o="*"===o?"*":code(o);_handlers[o]&&(r=r||getScope(),n=1<t?getMods(_modifier,e):[],_handlers[o]=_handlers[o].filter(function(e){return!((!i||e.method===i)&&e.scope===r&&compareArray(e.mods,n))}))})};function eventHandler(e,n,t,o){var r;if(n.element===o&&(n.scope===t||"all"===n.scope)){for(var i in r=0<n.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,i)&&(!_mods[i]&&~n.mods.indexOf(+i)||_mods[i]&&!~n.mods.indexOf(+i))&&(r=!1);(0!==n.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!r&&"*"!==n.shortcut||!1===n.method(e,n)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(t,e){var n=_handlers["*"],o=t.keyCode||t.which||t.charCode;if(hotkeys.filter.call(this,t)){if(~_downKeys.indexOf(o=93!==o&&224!==o?o:91)||229===o||_downKeys.push(o),["ctrlKey","altKey","shiftKey","metaKey"].forEach(function(e){var n=modifierMap[e];t[e]&&!~_downKeys.indexOf(n)?_downKeys.push(n):!t[e]&&~_downKeys.indexOf(n)?_downKeys.splice(_downKeys.indexOf(n),1):"metaKey"!==e||!t[e]||3!==_downKeys.length||t.ctrlKey||t.shiftKey||t.altKey||(_downKeys=_downKeys.slice(_downKeys.indexOf(n)))}),o in _mods){for(var r in _mods[o]=!0,_modifier)_modifier[r]===o&&(hotkeys[r]=!0);if(!n)return}for(var i in _mods)Object.prototype.hasOwnProperty.call(_mods,i)&&(_mods[i]=t[modifierMap[i]]);t.getModifierState&&(!t.altKey||t.ctrlKey)&&t.getModifierState("AltGraph")&&(~_downKeys.indexOf(17)||_downKeys.push(17),~_downKeys.indexOf(18)||_downKeys.push(18),_mods[17]=!0,_mods[18]=!0);var s=getScope();if(n)for(var d=0;d<n.length;d++)n[d].scope===s&&("keydown"===t.type&&n[d].keydown||"keyup"===t.type&&n[d].keyup)&&eventHandler(t,n[d],s,e);if(o in _handlers)for(var a=0;a<_handlers[o].length;a++)if(("keydown"===t.type&&_handlers[o][a].keydown||"keyup"===t.type&&_handlers[o][a].keyup)&&_handlers[o][a].key){for(var c=_handlers[o][a],f=c.key.split(c.splitKey),l=[],y=0;y<f.length;y++)l.push(code(f[y]));l.sort().join("")===_downKeys.sort().join("")&&eventHandler(t,c,s,e)}}}function isElementBind(e){return!!~elementHasBindEvent.indexOf(e)}function hotkeys(e,n,t){_downKeys=[];var o=getKeys(e),r=[],i="all",s=document,d=0,a=!1,c=!0,f="+",l=!1;for(void 0===t&&"function"==typeof n&&(t=n),"[object Object]"===Object.prototype.toString.call(n)&&(n.scope&&(i=n.scope),n.element&&(s=n.element),n.keyup&&(a=n.keyup),void 0!==n.keydown&&(c=n.keydown),void 0!==n.capture&&(l=n.capture),"string"==typeof n.splitKey&&(f=n.splitKey)),"string"==typeof n&&(i=n);d<o.length;d++)r=[],1<(e=o[d].split(f)).length&&(r=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({keyup:a,keydown:c,scope:i,mods:r,shortcut:o[d],method:t,key:o[d],splitKey:f,element:s});void 0!==s&&!isElementBind(s)&&window&&(elementHasBindEvent.push(s),addEvent(s,"keydown",function(e){dispatch(e,s)},l),winListendFocus||(winListendFocus=!0,addEvent(window,"focus",function(){_downKeys=[]},l)),addEvent(s,"keyup",function(e){dispatch(e,s),clearModifier(e)},l))}function trigger(n){var t=1<arguments.length&&void 0!==arguments[1]?arguments[1]:"all";Object.keys(_handlers).forEach(function(e){_handlers[e].filter(function(e){return e.scope===t&&e.shortcut===n}).forEach(function(e){e&&e.method&&e.method()})})}var a,_hotkeys,_api={getPressedKeyString:getPressedKeyString,setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,trigger:trigger,unbind:unbind,keyMap:_keyMap,modifier:_modifier,modifierMap:modifierMap};for(a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);"undefined"!=typeof window&&(_hotkeys=window.hotkeys,hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys),module.exports=hotkeys;
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (process){(function (){
 if (process.env.NODE_ENV === 'production') {
   // eslint-disable-next-line global-require
@@ -9234,7 +9232,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./dist/hotkeys.common.js":46,"./dist/hotkeys.common.min.js":47,"_process":81}],49:[function(require,module,exports){
+},{"./dist/hotkeys.common.js":45,"./dist/hotkeys.common.min.js":46,"_process":80}],48:[function(require,module,exports){
 'use strict';
 
 
@@ -9243,7 +9241,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":50}],50:[function(require,module,exports){
+},{"./lib/js-yaml.js":49}],49:[function(require,module,exports){
 'use strict';
 
 
@@ -9284,7 +9282,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":52,"./js-yaml/exception":53,"./js-yaml/loader":54,"./js-yaml/schema":56,"./js-yaml/schema/core":57,"./js-yaml/schema/default_full":58,"./js-yaml/schema/default_safe":59,"./js-yaml/schema/failsafe":60,"./js-yaml/schema/json":61,"./js-yaml/type":62}],51:[function(require,module,exports){
+},{"./js-yaml/dumper":51,"./js-yaml/exception":52,"./js-yaml/loader":53,"./js-yaml/schema":55,"./js-yaml/schema/core":56,"./js-yaml/schema/default_full":57,"./js-yaml/schema/default_safe":58,"./js-yaml/schema/failsafe":59,"./js-yaml/schema/json":60,"./js-yaml/type":61}],50:[function(require,module,exports){
 'use strict';
 
 
@@ -9345,7 +9343,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],52:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -10197,7 +10195,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":51,"./exception":53,"./schema/default_full":58,"./schema/default_safe":59}],53:[function(require,module,exports){
+},{"./common":50,"./exception":52,"./schema/default_full":57,"./schema/default_safe":58}],52:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -10242,7 +10240,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],54:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -11888,7 +11886,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":51,"./exception":53,"./mark":55,"./schema/default_full":58,"./schema/default_safe":59}],55:[function(require,module,exports){
+},{"./common":50,"./exception":52,"./mark":54,"./schema/default_full":57,"./schema/default_safe":58}],54:[function(require,module,exports){
 'use strict';
 
 
@@ -11966,7 +11964,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":51}],56:[function(require,module,exports){
+},{"./common":50}],55:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -12076,7 +12074,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":51,"./exception":53,"./type":62}],57:[function(require,module,exports){
+},{"./common":50,"./exception":52,"./type":61}],56:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -12096,7 +12094,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":56,"./json":61}],58:[function(require,module,exports){
+},{"../schema":55,"./json":60}],57:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -12123,7 +12121,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":56,"../type/js/function":67,"../type/js/regexp":68,"../type/js/undefined":69,"./default_safe":59}],59:[function(require,module,exports){
+},{"../schema":55,"../type/js/function":66,"../type/js/regexp":67,"../type/js/undefined":68,"./default_safe":58}],58:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -12153,7 +12151,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":56,"../type/binary":63,"../type/merge":71,"../type/omap":73,"../type/pairs":74,"../type/set":76,"../type/timestamp":78,"./core":57}],60:[function(require,module,exports){
+},{"../schema":55,"../type/binary":62,"../type/merge":70,"../type/omap":72,"../type/pairs":73,"../type/set":75,"../type/timestamp":77,"./core":56}],59:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -12172,7 +12170,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":56,"../type/map":70,"../type/seq":75,"../type/str":77}],61:[function(require,module,exports){
+},{"../schema":55,"../type/map":69,"../type/seq":74,"../type/str":76}],60:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -12199,7 +12197,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":56,"../type/bool":64,"../type/float":65,"../type/int":66,"../type/null":72,"./failsafe":60}],62:[function(require,module,exports){
+},{"../schema":55,"../type/bool":63,"../type/float":64,"../type/int":65,"../type/null":71,"./failsafe":59}],61:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -12262,7 +12260,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":53}],63:[function(require,module,exports){
+},{"./exception":52}],62:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -12402,7 +12400,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":62}],64:[function(require,module,exports){
+},{"../type":61}],63:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12439,7 +12437,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":62}],65:[function(require,module,exports){
+},{"../type":61}],64:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -12557,7 +12555,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":51,"../type":62}],66:[function(require,module,exports){
+},{"../common":50,"../type":61}],65:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -12732,7 +12730,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":51,"../type":62}],67:[function(require,module,exports){
+},{"../common":50,"../type":61}],66:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -12827,7 +12825,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":62}],68:[function(require,module,exports){
+},{"../../type":61}],67:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -12889,7 +12887,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":62}],69:[function(require,module,exports){
+},{"../../type":61}],68:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -12919,7 +12917,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":62}],70:[function(require,module,exports){
+},{"../../type":61}],69:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12929,7 +12927,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":62}],71:[function(require,module,exports){
+},{"../type":61}],70:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12943,7 +12941,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":62}],72:[function(require,module,exports){
+},{"../type":61}],71:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -12979,7 +12977,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":62}],73:[function(require,module,exports){
+},{"../type":61}],72:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -13025,7 +13023,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":62}],74:[function(require,module,exports){
+},{"../type":61}],73:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -13080,7 +13078,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":62}],75:[function(require,module,exports){
+},{"../type":61}],74:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -13090,7 +13088,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":62}],76:[function(require,module,exports){
+},{"../type":61}],75:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -13121,7 +13119,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":62}],77:[function(require,module,exports){
+},{"../type":61}],76:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -13131,7 +13129,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":62}],78:[function(require,module,exports){
+},{"../type":61}],77:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -13221,7 +13219,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":62}],79:[function(require,module,exports){
+},{"../type":61}],78:[function(require,module,exports){
 (function (global){(function (){
 /**
  * @license
@@ -30434,7 +30432,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 }.call(this));
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],80:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 //! moment.js
 //! version : 2.29.4
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -36121,7 +36119,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 })));
 
-},{}],81:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -36307,7 +36305,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],82:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 'use strict';
 
 const StorageModes = require('../wnode/storageModes.js');
@@ -36525,7 +36523,7 @@ function init () {
 
 init();
 
-},{"../generation/wgenerator.js":43,"../util/util.js":84,"../wnode/storageModes.js":87,"../wnode/wnode.js":89,"hotkeys-js":48}],83:[function(require,module,exports){
+},{"../generation/wgenerator.js":42,"../util/util.js":83,"../wnode/storageModes.js":86,"../wnode/wnode.js":88,"hotkeys-js":47}],82:[function(require,module,exports){
 'use strict';
 
 // TODO make this name lowercase.
@@ -36722,7 +36720,7 @@ Coord.DECIMAL_PLACES = 2;
 
 module.exports = Coord;
 
-},{"./util.js":84}],84:[function(require,module,exports){
+},{"./util.js":83}],83:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -37243,6 +37241,18 @@ util.uncapitalized = (s) => {
 
     return s[0].toLowerCase() +
         s.slice(1);
+};
+
+util.capitalizedAllWords = (s) => {
+    if (! util.exists(s)) {
+        return '';
+    }
+
+    const words = s.split(' ');
+
+    return words.map(
+        w => util.capitalized(w)
+    ).join(' ');
 };
 
 util.toCamelCase = (s) => {
@@ -37796,7 +37806,7 @@ util.testAll = () => {
 
 // util.testAll();
 
-},{"comma-number":45,"lodash":79,"moment":80}],85:[function(require,module,exports){
+},{"comma-number":44,"lodash":78,"moment":79}],84:[function(require,module,exports){
 'use strict';
 
 const Thing = require('./thing.js');
@@ -37875,11 +37885,11 @@ module.exports = class Creature extends Thing {
     }
 };
 
-},{"../util/coord.js":83,"../util/util.js":84,"./thing.js":88}],86:[function(require,module,exports){
+},{"../util/coord.js":82,"../util/util.js":83,"./thing.js":87}],85:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
-const ActionTemplate = require('../battle20/actionTemplate.js');
+const ActionTemplate = require('../battle20/actiontemplate.js');
 const NodeTemplate = require('../battle20/nodeTemplate.js');
 const Util = require('../util/util.js');
 const WNode = require('./wnode.js');
@@ -38323,7 +38333,7 @@ module.exports = Group;
 
 // Group.run();
 
-},{"../battle20/actionTemplate.js":1,"../battle20/nodeTemplate.js":4,"../util/coord.js":83,"../util/util.js":84,"./wnode.js":89}],87:[function(require,module,exports){
+},{"../battle20/actiontemplate.js":1,"../battle20/nodeTemplate.js":3,"../util/coord.js":82,"../util/util.js":83,"./wnode.js":88}],86:[function(require,module,exports){
 'use strict';
 
 const Util = require('../util/util.js');
@@ -38334,7 +38344,7 @@ module.exports = Util.makeEnum([
     'Frozen'
 ]);
 
-},{"../util/util.js":84}],88:[function(require,module,exports){
+},{"../util/util.js":83}],87:[function(require,module,exports){
 'use strict';
 
 const Coord = require('../util/coord.js');
@@ -38408,7 +38418,7 @@ module.exports = class Thing extends WNode {
 };
 
 
-},{"../util/coord.js":83,"../util/util.js":84,"./wnode.js":89}],89:[function(require,module,exports){
+},{"../util/coord.js":82,"../util/util.js":83,"./wnode.js":88}],88:[function(require,module,exports){
 'use strict';
 
 const Yaml = require('js-yaml');
@@ -38987,4 +38997,4 @@ class WNode {
 
 module.exports = WNode;
 
-},{"../util/util.js":84,"./storageModes.js":87,"js-yaml":49}]},{},[82]);
+},{"../util/util.js":83,"./storageModes.js":86,"js-yaml":48}]},{},[81]);

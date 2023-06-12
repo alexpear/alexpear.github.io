@@ -34,6 +34,7 @@
     "firstTimeSetup": "npm install && npm install -g browserify && npm install -g http-server && npm start",
     "refresh": "npm run buildAll && npm run server",
     "buildAll": "npm run buildTreeBrowser && npm run buildFishTank && npm run buildGroupGrid && npm run buildTitleGen && npm run buildTextGen",
+    "buildAllUnstable": "npm run buildTreeBrowser && npm run buildFishTank && npm run buildGroupGrid && npm run buildTitleGen && npm run buildTextGen",
     "buildTreeBrowser": "browserify treebrowser/treeBrowser.js -o treebrowser/bundle.js",
     "buildFishTank": "browserify fishTank/src/*.js -o fishTank/bundle.js",
     "buildGroupGrid": "browserify gridView/src/*.js bottleWorld/gridWarWorldState.js -o gridView/groupGridBundle.js",
