@@ -156,14 +156,32 @@ class RandomNames {
     static eightfoldAlphabet () {
         return [
             'ko',
-            'nor',
-            'te',
             'mu',
+            'te',
+            'nor',
             'ly',
             'si',
             'av',
             'du',
         ];
+    }
+
+    // Fine to Coarse, Kokoko VIPs, full names.
+    static rankStr (rank7) {
+        if (rank7[1] === 1) {
+            // Command squads can have special cases.
+
+        }
+        else {
+            const descriptor = rank7[0] === 1 ?
+                'Leader' :
+                Util.capitalized(
+                    RandomNames.eightfoldSyllable(rank7[0])
+                );
+
+            // TODO     
+
+        }
     }
 
     static eightfoldSyllable (numberFrom1) {
