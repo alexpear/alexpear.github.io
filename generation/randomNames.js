@@ -138,43 +138,83 @@ class RandomNames {
     static syllabicHierarchy (syllables) {
         syllables = syllables || 4;
 
-        const ALPHABET = [
-            'bu',
-            'do',
-            'fel',
-            'he',
-            'ja',
-            'ko',
-            'lo',
-            'mo',
-            'ni',
-            'per',
-            'ri',
-            'su',
-            'ta',
-            'vo',
-            'we',
-            'the',
-            'shi',
-            'dra',
-            'sto',
-            'ske',
-            'slo',
-            'kle',
-            'flus',
-            'cha'
-        ];
-
+        let rank = [];
         let output = '';
         for (let i = 0; i < syllables; i++) {
-            output += Util.randomOf(ALPHABET);
+            const number = Util.randomIntBetween(1, 9);
+            rank.push(number);
+            output += RandomNames.eightfoldAlphabet()[number - 1];
         }
 
-        return Util.capitalized(output);
+        return {
+            name: Util.capitalized(output),
+            rankArray: rank,
+            rank: rank.join('')
+        };
+    }
+
+    static eightfoldAlphabet () {
+        return [
+            'ko',
+            'nor',
+            'te',
+            'mu',
+            'ly',
+            'si',
+            'av',
+            'du',
+        ];
+    }
+
+    static eightfoldSyllable (numberFrom1) {
+        return RandomNames.eightfoldAlphabet()[numberFrom1 - 1];
+    }
+
+    // rankArray should be length 7
+    // min & maxExclu should be 0-indexed
+    static eightfoldStatement (rankArray, desc, min, maxInclu) {
+        let syllabic = '';
+        let numeric = '';
+        for (let i = min; i <= maxInclu; i++) {
+            const numeral = rankArray[i];
+
+            // Util.logDebug(`eightfoldStatement(${rankArray}, ${desc}, ${min}, ${maxInclu}) => i=${i}, numeral=${numeral}, eightfoldAlphabet() outputs ${RandomNames.eightfoldSyllable(numeral)}`);
+
+            syllabic += RandomNames.eightfoldSyllable(numeral);
+            numeric += numeral;
+        }
+
+        syllabic = Util.capitalized(syllabic);
+
+        const phrase = `${desc} ${syllabic}`.padEnd(23);
+
+        return phrase + numeric.padStart(4);
+    }
+
+    static eightfoldBreakdown (givenObj, surnameObj) {
+
+        const rankArrayFull = givenObj.rankArray.concat(surnameObj.rankArray);
+
+        const statements = [
+            RandomNames.eightfoldStatement(rankArrayFull, 'Planet', 6, 6),
+            RandomNames.eightfoldStatement(rankArrayFull, 'City', 5, 6),
+            RandomNames.eightfoldStatement(rankArrayFull, 'Shrine', 4, 6),
+            RandomNames.eightfoldStatement(rankArrayFull, 'Battalion', 3, 6),
+            RandomNames.eightfoldStatement(rankArrayFull, 'Company', 2, 2),
+            RandomNames.eightfoldStatement(rankArrayFull, 'Squad', 1, 2),
+            RandomNames.eightfoldStatement(rankArrayFull, 'Individual', 0, 2),
+        ];
+
+        return statements.join('\n');
     }
 
     static hierarchyPerson () {
-        return `\nI am ${RandomNames.syllabicHierarchy(4)} ${RandomNames.syllabicHierarchy(4)}.`
+        const given = RandomNames.syllabicHierarchy(3);
+        const surname = RandomNames.syllabicHierarchy(4);
+
+        const breakdown = RandomNames.eightfoldBreakdown(given, surname);
+
+        return `\nI am ${given.name} ${surname.name} - ${given.rank} ${surname.rank}\n\n${breakdown}`;
     }
 
     static nameCodex () {
