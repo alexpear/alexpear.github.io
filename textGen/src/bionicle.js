@@ -1,9 +1,12 @@
 'use strict';
 
-const Util = require('../util/util.js');
+const TextGen = require('./textGen.js');
+const Util = require('../../util/util.js');
 
-class BionicleName {
+class BionicleName extends TextGen {
     constructor () {
+        super();
+
         this.text = Math.random() < 0.5
             ? BionicleName.newDuonym()
             : BionicleName.newMononym();
@@ -11,6 +14,11 @@ class BionicleName {
 
     toString () {
         return this.text;
+    }
+
+    // Called by TextGen.outputHTML()
+    output () {
+        return BionicleName.demo();
     }
 
     static newMononym () {

@@ -1,5 +1,6 @@
 'use strict';
 
+const Bionicle = require('./bionicle.js');
 const ScienceFantasy = require('./dracolich.js');
 const Util = require('../../util/util.js');
 
@@ -7,6 +8,7 @@ class Presenter {
     generators () {
         return {
             dracolich: ScienceFantasy,
+            bionicle: Bionicle,
         };
     }
 
