@@ -217,18 +217,18 @@ class RandomNames {
             RandomNames.eightfoldStatement(rankArrayFull, 'Planet', 6, 6),
             RandomNames.eightfoldStatement(rankArrayFull, 'City', 5, 6),
             RandomNames.eightfoldStatement(rankArrayFull, 'Shrine', 4, 6),
-            RandomNames.eightfoldStatement(rankArrayFull, 'Battalion', 3, 6),
-            RandomNames.eightfoldStatement(rankArrayFull, 'Company', 2, 2),
-            RandomNames.eightfoldStatement(rankArrayFull, 'Squad', 1, 2),
-            RandomNames.eightfoldStatement(rankArrayFull, 'Individual', 0, 2),
+            RandomNames.eightfoldStatement(rankArrayFull, 'Battalion', 3, 3),
+            RandomNames.eightfoldStatement(rankArrayFull, 'Company', 2, 3),
+            RandomNames.eightfoldStatement(rankArrayFull, 'Squad', 1, 3),
+            RandomNames.eightfoldStatement(rankArrayFull, 'Individual', 0, 3),
         ];
 
         return statements.join('\n');
     }
 
     static hierarchyPerson () {
-        const given = RandomNames.syllabicHierarchy(3);
-        const surname = RandomNames.syllabicHierarchy(4);
+        const given = RandomNames.syllabicHierarchy(4);
+        const surname = RandomNames.syllabicHierarchy(3);
 
         const breakdown = RandomNames.eightfoldBreakdown(given, surname);
 
