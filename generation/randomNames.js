@@ -134,16 +134,14 @@ class RandomNames {
         return outputStr;
     }
 
-    // This is for a minor fiction setting inspired by the Eightfold Hierarchy world. Everyone has names something like Suchaskori Rislochasko, constructed of conso/vowel pairs. 
+    // This is for a minor fiction setting inspired by the Eightfold Hierarchy world. Everyone has names something like Musinornor Kotemu, constructed of conso/vowel pairs. 
     static syllabicHierarchy (syllables) {
         syllables = syllables || 4;
 
-        let rank = [];
+        let rank = RandomNames.rankArray(syllables);
         let output = '';
-        for (let i = 0; i < syllables; i++) {
-            const number = Util.randomIntBetween(1, 9);
-            rank.push(number);
-            output += RandomNames.eightfoldAlphabet()[number - 1];
+        for (let i = 0; i < rank.length; i++) {
+            output += RandomNames.eightfoldSyllable(rank[i]);
         }
 
         return {
@@ -151,6 +149,34 @@ class RandomNames {
             rankArray: rank,
             rank: rank.join('')
         };
+    }
+
+    static nameObjFromRankStr (rankStr) {
+        const output = {
+            name: '',
+            rankArray: [],
+            rank: rankStr
+        };
+
+        for (let char of rankStr) {
+            const number = Number(char);
+
+            output.rankArray.push(number);
+            output.name += RandomNames.eightfoldSyllable(number);
+        }
+
+        return output;
+    }
+
+    static rankArray (syllables = 7) {
+        let rank = [];
+
+        for (let i = 0; i < syllables; i++) {
+            const number = Util.randomIntBetween(1, 9);
+            rank.push(number);
+        }
+
+        return rank;
     }
 
     static eightfoldAlphabet () {
@@ -168,20 +194,20 @@ class RandomNames {
 
     // Fine to Coarse, Kokoko VIPs, full names.
     static rankStr (rank7) {
-        if (rank7[1] === 1) {
-            // Command squads can have special cases.
+        // if (rank7[1] === 1) {
+        //     // Command squads can have special cases.
 
-        }
-        else {
-            const descriptor = rank7[0] === 1 ?
-                'Leader' :
-                Util.capitalized(
-                    RandomNames.eightfoldSyllable(rank7[0])
-                );
+        // }
+        // else {
+        //     const descriptor = rank7[0] === 1 ?
+        //         'Leader' :
+        //         Util.capitalized(
+        //             RandomNames.eightfoldSyllable(rank7[0])
+        //         );
 
-            // TODO     
+        //     // TODO     
 
-        }
+        // }
     }
 
     static eightfoldSyllable (numberFrom1) {
@@ -209,9 +235,7 @@ class RandomNames {
         return phrase + numeric.padStart(4);
     }
 
-    static eightfoldBreakdown (givenObj, surnameObj) {
-
-        const rankArrayFull = givenObj.rankArray.concat(surnameObj.rankArray);
+    static eightfoldBreakdown (rankArrayFull) {
 
         const statements = [
             RandomNames.eightfoldStatement(rankArrayFull, 'Planet', 6, 6),
@@ -221,7 +245,27 @@ class RandomNames {
             RandomNames.eightfoldStatement(rankArrayFull, 'Company', 2, 3),
             RandomNames.eightfoldStatement(rankArrayFull, 'Squad', 1, 3),
             RandomNames.eightfoldStatement(rankArrayFull, 'Individual', 0, 3),
+            `                Leader = *`,
         ];
+
+        let personalRank = 0;
+        while (rankArrayFull[personalRank] === 1) {
+            personalRank++;
+
+            const j = statements.length - personalRank - 2;
+
+            statements[j] = statements[j] + ' *';
+        }
+
+        /* Rank notes
+        0 Individual
+        1 Squad
+        2 Company
+        3 Battalion
+        4 Shrine
+        5 City
+        6 Planet
+        7 Empress */
 
         return statements.join('\n');
     }
@@ -230,9 +274,16 @@ class RandomNames {
         const given = RandomNames.syllabicHierarchy(4);
         const surname = RandomNames.syllabicHierarchy(3);
 
-        const breakdown = RandomNames.eightfoldBreakdown(given, surname);
+        const rankArrayFull = given.rankArray.concat(surname.rankArray);
+        const breakdown = RandomNames.eightfoldBreakdown(rankArrayFull);
 
         return `\nI am ${given.name} ${surname.name} - ${given.rank} ${surname.rank}\n\n${breakdown}`;
+    }
+
+    static demoHierarchyPerson (rankStr = '1111111') {
+        const nameObj = RandomNames.nameObjFromRankStr(rankStr);
+
+        return `\nI am ${nameObj.name} - ${nameObj.rank}\n\n${RandomNames.eightfoldBreakdown(nameObj.rankArray)}`;
     }
 
     static nameCodex () {
@@ -367,7 +418,8 @@ class RandomNames {
 
     static test () {
         Util.log('\n' + RandomNames.name());
-        Util.log(RandomNames.hierarchyPerson())
+        Util.log(RandomNames.hierarchyPerson());
+        // Util.log(RandomNames.demoHierarchyPerson('1117324'))
     }
 }
 
