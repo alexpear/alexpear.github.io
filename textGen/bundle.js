@@ -23168,7 +23168,90 @@ module.exports = BionicleName;
 
 BionicleName.run();
 
-},{"../../util/util.js":8,"./textGen.js":7}],5:[function(require,module,exports){
+},{"../../util/util.js":10,"./textGen.js":8}],5:[function(require,module,exports){
+'use strict';
+
+// Outputs a prompt about the Division A-Z fictional universe.
+
+const TextGen = require('./textGen.js');
+const Util = require('../../util/util.js');
+
+class DivisionPrompt extends TextGen {
+
+    randomDivision () {
+        const topic = Util.randomOf([
+            'Archive',
+            'Bio',
+            'Chrono',
+            'Divine',
+            'Extraterrestrial',
+            'Finance',
+            'Geopolitics',
+            'History',
+            'Intelligence',
+            'Justice',
+            'Knowledge',
+            'Legal',
+            'Marine',
+            'Neural',
+            'Oversight',
+            'Planar',
+            'Questions',
+            'Research',
+            'Sky',
+            'Technology',
+            'Underworld',
+            'Villain',
+            'War',
+            'Xi',
+            'Youth',
+            'Zero',
+        ]);
+
+        return `${topic[0]} Division (${topic})`;
+    }
+
+    randomAspect () {
+        return Util.randomOf([
+            'headquarters',
+            'Basic Research work',
+            'least favorite division',
+            'interdivisional collaboration',
+            'long term fears',
+            'applied research',
+            'everyday activities',
+            'head',
+            'Internal Affairs',
+            'external liaisons',
+            'security personnel',
+            'superhero team',
+            'ancient guardian golem',
+            'immortal wanderer',
+            'ancient guardian order',
+            'defectors',
+            'supervillain',
+            'executive summary',
+            'ancient beast',
+            'foreign rival organization'
+        ]);
+    }
+
+    // Called by TextGen.outputHTML()
+    output () {
+        return `The ${this.randomAspect()} of ${this.randomDivision()}`;
+    }
+
+    static run () {
+        const output = new DivisionPrompt().output();
+        console.log(output);
+    }
+}
+
+module.exports = DivisionPrompt;
+
+DivisionPrompt.run();
+
+},{"../../util/util.js":10,"./textGen.js":8}],6:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -23247,7 +23330,7 @@ class ScienceFantasy extends TextGen {
     }
 
     static locationProfile () {
-        return '    That way lies...\n' +
+        return '    That way lies...\n\n' +
             new Location().toString();
     }
 
@@ -23835,18 +23918,20 @@ module.exports = ScienceFantasy;
 
 // ScienceFantasy.run();
 
-},{"../../util/util.js":8,"./textGen.js":7}],6:[function(require,module,exports){
+},{"../../util/util.js":10,"./textGen.js":8}],7:[function(require,module,exports){
 'use strict';
 
 const Bionicle = require('./bionicle.js');
 const ScienceFantasy = require('./dracolich.js');
+const WizardingName = require('./wizardingName.js');
 const Util = require('../../util/util.js');
 
 class Presenter {
     generators () {
         return {
-            dracolich: ScienceFantasy,
             bionicle: Bionicle,
+            dracolich: ScienceFantasy,
+            wizardingName: WizardingName,
         };
     }
 
@@ -23876,7 +23961,7 @@ module.exports = Presenter;
 
 Presenter.run();
 
-},{"../../util/util.js":8,"./bionicle.js":4,"./dracolich.js":5}],7:[function(require,module,exports){
+},{"../../util/util.js":10,"./bionicle.js":4,"./dracolich.js":6,"./wizardingName.js":9}],8:[function(require,module,exports){
 'use strict';
 
 const Util = require('../../util/util.js');
@@ -23942,7 +24027,496 @@ module.exports = TextGen;
 // const gen = new BionicleNameGen();
 // const str = gen.output();
 
-},{"../../util/util.js":8}],8:[function(require,module,exports){
+},{"../../util/util.js":10}],9:[function(require,module,exports){
+'use strict';
+
+const TextGen = require('./textGen.js');
+const Util = require('../../util/util.js');
+
+class WizardingName extends TextGen {
+    static random (gender) {
+        if (! gender) {
+            gender = Util.randomOf(['female', 'male']);
+        }
+
+        const given = gender === 'female' ?
+            WizardingName.femaleGivenName() :
+            WizardingName.maleGivenName();
+
+        return given + ' ' + WizardingName.familyName();
+    }
+
+    static femaleGivenName () {
+        return Util.randomOf([
+            'Mary',
+            'Elizabeth',
+            'Sarah',
+            'Margaret',
+            'Ann',
+            'Jane',
+            'Alice',
+            'Ellen',
+            'Annie',
+            'Florence',
+            'Emma',
+            'Edith',
+            'Emily',
+            'Eliza',
+            'Hannah',
+            'Susan',
+            'Martha',
+            'Dorothy',
+            'Catherine',
+            'Ethel',
+            'Ada',
+            'Anne',
+            'Frances',
+            'Elsie',
+            'Harriet',
+            'Scylla',
+            'Lamia',
+            'Nemea',
+            'Echidna',
+            'Andromache',
+            'Andromeda',
+            'Antigone',
+            'Arachne',
+            'Ariadne',
+            'Atalanta',
+            'Briseis',
+            'Cassandra',
+            'Cassiopeia',
+            'Clytemnestra',
+            'Danaë',
+            'Electra',
+            'Europa',
+            'Hecuba',
+            'Helen',
+            'Iphigenia',
+            'Jocasta',
+            'Medea',
+            'Pandora',
+            'Penelope',
+            'Hippolyta',
+            'Hestia',
+            'Thalassa',
+            'Nyx',
+            'Phoebe',
+            'Tethys',
+            'Selene',
+            'Euthenia',
+            'Artemis',
+            'Circe',
+            'Chimera',
+            'Amalthaea',
+            'Clio',
+            'Dione',
+            'Echo',
+            'Eris',
+            'Eos',
+            'Europa',
+            'Eurydice',
+            'Gaea',
+            'Galatea',
+            'Grace',
+            'Hera',
+            'Juno',
+            'Harmonia',
+            'Hecate',
+            'Io',
+            'Iris',
+            'Leda',
+            'Lethe',
+            'Nike',
+            'Niobe',
+            'Persephone',
+            'Pleiades',
+            'Polyxena',
+            'Polymnia',
+            'Psyche',
+            'Rhea',
+            'Terpsichore',
+            'Thalia',
+            'Urania',
+            'Alcithoë',
+            'Aethra'
+        ]);
+    }
+
+    static maleGivenName () {
+        return Util.randomOf([
+            'John',
+            'William',
+            'Thomas',
+            'George',
+            'James',
+            'Robert',
+            'Charles',
+            'Henry',
+            'Joseph',
+            'David',
+            'Richard',
+            'Frederick',
+            'Arthur',
+            'Edward',
+            'Albert',
+            'Alfred',
+            'Michael',
+            'Peter',
+            'Walter',
+            'Ernest',
+            'Samuel',
+            'Harry',
+            'Stephen',
+            'Frank',
+            'Paul',
+            'Typhon',
+            'Proteus',
+            'Cerberus',
+            'Hercules',
+            'Hermes',
+            'Pontus',
+            'Pallas',
+            'Adonis',
+            'Cato',
+            'Asclepius',
+            'Triton',
+            'Memnon',
+            'Alcibiades',
+            'Aristophanes',
+            'Phaedrus',
+            'Acestes',
+            'Achilles',
+            'Acis',
+            'Acontius',
+            'Actaeon',
+            'Admetus',
+            'Adonis',
+            'Aeacus',
+            'Aedon',
+            'Aeolus',
+            'Agamemnon',
+            'Aglauros',
+            'Ajax',
+            'Alcestis',
+            'Alcmaeon',
+            'Aloadae',
+            'Amphion',
+            'Amphitrite',
+            'Amphitryon',
+            'Ananke',
+            'Ancaeus',
+            'Anchises',
+            'Andromache',
+            'Antaeus',
+            'Antilochus',
+            'Antiope',
+            'Apollo',
+            'Ares',
+            'Arethusa',
+            'Argus',
+            'Aristaeus',
+            'Asclepius',
+            'Astyanax',
+            'Athamas',
+            'Atlas',
+            'Augeas',
+            'Autolycus',
+            'Baucis',
+            'Bellerophon',
+            'Bendis',
+            'Biton',
+            'Boreas',
+            'Briareus',
+            'Britomartis',
+            'Busiris',
+            'Cabeiri',
+            'Cadmus',
+            'Caeneus',
+            'Calais',
+            'Calchas',
+            'Callisto',
+            'Castalia',
+            'Cecrops',
+            'Cephalus',
+            'Charon',
+            'Chiron',
+            'Cleobis',
+            'Cotys',
+            'Cronus',
+            'Cyrene',
+            'Daedalus',
+            'Danaus',
+            'Daphne',
+            'Daphnis',
+            'Dardanus',
+            'Demeter',
+            'Demophon',
+            'Deucalion',
+            'Diomedes',
+            'Dionysus',
+            'Dioscuri',
+            'Eileithyia',
+            'Elysium',
+            'Endymion',
+            'Erato',
+            'Erechtheus',
+            'Erigone',
+            'Eros',
+            'Eumolpus',
+            'Euterpe',
+            'Evander',
+            'Fama',
+            'Galinthias',
+            'Ganymede',
+            'Glaucus',
+            'Hebe',
+            'Hector',
+            'Helios',
+            'Hephaestus',
+            'Heracles',
+            'Hesperides',
+            'Hesperus',
+            'Hora',
+            'Hyacinthus',
+            'Hyades',
+            'Hydra',
+            'Hygieia',
+            'Hylas',
+            'Hyperborea',
+            'Hypnos',
+            'Hypsipyle',
+            'Iacchus',
+            'Iasion',
+            'Icarus',
+            'Idomeneus',
+            'Ilos',
+            'Iolaus',
+            'Iphigeneia',
+            'Ixion',
+            'Jason',
+            'Laestrygones',
+            'Laocoön',
+            'Laomedon',
+            'Leander',
+            'Leto',
+            'Leucothea',
+            'Linus',
+            'Lycaon',
+            'Manto',
+            'Marsyas',
+            'Melampus',
+            'Meleager',
+            'Melpomene',
+            'Menelaus',
+            'Midas',
+            'Minos',
+            'Mnemosyne',
+            'Morpheus',
+            'Myrmidon',
+            'Narcissus',
+            'Nemesis',
+            'Neoptolemus',
+            'Nereid',
+            'Nereus',
+            'Nestor',
+            'Ninus',
+            'Nisus',
+            'Oceanus',
+            'Odysseus',
+            'Oedipus',
+            'Oenone',
+            'Orestes',
+            'Orion',
+            'Orpheus',
+            'Pandarus',
+            'Paris',
+            'Peleus',
+            'Pelias',
+            'Pelops',
+            'Perseus',
+            'Phaethon',
+            'Philemon',
+            'Philoctetes',
+            'Phocus',
+            'Phoenix',
+            'Pirithous',
+            'Plutus',
+            'Polyphemus',
+            'Priam',
+            'Priapus',
+            'Procrustes',
+            'Proetus',
+            'Prometheus',
+            'Protesilaus',
+            'Pygmalion',
+            'Python',
+            'Sarpedon',
+            'Semele',
+            'Serapis',
+            'Thebes',
+            'Silenus',
+            'Sisyphus',
+            'Styx',
+            'Tantalus',
+            'Tartarus',
+            'Telegonus',
+            'Telemachus',
+            'Tereus',
+            'Thamyris',
+            'Thanatos',
+            'Themis',
+            'Theseus',
+            'Thetis',
+            'Tiresias',
+            'Tithonus',
+            'Troilus',
+            'Tyche',
+            'Typhon',
+            'Uranus',
+            'Zetes',
+            'Zethus'
+        ]);
+    }
+
+    static familyName () {
+        return Util.randomOf([
+            'Smith',
+            'Jones',
+            'Brown',
+            'Taylor',
+            'Wilson',
+            'Davies',
+            'Evans',
+            'Johnson',
+            'Thomas',
+            'Roberts',
+            'Walker',
+            'Wright',
+            'Thompson',
+            'Robinson',
+            'White',
+            'Hall',
+            'Hughes',
+            'Green',
+            'Edwards',
+            'Martin',
+            'Wood',
+            'Clarke',
+            'Harris',
+            'Jackson',
+            'Lewis',
+            'Clark',
+            'Turner',
+            'Scott',
+            'Hill',
+            'Moore',
+            'Williams',
+            'Cooper',
+            'Ward',
+            'Morris',
+            'King',
+            'Watson',
+            'Harrison',
+            'Baker',
+            'Young',
+            'Allen',
+            'Morgan',
+            'Anderson',
+            'Mitchell',
+            'Phillips',
+            'James',
+            'Bell',
+            'Campbell',
+            'Lee',
+            'Kelly',
+            'Davis',
+            'Parker',
+            'Bennett',
+            'Miller',
+            'Shaw',
+            'Cook',
+            'Simpson',
+            'Richardson',
+            'Price',
+            'Marshall',
+            'Collins',
+            'Carter',
+            'Stewart',
+            'Bailey',
+            'Griffiths',
+            'Gray',
+            'Murphy',
+            'Murray',
+            'Cox',
+            'Adams',
+            'Richards',
+            'Graham',
+            'Ellis',
+            'Wilkinson',
+            'Foster',
+            'Russell',
+            'Chapman',
+            'Robertson',
+            'Mason',
+            'Webb',
+            'Rogers',
+            'Powell',
+            'Gibson',
+            'Hunt',
+            'Mills',
+            'Holmes',
+            'Palmer',
+            'Matthews',
+            'Reid',
+            'Fisher',
+            'Barnes',
+            'Knight',
+            'Owen',
+            'Harvey',
+            'Lloyd',
+            'Butler',
+            'Thomson',
+            'Barker',
+            'Pearson',
+            'Stevens',
+            'Jenkins'
+        ]);
+    }
+
+    static processTemp () {
+        const raw = `
+        `;
+
+        let better = raw.split('\n')
+            .map(n => Util.capitalized(n.toLowerCase()))
+            .join(`',\n'`);
+
+        console.log(better);
+    }
+
+    static lastFirst (name) {
+        const parts = name.split(' ');
+        return parts[1] + ', ' + parts[0];
+    }
+
+    static test () {
+        for (let i = 0; i < 35; i++) {
+            const name = WizardingName.random();
+            console.log(WizardingName.lastFirst(name));
+        }
+    }
+
+    output () {
+        return WizardingName.random();
+    }
+}
+
+module.exports = WizardingName;
+
+// WizardingName.test();
+
+},{"../../util/util.js":10,"./textGen.js":8}],10:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -25028,4 +25602,4 @@ util.testAll = () => {
 
 // util.testAll();
 
-},{"comma-number":1,"lodash":2,"moment":3}]},{},[4,5,6,7]);
+},{"comma-number":1,"lodash":2,"moment":3}]},{},[4,5,6,7,8,9]);
