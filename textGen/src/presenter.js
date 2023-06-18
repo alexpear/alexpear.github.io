@@ -3,6 +3,8 @@
 const Bionicle = require('./bionicle.js');
 const DominionCard = require('./dominionCard.js');
 const Humanistas = require('./humanistas.js');
+const Mispronounce = require('./mispronounce.js');
+const Nicknames = require('./nicknames.js');
 const ScienceFantasy = require('./dracolich.js');
 const WizardingName = require('./wizardingName.js');
 const Titles = require('./wildbowTitles.js');
@@ -15,8 +17,8 @@ class Presenter {
             dominionCard: DominionCard,
             dracolich: ScienceFantasy,
             humanistas: Humanistas,
-            // mispronounce: Mispronounce, // TODO - deal with dependency on underscore.js
-            // nicknames // TODO - add random name list
+            mispronounce: Mispronounce,
+            nicknames: Nicknames,
             wildbowTitles: Titles,
             wizardingName: WizardingName,
         };
