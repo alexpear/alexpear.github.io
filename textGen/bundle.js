@@ -23168,10 +23168,10 @@ module.exports = BionicleName;
 
 BionicleName.run();
 
-},{"../../util/util.js":10,"./textGen.js":8}],5:[function(require,module,exports){
+},{"../../util/util.js":12,"./textGen.js":10}],5:[function(require,module,exports){
 'use strict';
 
-// Outputs a prompt about the Division A-Z fictional universe.
+// Outputs a prompt about the A-Z Agency fictional universe.
 
 const TextGen = require('./textGen.js');
 const Util = require('../../util/util.js');
@@ -23251,7 +23251,307 @@ module.exports = DivisionPrompt;
 
 DivisionPrompt.run();
 
-},{"../../util/util.js":10,"./textGen.js":8}],6:[function(require,module,exports){
+},{"../../util/util.js":12,"./textGen.js":10}],6:[function(require,module,exports){
+'use strict';
+
+// Random card similar to the Dominion card game.
+
+const TextGen = require('./textGen.js');
+
+class DominionCard extends TextGen {
+    constructor () {
+        super();
+
+        this.name = 'New Card';
+        this.lines = {};
+        this.types = {
+            action: true
+        };
+        this.text = '';
+
+        this.fill();
+        this.print();
+    }
+
+    fill () {
+        const lineCount = DominionCard.randomUpTo(4);
+        // console.log(`lineCount is ${lineCount}`)
+
+        for (let i = 0; i < lineCount && this.getPrice() < 6; i++) {
+            // console.log(`in fill(), i is ${i}`)
+
+            this.addLine();
+        }
+
+        // console.log('\n') // visually separate the debug section
+    }
+
+    addLine () {
+        let newType;
+
+        if (Object.keys(this.lines).length >= 4) {
+            // Card is full.
+            return false;
+        }
+
+        do {
+            newType = DominionCard.randomLineType();
+            // console.log(`trying a new line type: ${newType}`)
+        }
+        while (this.lines[newType]);
+
+        const maxParam = DominionCard.LINE_TYPES[newType].maxParam;
+        this.lines[newType] = DominionCard.randomUpTo(maxParam);
+
+        if (newType === 'treasure' || newType === 'victory' || newType === 'duration') {
+            this.types[newType] = true;
+        }
+        else if (newType === 'discardTo' || newType === 'enemiesCurse') {
+            this.types.attack = true;
+        }
+
+        console.log(`Added line ${newType}: ${this.lines[newType]}`)
+
+        return true;
+    }
+
+    static randomLineType () {
+        return DominionCard.randomOf(Object.keys(DominionCard.LINE_TYPES));
+    }
+
+    getPrice () {
+        const prices = Object.keys(
+            this.lines
+        ).map(
+            key => {
+                const costRate = DominionCard.LINE_TYPES[key].cost;
+
+                const lineParam = this.lines[key];
+
+                if (typeof costRate === 'number') {
+                    return costRate * lineParam;
+                }
+
+                return costRate(lineParam);
+            }
+        );
+
+        const sum = prices.reduce(
+            (total, subPrice) => total + subPrice,
+            0
+        );
+
+        const rounded = Math.round(sum)
+        this.price = Math.max(rounded, 0);
+
+        return this.price;
+    }
+
+    print () {
+        this.text = this.toString();
+
+        // console.log(`\n==============================`)
+        console.log(this.text);
+    }
+
+    toString () {
+        let output = ''; //`\n------- ${this.name} -------\n\n`;
+
+        if (this.lines.duration) {
+            output += `Now and at the start of your next turn:\n`;
+        }
+        if (this.lines.card) {
+            output += `+${this.lines.card} Cards\n`;
+        }
+        if (this.lines.action) {
+            output += `+${this.lines.action} Actions\n`;
+        }
+        if (this.lines.buy) {
+            output += `+${this.lines.buy} Buy\n`;
+        }
+        if (this.lines.money) {
+            output += `+$${this.lines.money}\n`;
+        }
+        if (this.lines.coffer) {
+            output += `+${this.lines.coffer} Coffers\n`;
+        }
+        if (this.lines.villager) {
+            output += `+${this.lines.villager} Villagers\n`;
+        }
+        if (this.lines.vpToken) {
+            output += `+${this.lines.vpToken} VP Token\n`;
+        }
+        if (this.lines.playAnother) {
+            output += `You may play an Action card from your hand ${this.lines.playAnother} times.\n`;
+        }
+        if (this.lines.discardTo) {
+            output += `Each other player discards down to ${this.lines.discardTo} cards in hand.\n`;
+        }
+        if (this.lines.enemiesCurse) {
+            output += `Each other player gains ${this.lines.enemiesCurse} Curse cards.\n`;
+        }
+        if (this.lines.trashGain) {
+            output += `Trash a card from your hand. Gain a card costing up to ${this.lines.trashGain} more than it.\n`;
+        }
+        if (this.lines.mayTrash) {
+            output += `You may trash up to ${this.lines.mayTrash} cards from your hand.\n`;
+        }
+        if (this.lines.drawTo) {
+            output += `Draw until you have at least ${this.lines.drawTo} cards in hand.\n`;
+        }
+        if (this.lines.reduceCosts) {
+            output += `While this is in play, cards cost ${this.lines.reduceCosts} less, but not less than 0.\n`;
+        }
+        if (this.lines.treasure) {
+            output += `Worth $${this.lines.treasure}.\n`;
+        }
+        if (this.lines.victory) {
+            output += `Worth ${this.lines.victory} VP.\n`;
+        }
+        if (this.lines.gainFromSupply) {
+            output += `Gain a card costing up to ${this.lines.gainFromSupply}.\n`;
+        }
+        if (this.lines.gainSilver) {
+            output += `Gain a Silver.\n`;
+        }
+        if (this.lines.horse) {
+            output += `Gain a Horse.\n`;
+        }
+        if (this.lines.trashThis) {
+            output += `Trash this card.\n`;
+        }
+
+        const types = Object.keys(
+            this.types
+        )
+        .map(
+            t => t.toUpperCase()
+        )
+        .join(' - ');
+
+        output += `\n-- $${this.getPrice()} ${types} --`;
+
+        return output;
+        // return JSON.stringify(this, undefined, '    ');
+    }
+
+    // Minimum is always 1.
+    static randomUpTo (maxInclusive) {
+        return Math.floor(Math.random() * maxInclusive) + 1;
+    }
+
+    static randomOf (array) {
+        return array[
+            Math.floor(Math.random() * array.length)
+        ];
+    }
+
+    output () {
+        return new DominionCard().toString();
+    }
+
+    static run () {
+        const card = new DominionCard();
+    }
+}
+
+// Values represent the maximum parameter for this line. The minimum is 1.
+DominionCard.LINE_TYPES = {
+    card: { // Market
+        maxParam: 4,
+        cost: 1
+    },
+    action: { // Market
+        maxParam: 3,
+        cost: 1,
+        words: ['village', 'town'] // TODO
+    },
+    money: { // Market
+        maxParam: 5,
+        cost: 1
+    },
+    buy: { // Market
+        maxParam: 2,
+        cost: 0.5,
+        words: ['market']
+    },
+    coffer: { // Baker
+        maxParam: 2,
+        cost: 1.2
+    },
+    villager: { // Patron
+        maxParam: 2,
+        cost: 1.2
+    },
+    vpToken: { // Temple
+        maxParam: 1,
+        cost: 2
+    },
+    discardTo: { // Militia (high numbers are less effective)
+        maxParam: 5,
+        cost: p => (0.5 * (6 - p))
+    },
+    enemiesCurse: { // Witch
+        maxParam: 1,
+        cost: 3
+    },
+    gainFromSupply: { // Workshop
+        maxParam: 6,
+        cost: 0.5
+    },
+    gainSilver: { // Scrap
+        maxParam: 1,
+        cost: 2
+    },
+    horse: { // Stampede (gain a Horse)
+        maxParam: 1,
+        cost: 1
+    },
+    mayTrash: { // Chapel
+        maxParam: 4,
+        cost: 0.5
+    },
+    trashGain: { // Remodel
+        maxParam: 3,
+        cost: 2.2
+    },
+    trashThis: { // Feast
+        maxParam: 1,
+        cost: -2
+    },
+    playAnother: { // Throne Room (1 means 'You may play an Action card from your hand 1 time', similar to +1 Action)
+        maxParam: 3,
+        cost: 2.2
+    },
+    duration: { // Wharf (ie, perform same effect at start of next turn)
+        maxParam: 1,
+        cost: 2.5
+    },
+    drawTo: { // Library
+        maxParam: 7,
+        cost: 0.5
+    },
+    reduceCosts: { // Bridge
+        maxParam: 2,
+        cost: 2
+    },
+    // Boon
+    // Hex
+    treasure: { // Copper
+        maxParam: 5,
+        cost: 2
+    },
+    victory: { // Estate
+        maxParam: 10,
+        cost: 1.5
+    }
+};
+
+module.exports = DominionCard;
+
+DominionCard.run();
+
+},{"./textGen.js":10}],7:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -23330,7 +23630,7 @@ class ScienceFantasy extends TextGen {
     }
 
     static locationProfile () {
-        return '    That way lies...\n\n' +
+        return '    That way lies...\n' +
             new Location().toString();
     }
 
@@ -23918,10 +24218,221 @@ module.exports = ScienceFantasy;
 
 // ScienceFantasy.run();
 
-},{"../../util/util.js":10,"./textGen.js":8}],7:[function(require,module,exports){
+},{"../../util/util.js":12,"./textGen.js":10}],8:[function(require,module,exports){
+'use strict';
+
+const TextGen = require('./textGen.js');
+const Util = require('../../util/util.js');
+
+// In the Terra Ignota novels, the Humanistas hive legislature is controlled by representatives who each have voting power proprotional to the number of votes they received from the populace in the last election.
+
+class Humanistas extends TextGen {
+    constructor () {
+        super();
+
+        // type number[]
+        this.representatives = [];
+
+        this.init4();
+
+        this.representatives.sort(
+            (a, b) => b - a
+        );
+    }
+
+    // Legacy alg. Works alright but rarely produces 30+ members.
+    init () {
+        while (this.totalVotes() < Humanistas.POPULATION) {
+            this.addRep();
+        }
+
+        this.finalize();
+    }
+
+    init2 () {
+        while (this.totalVotes() < Humanistas.POPULATION) {
+            this.addRep2();
+        }
+
+        this.representatives = this.representatives.filter(
+            rep => rep >= Humanistas.POPULATION / 100 
+        );
+    }
+
+    // Algorithm 3
+    init3 () {
+        const topTierProportion = Math.random();
+        // const topTierHeadcount = 
+
+    }
+
+    // Algorithm 4
+    init4 () {
+        const seats = Math.ceil( 
+            400 * Math.pow( Math.random(), 2) 
+        );
+
+        const weights = [];
+        for (let i = 0; i < seats; i++) {
+            weights.push(
+                1 / Math.random()
+            );
+        }
+
+        // Normalize
+        const weightSum = Util.sum(weights);
+        for (let i = 0; i < seats; i++) {
+            this.representatives.push(
+                weights[i] / weightSum * Humanistas.POPULATION
+            );
+        }
+
+        // Util.logDebug({
+        //     reps: this.representatives,
+        //     weightSum,
+        //     weights,
+        // });
+    }
+
+    totalVotes () {
+        return Util.sum(this.representatives);
+    }
+
+    addRep () {
+        const max = Humanistas.mostVotesTheyCouldGet();
+        const votes = Math.ceil(Math.random() * max);
+
+        this.representatives.push(votes);
+    }
+
+    // Algorithm 2 - always produces around 9 members, low variety
+    addRep2 () {
+        const votesLeft = Humanistas.POPULATION - this.totalVotes();
+
+        const options = [];
+        for (let i = 0; i < 4; i++) {
+            const votes = Math.max(
+                Math.ceil(Math.random() * votesLeft),
+                1000
+            );
+
+            options.push(votes);
+        }
+
+        this.representatives.push(
+            Math.min(...options)
+        );
+    }
+
+    finalize () {
+        this.representatives.sort(
+            (a, b) => a - b
+        );
+        this.representatives.reverse();
+
+        let sum = 0;
+        for (let i = 0; i < this.representatives.length; i++) {
+            sum += this.representatives[i];
+
+            if (sum >= Humanistas.POPULATION) {
+                // Exclude any less-popular representatives from the parliament.
+                this.representatives = this.representatives.slice(0, i + 1);
+                break;
+            }
+        }
+    }
+
+    summary () {
+        const lines = this.representatives.map(
+            rep => {
+                const name = 'Representative';
+                const votes = Util.abbrvNumber(rep);
+                const percent = rep / this.totalVotes() * 100;
+                const nicePercent = percent.toFixed(0);
+
+                return `${name} with ${votes} votes (${nicePercent}%)`;
+            }
+        );
+
+        const bodyText = lines.join('\n');
+
+        return `The current Humanist Parliament consists of ${this.representatives.length} representatives:\n${bodyText}`;        
+    }
+
+    debugSummary () {
+        for (let i = 0; i < this.representatives.length; i++) {
+            console.log(this.representatives[i]);
+        }
+
+        Util.logDebug(`End of debugSummary() call.`)
+    }
+
+    static mostVotesTheyCouldGet () {
+        const maxExponent = Math.log10(Humanistas.POPULATION);
+        const minExponent = 3;
+
+        const exponent = Math.random() * (maxExponent - minExponent) + minExponent;
+
+        return Math.ceil(Math.pow(10, exponent));
+    }
+
+    static testMostVotesTheyCouldGet () {
+        for (let n = 0; n < 100; n++) {
+            Util.logDebug(Util.abbrvNumber(
+                Humanistas.mostVotesTheyCouldGet()
+            ));
+        }
+    }
+
+    static funcTest () {
+        const outputs = [];
+
+        for (let i = 0; i < 10000; i++) {
+            outputs.push(
+                Math.ceil( 400 * Math.pow( Math.random(), 10) )
+            );
+        }
+
+        //                 Math.ceil( 1000 * Math.pow( Math.random(), 2) ) has mean 333
+                        // Math.ceil( 1000 * Math.pow( Math.random(), 3) ) has mean 250
+                        // Math.ceil( 1000 * Math.pow( Math.random(), 4) ) has mean 200
+                        // Math.ceil( 400 * Math.pow( Math.random(), 10) ) has mean 36
+
+        const mean = outputs.reduce(
+            (sumSoFar, output) => sumSoFar + output,
+            0
+        ) / outputs.length;
+
+        console.log(mean);
+    }
+
+    output () {
+        return new Humanistas().summary();
+    }
+
+    static test () {
+        // Util.log(Humanistas.testMostVotesTheyCouldGet());
+
+        Humanistas.funcTest();
+
+        const gov = new Humanistas();
+
+        Util.log(gov.summary());
+    }
+}
+
+Humanistas.POPULATION = 1e9;
+
+module.exports = Humanistas;
+
+Humanistas.test();
+
+},{"../../util/util.js":12,"./textGen.js":10}],9:[function(require,module,exports){
 'use strict';
 
 const Bionicle = require('./bionicle.js');
+const DominionCard = require('./dominionCard.js');
+const Humanistas = require('./humanistas.js');
 const ScienceFantasy = require('./dracolich.js');
 const WizardingName = require('./wizardingName.js');
 const Util = require('../../util/util.js');
@@ -23930,7 +24441,9 @@ class Presenter {
     generators () {
         return {
             bionicle: Bionicle,
+            dominionCard: DominionCard,
             dracolich: ScienceFantasy,
+            humanistas: Humanistas,
             wizardingName: WizardingName,
         };
     }
@@ -23961,7 +24474,7 @@ module.exports = Presenter;
 
 Presenter.run();
 
-},{"../../util/util.js":10,"./bionicle.js":4,"./dracolich.js":6,"./wizardingName.js":9}],8:[function(require,module,exports){
+},{"../../util/util.js":12,"./bionicle.js":4,"./dominionCard.js":6,"./dracolich.js":7,"./humanistas.js":8,"./wizardingName.js":11}],10:[function(require,module,exports){
 'use strict';
 
 const Util = require('../../util/util.js');
@@ -24027,7 +24540,7 @@ module.exports = TextGen;
 // const gen = new BionicleNameGen();
 // const str = gen.output();
 
-},{"../../util/util.js":10}],9:[function(require,module,exports){
+},{"../../util/util.js":12}],11:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -24516,7 +25029,7 @@ module.exports = WizardingName;
 
 // WizardingName.test();
 
-},{"../../util/util.js":10,"./textGen.js":8}],10:[function(require,module,exports){
+},{"../../util/util.js":12,"./textGen.js":10}],12:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -25278,7 +25791,7 @@ util.abbrvNumber = (n) => {
     else {
         output = _.round(pos / 1e9)
             .toFixed(0)
-            + 'tn';
+            + 'bn';
     }
 
     return n >= 0 ?
@@ -25602,4 +26115,4 @@ util.testAll = () => {
 
 // util.testAll();
 
-},{"comma-number":1,"lodash":2,"moment":3}]},{},[4,5,6,7,8,9]);
+},{"comma-number":1,"lodash":2,"moment":3}]},{},[4,5,6,7,8,9,10,11]);

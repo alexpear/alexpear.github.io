@@ -1,6 +1,8 @@
 'use strict';
 
 const Bionicle = require('./bionicle.js');
+const DominionCard = require('./dominionCard.js');
+const Humanistas = require('./humanistas.js');
 const ScienceFantasy = require('./dracolich.js');
 const WizardingName = require('./wizardingName.js');
 const Util = require('../../util/util.js');
@@ -9,7 +11,9 @@ class Presenter {
     generators () {
         return {
             bionicle: Bionicle,
+            dominionCard: DominionCard,
             dracolich: ScienceFantasy,
+            humanistas: Humanistas,
             wizardingName: WizardingName,
         };
     }

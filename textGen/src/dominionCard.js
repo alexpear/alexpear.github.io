@@ -2,8 +2,12 @@
 
 // Random card similar to the Dominion card game.
 
-class DominionCard {
+const TextGen = require('./textGen.js');
+
+class DominionCard extends TextGen {
     constructor () {
+        super();
+
         this.name = 'New Card';
         this.lines = {};
         this.types = {
@@ -97,7 +101,7 @@ class DominionCard {
     }
 
     toString () {
-        let output = `\n------- ${this.name} -------\n\n`;
+        let output = ''; //`\n------- ${this.name} -------\n\n`;
 
         if (this.lines.duration) {
             output += `Now and at the start of your next turn:\n`;
@@ -112,7 +116,7 @@ class DominionCard {
             output += `+${this.lines.buy} Buy\n`;
         }
         if (this.lines.money) {
-            output += `+${this.lines.money} Money\n`;
+            output += `+$${this.lines.money}\n`;
         }
         if (this.lines.coffer) {
             output += `+${this.lines.coffer} Coffers\n`;
@@ -145,8 +149,7 @@ class DominionCard {
             output += `While this is in play, cards cost ${this.lines.reduceCosts} less, but not less than 0.\n`;
         }
         if (this.lines.treasure) {
-            // LATER replace all '2 money' with '$2'
-            output += `Worth ${this.lines.treasure} money.\n`;
+            output += `Worth $${this.lines.treasure}.\n`;
         }
         if (this.lines.victory) {
             output += `Worth ${this.lines.victory} VP.\n`;
@@ -187,6 +190,10 @@ class DominionCard {
         return array[
             Math.floor(Math.random() * array.length)
         ];
+    }
+
+    output () {
+        return new DominionCard().toString();
     }
 
     static run () {
