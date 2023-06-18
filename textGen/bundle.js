@@ -1,4 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+
+},{}],2:[function(require,module,exports){
 'use strict'
 
 // return a string with the provided number formatted with commas.
@@ -115,7 +117,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 (function (global){(function (){
 /**
  * @license
@@ -17328,7 +17330,7 @@ module.exports.bindWith = bindWith
 }.call(this));
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 //! moment.js
 //! version : 2.29.4
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -23015,7 +23017,7 @@ module.exports.bindWith = bindWith
 
 })));
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -23168,7 +23170,7 @@ module.exports = BionicleName;
 
 BionicleName.run();
 
-},{"../../util/util.js":12,"./textGen.js":10}],5:[function(require,module,exports){
+},{"../../util/util.js":16,"./textGen.js":13}],6:[function(require,module,exports){
 'use strict';
 
 // Outputs a prompt about the A-Z Agency fictional universe.
@@ -23251,7 +23253,7 @@ module.exports = DivisionPrompt;
 
 DivisionPrompt.run();
 
-},{"../../util/util.js":12,"./textGen.js":10}],6:[function(require,module,exports){
+},{"../../util/util.js":16,"./textGen.js":13}],7:[function(require,module,exports){
 'use strict';
 
 // Random card similar to the Dominion card game.
@@ -23551,7 +23553,7 @@ module.exports = DominionCard;
 
 DominionCard.run();
 
-},{"./textGen.js":10}],7:[function(require,module,exports){
+},{"./textGen.js":13}],8:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -24218,7 +24220,7 @@ module.exports = ScienceFantasy;
 
 // ScienceFantasy.run();
 
-},{"../../util/util.js":12,"./textGen.js":10}],8:[function(require,module,exports){
+},{"../../util/util.js":16,"./textGen.js":13}],9:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -24427,7 +24429,77 @@ module.exports = Humanistas;
 
 Humanistas.test();
 
-},{"../../util/util.js":12,"./textGen.js":10}],9:[function(require,module,exports){
+},{"../../util/util.js":16,"./textGen.js":13}],10:[function(require,module,exports){
+'use strict';
+
+// var _ = require('underscore');
+
+// Misheard words
+
+// Anamanaguchi
+console.log(makeMishearing(
+    ['A', 'I', 'U'],
+    ['N', 'M', 'G', 'CH']
+));
+
+function makeMishearing (vowels, consonants) {
+    // return _.sample(vowels) +
+    //     _.sample(consonants) +
+    //     _.sample(vowels) +
+    //     _.sample(consonants) +
+    //     _.sample(vowels) +
+    //     _.sample(consonants) +
+    //     _.sample(vowels) +
+    //     _.sample(consonants) +
+    //     _.sample(vowels) +
+    //     _.sample(consonants) +
+    //     _.sample(vowels);
+}
+
+// $ node mispronounce.js 
+// ANIMUNUCHUCHA
+
+// $ node mispronounce.js 
+// ANINUCHINUMA
+
+},{}],11:[function(require,module,exports){
+'use strict';
+
+// TODO use random name from popular names list as input, for demo?
+
+// Etha is a nickname for Bethany.
+// These are the secrets we hope to discover.
+
+function nicknames(fullName) {
+    if (! fullName.length) {
+        return [];
+    }
+
+    let nicknames = [];
+    for (let left = 0; left < fullName.length; left++) {
+        for (let rightExlusive = fullName.length; rightExlusive > left + 1; rightExlusive--) {
+            nicknames.push(
+                fullName[left].toUpperCase() + 
+                    fullName.slice(left + 1, rightExlusive).toLowerCase()
+            );
+        }
+    }
+
+    return nicknames;
+}
+
+function prettyNicknames(fullName) {
+    return nicknames(fullName).join('\n');
+}
+
+function printNicknames(fullName) {
+    console.log(prettyNicknames(fullName));
+}
+
+// Run it.
+printNicknames('Mephistopheles');
+
+},{}],12:[function(require,module,exports){
 'use strict';
 
 const Bionicle = require('./bionicle.js');
@@ -24435,6 +24507,7 @@ const DominionCard = require('./dominionCard.js');
 const Humanistas = require('./humanistas.js');
 const ScienceFantasy = require('./dracolich.js');
 const WizardingName = require('./wizardingName.js');
+const Titles = require('./wildbowTitles.js');
 const Util = require('../../util/util.js');
 
 class Presenter {
@@ -24444,6 +24517,9 @@ class Presenter {
             dominionCard: DominionCard,
             dracolich: ScienceFantasy,
             humanistas: Humanistas,
+            // mispronounce: Mispronounce, // TODO - deal with dependency on underscore.js
+            // nicknames // TODO - add random name list
+            wildbowTitles: Titles,
             wizardingName: WizardingName,
         };
     }
@@ -24474,7 +24550,7 @@ module.exports = Presenter;
 
 Presenter.run();
 
-},{"../../util/util.js":12,"./bionicle.js":4,"./dominionCard.js":6,"./dracolich.js":7,"./humanistas.js":8,"./wizardingName.js":11}],10:[function(require,module,exports){
+},{"../../util/util.js":16,"./bionicle.js":5,"./dominionCard.js":7,"./dracolich.js":8,"./humanistas.js":9,"./wildbowTitles.js":14,"./wizardingName.js":15}],13:[function(require,module,exports){
 'use strict';
 
 const Util = require('../../util/util.js');
@@ -24540,7 +24616,108 @@ module.exports = TextGen;
 // const gen = new BionicleNameGen();
 // const str = gen.output();
 
-},{"../../util/util.js":12}],11:[function(require,module,exports){
+},{"../../util/util.js":16}],14:[function(require,module,exports){
+'use strict';
+
+// Titles of projects of Wildbow or Leder Games
+
+const fs = require('fs');
+// const WORDS_PATH = '/usr/share/dict/words';
+const TextGen = require('./textGen.js');
+const Util = require('../../util/util.js');
+
+class Titles extends TextGen {
+    constructor () {
+        super();
+    }
+
+    // static all (firstLetter) {
+    //     let output = fs.readFileSync(WORDS_PATH, { encoding: 'utf8' })
+    //         .split('\n');
+
+    //     if (firstLetter) {
+    //         output = output.filter(w => w.startsWith(firstLetter));
+    //     }
+
+    //     output = output.filter(
+    //         w => Titles.letters(w) === 4 &&
+    //             /^[A-z]+$/.test(w) // Exclude apostrophes & other special characters
+    //     )
+    //     .map(
+    //         w => `${w[0].toUpperCase()}${w.slice(1)}`
+    //     );
+
+    //     return Titles.unique(output);
+    // }
+
+    static letters (word) {
+        let total = 0;
+
+        for (const char of word) {
+            if (/[a-z]/.test(char.toLowerCase())) {
+                total += 1;
+            }
+        }
+
+        return total;
+    }
+
+    static stringify (titles) {
+        return titles.join('\n');
+    }
+
+    static unique (array) {
+        return Array.from(new Set(array));
+    }
+
+    static all4s () {
+        const capitalized = ['Abby', 'Abel', 'Acts', 'Adam', 'Adan', 'Adar', 'Aden', 'Afro', 'Agni', 'Agra', 'Ahab', 'Aida', 'Ainu', 'Ajax', 'Alan', 'Alar', 'Alba', 'Aldo', 'Alec', 'Alex', 'Alma', 'Alpo', 'Alps', 'Alva', 'Amie', 'Amos', 'Amur', 'Andy', 'Anna', 'Anne', 'Apia', 'Arab', 'Aral', 'Ares', 'Argo', 'Arno', 'Aron', 'Ashe', 'Asia', 'Audi', 'Avis', 'Avon', 'Axum', 'Azov', 'Baal', 'Bach', 'Baez', 'Baku', 'Bali', 'Ball', 'Barr', 'Bass', 'Batu', 'Baum', 'Bean', 'Beau', 'Beck', 'Bede', 'Bela', 'Bell', 'Benz', 'Berg', 'Bern', 'Bert', 'Bess', 'Best', 'Beth', 'Biko', 'Bill', 'Bird', 'Biro', 'Boas', 'Boer', 'Bohr', 'Bond', 'Bonn', 'Bono', 'Borg', 'Bork', 'Born', 'Boru', 'Bose', 'Boyd', 'Brad', 'Bran', 'Bray', 'Bret', 'Brie', 'Brit', 'Brno', 'Brut', 'Buck', 'Burl', 'Burr', 'Burt', 'Bush', 'Byrd', 'Cage', 'Cain', 'Cali', 'Caph', 'Cara', 'Carl', 'Carr', 'Cary', 'Case', 'Cash', 'Cato', 'Catt', 'Cebu', 'Celt', 'Cerf', 'Chad', 'Chan', 'Chen', 'Chou', 'Clay', 'Clem', 'Cleo', 'Clio', 'Cobb', 'Cody', 'Coke', 'Cole', 'Colt', 'Como', 'Cook', 'Cora', 'Cory', 'Cote', 'Cray', 'Cree', 'Crux', 'Cruz', 'Cuba', 'Curt', 'Dada', 'Dale', 'Dali', 'Dana', 'Dane', 'Dare', 'Dave', 'Davy', 'Dawn', 'Dean', 'Debs', 'Dell', 'Dena', 'Deng', 'Deon', 'Depp', 'Devi', 'Dial', 'Diaz', 'Dick', 'Dido', 'Diem', 'Dina', 'Dino', 'Dion', 'Dior', 'Dirk', 'Doha', 'Dole', 'Dona', 'Donn', 'Dora', 'Doug', 'Drew', 'Duke', 'Dunn', 'Duse', 'Dyer', 'Earl', 'Earp', 'East', 'Eben', 'Ebro', 'Edam', 'Edda', 'Eddy', 'Eden', 'Edna', 'Eggo', 'Eire', 'Elam', 'Elba', 'Elbe', 'Ella', 'Elma', 'Elmo', 'Eloy', 'Elsa', 'Elul', 'Elva', 'Emil', 'Emma', 'Emmy', 'Enid', 'Enif', 'Enos', 'Eric', 'Erie', 'Erik', 'Erin', 'Eris', 'Erma', 'Erna', 'Eros', 'Erse', 'Esau', 'Etna', 'Eton', 'Etta', 'Eula', 'Evan', 'Eyck', 'Eyre', 'Ezra', 'FNMA', 'Fahd', 'Faye', 'Feds', 'Fern', 'Fiat', 'Fido', 'Fiji', 'Finn', 'Fisk', 'Foch', 'Ford', 'Fran', 'Fred', 'Frey', 'Frye', 'Fuji', 'Gaea', 'Gael', 'Gage', 'Gaia', 'Gail', 'Gale', 'Gall', 'Gary', 'Gaul', 'Gaza', 'Gena', 'Gene', 'Gere', 'Gide', 'Gila', 'Gill', 'Gina', 'Gino', 'Gish', 'Giza', 'Glen', 'Gobi', 'Goff', 'Good', 'Gore', 'Goth', 'Goya', 'Gray', 'Greg', 'Grey', 'Gris', 'Grus', 'Guam', 'Gwen', 'Gwyn', 'HSBC', 'Haas', 'Hahn', 'Hale', 'Hall', 'Hals', 'Hank', 'Hans', 'Hart', 'Hays', 'Head', 'Hebe', 'Heep', 'Hell', 'Hera', 'Hess', 'Hill', 'Hiss', 'Hoff', 'Holt', 'Hong', 'Hood', 'Hope', 'Hopi', 'Horn', 'Howe', 'Huck', 'Huey', 'Huff', 'Hugh', 'Hugo', 'Hull', 'Hume', 'Huns', 'Hunt', 'Hurd', 'Hutu', 'Hyde', 'IKEA', 'Iago', 'Igor', 'Imus', 'Inca', 'Indy', 'Ines', 'Inez', 'Inge', 'Iowa', 'Iran', 'Iraq', 'Iris', 'Irma', 'Isis', 'Ivan', 'Ives', 'Iyar', 'Izod', 'Jack', 'Jain', 'Jake', 'Jame', 'Jami', 'Jana', 'Jane', 'Java', 'Jean', 'Jedi', 'Jeep', 'Jeff', 'Jeri', 'Jess', 'Jews', 'Jill', 'Joan', 'Jobs', 'Jock', 'Jodi', 'Jody', 'Joel', 'Joey', 'John', 'Joni', 'Jose', 'Jove', 'Juan', 'Judd', 'Jude', 'Judy', 'July', 'June', 'Jung', 'Juno', 'Kalb', 'Kali', 'Kama', 'Kane', 'Kano', 'Kant', 'Kara', 'Kari', 'Karl', 'Karo', 'Kate', 'Katy', 'Kaye', 'Keck', 'Kemp', 'Kent', 'Keri', 'Kern', 'Kerr', 'Khan', 'Kidd', 'Kiel', 'Kiev', 'King', 'Kirk', 'Klan', 'Klee', 'Knox', 'Kobe', 'Koch', 'Kohl', 'Kong', 'Kory', 'Kris', 'Kroc', 'Kuhn', 'Kurd', 'Kurt', 'Kwan', 'Kyle', 'Lacy', 'Lamb', 'Lana', 'Land', 'Lane', 'Lang', 'Laos', 'Lapp', 'Lara', 'Lars', 'Laud', 'Laue', 'Leah', 'Lean', 'Lear', 'Leda', 'Left', 'Lego', 'Leif', 'Lela', 'Lena', 'Leno', 'Lent', 'Leon', 'Leos', 'Lesa', 'Leta', 'Levi', 'Levy', 'Lila', 'Lily', 'Lima', 'Lina', 'Lind', 'Lisa', 'Livy', 'Liza', 'Lodz', 'Lois', 'Loki', 'Lola', 'Lome', 'Long', 'Lora', 'Lord', 'Lori', 'Lott', 'Love', 'Lowe', 'Loyd', 'Luce', 'Lucy', 'Luis', 'Luke', 'Lula', 'Lulu', 'Luna', 'Lupe', 'Luvs', 'Lvov', 'Lyle', 'Lyly', 'Lyme', 'Lynn', 'Lyon', 'Lyra', 'Mace', 'Mach', 'Mack', 'Macy', 'Magi', 'Male', 'Mali', 'Mani', 'Mann', 'Manx', 'Mara', 'Marc', 'Mari', 'Mark', 'Mars', 'Marx', 'Mary', 'Mass', 'Maud', 'Maui', 'Maya', 'Mayo', 'Mays', 'Mead', 'Meir', 'Mesa', 'Mick', 'Mike', 'Mill', 'Milo', 'Mimi', 'Ming', 'Mira', 'Miro', 'Miss', 'Moet', 'Moho', 'Moll', 'Mona', 'Monk', 'Mons', 'Moog', 'Moon', 'Moor', 'More', 'Moro', 'Mort', 'Moss', 'Mott', 'Muir', 'Muse', 'Myra', 'Myst', 'Nagy', 'Nair', 'Nash', 'Nate', 'Nazi', 'Neal', 'Neil', 'Nell', 'Nerf', 'Nero', 'Neva', 'Nice', 'Nick', 'Nike', 'Nile', 'Nina', 'Nita', 'Noah', 'Noel', 'Nola', 'Nome', 'Nona', 'Nora', 'Nova', 'OHSA', 'OKed', 'Oahu', 'Oder', 'Odin', 'Odis', 'Odom', 'Ohio', 'Oise', 'Olaf', 'Olav', 'Olen', 'Olga', 'Olin', 'Oman', 'Omar', 'Omsk', 'Oort', 'Opal', 'Opel', 'Oran', 'Oreo', 'Orin', 'Orly', 'Oslo', 'Otis', 'Otto', 'Ovid', 'Owen', 'Oxus', 'Paar', 'Pace', 'Page', 'Park', 'Parr', 'Pate', 'Paul', 'Peck', 'Peel', 'Pele', 'Pena', 'Penn', 'Perl', 'Perm', 'Peru', 'Pete', 'Piaf', 'Pict', 'Pike', 'Pisa', 'Pitt', 'Pius', 'Pogo', 'Pole', 'Polk', 'Polo', 'Pooh', 'Pope', 'Post', 'Prut', 'Ptah', 'Puck', 'Pugh', 'Puzo', 'Pyle', 'Rama', 'Rand', 'Raul', 'Reba', 'Reed', 'Reid', 'Rena', 'Rene', 'Reno', 'Reva', 'Rhea', 'Rhee', 'Rice', 'Rich', 'Rick', 'Rico', 'Ride', 'Riel', 'Riga', 'Rios', 'Rita', 'Ritz', 'Robt', 'Rock', 'Roeg', 'Roku', 'Rome', 'Root', 'Rory', 'Rosa', 'Rose', 'Ross', 'Roth', 'Rove', 'Rowe', 'Roxy', 'Ruby', 'Rudy', 'Ruhr', 'Ruiz', 'Rush', 'Ruth', 'Ryan', 'SARS', 'SUSE', 'Saab', 'Saar', 'Sade', 'Sadr', 'Saki', 'Saks', 'Salk', 'Sana', 'Sand', 'Sang', 'Sara', 'Saul', 'Scot', 'Scud', 'Sean', 'Sega', 'Serb', 'Seth', 'Shaw', 'Shea', 'Siam', 'Sian', 'Sikh', 'Sims', 'Siva', 'Skye', 'Slav', 'Snow', 'Soho', 'Sony', 'Sosa', 'Soto', 'Spam', 'Stan', 'Styx', 'Suez', 'Sufi', 'Sung', 'Suva', 'Suzy', 'Sven', 'Taft', 'Tami', 'Tara', 'Tass', 'Tate', 'Tell', 'Teri', 'Terr', 'Tess', 'Thad', 'Thai', 'Thar', 'Thea', 'Thor', 'Tide', 'Tina', 'Ting', 'Tito', 'Toby', 'Todd', 'Togo', 'Tojo', 'Toni', 'Tony', 'Tory', 'Toto', 'Tran', 'Trey', 'Troy', 'Tull', 'Tums', 'Tupi', 'Turk', 'Tutu', 'Tyre', 'UCLA', 'Ural', 'Urdu', 'Urey', 'Uris', 'Ursa', 'Utah', 'Vang', 'Veda', 'Vega', 'Vela', 'Venn', 'Vera', 'Vern', 'Vila', 'Visa', 'Vito', 'Vlad', 'VoIP', 'Waco', 'Wade', 'Wake', 'Wald', 'Wall', 'Walt', 'Wang', 'Ward', 'Ware', 'Wasp', 'Watt', 'Webb', 'West', 'Whig', 'WiFi', 'Will', 'Wise', 'Witt', 'Wolf', 'Wong', 'Wood', 'Wren', 'Wynn', 'Xmas', 'Yacc', 'Yale', 'Yalu', 'Yang', 'Yank', 'Ymir', 'Yoda', 'Yoko', 'Yong', 'York', 'Yuan', 'Yule', 'Yuri', 'Yves', 'Zane', 'Zara', 'Zeke', 'Zeno', 'Zens', 'Zest', 'Zeus', 'Zibo', 'Zion', 'Zola', 'Zorn', 'Zulu', 'Zuni'];
+        const uncapitalized = ['Abed', 'Abet', 'Able', 'Ably', 'Abut', 'Aced', 'Aces', 'Ache', 'Achy', 'Acid', 'Acme', 'Acne', 'Acre', 'Adds', 'Adze', 'Aeon', 'Aery', 'Afar', 'Agar', 'Aged', 'Ages', 'Agog', 'Ague', 'Ahem', 'Ahoy', 'Aide', 'Aids', 'Ails', 'Aims', 'Airs', 'Airy', 'Ajar', 'Akin', 'Alas', 'Albs', 'Ales', 'Alga', 'Alit', 'Ally', 'Alms', 'Aloe', 'Also', 'Alto', 'Alum', 'Amen', 'Amid', 'Amir', 'Ammo', 'Amok', 'Amps', 'Anal', 'Anew', 'Ankh', 'Anon', 'Ante', 'Anti', 'Ants', 'Anus', 'Aped', 'Apes', 'Apex', 'Apps', 'Apse', 'Aqua', 'Arch', 'Arcs', 'Area', 'Aria', 'Arid', 'Arks', 'Arms', 'Army', 'Arts', 'Arty', 'Ashy', 'Asks', 'Asps', 'Atom', 'Atop', 'Auks', 'Aunt', 'Aura', 'Auto', 'Aver', 'Avid', 'Avow', 'Away', 'Awed', 'Awes', 'Awls', 'Awol', 'Awry', 'Axed', 'Axes', 'Axis', 'Axle', 'Axon', 'Ayes', 'Baas', 'Babe', 'Baby', 'Back', 'Bade', 'Bags', 'Bail', 'Bait', 'Bake', 'Bald', 'Bale', 'Balk', 'Balm', 'Band', 'Bane', 'Bang', 'Bani', 'Bank', 'Bans', 'Barb', 'Bard', 'Bare', 'Barf', 'Bark', 'Barn', 'Bars', 'Base', 'Bash', 'Bask', 'Bast', 'Bate', 'Bath', 'Bats', 'Baud', 'Bawl', 'Bays', 'Bead', 'Beak', 'Beam', 'Bear', 'Beat', 'Beds', 'Beef', 'Been', 'Beep', 'Beer', 'Bees', 'Beet', 'Begs', 'Belt', 'Bend', 'Bent', 'Berm', 'Beta', 'Bets', 'Bevy', 'Bias', 'Bibs', 'Bide', 'Bids', 'Bier', 'Bike', 'Bile', 'Bilk', 'Bind', 'Bins', 'Bite', 'Bits', 'Blab', 'Blah', 'Bled', 'Blew', 'Blip', 'Blob', 'Bloc', 'Blog', 'Blot', 'Blow', 'Blue', 'Blur', 'Boar', 'Boat', 'Bobs', 'Bode', 'Body', 'Bogs', 'Bogy', 'Boil', 'Bola', 'Bold', 'Bole', 'Boll', 'Bolt', 'Bomb', 'Bone', 'Bong', 'Bony', 'Boob', 'Book', 'Boom', 'Boon', 'Boor', 'Boos', 'Boot', 'Bops', 'Bore', 'Bosh', 'Boss', 'Both', 'Bout', 'Bowl', 'Bows', 'Boys', 'Bozo', 'Brag', 'Bras', 'Brat', 'Bred', 'Brew', 'Brig', 'Brim', 'Brow', 'Buds', 'Buff', 'Bugs', 'Bulb', 'Bulk', 'Bull', 'Bump', 'Bums', 'Bung', 'Bunk', 'Buns', 'Bunt', 'Buoy', 'Burg', 'Burn', 'Burp', 'Burs', 'Bury', 'Buss', 'Bust', 'Busy', 'Buts', 'Butt', 'Buys', 'Buzz', 'Byes', 'Byte', 'Cabs', 'Cads', 'Cagy', 'Cake', 'Calf', 'Calk', 'Call', 'Calm', 'Came', 'Camp', 'Cams', 'Cane', 'Cans', 'Cant', 'Cape', 'Caps', 'Card', 'Care', 'Carp', 'Cars', 'Cart', 'Cask', 'Cast', 'Cats', 'Cave', 'Caws', 'Cede', 'Cell', 'Cent', 'Chap', 'Char', 'Chat', 'Chef', 'Chew', 'Chic', 'Chid', 'Chin', 'Chip', 'Chit', 'Chop', 'Chow', 'Chug', 'Chum', 'Cite', 'City', 'Clad', 'Clam', 'Clan', 'Clap', 'Claw', 'Clef', 'Clew', 'Clip', 'Clit', 'Clod', 'Clog', 'Clop', 'Clot', 'Cloy', 'Club', 'Clue', 'Coal', 'Coat', 'Coax', 'Cobs', 'Cock', 'Coda', 'Code', 'Cods', 'Coed', 'Cogs', 'Coif', 'Coil', 'Coin', 'Cola', 'Cold', 'Cols', 'Coma', 'Comb', 'Come', 'Cone', 'Conk', 'Cons', 'Cool', 'Coon', 'Coop', 'Coos', 'Coot', 'Cope', 'Cops', 'Copy', 'Cord', 'Core', 'Cork', 'Corm', 'Corn', 'Cost', 'Cosy', 'Cots', 'Coup', 'Cove', 'Cowl', 'Cows', 'Cozy', 'Crab', 'Crag', 'Cram', 'Crap', 'Craw', 'Crew', 'Crib', 'Crop', 'Crow', 'Crud', 'Cube', 'Cubs', 'Cuds', 'Cued', 'Cues', 'Cuff', 'Cull', 'Cult', 'Cums', 'Cunt', 'Cups', 'Curb', 'Curd', 'Cure', 'Curl', 'Curs', 'Cusp', 'Cuss', 'Cute', 'Cuts', 'Cyst', 'Czar', 'Dabs', 'Dado', 'Dads', 'Daft', 'Dais', 'Dame', 'Damn', 'Damp', 'Dams', 'Dank', 'Dark', 'Darn', 'Dart', 'Dash', 'Data', 'Date', 'Daub', 'Days', 'Daze', 'Dead', 'Deaf', 'Deal', 'Dear', 'Debt', 'Deck', 'Deed', 'Deem', 'Deep', 'Deer', 'Deft', 'Defy', 'Deli', 'Demo', 'Dens', 'Dent', 'Deny', 'Desk', 'Dewy', 'Dice', 'Died', 'Dies', 'Diet', 'Digs', 'Dike', 'Dill', 'Dime', 'Dims', 'Dine', 'Ding', 'Dins', 'Dint', 'Dips', 'Dire', 'Dirt', 'Disc', 'Dish', 'Disk', 'Diss', 'Diva', 'Dive', 'Dock', 'Docs', 'Dodo', 'Doer', 'Does', 'Doff', 'Dogs', 'Doll', 'Dolt', 'Dome', 'Done', 'Dons', 'Doom', 'Door', 'Dope', 'Dopy', 'Dork', 'Dorm', 'Dory', 'Dose', 'Dote', 'Doth', 'Dots', 'Dour', 'Dove', 'Down', 'Doze', 'Drab', 'Drag', 'Dram', 'Draw', 'Dray', 'Drip', 'Drop', 'Drub', 'Drug', 'Drum', 'Drys', 'Dual', 'Dubs', 'Duck', 'Duct', 'Dude', 'Duds', 'Duel', 'Dues', 'Duet', 'Duff', 'Dull', 'Duly', 'Dumb', 'Dump', 'Dune', 'Dung', 'Dunk', 'Duns', 'Duos', 'Dupe', 'Dusk', 'Dust', 'Duty', 'Dyed', 'Dyes', 'Dyke', 'EBay', 'Each', 'Earn', 'Ears', 'Ease', 'Easy', 'Eats', 'Eave', 'Ebbs', 'Echo', 'Ecru', 'Edge', 'Edgy', 'Edit', 'Eels', 'Eery', 'Eggs', 'Egis', 'Egos', 'Eked', 'Ekes', 'Elks', 'Ells', 'Elms', 'Else', 'Emir', 'Emit', 'Emos', 'Emus', 'Ends', 'Envy', 'Eons', 'Epic', 'Eras', 'Ergo', 'Ergs', 'Errs', 'Espy', 'Etch', 'Euro', 'Even', 'Ever', 'Eves', 'Evil', 'Ewer', 'Ewes', 'Exam', 'Exec', 'Exes', 'Exit', 'Expo', 'Eyed', 'Eyes', 'Face', 'Fact', 'Fade', 'Fads', 'Fags', 'Fail', 'Fain', 'Fair', 'Fake', 'Fall', 'Fame', 'Fang', 'Fans', 'Fare', 'Farm', 'Fart', 'Fast', 'Fate', 'Fats', 'Faun', 'Fawn', 'Faze', 'Fear', 'Feat', 'Feed', 'Feel', 'Fees', 'Feet', 'Fell', 'Felt', 'Fend', 'Fens', 'Fest', 'Feta', 'Feud', 'Fibs', 'Fief', 'Fife', 'Figs', 'File', 'Fill', 'Film', 'Find', 'Fine', 'Fink', 'Fins', 'Fire', 'Firm', 'Firs', 'Fish', 'Fist', 'Fits', 'Five', 'Fizz', 'Flab', 'Flag', 'Flak', 'Flan', 'Flap', 'Flat', 'Flaw', 'Flax', 'Flay', 'Flea', 'Fled', 'Flee', 'Flew', 'Flex', 'Flip', 'Flit', 'Floe', 'Flog', 'Flop', 'Flow', 'Flub', 'Flue', 'Flux', 'Foal', 'Foam', 'Fobs', 'Foci', 'Foes', 'Fogs', 'Fogy', 'Foil', 'Fold', 'Folk', 'Fond', 'Font', 'Food', 'Fool', 'Foot', 'Fops', 'Fora', 'Fore', 'Fork', 'Form', 'Fort', 'Foul', 'Four', 'Fowl', 'Foxy', 'Frat', 'Fray', 'Free', 'Fret', 'Frog', 'From', 'Fuck', 'Fuel', 'Full', 'Fume', 'Fund', 'Funk', 'Furl', 'Furs', 'Fury', 'Fuse', 'Fuss', 'Futz', 'Fuze', 'Fuzz', 'Gabs', 'Gads', 'Gaff', 'Gags', 'Gain', 'Gait', 'Gala', 'Gals', 'Game', 'Gamy', 'Gang', 'Gape', 'Gaps', 'Garb', 'Gash', 'Gasp', 'Gate', 'Gave', 'Gawk', 'Gays', 'Gaze', 'Gear', 'Geed', 'Geek', 'Gees', 'Geez', 'Geld', 'Gels', 'Gelt', 'Gems', 'Gent', 'Germ', 'Gets', 'Gibe', 'Gift', 'Gigs', 'Gild', 'Gilt', 'Gins', 'Gird', 'Girl', 'Girt', 'Gist', 'Give', 'Glad', 'Glee', 'Glib', 'Glob', 'Glop', 'Glow', 'Glue', 'Glum', 'Glut', 'Gnat', 'Gnaw', 'Gnus', 'Goad', 'Goal', 'Goat', 'Gobs', 'Gods', 'Goes', 'Gold', 'Golf', 'Gone', 'Gong', 'Goof', 'Gook', 'Goon', 'Goop', 'Gory', 'Gosh', 'Gout', 'Gown', 'Grab', 'Grad', 'Gram', 'Grew', 'Grid', 'Grim', 'Grin', 'Grip', 'Grit', 'Grog', 'Grow', 'Grub', 'Guff', 'Gulf', 'Gull', 'Gulp', 'Gums', 'Gunk', 'Guns', 'Guru', 'Gush', 'Gust', 'Guts', 'Guys', 'Gybe', 'Gyms', 'Gyps', 'Gyro', 'Hack', 'Haft', 'Hags', 'Hail', 'Hair', 'Hake', 'Half', 'Halo', 'Halt', 'Hams', 'Hand', 'Hang', 'Hard', 'Hare', 'Hark', 'Harm', 'Harp', 'Hash', 'Hasp', 'Hate', 'Hath', 'Hats', 'Haul', 'Have', 'Hawk', 'Haws', 'Haze', 'Hazy', 'Heal', 'Heap', 'Hear', 'Heat', 'Heck', 'Heed', 'Heel', 'Heft', 'Heir', 'Held', 'Helm', 'Help', 'Hemp', 'Hems', 'Hens', 'Herb', 'Herd', 'Here', 'Hero', 'Hers', 'Hewn', 'Hews', 'Hick', 'Hide', 'Hied', 'Hies', 'High', 'Hike', 'Hilt', 'Hims', 'Hind', 'Hint', 'Hips', 'Hire', 'Hits', 'Hive', 'Hoax', 'Hobo', 'Hobs', 'Hock', 'Hods', 'Hoed', 'Hoes', 'Hogs', 'Hold', 'Hole', 'Holy', 'Home', 'Homy', 'Hone', 'Honk', 'Hoof', 'Hook', 'Hoop', 'Hoot', 'Hops', 'Hose', 'Host', 'Hour', 'Hove', 'Howl', 'Hows', 'Hubs', 'Hued', 'Hues', 'Huge', 'Hugs', 'Hula', 'Hulk', 'Hump', 'Hums', 'Hung', 'Hunk', 'Hurl', 'Hurt', 'Hush', 'Husk', 'Huts', 'Hymn', 'Hype', 'Hypo', 'IPad', 'IPod', 'Iamb', 'Ibex', 'Ibis', 'Iced', 'Ices', 'Icky', 'Icon', 'Idea', 'Ides', 'Idle', 'Idly', 'Idol', 'Idyl', 'Iffy', 'Ikon', 'Ilks', 'Ills', 'Imam', 'Imps', 'Inch', 'Info', 'Inks', 'Inky', 'Inns', 'Into', 'Ions', 'Iota', 'Irks', 'Iron', 'Isle', 'Isms', 'Itch', 'Item', 'Jabs', 'Jade', 'Jags', 'Jail', 'Jamb', 'Jams', 'Jape', 'Jars', 'Jaws', 'Jays', 'Jazz', 'Jeer', 'Jeez', 'Jell', 'Jerk', 'Jest', 'Jets', 'Jibe', 'Jibs', 'Jigs', 'Jilt', 'Jinn', 'Jinx', 'Jive', 'Jogs', 'Join', 'Joke', 'Jolt', 'Josh', 'Jots', 'Jowl', 'Joys', 'Judo', 'Jugs', 'Jump', 'Junk', 'Jury', 'Just', 'Jute', 'Juts', 'Kale', 'Keel', 'Keen', 'Keep', 'Kegs', 'Kelp', 'Kens', 'Kept', 'Keys', 'Kick', 'Kids', 'Kill', 'Kiln', 'Kilo', 'Kilt', 'Kind', 'Kink', 'Kiss', 'Kite', 'Kith', 'Kits', 'Kiwi', 'Knee', 'Knew', 'Knit', 'Knob', 'Knot', 'Know', 'Kook', 'Labs', 'Lace', 'Lack', 'Lade', 'Lads', 'Lady', 'Lags', 'Laid', 'Lain', 'Lair', 'Lake', 'Lama', 'Lame', 'Lamp', 'Lams', 'Lank', 'Laps', 'Lard', 'Lark', 'Lash', 'Lass', 'Last', 'Late', 'Lath', 'Lats', 'Lava', 'Lawn', 'Laws', 'Lays', 'Laze', 'Lazy', 'Lead', 'Leaf', 'Leak', 'Leap', 'Leas', 'Leek', 'Leer', 'Lees', 'Legs', 'Leis', 'Lend', 'Lens', 'Lept', 'Less', 'Lest', 'Lets', 'Lewd', 'Liar', 'Lice', 'Lick', 'Lids', 'Lied', 'Lief', 'Lien', 'Lies', 'Lieu', 'Life', 'Lift', 'Like', 'Lilt', 'Limb', 'Lime', 'Limn', 'Limo', 'Limp', 'Limy', 'Line', 'Link', 'Lint', 'Lion', 'Lips', 'Lira', 'Lire', 'Lisp', 'List', 'Lite', 'Live', 'Load', 'Loaf', 'Loam', 'Loan', 'Lobe', 'Lobs', 'Loci', 'Lock', 'Loco', 'Lode', 'Loft', 'Loge', 'Logo', 'Logs', 'Loin', 'Loll', 'Lone', 'Look', 'Loom', 'Loon', 'Loop', 'Loot', 'Lope', 'Lops', 'Lore', 'Lorn', 'Lose', 'Loss', 'Lost', 'Loth', 'Lots', 'Loud', 'Lout', 'Lows', 'Luau', 'Lube', 'Luck', 'Lugs', 'Lull', 'Lump', 'Lung', 'Lure', 'Lurk', 'Lush', 'Lust', 'Lute', 'Lynx', 'Lyre', 'Made', 'Mads', 'Maid', 'Mail', 'Maim', 'Main', 'Make', 'Mall', 'Malt', 'Mama', 'Mane', 'Mans', 'Many', 'Maps', 'Mare', 'Mart', 'Mash', 'Mask', 'Mast', 'Mate', 'Math', 'Mats', 'Matt', 'Maul', 'Maws', 'Maze', 'Meal', 'Mean', 'Meat', 'Meek', 'Meet', 'Megs', 'Meld', 'Melt', 'Meme', 'Memo', 'Mend', 'Menu', 'Meow', 'Mere', 'Mesh', 'Mess', 'Mete', 'Mewl', 'Mews', 'Mica', 'Mice', 'Mien', 'Miff', 'Mild', 'Mile', 'Milf', 'Milk', 'Mils', 'Mime', 'Mind', 'Mine', 'Mini', 'Mink', 'Mint', 'Minx', 'Mire', 'Mist', 'Mite', 'Mitt', 'Mkay', 'Moan', 'Moat', 'Mobs', 'Mock', 'Mode', 'Mods', 'Mold', 'Mole', 'Molt', 'Moms', 'Mono', 'Mood', 'Moos', 'Moot', 'Mope', 'Mops', 'Morn', 'Most', 'Mote', 'Moth', 'Move', 'Mown', 'Mows', 'Much', 'Muck', 'Muff', 'Mugs', 'Mule', 'Mull', 'Murk', 'Mush', 'Musk', 'Muss', 'Must', 'Mute', 'Mutt', 'Myna', 'Myth', 'Nabs', 'Nags', 'Nail', 'Name', 'Nape', 'Naps', 'Narc', 'Nark', 'Nary', 'Nave', 'Navy', 'Nays', 'Near', 'Neat', 'Neck', 'Need', 'Neon', 'Nerd', 'Nest', 'Nets', 'News', 'Newt', 'Next', 'Nibs', 'Nigh', 'Nine', 'Nips', 'Nite', 'Nits', 'Node', 'Nods', 'Noes', 'None', 'Nook', 'Noon', 'Nope', 'Norm', 'Nose', 'Nosh', 'Nosy', 'Note', 'Noun', 'Nous', 'Nubs', 'Nude', 'Nuke', 'Null', 'Numb', 'Nuns', 'Nuts', 'Oafs', 'Oaks', 'Oars', 'Oath', 'Oats', 'Obey', 'Obit', 'Oboe', 'Odds', 'Odes', 'Odor', 'Offs', 'Ogle', 'Ogre', 'Ohms', 'Oils', 'Oily', 'Oink', 'Okay', 'Okra', 'Oleo', 'Omen', 'Omit', 'Once', 'Ones', 'Only', 'Onto', 'Onus', 'Onyx', 'Oops', 'Ooze', 'Open', 'Opts', 'Opus', 'Oral', 'Orbs', 'Orcs', 'Ores', 'Orgy', 'Ouch', 'Ours', 'Oust', 'Outs', 'Oval', 'Oven', 'Over', 'Ovum', 'Owed', 'Owes', 'Owls', 'Owns', 'Oxen', 'Pack', 'Pact', 'Pads', 'Paid', 'Pail', 'Pain', 'Pair', 'Pale', 'Pall', 'Palm', 'Pals', 'Pane', 'Pang', 'Pans', 'Pant', 'Papa', 'Paps', 'Pare', 'Pars', 'Part', 'Pass', 'Past', 'Path', 'Pats', 'Pave', 'Pawl', 'Pawn', 'Paws', 'Pays', 'Peak', 'Peal', 'Pear', 'Peas', 'Peat', 'Pecs', 'Peed', 'Peek', 'Peep', 'Peer', 'Pees', 'Pegs', 'Pelt', 'Pens', 'Pent', 'Peon', 'Peps', 'Perk', 'Pert', 'Peso', 'Pest', 'Pets', 'Pews', 'Pica', 'Pick', 'Pied', 'Pier', 'Pies', 'Pigs', 'Pile', 'Pill', 'Pimp', 'Pine', 'Ping', 'Pink', 'Pins', 'Pint', 'Pipe', 'Pips', 'Piss', 'Pita', 'Pith', 'Pits', 'Pity', 'Pixy', 'Plan', 'Play', 'Plea', 'Pled', 'Plod', 'Plop', 'Plot', 'Plow', 'Ploy', 'Plug', 'Plum', 'Plus', 'Pock', 'Pods', 'Poem', 'Poet', 'Poke', 'Poky', 'Poll', 'Pols', 'Pomp', 'Pond', 'Pone', 'Pony', 'Pool', 'Poop', 'Poor', 'Pops', 'Pore', 'Pork', 'Porn', 'Port', 'Pose', 'Posh', 'Posy', 'Pots', 'Pour', 'Pout', 'Pram', 'Pray', 'Prep', 'Prey', 'Prig', 'Prim', 'Prod', 'Prof', 'Prom', 'Prop', 'Pros', 'Prow', 'Psst', 'Pubs', 'Puff', 'Pugs', 'Puke', 'Pull', 'Pulp', 'Puma', 'Pump', 'Punk', 'Puns', 'Punt', 'Puny', 'Pupa', 'Pups', 'Pure', 'Purl', 'Purr', 'Push', 'Puss', 'Puts', 'Putt', 'Pwns', 'Pyre', 'Quad', 'Quay', 'Quid', 'Quip', 'Quit', 'Quiz', 'Race', 'Rack', 'Racy', 'Raft', 'Raga', 'Rage', 'Rags', 'Raid', 'Rail', 'Rain', 'Raja', 'Rake', 'Ramp', 'Rams', 'Rang', 'Rank', 'Rant', 'Rape', 'Raps', 'Rapt', 'Rare', 'Rash', 'Rasp', 'Rate', 'Rats', 'Rave', 'Rays', 'Raze', 'Razz', 'Read', 'Real', 'Ream', 'Reap', 'Rear', 'Redo', 'Reds', 'Reef', 'Reek', 'Reel', 'Refs', 'Rein', 'Reis', 'Rely', 'Rend', 'Rent', 'Reps', 'Rest', 'Revs', 'Ribs', 'Rids', 'Rife', 'Riff', 'Rift', 'Rigs', 'Rile', 'Rill', 'Rime', 'Rims', 'Rind', 'Ring', 'Rink', 'Riot', 'Ripe', 'Rips', 'Rise', 'Risk', 'Rite', 'Road', 'Roam', 'Roan', 'Roar', 'Robe', 'Robs', 'Rode', 'Rods', 'Roes', 'Roil', 'Role', 'Roll', 'Romp', 'Rood', 'Roof', 'Rook', 'Room', 'Rope', 'Rosy', 'Rote', 'Rots', 'Rout', 'Rows', 'Rube', 'Rubs', 'Rude', 'Rued', 'Rues', 'Ruff', 'Rugs', 'Ruin', 'Rule', 'Rump', 'Rums', 'Rune', 'Rung', 'Runs', 'Runt', 'Ruse', 'Rusk', 'Rust', 'Ruts', 'Sack', 'Sacs', 'Safe', 'Saga', 'Sage', 'Sago', 'Sags', 'Said', 'Sail', 'Sake', 'Sale', 'Salt', 'Same', 'Sane', 'Sank', 'Sans', 'Saps', 'Sari', 'Sash', 'Sass', 'Sate', 'Save', 'Sawn', 'Saws', 'Says', 'Scab', 'Scad', 'Scam', 'Scan', 'Scar', 'Scat', 'Scow', 'Scum', 'Seal', 'Seam', 'Sear', 'Seas', 'Seat', 'Secs', 'Sect', 'Seed', 'Seek', 'Seem', 'Seen', 'Seep', 'Seer', 'Sees', 'Self', 'Sell', 'Semi', 'Send', 'Sent', 'Sera', 'Sere', 'Serf', 'Sets', 'Sewn', 'Sews', 'Sexy', 'Shad', 'Shag', 'Shah', 'Sham', 'Shat', 'Shed', 'Shes', 'Shim', 'Shin', 'Ship', 'Shit', 'Shod', 'Shoe', 'Shoo', 'Shop', 'Shot', 'Show', 'Shun', 'Shut', 'Sick', 'Sics', 'Side', 'Sift', 'Sigh', 'Sign', 'Silk', 'Sill', 'Silo', 'Silt', 'Sine', 'Sing', 'Sink', 'Sins', 'Sips', 'Sire', 'Sirs', 'Site', 'Sits', 'Size', 'Skew', 'Skid', 'Skim', 'Skin', 'Skip', 'Skis', 'Skit', 'Slab', 'Slag', 'Slam', 'Slap', 'Slat', 'Slaw', 'Slay', 'Sled', 'Slew', 'Slid', 'Slim', 'Slip', 'Slit', 'Slob', 'Sloe', 'Slog', 'Slop', 'Slot', 'Slow', 'Slue', 'Slug', 'Slum', 'Slur', 'Slut', 'Smit', 'Smog', 'Smug', 'Smut', 'Snag', 'Snap', 'Snip', 'Snit', 'Snob', 'Snot', 'Snub', 'Snug', 'Soak', 'Soap', 'Soar', 'Sobs', 'Sock', 'Soda', 'Sods', 'Sofa', 'Soft', 'Soil', 'Sold', 'Sole', 'Soli', 'Solo', 'Sols', 'Some', 'Song', 'Sons', 'Soon', 'Soot', 'Sops', 'Sore', 'Sort', 'Sots', 'Soul', 'Soup', 'Sour', 'Sown', 'Sows', 'Soya', 'Span', 'Spar', 'Spas', 'Spat', 'Spay', 'Spec', 'Sped', 'Spew', 'Spin', 'Spit', 'Spot', 'Spry', 'Spud', 'Spun', 'Spur', 'Stab', 'Stag', 'Star', 'Stay', 'Stem', 'Step', 'Stew', 'Stir', 'Stop', 'Stow', 'Stub', 'Stud', 'Stun', 'Stye', 'Subs', 'Such', 'Suck', 'Suds', 'Sued', 'Sues', 'Suet', 'Suit', 'Sulk', 'Sumo', 'Sump', 'Sums', 'Sunk', 'Suns', 'Sups', 'Sure', 'Surf', 'Swab', 'Swag', 'Swam', 'Swan', 'Swap', 'Swat', 'Sway', 'Swig', 'Swim', 'Swop', 'Swum', 'Sync', 'Tabs', 'Tabu', 'Tack', 'Taco', 'Tact', 'Tads', 'Tags', 'Tail', 'Take', 'Talc', 'Tale', 'Talk', 'Tall', 'Tame', 'Tamp', 'Tams', 'Tang', 'Tank', 'Tans', 'Tape', 'Taps', 'Tare', 'Taro', 'Tarp', 'Tars', 'Tart', 'Task', 'Tats', 'Taut', 'Taxi', 'Teak', 'Teal', 'Team', 'Tear', 'Teas', 'Teat', 'Teed', 'Teem', 'Teen', 'Tees', 'Temp', 'Tend', 'Tens', 'Tent', 'Term', 'Tern', 'Test', 'Text', 'Than', 'That', 'Thaw', 'Thee', 'Them', 'Then', 'They', 'Thin', 'This', 'Thou', 'Thru', 'Thud', 'Thug', 'Thus', 'Tick', 'Tics', 'Tidy', 'Tied', 'Tier', 'Ties', 'Tiff', 'Tike', 'Tile', 'Till', 'Tilt', 'Time', 'Tine', 'Tins', 'Tint', 'Tiny', 'Tipi', 'Tips', 'Tire', 'Tiro', 'Tits', 'Toad', 'Toed', 'Toes', 'Tofu', 'Toga', 'Togs', 'Toil', 'Toke', 'Told', 'Toll', 'Tomb', 'Tome', 'Toms', 'Tone', 'Tong', 'Tons', 'Took', 'Tool', 'Toot', 'Tops', 'Tore', 'Torn', 'Tors', 'Tort', 'Toss', 'Tost', 'Tote', 'Tots', 'Tour', 'Tout', 'Town', 'Tows', 'Toys', 'Tram', 'Trap', 'Tray', 'Tree', 'Trek', 'Trig', 'Trim', 'Trio', 'Trip', 'Trod', 'Trot', 'True', 'Tsar', 'Tuba', 'Tube', 'Tubs', 'Tuck', 'Tuft', 'Tugs', 'Tuna', 'Tune', 'Tuns', 'Turd', 'Turf', 'Turn', 'Tush', 'Tusk', 'Twee', 'Twig', 'Twin', 'Twit', 'Twos', 'Tyke', 'Type', 'Typo', 'Tyro', 'Tzar', 'Ugly', 'Ulna', 'Umps', 'Undo', 'Unit', 'Unto', 'Upon', 'Urea', 'Urge', 'Uric', 'Urns', 'Used', 'User', 'Uses', 'Vain', 'Vale', 'Vamp', 'Vane', 'Vans', 'Vape', 'Vary', 'Vase', 'Vast', 'Vats', 'Veal', 'Veep', 'Veer', 'Veil', 'Vein', 'Veld', 'Vend', 'Vent', 'Verb', 'Very', 'Vest', 'Veto', 'Vets', 'Vial', 'Vibe', 'Vice', 'Vied', 'Vies', 'View', 'Vile', 'Vine', 'Viol', 'Vise', 'Viva', 'Void', 'Vole', 'Volt', 'Vote', 'Vows', 'Wack', 'Wadi', 'Wads', 'Waft', 'Wage', 'Wags', 'Waif', 'Wail', 'Wait', 'Wale', 'Walk', 'Wand', 'Wane', 'Want', 'Warm', 'Warn', 'Warp', 'Wars', 'Wart', 'Wary', 'Wash', 'Wave', 'Wavy', 'Waxy', 'Ways', 'Weak', 'Weal', 'Wean', 'Wear', 'Webs', 'Weds', 'Weed', 'Week', 'Weep', 'Weer', 'Wees', 'Weft', 'Weir', 'Weld', 'Well', 'Welt', 'Wend', 'Wens', 'Went', 'Wept', 'Were', 'Wets', 'Wham', 'What', 'When', 'Whet', 'Whew', 'Whey', 'Whim', 'Whip', 'Whir', 'Whit', 'Whiz', 'Whoa', 'Whom', 'Whys', 'Wick', 'Wide', 'Wife', 'Wigs', 'Wiki', 'Wild', 'Wile', 'Wilt', 'Wily', 'Wimp', 'Wind', 'Wine', 'Wing', 'Wink', 'Wino', 'Wins', 'Wipe', 'Wire', 'Wiry', 'Wish', 'Wisp', 'Wist', 'With', 'Wits', 'Wive', 'Woes', 'Woke', 'Woks', 'Womb', 'Wont', 'Woof', 'Wool', 'Woos', 'Word', 'Wore', 'Work', 'Worm', 'Worn', 'Wove', 'Wows', 'Wrap', 'Writ', 'Wuss', 'Yack', 'Yaks', 'Yams', 'Yaps', 'Yard', 'Yarn', 'Yawl', 'Yawn', 'Yaws', 'Yeah', 'Year', 'Yeas', 'Yell', 'Yelp', 'Yens', 'Yeps', 'Yest', 'Yeti', 'Yews', 'Yips', 'Yock', 'Yoga', 'Yogi', 'Yoke', 'Yolk', 'Yore', 'Your', 'Yous', 'Yowl', 'Yuck', 'Yuks', 'Yups', 'Zany', 'Zaps', 'Zeal', 'Zebu', 'Zeds', 'Zero', 'Zeta', 'Zinc', 'Zing', 'Zips', 'Zits', 'Zone', 'Zoom', 'Zoos'];
+
+        const all = capitalized.concat(uncapitalized);
+        all.sort();
+        return all;
+    }
+
+    // static random () {
+    //     return Util.randomOf()
+    // }
+
+    output () {
+        const title = Util.randomOf(Titles.all4s());
+
+        const series = {
+            W: 'Worm',
+            P: 'Pact',
+            T: 'Twig',
+            F: 'Face'
+        };
+
+        const seriesName = series[title[0]];
+        if (seriesName) {
+            return title + ', the sequel to ' + seriesName;
+        }
+        else {
+            return title;
+        }
+    }
+
+    static run (firstLetter) {
+        // const all = Titles.all(firstLetter);
+        // all.sort();
+        // const output = Titles.stringify(all);
+        // console.log(output);
+
+        // console.log(all.join("', '"));
+        console.log(new Titles().output());
+    }
+}
+
+module.exports = Titles;
+
+Titles.run();
+
+},{"../../util/util.js":16,"./textGen.js":13,"fs":1}],15:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -25029,7 +25206,7 @@ module.exports = WizardingName;
 
 // WizardingName.test();
 
-},{"../../util/util.js":12,"./textGen.js":10}],12:[function(require,module,exports){
+},{"../../util/util.js":16,"./textGen.js":13}],16:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -26115,4 +26292,4 @@ util.testAll = () => {
 
 // util.testAll();
 
-},{"comma-number":1,"lodash":2,"moment":3}]},{},[4,5,6,7,8,9,10,11]);
+},{"comma-number":2,"lodash":3,"moment":4}]},{},[5,6,7,8,9,10,11,12,13,14,15]);
