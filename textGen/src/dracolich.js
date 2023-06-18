@@ -620,30 +620,30 @@ class Location {
         let output = 'The ' + this.name;
 
         if (this.leader) {
-            output += '\n\n    ruled by the ' + this.leader.toString();
+            output += '\n\nruled by the ' + this.leader.toString();
         }
 
         if (this.court.length > 0) {
-            output += '\n\n    notable residents:';
+            output += '\n\nnotable residents:';
 
             for (let courtier of this.court) {
-                output += '\n        The ' + courtier.toString();
+                output += '\nThe ' + courtier.toString();
             }
         }
 
         if (this.prison.length > 0) {
-            output += '\n\n    incarcerated beings:';
+            output += '\n\nincarcerated beings:';
 
             for (let prisoner of this.prison) {
-                output += '\n        The ' + prisoner.name;
+                output += '\nThe ' + prisoner.name;
             }
         }
 
         if (this.treasury.length > 0) {
-            output += '\n\n    in the vaults:';
+            output += '\n\nin the vaults:';
 
             for (let treasure of this.treasury) {
-                output += '\n        The ' + treasure;
+                output += '\nThe ' + treasure;
             }
         }
 
