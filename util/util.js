@@ -759,7 +759,7 @@ util.abbrvNumber = (n) => {
     else {
         output = _.round(pos / 1e9)
             .toFixed(0)
-            + 'tn';
+            + 'bn';
     }
 
     return n >= 0 ?
