@@ -128,8 +128,6 @@ class TraitGrid {
             if (value) {
                 grid[axis] = value;
                 traits += 1;
-
-                // TODO Desired feature: being 'frank' or 'very frank'
             }
         }
 
@@ -245,19 +243,29 @@ class TraitGrid {
         ];
     }
 
+    static randomGender () {
+        const GENDERS = ['female', 'nonbinary', 'male'];
+        const gVal = TraitGrid.randomValue(0.95);
+
+        return GENDERS[gVal + 1];
+    }
+
     static test () {
         console.log(`TraitGrid test starting.`);
 
         // Util.logDebug(`TraitGrid.axisToAdjective is ${JSON.stringify(TraitGrid.axisToAdjective, undefined, '    ')}`);
         // Util.logDebug(`TraitGrid.adjectiveToAxis is ${JSON.stringify(TraitGrid.adjectiveToAxis, undefined, '    ')}`);
 
+        const people = [];
         for (let i = 0; i < 36; i++) {
-            const grid = TraitGrid.random();
-
-            // console.log(JSON.stringify(grid));
-            console.log(grid.toString() + ' human officer');
-            // console.log();
+            people.push(TraitGrid.random().toString() + ' human officer');
         }
+
+        people.sort(
+            (a, b) => a.length - b.length
+        );
+
+        console.log(people.join('\n'));
 
         console.log(`TraitGrid test complete.`);
     }
