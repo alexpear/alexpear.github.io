@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const WORDS_PATH = '/usr/share/dict/words';
+const HexCode = require('./hexCode.js');
 const TextGen = require('./textGen.js');
 const Util = require('../../util/util.js');
 
@@ -87,17 +88,24 @@ class L33tWords extends TextGen {
             )
             .map(
                 line => {
-                    const hexCode = '#' + line.split(' (')[0];
-                    const element = L33tWords.asElement(hexCode);
+                    let rawCode = line.split(' (')[0];
 
-                    // For length-3 codes, also try the doubled code, eg #BAE => #BAEBAE
-                    if (hexCode.length === 4) {
-                        const doubleCode = hexCode + hexCode.slice(1);
-                        return element + '\n' + L33tWords.asElement(doubleCode);
+                    if (rawCode.length === 3) {
+                        rawCode = rawCode[0].repeat(2) +
+                            rawCode[1].repeat(2) + 
+                            rawCode[2].repeat(2);
                     }
 
-                    return element;
+                    // console.log(`rawCode ${rawCode} has length ${rawCode.length}`)
+
+                    return new HexCode(rawCode);
                 }
+            )
+            .sort(
+                (a, b) => a.compare(b)
+            )
+            .map(
+                hexCode => L33tWords.asElement(hexCode.toString())
             )
             .join('\n');
 
@@ -120,8 +128,6 @@ class L33tWords extends TextGen {
         gen.faveHexCodeDivs();
     }
 }
-
-// text-shadow: white 1px 1px, white 1px -1px, white -1px -1px, white -1px 1px
 
 L33tWords.FAVES = [
     'ABE (Abe)',
@@ -259,7 +265,6 @@ L33tWords.FAVES = [
     '5ABBA7 (sabbat)',
     '5AD157 (sadist)',
     '5C071A (Scotia)',
-    '5EABEE (Seabee)',
     '5EA7ED (seated)',
     '5ECEDE (secede)',
     '5EDA7E (sedate)',
@@ -267,12 +272,10 @@ L33tWords.FAVES = [
     '5E77EE (settee)',
     '57A515 (stasis)',
     '57A7ED (stated)',
-    '57A71C (static)',
     '7AC71C (tactic)',
     '7A0157 (Taoist)',
     '7A57ED (tasted)',
     '7A7700 (tattoo)',
-    '7E57E5 (testes)',
     '70B1A5 (Tobias)',
     '70FFEE (toffee)',
     '75E75E (tsetse)',
