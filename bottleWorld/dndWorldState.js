@@ -81,7 +81,7 @@ class DndWorldState extends WorldState {
                     ]
                 },
                 {
-                    terrain: 'plains',
+                    terrain: 'grassland',
                     components: [
                         DndWorldState.newGroup()
                     ]
@@ -338,7 +338,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 1000,
                     mountain: 200,
-                    plains: 100_000,
+                    grassland: 100_000,
                     desert: 100
                 }
             },
@@ -348,7 +348,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 2000,
                     mountain: 100,
-                    plains: 200,
+                    grassland: 200,
                     desert: 100
                 }
             },
@@ -358,7 +358,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 1000,
                     mountain: 200,
-                    plains: 10_000,
+                    grassland: 10_000,
                     desert: 100
                 }
             },
@@ -368,7 +368,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 1000,
                     mountain: 200,
-                    plains: 1_000,
+                    grassland: 1_000,
                     desert: 100
                 }
             },
@@ -378,7 +378,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 1,
                     mountain: 1,
-                    plains: 1,
+                    grassland: 1,
                     desert: 1,
                     sea: 1
                 }
@@ -389,7 +389,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 1,
                     mountain: 1,
-                    plains: 1,
+                    grassland: 1,
                     desert: 1,
                     sea: 1
                 }
@@ -400,7 +400,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 100_000,
                     mountain: 100_000,
-                    plains: 100_000,
+                    grassland: 100_000,
                     desert: 100_000,
                     sea: 10_000
                 }
@@ -411,7 +411,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 1,
                     mountain: 1,
-                    plains: 1,
+                    grassland: 1,
                     desert: 1
                 }
             },
@@ -421,7 +421,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 100_000,
                     mountain: 100_000,
-                    plains: 100_000,
+                    grassland: 100_000,
                     desert: 100_000
                 }
             },
@@ -431,7 +431,7 @@ class DndWorldState extends WorldState {
                 terrains: {
                     forest: 100,
                     mountain: 100,
-                    plains: 100,
+                    grassland: 100,
                     desert: 100
                 }
             }
@@ -444,8 +444,10 @@ class DndWorldState extends WorldState {
             'forest',
             'mountain',
             'desert',
-            'plains',
-            'sea'
+            'grassland',
+            'sea',
+            'sea',
+            'sea',
         ];
     }
 
@@ -463,7 +465,7 @@ class DndWorldState extends WorldState {
             forest: '🌲',
             mountain: '🗻',
             desert: '🌵',
-            plains: '🌽',
+            grassland: '🌽',
             sea: '🌊'
         };
 
@@ -474,7 +476,7 @@ class DndWorldState extends WorldState {
         Util.log(`Beginning the DndWorldState test...`, `debug`);
 
         const ws = new DndWorldState();
-        ws.makeGrid(3, 4);
+        ws.makeGrid(4, 7);
 
         for (let t = 0; t < 100; t++) {
             Util.log(`t=${t}`);
@@ -483,6 +485,8 @@ class DndWorldState extends WorldState {
 
             ws.computeNextInstant();
         }
+
+        console.log(ws.textGrid() + '\n');
 
     //     // Unit tests
     //     RingWorldState.testDistanceBetween();
