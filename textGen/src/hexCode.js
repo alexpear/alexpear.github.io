@@ -6,6 +6,7 @@ const Util = require('../../util/util.js');
 
 class HexCode {
     constructor (str6chars) {
+        // LATER could make robust to different input formats like #C0FFEE or CAT
         this.rgb = [
             parseInt(str6chars.slice(0, 2), 16),
             parseInt(str6chars.slice(2, 4), 16),
@@ -20,11 +21,22 @@ class HexCode {
     }
 
     hexString () {
-        const str = this.axisAsHex(0) + 
+        let str = this.axisAsHex(0) + 
             this.axisAsHex(1) + 
             this.axisAsHex(2);
 
-        return str.toUpperCase();
+        str = str.toUpperCase();
+
+        // 3-digit format case
+        if (
+            str[0] === str[1] &&
+            str[2] === str[3] &&
+            str[4] === str[5]
+        ) {
+            return str[0] + str[2] + str[4];
+        }
+
+        return str;
     }
 
     axisAsHex (axis) {
