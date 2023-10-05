@@ -61,12 +61,20 @@ class DivisionPrompt extends TextGen {
             'supervillain',
             'executive summary',
             'ancient beast',
-            'foreign rival organization'
+            'foreign rival organization',
+            'interdivisional relationships',
         ]);
     }
 
     // Called by TextGen.outputHTML()
     output () {
+        const aspect = 'interdivisional relationships';
+        // const aspect = this.randomAspect();
+
+        if (aspect === 'interdivisional relationships') {
+            return `${this.randomDivision()}'s opinion of ${this.randomDivision()}`;
+        }
+
         return `The ${this.randomAspect()} of ${this.randomDivision()}`;
     }
 
