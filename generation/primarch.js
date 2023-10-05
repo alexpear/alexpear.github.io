@@ -132,6 +132,76 @@ class PrimarchCards {
         );
     }
 
+
+    /* Herschel version notes
+    Perhaps each combatant cardset comes with a identical chassis card, as a reminder.
+    Standard Issue Carbine 
+    */
+    static herschelCard () {
+        const name = Util.randomOf([
+            'chameleon paint',
+            'wing pack',
+            'chainmesh armor',
+            'netinfil suite',
+            'personal forcefield',
+            'strength exoskeleton',
+            'agility exoskeleton',
+            'infrared visor',
+            'guncopter trio',
+            'spiderbot trio',
+            'falsefied enemy credentials', // limited influence over enemy cards
+            'enemy net wiretap', // + initiative
+            'nanoswarm grenades', // vulnerable to netinfil, fire, & antisynthetic effects
+
+            // infantry weapons
+            'sniper rifle',
+            'rotary chaingun',
+            'missile launcher',
+            'laser cannon',
+            'flamethrower',
+            'silenced SMG',
+            'plasma sword',
+
+            'EMP',
+            'demolition charge',
+            'flashbang',
+            'stun gas grenades',
+
+            // mecha weapons
+            'heavy railgun',
+            'heavy plasma cannon',
+            'tankbuster laser',
+            'point defense lasers',
+            'knightcatcher netgun',
+            'knightscale hammer',
+            'magnet grenade',
+
+            'ceramic plate armor',
+            'heavy castle armor', // comes with power reactor, exoskeleton, etc. Increases max weight. Permits using multiple weapons at once.
+            'heavy VTOL module',
+            'knightscale forcefield',
+        ]);
+
+        return { name };
+    }
+
+    // 2023 July 25. Sketching out a new style of gear cards. Arbitrarily calling this version Herschel, after a fictional weapons manufacturer.
+    // No chassis - cardset can represent infantry or mecha.
+    static herschelDemo () {
+        const cardset = [];
+        const cardCount = Util.randomIntBetween(1, 6);
+
+        for (let i = 0; i < cardCount; i++) {
+            cardset.push(PrimarchCards.herschelCard());
+        }
+
+        console.log();
+        console.log(PrimarchCards.asString(cardset));
+        console.log();
+    }
+
+    // drop pod deployment
+
     static demo () {
         const cardset = PrimarchCards.newCardset();
 
@@ -141,7 +211,8 @@ class PrimarchCards {
     }
 
     static run () {
-        PrimarchCards.demo();
+        // PrimarchCards.demo();
+        PrimarchCards.herschelDemo();
     }
 }
 
