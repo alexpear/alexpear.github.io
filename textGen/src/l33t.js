@@ -79,6 +79,7 @@ class L33tWords extends TextGen {
         return MAP[char.toLowerCase()];
     }
 
+    // TODO - sort fave hexcodes by color similarity somehow.
     faveHexCodeDivs () {
         const htmlStr = L33tWords.FAVES
             .filter(
@@ -165,6 +166,8 @@ L33tWords.FAVES = [
     '0AF (oaf)',
     '0DD (odd)',
     '0DE (ode)',
+    '5EE',
+    '5E7',
     '2FACED (2 faced)',
     '4FACED (4 faced)',
     'ABA5ED (abased)',
@@ -261,7 +264,6 @@ L33tWords.FAVES = [
     '5ECEDE (secede)',
     '5EDA7E (sedate)',
     '5EEDED (seeded)',
-    '5E75E7 (setset)',
     '5E77EE (settee)',
     '57A515 (stasis)',
     '57A7ED (stated)',
