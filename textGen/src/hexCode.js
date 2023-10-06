@@ -13,7 +13,13 @@ class HexCode {
             parseInt(str6chars.slice(4, 6), 16),
         ];
 
-        console.log(`new HexCode(${str6chars}).toString() is ${this.toString()}`)
+        // console.log(`new HexCode(${str6chars}).toString() is ${this.toString()}`)
+    }
+
+    static fromNumbers (r, g, b) {
+        const code = new HexCode('000000');
+        code.rgb = [r, g, b];
+        return code;
     }
 
     asDemoElement (hexCode) {
@@ -58,7 +64,7 @@ class HexCode {
     compare (otherColor) {
         // First sort by octant
         const thisOctant = this.nearestCorner();
-        const otherOctant = this.nearestCorner();
+        const otherOctant = otherColor.nearestCorner();
 
         for (let i = 0; i <= 2; i++) {
             const octantAxisDiff = otherOctant.rgb[i] - thisOctant.rgb[i];
@@ -87,17 +93,11 @@ class HexCode {
 
     // For sorting into octants of the color cube
     nearestCorner () {
-        return {
-            rgb: [
-                this.rgb[0] <= 127 ? 0 : 255,
-                this.rgb[1] <= 127 ? 0 : 255,
-                this.rgb[2] <= 127 ? 0 : 255,
-            ]
-        };
-    }
-
-    output () {
-
+        return HexCode.fromNumbers(
+            this.rgb[0] <= 127 ? 0 : 255,
+            this.rgb[1] <= 127 ? 0 : 255,
+            this.rgb[2] <= 127 ? 0 : 255,
+        );
     }
 
     static run () {
@@ -107,4 +107,4 @@ class HexCode {
 
 module.exports = HexCode;
 
-HexCode.run();
+// HexCode.run();

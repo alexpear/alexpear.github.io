@@ -104,6 +104,13 @@ class L33tWords extends TextGen {
             .sort(
                 (a, b) => a.compare(b)
             )
+            // debug
+            // .map(
+            //     hexCode => {
+            //         console.log(`${hexCode.toString()} is in octant ${hexCode.nearestCorner().toString()}`);
+            //         return hexCode;
+            //     }
+            // )
             .map(
                 hexCode => L33tWords.asElement(hexCode.toString())
             )
