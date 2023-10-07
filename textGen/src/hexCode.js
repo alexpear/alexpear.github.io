@@ -73,6 +73,9 @@ class HexCode {
             }
         }
 
+        // LATER - variant where at this point we start recursively splitting each octant into suboctants.
+        // Note that should check whether theyre the same color first, or at least early.
+
         // If both are in same octant, sort by brightness.
         const brightnessDiff = otherColor.brightness() - this.brightness(); 
         if (brightnessDiff !== 0) {
