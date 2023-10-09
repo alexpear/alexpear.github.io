@@ -80,7 +80,6 @@ class L33tWords extends TextGen {
         return MAP[char.toLowerCase()];
     }
 
-    // TODO - sort fave hexcodes by color similarity somehow.
     faveHexCodeDivs () {
         const htmlStr = L33tWords.FAVES
             .filter(
@@ -102,7 +101,9 @@ class L33tWords extends TextGen {
                 }
             )
             .sort(
-                (a, b) => a.compare(b)
+                (a, b) => a.compare(b) // Color sort
+                // (a, b) => Math.random() - 0.5 // Random sort
+                // (a, b) => a.toString().localeCompare(b.toString()) // Alphabetize
             )
             // debug
             // .map(
