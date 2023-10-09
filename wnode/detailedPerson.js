@@ -195,6 +195,7 @@ class DetailedPerson extends Creature {
         }
         else if (responderTrait === '') {
             response = `Well, not as much as you.`;
+            // TODO Immediately bring up the next axis that responder has a value in. Will require function refactor. 
         }
         else {
             response = `Actually, I'm pretty ${responderTrait}.`;

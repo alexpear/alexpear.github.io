@@ -89,7 +89,7 @@ class Entity:
   def __init__(self, name='nameless entity', typeName='entity', parent=None):
     self.name = name
     self.typeName = typeName
-    self.in = parent
+    self.inside= parent
     self.contents = []
 
 class Region(Entity):

@@ -177,6 +177,14 @@ util.mean = (array) => {
     return sum / array.length;
 };
 
+util.shuffle = (array) => {
+    array.sort(
+        (a, b) => Math.random()
+    );
+
+    return array;
+};
+
 util.constrain = (n, minInclusive, maxInclusive) => {
     if (n <= minInclusive) {
         return minInclusive;
@@ -275,6 +283,10 @@ util.randomBagDraw = (bag) => {
     return name;
 };
 
+util.randomLetter = () => {
+    return util.randomOf(`ABCDEFGHIJKLMNOPQRSTUVWXYZ`);
+};
+
 // Returns string
 util.newId = function (idLength) {
     // Later research the most performant way to run this.
@@ -325,8 +337,8 @@ util.toChartString = (grid) => {
 // grid is of type string[][]
 util.textGrid = (grid, width, height) => {
     // These currently need to be set to the dimensions shown in the top of the terminal window.
-    util.SCREEN_WIDTH = width || 139;
-    util.SCREEN_HEIGHT = height || 37;
+    util.SCREEN_WIDTH = width || 181;
+    util.SCREEN_HEIGHT = height || 46;
 
     const colCount = grid[0].length;
     const rightExcess = (util.SCREEN_WIDTH - 1) % colCount;
@@ -625,14 +637,15 @@ util.padSides = (string, length) => {
         Math.ceil(padAmount)
     );
     
-    return left + string + right;
-};
+    // return left + string + right;
+    return (left + string).padEnd(length);
+}
 
 util.testPadSides = () => {
     for (let l = 1; l < 10; l++) {
 
-        for (let sl = 0; sl < 10; sl++) {
-            const input = 'x'.repeat(sl);
+        for (let sl = 0; sl < 3; sl++) {
+            const input = ' 👁 e'.repeat(sl);
             const output = util.padSides(input, l);
 
             const summary = `padSides(${input}, ${l}) => \n'${output}'`;
