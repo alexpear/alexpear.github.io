@@ -206,6 +206,7 @@ L33tWords.FAVES = [
     // 'A55E55 (assess)',
     'A55E75 (assets)',
     'A77E57 (attest)',
+    'A771CA (Attica)',
     'A55157 (assist)',
     'BACCAE (baccae)',
     'BAAAAD',
