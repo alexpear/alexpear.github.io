@@ -7,10 +7,10 @@ const Util = require('../../util/util.js');
 
 class Wiki {
 	constructor () {
-		this.loadDict();
+		this.loadDicts();
 	}
 
-	loadDict () {
+	loadDicts () {
 		this.regionDict = {
 			bambi: {
 				displayName: 'Deer Forest',
@@ -195,8 +195,9 @@ class Wiki {
 
 				}
 			},
+		};
 
-			// Border areas - TODO: Move to separate dict.
+		this.borderDict = {
 			bambivirginia: {
 				desc: 'bambi virginia border desc'
 			},
@@ -220,7 +221,7 @@ class Wiki {
 
 			const neighborName = this.regionDict[neighborKey].displayName;
 			const borderKey = this.borderKey(pageKey, neighborKey);
-			const borderInfo = this.regionDict[borderKey];
+			const borderInfo = this.borderDict[borderKey];
 			const borderDesc = borderInfo ? borderInfo.desc : '';
 			const dirWord = this.directionWord(dir);
 
@@ -289,13 +290,12 @@ class Wiki {
 	testRegionDict () {
 		for (let key in this.regionDict) {
 			const regionInfo = this.regionDict[key];
-			if (! regionInfo.neighbors) { continue; } // border case
 
 			this.testField(key, 'displayName');
 			this.testField(key, 'desc');
 
 			if (Object.keys(regionInfo.neighbors).length === 0) {
-				console.log(`${key}.neighbors - needs to be populated`);
+				console.log(`this.regionDict.${key}.neighbors - needs to be populated`);
 			}
 
 			for (let dirKey in regionInfo.neighbors) {
@@ -305,16 +305,17 @@ class Wiki {
 				const counterpartEntry = this.regionDict[neighborKey].neighbors[opposite];
 
 				if (counterpartEntry !== key) {
-					console.log(`${neighborKey}.neighbors.${opposite} ?= ${key}`);
+					console.log(`this.regionDict.${neighborKey}.neighbors.${opposite} ?= ${key}`);
 				}
 
 				const borderKey = this.borderKey(key, neighborKey);
-				this.testField(borderKey, 'desc', '(border entry)');
 
-				// const borderDesc = this.regionDict[borderKey].desc;
-				// if (! borderDesc || borderDesc.length < 99) {
-				// 	this.missing[borderKey].desc = 'missing';
-				// }
+				const goodBorderDesc = this.borderDict[borderKey] &&
+					this.borderDict[borderKey].desc.length > 99;
+
+				if (! goodBorderDesc) {
+					console.log(`this.borderDict.${borderKey}.desc -- incomplete`);
+				}
 			}
 		}
 	}
@@ -331,11 +332,7 @@ class Wiki {
 		}
 
 		if (! legit) {
-			// const info = {};
-			// info[fieldName] = 'incomplete';
-			// this.missing[key] = info;
-
-			console.log(`${key}.${fieldName} -- incomplete ` + (note || ''));
+			console.log(`this.regionDict.${key}.${fieldName} -- incomplete ` + (note || ''));
 		}
 	}
 
