@@ -16,28 +16,189 @@ class Wiki {
 				displayName: 'Deer Forest',
 				desc: 'bambi desc',
 				neighbors: {
-					e: 'pocahontas',
+					e: 'virginia',
 				}
 			},
-			pocahontas: {
+			virginia: {
 				displayName: 'Virginia',
 				desc: 'Virginia desc',
 				neighbors: {
 					w: 'bambi',
 				}
 			},
-			princessfrog: {
+			neworleans: {
 				displayName: '',
 				desc: '',
 				neighbors: {
-					n: 'pocahontas',
+					n: 'virginia',
 				}
 			},
-			// TODO
+			colombia: {
+				displayName: '',
+				desc: '',
+				neighbors: {
 
-			// Border areas
-			bambipocahontas: {
-				desc: 'bambi pocahontas border desc'
+				}
+			},
+			andes: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			caribbean: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			atlantis: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			// Or could combine British movies. King John the lion sits the throne but the true power is unofficial: The Horned King & Maleficent, now wed.
+			maleficent: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			robinhood: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			paris: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			frozen: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			gothel: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			pleasureisland: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			pridelands: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			claytonville: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			greece: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			agrabah: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			junglebook: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			china: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			kumandra: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			motunui: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+					// TODO
+				}
+			},
+			space: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			neverneverland: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			wonderland: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			strangeworld: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+			zootopia: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+
+				}
+			},
+
+			// Border areas - TODO: Move to separate dict.
+			bambivirginia: {
+				desc: 'bambi virginia border desc'
 			},
 			// TODO
 		};
@@ -60,14 +221,16 @@ class Wiki {
 			const neighborName = this.regionDict[neighborKey].displayName;
 			const borderKey = this.borderKey(pageKey, neighborKey);
 			const borderInfo = this.regionDict[borderKey];
+			const borderDesc = borderInfo ? borderInfo.desc : '';
 			const dirWord = this.directionWord(dir);
 
+			// TODO add hyperlink.
 			const relationSentence = dirWord === 'exotic' ?
 				'' :
 				`To the ${dirWord} lies ${neighborName}. `;
 
 			elements.push(
-				this.htmlPassage(relationSentence + borderInfo.desc)
+				this.htmlPassage(relationSentence + borderDesc)
 			);
 
 			// Util.logDebug(`wiki.pageHtmlStr(${pageKey}), bottom of for() loop, dir is ${dir}. elements[last] is ${elements[elements.length - 1]}`);
@@ -131,6 +294,10 @@ class Wiki {
 			this.testField(key, 'displayName');
 			this.testField(key, 'desc');
 
+			if (Object.keys(regionInfo.neighbors).length === 0) {
+				console.log(`${key}.neighbors - needs to be populated`);
+			}
+
 			for (let dirKey in regionInfo.neighbors) {
 				const neighborKey = regionInfo.neighbors[dirKey];
 
@@ -142,7 +309,7 @@ class Wiki {
 				}
 
 				const borderKey = this.borderKey(key, neighborKey);
-				this.testField(borderKey, 'desc');
+				this.testField(borderKey, 'desc', '(border entry)');
 
 				// const borderDesc = this.regionDict[borderKey].desc;
 				// if (! borderDesc || borderDesc.length < 99) {
@@ -153,7 +320,7 @@ class Wiki {
 	}
 
 	// Helper func.
-	testField (key, fieldName) {
+	testField (key, fieldName, note) {
 		const regionInfo = this.regionDict[key];
 		const content = regionInfo && regionInfo[fieldName];
 
@@ -168,7 +335,7 @@ class Wiki {
 			// info[fieldName] = 'incomplete';
 			// this.missing[key] = info;
 
-			console.log(`${key}.${fieldName} -- incomplete`);
+			console.log(`${key}.${fieldName} -- incomplete ` + (note || ''));
 		}
 	}
 
