@@ -1,0 +1,61 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+
+  <script>
+
+  </script>
+
+  <style>
+    body {
+      text-align: center;
+      font-family: serif;
+      font-size: 72;
+      background: #000000;
+      color: #000000;
+      text-shadow: white 1px 1px, white 1px -1px, white -1px -1px, white -1px 1px;
+    }
+
+    #header {
+      height: 100px;
+    }
+
+    #main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      height: 100px;
+      padding: 10px 0px 0px 0px;
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header">
+    <!-- button/link to return to main Villainverse page -->
+  </div>
+
+  <div id="main">
+    <label id="regionName"></label>
+    <p id="regionDesc"></p>
+
+    <!-- Or maybe these elements should be algorithmically created by wiki.js -->
+    <p hidden class="neighborPassage" id="northwest">
+      <!-- content here should be text and embedded hyperlink to other page -->
+    </p>
+    <p hidden class="neighborPassage" id="north"></p>
+    <p hidden class="neighborPassage" id="northeast"></p>
+    <p hidden class="neighborPassage" id="east"></p>
+    <p hidden class="neighborPassage" id="southeast"></p>
+    <p hidden class="neighborPassage" id="south"></p>
+    <p hidden class="neighborPassage" id="southwest"></p>
+    <p hidden class="neighborPassage" id="west"></p>
+    <p hidden class="neighborPassage" id="exotic"></p>
+  </div>
+</body>
+
+</html>
