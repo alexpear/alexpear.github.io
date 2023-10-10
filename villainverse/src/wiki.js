@@ -12,11 +12,13 @@ class Wiki {
 
 	loadDicts () {
 		this.regionDict = {
+			// Gaston is here, colonial hunter.
 			bambi: {
-				displayName: 'Deer Forest',
+				displayName: 'the Deer Forest',
 				desc: 'bambi desc',
 				neighbors: {
 					e: 'virginia',
+					exotic: 'zootopia',
 				}
 			},
 			virginia: {
@@ -24,172 +26,202 @@ class Wiki {
 				desc: 'Virginia desc',
 				neighbors: {
 					w: 'bambi',
+					e: 'atlantis',
 				}
 			},
 			neworleans: {
-				displayName: '',
+				displayName: 'New Orleans',
 				desc: '',
 				neighbors: {
 					n: 'virginia',
+					se: 'caribbean',
+					s: 'colombia',
 				}
 			},
 			colombia: {
-				displayName: '',
+				displayName: 'Colombia',
 				desc: '',
 				neighbors: {
-
+					n: 'neworleans',
+					ne: 'caribbean',
+					s: 'inca',
 				}
 			},
-			andes: {
-				displayName: '',
+			inca: {
+				displayName: 'the Incan Empire',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			caribbean: {
-				displayName: '',
+				displayName: 'the Mermaid Kingdom',
 				desc: '',
 				neighbors: {
-
+					nw: 'neworleans',
+					ne: 'atlantis',
+					s: 'colombia',
+					w: 'motunui', // distantly
+					exotic: 'paris', // colonial French land humans.
 				}
 			},
 			atlantis: {
-				displayName: '',
+				displayName: 'Atlantis',
 				desc: '',
 				neighbors: {
-
+					w: 'virginia', // Washington DC colonizing Atlantis
+					sw: 'caribbean',
+					exotic: 'space',
+					// maybe strange world too. could add new direction 'interplanetary'
 				}
 			},
-			// Or could combine British movies. King John the lion sits the throne but the true power is unofficial: The Horned King & Maleficent, now wed.
-			maleficent: {
-				displayName: '',
+			// We combine British movies. King John the lion sits the throne but the true power is unofficial: The Horned King & Maleficent, now wed.
+			britain: {
+				displayName: 'Britain',
 				desc: '',
 				neighbors: {
-
+					e: 'arendelle',
+					se: 'germany',
+					s: 'paris',
+					// TODO opposite check should be able to handle 'exotic' etc
+					exotic: 'neverneverland',
+					// need keys to link to more:
+					exotic2: 'wonderland',
+					colonial: 'virginia',
+					colonial2: 'claytonville',
 				}
 			},
-			robinhood: {
-				displayName: '',
+			// Evil queen from Snow White
+			germany: {
+				displayName: 'Germany',
 				desc: '',
 				neighbors: {
-
+					nw: 'britain',
+					n: 'arendelle',
+					e: 'corona',
+					w: 'paris',
+					s: 'pleasureisland',
 				}
 			},
+			// Frollo from Notre Dame
+			// Beauty & the Beast characters under siege
 			paris: {
-				displayName: '',
+				displayName: 'Paris',
+				desc: '',
+				neighbors: {
+					colonial: 'neworleans',
+					colonial2: 'caribbean',
+				}
+			},
+			// frozen
+			arendelle: {
+				displayName: 'Arendelle',
 				desc: '',
 				neighbors: {
 
 				}
 			},
-			frozen: {
-				displayName: '',
-				desc: '',
-				neighbors: {
-
-				}
-			},
-			gothel: {
-				displayName: '',
+			// Mother Gothel from Tangled
+			corona: {
+				displayName: 'Corona',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			pleasureisland: {
-				displayName: '',
+				displayName: 'Pleasure Island',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			pridelands: {
-				displayName: '',
+				displayName: 'Pride Lands',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			claytonville: {
-				displayName: '',
+				displayName: 'Claytonville',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			greece: {
-				displayName: '',
+				displayName: 'Mount Olympos',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			agrabah: {
-				displayName: '',
+				displayName: 'Agrabah',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			junglebook: {
-				displayName: '',
+				displayName: 'the Jungle',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			china: {
-				displayName: '',
+				displayName: 'China',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			kumandra: {
-				displayName: '',
+				displayName: 'Kumandra',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			motunui: {
-				displayName: '',
+				displayName: 'Motunui',
 				desc: '',
 				neighbors: {
 					// TODO
 				}
 			},
 			space: {
-				displayName: '',
+				displayName: 'Outer Space',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			neverneverland: {
-				displayName: '',
+				displayName: 'Never Never Land',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			wonderland: {
-				displayName: '',
+				displayName: 'Wonderland',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			strangeworld: {
-				displayName: '',
+				displayName: 'the Strange World',
 				desc: '',
 				neighbors: {
 
 				}
 			},
 			zootopia: {
-				displayName: '',
+				displayName: 'Zootopia',
 				desc: '',
 				neighbors: {
 
