@@ -16,14 +16,21 @@ class Wiki {
 				displayName: 'Deer Forest',
 				desc: 'bambi desc',
 				neighbors: {
-					e: 'pocahontas'
+					e: 'pocahontas',
 				}
 			},
 			pocahontas: {
 				displayName: 'Virginia',
 				desc: 'Virginia desc',
 				neighbors: {
-					w: 'bambi'
+					w: 'bambi',
+				}
+			},
+			princessfrog: {
+				displayName: '',
+				desc: '',
+				neighbors: {
+					n: 'pocahontas',
 				}
 			},
 			// TODO
@@ -117,8 +124,6 @@ class Wiki {
 	}
 
 	testRegionDict () {
-		this.missing = {};
-
 		for (let key in this.regionDict) {
 			const regionInfo = this.regionDict[key];
 			if (! regionInfo.neighbors) { continue; } // border case
@@ -133,7 +138,7 @@ class Wiki {
 				const counterpartEntry = this.regionDict[neighborKey].neighbors[opposite];
 
 				if (counterpartEntry !== key) {
-					this.missing[neighborKey].neighbors[opposite] = key;
+					console.log(`${neighborKey}.neighbors.${opposite} ?= ${key}`);
 				}
 
 				const borderKey = this.borderKey(key, neighborKey);
@@ -145,15 +150,12 @@ class Wiki {
 				// }
 			}
 		}
-
-		console.log(
-			Util.stringify(this.missing)
-		);
 	}
 
 	// Helper func.
 	testField (key, fieldName) {
-		const content = this.regionDict[key][fieldName];
+		const regionInfo = this.regionDict[key];
+		const content = regionInfo && regionInfo[fieldName];
 
 		let legit = !! content;
 
@@ -162,10 +164,11 @@ class Wiki {
 		}
 
 		if (! legit) {
-			const info = {};
-			info[fieldName] = 'incomplete';
+			// const info = {};
+			// info[fieldName] = 'incomplete';
+			// this.missing[key] = info;
 
-			this.missing[key] = info;
+			console.log(`${key}.${fieldName} -- incomplete`);
 		}
 	}
 
