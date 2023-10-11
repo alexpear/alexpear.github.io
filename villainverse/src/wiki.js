@@ -27,6 +27,7 @@ class Wiki {
 				neighbors: {
 					w: 'bambi',
 					e: 'atlantis',
+					s: 'neworleans',
 				}
 			},
 			neworleans: {
@@ -34,8 +35,8 @@ class Wiki {
 				desc: '',
 				neighbors: {
 					n: 'virginia',
-					se: 'caribbean',
 					s: 'colombia',
+					colonial: 'paris',
 				}
 			},
 			colombia: {
@@ -43,7 +44,7 @@ class Wiki {
 				desc: '',
 				neighbors: {
 					n: 'neworleans',
-					ne: 'caribbean',
+					ne: 'atlantis',
 					s: 'inca',
 				}
 			},
@@ -54,15 +55,15 @@ class Wiki {
 
 				}
 			},
-			caribbean: {
+			ursula: {
 				displayName: 'the Mermaid Kingdom',
 				desc: '',
 				neighbors: {
-					nw: 'neworleans',
-					ne: 'atlantis',
-					s: 'colombia',
-					w: 'motunui', // distantly
-					exotic: 'paris', // colonial French land humans.
+					nw: 'paris',
+					n: 'pleasureisland',
+					ne: 'greece',
+					w: 'atlantis',
+					// exotic: 'motunui', // distantly
 				}
 			},
 			atlantis: {
@@ -70,9 +71,12 @@ class Wiki {
 				desc: '',
 				neighbors: {
 					w: 'virginia', // Washington DC colonizing Atlantis
-					sw: 'caribbean',
-					exotic: 'space',
-					// maybe strange world too. could add new direction 'interplanetary'
+					e: 'ursula',
+					sw: 'colombia',
+					distant: 'motunui',
+					interplanetary: 'space',
+					exotic: 'strangeworld',
+					// TODO make sure directions() can handle these keys.
 				}
 			},
 			// We combine British movies. King John the lion sits the throne but the true power is unofficial: The Horned King & Maleficent, now wed.
@@ -109,8 +113,8 @@ class Wiki {
 				displayName: 'Paris',
 				desc: '',
 				neighbors: {
+					se: 'ursula',
 					colonial: 'neworleans',
-					colonial2: 'caribbean',
 				}
 			},
 			// frozen
@@ -118,7 +122,7 @@ class Wiki {
 				displayName: 'Arendelle',
 				desc: '',
 				neighbors: {
-
+					w: 'britain',
 				}
 			},
 			// Mother Gothel from Tangled
@@ -126,14 +130,14 @@ class Wiki {
 				displayName: 'Corona',
 				desc: '',
 				neighbors: {
-
+					w: 'germany',
 				}
 			},
 			pleasureisland: {
 				displayName: 'Pleasure Island',
 				desc: '',
 				neighbors: {
-
+					n: 'germany',
 				}
 			},
 			pridelands: {
@@ -224,7 +228,7 @@ class Wiki {
 				displayName: 'Zootopia',
 				desc: '',
 				neighbors: {
-
+					exotic: 'bambi',
 				}
 			},
 		};
@@ -302,7 +306,7 @@ class Wiki {
 	}
 
 	otherDirection (dirKey) {
-		return {
+		const opposites = {
 			nw: 'se',
 			n: 's',
 			ne: 'sw',
@@ -311,8 +315,9 @@ class Wiki {
 			s: 'n',
 			sw: 'ne',
 			w: 'e',
-		}
-		[dirKey];
+		};
+
+		return opposites[dirKey] || dirKey;
 	}
 
 	borderKey (a, b) {
@@ -337,7 +342,7 @@ class Wiki {
 				const counterpartEntry = this.regionDict[neighborKey].neighbors[opposite];
 
 				if (counterpartEntry !== key) {
-					console.log(`this.regionDict.${neighborKey}.neighbors.${opposite} ?= ${key}`);
+					console.log(`this.regionDict.${neighborKey}.neighbors -- ${opposite}: '${key}',`);
 				}
 
 				const borderKey = this.borderKey(key, neighborKey);
