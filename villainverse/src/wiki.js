@@ -15,9 +15,9 @@ class Wiki {
 			// Gaston is here, colonial hunter.
 			bambi: {
 				displayName: 'the Deer Forest',
-				desc: 'A new beast has begun stalking the green forest. It is Man, armed with rifles that combine Man\'s red flower with alchemical gunpowder. The newest of these men is Gaston, a bold Frenchman who is eager to tame a New World in the name of colonialism.',
+				desc: 'A new beast has begun stalking the green forest. It is Man, armed with rifles that combine Man\'s red flower with alchemical gunpowder.',
 				neighbors: {
-					e: 'virginia',
+					se: 'neworleans',
 					exotic: 'zootopia',
 				}
 			},
@@ -25,7 +25,6 @@ class Wiki {
 				displayName: 'Virginia',
 				desc: 'In the wake of devastating plagues, English colonists conquered Virginia. Then they shook off Britain\'s reins. Yet they did not abandon the project of conquest.',
 				neighbors: {
-					w: 'bambi',
 					e: 'atlantis',
 					s: 'neworleans',
 					colonial: 'britain',
@@ -35,6 +34,7 @@ class Wiki {
 				displayName: 'New Orleans',
 				desc: 'French colonists have driven out the locals & built a city they call New Orleans. As if that weren\'t bad enough, French power in the city has since been usurped by the influence of the demons of Hell. Enterprising Satanists have signed away their afterlives for the opportunity to dominate public life. Now demon summoning is openly practiced in the militia barracks & the office of the Governor-General.',
 				neighbors: {
+					nw: 'bambi',
 					n: 'virginia',
 					s: 'colombia',
 					colonial: 'paris',
@@ -272,10 +272,144 @@ class Wiki {
 		};
 
 		this.borderDict = {
-			bambivirginia: {
-				desc: 'bambi virginia border desc'
-			},
-			// TODO
+		    bambineworleans: {
+		        desc: 'The newest hunter in the wild forests is Gaston, a bold Frenchman who is eager to tame a New World in the name of colonialism.',
+		    },
+		    pridelandszootopia: {
+		        desc: '',
+		    },
+		    bambizootopia: {
+		        desc: '',
+		    },
+		    atlantisvirginia: {
+		        desc: '',
+		    },
+		    neworleansvirginia: {
+		        desc: '',
+		    },
+		    britainvirginia: {
+		        desc: '',
+		    },
+		    colombianeworleans: {
+		        desc: '',
+		    },
+		    neworleansparis: {
+		        desc: '',
+		    },
+		    atlantiscolombia: {
+		        desc: '',
+		    },
+		    colombiainca: {
+		        desc: '',
+		    },
+		    incamotunui: {
+		        desc: '',
+		    },
+		    pleasureislandursula: {
+		        desc: '',
+		    },
+		    greeceursula: {
+		        desc: '',
+		    },
+		    agrabahursula: {
+		        desc: '',
+		    },
+		    atlantisursula: {
+		        desc: '',
+		    },
+		    pridelandsursula: {
+		        desc: '',
+		    },
+		    atlantismotunui: {
+		        desc: '',
+		    },
+		    atlantisspace: {
+		        desc: '',
+		    },
+		    atlantisstrangeworld: {
+		        desc: '',
+		    },
+		    arendellebritain: {
+		        desc: '',
+		    },
+		    britaingermany: {
+		        desc: '',
+		    },
+		    britainparis: {
+		        desc: '',
+		    },
+		    britainneverneverland: {
+		        desc: '',
+		    },
+		    britainwonderland: {
+		        desc: '',
+		    },
+		    britainpridelands: {
+		        desc: '',
+		    },
+		    britainclaytonville: {
+		        desc: '',
+		    },
+		    arendellegermany: {
+		        desc: '',
+		    },
+		    coronagermany: {
+		        desc: '',
+		    },
+		    germanyparis: {
+		        desc: '',
+		    },
+		    germanypleasureisland: {
+		        desc: '',
+		    },
+		    parispleasureisland: {
+		        desc: '',
+		    },
+		    arendellecorona: {
+		        desc: '',
+		    },
+		    coronapleasureisland: {
+		        desc: '',
+		    },
+		    coronagreece: {
+		        desc: '',
+		    },
+		    greecepleasureisland: {
+		        desc: '',
+		    },
+		    agrabahpridelands: {
+		        desc: '',
+		    },
+		    claytonvillepridelands: {
+		        desc: '',
+		    },
+		    agrabahgreece: {
+		        desc: '',
+		    },
+		    greecespace: {
+		        desc: '',
+		    },
+		    agrabahchina: {
+		        desc: '',
+		    },
+		    agrabahjunglebook: {
+		        desc: '',
+		    },
+		    chinajunglebook: {
+		        desc: '',
+		    },
+		    junglebookkumandra: {
+		        desc: '',
+		    },
+		    chinakumandra: {
+		        desc: '',
+		    },
+		    chinamotunui: {
+		        desc: '',
+		    },
+		    kumandramotunui: {
+		        desc: ''
+		    },
 		};
 
 		const descs = Object.values(this.regionDict)
@@ -417,11 +551,19 @@ class Wiki {
 					'Border entry missing';
 
 				if (! goodBorderDesc) {
+					// Add it in-memory for later printing.
+					this.borderDict[borderKey] = borderInfo || {desc: ''};
+
 					// Temporarily comment this to reduce noise.
-					console.log(`this.borderDict.${borderKey}.desc -- ${message}`);
+					console.log(`  this.borderDict.${borderKey}.desc -- ${message}`);
 				}
 			}
 		}
+
+		// Uncomment to print pasteable blank border entries.
+		// console.log(
+		// 	Util.stringify(this.borderDict)
+		// );
 	}
 
 	// Helper func.
