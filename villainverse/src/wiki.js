@@ -41,8 +41,8 @@ class Wiki {
 				}
 			},
 			colombia: {
-				displayName: 'Colombia',
-				desc: '',
+				displayName: 'Encanto',
+				desc: 'In a torrid clime there was a house of many marvelous virtues. One night, twelve Incan soldiers leapt through the bedroom windows, bottled the breath of everyone sleeping in the house, & flew away, carried by a giant purple hawk. A sorceress of the Andes brewed these pneumatic essences into thousands of crystal phials, laughing as she did so. Now her empire threatens Encanto\'s perimeter with its own abilities. Her armies clear the rain when attacking, & gather storms when defending. Sword-slashed soldiers jeer & pull out Chef Kronk\'s magical arepas, healing them instantly. Even the beasts of the jungle have been recruited: strong jaguar, swift toucan, agile squirrel.',
 				neighbors: {
 					n: 'neworleans',
 					ne: 'atlantis',
@@ -142,7 +142,7 @@ class Wiki {
 			},
 			pleasureisland: {
 				displayName: 'Pleasure Island',
-				desc: '',
+				desc: 'The fairies were angels once. When they fell from Heaven, some (like Tinker Bell) wavered in their convictions, flirting again with virtue. Pleasure Island is the work of a fairy who did not waver. Here, children live forgotten by the world. Here, kicking & shouting is permitted. Here, children never grow up - they grow into asses.',
 				neighbors: {
 					nw: 'paris',
 					n: 'germany',
@@ -159,11 +159,13 @@ class Wiki {
 					n: 'agrabah',
 					s: 'claytonville',
 					dynastic: 'britain',
+					exotic2: 'zootopia',
 				}
 			},
+			// Tarzan
 			claytonville: {
 				displayName: 'Claytonville',
-				desc: '',
+				desc: 'Thousands of foreign loggers have descended on the jungle, & when their ships sail back they carry lumber for Britain & beasts for the zoos.',
 				neighbors: {
 					n: 'pridelands',
 					colonial2: 'britain',
@@ -171,7 +173,7 @@ class Wiki {
 			},
 			greece: {
 				displayName: 'Mount Olympos',
-				desc: '',
+				desc: 'Having unleashed the Titans once more against his brother Zeus, fire-headed Hades now rules heaven. The gods have been imprisoned on the other planets, save Ares, who serves Hades, & Artemis, who no foe can catch. The blasphemous Titans now stride knee-deep in the Mediterranean, & thousands of mortals have fled Greece to evade their fickle gaze.',
 				neighbors: {
 					n: 'corona',
 					w: 'pleasureisland',
@@ -182,7 +184,7 @@ class Wiki {
 			},
 			agrabah: {
 				displayName: 'Agrabah',
-				desc: '',
+				desc: 'The Agrabah rainforest was once a desert city. Instead of streets, it now has rivers. Instead of slums, sequoias. Mongoose & tiger pick fruit together, fangs forgotten, unaging. Beneath the forest floor sprawls an underground palace nineteen stories deep, containing Atlantean texts, jarred Proteans, pixie dust. Above the redwoods soars the skyscraper Latter Babel, seat of Jafar the Unfettered. In his veins glimmer fire, stolen from the djinn. It is no longer sorcery that he envies; it is God. Wielding the same power that produced Creation in six days, he has remade Eden in Agrabah. Now his gaze flickers across the future, plotting a Day of Judgement wherein Earth judges Heaven.',
 				neighbors: {
 					nw: 'greece',
 					w: 'ursula',
@@ -193,7 +195,7 @@ class Wiki {
 			},
 			junglebook: {
 				displayName: 'the Jungle',
-				desc: '',
+				desc: 'An ancient Shaivite temple looms over a field of blackened stumps. It has been taken over by the impious Bonfire King, a mighty orangutan whose arms stretch longer than anacondas. Guarded night & day by wary gorillas, the Dynastic Fire flickers in the courtyard, fed hourly on jungle lumber. This wood, & fruit, & martial service are the tribute paid by jungle creatures to the Bonfire King. Peacocks gift him fine earthworms, & even ants carry kindling to his throne. Those defiant species, like the peaceable Bears, have woken to a red glow at midnight, & fled as their homes transformed to Hellfire, then ashes. But guilt glowers too, in the heart of torchbearing Abu on the steps of the temple.',
 				neighbors: {
 					nw: 'agrabah',
 					ne: 'china',
@@ -202,7 +204,7 @@ class Wiki {
 			},
 			china: {
 				displayName: 'China',
-				desc: '',
+				desc: 'After Bori Khan touched his torch to the kindling & burned the Emperor alive, he sent messengers to every village of China & of his conquered lands (in other words to every corner of Asia) saying the Emperor had not been killed. "The Emperor could no longer ignore the will of Heaven & declared Bori Khan his heir. Now he attends higher matters on pilgramage to the Four Mountains." But to me he said, "Return to Venice, beyond even my grasp. Of every land in this world, listen to its multiple stories, & record that which glows brightest in your heart." And so I have done.',
 				neighbors: {
 					w: 'agrabah',
 					sw: 'junglebook',
@@ -212,7 +214,7 @@ class Wiki {
 			},
 			kumandra: {
 				displayName: 'Kumandra',
-				desc: '',
+				desc: 'In the Land of Statues, art rules & artists cower. Upon its five thrones sit silent-shouting statues. Its streets are populated with stone people of masterful vitality. Only in five secret places - cave, roof, boat, tower, treetop - do five underfed humans draw breath. They cannot leave, for they cannot trust anyone beyond the blue glow of what they hold in their hands.',
 				neighbors: {
 					n: 'china',
 					w: 'junglebook',
@@ -221,7 +223,7 @@ class Wiki {
 			},
 			motunui: {
 				displayName: 'Motunui',
-				desc: '',
+				desc: 'When Death seized Heaven\'s throne, he conscripted the wayward Titans to enforce his plutocracy. Lava-blooded Te Ka, now a Hadean vassal, strides the ocean demanding treasure. Islands that do not tithe must evacuate, enduring a long voyage to an uncertain harbor. Those that give up their heirlooms must quickly find or steal more before the firetyrant returns to the island. The only fearless places here are the smoking footsteps of towering Te Ka, new islands in the ocean, drawing squabbling birds, seals, green grass.',
 				neighbors: {
 					nw: 'china',
 					w: 'kumandra',
@@ -231,7 +233,7 @@ class Wiki {
 			},
 			space: {
 				displayName: 'Outer Space',
-				desc: '',
+				desc: 'Throughout the universe, no planet is as feared as Aurelion, the world where everything is for sale. Ever since the planet was purchased by the pirate Captain Flint, United Galactic Federation sessions have lapsed into apprehensive silence, as all listen to the new Aurelion representative, Senator John Silver. For no armada has yet forestalled Flint\'s audacious raids, nor has any ruler outrun his vengeful ships. As a sword cannot slice a shadow, so no army can defy the Captain. And unless the Federation wants things to get uncomfortable, suggests Senator Silver, they should allow Captain Flint to commission custom weapons from geneticist Dr Jumba Jookiba...',
 				neighbors: {
 					interplanetary: 'atlantis',
 					interplanetary2: 'greece',
@@ -239,21 +241,21 @@ class Wiki {
 			},
 			neverneverland: {
 				displayName: 'Never Never Land',
-				desc: '',
+				desc: 'When infants Romulus & Remus were left to die among seven wild hills, they were found at night by a she-wolf. She carried them through a secret tunnel to an island of fairies & mermaids, where they lived in a willow-tree. Ever since, this tree (or trees or houses of similarly low quality) has been home to those children who find themselves outdoors at night with nowhere to go. But all beings under God are capable of sin, & there came a time when some of these lost ones marauded in a ship under a cruel Captain. And in time it happened that these pirates cut down the willow-tree (or tree-house, or driftwood-house) & claimed the next lost child directly as their cabin boy. "It is we who run this island," they said to him, "so get your head out of the clouds & work!"',
 				neighbors: {
 					exotic: 'britain',
 				}
 			},
 			wonderland: {
 				displayName: 'Wonderland',
-				desc: '',
+				desc: 'In your house or mine, the pet is the guest of humanity. But in different worlds it is otherwise. The Red Queen is in truth a kitten, but to call her that is to violate her fiercest edict, since a cat on the throne would make no sense.',
 				neighbors: {
 					exotic2: 'britain',
 				}
 			},
 			strangeworld: {
 				displayName: 'the Strange World',
-				desc: '',
+				desc: 'Somewhere in the starry dance of Night, there is a world where Nature has tamed Humanity. Some wayward ancients ventured there long ago, but little knowledge can reach us from that place. The last letter received from such a visitor read, "Strange this new world is, but I have found my home. With these words I write my last."',
 				neighbors: {
 					exotic: 'atlantis',
 				}
@@ -261,9 +263,10 @@ class Wiki {
 			// Including House of Mouse, Duck Tales, etc
 			zootopia: {
 				displayName: 'Zootopia',
-				desc: '',
+				desc: 'There is a land unknown to Human where the claw is subject to the paw. The lions march shackled before the mocking-tongued goats. Civility & cruelty hold hands in Zootopia, where sophisticated sheep keep their brother animals in chains. Those who show mercy are exiled to the countryside ... but may perhaps befriend an outlaw trio there, duck dog & mouse, who live as casteless equals.',
 				neighbors: {
 					exotic: 'bambi',
+					exotic2: 'pridelands',
 				}
 			},
 		};
@@ -387,8 +390,9 @@ class Wiki {
 			this.testField(key, 'displayName'); 
 			this.testField(key, 'desc');
 
-			if (Object.keys(regionInfo.neighbors).length <= 1) {
-				console.log(`this.regionDict.${key}.neighbors - needs to be populated`);
+			const neighborCount = Object.keys(regionInfo.neighbors).length;
+			if (neighborCount <= 0) {
+				console.log(`this.regionDict.${key}.neighbors has ${neighborCount} entries - needs to be populated`);
 			}
 
 			for (let dirKey in regionInfo.neighbors) {
@@ -413,8 +417,8 @@ class Wiki {
 					'Border entry missing';
 
 				if (! goodBorderDesc) {
-					// temp commented to reduce noise
-					// console.log(`this.borderDict.${borderKey}.desc -- ${message}`);
+					// Temporarily comment this to reduce noise.
+					console.log(`this.borderDict.${borderKey}.desc -- ${message}`);
 				}
 			}
 		}
