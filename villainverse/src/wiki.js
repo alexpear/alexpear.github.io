@@ -422,7 +422,11 @@ class Wiki {
     }
 
     random () {
-        
+        this.go(
+            Util.randomOf(
+                Object.keys(this.regionDict)
+            )
+        );
     }
 
     pageHtmlStr (pageKey) {
