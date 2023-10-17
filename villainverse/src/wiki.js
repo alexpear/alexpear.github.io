@@ -94,7 +94,7 @@ class Wiki {
             // Evil queen from Snow White
             germany: {
                 displayName: 'Germany',
-                desc: 'Europe tiptoes around its Germanic heart, fearful to displease the tyrannical Mirrorqueen. A sorceress of unnatural age, there are few secrets hidden from her mystical scrutiny. Crowded are the cemeteries with those who have plotted against her, then tasted the retribution of her poisoners.',
+                desc: 'Europe has long tiptoed around its Germanic heart, fearful to displease the tyrannical Mirrorqueen. A sorceress of unnatural age, there are few secrets hidden from her mystical scrutiny. Crowded are the cemeteries with those who have plotted against her, then tasted the retribution of her poison.',
                 neighbors: {
                     nw: 'britain',
                     n: 'arendelle',
@@ -419,6 +419,8 @@ class Wiki {
     go (pageKey) {
         const mainDiv = document.getElementById('main');
         mainDiv.innerHTML = this.pageHtmlStr(pageKey);
+
+        // TODO - Then scroll to top of page.
     }
 
     random () {
