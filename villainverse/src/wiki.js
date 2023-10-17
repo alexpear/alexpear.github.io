@@ -89,7 +89,6 @@ class Wiki {
                     exotic2: 'wonderland',
                     dynastic: 'pridelands',
                     colonial: 'virginia',
-                    colonial2: 'claytonville',
                 }
             },
             // Evil queen from Snow White
@@ -164,7 +163,7 @@ class Wiki {
                 desc: 'Thousands of foreign loggers have descended on the jungle, & when their ships sail back they carry lumber for Britain & beasts for the zoos.',
                 neighbors: {
                     n: 'pridelands',
-                    colonial2: 'britain',
+                    // zootopia?
                 }
             },
             greece: {
@@ -277,7 +276,7 @@ class Wiki {
                 desc: 'The young lions of the Pride are trained by scouting for rabbit-holes that lead to Zootopia. Well-armed bunnies & rats make sprinting raids on predator territory, trying to free prisoners & effect regime change.',
             },
             bambizootopia: {
-                desc: '',
+                desc: 'Walking the deer paths that connect the worlds, Great Prince of the Forest Bambi emerges from Savannah Central Park in Zootopia with his antlers held high. He is here to give a speech on the harmony between prey & predators.',
             },
             atlantisvirginia: {
                 desc: 'The new administration of Atlantis is learning to exploit the lost city\' arts. Glowing stone aircraft now float in clumsy circles round Washington\'s skies. Machine guns have been bolted to their sides, but when the Americans learn to activate their crystal weapons, history may repeat itself.',
@@ -286,7 +285,7 @@ class Wiki {
                 desc: 'The hotels of Georgia are packed with preachers, called to defend their nation against Lousiana demons.',
             },
             britainvirginia: {
-                desc: 'King John is not happy to have lost thirteen colonies worth of taxes.',
+                desc: 'King John is not happy to have lost thirteen colonies worth of tax revenue.',
             },
             colombianeworleans: {
                 desc: 'French ships periodically sail to conquer Encanto, but the winds of Pepa Madrigal\'s heart have so far prevented them from reaching shore. But the faces in Bruno\'s vision worry him, faces that are only pretending to be voodoo spirits.',
@@ -319,7 +318,7 @@ class Wiki {
                 desc: 'Atlantis has long known the secrets of riding a pillar of alchemical fire up into the heavens. Now, American expeditions ride Atlantean spacecraft they barely understand into deep space. Speeding boldly towards planets rumored to contain lost technology, they pray to evade the telescopes of Captain Flint\'s pirates.',
             },
             atlantisstrangeworld: {
-                desc: '',
+                desc: 'The Illumineers of ancient Atlantis were familiar with the strange world of Avalonia - perhaps even with every world.',
             },
             arendellebritain: {
                 desc: 'Ice statues gleam as London readies for the royal wedding. King Hans has offered the hand of Princess Anna to King John the Lion. Everyone is delighted by the arrangment, except the bride, who mutters behind her veil, "Love is a one-way door".',
@@ -337,19 +336,16 @@ class Wiki {
                 desc: '',
             },
             britainpridelands: {
-                desc: '',
-            },
-            britainclaytonville: {
-                desc: '',
+                desc: 'English ships bearing gold & dried meat support the Pride regime, for King John is in fact a descendant of the Scar dynasty.',
             },
             arendellegermany: {
-                desc: '',
+                desc: '"I don\'t know how you got in here," says the women beneath Arendelle Castle, "but I want nothing of your sorcery. Vade retro me satana!" But the hook-nosed witch smiles patiently.',
             },
             coronagermany: {
                 desc: '',
             },
             germanyparis: {
-                desc: 'The Mirrorqueen has instructed Quasimodo, by letter from beggar to Beggar King to hunchback, to sprinkle the false Pope\'s food with soporific powder. Holding the readied apple in his hands, he watches Mass from above, praying.',
+                desc: 'The Mirrorqueen has instructed Quasimodo, by letter from beggar to Beggar King to hunchback, to sprinkle the false Pope\'s food with soporific powder. Holding the readied apple in his hands, he watches mass from above, praying.',
             },
             germanypleasureisland: {
                 desc: '',
