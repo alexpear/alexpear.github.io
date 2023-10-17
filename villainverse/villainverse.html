@@ -9,12 +9,11 @@
 
   <style>
     body {
-      text-align: center;
+      text-align: left;
       font-family: serif;
-      font-size: 72;
+      font-size: 16;
       background: #000000;
-      color: #000000;
-      text-shadow: white 1px 1px, white 1px -1px, white -1px -1px, white -1px 1px;
+      color: #bad;
     }
 
     #header {
@@ -27,9 +26,14 @@
     }
 
     label {
-      height: 100px;
-      padding: 10px 0px 0px 0px;
-      margin: 10px;
+      font-size: 48;
+      text-align: center;
+    }
+
+    .link {
+      color: #beefed;
+      text-decoration-line: underline;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -40,21 +44,13 @@
   </div>
 
   <div id="main">
-    <label id="regionName"></label>
-    <p id="regionDesc"></p>
-
-    <!-- Or maybe these elements should be algorithmically created by wiki.js -->
-    <p hidden class="neighborPassage" id="northwest">
-      <!-- content here should be text and embedded hyperlink to other page -->
-    </p>
-    <p hidden class="neighborPassage" id="north"></p>
-    <p hidden class="neighborPassage" id="northeast"></p>
-    <p hidden class="neighborPassage" id="east"></p>
-    <p hidden class="neighborPassage" id="southeast"></p>
-    <p hidden class="neighborPassage" id="south"></p>
-    <p hidden class="neighborPassage" id="southwest"></p>
-    <p hidden class="neighborPassage" id="west"></p>
-    <p hidden class="neighborPassage" id="exotic"></p>
+    <!-- <label id="regionName"></label>
+    <p id="regionDesc"></p> -->
+    <label>Zootopia</label>
+    <p>There is a land unknown to Human where the claw is subject to the hoof. The lions march shackled before the mocking-tongued goats. Civility & cruelty hold hands in Zootopia, where unfree Pluto's jeweled collar reads "Property of Scrooge McDuck". Those who show mercy are exiled to the countryside ... but may perhaps befriend an outlaw trio there, duck dog & mouse, who live as casteless equals.</p>
+    <p class="link">The Deer Forest: </p>
+    <p>The Pride Lands: The young lions of the Pride are trained by scouting for rabbit-holes that lead to Zootopia. Well-armed bunnies & rats make sprinting raids on predator territory, trying to free prisoners & effect regime change.</p>
+    <p>Wonderland: </p>
   </div>
 </body>
 
