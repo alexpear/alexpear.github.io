@@ -3,10 +3,6 @@
 <head>
   <meta charset="utf-8">
 
-  <script>
-
-  </script>
-
   <style>
     body {
       text-align: left;
@@ -14,10 +10,6 @@
       font-size: 16;
       background: #000000;
       color: #bad;
-    }
-
-    #header {
-      height: 100px;
     }
 
     #main {
@@ -28,11 +20,17 @@
     label {
       font-size: 48;
       text-align: center;
+      color: white;
     }
 
-    .link {
-      color: #beefed;
-      text-decoration-line: underline;
+    .wikilink {
+      font-size: 18;
+      color: white;
+      background: none!important;
+      border: none;
+      padding: 0!important;
+      font-family: serif;
+      text-decoration: underline;
       cursor: pointer;
     }
   </style>
@@ -44,14 +42,14 @@
   </div>
 
   <div id="main">
-    <!-- <label id="regionName"></label>
-    <p id="regionDesc"></p> -->
     <label>Zootopia</label>
     <p>There is a land unknown to Human where the claw is subject to the hoof. The lions march shackled before the mocking-tongued goats. Civility & cruelty hold hands in Zootopia, where unfree Pluto's jeweled collar reads "Property of Scrooge McDuck". Those who show mercy are exiled to the countryside ... but may perhaps befriend an outlaw trio there, duck dog & mouse, who live as casteless equals.</p>
-    <p class="link">The Deer Forest: </p>
-    <p>The Pride Lands: The young lions of the Pride are trained by scouting for rabbit-holes that lead to Zootopia. Well-armed bunnies & rats make sprinting raids on predator territory, trying to free prisoners & effect regime change.</p>
-    <p>Wonderland: </p>
+    <p>
+      <button type="button" class="wikilink" onclick="window.wiki.go('pridelands')">The Pride Lands</button>: The young lions of the Pride are trained by scouting for rabbit-holes that lead to Zootopia. Well-armed bunnies & rats make sprinting raids on predator territory, trying to free prisoners & effect regime change.
+    </p>
   </div>
 </body>
 
 </html>
+
+<script src="bundle.js"></script>

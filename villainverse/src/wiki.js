@@ -149,7 +149,7 @@ class Wiki {
             },
             pridelands: {
                 displayName: 'the Pride Lands',
-                desc: 'On the savannah, mice live like kings, each burrough a palace. The grass is empty of all creatures too slow to escape the lion\'s claw. Gazelle, wild dog, elephant, all are gathered in shivering herds, perimetered night & day by jailor lions. For cruel generations, the pride has not ruled but farmed for meat.',
+                desc: 'On the savannah, mice live like kings, each burrow a palace. The grass is empty of all creatures too slow to escape the lion\'s claw. Gazelle, wild dog, elephant, all are gathered in shivering herds, perimetered night & day by jailor lions. For cruel generations, the pride has not ruled but farmed for meat.',
                 neighbors: {
                     n: 'agrabah',
                     s: 'claytonville',
@@ -416,6 +416,15 @@ class Wiki {
         ) / this.regionCount;
     }
 
+    go (pageKey) {
+        const mainDiv = document.getElementById('main');
+        mainDiv.innerHTML = this.pageHtmlStr(pageKey);
+    }
+
+    random () {
+        
+    }
+
     pageHtmlStr (pageKey) {
         const regionInfo = this.regionDict[pageKey];
         const elements = [
@@ -451,10 +460,18 @@ class Wiki {
         const borderDesc = borderInfo ? borderInfo.desc : '';
         const dirWord = this.directionWord(dir);
 
-        // TODO add hyperlink.
-        const relationSentence = this.directions().includes(dir) ?
-            `To the ${dirWord} lies ${neighborName}. ` :
-            `${Util.capitalized(neighborName)}: `;
+        let relationSentence;
+        if (this.directions().includes(dir)) {
+            const button = this.asWikiLink(neighborKey, neighborName);
+            relationSentence = `To the ${dirWord} lies ${button}. `;
+        }
+        else {
+            const button = this.asWikiLink(
+                neighborKey,
+                Util.capitalized(neighborName)
+            );
+            relationSentence = button + ': ';
+        }
 
         elements.push(
             this.htmlPassage(relationSentence + borderDesc)
@@ -468,6 +485,10 @@ class Wiki {
     asElement (content, elementName) {
         // TODO make content HTML-friendly, escape etc.
         return `<${elementName}>${content}</${elementName}>`;
+    }
+
+    asWikiLink (pageKey, displayName) {
+        return `<button type="button" class="wikilink" onclick="window.wiki.go('${pageKey}')">${displayName}</button>`;
     }
 
     directions () {
@@ -593,6 +614,8 @@ class Wiki {
         const wiki = new Wiki();
         wiki.testPages();
         wiki.testRegionDict();
+
+        window.wiki = wiki;
     }
 }
 
