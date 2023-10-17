@@ -42,7 +42,7 @@ class Wiki {
             },
             colombia: {
                 displayName: 'Encanto',
-                desc: 'In a torrid clime there was a house of many marvelous virtues. Alone in this world, Encanto is not ruled by evil but by good.',
+                desc: 'In a torrid clime there was a house of many marvelous virtues. Alone in this world, Encanto is ruled not by evil but by good.',
                 neighbors: {
                     n: 'neworleans',
                     s: 'inca',
@@ -416,11 +416,14 @@ class Wiki {
         ) / this.regionCount;
     }
 
+    // TODO support back button
+    // TODO a way to link to a page
+
     go (pageKey) {
         const mainDiv = document.getElementById('main');
         mainDiv.innerHTML = this.pageHtmlStr(pageKey);
 
-        // TODO - Then scroll to top of page.
+        document.body.scrollTop = 0;
     }
 
     random () {
@@ -476,7 +479,9 @@ class Wiki {
                 neighborKey,
                 Util.capitalized(neighborName)
             );
-            relationSentence = button + ': ';
+            const colon = borderDesc ? ':' : '';
+
+            relationSentence = button + colon + ' ';
         }
 
         elements.push(

@@ -24159,7 +24159,7 @@ class Wiki {
             },
             colombia: {
                 displayName: 'Encanto',
-                desc: 'In a torrid clime there was a house of many marvelous virtues. Alone in this world, Encanto is not ruled by evil but by good.',
+                desc: 'In a torrid clime there was a house of many marvelous virtues. Alone in this world, Encanto is ruled not by evil but by good.',
                 neighbors: {
                     n: 'neworleans',
                     s: 'inca',
@@ -24211,7 +24211,7 @@ class Wiki {
             // Evil queen from Snow White
             germany: {
                 displayName: 'Germany',
-                desc: 'Europe tiptoes around its Germanic heart, fearful to displease the tyrannical Mirrorqueen. A sorceress of unnatural age, there are few secrets hidden from her mystical scrutiny. Crowded are the cemeteries with those who have plotted against her, then tasted the retribution of her poisoners.',
+                desc: 'Europe has long tiptoed around its Germanic heart, fearful to displease the tyrannical Mirrorqueen. A sorceress of unnatural age, there are few secrets hidden from her mystical scrutiny. Crowded are the cemeteries with those who have plotted against her, then tasted the retribution of her poison.',
                 neighbors: {
                     nw: 'britain',
                     n: 'arendelle',
@@ -24533,9 +24533,14 @@ class Wiki {
         ) / this.regionCount;
     }
 
+    // TODO support back button
+    // TODO a way to link to a page
+
     go (pageKey) {
         const mainDiv = document.getElementById('main');
         mainDiv.innerHTML = this.pageHtmlStr(pageKey);
+
+        document.body.scrollTop = 0;
     }
 
     random () {
@@ -24591,7 +24596,9 @@ class Wiki {
                 neighborKey,
                 Util.capitalized(neighborName)
             );
-            relationSentence = button + ': ';
+            const colon = borderDesc ? ':' : '';
+
+            relationSentence = button + colon + ' ';
         }
 
         elements.push(
