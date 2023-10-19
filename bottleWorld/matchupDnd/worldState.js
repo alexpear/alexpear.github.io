@@ -9,6 +9,8 @@ class WorldState {
         this.load();
         this.protagFaction = this.randomFaction();
         this.antagFaction = this.randomFaction();
+
+        // Util.logDebug(`ws constructor - this.protagFaction is class: ${this.protagFaction.constructor.name}`)
     }
 
     load () {
@@ -293,20 +295,21 @@ class WorldState {
         );
     }
 
-    newFactionCharacter (factionTemplate = this.protagFaction) {
+    // TODO move to class Faction.
+    newFactionCharacter (faction = this.protagFaction) {
         let speciesInfo;
-        if (this.speciesExcept) {
-            if (this.speciesExcept.length >= Character.SPECIES().length) {
-                throw new Error(`${factionTemplate.name} has too many (${this.speciesExcept.length}) speciesExcept entries.`);
+        if (faction.template.speciesExcept) {
+            if (faction.template.speciesExcept.length >= Character.SPECIES().length) {
+                throw new Error(`${faction.toString()} has too many (${faction.template.speciesExcept.length}) speciesExcept entries.`);
             }
 
             do {
                 speciesInfo = Util.randomOf(Character.SPECIES());
             } 
-            while (this.speciesExcept.includes(speciesInfo.name));
+            while (faction.template.speciesExcept.includes(speciesInfo.name));
         }
-        else if (this.species) {
-            speciesName = Util.randomOf(this.species);
+        else if (faction.template.species) {
+            const speciesName = Util.randomOf(faction.template.species);
 
             speciesInfo = Character.SPECIES().find(s => s.name === speciesName);
         }
@@ -316,11 +319,15 @@ class WorldState {
 
         let classInfo = Util.randomOf(Character.CLASS());
 
+        // Util.logDebug(`in newFactionCharacter(${faction.toString()}), about to create a ${speciesInfo.name} ${classInfo.name}.`);
+
         return new Character(speciesInfo, classInfo);
     }
 
     synopsis () {
-        return `I am a ${new Character().toString()} from the ${this.protagFaction.toString()}.\nI & my ${new Character().toString()} friend are in the ${this.antagFaction.toString()}.\nWe were thwarted by a ${new Character().toString()} so we're going up against a ${new Character().toString()} instead.`;
+        return `I am a ${this.newFactionCharacter(this.protagFaction).toString()} from the ${this.protagFaction.toString()}.\n` +
+            `I & my ${this.newFactionCharacter(this.protagFaction).toString()} friend are in the ${this.antagFaction.toString()}.\n` +
+            `We were thwarted by a ${this.newFactionCharacter(this.antagFaction).toString()} so we're going up against a ${this.newFactionCharacter(this.antagFaction).toString()} instead.`;
     }
 
     static run () {
