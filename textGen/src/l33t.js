@@ -246,6 +246,7 @@ L33tWords.FAVES = [
     'C0BBED (cobbed)',
     'C0FFEE (coffee)',
     'DAB055 (da boss)',
+    'DA0157 (Daoist)',
     'DEBA5E (debase)',
     'DEBB1E (Debbie)',
     'DEB7EE (debtee)',
