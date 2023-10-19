@@ -14,308 +14,260 @@ class WorldState {
     load () {
         this.FACTIONS = [
             {
-                name: 'Human Citystate',
+                name: 'Citystate of Vett',
                 weight: 1,
                 alignment: 'LR',
                 planeCategory: 'material',
-                creatures: [
-                    // {
-                    //     name: '',
-                    //     weight: 1,
-                    //     might: 1,
-                    // },
-                    // LATER perhaps give each faction a subset of species & classes to draw from.
-                ],
-                species: [],
-                classes: [],
+                // LATER perhaps give each faction a subset of species & classes to draw from.
+                species: ['human'],
+                classesExcept: ['ghost', 'warlock', 'barbarian', 'samurai', 'lich', 'vampire', 'werewolf'], // TODO support classesExcept
             },
             {
                 name: 'Mines of Moradin',
                 weight: 1,
                 alignment: 'LD',
                 planeCategory: 'material',
-                creatures: [
-                ],
+                species: ['dwarf'],
             },
             {
-                name: 'Wood Elves',
+                name: 'Everwoods',
                 weight: 1,
                 planeCategory: 'material',
-                creatures: [
-                ],
+                species: ['elf', 'pixie', 'triton', 'giant'],
             },
             {
-                name: 'Goblinoids',
+                name: 'Hordelands',
                 weight: 1,
                 planeCategory: 'material',
-                creatures: [
-                ],
+                species: ['goblin', 'orc', 'ogre', 'saurian'],
             },
             {
                 name: 'Azlanti',
                 weight: 1,
                 planeCategory: 'material',
-                creatures: [
-                ],
+                species: ['human'],
             },
             {
                 name: 'Drow',
                 weight: 1,
                 planeCategory: 'material',
-                creatures: [
-                ],
+                species: ['Dark Elf'], // TODO make species autocapitalize both words, or have a displayName, so i dont have to specify it as capital everywhere.
             },
             {
                 name: 'Mind Flayers',
                 weight: 1,
                 planeCategory: 'material',
-                creatures: [
-                ],
+                species: ['mindflayer'],
             },
-            {
-                name: 'Aboleths',
-                weight: 1,
-                planeCategory: 'material',
-                creatures: [
-                ],
-            },
+            // {
+            //     name: 'Aboleths',
+            //     weight: 1,
+            //     planeCategory: 'material',
+            //     species: [''],
+            // },
             {
                 name: 'Feywild',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['elf', 'pixie', 'triton', 'giant', 'goblin'],
             },
             {
                 name: 'Shadowfell',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['Dark Elf', 'skeleton', 'demon', 'golem', 'mindflayer'],
             },
             {
                 name: 'City of Sigil',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                // All species & classes possible
             },
             {
                 name: 'Far Realm',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['demon', 'golem', 'beholder'],
             },
             {
                 name: 'Dreamlands',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['pixie', 'giant', 'aasimar', 'demon'],
             },
             {
                 name: 'Astral Plane',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['elf', 'Dark Elf', 'aasimar', 'saurian', 'golem'],
             },
             {
                 name: 'Jandelay Archive',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['elf', 'Dark Elf', 'aasimar', 'mindflayer', 'golem'],
             },
             {
                 name: 'Seven Heavens',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['aasimar', 'dragon'],
             },
             {
                 name: 'Plane of Bitopia',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['dwarf', 'elf', 'aasimar', 'golem'],
             },
             {
                 name: 'Plane of Elysium',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['elf', 'aasimar', 'pixie', 'naga', 'dragon'],
             },
             {
                 name: 'Beastlands',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['elf', 'aasimar', 'triton'],
             },
             {
                 name: 'Plane of Olympia',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['elf', 'aasimar', 'triton', 'giant', 'saurian'],
             },
             {
                 name: 'Plane of Ysgard',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['human', 'dwarf', 'ogre', 'giant', 'dragon'],
             },
             {
                 name: 'Elemental Chaos',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['goblin', 'golem', 'naga', 'beholder', 'giant', 'dragon'],
             },
             {
                 name: 'Pandaemonium',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['human', 'mindflayer', 'goblin', 'demon', 'skeleton'],
             },
             {
                 name: 'Abyss',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['demon'],
             },
             {
                 name: 'Plane of Gehenna',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['Dark Elf', 'skeleton']
             },
             {
                 name: 'Plane of Erebus',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['skeleton', 'demon'],
             },
             {
                 name: 'Plane of Carceri',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['demon', 'giant'],
             },
             {
                 name: 'Nine Hells',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['demon'],
             },
             {
                 name: 'Plane of Acheron',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                // All species & classes.
             },
             {
                 name: 'Plane of Axis',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['aasimar'],
             },
             {
                 name: 'Plane of Arcadia',
                 weight: 1,
                 planeCategory: 'extraplanar',
-                creatures: [
-                ],
+                species: ['aasimar', 'human', 'elf', 'pixie', 'giant'],
             },
             {
                 name: 'Planet Mercury',
                 weight: 1,
                 planeCategory: 'interplanetary',
-                creatures: [
-                ],
+//                species: ['giant', 'dwarf', 'goblin', 'saurian', 'aasimar', 'ogre'],
+                speciesExcept: ['human', 'triton'],
             },
             {
                 name: 'Planet Venus',
                 weight: 1,
                 planeCategory: 'interplanetary',
-                creatures: [
-                ],
+                // All species & classes
             },
             {
                 name: 'Planet Mars',
                 weight: 1,
                 planeCategory: 'interplanetary',
-                creatures: [
-                ],
+                speciesExcept: ['human'],
             },
             {
                 name: 'Asteroid Belt',
                 weight: 1,
                 planeCategory: 'interplanetary',
-                creatures: [
-                ],
+                speciesExcept: ['human', 'triton'],
             },
             {
                 name: 'Planet Jupiter',
                 weight: 1,
                 planeCategory: 'interplanetary',
-                creatures: [
-                ],
+                speciesExcept: ['human'],
             },
             {
                 name: 'Planet Saturn',
                 weight: 1,
                 planeCategory: 'interplanetary',
-                creatures: [
-                ],
+                speciesExcept: ['human'],
             },
             {
                 name: 'Planet Uranus',
                 weight: 1,
                 planeCategory: 'interplanetary',
-                creatures: [
-                ],
+                speciesExcept: ['human'],
             },
             {
                 name: 'Planet Neptune',
                 weight: 1,
                 planeCategory: 'interplanetary',
-                creatures: [
-                ],
+                speciesExcept: ['human'],
             },
             {
                 name: 'Planet Pluto',
                 weight: 1,
                 planeCategory: 'interplanetary',
-                creatures: [
-                ],
+                speciesExcept: ['human'],
             },
             {
                 name: 'Planet Eris',
                 weight: 1,
                 planeCategory: 'interplanetary',
-                creatures: [
-                ],
+                speciesExcept: ['human'],
             },
             {
                 name: 'Occult Realms',
                 weight: 1,
-                planeCategory: 'material',
-                creatures: [
-                ],
+                // All species & classes
             },
         ];
 
@@ -341,26 +293,35 @@ class WorldState {
         );
     }
 
-    synopsis () {
-        // return '\n' + this.protagFaction.toString() + ' vs ' +
-        //     this.antagFaction.toString() + 
-        //     '\n\nwith these characters:\n' +
-        //     Character.groupOfSameSpecies(2).map(
-        //         c => c.toString()
-        //     )
-        //     .join('\n') + '\n';
+    newFactionCharacter (factionTemplate = this.protagFaction) {
+        let speciesInfo;
+        if (this.speciesExcept) {
+            if (this.speciesExcept.length >= Character.SPECIES().length) {
+                throw new Error(`${factionTemplate.name} has too many (${this.speciesExcept.length}) speciesExcept entries.`);
+            }
 
-        return `I am a ${new Character().toString()} from the ${this.protagFaction.toString()}.\nI & my ${new Character().toString()} friend are in the ${this.antagFaction.toString()}.\nWe were thwarted by a ${new Character().toString()} so we're going up against a ${new Character().toString()} instead.`;
+            do {
+                speciesInfo = Util.randomOf(Character.SPECIES());
+            } 
+            while (this.speciesExcept.includes(speciesInfo.name));
+        }
+        else if (this.species) {
+            speciesName = Util.randomOf(this.species);
+
+            speciesInfo = Character.SPECIES().find(s => s.name === speciesName);
+        }
+        else {
+            speciesInfo = Util.randomOf(Character.SPECIES());
+        }
+
+        let classInfo = Util.randomOf(Character.CLASS());
+
+        return new Character(speciesInfo, classInfo);
     }
 
-    // LATER synopsis like:
-
-    /* I am a Orc Artificer from the Planet Saturn. 
-    I & my ally, a Demon Rogue, are in the Feywild. 
-    We were thwarted by a Elf Scout so we're going up against a Pixie Scholar instead.
-
-    LATER - prepend Planet to .name of all planets, prepend 'the' to every faction when printing.
-    */
+    synopsis () {
+        return `I am a ${new Character().toString()} from the ${this.protagFaction.toString()}.\nI & my ${new Character().toString()} friend are in the ${this.antagFaction.toString()}.\nWe were thwarted by a ${new Character().toString()} so we're going up against a ${new Character().toString()} instead.`;
+    }
 
     static run () {
         const ws = new WorldState();
