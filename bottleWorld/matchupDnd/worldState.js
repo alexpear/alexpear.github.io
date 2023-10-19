@@ -2,7 +2,6 @@
 
 // Fantasy bottle world that focuses on 2 sub-milieus per setup.
 
-// const Creature = require('../wnode/creature.js');
 const Util = require('../../util/util.js');
 
 class WorldState {
@@ -27,6 +26,8 @@ class WorldState {
                     // },
                     // LATER perhaps give each faction a subset of species & classes to draw from.
                 ],
+                species: [],
+                classes: [],
             },
             {
                 name: 'Mines of Moradin',
@@ -93,7 +94,7 @@ class WorldState {
                 ],
             },
             {
-                name: 'Sigil',
+                name: 'City of Sigil',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
@@ -121,7 +122,7 @@ class WorldState {
                 ],
             },
             {
-                name: 'Jandelay',
+                name: 'Jandelay Archive',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
@@ -135,14 +136,14 @@ class WorldState {
                 ],
             },
             {
-                name: 'Bitopia',
+                name: 'Plane of Bitopia',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
                 ],
             },
             {
-                name: 'Elysium',
+                name: 'Plane of Elysium',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
@@ -156,14 +157,14 @@ class WorldState {
                 ],
             },
             {
-                name: 'Olympia',
+                name: 'Plane of Olympia',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
                 ],
             },
             {
-                name: 'Ysgard',
+                name: 'Plane of Ysgard',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
@@ -191,21 +192,21 @@ class WorldState {
                 ],
             },
             {
-                name: 'Gehenna',
+                name: 'Plane of Gehenna',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
                 ],
             },
             {
-                name: 'Hades',
+                name: 'Plane of Erebus',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
                 ],
             },
             {
-                name: 'Carceri',
+                name: 'Plane of Carceri',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
@@ -219,42 +220,42 @@ class WorldState {
                 ],
             },
             {
-                name: 'Acheron',
+                name: 'Plane of Acheron',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
                 ],
             },
             {
-                name: 'Axis',
+                name: 'Plane of Axis',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
                 ],
             },
             {
-                name: 'Arcadia',
+                name: 'Plane of Arcadia',
                 weight: 1,
                 planeCategory: 'extraplanar',
                 creatures: [
                 ],
             },
             {
-                name: 'Mercury',
+                name: 'Planet Mercury',
                 weight: 1,
                 planeCategory: 'interplanetary',
                 creatures: [
                 ],
             },
             {
-                name: 'Venus',
+                name: 'Planet Venus',
                 weight: 1,
                 planeCategory: 'interplanetary',
                 creatures: [
                 ],
             },
             {
-                name: 'Mars',
+                name: 'Planet Mars',
                 weight: 1,
                 planeCategory: 'interplanetary',
                 creatures: [
@@ -268,49 +269,49 @@ class WorldState {
                 ],
             },
             {
-                name: 'Jupiter',
+                name: 'Planet Jupiter',
                 weight: 1,
                 planeCategory: 'interplanetary',
                 creatures: [
                 ],
             },
             {
-                name: 'Saturn',
+                name: 'Planet Saturn',
                 weight: 1,
                 planeCategory: 'interplanetary',
                 creatures: [
                 ],
             },
             {
-                name: 'Uranus',
+                name: 'Planet Uranus',
                 weight: 1,
                 planeCategory: 'interplanetary',
                 creatures: [
                 ],
             },
             {
-                name: 'Neptune',
+                name: 'Planet Neptune',
                 weight: 1,
                 planeCategory: 'interplanetary',
                 creatures: [
                 ],
             },
             {
-                name: 'Pluto',
+                name: 'Planet Pluto',
                 weight: 1,
                 planeCategory: 'interplanetary',
                 creatures: [
                 ],
             },
             {
-                name: 'Eris',
+                name: 'Planet Eris',
                 weight: 1,
                 planeCategory: 'interplanetary',
                 creatures: [
                 ],
             },
             {
-                name: 'Occult',
+                name: 'Occult Realms',
                 weight: 1,
                 planeCategory: 'material',
                 creatures: [
@@ -341,16 +342,25 @@ class WorldState {
     }
 
     synopsis () {
-        return '\n' + this.protagFaction.toString() + ' vs ' +
-            this.antagFaction.toString() + 
-            '\n\nwith these characters:\n' +
-            Creature.groupOfSameSpecies(2).map(
-                c => c.toString()
-            )
-            .join('\n') + '\n';
+        // return '\n' + this.protagFaction.toString() + ' vs ' +
+        //     this.antagFaction.toString() + 
+        //     '\n\nwith these characters:\n' +
+        //     Character.groupOfSameSpecies(2).map(
+        //         c => c.toString()
+        //     )
+        //     .join('\n') + '\n';
+
+        return `I am a ${new Character().toString()} from the ${this.protagFaction.toString()}.\nI & my ${new Character().toString()} friend are in the ${this.antagFaction.toString()}.\nWe were thwarted by a ${new Character().toString()} so we're going up against a ${new Character().toString()} instead.`;
     }
 
-    // LATER gen 2 characters of same species & different class, for the synopsis.
+    // LATER synopsis like:
+
+    /* I am a Orc Artificer from the Planet Saturn. 
+    I & my ally, a Demon Rogue, are in the Feywild. 
+    We were thwarted by a Elf Scout so we're going up against a Pixie Scholar instead.
+
+    LATER - prepend Planet to .name of all planets, prepend 'the' to every faction when printing.
+    */
 
     static run () {
         const ws = new WorldState();
@@ -363,7 +373,6 @@ class WorldState {
 class Faction {
     constructor (template) {
         this.template = template;
-        // this.povCreature = new Creature(); // LATER use template.creatures to gen this.
     }
 
     toString () {
@@ -371,10 +380,10 @@ class Faction {
     }
 }
 
-class Creature {
+class Character {
     constructor (speciesTemplate, classTemplate) {
-        this.species = speciesTemplate || Util.randomOf(Creature.SPECIES());
-        this.class = classTemplate || Util.randomOf(Creature.CLASS());
+        this.species = speciesTemplate || Util.randomOf(Character.SPECIES());
+        this.class = classTemplate || Util.randomOf(Character.CLASS());
     }
 
     toString () {
@@ -383,14 +392,14 @@ class Creature {
     }
 
     static groupOfSameSpecies (quantity = 2, speciesTemplate) {
-        speciesTemplate = speciesTemplate || Util.randomOf(Creature.SPECIES());
+        speciesTemplate = speciesTemplate || Util.randomOf(Character.SPECIES());
 
         const output = [];
         for (let i = 0; i < quantity; i++) {
             output.push(
-                new Creature(
+                new Character(
                     speciesTemplate,
-                    Util.randomOf(Creature.CLASS())
+                    Util.randomOf(Character.CLASS())
                 )
             );
         }
