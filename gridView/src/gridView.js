@@ -196,7 +196,8 @@ class GridView {
     }
 }
 
-GridView.WINDOW_SQUARES = 16; // number of squares
+// TODO - testing on laptop that suits 10x10, but default scenario still considers 8 the halfway, which is too much.
+GridView.WINDOW_SQUARES = 10; // number of squares
 GridView.DEFAULT_SQUARE_SIZE = 4; // meters
 
 module.exports = GridView;
