@@ -69,13 +69,18 @@ class ScifiWarband {
 
         this.canvasCtx.drawImage(
             imgElement, 
-            x * ScifiWarband.SQUARE_PIXELS * 1.1, 
-            y * ScifiWarband.SQUARE_PIXELS * 1.1,
+            this.cornerOfSquare(x),
+            this.cornerOfSquare(y),
             width,
             height
         );
 
-        Util.logDebug(`I just called this.canvasCtx.drawImage(<img from ${imgElement.src}>, ${x * ScifiWarband.SQUARE_PIXELS}, ${y * ScifiWarband.SQUARE_PIXELS}, ${width}, ${height}); natural W is ${imgElement.naturalWidth}, natural H is ${imgElement.naturalHeight}.`);
+        // Util.logDebug(`I just called this.canvasCtx.drawImage(<img from ${imgElement.src}>, ${x * ScifiWarband.SQUARE_PIXELS}, ${y * ScifiWarband.SQUARE_PIXELS}, ${width}, ${height}); natural W is ${imgElement.naturalWidth}, natural H is ${imgElement.naturalHeight}.`);
+    }
+
+    // Returns canvas pixel value of the top left corner of the square in the x axis. Also works for y axis.
+    cornerOfSquare (x) {
+        return x * ScifiWarband.SQUARE_PIXELS * 1.1 + (ScifiWarband.SQUARE_PIXELS * 0.1);
     }
 
     exampleSetup () {
