@@ -1,8 +1,8 @@
 'use strict';
 
-//
+// Autobattler game in browser. WIP.
 
-// browserify scifiWarband/src/*.js -o scifiWarbandBundle.js
+// npm run buildScifiWarband
 
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
@@ -12,53 +12,25 @@ const Util = require('../../util/util.js');
 class ScifiWarband {
     constructor () {
         this.things = [];
+        this.canvas = document.getElementById('canvas');
+        this.canvasCtx = canvas.getContext('2d');
     }
 
-    setHtml () {
-        const canvas = document.getElementById('canvas');
+    setHTML () {
         this.drawGrid();
     }
 
     drawGrid () {
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-
         for (let y = 0; y < ScifiWarband.WINDOW_SQUARES; y++) {
             for (let x = 0; x < ScifiWarband.WINDOW_SQUARES; x++) {
                 const things = this.contentsOfCoord(x, y);
 
                 if (things.length === 0) {
                     this.drawSquare(Squad.IMAGE_PREFIX + 'sand.jpg', x, y);
-                    // this.drawSquare(thing.imageURL(), x, y);
                 }
                 else {
                     const thing = things[0];
-                    const imgElement = new Image();
-                    imgElement.src = thing.imageURL();
-
-                    let width;
-                    let height;
-                    if (imgElement.naturalWidth >= imgElement.naturalHeight) {
-                        width = ScifiWarband.SQUARE_PIXELS;
-                        height = imgElement.naturalHeight / imgElement.naturalWidth * ScifiWarband.SQUARE_PIXELS;
-                    }
-                    else {
-                        width = imgElement.naturalWidth / imgElement.naturalHeight * ScifiWarband.SQUARE_PIXELS;
-                        height = ScifiWarband.SQUARE_PIXELS;
-                    }
-
-                    ctx.drawimage(
-                        imgElement, 
-                        x * ScifiWarband.SQUARE_PIXELS, 
-                        y * ScifiWarband.SQUARE_PIXELS,
-                        width,
-                        height
-                    );
-
-                    // TODO draw squad
-                    // this.drawSquare(things, x, y);
-
-                    // ctx.drawimage(img1, 0, 0);
+                    this.drawSquare(thing.imageURL(), x, y);
 
                     if (things.length >= 2) {
                         Util.logDebug(`Coord ${x}, ${y} contains ${things.length} things, BTW.`);
@@ -66,7 +38,6 @@ class ScifiWarband {
                 }
             }
         }
-
     }
 
     // Returns Squad[]
@@ -75,6 +46,40 @@ class ScifiWarband {
             t => t.coord.dimensions[0] === x &&
                 t.coord.dimensions[1] === y
         );
+    }
+
+    drawSquare (imageURL, x, y) {
+        const imgElement = new Image();
+        imgElement.src = imageURL;
+
+        imgElement.onload = () => this.drawLoadedImage(imgElement, x, y);
+
+        // functionize: TODO 
+
+        let width;
+        let height;
+        if (imgElement.naturalWidth >= imgElement.naturalHeight) {
+            width = ScifiWarband.SQUARE_PIXELS;
+            height = imgElement.naturalHeight / imgElement.naturalWidth * ScifiWarband.SQUARE_PIXELS;
+        }
+        else {
+            width = imgElement.naturalWidth / imgElement.naturalHeight * ScifiWarband.SQUARE_PIXELS;
+            height = ScifiWarband.SQUARE_PIXELS;
+        }
+
+        this.canvasCtx.drawImage(
+            imgElement, 
+            x * ScifiWarband.SQUARE_PIXELS, 
+            y * ScifiWarband.SQUARE_PIXELS,
+            width,
+            height
+        );
+
+        Util.logDebug(`I just called this.canvasCtx.drawImage(<img from ${imgElement.src}>, ${x * ScifiWarband.SQUARE_PIXELS}, ${y * ScifiWarband.SQUARE_PIXELS}, ${width}, ${height}); natural W is ${imgElement.naturalWidth}, natural H is ${imgElement.naturalHeight}.`);
+    }
+
+    drawLoadedImage (imgElement, x, y) {
+
     }
 
     exampleSetup () {
@@ -93,8 +98,7 @@ class ScifiWarband {
     static run () {
         const game = new ScifiWarband();
         game.exampleSetup();
-
-        game.setGridHtml();
+        game.setHTML();
     }
 }
 
