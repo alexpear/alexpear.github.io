@@ -53,9 +53,9 @@ class ScifiWarband {
         imgElement.src = imageURL;
 
         imgElement.onload = () => this.drawLoadedImage(imgElement, x, y);
+    }
 
-        // functionize: TODO 
-
+    drawLoadedImage (imgElement, x, y) {
         let width;
         let height;
         if (imgElement.naturalWidth >= imgElement.naturalHeight) {
@@ -69,17 +69,13 @@ class ScifiWarband {
 
         this.canvasCtx.drawImage(
             imgElement, 
-            x * ScifiWarband.SQUARE_PIXELS, 
-            y * ScifiWarband.SQUARE_PIXELS,
+            x * ScifiWarband.SQUARE_PIXELS * 1.1, 
+            y * ScifiWarband.SQUARE_PIXELS * 1.1,
             width,
             height
         );
 
         Util.logDebug(`I just called this.canvasCtx.drawImage(<img from ${imgElement.src}>, ${x * ScifiWarband.SQUARE_PIXELS}, ${y * ScifiWarband.SQUARE_PIXELS}, ${width}, ${height}); natural W is ${imgElement.naturalWidth}, natural H is ${imgElement.naturalHeight}.`);
-    }
-
-    drawLoadedImage (imgElement, x, y) {
-
     }
 
     exampleSetup () {
