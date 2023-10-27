@@ -15,6 +15,9 @@ class ScifiWarband {
         this.things = [];
         this.canvas = document.getElementById('canvas');
         this.canvasCtx = canvas.getContext('2d');
+        this.events = [
+            // Event.encounterStart()
+        ];
     }
 
     async runEncounter () {
@@ -30,15 +33,23 @@ class ScifiWarband {
 
                 if (! curSquad) { continue; } // This is normal for the team with less squads at the end of the round.
 
-                const actions = this.chooseAction(curSquad);
-                
-                this.performAction(action);
+                this.record(
+                    curSquad.update()
+                );
+
+                const actions = this.chooseActions(curSquad);
+
+                this.performActions(actions);
 
                 this.setHTML();
                 await Util.sleep(1);
                 // LATER Let user step forwards or back (event by event) thru the replay, instead of sleep()ing.
             }
         }
+    }
+
+    record (events) {
+        this.events = this.events.concat(events);
     }
 
     encounterDone () {
@@ -64,15 +75,16 @@ class ScifiWarband {
     // This function is the mind of the squad.
     // Allowed to return illegal moves.
     chooseActions (curSquad) {
+        const sentiments = this.creatures.map(cr => cr.morale());
+        // LATER morale can inform chooseActions()
 
     }
 
     // If action sequence is illegal, interpret/default to a legal move.
-    performAction (actions) {
+    performActions (actions) {
         // Roll random chances
         // Update game state
-        // Create & save Event object
-        // Log event
+        // this.record(events)
     }
 
     setHTML () {
@@ -256,10 +268,53 @@ ScifiWarband.DEFAULT_SQUARE_SIZE = 4; // meters
 ScifiWarband.SQUARE_PIXELS = 60;
 
 // TODO new file
+class Event {
+    constructor (type, t, details) {
+        this.timestamp = new Date();
+        this.type = type;
+        this.details = details || {};
+
+        this.log();
+    }
+
+    log () {
+        Util.logEvent(`${this.type}: ${Util.stringify(this.details)}`);
+    }
+
+    toJson () {
+
+    }
+
+    static encounterStart () {
+        return new Event(0, Event.TYPE.EncounterStart);
+    }
+
+    static attack (t, attackingCreature, target, weaponTemplate, attackOutcome, shieldsTo, statusChanges) {
+        return new Event(
+            t,
+            Event.TYPE.Attack,
+            {
+                target,
+                weaponTemplate,
+                attackOutcome,
+                shieldsTo,
+                statusChanges,
+            }
+        )
+    }
+}
+
+Event.TYPE = {
+    EncounterStart: 'Encounter Start',
+    Attack: 'Attack',
+};
+
+// TODO new file
 class Creature {
     constructor (creatureTemplate) {
         this.template = creatureTemplate;
         this.shields = this.template.shields || 0;
+        this.cooldownEnds = Infinity;
 
         // Used to track buffs, debuffs, injuries, whether ko, etc.
         this.status = {};
@@ -270,9 +325,17 @@ class Creature {
     }
 
     // creates Event
-    update () {
+    update (t) {
         // cooldowns, shield regen, etc
-        // morale checks probably are initiated at the squad level
+        if (this.cooldownEnds <= t) {
+            if (this.shields < this.template.shields) {
+                this.shields += 
+            }
+
+            this.cooldownEnds = Infinity;
+
+        }
+        // Note: Morale checks should probably be initiated at the squad level rather than here
     }
 
     // returns number in range [-10, 10]
@@ -344,6 +407,10 @@ class Squad {
     // unit: squares
     distanceTo (otherSquad) {
         return this.coord.distanceTo(otherSquad.coord);
+    }
+
+    update () {
+        this.creatures.map(cr => cr.update());
     }
 
     imageURL () {
