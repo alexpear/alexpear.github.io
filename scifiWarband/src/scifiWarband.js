@@ -74,13 +74,33 @@ class ScifiWarband {
             width,
             height
         );
-
-        // Util.logDebug(`I just called this.canvasCtx.drawImage(<img from ${imgElement.src}>, ${x * ScifiWarband.SQUARE_PIXELS}, ${y * ScifiWarband.SQUARE_PIXELS}, ${width}, ${height}); natural W is ${imgElement.naturalWidth}, natural H is ${imgElement.naturalHeight}.`);
     }
 
     // Returns canvas pixel value of the top left corner of the square in the x axis. Also works for y axis.
     cornerOfSquare (x) {
         return x * ScifiWarband.SQUARE_PIXELS * 1.1 + (ScifiWarband.SQUARE_PIXELS * 0.1);
+    }
+
+    centerOfSquare (x) {
+        return this.cornerOfSquare(x) + ScifiWarband.SQUARE_PIXELS * 0.5;
+    }
+
+    // Inputs should be in grid coords, not pixel coords.
+    drawAttack (startX, startY, endX, endY) {
+        // TODO - draw muzzle flash ray-lines at start
+        // TODO line traits & colors
+        this.canvasCtx.moveTo(
+            this.centerOfSquare(startX),
+            this.centerOfSquare(startY),
+        );
+        this.canvasCtx.lineTo(
+            this.centerOfSquare(endX),
+            this.centerOfSquare(endY),
+        );
+
+        this.canvasCtx.lineWidth = 2;
+        this.canvasCtx.strokeStyle = "yellow";
+        this.canvasCtx.stroke();
     }
 
     exampleSetup () {
@@ -96,10 +116,18 @@ class ScifiWarband {
         ];
     }
 
-    static run () {
+    static async run () {
         const game = new ScifiWarband();
         game.exampleSetup();
         game.setHTML();
+
+        await Util.sleep(1);
+        game.drawAttack(
+            Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+            Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+            Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+            Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+        );
     }
 }
 
