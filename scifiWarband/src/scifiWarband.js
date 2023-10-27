@@ -9,6 +9,7 @@ const Util = require('../../util/util.js');
 
 
 
+// LATER might split into multiple classes: WarbandGame.js, Encounter.js, EncounterView.js, as needed.
 class ScifiWarband {
     constructor () {
         this.things = [];
@@ -16,11 +17,71 @@ class ScifiWarband {
         this.canvasCtx = canvas.getContext('2d');
     }
 
+    async runEncounter () {
+        const firstTeam = Squad.TEAM.Enemy; // LATER could depend upon who is attacker/defender.
+        const secondTeam = Squad.TEAM.Player;
+        let curTeam = firstTeam;
+
+        for (let t = 1; t <= 100; t++) {
+            for (let activation = 1; activation <= 1e5; activation++) {
+                if (this.encounterDone()) { return; }
+
+                const curSquad = this.findReadySquad(curTeam);
+
+                if (! curSquad) { continue; } // This is normal for the team with less squads at the end of the round.
+
+                const actions = this.chooseAction(curSquad);
+                
+                this.performAction(action);
+
+                this.setHTML();
+                await Util.sleep(1);
+                // LATER Let user step forwards or back (event by event) thru the replay, instead of sleep()ing.
+            }
+        }
+    }
+
+    encounterDone () {
+        // TODO If only one Team has non-KO Squads, return true.
+    }
+
+    findReadySquad (team) {
+        return this.things.find(
+            thing => thing.ready && thing.team === team
+        );
+    }
+
+    /* Actions
+    Move
+    Take Cover
+    Attack with <weapon>
+    Grab Item (free)
+    Secure Objective
+    First Aid
+    Special Action
+    */
+
+    // This function is the mind of the squad.
+    // Allowed to return illegal moves.
+    chooseActions (curSquad) {
+
+    }
+
+    // If action sequence is illegal, interpret/default to a legal move.
+    performAction (actions) {
+        // Roll random chances
+        // Update game state
+        // Create & save Event object
+        // Log event
+    }
+
     setHTML () {
         this.drawGrid();
     }
 
     drawGrid () {
+        // TODO reset canvas
+
         for (let y = 0; y < ScifiWarband.WINDOW_SQUARES; y++) {
             for (let x = 0; x < ScifiWarband.WINDOW_SQUARES; x++) {
                 const things = this.contentsOfCoord(x, y);
@@ -46,6 +107,56 @@ class ScifiWarband {
             t => t.coord.dimensions[0] === x &&
                 t.coord.dimensions[1] === y
         );
+    }
+
+    // Returns array of nearest foe - or foes tied for same distance.
+    nearestFoes (squad) {
+        let nearests = [];
+        let shortestDist = 99999; // unit: squares
+
+        for (let thing of this.things) {
+            if (thing.team === squad.team) { continue; }
+            
+            const dist = squad.distanceTo(thing);
+            if (dist < shortestDist) {
+                nearests = [thing];
+            }
+            else if (dist === shortestDist) {
+                nearests.push(thing);
+            }
+
+            // NOTE - speeding up this func further (eg via Manhattan distance 1st pass) seems unnecessary: 0.00006 seconds per nearestFoes() call.
+        }
+
+        return nearests;
+    }
+
+    testNearestFoes () {
+        this.things = [];
+
+        // Create 200 squads at random coords & teams
+        for (let i = 0; i < 200; i++) {
+            this.things.push(
+                new Squad(
+                    Squad.TEMPLATES.Marines,
+                    Util.randomOf([Squad.TEAM.Player, Squad.TEAM.Enemy]),
+                    Coord.random2d(10)
+                )
+            );
+        }
+        // log start time & save in local variable
+        const startDate = new Date();
+        Util.logDebug(`testNearestFoes() starting test at ${startDate.getUTCMilliseconds()}`);
+        
+        // call nearestFoes for each squad
+        for (let sq of this.things) {
+            const unused = this.nearestFoes(sq);
+        }
+        
+        // log total time spent & time per call
+        const endDate = new Date();
+        const ms = endDate - startDate;
+        Util.logDebug(`testNearestFoes() ending test at ${endDate.getUTCMilliseconds()}\n  Total time was ${ms / 1000} seconds, or ${ms / 1000 / this.things.length} seconds per nearestFoes() call.`);
     }
 
     drawSquare (imageURL, x, y) {
@@ -103,6 +214,10 @@ class ScifiWarband {
         this.canvasCtx.stroke();
     }
 
+    explainOutcome () {
+        // TODO Present outcome to user.
+    }
+
     exampleSetup () {
         this.things = this.exampleSquads();
     }
@@ -128,6 +243,11 @@ class ScifiWarband {
             Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
             Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
         );
+
+        // game.runEncounter();
+        game.explainOutcome();
+
+        game.testNearestFoes();
     }
 }
 
@@ -139,7 +259,44 @@ ScifiWarband.SQUARE_PIXELS = 60;
 class Creature {
     constructor (creatureTemplate) {
         this.template = creatureTemplate;
-        this.sp = this.template.sp;
+        this.shields = this.template.shields || 0;
+
+        // Used to track buffs, debuffs, injuries, whether ko, etc.
+        this.status = {};
+    }
+
+    isKO () {
+        return !! this.status.ko;
+    }
+
+    // creates Event
+    update () {
+        // cooldowns, shield regen, etc
+        // morale checks probably are initiated at the squad level
+    }
+
+    // returns number in range [-10, 10]
+    // For squads to poll their members' perspectives.
+    morale () {
+        return 5; // Later add complexity
+    }
+
+    // Could move this to main encounter class if that makes cover calc easier.
+    // creates Event
+    attack (otherSquad) {
+        // Choose weapon
+        // Roll randomness
+        // save Event
+    }
+
+    // After considering cover.
+    // creates Event
+    takeHit (projectile) {
+        // Decrease shields & damage
+        // Compare remaining damage to durability
+        // Random effect
+        // Edit this.status
+        // create Event
     }
 
     static example () {
@@ -156,28 +313,48 @@ Creature.TEMPLATES = {
     Marine: {
         size: 2, 
         speed: 1, 
-        sp: 10,
+        durability: 10,
     },
+    // LATER How does damage work for: Scorpion, Scarab, UNSC Frigate?
 };
 
 // TODO new file.
 class Squad {
-    constructor (squadTemplate, allegiance, coord) {
+    constructor (squadTemplate, team, coord) {
         this.template = squadTemplate;
-        this.quantity = this.template.quantity;
-        this.allegiance = allegiance;
+        this.team = team;
         this.coord = coord || new Coord();
+        this.ready = true;
+        this.creatures = [];
+
+        // Note that this is how you create a homogenous squad from a template. LATER, might often have heterogenous squads coming from customization choices or from a save file.
+        for (let i = 1; i <= this.template.quantity; i++) {
+            this.creatures.push(
+                new Creature(this.template.creature)
+            );
+        }
+    }
+
+    isKO () {
+        return this.creatures.every(
+            cr => cr.isKO()
+        );
+    }
+
+    // unit: squares
+    distanceTo (otherSquad) {
+        return this.coord.distanceTo(otherSquad.coord);
     }
 
     imageURL () {
         return Squad.IMAGE_PREFIX + this.template.image;
     }
 
-    static example (allegiance) {
+    static example (team) {
         const sq = new Squad(
             Squad.TEMPLATES.Marines,
-            allegiance || Squad.TEAM.Player,
-            Coord.random(10),
+            team || Squad.TEAM.Player,
+            Coord.random2d(10),
         );
 
         return sq;
