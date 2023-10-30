@@ -6,24 +6,62 @@ const Util = require('../../util/util.js');
 
 class Templates {
     static init () {
-        const universe = Templates.Halo;
+        const universeKey = 'Halo';
+        const universe = Templates[universeKey];
         for (let faction in universe) {
             for (let section in universe[faction]) {
                 for (let entryName in universe[faction][section]) {
                     const entryObj = universe[faction][section][entryName];
 
-                    Templates.setupAnything(entryObj, entryName);
 
                     if (section === 'Creature') {
                         Templates.setupCreature(entryObj);
                     }
+                    else if (section === 'Item') {
+                        Templates.setupItem(entryObj);
+                    }
+
+                    Templates.setupAnything(
+                        entryObj,
+                        [universeKey, faction, section, entryName]
+                    );
                 }
             }
         }
     }
 
-    static setupAnything (obj, key) {
-        obj.name = obj.name || key;
+    static setupAnything (obj, pathArray) {
+        obj.name = obj.name || pathArray[pathArray.length - 1];
+
+        // Links
+        if (obj.creature) {
+            obj.creature = Templates.translateDotPath(pathArray, obj.creature);
+        }
+
+        if (obj.items) {
+            for (let i = 0; i < obj.items.length; i++) {
+                obj.items[i] = Templates.translateDotPath(pathArray, obj.items[i]);
+            }
+        }
+    }
+
+    static translateDotPath (pathArray, dotPath) {
+        const words = dotPath.split('.');
+
+        let output = Templates;
+
+        // universe, faction, section, entry
+        for (let i = 0; i < pathArray.length; i++) {
+
+            // If dotPath is long enough, use that. Else use pathArray.
+            const narrowerKey = words.length >= (pathArray.length - i) ?
+                words[i] :
+                pathArray[i];
+
+            output = output[narrowerKey]; 
+        }
+
+        return output;
     }
 
     static setupItem (item) {
@@ -59,6 +97,10 @@ class Templates {
             }
         }
     }
+
+    static test () {
+        Util.logDebug(Templates);
+    }
 }
 
 Templates.ATTACK_TYPE = {
@@ -92,7 +134,7 @@ Templates.Halo = {
                 speed: 1, 
                 durability: 10,
                 accuracy: 1,
-                items: [Templates.Halo.UNSC.Item.SMG],
+                items: ['Item.SMG'],
             },
 
             // Vehicles
@@ -195,3 +237,4 @@ Templates.Halo = {
 module.exports = Templates;
 
 Templates.init();
+Templates.test();
