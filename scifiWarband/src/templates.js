@@ -6,25 +6,26 @@ const Util = require('../../util/util.js');
 
 class Templates {
     static init () {
-        const universeKey = 'Halo';
-        const universe = Templates[universeKey];
-        for (let faction in universe) {
-            for (let section in universe[faction]) {
-                for (let entryName in universe[faction][section]) {
-                    const entryObj = universe[faction][section][entryName];
+        for (let universeKey in Templates.universes()) {
+            const universe = Templates[universeKey];    
 
+            for (let faction in universe) {
+                for (let section in universe[faction]) {
+                    for (let entryName in universe[faction][section]) {
+                        const entryObj = universe[faction][section][entryName];
 
-                    if (section === 'Creature') {
-                        Templates.setupCreature(entryObj);
+                        if (section === 'Creature') {
+                            Templates.setupCreature(entryObj);
+                        }
+                        else if (section === 'Item') {
+                            Templates.setupItem(entryObj);
+                        }
+
+                        Templates.setupAnything(
+                            entryObj,
+                            [universeKey, faction, section, entryName]
+                        );
                     }
-                    else if (section === 'Item') {
-                        Templates.setupItem(entryObj);
-                    }
-
-                    Templates.setupAnything(
-                        entryObj,
-                        [universeKey, faction, section, entryName]
-                    );
                 }
             }
         }
@@ -47,21 +48,30 @@ class Templates {
 
     static translateDotPath (pathArray, dotPath) {
         const words = dotPath.split('.');
-
-        let output = Templates;
+        const translatedPath = [];
 
         // universe, faction, section, entry
         for (let i = 0; i < pathArray.length; i++) {
+            const lengthDiff = pathArray.length - words.length;
+
+            // Util.logDebug(`translateDotPath(${pathArray.join('.')}, ${dotPath}): i=${i}, pathArray.length - i = ${pathArray.length - i}, words[i - lengthDiff] is ${words[i - lengthDiff]}`);
 
             // If dotPath is long enough, use that. Else use pathArray.
             const narrowerKey = words.length >= (pathArray.length - i) ?
-                words[i] :
+                words[i - lengthDiff] :
                 pathArray[i];
 
-            output = output[narrowerKey]; 
+            translatedPath.push(narrowerKey);
         }
 
-        return output;
+        // Util.logDebug(`${dotPath} in context ${pathArray.join('.')} translates to ${translatedPath.join('.')}`);
+
+        let obj = Templates;
+        for (let key of translatedPath) {
+            obj = obj[key];
+        }
+
+        return obj;
     }
 
     static setupItem (item) {
@@ -99,7 +109,13 @@ class Templates {
     }
 
     static test () {
-        Util.logDebug(Templates);
+        Util.logDebug(Templates.universes());
+    }
+
+    static universes () {
+        return {
+            Halo: Templates.Halo,
+        }
     }
 }
 
@@ -144,7 +160,7 @@ Templates.Halo = {
         Squad: {
             Marine: {
                 name: 'Marine Fireteam',
-                creature: Templates.Halo.UNSC.Creature.Marine,
+                creature: 'Creature.Marine',
                 quantity: 3,
                 image: 'marine.png',
            },
@@ -173,7 +189,7 @@ Templates.Halo = {
                 speed: 1, 
                 durability: 5,
                 accuracy: 0,
-                items: [Templates.Halo.Covenant.Item.PlasmaPistol],
+                items: ['Item.PlasmaPistol'],
             },
             
             // Vehicles
@@ -183,7 +199,7 @@ Templates.Halo = {
             // Infantry
             Grunt: {
                 name: 'Grunt Lance',
-                creature: Templates.Halo.Covenant.Creature.Grunt,
+                creature: 'Creature.Grunt',
                 quantity: 4,
                 image: 'grunt.png',
            },
@@ -237,4 +253,4 @@ Templates.Halo = {
 module.exports = Templates;
 
 Templates.init();
-Templates.test();
+// Templates.test();
