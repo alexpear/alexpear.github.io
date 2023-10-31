@@ -2,6 +2,7 @@
 
 //
 
+const Event = require('./event.js');
 const Templates = require('./templates.js');
 const Util = require('../../util/util.js');
 
@@ -22,6 +23,8 @@ class Creature {
 
     // creates Event
     update (t) {
+        if (this.isKO()) { return; }
+
         if (this.cooldownEnds <= t) {
             if (this.shields < this.template.shields) {
                 this.shields = this.shields + this.template.shieldRegen;
@@ -31,7 +34,7 @@ class Creature {
                     this.cooldownEnds = Infinity;
                 }
 
-                return Event.update(t, this);
+                return Event.update(this);
             }
         }
     }
@@ -77,8 +80,9 @@ class Creature {
         const advantage = otherSquad.size() * this.accuracy(weaponTemplate);
         const events = [];
 
-        for (let shot = 1; shot <= Math.ceiling(weaponTemplate.rof || 1); shot++) {
-            const event = Event.attack(this, weaponTemplate, otherSquad);
+        for (let shot = 1; shot <= Math.ceil(weaponTemplate.rof || 1); shot++) {
+            //    static attack (t, attackingCreature, target, weaponTemplate, attackOutcome, shieldsTo, statusChanges) {
+            const event = Event.attack(this, otherSquad, weaponTemplate);
             events.push(event);
 
             if (Math.random() > advantage / (advantage + distance + 1)) {
@@ -134,7 +138,7 @@ class Creature {
         }
 
         // Looks at this.shields, this.cooldownEnds maybe, this.status
-        const event = Event.hit(this, weaponTemplate, t);
+        const event = Event.hit(this, weaponTemplate);
         return event;
     }
 
@@ -144,7 +148,7 @@ class Creature {
             damage *= resistance;
         }
 
-        const harm = damage / ((damage + this.durability) * Math.random());
+        const harm = damage / ((damage + this.durability()) * Math.random());
 
         if (harm < 1) { return; }
 
@@ -161,6 +165,17 @@ class Creature {
             // Too much damage in 1 category causes KO.
             this.status.ko = true;
         }
+    }
+
+    toJson () {
+        const json = Util.certainKeysOf(
+            this, 
+            ['id', 'template', 'shields', 'cooldownEnds', 'status']
+        );
+
+        json.squad = this.squad?.id;
+
+        return json;
     }
 
     static example () {
