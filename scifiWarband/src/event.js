@@ -3,15 +3,11 @@
 // const Creature = require('./creature.js');
 // const Squad = require('./squad.js');
 // const Action = require('./action.js');
-// const Item = require('./Item.js');
-// const Templates = require('./templates.js');
-
-// const Event = require('./event.js');
 
 const Util = require('../../util/util.js');
 
 class Event {
-    constructor (type, t, details) {
+    constructor (type, details) {
         this.timestamp = new Date();
         this.type = type;
         this.details = details || {};
@@ -20,7 +16,7 @@ class Event {
     }
 
     log () {
-        Util.logEvent(this.toJson());
+        Util.log(this.toJson());
     }
 
     toJson () {
@@ -30,35 +26,49 @@ class Event {
             details: this.details
         };
 
-        safeObj.details.target = this.details.target?.id;
+        safeObj.details = Util.valuesAsIDs(safeObj.details);
 
         return safeObj;
     }
 
     static encounterStart () {
-        return new Event(0, Event.TYPE.EncounterStart);
+        const e = new Event(Event.TYPE.EncounterStart);
+
+        e.t = 0;
+
+        return e;
     }
 
-    static attack (t, attackingCreature, target, weaponTemplate, attackOutcome, shieldsTo, statusChanges) {
+    static attack (attackingCreature, target, weaponTemplate) { //, attackOutcome, shieldsTo, statusChanges) {
         return new Event(
-            t,
             Event.TYPE.Attack,
             {
+                subject: attackingCreature,
                 target,
                 weaponTemplate,
-                attackOutcome,
-                shieldsTo,
-                statusChanges,
             }
-        )
+        );
     }
 
-    static update (t, creature) {
+    static hit (victim, weaponTemplate) {
         return new Event(
-            t, 
+            Event.TYPE.Hit,
+            {
+                victim,
+                shieldsTo: victim.shields,
+                status: Util.clone(victim.status),
+                // LATER could also include an ATTACK_OUTCOME value here, if useful. Alternately, just calc what happened while replaying.
+                weaponTemplate: weaponTemplate,
+            }
+        );
+    }
+
+    static update (creature) {
+        return new Event(
             Event.TYPE.Update,
             {
                 shieldsTo: creature.shields,
+                status: Util.clone(victim.status),
                 cooldownEnds: creature.cooldownEnds,
             }
         );
@@ -68,6 +78,7 @@ class Event {
 Event.TYPE = {
     EncounterStart: 'Encounter Start',
     Attack: 'Attack',
+    Hit: 'Hit',
     Update: 'Update',
 };
 
