@@ -142,7 +142,9 @@ class ScifiWarband {
 
     findReadySquad (team) {
         return this.things.find(
-            thing => thing.ready && thing.team === team
+            thing => thing.ready && 
+                thing.team === team && 
+                ! thing.isKO()
         );
     }
 
@@ -328,11 +330,12 @@ class ScifiWarband {
 
     // Returns array of nearest foe - or foes tied for same distance.
     nearestFoes (squad) {
+        // TODO check whether game crashes when this returns [];
         let nearests = [];
         let shortestDist = 99999; // unit: squares
 
         for (let thing of this.things) {
-            Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, top. Teams: ${squad.team} vs ${thing.team}, canSee(thing)? ${squad.canSee(thing)}, thing.stealth = ${thing.stealth}`);
+            // Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, top. Teams: ${squad.team} vs ${thing.team}, canSee(thing)? ${squad.canSee(thing)}, thing.visibility = ${thing.visibility}`);
 
             if (thing.team === squad.team) { continue; }
             if (thing.isKO()) { continue; }
@@ -340,7 +343,7 @@ class ScifiWarband {
 
             const dist = squad.distanceTo(thing);
 
-            Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, dist is ${dist}`);
+            // Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, dist is ${dist}`);
 
             if (dist < shortestDist) {
                 nearests = [thing];

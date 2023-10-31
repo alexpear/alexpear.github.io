@@ -27,7 +27,7 @@ class Squad {
             cr.squad = this;
         }
 
-        this.resetStealth();
+        this.resetVisibility();
     }
 
     isKO () {
@@ -35,6 +35,8 @@ class Squad {
             cr => cr.isKO()
         );
     }
+
+    // LATER if useful, we could add a func like .available(), which checks both .ready and .isKO()
 
     activeCreatures () {
         return this.creatures.filter(cr => ! cr.isKO())
@@ -62,9 +64,8 @@ class Squad {
         return this.coord.distanceTo(otherSquad.coord);
     }
 
-    // TODO stealth should actually work the other way - prop where high = obvious, low = stealthy. visibility?
     canSee (otherSquad) {
-        return otherSquad.stealth < this.distanceTo(otherSquad);
+        return otherSquad.visibility >= this.distanceTo(otherSquad);
     }
 
     preferredDistance () {
@@ -83,17 +84,19 @@ class Squad {
         const events = this.creatures.map(cr => cr.update())
             .filter(e => !! e);
 
-        this.resetStealth();
+        this.resetVisibility();
         this.ready = true;
 
         return events;
     }
 
-    resetStealth () {
-        this.stealth = Math.min(
-            this.activeCreatures().map(cr => cr.template.stealth || 0)
-            // TODO check whether .creatures should be replaced with activeCreatures classwide
-        ) || 0;
+    resetVisibility () {
+        const DEFAULT = 99;
+
+        this.visibility = Math.max(
+            this.activeCreatures().map(cr => cr.template.visibility || DEFAULT)
+        )
+        || DEFAULT;
     }
 
     attack (targetSquad) {
@@ -104,8 +107,8 @@ class Squad {
             manyEvents = manyEvents.concat(events);
         }
 
-        this.stealth -= creatures.length;
-        // LATER make sure stealth & ready changes are well integrated with event system. Motive: Stealth might need displaying.
+        this.visibility += creatures.length;
+        // LATER make sure visibility & ready changes are well integrated with event system. Motive: visibility might need displaying.
 
         return manyEvents;
     }
