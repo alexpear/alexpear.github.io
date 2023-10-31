@@ -22,6 +22,16 @@ class ScifiWarband {
         this.events = [
             // Event.encounterStart()
         ];
+
+        // LATER add a system to assign readable squad names to .things like 'Grunt Squad Alpha'
+    }
+
+    initSquads () {
+        for (let thing of this.things) {
+            thing.id = thing.template.name + ' ' + thing.id;
+
+            console.log(thing.toJson());
+        }
     }
 
     async runEncounter () {
@@ -29,7 +39,10 @@ class ScifiWarband {
         const secondTeam = Squad.TEAM.Player;
         let curTeam = firstTeam;
 
-        for (let t = 1; t <= 100; t++) {
+        for (this.t = 1; this.t <= 100; this.t++) {
+            this.readySquads();
+            Util.log(`t=${this.t}: ${this.things.filter(t => ! t.isKO()).length} squads left.`)
+
             for (let activation = 1; activation <= 1e5; activation++) {
                 if (this.encounterDone()) { return; }
 
@@ -43,10 +56,12 @@ class ScifiWarband {
 
                 const actions = this.chooseActions(curSquad);
 
+                // Util.logDebug(`runEncounter() loop - chosen actions are: ${Util.stringify(actions.map(a => a.toJson()))}`);
+
                 this.performActions(actions);
 
-                this.setHTML();
                 await Util.sleep(1);
+                this.setHTML();
                 // LATER Let user step forwards or back (event by event) thru the replay, instead of sleep()ing.
             }
         }
@@ -57,7 +72,29 @@ class ScifiWarband {
     }
 
     encounterDone () {
-        // TODO If only one Team has non-KO Squads, return true.
+        const squadCounts = {};
+
+        for (let thing of this.things) {
+            if (thing.isKO()) { continue; }
+
+            if (squadCounts[thing.team]) {
+                squadCounts[thing.team] += 1;
+            }
+            else {
+                squadCounts[thing.team] = 1;
+            }
+        }
+
+        // Util.log(squadCounts);
+        // Util.log(`t=${this.t}: ${squadCounts.player} player squads vs ${squadCounts.enemy} enemy squads`);
+
+        return Object.keys(squadCounts).length <= 1;
+    }
+
+    readySquads () {
+        for (let thing of this.things) {
+            thing.ready = true;
+        }
     }
 
     findReadySquad (team) {
@@ -69,12 +106,14 @@ class ScifiWarband {
     // This function is the mind of the squad.
     // Allowed to return illegal moves.
     chooseActions (curSquad) {
-        const sentiments = this.creatures.map(cr => cr.morale());
+        // Util.logDebug(curSquad.toJson());
+
+        const sentiments = curSquad.creatures.map(cr => cr.morale());
         // LATER morale can inform chooseActions()
 
         // A squad may do ONE action (eg move OR attack) each turn.
-        const movePlan = this.desiredMove();
-        const attackPlan = this.desiredAttack();
+        const movePlan = this.desiredMove(curSquad);
+        const attackPlan = this.desiredAttack(curSquad);
         // LATER replace these 2 local vars with array of several possible actions. this.desiredActions() => actionInfo[]
 
         const roll = Math.random() * (movePlan.desire + attackPlan.desire);
@@ -85,6 +124,26 @@ class ScifiWarband {
         else {
             return [Action.attack(curSquad, attackPlan.target)];
         }
+    }
+
+    desiredMove (curSquad) {
+        const coord = curSquad.coord; // TODO select nontrash coord
+        const desire = 0.5; // LATER estimate how useful it is to change position at this moment.
+
+        return {
+            coord,
+            desire,
+        };
+    }
+
+    desiredAttack (curSquad) {
+        const target = this.nearestFoes(curSquad)[0];
+        const desire = 0.5; // LATER estimate how useful this attack is.
+
+        return {
+            target,
+            desire,
+        };
     }
 
     // If action sequence is illegal, interpret/default to a legal move.
@@ -108,8 +167,14 @@ class ScifiWarband {
         // LATER check for illegal actions.
 
         const squad = action.subject;
+        if (squad.isKO()) {
+            throw new Error(squad.id); // illegal
+        }
+
         const distance = squad.coord.distanceTo(action.target);
         squad.ready = false;
+
+        // TODO log more readable summaries of what happens.
 
         if (action.type === Action.TYPE.Move) {
             if (distance > squad.speed()) {
@@ -118,11 +183,19 @@ class ScifiWarband {
                 return;
             }
 
+            // if (distance === 0) {
+                // Util.logError(`This is not so bad, but a squad decided to move 0 distance: ${action.toString()}`);
+            // }
+
             squad.coord = action.target;
             return;
         }
 
         if (action.type === Action.TYPE.Attack) {
+            if (action.target.isKO()) {
+                throw new Error(action.target.id);
+            }
+
             if (! squad.canSee(action.target)) {
                 Util.logError(`Illegal action submitted, can't see target squad: ${action.toString()}`);
                 // LATER interpret as a more reasonable action.
@@ -144,7 +217,7 @@ class ScifiWarband {
     }
 
     drawGrid () {
-        // TODO reset canvas
+        this.resetGrid();
 
         for (let y = 0; y < ScifiWarband.WINDOW_SQUARES; y++) {
             for (let x = 0; x < ScifiWarband.WINDOW_SQUARES; x++) {
@@ -155,7 +228,14 @@ class ScifiWarband {
                 }
                 else {
                     const thing = things[0];
-                    this.drawSquare(thing.imageURL(), x, y);
+
+                    if (! thing.isKO()) {
+                        this.drawSquare(thing.imageURL(), x, y);
+                    }
+                    else {
+                        // LATER find real KO image(s)
+                        this.drawSquare(Squad.IMAGE_PREFIX + 'sentinel.jpg', x, y);
+                    }
 
                     if (things.length >= 2) {
                         Util.logDebug(`Coord ${x}, ${y} contains ${things.length} things, BTW.`);
@@ -163,6 +243,10 @@ class ScifiWarband {
                 }
             }
         }
+    }
+
+    resetGrid () {
+        this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     // Returns Squad[]
@@ -180,6 +264,7 @@ class ScifiWarband {
 
         for (let thing of this.things) {
             if (thing.team === squad.team) { continue; }
+            if (thing.isKO()) { continue; }
             if (! squad.canSee(thing)) { continue; }
 
             const dist = squad.distanceTo(thing);
@@ -224,10 +309,6 @@ class ScifiWarband {
         Util.logDebug(`testNearestFoes() ending test at ${endDate.getUTCMilliseconds()}\n  Total time was ${ms / 1000} seconds, or ${ms / 1000 / this.things.length} seconds per nearestFoes() call.`);
     }
 
-    canSee (otherSquad) {
-        return otherSquad.stealth < this.distanceTo(otherSquad);
-    }
-
     drawSquare (imageURL, x, y) {
         const imgElement = new Image();
         imgElement.src = imageURL;
@@ -236,21 +317,27 @@ class ScifiWarband {
     }
 
     drawLoadedImage (imgElement, x, y) {
+        let xOffset = 0;
+        let yOffset = 0;
         let width;
         let height;
         if (imgElement.naturalWidth >= imgElement.naturalHeight) {
             width = ScifiWarband.SQUARE_PIXELS;
             height = imgElement.naturalHeight / imgElement.naturalWidth * ScifiWarband.SQUARE_PIXELS;
+            yOffset = (width - height) / 2;
         }
         else {
             width = imgElement.naturalWidth / imgElement.naturalHeight * ScifiWarband.SQUARE_PIXELS;
             height = ScifiWarband.SQUARE_PIXELS;
+            xOffset = (height - width) / 2;
         }
+
+        // tow 1710
 
         this.canvasCtx.drawImage(
             imgElement, 
-            this.cornerOfSquare(x),
-            this.cornerOfSquare(y),
+            this.cornerOfSquare(x) + xOffset,
+            this.cornerOfSquare(y) + yOffset,
             width,
             height
         );
@@ -267,6 +354,7 @@ class ScifiWarband {
 
     drawAttack (squad, target) {
         this.drawAttackXY(
+            // TODO bug seen where .coord is undefined
             squad.coord.x,
             squad.coord.y,
             target.coord.x,
@@ -309,23 +397,34 @@ class ScifiWarband {
         ];
     }
 
+    static async testDrawAttack () {
+        await Util.sleep(1);
+        game.drawAttack(
+            {
+                coord: {
+                    x: Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+                    y: Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+                }
+            },
+            {
+                coord: {
+                    x: Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+                    y: Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+                }
+            }
+        );
+    }
+
     static async run () {
         const game = new ScifiWarband();
         game.exampleSetup();
+        game.initSquads();
         game.setHTML();
-
-        await Util.sleep(1);
-        game.drawAttack(
-            Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
-            Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
-            Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
-            Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
-        );
 
         game.runEncounter();
         game.explainOutcome();
 
-        game.testNearestFoes();
+        // game.testNearestFoes();
     }
 }
 
