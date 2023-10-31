@@ -35,17 +35,20 @@ class ScifiWarband {
     }
 
     async runEncounter () {
-        const firstTeam = Squad.TEAM.Enemy; // LATER could depend upon who is attacker/defender.
-        const secondTeam = Squad.TEAM.Player;
-        let curTeam = firstTeam;
+        // LATER starting team could depend on who is attacker/defender, or who has most squads left at start of each round. Currently arbitrary.
+        const teams = Object.keys(this.teamSummaries());
+        // LATER 3-team support by indexing teams[activation % teams.length]
 
         for (this.t = 1; this.t <= 100; this.t++) {
             this.readySquads();
-            Util.log(`t=${this.t}: ${this.things.filter(t => ! t.isKO()).length} squads left.`)
+            this.logNewRound();
+            // Util.log(`t=${this.t}: ${this.things.filter(t => ! t.isKO()).length} squads left.`)
 
             for (let activation = 1; activation <= 1e5; activation++) {
                 if (this.encounterDone()) { return; }
 
+                const teamIndex = activation % teams.length;
+                const curTeam = teams[teamIndex];
                 const curSquad = this.findReadySquad(curTeam);
 
                 if (! curSquad) { continue; } // This is normal for the team with less squads at the end of the round.
@@ -62,9 +65,45 @@ class ScifiWarband {
 
                 await Util.sleep(1);
                 this.setHTML();
-                // LATER Let user step forwards or back (event by event) thru the replay, instead of sleep()ing.
+                // LATER UI where user steps forwards or back (event by event) thru the replay, instead of sleep()ing.
+
+                
             }
         }
+    }
+
+    teamSummaries () {
+        const teamSummaries = {};
+
+        for (let thing of this.things) {
+            const quantity = thing.quantity();
+            const squadNumber = quantity >= 1 ?
+                1 :
+                0;
+
+            if (teamSummaries[thing.team]) {
+                const obj = teamSummaries[thing.team];
+
+                obj.squads += squadNumber;
+                obj.headcount += quantity;
+                obj.healthBar += thing.healthBar();
+            }
+            else {
+                teamSummaries[thing.team] = {
+                    squads: squadNumber,
+                    headcount: quantity,
+                    healthBar: thing.healthBar(),
+                };
+            }
+        }
+
+        return teamSummaries;
+    }
+
+    logNewRound () {
+        const teamSummaries = this.teamSummaries();
+
+        Util.log(`t=${this.t}: ${Util.stringify(teamSummaries)}`);
     }
 
     record (events) {
@@ -81,6 +120,10 @@ class ScifiWarband {
                 squadCounts[thing.team] += 1;
             }
             else {
+                if (Object.keys(squadCounts).length >= 1) {
+                    return false;
+                }
+
                 squadCounts[thing.team] = 1;
             }
         }
@@ -118,6 +161,8 @@ class ScifiWarband {
 
         const roll = Math.random() * (movePlan.desire + attackPlan.desire);
 
+        // Util.logDebug(`${curSquad.terse()} is thinking of attacking ${attackPlan.target.terse()}`);
+
         if (roll <= movePlan.desire) {
             return [Action.move(curSquad, movePlan.coord)];
         }
@@ -127,18 +172,29 @@ class ScifiWarband {
     }
 
     desiredMove (curSquad) {
-        const coord = curSquad.coord; // TODO select nontrash coord
-        const desire = 0.5; // LATER estimate how useful it is to change position at this moment.
+        const report = {};
+
+        const nearestFoes = this.nearestFoes(curSquad);
+        const foeDistance = curSquad.distanceTo(nearestFoes[0]);
+        const preferredDistance = curSquad.preferredDistance();
+        const positionImperfection = foeDistance - preferredDistance;
+
+        if (Math.abs(positionImperfection) <= 0.5) {
+            // Good position already.
+            return {
+                desire: 0
+            };
+        }
 
         return {
-            coord,
-            desire,
+            coord: curSquad.coord, // LATER select nontrash coord
+            desire: 0, // LATER estimate how useful it is to change position at this moment.
         };
     }
 
     desiredAttack (curSquad) {
         const target = this.nearestFoes(curSquad)[0];
-        const desire = 0.5; // LATER estimate how useful this attack is.
+        const desire = 0.9; // LATER estimate how useful this attack is.
 
         return {
             target,
@@ -174,8 +230,6 @@ class ScifiWarband {
         const distance = squad.coord.distanceTo(action.target);
         squad.ready = false;
 
-        // TODO log more readable summaries of what happens.
-
         if (action.type === Action.TYPE.Move) {
             if (distance > squad.speed()) {
                 Util.logError(`Illegal action submitted, can't move that far: ${action.toString()}`);
@@ -202,9 +256,24 @@ class ScifiWarband {
                 return;
             }
 
+            const initialTargetCount =  action.target.quantity();
+            const targetTerse = action.target.terse();
+
             const events = squad.attack(action.target);
             this.record(events);
             this.drawAttack(squad, action.target);
+
+            // TODO log more readable summaries of what happens. 3 Marines (3,2) attack 2 Grunts (5, 0). 4 hits, no KOs.
+            const hitCount = events
+                .filter(e => e.type === Event.TYPE.Hit)
+               .length;
+
+            const koCount = initialTargetCount - action.target.quantity();
+            const eliminationMessage = action.target.quantity() === 0 ?
+                ' (SQUAD WIPE)' :
+                '';
+
+            Util.log(`${squad.terse()} attack ${targetTerse}: ${hitCount} hits, ${koCount} KOs${eliminationMessage}`);
 
             return;
         }
@@ -263,11 +332,16 @@ class ScifiWarband {
         let shortestDist = 99999; // unit: squares
 
         for (let thing of this.things) {
+            Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, top. Teams: ${squad.team} vs ${thing.team}, canSee(thing)? ${squad.canSee(thing)}, thing.stealth = ${thing.stealth}`);
+
             if (thing.team === squad.team) { continue; }
             if (thing.isKO()) { continue; }
             if (! squad.canSee(thing)) { continue; }
 
             const dist = squad.distanceTo(thing);
+
+            Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, dist is ${dist}`);
+
             if (dist < shortestDist) {
                 nearests = [thing];
             }

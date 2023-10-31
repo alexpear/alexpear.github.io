@@ -19,7 +19,6 @@ class Squad {
         this.team = team;
         this.coord = coord || new Coord();
         this.ready = true;
-        this.resetStealth();
 
         // Note that this is how you create a homogenous squad from a template. LATER, might often have heterogenous squads coming from customization choices or from a save file.
         for (let i = 1; i <= this.template.quantity; i++) {
@@ -27,6 +26,8 @@ class Squad {
             this.creatures.push(cr);
             cr.squad = this;
         }
+
+        this.resetStealth();
     }
 
     isKO () {
@@ -38,6 +39,10 @@ class Squad {
     activeCreatures () {
         return this.creatures.filter(cr => ! cr.isKO())
     }
+
+    quantity () {
+        return this.activeCreatures().length;
+    }    
 
     size () {
         return Util.sum(
@@ -57,13 +62,27 @@ class Squad {
         return this.coord.distanceTo(otherSquad.coord);
     }
 
+    // TODO stealth should actually work the other way - prop where high = obvious, low = stealthy. visibility?
     canSee (otherSquad) {
         return otherSquad.stealth < this.distanceTo(otherSquad);
     }
 
+    preferredDistance () {
+        const prefs = this.activeCreatures().map(
+            cr => cr.weapon().preferredRange
+        );
+
+        return Util.mean(prefs);
+    }
+
     update () {
+        if (this.isKO()) {
+            return;
+        }
+ 
         const events = this.creatures.map(cr => cr.update())
             .filter(e => !! e);
+
         this.resetStealth();
         this.ready = true;
 
@@ -74,7 +93,7 @@ class Squad {
         this.stealth = Math.min(
             this.activeCreatures().map(cr => cr.template.stealth || 0)
             // TODO check whether .creatures should be replaced with activeCreatures classwide
-        );  
+        ) || 0;
     }
 
     attack (targetSquad) {
@@ -108,6 +127,29 @@ class Squad {
 
     imageURL () {
         return Squad.IMAGE_PREFIX + this.template.image;
+    }
+
+    // 2 Grunts (5, 0)
+    terse () {
+        const representative = this.quantity() >= 1 ?
+            this.activeCreatures()[0] :
+            this.creatures[0];
+
+        const name = representative.template.name;
+
+        return `${this.quantity()} ${name}s ${this.coord.toString()}`;
+    }
+
+    healthBar () {
+        if (this.isKO()) {
+            return 0;
+        }
+
+        return Util.mean(
+            this.activeCreatures().map(
+                cr => cr.healthBar()
+            )
+        );
     }
 
     toJson () {

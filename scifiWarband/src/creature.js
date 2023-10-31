@@ -57,6 +57,50 @@ class Creature {
 
     weapon (targetSquad) {
         return this.template.items[0]; // LATER choose a weapon, or have a better preset system.
+        // LATER use this.items, to track things theyve picked up during battle.
+    }
+
+    // Returns number in range [0, 1]
+    healthBar () {
+        if (this.isKO()) {
+            return 0;
+        }
+
+        // const stats = {
+        //     speed: {
+        //         base: this.template.speed,
+        //         modifier: this.status.speed || 0,
+        //     },
+        //     accuracy: {
+        //         base: this.template.speed,
+        //         modifier: this.status.speed || 0,
+        //     },
+        //     durability: {
+        //         base: this.template.speed,
+        //         modifier: this.status.speed || 0,
+        //     },
+        // };
+
+        return Math.min(
+            this.traitHealthBar('speed'),
+            this.traitHealthBar('accuracy'),
+            this.traitHealthBar('durability')
+        );
+    }
+
+    traitHealthBar (trait) {
+        // Note - Epsilon prevents division by zero.
+        const base = this.template[trait] || Number.EPSILON;
+        const modifier = this.status[trait] || 0;
+
+        const ratio = (base + modifier) / base;
+
+        if (! Util.exists(ratio)) {
+            Util.logDebug(`Creature.traitHealthBar(${trait}): modifier is ${modifier}, ratio is ${ratio}`);
+            throw new Error(this.toJson());
+        }
+
+        return ratio;
     }
 
     // returns number in range [-10, 10]

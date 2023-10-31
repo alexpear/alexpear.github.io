@@ -12,7 +12,7 @@ class Event {
         this.type = type;
         this.details = details || {};
 
-        this.log();
+        // this.log();
     }
 
     log () {
