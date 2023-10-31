@@ -1,6 +1,6 @@
 'use strict';
 
-// const Creature = require('./creature.js');
+const Creature = require('./creature.js');
 // const Squad = require('./squad.js');
 // const Action = require('./action.js');
 // const Item = require('./Item.js');
@@ -15,11 +15,11 @@ class Squad {
     constructor (squadTemplate, team, coord) {
         this.id = Util.uuid();
         this.template = squadTemplate;
+        this.creatures = [];
         this.team = team;
         this.coord = coord || new Coord();
         this.ready = true;
         this.resetStealth();
-        this.creatures = [];
 
         // Note that this is how you create a homogenous squad from a template. LATER, might often have heterogenous squads coming from customization choices or from a save file.
         for (let i = 1; i <= this.template.quantity; i++) {
@@ -57,15 +57,22 @@ class Squad {
         return this.coord.distanceTo(otherSquad.coord);
     }
 
+    canSee (otherSquad) {
+        return otherSquad.stealth < this.distanceTo(otherSquad);
+    }
+
     update () {
-        this.creatures.map(cr => cr.update());
+        const events = this.creatures.map(cr => cr.update())
+            .filter(e => !! e);
         this.resetStealth();
         this.ready = true;
+
+        return events;
     }
 
     resetStealth () {
         this.stealth = Math.min(
-            this.activeCreatures.map(cr => cr.template.stealth || 0)
+            this.activeCreatures().map(cr => cr.template.stealth || 0)
             // TODO check whether .creatures should be replaced with activeCreatures classwide
         );  
     }
@@ -85,9 +92,9 @@ class Squad {
     }
 
     whoGotHit () {
-        const roll = Math.random() * this.size();
+        let roll = Math.random() * this.size();
 
-        for (let cr of this.creatures) {
+        for (let cr of this.activeCreatures()) {
             roll -= cr.template.size;
 
             if (roll <= 0) {
@@ -103,6 +110,17 @@ class Squad {
         return Squad.IMAGE_PREFIX + this.template.image;
     }
 
+    toJson () {
+        const json = Util.certainKeysOf(
+            this, 
+            ['id', 'template', 'team', 'coord', 'ready']
+        );
+
+        json.creatures = this.creatures.map(cr => cr.toJson());
+
+        return json;
+    }
+
     static example (key) {
         const examples = {
             Marine: {
@@ -115,7 +133,7 @@ class Squad {
             },
         };
 
-        const info = example[key] || example.Marine;
+        const info = examples[key] || examples.Marine;
 
         const sq = new Squad(
             info.template,
