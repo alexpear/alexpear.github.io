@@ -53,9 +53,15 @@ class Squad {
     }
 
     speed () {
-        return Math.min(
+        const min = Util.min(
             this.activeCreatures().map(cr => cr.speed())
         );
+
+        if (! Util.exists(min)) {
+            throw new Error(Util.stringify(this.toJson()));
+        }
+
+        return min;
     }
 
     // unit: squares
@@ -65,7 +71,11 @@ class Squad {
     }
 
     canSee (otherSquad) {
-        return otherSquad.visibility >= this.distanceTo(otherSquad);
+        return Squad.coordCanSee(this.coord, otherSquad);
+    }
+
+    static coordCanSee (coord, squad) {
+        return squad.visibility >= coord.distanceTo(squad.coord);
     }
 
     preferredDistance () {
@@ -93,7 +103,7 @@ class Squad {
     resetVisibility () {
         const DEFAULT = 99;
 
-        this.visibility = Math.max(
+        this.visibility = Util.max(
             this.activeCreatures().map(cr => cr.template.visibility || DEFAULT)
         )
         || DEFAULT;

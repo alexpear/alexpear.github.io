@@ -171,10 +171,31 @@ util.sum = function (array) {
 };
 
 // Average
+// LATER could support multiple param usage: Util.mean(3, 5, 7)
 util.mean = (array) => {
     array = util.array(array);
+    if (array.length === 0) { return 0; }
+
     const sum = util.sum(array);
     return sum / array.length;
+};
+
+// More robust variant of Math.min()
+util.min = (...args) => {
+    if (args.length === 1 && util.isArray(args[0])) {
+        return Math.min(...args[0]);
+    }
+
+    return Math.min(...args);
+};
+
+// More robust variant of Math.max()
+util.max = (...args) => {
+    if (args.length === 1 && util.isArray(args[0])) {
+        return Math.max(...args[0]);
+    }
+
+    return Math.max(...args);
 };
 
 util.shuffle = (array) => {
@@ -295,12 +316,17 @@ util.newId = function (idLength) {
 
     let id = '';
     for (let i = 0; i < (idLength || 50); i++) {
-        const index = Math.floor( Math.random() * ALPHABET.length );
+        const index = Math.floor( 
+            Math.random() * ALPHABET.length 
+        );
         id += ALPHABET[index];
     }
 
     return id;
 };
+
+// Similar to newId()
+util.uuid = () => crypto.randomUUID();
 
 // Returns string
 util.shortId = function (id) {
@@ -747,6 +773,8 @@ util.arrayCopy = (a) => {
     return a.map(x => x);
 };
 
+util.clone = (obj) => _.cloneDeep(obj);
+
 util.round = (n) => _.round(n);
 
 util.commaNumber = (n) =>
@@ -951,10 +979,15 @@ util.sigfigsOf = (n) => {
 };
 
 // Call like 'await Util.sleep(6);'
-util.sleep = (seconds) =>
-    new Promise(
+util.sleep = (seconds) => {
+    if (! util.exists(seconds)) {
+        seconds = 1;
+    }
+
+    return new Promise(
         funcWhenResolved => setTimeout(funcWhenResolved, seconds * 1000)
     );
+}
 
 // eg ('00705', '0') => 2
 util.charCountAtStart = (str, char) => {
@@ -1073,6 +1106,28 @@ util.dictToJson = (dict) => {
         );
 
     return serialized;
+};
+
+util.valuesAsIDs = (obj) => {
+    const converted = {};
+
+    for (let key in obj) {
+        const val = obj[key];
+
+        converted[key] = val?.id || val;
+    }
+
+    return converted;
+};
+
+util.certainKeysOf = (obj, keyArray) => {
+    const output = {};
+
+    for (let key of keyArray) {
+        output[key] = obj[key];
+    }
+
+    return output;
 };
 
 // Myers-Briggs Type Indicator (personality category)

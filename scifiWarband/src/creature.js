@@ -81,11 +81,21 @@ class Creature {
         //     },
         // };
 
-        return Math.min(
+        return Util.min(
             this.traitHealthBar('speed'),
             this.traitHealthBar('accuracy'),
             this.traitHealthBar('durability')
         );
+    }
+
+    static testHealthBar () {
+        const min = Util.min(0.1, 0.2, 0.3);
+        const min2 = Util.min([0.1, 0.2, 0.3]);
+        const expected = 0.1;
+
+        if (min !== min2 || min2 !== expected) {
+            throw new Error(`${min}, ${min2}`);
+        }
     }
 
     traitHealthBar (trait) {
@@ -152,11 +162,13 @@ class Creature {
     // After considering cover.
     // returns Event
     takeHit (weaponTemplate, t) {
+        t = t || 1; // Temp
+
         let damage = weaponTemplate.damage;
 
         if (this.shields) {
             // TODO decide whether to get t by passing, by a static variable, or set it later.
-            this.cooldownEnds = t + this.template.shieldDelay;
+            this.cooldownEnds = t + (this.template.shieldDelay || 2);
 
             if (weaponTemplate.attackType === Creature.ATTACK_TYPE.Plasma) {
                 this.shields -= damage * 2;
@@ -247,3 +259,5 @@ class Creature {
 // };
 
 module.exports = Creature;
+
+// Creature.testHealthBar();

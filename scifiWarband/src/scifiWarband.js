@@ -65,9 +65,8 @@ class ScifiWarband {
 
                 await Util.sleep(1);
                 this.setHTML();
+                // TODO bug - drawAttack() is not displaying on top currently.
                 // LATER UI where user steps forwards or back (event by event) thru the replay, instead of sleep()ing.
-
-                
             }
         }
     }
@@ -148,7 +147,12 @@ class ScifiWarband {
         );
     }
 
-    // This function is the mind of the squad.
+    // returns boolean
+    coordOnGrid (coord) {
+        return coord.inBox(0, 0, ScifiWarband.WINDOW_SQUARES, ScifiWarband.WINDOW_SQUARES);
+    }
+
+    // This function is the mind of the squad. LATER could move these behavioral funcs to a class Mind in a mind.js file.
     // Allowed to return illegal moves.
     chooseActions (curSquad) {
         // Util.logDebug(curSquad.toJson());
@@ -161,9 +165,13 @@ class ScifiWarband {
         const attackPlan = this.desiredAttack(curSquad);
         // LATER replace these 2 local vars with array of several possible actions. this.desiredActions() => actionInfo[]
 
+        // if (movePlan.coord === curSquad.coord) {
+        //     movePlan.desire = 0;
+        // }
+
         const roll = Math.random() * (movePlan.desire + attackPlan.desire);
 
-        // Util.logDebug(`${curSquad.terse()} is thinking of attacking ${attackPlan.target.terse()}`);
+        Util.logDebug(`${curSquad.terse()} is thinking of moving to ${movePlan.coord.toString()} with desire ${movePlan.desire}, or attacking ${attackPlan.target.terse()} with desire ${attackPlan.desire}`);
 
         if (roll <= movePlan.desire) {
             return [Action.move(curSquad, movePlan.coord)];
@@ -171,31 +179,185 @@ class ScifiWarband {
         else {
             return [Action.attack(curSquad, attackPlan.target)];
         }
+        // LATER could add this 'roll over N numbers' logic to util.js
     }
 
     desiredMove (curSquad) {
         const report = {};
 
-        const nearestFoes = this.nearestFoes(curSquad);
-        const foeDistance = curSquad.distanceTo(nearestFoes[0]);
+        const speed = curSquad.speed();
+        const nearestFoeInfo = this.nearestFoes(curSquad);
+        const nearestFoes = nearestFoeInfo.foes;
+        const foeDistance = nearestFoeInfo.dist;
         const preferredDistance = curSquad.preferredDistance();
         const positionImperfection = foeDistance - preferredDistance;
 
         if (Math.abs(positionImperfection) <= 0.5) {
             // Good position already.
             return {
+                coord: curSquad.coord,
                 desire: 0
             };
         }
 
+        const goodRangeCoord = this.coordAlongLine(
+            nearestFoes[0].coord,
+            curSquad.coord,
+            preferredDistance
+        );
+
+        let firstChoiceCoord = goodRangeCoord;
+
+        if(curSquad.coord.distanceTo(goodRangeCoord) > speed) {
+            firstChoiceCoord = this.coordAlongLine(
+                curSquad.coord,
+                goodRangeCoord,
+                speed
+            );
+        }
+
+        const candidates = this.adjacents(firstChoiceCoord);
+        candidates.push(firstChoiceCoord);
+
+        let bestCoord = candidates[0];
+        let bestRating = -Infinity;
+
+        // TODO bug - squad keeps moving further away from nearest foe despite holding a SMG with preferred range 1.
+        for (let candidate of candidates) {
+            const rating = this.destinationRating(candidate, curSquad);
+            if (rating > bestRating) {
+                bestRating = rating;
+                bestCoord = candidate;
+            }
+
+            Util.logDebug(`ScifiWarband.desiredMove(), candidates loop: candidate=${candidate.toString()}, rating=${rating}, curSquad=${curSquad.terse()}`);
+        }
+
+        // Desires should be numbers in range [0, 1]
+        const desire = bestRating / (bestRating + 1);
+
         return {
-            coord: curSquad.coord, // LATER select nontrash coord
-            desire: 0, // LATER estimate how useful it is to change position at this moment.
+            coord: bestCoord,
+            desire,
         };
+
+        /* Notes
+        Multiple funcs would be useful:
+        * Move along a line as far as possible
+            - Candidate alg:
+                - Calculate optimal dest in continuous coords
+                - Try rounding it into discrete coords
+                - If rounding lands it out of range, iteratively try the calc again with a tighter dist. 
+                    - Tighten by perhaps 0.5 squares at a time. 
+                - Edge cases: 
+                    - You are diagonally adjacent to enemy already, hard to get closer
+                    - Optimal dest is occupied by friendly, terrain, or stealthy enemy 
+        * Find optimal spot along a line
+            - Similar to 'as far as possible' but based on preferredRange instead of speed
+        * Compare a few adjacent destination squares 
+            - Useful for slow movers.
+            - Altho arguably might be overoptimizing - focusing on diagonal-orthagonal tradeoff, which is a grid quirk, not a narrative thing. 
+        * Dynamic programming esque:
+            - Assemble a desire rating for many possible squares.
+            - Obstacles:
+                - If optimal area is crowded with friendlies, hard to tell when youre done
+                    - But evaluating every possible square would work 
+            * Rate optimal (rounded) square and the 8 adjacent squares
+                - If none are possible, back up (tighten dist) by 1.4 or 1.5 along the optimal line 
+                    - But still should remember the already rated squares (caching)
+                - If none near the line are possible, MRB1: Give up
+                    - MRB2: Rate all squares within dist
+                * Helper: .destinationRating(coord)
+                    - Factors
+                        - Dist to nearestFoe
+                            - MRB2: Rating of how dangerous that foe(s) are to us at that dist.
+                            - Closeness to our preferred range - MRB1
+        - LATER: What about walking around obstacles? Pathfinding?
+
+        Note - should probably round optimal range calcs in chooseActions() funcs, to avoid squads overoptimizing and preferring orthagonal firing positions to diagonal, etc.
+        Altho moving loses a turn of shooting, which mitigates that a little already.
+        */
     }
 
+    // returns rounded coord
+    coordAlongLine (startCoord, endCoord, distFromStart) {
+        const deltaX = startCoord.x - endCoord.x;
+        const deltaY = startCoord.y - endCoord.y;
+
+        let xDist;
+        let yDist;
+
+        if (deltaY === 0) {
+            // Case where we avoid dividing by zero.
+            xDist = Math.sign(deltaX) * distFromStart;
+            yDist = 0;
+        }
+        else {
+            // LATER could rename to inverseSlope or whatever the correct term is for x/y
+            const slope = deltaX / deltaY;
+
+            xDist = Math.sqrt( 
+                distFromStart**2 / (
+                    slope**2 + 1
+                )
+            );
+            yDist = slope * xDist;            
+        }
+
+        return new Coord(
+            Util.round(startCoord.x + xDist),
+            Util.round(startCoord.y + yDist)
+        );
+    }
+
+    adjacents (coord) {
+        const coords = [];
+
+        for (let x = -1; x <= 1; x++) {
+            for (let y = -1; y <= 1; y++) {
+                if (x === 0 && y === 0) { continue; }
+
+                const neighbor = new Coord(coord.x + x, coord.y + y);
+
+                if (this.coordOnGrid(neighbor)) {
+                    coords.push(neighbor);
+                }
+            }
+        }
+
+        return coords;
+    }
+
+    // distToFoe is a param you can optionally include if you happen to already know it.
+    destinationRating (coord, squad, distToFoe) {
+        const BASE = 10;
+
+        if (! Util.exists(distToFoe)) {
+            const foeInfo = this.nearestFoesFromCoord(coord);
+            distToFoe = foeInfo.dist;
+        }
+
+        if (distToFoe > squad.speed()) {
+            return -Infinity;
+        }
+
+        const occupants = this.contentsOfCoord(coord);
+        for (let occupant of occupants) {
+            Util.logDebug(`destinationRating(), comparing occupant ${occupant.terse()} to squad ${squad.terse()}`)
+            if (occupant === squad) {
+                return -9999;
+            }
+
+            if (! occupant.isKO()) {
+                return -Infinity;
+            }
+        }
+
+        return BASE - distToFoe;
+    }   
+
     desiredAttack (curSquad) {
-        const target = this.nearestFoes(curSquad)[0];
+        const target = this.nearestFoes(curSquad).foes[0];
         const desire = 0.9; // LATER estimate how useful this attack is.
 
         return {
@@ -222,8 +384,6 @@ class ScifiWarband {
     }
 
     performAction (action) {
-        // LATER check for illegal actions.
-
         const squad = action.subject;
         if (squad.isKO()) {
             throw new Error(squad.id); // illegal
@@ -233,6 +393,10 @@ class ScifiWarband {
         squad.ready = false;
 
         if (action.type === Action.TYPE.Move) {
+            if (! Util.exists(action.target.x) || ! Util.exists(action.target.y)) {
+                throw new Error(action);
+            }
+
             if (distance > squad.speed()) {
                 Util.logError(`Illegal action submitted, can't move that far: ${action.toString()}`);
                 // LATER interpret as a more reasonable move.
@@ -242,6 +406,15 @@ class ScifiWarband {
             // if (distance === 0) {
                 // Util.logError(`This is not so bad, but a squad decided to move 0 distance: ${action.toString()}`);
             // }
+            const occupants = this.contentsOfCoord(action.target);
+            for (let thing of occupants) {
+                if (! thing.isKO()) {
+                    Util.logError(`Illegal action - trying to move onto occupied square: ${action.toString()}`);
+                    return;
+                }
+            }
+
+            Util.log(`${squad.terse()} moves to ${action.target.toString()}, distance=${distance}, speed=${squad.speed()}`);
 
             squad.coord = action.target;
             return;
@@ -265,7 +438,6 @@ class ScifiWarband {
             this.record(events);
             this.drawAttack(squad, action.target);
 
-            // TODO log more readable summaries of what happens. 3 Marines (3,2) attack 2 Grunts (5, 0). 4 hits, no KOs.
             const hitCount = events
                 .filter(e => e.type === Event.TYPE.Hit)
                .length;
@@ -292,7 +464,7 @@ class ScifiWarband {
 
         for (let y = 0; y < ScifiWarband.WINDOW_SQUARES; y++) {
             for (let x = 0; x < ScifiWarband.WINDOW_SQUARES; x++) {
-                const things = this.contentsOfCoord(x, y);
+                const things = this.contentsOfCoord(new Coord(x, y));
 
                 if (things.length === 0) {
                     this.drawSquare(Squad.IMAGE_PREFIX + 'sand.jpg', x, y);
@@ -321,32 +493,38 @@ class ScifiWarband {
     }
 
     // Returns Squad[]
-    contentsOfCoord (x, y) {
+    contentsOfCoord (input) {
         return this.things.filter(
-            t => t.coord.dimensions[0] === x &&
-                t.coord.dimensions[1] === y
+            t => t.coord.x === input.x &&
+                t.coord.y === input.y
         );
     }
 
     // Returns array of nearest foe - or foes tied for same distance.
     nearestFoes (squad) {
-        // TODO check whether game crashes when this returns [];
+        return this.nearestFoesFromCoord(squad.coord, squad.team);
+    }
+
+    nearestFoesFromCoord (coord, team) {
+        // LATER check whether game crashes when this returns [];
         let nearests = [];
         let shortestDist = 99999; // unit: squares
 
         for (let thing of this.things) {
             // Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, top. Teams: ${squad.team} vs ${thing.team}, canSee(thing)? ${squad.canSee(thing)}, thing.visibility = ${thing.visibility}`);
 
-            if (thing.team === squad.team) { continue; }
+            if (thing.team === team) { continue; }
             if (thing.isKO()) { continue; }
-            if (! squad.canSee(thing)) { continue; }
 
-            const dist = squad.distanceTo(thing);
+            if (! Squad.coordCanSee(coord, thing)) { continue; }
+
+            const dist = coord.distanceTo(thing.coord);
 
             // Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, dist is ${dist}`);
 
             if (dist < shortestDist) {
                 nearests = [thing];
+                shortestDist = dist;
             }
             else if (dist === shortestDist) {
                 nearests.push(thing);
@@ -355,7 +533,10 @@ class ScifiWarband {
             // NOTE - speeding up this func further (eg via Manhattan distance 1st pass) seems unnecessary: 0.00006 seconds per nearestFoes() call.
         }
 
-        return nearests;
+        return {
+            foes: nearests,
+            dist: shortestDist,
+        };
     }
 
     testNearestFoes () {
@@ -441,7 +622,7 @@ class ScifiWarband {
 
     // Inputs should be in grid coords, not pixel coords.
     drawAttackXY (startX, startY, endX, endY) {
-        // TODO - draw muzzle flash ray-lines at start
+        // TODO - draw muzzle flash ray-lines at start coord
         // TODO line traits & colors
         this.canvasCtx.moveTo(
             this.centerOfSquare(startX),
@@ -458,7 +639,8 @@ class ScifiWarband {
     }
 
     explainOutcome () {
-        // TODO Present outcome to user.
+        this.logNewRound();
+        // LATER Present outcome to user in more detail.
     }
 
     exampleSetup () {
