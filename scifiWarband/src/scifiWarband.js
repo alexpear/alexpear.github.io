@@ -444,6 +444,7 @@ class ScifiWarband {
             return;
         }
 
+        // LATER functionize into this.performAttack()
         if (action.type === Action.TYPE.Attack) {
             if (action.target.isKO()) {
                 throw new Error(action.target.id);
@@ -647,6 +648,7 @@ class ScifiWarband {
     drawAttackXY (startX, startY, endX, endY) {
         // TODO - draw muzzle flash ray-lines at start coord
         // TODO line traits & colors
+        this.canvasCtx.beginPath();
         this.canvasCtx.moveTo(
             this.centerOfSquare(startX),
             this.centerOfSquare(startY),
