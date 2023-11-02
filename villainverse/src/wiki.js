@@ -330,7 +330,7 @@ class Wiki {
                 desc: 'French troops have landed at Dover & fortified their camps. The French knights swing chains of cold iron, which is agony to fairies. English longbowmen take aim behind ranks of horned & winged defenders.',
             },
             britainneverneverland: {
-                desc: '',
+                desc: 'The fairies of Neverland were born in London, but fled its iron fences, iron mills, iron doorknobs. Fey armies of Maleficent regularly alight upon Neverland\'s shores to steal its fabulous treasures. But the locals are wily & stubborn, & defend their isle like crows against hawks.',
             },
             britainwonderland: {
                 desc: '',
