@@ -137,20 +137,31 @@ class Coord {
         return candidateNeighbor;
     }
 
-    static random (xCount, yCount) {
-        if (! Util.exists(xCount)) {
-            console.log('ERROR: Coord.random() called without r argument');
-            return new Coord(-1,-1);
-            // LATER throw exception, make supervisor reboot, et cetera.
+    // a 2d func.
+    inBox (xMin, yMin, xMax, yMax) {
+        return xMin <= this.x &&
+            this.x <= xMax &&
+            yMin <= this.y &&
+            this.y <= yMax;
+    }
+
+    static random2d (xMax, yMax) {
+        return Coord.random(xMax, yMax);
+    }
+
+    // LATER rename to random2d or add 3d support. Note: ringWorldState's call might need updating if we change this.
+    static random (xMax, yMax) {
+        if (! xMax) {
+            xMax = 10;
+            yMax = 10;
+        }
+        else if (! yMax) {
+            yMax = xMax;
         }
 
-        const c = yCount ?
-            Util.randomUpTo(yCount - 1) :
-            0;
-
         return new Coord(
-            Util.randomUpTo(xCount-1),
-            c
+            Util.randomUpTo(xMax - 1),
+            Util.randomUpTo(yMax - 1)
         );
     }
 
