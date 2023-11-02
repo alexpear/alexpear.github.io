@@ -231,6 +231,7 @@ class ScifiWarband {
         );
 
         let firstChoiceCoord = goodRangeCoord;
+        Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): goodRangeCoord is ${goodRangeCoord.toString()}, nearest foe is ${nearestFoes[0].coord.toString()}, preferredDistance=${preferredDistance}`)
 
         if(curSquad.coord.distanceTo(goodRangeCoord) > speed) {
             firstChoiceCoord = this.coordAlongLine(
@@ -238,6 +239,8 @@ class ScifiWarband {
                 goodRangeCoord,
                 speed
             );
+
+            Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): goodRangeCoord was too far so we replaced it with ${firstChoiceCoord.toString()} `);
         }
 
         const candidates = this.adjacents(firstChoiceCoord);
@@ -303,6 +306,25 @@ class ScifiWarband {
         */
     }
 
+    /*
+    6 8
+    3 4
+    deltaX 3
+    dY 4
+    slope 0.75
+    ydist 4
+    xdist 3
+    should be -4, -3
+
+    3 4
+    6 8
+    dx -3
+    dy -4
+    slope 0.75
+    ydist 4
+    xdist 3
+    */
+
     // returns rounded coord
     coordAlongLine (startCoord, endCoord, distFromStart) {
         const deltaX = startCoord.x - endCoord.x;
@@ -313,25 +335,121 @@ class ScifiWarband {
 
         if (deltaY === 0) {
             // Case where we avoid dividing by zero.
-            xDist = Math.sign(deltaX) * distFromStart;
+            xDist = Math.sign(deltaX) * -1 * distFromStart;
             yDist = 0;
         }
         else {
             // LATER could rename to inverseSlope or whatever the correct term is for x/y
             const slope = deltaX / deltaY;
 
-            xDist = Math.sqrt( 
+            yDist = Math.sqrt(
                 distFromStart**2 / (
                     slope**2 + 1
                 )
             );
-            yDist = slope * xDist;            
+            xDist = slope * yDist;
         }
 
         return new Coord(
             Util.round(startCoord.x + xDist),
             Util.round(startCoord.y + yDist)
         );
+    }
+
+    static testCoordAlongLine () {
+        const game = new ScifiWarband();
+
+        let testsRun = 0;
+
+        hope(
+            game.coordAlongLine(
+                new Coord(2, 2),
+                new Coord(2, 10),
+                3
+            ),
+            2, 5,
+            'deltaX=0 case',
+        );
+
+        hope(
+            game.coordAlongLine(
+                new Coord(0, 0),
+                new Coord(10, 0),
+                3
+            ),
+            3, 0,
+            'deltaY=0 case',
+        );
+
+        hope(
+            game.coordAlongLine(
+                new Coord(0, 0),
+                new Coord(6, 8),
+                5
+            ),
+            3, 4,
+            'Like a triangle of sides 3,4,5, going down & right',
+        );
+
+        hope(
+            game.coordAlongLine(
+                new Coord(0, 0),
+                new Coord(8, 6),
+                5
+            ),
+            4, 3,
+            'Like a triangle of sides 3,4,5, going down & right, flipped',
+        );
+
+        hope(
+            game.coordAlongLine(
+                new Coord(6, 0),
+                new Coord(0, 8),
+                5
+            ),
+            3, 4,
+            'Like a triangle of sides 3,4,5, going down & left',
+        );
+
+        hope(
+            game.coordAlongLine(
+                new Coord(6, 8),
+                new Coord(3, 4),
+                5
+            ),
+            3, 4,
+            'Like a triangle of sides 3,4,5, going up & left',
+        );
+
+        const baseline = 10;
+        const start = new Coord(baseline, baseline);
+
+        for (let xOffset = -1; xOffset <= 1; xOffset++) {
+            for (let yOffset = -1; yOffset <= 1; yOffset++) {
+                const end = new Coord(baseline + 2 * xOffset, baseline + 2 * yOffset);
+
+                hope(
+                    game.coordAlongLine(
+                        start,
+                        end,
+                        1.1
+                    ),
+                    baseline + xOffset,
+                    baseline + yOffset,
+                    `Generated test: ${start} to ${end}`,
+                );
+            }
+        }
+
+        function hope (result, x, y, testNote) {
+            testsRun++;
+
+            if (! result || result.x !== x || result.y !== y) {
+                throw new Error(`testCoordAlongLine(): Test ${testsRun}: (${testNote || ''}) Got ${result.toString()} but we expected [${x}, ${y}]`);
+            }
+        }
+
+        Util.logDebug(`ScifiWarband.testCoordAlongLine() - All tests finished.`);
     }
 
     adjacents (coord) {
@@ -681,6 +799,13 @@ class ScifiWarband {
         ];
     }
 
+    exampleSetupSimple () {
+        this.things = [
+            Squad.example('Marine', new Coord(2, 1)),
+            Squad.example('Grunt', new Coord(7, 1)),
+        ];
+    }
+
     static async testDrawAttack () {
         await Util.sleep(1);
         game.drawAttack(
@@ -700,8 +825,10 @@ class ScifiWarband {
     }
 
     static async run () {
+        ScifiWarband.testCoordAlongLine();
+
         const game = new ScifiWarband();
-        game.exampleSetup();
+        game.exampleSetupSimple();
         game.initSquads();
         game.setHTML();
 
@@ -712,7 +839,7 @@ class ScifiWarband {
     }
 }
 
-ScifiWarband.WINDOW_SQUARES = 10; // number of squares
+ScifiWarband.WINDOW_SQUARES = 9; // number of squares
 ScifiWarband.DEFAULT_SQUARE_SIZE = 4; // meters
 ScifiWarband.SQUARE_PIXELS = 60;
 
