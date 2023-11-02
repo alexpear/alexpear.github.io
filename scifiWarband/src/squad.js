@@ -22,12 +22,20 @@ class Squad {
 
         // Note that this is how you create a homogenous squad from a template. LATER, might often have heterogenous squads coming from customization choices or from a save file.
         for (let i = 1; i <= this.template.quantity; i++) {
-            const cr = new Creature(this.template.creature);
+            const cr = new Creature(this.template.creature); // todo translate Creature.Grunt string 
             this.creatures.push(cr);
             cr.squad = this;
         }
 
         this.resetVisibility();
+        this.loadImage();
+    }
+
+    loadImage () {
+        this.imgElement = new Image();
+        this.imgElement.src = Squad.IMAGE_PREFIX + this.template.image;
+
+        // imgElement.onload = () => this.drawLoadedImage(imgElement, x, y);
     }
 
     isKO () {
@@ -140,6 +148,14 @@ class Squad {
 
     imageURL () {
         return Squad.IMAGE_PREFIX + this.template.image;
+    }
+
+    imageName () {
+        const fullName = this.template.image;
+
+        if (! fullName) { return 'cryptum'; } // LATER instead of placeholder image, draw squad name as text in square.
+
+        return fullName.split('.')[0]; // Remove extension
     }
 
     // 2 Grunts (5, 0)

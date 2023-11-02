@@ -23,7 +23,31 @@ class ScifiWarband {
             Event.encounterStart()
         ];
 
-        // LATER add a system to assign readable squad names to .things like 'Grunt Squad Alpha'
+        this.loadImages();
+
+        // LATER add a system to assign readable squad display names to .things like 'Grunt Squad Alpha'
+    }
+
+    loadImages () {
+        this.images = {
+            sand: this.loadImage('sand.jpg'),
+            sentinel: this.loadImage('sentinel.jpg'),
+        };
+
+        for (let template of Templates.allEntries()) {
+            if (! template.image) { continue; }
+
+            const withoutExtension = template.image.split('.')[0];
+            if (this.images[withoutExtension]) { continue; }
+
+            this.images[withoutExtension] = this.loadImage(template.image);
+        }
+    }
+
+    loadImage (filename) {
+        const img = new Image();
+        img.src = Squad.IMAGE_PREFIX + filename;
+        return img;
     }
 
     initSquads () {
@@ -467,17 +491,17 @@ class ScifiWarband {
                 const things = this.contentsOfCoord(new Coord(x, y));
 
                 if (things.length === 0) {
-                    this.drawSquare(Squad.IMAGE_PREFIX + 'sand.jpg', x, y);
+                    this.drawLoadedImage(this.images.sand, x, y);
                 }
                 else {
                     const thing = things[0];
 
                     if (! thing.isKO()) {
-                        this.drawSquare(thing.imageURL(), x, y);
+                        this.drawLoadedImage(this.images[thing.imageName()], x, y);
                     }
                     else {
                         // LATER find real KO image(s)
-                        this.drawSquare(Squad.IMAGE_PREFIX + 'sentinel.jpg', x, y);
+                        this.drawLoadedImage(this.images.sentinel, x, y);
                     }
 
                     if (things.length >= 2) {
@@ -567,7 +591,8 @@ class ScifiWarband {
         Util.logDebug(`testNearestFoes() ending test at ${endDate.getUTCMilliseconds()}\n  Total time was ${ms / 1000} seconds, or ${ms / 1000 / this.things.length} seconds per nearestFoes() call.`);
     }
 
-    drawSquare (imageURL, x, y) {
+    // Deprecated - too slow to load during drawing.
+    drawSquare (imageName, x, y) {
         const imgElement = new Image();
         imgElement.src = imageURL;
 
