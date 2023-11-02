@@ -6,13 +6,23 @@ const Util = require('../../util/util.js');
 
 class Templates {
     static init () {
-        for (let universeKey in Templates.universes()) {
-            const universe = Templates[universeKey];    
+        Util.logDebug(`Templates.init(), top.`);
 
+        for (let universe of Templates.universes()) {
             for (let faction in universe) {
+                Util.logDebug(`Templates.init(), faction=${faction}`);
+
+                if (Util.isString(universe[faction])) { continue; }
+
                 for (let section in universe[faction]) {
-                    for (let entryName in universe[faction][section]) {
-                        const entryObj = universe[faction][section][entryName];
+                    const sectionObj = universe[faction][section];
+
+                    if (Util.isString(sectionObj)) { continue; }
+
+                    for (let entryName in sectionObj) {
+                        const entryObj = sectionObj[entryName];
+
+                        Util.logDebug(`Templates.init() loop, faction=${faction} entryName=${entryName}`)
 
                         if (section === 'Creature') {
                             Templates.setupCreature(entryObj);
@@ -23,7 +33,7 @@ class Templates {
 
                         Templates.setupAnything(
                             entryObj,
-                            [universeKey, faction, section, entryName]
+                            [universe.name, faction, section, entryName]
                         );
                     }
                 }
@@ -32,7 +42,10 @@ class Templates {
     }
 
     static setupAnything (obj, pathArray) {
+        Util.logDebug(`Templates.setupAnything(obj=${Util.stringify(obj)}, pathArray=${pathArray})`)
+
         obj.name = obj.name || pathArray[pathArray.length - 1];
+        obj.faction = obj.faction || pathArray[1];
 
         // Links
         if (obj.creature) {
@@ -64,12 +77,14 @@ class Templates {
             translatedPath.push(narrowerKey);
         }
 
-        // Util.logDebug(`${dotPath} in context ${pathArray.join('.')} translates to ${translatedPath.join('.')}`);
+        Util.logDebug(`${dotPath} in context ${pathArray.join('.')} translates to ${translatedPath.join('.')}`);
 
         let obj = Templates;
         for (let key of translatedPath) {
             obj = obj[key];
         }
+
+        Util.logDebug(`Templates.translateDotPath(${pathArray}, foo...): obj=${Util.stringify(obj)}`);
 
         return obj;
     }
@@ -108,14 +123,41 @@ class Templates {
         }
     }
 
+    static allSquads () {
+        return Templates.allEntries('Squad');
+    }
+
+    static allEntries (type) {
+        let entries = [];
+        for (let universe of Templates.universes()) {
+            for (let factionKey in universe) {
+                const faction = universe[factionKey];
+                if (Util.isString(faction)) { continue; }
+
+                Util.logDebug(`Templates.allEntries(${type}), factionKey=${factionKey}`);
+
+                if (type) {
+                    entries = entries.concat(Object.values(faction[type]));
+                }
+                else {
+                    entries = entries.concat(Object.values(faction.Item));
+                    entries = entries.concat(Object.values(faction.Creature));
+                    entries = entries.concat(Object.values(faction.Squad));
+                }
+            }
+        }
+
+        return entries;
+    }
+
     static test () {
         Util.logDebug(Templates.universes());
     }
 
     static universes () {
-        return {
-            Halo: Templates.Halo,
-        }
+        return [
+            Templates.Halo,
+        ];
     }
 }
 
@@ -129,6 +171,7 @@ Templates.ATTACK_TYPE = {
 };
 
 Templates.Halo = {
+    name: 'Halo',
     UNSC: {
         Item: {
             // Weapons
