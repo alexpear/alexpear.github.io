@@ -10,6 +10,7 @@ class Event {
     constructor (type, details) {
         this.timestamp = new Date();
         this.type = type;
+        this.t = Event.t;
         this.details = details || {};
 
         // this.log();
@@ -75,6 +76,9 @@ class Event {
     }
 }
 
+// While generating encounter outcome, this static variable is kept up to date. Afterwards, the Event instances remember what t they happened in. (event.t)
+Event.t = 0;
+
 Event.TYPE = {
     EncounterStart: 'Encounter Start',
     Attack: 'Attack',
@@ -91,9 +95,5 @@ Event.ATTACK_OUTCOME = {
     Damage: 'Damage', // Including shield damage.
     KO: 'KO',
 };
-
-// TODO Maybe track t globally during battle calculation in Event.t
-// Then dont have to pass it around so much.
-// Altho tricky to store it in 2 places...
 
 module.exports = Event;

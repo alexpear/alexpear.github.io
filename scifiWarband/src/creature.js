@@ -22,10 +22,10 @@ class Creature {
     }
 
     // creates Event
-    update (t) {
+    update () {
         if (this.isKO()) { return; }
 
-        if (this.cooldownEnds <= t) {
+        if (this.cooldownEnds <= Event.t) {
             if (this.shields < this.template.shields) {
                 this.shields = this.shields + this.template.shieldRegen;
 
@@ -161,14 +161,12 @@ class Creature {
 
     // After considering cover.
     // returns Event
-    takeHit (weaponTemplate, t) {
-        t = t || 1; // Temp
-
+    takeHit (weaponTemplate) {
         let damage = weaponTemplate.damage;
 
         if (this.shields) {
             // TODO decide whether to get t by passing, by a static variable, or set it later.
-            this.cooldownEnds = t + (this.template.shieldDelay || 2);
+            this.cooldownEnds = Event.t + (this.template.shieldDelay || 2);
 
             if (weaponTemplate.attackType === Creature.ATTACK_TYPE.Plasma) {
                 this.shields -= damage * 2;

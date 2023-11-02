@@ -20,7 +20,7 @@ class ScifiWarband {
         this.canvas = document.getElementById('canvas');
         this.canvasCtx = canvas.getContext('2d');
         this.events = [
-            // Event.encounterStart()
+            Event.encounterStart()
         ];
 
         // LATER add a system to assign readable squad names to .things like 'Grunt Squad Alpha'
@@ -39,7 +39,7 @@ class ScifiWarband {
         const teams = Object.keys(this.teamSummaries());
         // LATER 3-team support by indexing teams[activation % teams.length]
 
-        for (this.t = 1; this.t <= 100; this.t++) {
+        for (Event.t = 1; Event.t <= 100; Event.t++) {
             this.readySquads();
             this.logNewRound();
             // Util.log(`t=${this.t}: ${this.things.filter(t => ! t.isKO()).length} squads left.`)
@@ -102,7 +102,7 @@ class ScifiWarband {
     logNewRound () {
         const teamSummaries = this.teamSummaries();
 
-        Util.log(`t=${this.t}: ${Util.stringify(teamSummaries)}`);
+        Util.log(`t=${Event.t}: ${Util.stringify(teamSummaries)}`);
     }
 
     record (events) {
@@ -589,8 +589,6 @@ class ScifiWarband {
             height = ScifiWarband.SQUARE_PIXELS;
             xOffset = (height - width) / 2;
         }
-
-        // tow 1710
 
         this.canvasCtx.drawImage(
             imgElement, 
