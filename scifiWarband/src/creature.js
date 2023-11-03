@@ -69,26 +69,18 @@ class Creature {
             return 0;
         }
 
-        // const stats = {
-        //     speed: {
-        //         base: this.template.speed,
-        //         modifier: this.status.speed || 0,
-        //     },
-        //     accuracy: {
-        //         base: this.template.speed,
-        //         modifier: this.status.speed || 0,
-        //     },
-        //     durability: {
-        //         base: this.template.speed,
-        //         modifier: this.status.speed || 0,
-        //     },
-        // };
-
-        return Util.min(
+        const unshieldedRatio = Util.min(
             this.traitHealthBar('speed'),
             this.traitHealthBar('accuracy'),
-            this.traitHealthBar('durability')
+            this.traitHealthBar('durability'),
         );
+
+        // LATER could establish proportion between shields & unshielded here, by looking at min of the 3 unshielded traits.
+        const baseline = this.template.shields ?
+            2 :
+            1;
+
+        return (unshieldedRatio + this.shieldHealthBar()) / baseline;
     }
 
     static testHealthBar () {
@@ -114,6 +106,13 @@ class Creature {
         }
 
         return ratio;
+    }
+
+    shieldHealthBar () {
+        const current = this.shields || 0;
+        const total = this.template.shields || Number.EPSILON;
+
+        return current / total;
     }
 
     // returns number in range [-10, 10]
