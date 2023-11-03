@@ -192,7 +192,7 @@ class Squad {
         return json;
     }
 
-    static example (key) {
+    static example (key, coord) {
         const examples = {
             Marine: {
                 template: Templates.Halo.UNSC.Squad.Marine,
@@ -209,7 +209,7 @@ class Squad {
         const sq = new Squad(
             info.template,
             info.team,
-            Coord.random2d(10),
+            coord || Coord.random2d(9),
         );
 
         return sq;
