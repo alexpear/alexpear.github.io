@@ -271,6 +271,7 @@ class ScifiWarband {
         }
 
         // Desires should be numbers in range [0, 1]
+        bestRating = Math.max(bestRating, 0);
         const desire = bestRating / (bestRating + 1);
 
         if (desire > 1) {
@@ -506,13 +507,17 @@ class ScifiWarband {
     destinationRating (coord, squad, distToFoe) {
         const BASE = 10;
 
-        if (! Util.exists(distToFoe)) {
-            const foeInfo = this.nearestFoesFromCoord(coord);
-            distToFoe = foeInfo.dist;
+        if (! this.coordOnGrid(coord)) {
+            return -Infinity;
         }
 
-        if (distToFoe > squad.speed()) {
+        if (squad.coord.distanceTo(coord) > squad.speed()) {
             return -Infinity;
+        }
+
+        if (! Util.exists(distToFoe)) {
+            const foeInfo = this.nearestFoesFromCoord(coord, squad.team);
+            distToFoe = foeInfo.dist;
         }
 
         const occupants = this.contentsOfCoord(coord);
@@ -527,16 +532,47 @@ class ScifiWarband {
             }
         }
 
-        return BASE - distToFoe;
-    }   
+        const imperfection = Math.abs(distToFoe - squad.preferredDistance());
+
+        return BASE - imperfection;
+    }
+
+    static testDestinationRating () {
+        const game = new ScifiWarband();
+        game.things = [Squad.example('Grunt', new Coord(0, 0))];
+        const protag = Squad.example('Marine', new Coord(2, 2));
+
+        let bestRatedCoord;
+        let bestRating = -Infinity;
+
+        for (let x = 1; x <= 3; x++) {
+            for (let y = 1; y <= 3; y++) {
+                const coord = new Coord(x, y);
+                const rating = game.destinationRating(coord, protag);
+
+                if (rating > bestRating) {
+                    bestRating = rating;
+                    bestRatedCoord = coord;
+                }
+            }
+        }
+
+        if (bestRatedCoord.x !== 1 || bestRatedCoord.y !== 1) {
+            throw new Error(`${bestRatedCoord} had rating=${bestRating}`);
+        }
+    }
 
     desiredAttack (curSquad) {
-        const target = this.nearestFoes(curSquad).foes[0];
-        const desire = 0.9; // LATER estimate how useful this attack is.
+        const foeInfo = this.nearestFoes(curSquad);
+        const imperfection = Math.abs(foeInfo.dist - curSquad.preferredDistance());
+        const positionRating = Math.max(
+            10 - imperfection,
+            0
+        );
 
         return {
-            target,
-            desire,
+            target: foeInfo.foes[0],
+            desire: positionRating / (positionRating + 1),
         };
     }
 
@@ -856,8 +892,15 @@ class ScifiWarband {
         );
     }
 
-    static async run () {
+    static test () {
         ScifiWarband.testCoordAlongLine();
+        ScifiWarband.testDestinationRating();
+
+        Util.logDebug(`ScifiWarband.test() - All tests finished.`);
+    }
+
+    static async run () {
+        ScifiWarband.test();
 
         const game = new ScifiWarband();
         game.exampleSetupSimple();
