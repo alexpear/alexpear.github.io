@@ -40,7 +40,10 @@ class Creature {
     }
 
     speed () {
-        return this.template.speed + (this.status.speed || 0);
+        return Math.max(
+            this.template.speed + (this.status.speed || 0),
+            1
+        );
     }
 
     intrinsicAccuracy () {
