@@ -196,7 +196,7 @@ class Squad {
         const examples = {
             Marine: {
                 template: Templates.Halo.UNSC.Squad.Marine,
-                team: Squad.TEAM.Player,
+                team: Squad.TEAM.Player, // LATER use template faction names for .team, instead of Player/Enemy
             },
             Grunt: {
                 template: Templates.Halo.Covenant.Squad.Grunt,

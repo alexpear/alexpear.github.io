@@ -190,7 +190,7 @@ Templates.Halo = {
             // Infantry
             Marine: {
                 size: 2,
-                speed: 1, 
+                speed: 1.5,
                 durability: 10,
                 accuracy: 1,
                 items: ['Item.SMG'],
@@ -229,7 +229,7 @@ Templates.Halo = {
             // Infantry
             Grunt: {
                 size: 1.5,
-                speed: 1, 
+                speed: 1.5,
                 durability: 5,
                 accuracy: 0,
                 items: ['Item.PlasmaPistol'],
