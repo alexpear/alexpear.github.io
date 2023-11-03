@@ -382,6 +382,8 @@ class ScifiWarband {
                     slope**2 + 1
                 )
             );
+            yDist *= Math.sign(deltaY) * -1;
+
             xDist = slope * yDist;
         }
 
