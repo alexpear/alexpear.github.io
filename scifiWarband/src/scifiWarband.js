@@ -231,7 +231,7 @@ class ScifiWarband {
         );
 
         let firstChoiceCoord = goodRangeCoord;
-        Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): goodRangeCoord is ${goodRangeCoord.toString()}, nearest foe is ${nearestFoes[0].coord.toString()}, preferredDistance=${preferredDistance}`)
+        Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): positionImperfection=${positionImperfection} goodRangeCoord is ${goodRangeCoord.toString()}, nearest foe is ${nearestFoes[0].coord.toString()}, preferredDistance=${preferredDistance}, speed=${speed}`)
 
         if(curSquad.coord.distanceTo(goodRangeCoord) > speed) {
             firstChoiceCoord = this.coordAlongLine(
@@ -240,7 +240,7 @@ class ScifiWarband {
                 speed
             );
 
-            Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): goodRangeCoord was too far so we replaced it with ${firstChoiceCoord.toString()} `);
+            Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): goodRangeCoord was too far (${curSquad.coord.distanceTo(goodRangeCoord)} vs speed ${speed}) so we replaced it with ${firstChoiceCoord.toString()} `);
         }
 
         const candidates = this.adjacents(firstChoiceCoord);
@@ -323,6 +323,22 @@ class ScifiWarband {
     slope 0.75
     ydist 4
     xdist 3
+
+    10 10
+    13  6
+    distfromstart 5
+    dx -3
+    dy 4
+    slope -0.75
+    ydist 4
+    xdist 3
+
+    6 0
+    0 8
+    dist 5
+    dx 6
+    dy -8
+    slope -.75
     */
 
     // returns rounded coord
@@ -448,8 +464,6 @@ class ScifiWarband {
                 throw new Error(`testCoordAlongLine(): Test ${testsRun}: (${testNote || ''}) Got ${result.toString()} but we expected [${x}, ${y}]`);
             }
         }
-
-        Util.logDebug(`ScifiWarband.testCoordAlongLine() - All tests finished.`);
     }
 
     adjacents (coord) {
@@ -536,7 +550,7 @@ class ScifiWarband {
 
         if (action.type === Action.TYPE.Move) {
             if (! Util.exists(action.target.x) || ! Util.exists(action.target.y)) {
-                throw new Error(action);
+                throw new Error(Util.stringify(action));
             }
 
             if (distance > squad.speed()) {

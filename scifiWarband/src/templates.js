@@ -6,11 +6,11 @@ const Util = require('../../util/util.js');
 
 class Templates {
     static init () {
-        Util.logDebug(`Templates.init(), top.`);
+        // Util.logDebug(`Templates.init(), top.`);
 
         for (let universe of Templates.universes()) {
             for (let faction in universe) {
-                Util.logDebug(`Templates.init(), faction=${faction}`);
+                // Util.logDebug(`Templates.init(), faction=${faction}`);
 
                 if (Util.isString(universe[faction])) { continue; }
 
@@ -22,7 +22,7 @@ class Templates {
                     for (let entryName in sectionObj) {
                         const entryObj = sectionObj[entryName];
 
-                        Util.logDebug(`Templates.init() loop, faction=${faction} entryName=${entryName}`)
+                        // Util.logDebug(`Templates.init() loop, faction=${faction} entryName=${entryName}`)
 
                         if (section === 'Creature') {
                             Templates.setupCreature(entryObj);
@@ -42,7 +42,7 @@ class Templates {
     }
 
     static setupAnything (obj, pathArray) {
-        Util.logDebug(`Templates.setupAnything(obj=${Util.stringify(obj)}, pathArray=${pathArray})`)
+        // Util.logDebug(`Templates.setupAnything(obj=${Util.stringify(obj)}, pathArray=${pathArray})`)
 
         obj.name = obj.name || pathArray[pathArray.length - 1];
         obj.faction = obj.faction || pathArray[1];
@@ -77,14 +77,14 @@ class Templates {
             translatedPath.push(narrowerKey);
         }
 
-        Util.logDebug(`${dotPath} in context ${pathArray.join('.')} translates to ${translatedPath.join('.')}`);
+        // Util.logDebug(`${dotPath} in context ${pathArray.join('.')} translates to ${translatedPath.join('.')}`);
 
         let obj = Templates;
         for (let key of translatedPath) {
             obj = obj[key];
         }
 
-        Util.logDebug(`Templates.translateDotPath(${pathArray}, foo...): obj=${Util.stringify(obj)}`);
+        // Util.logDebug(`Templates.translateDotPath(${pathArray}, foo...): obj=${Util.stringify(obj)}`);
 
         return obj;
     }
@@ -134,7 +134,7 @@ class Templates {
                 const faction = universe[factionKey];
                 if (Util.isString(faction)) { continue; }
 
-                Util.logDebug(`Templates.allEntries(${type}), factionKey=${factionKey}`);
+                // Util.logDebug(`Templates.allEntries(${type || ''}), factionKey=${factionKey}`);
 
                 if (type) {
                     entries = entries.concat(Object.values(faction[type]));
