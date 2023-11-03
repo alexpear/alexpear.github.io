@@ -197,6 +197,16 @@ class ScifiWarband {
 
         Util.logDebug(`${curSquad.terse()} is thinking of moving to ${movePlan.coord.toString()} with desire ${movePlan.desire}, or attacking ${attackPlan.target.terse()} with desire ${attackPlan.desire}`);
 
+        if (! roll) {
+            // Detect bugs with 0, undefined, NaN, etc.
+            throw new Error(Util.stringify({
+                squad: curSquad.terse(),
+                roll,
+                movePlanDesire: movePlan.desire,
+                attackPlanDesire: attackPlan.desire,
+            }));
+        }
+
         if (roll <= movePlan.desire) {
             return [Action.move(curSquad, movePlan.coord)];
         }
@@ -262,6 +272,14 @@ class ScifiWarband {
 
         // Desires should be numbers in range [0, 1]
         const desire = bestRating / (bestRating + 1);
+
+        if (desire > 1) {
+            throw new Error(Util.stringify({
+                desire,
+                bestRating,
+                squad: curSquad.terse(),
+            }));
+        }
 
         return {
             coord: bestCoord,
