@@ -181,6 +181,7 @@ Templates.Halo = {
                 rof: 4,
                 accuracy: 1,
                 preferredRange: 1,
+                color: 'yellow'
             },
 
             // Non-Weapons
@@ -220,6 +221,7 @@ Templates.Halo = {
                 rof: 2,
                 accuracy: 1.5,
                 preferredRange: 2,
+                color: 'lime',
             }
 
             // Non-Weapons

@@ -588,7 +588,8 @@ class ScifiWarband {
 
             const events = squad.attack(action.target);
             this.record(events);
-            this.drawAttack(squad, action.target);
+            const color = Squad.attackColor(events);
+            this.drawAttack(squad, action.target, color);
 
             const hitCount = events
                 .filter(e => e.type === Event.TYPE.Hit)
@@ -761,13 +762,14 @@ class ScifiWarband {
         return this.cornerOfSquare(x) + ScifiWarband.SQUARE_PIXELS * 0.5;
     }
 
-    drawAttack (squad, target) {
+    drawAttack (squad, target, color) {
         this.drawAttackXY(
             // TODO bug seen where .coord is undefined
             squad.coord.x,
             squad.coord.y,
             target.coord.x,
-            target.coord.y
+            target.coord.y,
+            color
         );
     }
 

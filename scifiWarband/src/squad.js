@@ -6,7 +6,7 @@ const Creature = require('./creature.js');
 // const Item = require('./Item.js');
 const Templates = require('./templates.js');
 
-// const Event = require('./event.js');
+const Event = require('./event.js');
 
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
@@ -146,6 +146,44 @@ class Squad {
 
         Util.logDebug(`Squad.whoGotHit() default case happened for Squad ${this.id}.`);
         return this.creatures[this.creatures.length - 1];
+    }
+
+    // For display
+    static attackColor (events) {
+        const colors = {};
+
+        // Util.logDebug(`Squad.attackColor(), top of func. events.map(e => e.constructor.name).join(', ')=${events.map(e => e.constructor.name).join(', ')}`);
+
+        for (let event of events) {
+            // Util.logDebug(`Squad.attackColor(), top of for loop. event.type=${event.type}, event.constructor.name=${event.constructor.name}, event=${event}`);
+            // Util.logDebug(`Squad.attackColor(), top of for loop. event.type=${event.type}, event.toJson()=${Util.stringify(event.toJson())}`);
+            if (event.type !== Event.TYPE.Attack) { continue; }
+
+            const color = event.details.weaponTemplate?.color;
+            // Util.logDebug(`Squad.attackColor(), before if statement. color=${color}`);
+            if (color) {
+                if (colors[color]) {
+                    colors[color] += 1;
+                }
+                else {
+                    colors[color] = 1;
+                }
+            }
+        }
+
+        let commonest = 'yellow';
+        let appearances = 0;
+
+        for (let color in colors) {
+            if (colors[color] > appearances) {
+                appearances = colors[color];
+                commonest = color;
+            }
+        }
+
+        // Util.logDebug(`Squad.attackColor(), event types =${events.map(e => e.type).join(', ')}, events[0].details.weaponTemplate=${Util.stringify(events[0].details.weaponTemplate)}, events[0].details.weaponTemplate?.color=${events[0].details.weaponTemplate?.color} commonest=${commonest}, appearances=${appearances} - ` + Util.stringify(colors))
+
+        return commonest;
     }
 
     imageURL () {
