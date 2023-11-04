@@ -4,35 +4,37 @@
 const Squad = require('./squad.js');
 // const Action = require('./action.js');
 // const Item = require('./Item.js');
-// const Templates = require('./templates.js');
+const Templates = require('./templates.js');
 // const Event = require('./event.js');
 // const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 class Company {
-    constructor (team) {
-        // this.id = Util.uuid();
-        // this.team = team;
-
-        // for (let i = 1; i <= this.template.quantity; i++) {
-        //     const cr = new Creature(this.template.creature); // todo translate Creature.Grunt string
-        //     this.creatures.push(cr);
-        //     cr.squad = this;
-        // }
+    constructor (faction) {
+        this.id = Util.uuid();
+        this.name = this.id;
+        this.faction = faction;
+        this.squads = [];
     }
 
     terse () {
-        // const representative = this.quantity() >= 1 ?
-        //     this.activeCreatures()[0] :
-        //     this.creatures[0];
-
-        // const name = representative.template.name;
-
         // return `${this.quantity()} ${name}s ${this.coord.toString()}`;
     }
 
-    healthBar () {
+    activeSquads () {
+        return this.squads.filter(sq => ! sq.isKO());
+    }
 
+    activeSquadCount () {
+        return this.activeSquads().length;
+    }
+
+    healthBar () {
+        return this.activeSquadCount() / this.squads.length;
+    }
+
+    nameSquads () {
+        
     }
 
     toJson () {
@@ -47,26 +49,20 @@ class Company {
     }
 
     static example () {
-        // const examples = {
-        //     Marine: {
-        //         template: Templates.Halo.UNSC.Squad.Marine,
-        //         team: Squad.TEAM.Player, // LATER use template faction names for .team, instead of Player/Enemy
-        //     },
-        //     Grunt: {
-        //         template: Templates.Halo.Covenant.Squad.Grunt,
-        //         team: Squad.TEAM.Enemy,
-        //     },
-        // };
+        const comp = new Company(Templates.Halo.UNSC.name);
 
-        // const info = examples[key] || examples.Marine;
+        comp.squads = Company.exampleSquads();
+        return comp;
+    }
 
-        // const sq = new Squad(
-        //     info.template,
-        //     info.team,
-        //     coord || Coord.random2d(9),
-        // );
+    static exampleSquads () {
+        const squads = [];
 
-        // return sq;
+        for (let i = 0; i < 3; i++) {
+            squads.push(Squad.example('Marine'));
+        }
+
+        return squads;
     }
 }
 

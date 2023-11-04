@@ -61,7 +61,6 @@ class ScifiWarband {
     async runEncounter () {
         // LATER starting team could depend on who is attacker/defender, or who has most squads left at start of each round. Currently arbitrary.
         const teams = Object.keys(this.teamSummaries());
-        // LATER 3-team support by indexing teams[activation % teams.length]
 
         for (Event.t = 1; Event.t <= 100; Event.t++) {
             this.readySquads();
@@ -887,11 +886,6 @@ class ScifiWarband {
 ScifiWarband.WINDOW_SQUARES = 9; // number of squares
 ScifiWarband.DEFAULT_SQUARE_SIZE = 4; // meters
 ScifiWarband.SQUARE_PIXELS = 60;
-
-// LATER new file
-class Item {
-    
-}
 
 module.exports = ScifiWarband;
 

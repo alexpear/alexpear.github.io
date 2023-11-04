@@ -221,6 +221,12 @@ class Squad {
         );
     }
 
+    commonestCreature () {
+        return Util.commonest(
+            this.creatures.map(cr => cr.template.name)
+        );
+    }
+
     toJson () {
         const json = Util.certainKeysOf(
             this, 

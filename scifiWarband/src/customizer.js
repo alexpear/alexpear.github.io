@@ -11,14 +11,32 @@ const Util = require('../../util/util.js');
 
 class Customizer {
     constructor () {
-        this.companies = Customizer.exampleCompanies();
+        this.companies = [];
         this.initUI();
     }
 
     initUI () {
         window.customizer = this;
 
+        this.setUI();
+    }
 
+    setUI () {
+        for (let company of this.companies) {
+
+
+            for (let squad of company.squads) {
+
+
+                for (let creature of squad.creatures) {
+
+
+                    for (let item of creature.items) {
+                        
+                    }
+                }
+            }
+        }
     }
 
     static exampleCompanies () {
@@ -31,6 +49,9 @@ class Customizer {
 
     static async run () {
         // Customizer.test();
+
+        const cmizer = new Customizer();
+        cmizer.companies = Customizer.exampleCompanies();
 
     }
 }

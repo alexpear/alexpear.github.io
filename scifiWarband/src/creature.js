@@ -2,19 +2,33 @@
 
 //
 
+const Item = require('./item.js');
 const Event = require('./event.js');
 const Templates = require('./templates.js');
 const Util = require('../../util/util.js');
 
 class Creature {
-    constructor (creatureTemplate) {
+    constructor (creatureTemplate, items) {
         this.id = Util.uuid();
         this.template = creatureTemplate;
+        this.items = [];
         this.shields = this.template.shields || 0;
         this.cooldownEnds = Infinity;
 
         // Used to track buffs, debuffs, injuries, whether ko, etc.
         this.status = {};
+
+        if (items) {
+            this.items = items;
+        }
+        else {
+            const templateItems = this.template.items || [];
+            for (let itemTemplate of templateItems) {
+                this.items.push(
+                    new Item(itemTemplate)
+                );
+            }
+        }
     }
 
     isKO () {
