@@ -173,7 +173,12 @@ class ScifiWarband {
 
     // returns boolean
     coordOnGrid (coord) {
-        return coord.inBox(0, 0, ScifiWarband.WINDOW_SQUARES, ScifiWarband.WINDOW_SQUARES);
+        return coord.inBox(
+            0,
+            0,
+            ScifiWarband.WINDOW_SQUARES - 1,
+            ScifiWarband.WINDOW_SQUARES - 1
+        );
     }
 
     // This function is the mind of the squad. LATER could move these behavioral funcs to a class Mind in a mind.js file.
