@@ -23018,20 +23018,1035 @@ module.exports.bindWith = bindWith
 },{}],4:[function(require,module,exports){
 'use strict';
 
+//
+
+const Util = require('../../util/util.js');
+
+class Action {
+    constructor (type, subject, target) {
+        this.type = type;
+        this.subject = subject;
+        this.target = target;
+    }
+
+    isFree () {
+        return [Action.TYPE.GrabItem].includes(this.type);
+    }
+
+    toJson () {
+        return {
+            type: this.type,
+            subject: this.subject.id,
+            target: this.target.id ?
+                this.target.id :
+                this.target.toString(),
+            // LATER include name of which kind of special action, if relevant
+        }
+    }
+
+    toString() {
+        // LATER implement a pretty text summary here
+        return Util.stringify(this.toJson());
+    }
+
+    static move (subject, coord) {
+        return new Action(Action.TYPE.Move, subject, coord);
+    }
+
+    static attack (subject, target) {
+        return new Action(Action.TYPE.Attack, subject, target);
+    }
+}
+
+// LATER vaguely contemplating instead using Event to represent planned actions. Downside: Semantically it's a plan, not a event.
+Action.TYPE = {
+    Move: 'Move',
+    TakeCover: 'Take Cover',
+    Attack: 'Attack',
+    Objective: 'Secure Objective',
+    FirstAid: 'First Aid',
+    GrabItem: 'Grab Item',
+    Special: 'Special',
+};
+
+module.exports = Action;
+
+},{"../../util/util.js":11}],5:[function(require,module,exports){
+'use strict';
+
+//
+
+const Event = require('./event.js');
+const Templates = require('./templates.js');
+const Util = require('../../util/util.js');
+
+class Creature {
+    constructor (creatureTemplate) {
+        this.id = Util.uuid();
+        this.template = creatureTemplate;
+        this.shields = this.template.shields || 0;
+        this.cooldownEnds = Infinity;
+
+        // Used to track buffs, debuffs, injuries, whether ko, etc.
+        this.status = {};
+    }
+
+    isKO () {
+        return !! this.status.ko;
+    }
+
+    // creates Event
+    update () {
+        if (this.isKO()) { return; }
+
+        if (this.cooldownEnds <= Event.t) {
+            if (this.shields < this.template.shields) {
+                this.shields = this.shields + this.template.shieldRegen;
+
+                if (this.shields >= this.template.shields) {
+                    this.shields = this.template.shields;
+                    this.cooldownEnds = Infinity;
+                }
+
+                return Event.update(this);
+            }
+        }
+    }
+
+    speed () {
+        return Math.max(
+            this.template.speed + (this.status.speed || 0),
+            1
+        );
+    }
+
+    intrinsicAccuracy () {
+        return this.template.accuracy + (this.status.accuracy || 0);
+    }
+
+    accuracy (weaponTemplate) {
+        return this.intrinsicAccuracy() + (weaponTemplate.accuracy || 0);
+    }
+
+    durability () {
+        return this.template.durability + (this.status.durability || 0);
+    }
+
+    weapon (targetSquad) {
+        return this.template.items[0]; // LATER choose a weapon, or have a better preset system.
+        // LATER use this.items, to track things theyve picked up during battle.
+    }
+
+    // Returns number in range [0, 1]
+    healthBar () {
+        if (this.isKO()) {
+            return 0;
+        }
+
+        const unshieldedRatio = Util.min(
+            this.traitHealthBar('speed'),
+            this.traitHealthBar('accuracy'),
+            this.traitHealthBar('durability'),
+        );
+
+        // LATER could establish proportion between shields & unshielded here, by looking at min of the 3 unshielded traits.
+        const baseline = this.template.shields ?
+            2 :
+            1;
+
+        return (unshieldedRatio + this.shieldHealthBar()) / baseline;
+    }
+
+    static testHealthBar () {
+        const min = Util.min(0.1, 0.2, 0.3);
+        const min2 = Util.min([0.1, 0.2, 0.3]);
+        const expected = 0.1;
+
+        if (min !== min2 || min2 !== expected) {
+            throw new Error(`${min}, ${min2}`);
+        }
+    }
+
+    traitHealthBar (trait) {
+        // Note - Epsilon prevents division by zero.
+        const base = this.template[trait] || Number.EPSILON;
+        const modifier = this.status[trait] || 0;
+
+        const ratio = (base + modifier) / base;
+
+        if (! Util.exists(ratio)) {
+            Util.logDebug(`Creature.traitHealthBar(${trait}): modifier is ${modifier}, ratio is ${ratio}`);
+            throw new Error(this.toJson());
+        }
+
+        return ratio;
+    }
+
+    shieldHealthBar () {
+        const current = this.shields || 0;
+        const total = this.template.shields || Number.EPSILON;
+
+        return current / total;
+    }
+
+    // returns number in range [-10, 10]
+    // For squads to poll their members' perspectives.
+    morale () {
+        return 5; // Later add complexity
+    }
+
+    // LATER Could move this to main encounter class if that makes cover calc easier.
+    // returns Event[]
+    attack (otherSquad, coverPercent = 0) {
+        const distance = this.squad.distanceTo(otherSquad);
+        const weaponTemplate = this.weapon(); 
+
+        // eg: Melee weapons have a strict max range.
+        if (distance > weaponTemplate.maxRange) {            
+            Util.logEvent(`Creature ${this.id} won't participate in attack because it's beyond this weapon's maxRange: ${weaponTemplate.maxRange}`);
+            return;
+        }
+
+        const advantage = otherSquad.size() * this.accuracy(weaponTemplate);
+        const events = [];
+
+        for (let shot = 1; shot <= Math.ceil(weaponTemplate.rof || 1); shot++) {
+            //    static attack (t, attackingCreature, target, weaponTemplate, attackOutcome, shieldsTo, statusChanges) {
+            const event = Event.attack(this, otherSquad, weaponTemplate);
+            events.push(event);
+
+            if (Math.random() > advantage / (advantage + distance + 1)) {
+                event.details.attackOutcome = Event.ATTACK_OUTCOME.Miss;
+                continue;
+            }
+
+            if (Math.random() <= coverPercent) {
+                event.details.attackOutcome = Event.ATTACK_OUTCOME.Cover;
+                continue;
+            }
+
+            const victim = otherSquad.whoGotHit();
+            event.details.targetCreature = victim;
+            event.details.attackOutcome = Event.ATTACK_OUTCOME.Hit;
+
+            events.push(victim.takeHit(weaponTemplate));
+        }
+
+        return events;
+    }
+
+    // After considering cover.
+    // returns Event
+    takeHit (weaponTemplate) {
+        let damage = weaponTemplate.damage;
+
+        if (this.shields) {
+            // TODO decide whether to get t by passing, by a static variable, or set it later.
+            this.cooldownEnds = Event.t + (this.template.shieldDelay || 2);
+
+            if (weaponTemplate.attackType === Creature.ATTACK_TYPE.Plasma) {
+                this.shields -= damage * 2;
+
+                if (this.shields < 0) {
+                    damage = Math.abs(this.shields) / 2;
+                    this.shields = 0;
+                    this.takeUnshieldedDamage(damage, weaponTemplate);    
+                }
+            }
+            else {
+                this.shields -= damage;
+
+                if (this.shields < 0) {
+                    damage = Math.abs(this.shields);
+                    this.shields = 0;
+                    this.takeUnshieldedDamage(damage, weaponTemplate);    
+                }
+            }
+        }
+        else {
+            this.takeUnshieldedDamage(damage, weaponTemplate);    
+        }
+
+        // Looks at this.shields, this.cooldownEnds maybe, this.status
+        const event = Event.hit(this, weaponTemplate);
+        return event;
+    }
+
+    takeUnshieldedDamage (damage, weaponTemplate) {
+        const resistance = this.template.resistance[weaponTemplate.attackType];
+        if (resistance) {
+            damage *= resistance;
+        }
+
+        const harm = damage / ((damage + this.durability()) * Math.random());
+
+        if (harm < 1) { return; }
+
+        const harmedTrait = Util.randomOf(['speed', 'accuracy', 'durability']);
+
+        if (this.status[harmedTrait]) {
+            this.status[harmedTrait] -= Math.floor(harm);
+        }
+        else {
+            this.status[harmedTrait] = Math.floor(harm) * -1;
+        }
+
+        if (this.template[harmedTrait] + this.status[harmedTrait] < 0) {
+            // Too much damage in 1 category causes KO.
+            this.status.ko = true;
+        }
+    }
+
+    toJson () {
+        const json = Util.certainKeysOf(
+            this, 
+            ['id', 'template', 'shields', 'cooldownEnds', 'status']
+        );
+
+        json.squad = this.squad?.id;
+
+        return json;
+    }
+
+    static example () {
+        const cr = new Creature(
+            Templates.Halo.UNSC.Creature.Marine
+        );
+
+        return cr;
+    }
+}
+
+// TODO move this and Squad.TEMPLATES to a WarbandTemplates.js file
+// TODO restructure - WarbandTemplates.UNSC.Creature.Marine
+// Creature.TEMPLATES = {
+//     Marine: {
+//         size: 2,
+//         speed: 1, 
+//         durability: 10,
+//         accuracy: 1, // Later finalize how this calc works.
+//         resistance: {},
+//         items: [Item.TEMPLATES.UNSC.Weapon.SMG]
+//     },
+//     // Motive for accuracy stat - Spartans better with firearms than Grunts, also makes takeUnshieldedDamage() status effects simpler.
+//     // LATER How does damage work for: Scorpion, Scarab, UNSC Frigate? Based on status debuffs?
+// };
+
+module.exports = Creature;
+
+// Creature.testHealthBar();
+
+},{"../../util/util.js":11,"./event.js":6,"./templates.js":9}],6:[function(require,module,exports){
+'use strict';
+
+// const Creature = require('./creature.js');
+// const Squad = require('./squad.js');
+// const Action = require('./action.js');
+
+const Util = require('../../util/util.js');
+
+class Event {
+    constructor (type, details) {
+        this.timestamp = new Date();
+        this.type = type;
+        this.t = Event.t;
+        this.details = details || {};
+
+        this.log();
+    }
+
+    log () {
+        Util.log(this.toJson());
+    }
+
+    toJson () {
+        const safeObj = {
+            timestamp: this.timestamp.getUTCMilliseconds(),
+            t: this.t,
+            type: this.type,
+            details: this.details
+        };
+
+        safeObj.details = Util.valuesAsIDs(safeObj.details);
+
+        return safeObj;
+    }
+
+    static encounterStart () {
+        const e = new Event(Event.TYPE.EncounterStart);
+
+        e.t = 0;
+
+        return e;
+    }
+
+    static attack (attackingCreature, target, weaponTemplate) {
+        return new Event(
+            Event.TYPE.Attack,
+            {
+                subject: attackingCreature,
+                target,
+                weaponTemplate,
+            }
+        );
+    }
+
+    static hit (victim, weaponTemplate) {
+        return new Event(
+            Event.TYPE.Hit,
+            {
+                victim,
+                shieldsTo: victim.shields,
+                status: Util.clone(victim.status),
+                // LATER could also include an ATTACK_OUTCOME value here, if useful. Alternately, just calc what happened while replaying.
+                weaponTemplate: weaponTemplate,
+            }
+        );
+    }
+
+    static update (creature) {
+        return new Event(
+            Event.TYPE.Update,
+            {
+                shieldsTo: creature.shields,
+                status: Util.clone(victim.status),
+                cooldownEnds: creature.cooldownEnds,
+            }
+        );
+    }
+}
+
+// While generating encounter outcome, this static variable is kept up to date. Afterwards, the Event instances remember what t they happened in. (event.t)
+Event.t = 0;
+
+Event.TYPE = {
+    EncounterStart: 'Encounter Start',
+    Attack: 'Attack',
+    Hit: 'Hit',
+    Update: 'Update',
+};
+
+Event.ATTACK_OUTCOME = {
+    Miss: 'Miss',
+    Cover: 'Stopped by Cover',
+    Hit: 'Hit',
+    // These last few are cool, but we might express these situations via the events created by takeHit() instead.
+    Endured: 'Endured',
+    Damage: 'Damage', // Including shield damage.
+    KO: 'KO',
+};
+
+module.exports = Event;
+
+},{"../../util/util.js":11}],7:[function(require,module,exports){
+'use strict';
+
 // Autobattler game in browser. WIP.
 
 // npm run buildScifiWarband
 
+const Action = require('./action.js');
+const Creature = require('./creature.js');
+const Event = require('./event.js');
+// const Item = require('./item.js');
+const Squad = require('./squad.js');
+const Templates = require('./templates.js');
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
-
-
+// LATER might split into multiple classes: WarbandGame.js, Encounter.js, EncounterView.js, as needed.
 class ScifiWarband {
     constructor () {
         this.things = [];
         this.canvas = document.getElementById('canvas');
         this.canvasCtx = canvas.getContext('2d');
+        this.events = [
+            Event.encounterStart()
+        ];
+
+        this.loadImages();
+
+        // LATER add a system to assign readable squad display names to .things like 'Grunt Squad Alpha'
+    }
+
+    loadImages () {
+        this.images = {
+            sand: this.loadImage('sand.jpg'),
+            sentinel: this.loadImage('sentinel.jpg'),
+        };
+
+        for (let template of Templates.allEntries()) {
+            if (! template.image) { continue; }
+
+            const withoutExtension = template.image.split('.')[0];
+            if (this.images[withoutExtension]) { continue; }
+
+            this.images[withoutExtension] = this.loadImage(template.image);
+        }
+    }
+
+    loadImage (filename) {
+        const img = new Image();
+        img.src = Squad.IMAGE_PREFIX + filename;
+        return img;
+    }
+
+    initSquads () {
+        for (let thing of this.things) {
+            thing.id = thing.template.name + ' ' + thing.id;
+
+            console.log(thing.toJson());
+        }
+    }
+
+    async runEncounter () {
+        // LATER starting team could depend on who is attacker/defender, or who has most squads left at start of each round. Currently arbitrary.
+        const teams = Object.keys(this.teamSummaries());
+        // LATER 3-team support by indexing teams[activation % teams.length]
+
+        for (Event.t = 1; Event.t <= 100; Event.t++) {
+            this.readySquads();
+            this.logNewRound();
+            // Util.log(`t=${this.t}: ${this.things.filter(t => ! t.isKO()).length} squads left.`)
+
+            for (let activation = 1; activation <= 1e5; activation++) {
+                if (this.encounterDone()) { return; }
+
+                const teamIndex = activation % teams.length;
+                const curTeam = teams[teamIndex];
+                const curSquad = this.findReadySquad(curTeam);
+
+                if (! curSquad) { continue; } // This is normal for the team with less squads at the end of the round.
+
+                this.record(
+                    curSquad.update()
+                );
+
+                const actions = this.chooseActions(curSquad);
+
+                // Util.logDebug(`runEncounter() loop - chosen actions are: ${Util.stringify(actions.map(a => a.toJson()))}`);
+
+                this.performActions(actions);
+
+                await Util.sleep(1);
+                this.setHTML();
+                // TODO bug - drawAttack() is not displaying on top currently.
+                // LATER UI where user steps forwards or back (event by event) thru the replay, instead of sleep()ing.
+            }
+        }
+    }
+
+    teamSummaries () {
+        const teamSummaries = {};
+
+        for (let thing of this.things) {
+            const quantity = thing.quantity();
+            const squadNumber = quantity >= 1 ?
+                1 :
+                0;
+
+            if (teamSummaries[thing.team]) {
+                const obj = teamSummaries[thing.team];
+
+                obj.squads += squadNumber;
+                obj.headcount += quantity;
+                obj.healthBar += thing.healthBar();
+            }
+            else {
+                teamSummaries[thing.team] = {
+                    squads: squadNumber,
+                    headcount: quantity,
+                    healthBar: thing.healthBar(),
+                };
+            }
+        }
+
+        return teamSummaries;
+    }
+
+    logNewRound () {
+        const teamSummaries = this.teamSummaries();
+
+        Util.log(`t=${Event.t}: ${Util.stringify(teamSummaries)}`);
+    }
+
+    record (events) {
+        this.events = this.events.concat(events);
+    }
+
+    encounterDone () {
+        const squadCounts = {};
+
+        for (let thing of this.things) {
+            if (thing.isKO()) { continue; }
+
+            if (squadCounts[thing.team]) {
+                squadCounts[thing.team] += 1;
+            }
+            else {
+                if (Object.keys(squadCounts).length >= 1) {
+                    return false;
+                }
+
+                squadCounts[thing.team] = 1;
+            }
+        }
+
+        // Util.log(squadCounts);
+        // Util.log(`t=${this.t}: ${squadCounts.player} player squads vs ${squadCounts.enemy} enemy squads`);
+
+        return Object.keys(squadCounts).length <= 1;
+    }
+
+    readySquads () {
+        for (let thing of this.things) {
+            thing.ready = true;
+        }
+    }
+
+    findReadySquad (team) {
+        return this.things.find(
+            thing => thing.ready && 
+                thing.team === team && 
+                ! thing.isKO()
+        );
+    }
+
+    // returns boolean
+    coordOnGrid (coord) {
+        return coord.inBox(
+            0,
+            0,
+            ScifiWarband.WINDOW_SQUARES - 1,
+            ScifiWarband.WINDOW_SQUARES - 1
+        );
+    }
+
+    // This function is the mind of the squad. LATER could move these behavioral funcs to a class Mind in a mind.js file.
+    // Allowed to return illegal moves.
+    chooseActions (curSquad) {
+        // Util.logDebug(curSquad.toJson());
+
+        const sentiments = curSquad.creatures.map(cr => cr.morale());
+        // LATER morale can inform chooseActions()
+
+        // A squad may do ONE action (eg move OR attack) each turn.
+        const movePlan = this.desiredMove(curSquad);
+        const attackPlan = this.desiredAttack(curSquad);
+        // LATER replace these 2 local vars with array of several possible actions. this.desiredActions() => actionInfo[]
+
+        // if (movePlan.coord === curSquad.coord) {
+        //     movePlan.desire = 0;
+        // }
+
+        const roll = Math.random() * (movePlan.desire + attackPlan.desire);
+
+        Util.logDebug(`${curSquad.terse()} is thinking of moving to ${movePlan.coord.toString()} with desire ${movePlan.desire}, or attacking ${attackPlan.target.terse()} with desire ${attackPlan.desire}`);
+
+        if (! roll) {
+            // Detect bugs with 0, undefined, NaN, etc.
+            throw new Error(Util.stringify({
+                squad: curSquad.terse(),
+                roll,
+                movePlanDesire: movePlan.desire,
+                attackPlanDesire: attackPlan.desire,
+            }));
+        }
+
+        if (roll <= movePlan.desire) {
+            return [Action.move(curSquad, movePlan.coord)];
+        }
+        else {
+            return [Action.attack(curSquad, attackPlan.target)];
+        }
+        // LATER could add this 'roll over N numbers' logic to util.js
+    }
+
+    desiredMove (curSquad) {
+        const report = {};
+
+        const speed = curSquad.speed();
+        const nearestFoeInfo = this.nearestFoes(curSquad);
+        const nearestFoes = nearestFoeInfo.foes;
+        const foeDistance = nearestFoeInfo.dist;
+        const preferredDistance = curSquad.preferredDistance();
+        const positionImperfection = foeDistance - preferredDistance;
+
+        if (Math.abs(positionImperfection) <= 0.5) {
+            // Good position already.
+            return {
+                coord: curSquad.coord,
+                desire: 0
+            };
+        }
+
+        const goodRangeCoord = this.coordAlongLine(
+            nearestFoes[0].coord,
+            curSquad.coord,
+            preferredDistance
+        );
+
+        let firstChoiceCoord = goodRangeCoord;
+        Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): positionImperfection=${positionImperfection} goodRangeCoord is ${goodRangeCoord.toString()}, nearest foe is ${nearestFoes[0].coord.toString()}, preferredDistance=${preferredDistance}, speed=${speed}`)
+
+        if(curSquad.coord.distanceTo(goodRangeCoord) > speed) {
+            firstChoiceCoord = this.coordAlongLine(
+                curSquad.coord,
+                goodRangeCoord,
+                speed
+            );
+
+            Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): goodRangeCoord was too far (${curSquad.coord.distanceTo(goodRangeCoord)} vs speed ${speed}) so we replaced it with ${firstChoiceCoord.toString()} `);
+        }
+
+        const candidates = this.adjacents(firstChoiceCoord);
+        candidates.push(firstChoiceCoord);
+
+        let bestCoord = candidates[0];
+        let bestRating = -Infinity;
+
+        // TODO bug - squad keeps moving further away from nearest foe despite holding a SMG with preferred range 1.
+        for (let candidate of candidates) {
+            const rating = this.destinationRating(candidate, curSquad);
+            if (rating > bestRating) {
+                bestRating = rating;
+                bestCoord = candidate;
+            }
+
+            Util.logDebug(`ScifiWarband.desiredMove(), candidates loop: candidate=${candidate.toString()}, rating=${rating}, curSquad=${curSquad.terse()}`);
+        }
+
+        // Desires should be numbers in range [0, 1]
+        bestRating = Math.max(bestRating, 0);
+        const desire = bestRating / (bestRating + 1);
+
+        if (desire > 1) {
+            throw new Error(Util.stringify({
+                desire,
+                bestRating,
+                squad: curSquad.terse(),
+            }));
+        }
+
+        return {
+            coord: bestCoord,
+            desire,
+        };
+    }
+
+    // returns rounded coord
+    coordAlongLine (startCoord, endCoord, distFromStart) {
+        const deltaX = startCoord.x - endCoord.x;
+        const deltaY = startCoord.y - endCoord.y;
+
+        let xDist;
+        let yDist;
+
+        if (deltaY === 0) {
+            // Case where we avoid dividing by zero.
+            xDist = Math.sign(deltaX) * -1 * distFromStart;
+            yDist = 0;
+        }
+        else {
+            // LATER could rename to inverseSlope or whatever the correct term is for x/y
+            const slope = deltaX / deltaY;
+
+            yDist = Math.sqrt(
+                distFromStart**2 / (
+                    slope**2 + 1
+                )
+            );
+            yDist *= Math.sign(deltaY) * -1;
+
+            xDist = slope * yDist;
+        }
+
+        return new Coord(
+            Util.round(startCoord.x + xDist),
+            Util.round(startCoord.y + yDist)
+        );
+    }
+
+    static testCoordAlongLine () {
+        const game = new ScifiWarband();
+
+        let testsRun = 0;
+
+        hope(
+            game.coordAlongLine(
+                new Coord(2, 2),
+                new Coord(2, 10),
+                3
+            ),
+            2, 5,
+            'deltaX=0 case',
+        );
+
+        hope(
+            game.coordAlongLine(
+                new Coord(0, 0),
+                new Coord(10, 0),
+                3
+            ),
+            3, 0,
+            'deltaY=0 case',
+        );
+
+        hope(
+            game.coordAlongLine(
+                new Coord(0, 0),
+                new Coord(6, 8),
+                5
+            ),
+            3, 4,
+            'Like a triangle of sides 3,4,5, going down & right',
+        );
+
+        hope(
+            game.coordAlongLine(
+                new Coord(0, 0),
+                new Coord(8, 6),
+                5
+            ),
+            4, 3,
+            'Like a triangle of sides 3,4,5, going down & right, flipped',
+        );
+
+        hope(
+            game.coordAlongLine(
+                new Coord(6, 0),
+                new Coord(0, 8),
+                5
+            ),
+            3, 4,
+            'Like a triangle of sides 3,4,5, going down & left',
+        );
+
+        hope(
+            game.coordAlongLine(
+                new Coord(6, 8),
+                new Coord(3, 4),
+                5
+            ),
+            3, 4,
+            'Like a triangle of sides 3,4,5, going up & left',
+        );
+
+        const baseline = 10;
+        const start = new Coord(baseline, baseline);
+
+        for (let xOffset = -1; xOffset <= 1; xOffset++) {
+            for (let yOffset = -1; yOffset <= 1; yOffset++) {
+                const end = new Coord(baseline + 2 * xOffset, baseline + 2 * yOffset);
+
+                hope(
+                    game.coordAlongLine(
+                        start,
+                        end,
+                        1.1
+                    ),
+                    baseline + xOffset,
+                    baseline + yOffset,
+                    `Generated test: ${start} to ${end}`,
+                );
+            }
+        }
+
+        function hope (result, x, y, testNote) {
+            testsRun++;
+
+            if (! result || result.x !== x || result.y !== y) {
+                throw new Error(`testCoordAlongLine(): Test ${testsRun}: (${testNote || ''}) Got ${result.toString()} but we expected [${x}, ${y}]`);
+            }
+        }
+    }
+
+    adjacents (coord) {
+        const coords = [];
+
+        for (let x = -1; x <= 1; x++) {
+            for (let y = -1; y <= 1; y++) {
+                if (x === 0 && y === 0) { continue; }
+
+                const neighbor = new Coord(coord.x + x, coord.y + y);
+
+                if (this.coordOnGrid(neighbor)) {
+                    coords.push(neighbor);
+                }
+            }
+        }
+
+        return coords;
+    }
+
+    // distToFoe is a param you can optionally include if you happen to already know it.
+    destinationRating (coord, squad, distToFoe) {
+        const BASE = 10;
+
+        if (! this.coordOnGrid(coord)) {
+            return -Infinity;
+        }
+
+        if (squad.coord.distanceTo(coord) > squad.speed()) {
+            return -Infinity;
+        }
+
+        if (! Util.exists(distToFoe)) {
+            const foeInfo = this.nearestFoesFromCoord(coord, squad.team);
+            distToFoe = foeInfo.dist;
+        }
+
+        const occupants = this.contentsOfCoord(coord);
+        for (let occupant of occupants) {
+            Util.logDebug(`destinationRating(), comparing occupant ${occupant.terse()} to squad ${squad.terse()}`)
+            if (occupant === squad) {
+                return -9999;
+            }
+
+            if (! occupant.isKO()) {
+                return -Infinity;
+            }
+        }
+
+        const imperfection = Math.abs(distToFoe - squad.preferredDistance());
+
+        return BASE - imperfection;
+    }
+
+    static testDestinationRating () {
+        const game = new ScifiWarband();
+        game.things = [Squad.example('Grunt', new Coord(0, 0))];
+        const protag = Squad.example('Marine', new Coord(2, 2));
+
+        let bestRatedCoord;
+        let bestRating = -Infinity;
+
+        for (let x = 1; x <= 3; x++) {
+            for (let y = 1; y <= 3; y++) {
+                const coord = new Coord(x, y);
+                const rating = game.destinationRating(coord, protag);
+
+                if (rating > bestRating) {
+                    bestRating = rating;
+                    bestRatedCoord = coord;
+                }
+            }
+        }
+
+        if (bestRatedCoord.x !== 1 || bestRatedCoord.y !== 1) {
+            throw new Error(`${bestRatedCoord} had rating=${bestRating}`);
+        }
+    }
+
+    desiredAttack (curSquad) {
+        const foeInfo = this.nearestFoes(curSquad);
+        const imperfection = Math.abs(foeInfo.dist - curSquad.preferredDistance());
+        const positionRating = Math.max(
+            10 - imperfection,
+            0
+        );
+
+        return {
+            target: foeInfo.foes[0],
+            desire: positionRating / (positionRating + 1),
+        };
+    }
+
+    // If action sequence is illegal, interpret/default to a legal move.
+    performActions (actions) {
+        let nonFrees = 0;
+
+        for (let action of actions) {
+            if (! action.isFree()) {
+                nonFrees += 1;
+                // Only allow 1 nonfree action
+                if (nonFrees >= 2) {
+                    continue; 
+                }
+            }
+
+            this.performAction(action);
+        }
+    }
+
+    performAction (action) {
+        const squad = action.subject;
+        if (squad.isKO()) {
+            throw new Error(squad.id); // illegal
+        }
+
+        const distance = squad.coord.distanceTo(action.target);
+        squad.ready = false;
+
+        if (action.type === Action.TYPE.Move) {
+            if (! Util.exists(action.target.x) || ! Util.exists(action.target.y)) {
+                throw new Error(Util.stringify(action));
+            }
+
+            if (distance > squad.speed()) {
+                Util.logError(`Illegal action submitted, can't move that far: ${action.toString()}`);
+                // LATER interpret as a more reasonable move.
+                return;
+            }
+
+            if (! this.coordOnGrid(action.target)) {
+                Util.logError(`Illegal action submitted, can't move off the grid: ${action.toString()}`);
+                // LATER interpret as a more reasonable move.
+                return;
+            }
+
+            // if (distance === 0) {
+                // Util.logError(`This is not so bad, but a squad decided to move 0 distance: ${action.toString()}`);
+            // }
+            const occupants = this.contentsOfCoord(action.target);
+            for (let thing of occupants) {
+                if (! thing.isKO()) {
+                    Util.logError(`Illegal action - trying to move onto occupied square: ${action.toString()}`);
+                    return;
+                }
+            }
+
+            Util.log(`${squad.terse()} moves to ${action.target.toString()}, distance=${distance}, speed=${squad.speed()}`);
+
+            squad.coord = action.target;
+            return;
+        }
+
+        // LATER functionize into this.performAttack()
+        if (action.type === Action.TYPE.Attack) {
+            if (action.target.isKO()) {
+                throw new Error(action.target.id);
+            }
+
+            if (! squad.canSee(action.target)) {
+                Util.logError(`Illegal action submitted, can't see target squad: ${action.toString()}`);
+                // LATER interpret as a more reasonable action.
+                return;
+            }
+
+            const initialTargetCount =  action.target.quantity();
+            const targetTerse = action.target.terse();
+
+            const events = squad.attack(action.target);
+            this.record(events);
+            const color = Squad.attackColor(events);
+            this.drawAttack(squad, action.target, color);
+
+            const hitCount = events
+                .filter(e => e.type === Event.TYPE.Hit)
+               .length;
+
+            const koCount = initialTargetCount - action.target.quantity();
+            const eliminationMessage = action.target.quantity() === 0 ?
+                ' (SQUAD WIPE)' :
+                '';
+
+            Util.log(`${squad.terse()} attack ${targetTerse}: ${hitCount} hits, ${koCount} KOs${eliminationMessage}`);
+
+            return;
+        }
+
+        // LATER more action types
     }
 
     setHTML () {
@@ -23039,16 +24054,29 @@ class ScifiWarband {
     }
 
     drawGrid () {
+        this.resetGrid();
+
         for (let y = 0; y < ScifiWarband.WINDOW_SQUARES; y++) {
             for (let x = 0; x < ScifiWarband.WINDOW_SQUARES; x++) {
-                const things = this.contentsOfCoord(x, y);
+                const things = this.contentsOfCoord(new Coord(x, y));
 
                 if (things.length === 0) {
-                    this.drawSquare(Squad.IMAGE_PREFIX + 'sand.jpg', x, y);
+                    this.drawLoadedImage(this.images.sand, x, y);
                 }
                 else {
-                    const thing = things[0];
-                    this.drawSquare(thing.imageURL(), x, y);
+                    for (let thing of things) {
+                        if (thing.isKO()) {
+                            if (things.every(th => th.isKO())) {
+                                // LATER find real KO image(s)
+                                this.drawLoadedImage(this.images.sentinel, x, y);
+                                break;
+                            }
+                        }
+                        else {
+                            this.drawLoadedImage(this.images[thing.imageName()], x, y);
+                            break;
+                        }
+                    }
 
                     if (things.length >= 2) {
                         Util.logDebug(`Coord ${x}, ${y} contains ${things.length} things, BTW.`);
@@ -23058,15 +24086,87 @@ class ScifiWarband {
         }
     }
 
+    resetGrid () {
+        this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     // Returns Squad[]
-    contentsOfCoord (x, y) {
+    contentsOfCoord (input) {
         return this.things.filter(
-            t => t.coord.dimensions[0] === x &&
-                t.coord.dimensions[1] === y
+            t => t.coord.x === input.x &&
+                t.coord.y === input.y
         );
     }
 
-    drawSquare (imageURL, x, y) {
+    // Returns array of nearest foe - or foes tied for same distance.
+    nearestFoes (squad) {
+        return this.nearestFoesFromCoord(squad.coord, squad.team);
+    }
+
+    nearestFoesFromCoord (coord, team) {
+        // LATER check whether game crashes when this returns [];
+        let nearests = [];
+        let shortestDist = 99999; // unit: squares
+
+        for (let thing of this.things) {
+            // Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, top. Teams: ${squad.team} vs ${thing.team}, canSee(thing)? ${squad.canSee(thing)}, thing.visibility = ${thing.visibility}`);
+
+            if (thing.team === team) { continue; }
+            if (thing.isKO()) { continue; }
+
+            if (! Squad.coordCanSee(coord, thing)) { continue; }
+
+            const dist = coord.distanceTo(thing.coord);
+
+            // Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, dist is ${dist}`);
+
+            if (dist < shortestDist) {
+                nearests = [thing];
+                shortestDist = dist;
+            }
+            else if (dist === shortestDist) {
+                nearests.push(thing);
+            }
+
+            // NOTE - speeding up this func further (eg via Manhattan distance 1st pass) seems unnecessary: 0.00006 seconds per nearestFoes() call.
+        }
+
+        return {
+            foes: nearests,
+            dist: shortestDist,
+        };
+    }
+
+    testNearestFoes () {
+        this.things = [];
+
+        // Create 200 squads at random coords & teams
+        for (let i = 0; i < 200; i++) {
+            this.things.push(
+                new Squad(
+                    Templates.Halo.UNSC.Squad.Marine,
+                    Util.randomOf([Squad.TEAM.Player, Squad.TEAM.Enemy]),
+                    Coord.random2d(10)
+                )
+            );
+        }
+        // log start time & save in local variable
+        const startDate = new Date();
+        Util.logDebug(`testNearestFoes() starting test at ${startDate.getUTCMilliseconds()}`);
+        
+        // call nearestFoes for each squad
+        for (let sq of this.things) {
+            const unused = this.nearestFoes(sq);
+        }
+        
+        // log total time spent & time per call
+        const endDate = new Date();
+        const ms = endDate - startDate;
+        Util.logDebug(`testNearestFoes() ending test at ${endDate.getUTCMilliseconds()}\n  Total time was ${ms / 1000} seconds, or ${ms / 1000 / this.things.length} seconds per nearestFoes() call.`);
+    }
+
+    // Deprecated - too slow to load during drawing.
+    drawSquare (imageName, x, y) {
         const imgElement = new Image();
         imgElement.src = imageURL;
 
@@ -23074,26 +24174,28 @@ class ScifiWarband {
     }
 
     drawLoadedImage (imgElement, x, y) {
+        let xOffset = 0;
+        let yOffset = 0;
         let width;
         let height;
         if (imgElement.naturalWidth >= imgElement.naturalHeight) {
             width = ScifiWarband.SQUARE_PIXELS;
             height = imgElement.naturalHeight / imgElement.naturalWidth * ScifiWarband.SQUARE_PIXELS;
+            yOffset = (width - height) / 2;
         }
         else {
             width = imgElement.naturalWidth / imgElement.naturalHeight * ScifiWarband.SQUARE_PIXELS;
             height = ScifiWarband.SQUARE_PIXELS;
+            xOffset = (height - width) / 2;
         }
 
         this.canvasCtx.drawImage(
             imgElement, 
-            this.cornerOfSquare(x),
-            this.cornerOfSquare(y),
+            this.cornerOfSquare(x) + xOffset,
+            this.cornerOfSquare(y) + yOffset,
             width,
             height
         );
-
-        // Util.logDebug(`I just called this.canvasCtx.drawImage(<img from ${imgElement.src}>, ${x * ScifiWarband.SQUARE_PIXELS}, ${y * ScifiWarband.SQUARE_PIXELS}, ${width}, ${height}); natural W is ${imgElement.naturalWidth}, natural H is ${imgElement.naturalHeight}.`);
     }
 
     // Returns canvas pixel value of the top left corner of the square in the x axis. Also works for y axis.
@@ -23101,73 +24203,394 @@ class ScifiWarband {
         return x * ScifiWarband.SQUARE_PIXELS * 1.1 + (ScifiWarband.SQUARE_PIXELS * 0.1);
     }
 
+    centerOfSquare (x) {
+        return this.cornerOfSquare(x) + ScifiWarband.SQUARE_PIXELS * 0.5;
+    }
+
+    drawAttack (squad, target, color) {
+        this.drawAttackXY(
+            // TODO bug seen where .coord is undefined
+            squad.coord.x,
+            squad.coord.y,
+            target.coord.x,
+            target.coord.y,
+            color
+        );
+    }
+
+    // Inputs should be in grid coords, not pixel coords.
+    drawAttackXY (startX, startY, endX, endY, color = 'yellow') {
+        const SHORTLINE = 12;
+        const TILT = Math.PI / 6;
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const radians = Math.atan2(dy, dx);
+
+        this.canvasCtx.lineWidth = 2;
+        this.canvasCtx.strokeStyle = color;
+        this.canvasCtx.beginPath();
+
+        this.canvasCtx.moveTo(
+            this.centerOfSquare(startX),
+            this.centerOfSquare(startY),
+        );
+
+        const endPixelX = this.centerOfSquare(endX);
+        const endPixelY = this.centerOfSquare(endY);
+
+        this.canvasCtx.lineTo(
+            endPixelX,
+            endPixelY
+        );
+        this.canvasCtx.lineTo(
+            endPixelX - SHORTLINE * Math.cos(radians - TILT),
+            endPixelY - SHORTLINE * Math.sin(radians - TILT)
+        );
+        this.canvasCtx.moveTo(
+            endPixelX,
+            endPixelY
+        );
+        this.canvasCtx.lineTo(
+            endPixelX - SHORTLINE * Math.cos(radians + TILT),
+            endPixelY - SHORTLINE * Math.sin(radians + TILT)
+        );
+
+        this.canvasCtx.stroke();
+    }
+
+    explainOutcome () {
+        this.logNewRound();
+        // LATER Present outcome to user in more detail.
+    }
+
     exampleSetup () {
         this.things = this.exampleSquads();
     }
 
     exampleSquads () {
-        return [
-            Squad.example(),
-            Squad.example(),
-            Squad.example(Squad.TEAM.Enemy),
-            Squad.example(Squad.TEAM.Enemy),
+        const allSquads = [];
+
+        for (let i = 0; i < 10; i++) {
+            allSquads.push(Squad.example('Marine'));
+            allSquads.push(Squad.example('Grunt'));
+        }
+
+        return allSquads;
+    }
+
+    exampleSetupSimple () {
+        this.things = [
+            Squad.example('Marine', new Coord(2, 1)),
+            Squad.example('Grunt', new Coord(7, 1)),
         ];
     }
 
-    static run () {
+    static async testDrawAttack () {
+        await Util.sleep(1);
+        game.drawAttack(
+            {
+                coord: {
+                    x: Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+                    y: Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+                }
+            },
+            {
+                coord: {
+                    x: Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+                    y: Math.floor(Math.random() * ScifiWarband.WINDOW_SQUARES),
+                }
+            }
+        );
+    }
+
+    static test () {
+        ScifiWarband.testCoordAlongLine();
+        ScifiWarband.testDestinationRating();
+
+        Util.logDebug(`ScifiWarband.test() - All tests finished.`);
+    }
+
+    static async run () {
+        ScifiWarband.test();
+
         const game = new ScifiWarband();
         game.exampleSetup();
+        game.initSquads();
         game.setHTML();
+
+        game.runEncounter();
+        game.explainOutcome();
+
+        // game.testNearestFoes();
     }
 }
 
-ScifiWarband.WINDOW_SQUARES = 10; // number of squares
+ScifiWarband.WINDOW_SQUARES = 9; // number of squares
 ScifiWarband.DEFAULT_SQUARE_SIZE = 4; // meters
 ScifiWarband.SQUARE_PIXELS = 60;
 
-// TODO new file
-class Creature {
-    constructor (creatureTemplate) {
-        this.template = creatureTemplate;
-        this.sp = this.template.sp;
-    }
-
-    static example () {
-        const cr = new Creature(
-            Creature.TEMPLATES.Marine
-        );
-
-        return cr;
-    }
+// LATER new file
+class Item {
+    
 }
 
-// TODO move this and Squad.TEMPLATES to a Codex.js file
-Creature.TEMPLATES = {
-    Marine: {
-        size: 2, 
-        speed: 1, 
-        sp: 10,
-    },
-};
+module.exports = ScifiWarband;
 
-// TODO new file.
+ScifiWarband.run();
+
+},{"../../util/coord.js":10,"../../util/util.js":11,"./action.js":4,"./creature.js":5,"./event.js":6,"./squad.js":8,"./templates.js":9}],8:[function(require,module,exports){
+'use strict';
+
+const Creature = require('./creature.js');
+// const Squad = require('./squad.js');
+// const Action = require('./action.js');
+// const Item = require('./Item.js');
+const Templates = require('./templates.js');
+
+const Event = require('./event.js');
+
+const Coord = require('../../util/coord.js');
+const Util = require('../../util/util.js');
+
 class Squad {
-    constructor (squadTemplate, allegiance, coord) {
+    constructor (squadTemplate, team, coord) {
+        this.id = Util.uuid();
         this.template = squadTemplate;
-        this.quantity = this.template.quantity;
-        this.allegiance = allegiance;
+        this.creatures = [];
+        this.team = team;
         this.coord = coord || new Coord();
+        this.ready = true;
+
+        // Note that this is how you create a homogenous squad from a template. LATER, might often have heterogenous squads coming from customization choices or from a save file.
+        for (let i = 1; i <= this.template.quantity; i++) {
+            const cr = new Creature(this.template.creature); // todo translate Creature.Grunt string 
+            this.creatures.push(cr);
+            cr.squad = this;
+        }
+
+        this.resetVisibility();
+        this.loadImage();
+    }
+
+    loadImage () {
+        this.imgElement = new Image();
+        this.imgElement.src = Squad.IMAGE_PREFIX + this.template.image;
+
+        // imgElement.onload = () => this.drawLoadedImage(imgElement, x, y);
+    }
+
+    isKO () {
+        return this.creatures.every(
+            cr => cr.isKO()
+        );
+    }
+
+    // LATER if useful, we could add a func like .available(), which checks both .ready and .isKO()
+
+    activeCreatures () {
+        return this.creatures.filter(cr => ! cr.isKO())
+    }
+
+    quantity () {
+        return this.activeCreatures().length;
+    }    
+
+    size () {
+        return Util.sum(
+            this.activeCreatures().map(cr => cr.template.size)
+        );
+    }
+
+    speed () {
+        const min = Util.min(
+            this.activeCreatures().map(cr => cr.speed())
+        );
+
+        if (! Util.exists(min)) {
+            throw new Error(Util.stringify(this.toJson()));
+        }
+
+        return min;
+    }
+
+    // unit: squares
+    // TODO - decide whether to use squares as unit for codex stats (meaning i cant change meters per square) or express in meters.
+    distanceTo (otherSquad) {
+        return this.coord.distanceTo(otherSquad.coord);
+    }
+
+    canSee (otherSquad) {
+        return Squad.coordCanSee(this.coord, otherSquad);
+    }
+
+    static coordCanSee (coord, squad) {
+        return squad.visibility >= coord.distanceTo(squad.coord);
+    }
+
+    preferredDistance () {
+        const prefs = this.activeCreatures().map(
+            cr => cr.weapon().preferredRange
+        );
+
+        return Util.mean(prefs);
+    }
+
+    update () {
+        if (this.isKO()) {
+            return;
+        }
+ 
+        const events = this.creatures.map(cr => cr.update())
+            .filter(e => !! e);
+
+        this.resetVisibility();
+        this.ready = true;
+
+        return events;
+    }
+
+    resetVisibility () {
+        const DEFAULT = 99;
+
+        this.visibility = Util.max(
+            this.activeCreatures().map(cr => cr.template.visibility || DEFAULT)
+        )
+        || DEFAULT;
+    }
+
+    attack (targetSquad) {
+        let manyEvents = [];
+        const creatures = this.activeCreatures();
+        for (let cr of creatures) {
+            const events = cr.attack(targetSquad);
+            manyEvents = manyEvents.concat(events);
+        }
+
+        // Util.logDebug(`Squad.attack(), manyEvents.map(e => e.constructor.name).join(', ')=${manyEvents.map(e => e.constructor.name).join(', ')}`);
+
+        this.visibility += creatures.length;
+        // LATER make sure visibility & ready changes are well integrated with event system. Motive: visibility might need displaying.
+
+        return manyEvents;
+    }
+
+    whoGotHit () {
+        let roll = Math.random() * this.size();
+
+        for (let cr of this.activeCreatures()) {
+            roll -= cr.template.size;
+
+            if (roll <= 0) {
+                return cr;
+            }
+        }
+
+        Util.logDebug(`Squad.whoGotHit() default case happened for Squad ${this.id}.`);
+        return this.creatures[this.creatures.length - 1];
+    }
+
+    // For display
+    static attackColor (events) {
+        const colors = {};
+
+        // Util.logDebug(`Squad.attackColor(), top of func. events.map(e => e.constructor.name).join(', ')=${events.map(e => e.constructor.name).join(', ')}`);
+
+        for (let event of events) {
+            // Util.logDebug(`Squad.attackColor(), top of for loop. event.type=${event.type}, event.constructor.name=${event.constructor.name}, event=${event}`);
+            // Util.logDebug(`Squad.attackColor(), top of for loop. event.type=${event.type}, event.toJson()=${Util.stringify(event.toJson())}`);
+            if (event.type !== Event.TYPE.Attack) { continue; }
+
+            const color = event.details.weaponTemplate?.color;
+            // Util.logDebug(`Squad.attackColor(), before if statement. color=${color}`);
+            if (color) {
+                if (colors[color]) {
+                    colors[color] += 1;
+                }
+                else {
+                    colors[color] = 1;
+                }
+            }
+        }
+
+        let commonest = 'yellow';
+        let appearances = 0;
+
+        for (let color in colors) {
+            if (colors[color] > appearances) {
+                appearances = colors[color];
+                commonest = color;
+            }
+        }
+
+        // Util.logDebug(`Squad.attackColor(), event types =${events.map(e => e.type).join(', ')}, events[0].details.weaponTemplate=${Util.stringify(events[0].details.weaponTemplate)}, events[0].details.weaponTemplate?.color=${events[0].details.weaponTemplate?.color} commonest=${commonest}, appearances=${appearances} - ` + Util.stringify(colors))
+
+        return commonest;
     }
 
     imageURL () {
         return Squad.IMAGE_PREFIX + this.template.image;
     }
 
-    static example (allegiance) {
+    imageName () {
+        const fullName = this.template.image;
+
+        if (! fullName) { return 'cryptum'; } // LATER instead of placeholder image, draw squad name as text in square.
+
+        return fullName.split('.')[0]; // Remove extension
+    }
+
+    // 2 Grunts (5, 0)
+    terse () {
+        const representative = this.quantity() >= 1 ?
+            this.activeCreatures()[0] :
+            this.creatures[0];
+
+        const name = representative.template.name;
+
+        return `${this.quantity()} ${name}s ${this.coord.toString()}`;
+    }
+
+    healthBar () {
+        if (this.isKO()) {
+            return 0;
+        }
+
+        return Util.mean(
+            this.activeCreatures().map(
+                cr => cr.healthBar()
+            )
+        );
+    }
+
+    toJson () {
+        const json = Util.certainKeysOf(
+            this, 
+            ['id', 'template', 'team', 'coord', 'ready']
+        );
+
+        json.creatures = this.creatures.map(cr => cr.toJson());
+
+        return json;
+    }
+
+    static example (key, coord) {
+        const examples = {
+            Marine: {
+                template: Templates.Halo.UNSC.Squad.Marine,
+                team: Squad.TEAM.Player, // LATER use template faction names for .team, instead of Player/Enemy
+            },
+            Grunt: {
+                template: Templates.Halo.Covenant.Squad.Grunt,
+                team: Squad.TEAM.Enemy,
+            },
+        };
+
+        const info = examples[key] || examples.Marine;
+
         const sq = new Squad(
-            Squad.TEMPLATES.Marines,
-            allegiance || Squad.TEAM.Player,
-            Coord.random(10),
+            info.template,
+            info.team,
+            coord || Coord.random2d(9),
         );
 
         return sq;
@@ -23181,20 +24604,312 @@ Squad.TEAM = {
 
 Squad.IMAGE_PREFIX = 'https://alexpear.github.io/gridView/images/';
 
-Squad.TEMPLATES = {
-    Marines: {
-        name: 'Marine Fireteam',
-        creature: Creature.TEMPLATES.Marine,
-        quantity: 3,
-        image: 'marine.png',
+module.exports = Squad;
+
+},{"../../util/coord.js":10,"../../util/util.js":11,"./creature.js":5,"./event.js":6,"./templates.js":9}],9:[function(require,module,exports){
+'use strict';
+
+//
+
+const Util = require('../../util/util.js');
+
+class Templates {
+    static init () {
+        // Util.logDebug(`Templates.init(), top.`);
+
+        for (let universe of Templates.universes()) {
+            for (let faction in universe) {
+                // Util.logDebug(`Templates.init(), faction=${faction}`);
+
+                if (Util.isString(universe[faction])) { continue; }
+
+                for (let section in universe[faction]) {
+                    const sectionObj = universe[faction][section];
+
+                    if (Util.isString(sectionObj)) { continue; }
+
+                    for (let entryName in sectionObj) {
+                        const entryObj = sectionObj[entryName];
+
+                        // Util.logDebug(`Templates.init() loop, faction=${faction} entryName=${entryName}`)
+
+                        if (section === 'Creature') {
+                            Templates.setupCreature(entryObj);
+                        }
+                        else if (section === 'Item') {
+                            Templates.setupItem(entryObj);
+                        }
+
+                        Templates.setupAnything(
+                            entryObj,
+                            [universe.name, faction, section, entryName]
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    static setupAnything (obj, pathArray) {
+        // Util.logDebug(`Templates.setupAnything(obj=${Util.stringify(obj)}, pathArray=${pathArray})`)
+
+        obj.name = obj.name || pathArray[pathArray.length - 1];
+        obj.faction = obj.faction || pathArray[1];
+
+        // Links
+        if (obj.creature) {
+            obj.creature = Templates.translateDotPath(pathArray, obj.creature);
+        }
+
+        if (obj.items) {
+            for (let i = 0; i < obj.items.length; i++) {
+                obj.items[i] = Templates.translateDotPath(pathArray, obj.items[i]);
+            }
+        }
+    }
+
+    static translateDotPath (pathArray, dotPath) {
+        const words = dotPath.split('.');
+        const translatedPath = [];
+
+        // universe, faction, section, entry
+        for (let i = 0; i < pathArray.length; i++) {
+            const lengthDiff = pathArray.length - words.length;
+
+            // Util.logDebug(`translateDotPath(${pathArray.join('.')}, ${dotPath}): i=${i}, pathArray.length - i = ${pathArray.length - i}, words[i - lengthDiff] is ${words[i - lengthDiff]}`);
+
+            // If dotPath is long enough, use that. Else use pathArray.
+            const narrowerKey = words.length >= (pathArray.length - i) ?
+                words[i - lengthDiff] :
+                pathArray[i];
+
+            translatedPath.push(narrowerKey);
+        }
+
+        // Util.logDebug(`${dotPath} in context ${pathArray.join('.')} translates to ${translatedPath.join('.')}`);
+
+        let obj = Templates;
+        for (let key of translatedPath) {
+            obj = obj[key];
+        }
+
+        // Util.logDebug(`Templates.translateDotPath(${pathArray}, foo...): obj=${Util.stringify(obj)}`);
+
+        return obj;
+    }
+
+    static setupItem (item) {
+        const DEFAULTS = {
+            size: 0.1,
+            cost: 0.1,
+            durability: 1,
+        };
+
+        for (let key in DEFAULTS) {
+            if (! Util.exists(item[key])) {
+                item[key] = DEFAULTS[key];
+            }
+        }
+    }
+
+    static setupCreature (creature) {
+        const DEFAULTS = {
+            size: 2,
+            // LATER we could also add bulk or weight, if useful.
+            cost: 1,
+            speed: 1,
+            durability: 1,
+            shields: 0,
+            accuracy: 0,
+            resistance: {},
+            items: [],
+        };
+
+        for (let key in DEFAULTS) {
+            if (! Util.exists(creature[key])) {
+                creature[key] = DEFAULTS[key];
+            }
+        }
+    }
+
+    static allSquads () {
+        return Templates.allEntries('Squad');
+    }
+
+    static allEntries (type) {
+        let entries = [];
+        for (let universe of Templates.universes()) {
+            for (let factionKey in universe) {
+                const faction = universe[factionKey];
+                if (Util.isString(faction)) { continue; }
+
+                // Util.logDebug(`Templates.allEntries(${type || ''}), factionKey=${factionKey}`);
+
+                if (type) {
+                    entries = entries.concat(Object.values(faction[type]));
+                }
+                else {
+                    entries = entries.concat(Object.values(faction.Item));
+                    entries = entries.concat(Object.values(faction.Creature));
+                    entries = entries.concat(Object.values(faction.Squad));
+                }
+            }
+        }
+
+        return entries;
+    }
+
+    static test () {
+        Util.logDebug(Templates.universes());
+    }
+
+    static universes () {
+        return [
+            Templates.Halo,
+        ];
+    }
+}
+
+Templates.ATTACK_TYPE = {
+    Kinetic: 'Kinetic',
+    Plasma: 'Plasma',
+    Impact: 'Impact',
+    Explosive: 'Explosive',
+    Hardlight: 'Hardlight',
+    Electric: 'Electric',
+};
+
+Templates.Halo = {
+    name: 'Halo',
+    UNSC: {
+        Item: {
+            // Weapons
+            SMG: {
+                type: Templates.ATTACK_TYPE.Kinetic,
+                damage: 1,
+                rof: 4,
+                accuracy: 1,
+                preferredRange: 1,
+                color: 'yellow'
+            },
+
+            // Non-Weapons
+
+        },
+        Creature: {
+            // Infantry
+            Marine: {
+                size: 2,
+                speed: 1.5,
+                durability: 10,
+                accuracy: 1,
+                items: ['Item.SMG'],
+            },
+
+            // Vehicles
+
+            // Motive for accuracy stat - Spartans better with firearms than Grunts, also makes takeUnshieldedDamage() status effects simpler.
+        },
+        Squad: {
+            Marine: {
+                name: 'Marine Fireteam',
+                creature: 'Creature.Marine',
+                quantity: 3,
+                image: 'marine.png',
+           },
+
+        },
+    },
+    Covenant: {
+         Item: {
+            // Weapons
+            PlasmaPistol: {
+                name: 'Plasma Pistol',
+                type: Templates.ATTACK_TYPE.Plasma,
+                damage: 2,
+                rof: 2,
+                accuracy: 1.5,
+                preferredRange: 2,
+                color: 'lime',
+            }
+
+            // Non-Weapons
+
+        },
+        Creature: {
+            // Infantry
+            Grunt: {
+                size: 1.5,
+                speed: 1.5,
+                durability: 5,
+                accuracy: 0,
+                items: ['Item.PlasmaPistol'],
+            },
+            
+            // Vehicles
+
+        },
+        Squad: {
+            // Infantry
+            Grunt: {
+                name: 'Grunt Lance',
+                creature: 'Creature.Grunt',
+                quantity: 4,
+                image: 'grunt.png',
+           },
+
+            // Vehicles
+
+        },
+    },
+    Forerunner: {
+        Item: {
+            // Weapons
+
+            // Non-Weapons
+
+        },
+        Creature: {
+            // Infantry
+            
+            // Vehicles
+
+        },
+        Squad: {
+            // Infantry
+            
+            // Vehicles
+
+        },
+    },
+    Flood: {
+        Item: {
+            // Weapons
+
+            // Non-Weapons
+
+        },
+        Creature: {
+            // Infantry
+            
+            // Vehicles
+
+        },
+        Squad: {
+            // Infantry
+            
+            // Vehicles
+
+        },
     },
 };
 
-module.exports = ScifiWarband;
+module.exports = Templates;
 
-ScifiWarband.run();
+Templates.init();
+// Templates.test();
 
-},{"../../util/coord.js":5,"../../util/util.js":6}],5:[function(require,module,exports){
+},{"../../util/util.js":11}],10:[function(require,module,exports){
 'use strict';
 
 // TODO make this name lowercase.
@@ -23334,6 +25049,19 @@ class Coord {
         return candidateNeighbor;
     }
 
+    // a 2d func.
+    inBox (xMin, yMin, xMax, yMax) {
+        return xMin <= this.x &&
+            this.x <= xMax &&
+            yMin <= this.y &&
+            this.y <= yMax;
+    }
+
+    static random2d (xMax, yMax) {
+        return Coord.random(xMax, yMax);
+    }
+
+    // LATER rename to random2d or add 3d support. Note: ringWorldState's call might need updating if we change this.
     static random (xMax, yMax) {
         if (! xMax) {
             xMax = 10;
@@ -23389,7 +25117,7 @@ Coord.DECIMAL_PLACES = 2;
 
 module.exports = Coord;
 
-},{"./util.js":6}],6:[function(require,module,exports){
+},{"./util.js":11}],11:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -23563,10 +25291,31 @@ util.sum = function (array) {
 };
 
 // Average
+// LATER could support multiple param usage: Util.mean(3, 5, 7)
 util.mean = (array) => {
     array = util.array(array);
+    if (array.length === 0) { return 0; }
+
     const sum = util.sum(array);
     return sum / array.length;
+};
+
+// More robust variant of Math.min()
+util.min = (...args) => {
+    if (args.length === 1 && util.isArray(args[0])) {
+        return Math.min(...args[0]);
+    }
+
+    return Math.min(...args);
+};
+
+// More robust variant of Math.max()
+util.max = (...args) => {
+    if (args.length === 1 && util.isArray(args[0])) {
+        return Math.max(...args[0]);
+    }
+
+    return Math.max(...args);
 };
 
 util.shuffle = (array) => {
@@ -23687,12 +25436,17 @@ util.newId = function (idLength) {
 
     let id = '';
     for (let i = 0; i < (idLength || 50); i++) {
-        const index = Math.floor( Math.random() * ALPHABET.length );
+        const index = Math.floor( 
+            Math.random() * ALPHABET.length 
+        );
         id += ALPHABET[index];
     }
 
     return id;
 };
+
+// Similar to newId()
+util.uuid = () => crypto.randomUUID();
 
 // Returns string
 util.shortId = function (id) {
@@ -24139,6 +25893,8 @@ util.arrayCopy = (a) => {
     return a.map(x => x);
 };
 
+util.clone = (obj) => _.cloneDeep(obj);
+
 util.round = (n) => _.round(n);
 
 util.commaNumber = (n) =>
@@ -24343,10 +26099,15 @@ util.sigfigsOf = (n) => {
 };
 
 // Call like 'await Util.sleep(6);'
-util.sleep = (seconds) =>
-    new Promise(
+util.sleep = (seconds) => {
+    if (! util.exists(seconds)) {
+        seconds = 1;
+    }
+
+    return new Promise(
         funcWhenResolved => setTimeout(funcWhenResolved, seconds * 1000)
     );
+}
 
 // eg ('00705', '0') => 2
 util.charCountAtStart = (str, char) => {
@@ -24467,6 +26228,28 @@ util.dictToJson = (dict) => {
     return serialized;
 };
 
+util.valuesAsIDs = (obj) => {
+    const converted = {};
+
+    for (let key in obj) {
+        const val = obj[key];
+
+        converted[key] = val?.id || val;
+    }
+
+    return converted;
+};
+
+util.certainKeysOf = (obj, keyArray) => {
+    const output = {};
+
+    for (let key of keyArray) {
+        output[key] = obj[key];
+    }
+
+    return output;
+};
+
 // Myers-Briggs Type Indicator (personality category)
 util.mbti = () => {
     return [
@@ -24488,4 +26271,4 @@ util.testAll = () => {
 
 // util.testAll();
 
-},{"comma-number":1,"lodash":2,"moment":3}]},{},[4]);
+},{"comma-number":1,"lodash":2,"moment":3}]},{},[4,5,6,7,8,9]);
