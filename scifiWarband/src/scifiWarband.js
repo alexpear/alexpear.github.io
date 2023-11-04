@@ -778,21 +778,42 @@ class ScifiWarband {
     }
 
     // Inputs should be in grid coords, not pixel coords.
-    drawAttackXY (startX, startY, endX, endY) {
-        // TODO - draw muzzle flash ray-lines at start coord
-        // TODO line traits & colors
+    drawAttackXY (startX, startY, endX, endY, color = 'yellow') {
+        const SHORTLINE = 12;
+        const TILT = Math.PI / 6;
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const radians = Math.atan2(dy, dx);
+
+        this.canvasCtx.lineWidth = 2;
+        this.canvasCtx.strokeStyle = color;
         this.canvasCtx.beginPath();
+
         this.canvasCtx.moveTo(
             this.centerOfSquare(startX),
             this.centerOfSquare(startY),
         );
+
+        const endPixelX = this.centerOfSquare(endX);
+        const endPixelY = this.centerOfSquare(endY);
+
         this.canvasCtx.lineTo(
-            this.centerOfSquare(endX),
-            this.centerOfSquare(endY),
+            endPixelX,
+            endPixelY
+        );
+        this.canvasCtx.lineTo(
+            endPixelX - SHORTLINE * Math.cos(radians - TILT),
+            endPixelY - SHORTLINE * Math.sin(radians - TILT)
+        );
+        this.canvasCtx.moveTo(
+            endPixelX,
+            endPixelY
+        );
+        this.canvasCtx.lineTo(
+            endPixelX - SHORTLINE * Math.cos(radians + TILT),
+            endPixelY - SHORTLINE * Math.sin(radians + TILT)
         );
 
-        this.canvasCtx.lineWidth = 2;
-        this.canvasCtx.strokeStyle = "yellow";
         this.canvasCtx.stroke();
     }
 
