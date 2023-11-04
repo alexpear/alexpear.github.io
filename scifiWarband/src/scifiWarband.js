@@ -623,14 +623,18 @@ class ScifiWarband {
                     this.drawLoadedImage(this.images.sand, x, y);
                 }
                 else {
-                    const thing = things[0];
-
-                    if (! thing.isKO()) {
-                        this.drawLoadedImage(this.images[thing.imageName()], x, y);
-                    }
-                    else {
-                        // LATER find real KO image(s)
-                        this.drawLoadedImage(this.images.sentinel, x, y);
+                    for (let thing of things) {
+                        if (thing.isKO()) {
+                            if (things.every(th => th.isKO())) {
+                                // LATER find real KO image(s)
+                                this.drawLoadedImage(this.images.sentinel, x, y);
+                                break;
+                            }
+                        }
+                        else {
+                            this.drawLoadedImage(this.images[thing.imageName()], x, y);
+                            break;
+                        }
                     }
 
                     if (things.length >= 2) {
