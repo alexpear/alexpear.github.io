@@ -703,7 +703,7 @@ class ScifiWarband {
             this.things.push(
                 new Squad(
                     Templates.Halo.UNSC.Squad.Marine,
-                    Util.randomOf([Squad.TEAM.Player, Squad.TEAM.Enemy]),
+                    undefined, //Util.randomOf([Squad.TEAM.Player, Squad.TEAM.Enemy]),
                     Coord.random2d(10)
                 )
             );

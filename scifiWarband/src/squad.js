@@ -16,7 +16,7 @@ class Squad {
         this.id = Util.uuid();
         this.template = squadTemplate;
         this.creatures = [];
-        this.team = team;
+        this.team = team || this.template.faction;
         this.coord = coord || new Coord();
         this.ready = true;
 
@@ -254,7 +254,7 @@ class Squad {
 
         const sq = new Squad(
             info.template,
-            info.team,
+            undefined,
             coord || Coord.random2d(9),
         );
 

@@ -14,6 +14,8 @@ class Templates {
 
                 if (Util.isString(universe[faction])) { continue; }
 
+                universe[faction].name = faction;
+
                 for (let section in universe[faction]) {
                     const sectionObj = universe[faction][section];
 
