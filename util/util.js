@@ -198,6 +198,31 @@ util.max = (...args) => {
     return Math.max(...args);
 };
 
+util.commonest = (array) => {
+    const dict = {};
+
+    for (let value of array) {
+        if (dict[value]) {
+            dict[value] += 1;
+        }
+        else {
+            dict[value] = 1;
+        }
+    }
+
+    let mostAppearances = 0;
+    let winner;
+
+    for (let value in dict) {
+        if (dict[value] > mostAppearances) {
+            mostAppearances = dict[value];
+            winner = value;
+        }
+    }
+
+    return winner;
+};
+
 util.shuffle = (array) => {
     array.sort(
         (a, b) => Math.random()
