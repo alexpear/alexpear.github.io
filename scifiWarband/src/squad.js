@@ -125,6 +125,8 @@ class Squad {
             manyEvents = manyEvents.concat(events);
         }
 
+        // Util.logDebug(`Squad.attack(), manyEvents.map(e => e.constructor.name).join(', ')=${manyEvents.map(e => e.constructor.name).join(', ')}`);
+
         this.visibility += creatures.length;
         // LATER make sure visibility & ready changes are well integrated with event system. Motive: visibility might need displaying.
 

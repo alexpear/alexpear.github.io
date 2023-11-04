@@ -12,7 +12,6 @@ class Event {
         this.type = type;
         this.t = Event.t;
         this.details = details || {};
-
         // this.log();
     }
 
@@ -23,6 +22,7 @@ class Event {
     toJson () {
         const safeObj = {
             timestamp: this.timestamp.getUTCMilliseconds(),
+            t: this.t,
             type: this.type,
             details: this.details
         };
@@ -40,7 +40,7 @@ class Event {
         return e;
     }
 
-    static attack (attackingCreature, target, weaponTemplate) { //, attackOutcome, shieldsTo, statusChanges) {
+    static attack (attackingCreature, target, weaponTemplate) {
         return new Event(
             Event.TYPE.Attack,
             {

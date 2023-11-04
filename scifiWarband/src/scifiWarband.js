@@ -286,79 +286,7 @@ class ScifiWarband {
             coord: bestCoord,
             desire,
         };
-
-        /* Notes
-        Multiple funcs would be useful:
-        * Move along a line as far as possible
-            - Candidate alg:
-                - Calculate optimal dest in continuous coords
-                - Try rounding it into discrete coords
-                - If rounding lands it out of range, iteratively try the calc again with a tighter dist. 
-                    - Tighten by perhaps 0.5 squares at a time. 
-                - Edge cases: 
-                    - You are diagonally adjacent to enemy already, hard to get closer
-                    - Optimal dest is occupied by friendly, terrain, or stealthy enemy 
-        * Find optimal spot along a line
-            - Similar to 'as far as possible' but based on preferredRange instead of speed
-        * Compare a few adjacent destination squares 
-            - Useful for slow movers.
-            - Altho arguably might be overoptimizing - focusing on diagonal-orthagonal tradeoff, which is a grid quirk, not a narrative thing. 
-        * Dynamic programming esque:
-            - Assemble a desire rating for many possible squares.
-            - Obstacles:
-                - If optimal area is crowded with friendlies, hard to tell when youre done
-                    - But evaluating every possible square would work 
-            * Rate optimal (rounded) square and the 8 adjacent squares
-                - If none are possible, back up (tighten dist) by 1.4 or 1.5 along the optimal line 
-                    - But still should remember the already rated squares (caching)
-                - If none near the line are possible, MRB1: Give up
-                    - MRB2: Rate all squares within dist
-                * Helper: .destinationRating(coord)
-                    - Factors
-                        - Dist to nearestFoe
-                            - MRB2: Rating of how dangerous that foe(s) are to us at that dist.
-                            - Closeness to our preferred range - MRB1
-        - LATER: What about walking around obstacles? Pathfinding?
-
-        Note - should probably round optimal range calcs in chooseActions() funcs, to avoid squads overoptimizing and preferring orthagonal firing positions to diagonal, etc.
-        Altho moving loses a turn of shooting, which mitigates that a little already.
-        */
     }
-
-    /*
-    6 8
-    3 4
-    deltaX 3
-    dY 4
-    slope 0.75
-    ydist 4
-    xdist 3
-    should be -4, -3
-
-    3 4
-    6 8
-    dx -3
-    dy -4
-    slope 0.75
-    ydist 4
-    xdist 3
-
-    10 10
-    13  6
-    distfromstart 5
-    dx -3
-    dy 4
-    slope -0.75
-    ydist 4
-    xdist 3
-
-    6 0
-    0 8
-    dist 5
-    dx 6
-    dy -8
-    slope -.75
-    */
 
     // returns rounded coord
     coordAlongLine (startCoord, endCoord, distFromStart) {
@@ -615,6 +543,12 @@ class ScifiWarband {
                 return;
             }
 
+            if (! this.coordOnGrid(action.target)) {
+                Util.logError(`Illegal action submitted, can't move off the grid: ${action.toString()}`);
+                // LATER interpret as a more reasonable move.
+                return;
+            }
+
             // if (distance === 0) {
                 // Util.logError(`This is not so bad, but a squad decided to move 0 distance: ${action.toString()}`);
             // }
@@ -861,12 +795,14 @@ class ScifiWarband {
     }
 
     exampleSquads () {
-        return [
-            Squad.example('Marine'),
-            Squad.example('Marine'),
-            Squad.example('Grunt'),
-            Squad.example('Grunt'),
-        ];
+        const allSquads = [];
+
+        for (let i = 0; i < 10; i++) {
+            allSquads.push(Squad.example('Marine'));
+            allSquads.push(Squad.example('Grunt'));
+        }
+
+        return allSquads;
     }
 
     exampleSetupSimple () {
@@ -905,7 +841,7 @@ class ScifiWarband {
         ScifiWarband.test();
 
         const game = new ScifiWarband();
-        game.exampleSetupSimple();
+        game.exampleSetup();
         game.initSquads();
         game.setHTML();
 
