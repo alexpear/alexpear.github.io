@@ -18,7 +18,7 @@ class ScifiWarband {
     constructor () {
         this.things = [];
         this.canvas = document.getElementById('canvas');
-        this.canvasCtx = canvas.getContext('2d');
+        this.canvasCtx = this.canvas.getContext('2d');
         this.events = [
             Event.encounterStart()
         ];
