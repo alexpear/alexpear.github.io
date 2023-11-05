@@ -248,6 +248,10 @@ class Creature {
         return json;
     }
 
+    name () {
+        return this.nameGenerated || (this.template.name + ' ' + Util.shortId(this.id));
+    }
+
     static example () {
         const cr = new Creature(
             Templates.Halo.UNSC.Creature.Marine

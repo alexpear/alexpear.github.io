@@ -172,6 +172,7 @@ Templates.ATTACK_TYPE = {
     Electric: 'Electric',
 };
 
+// LATER this obj could be defined in its own file in YAML, to make it easier for nondevs to edit.
 Templates.Halo = {
     name: 'Halo',
     UNSC: {

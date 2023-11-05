@@ -5,6 +5,7 @@
 const Templates = require('./templates.js');
 const Util = require('../../util/util.js');
 
+// LATER could make class Component, superclass of Item, Creature, Squad, & Company.
 class Item {
     constructor (template) {
         this.id = Util.uuid();
@@ -13,6 +14,10 @@ class Item {
 
     toJson () {
         return this;
+    }
+
+    name () {
+        return this.template.name; // + ' ' + Util.shortId(this.id);
     }
 
     static example () {

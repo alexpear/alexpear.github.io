@@ -38,6 +38,14 @@ class Squad {
         // imgElement.onload = () => this.drawLoadedImage(imgElement, x, y);
     }
 
+    existingName () {
+        return this.nameFromUser || this.nameGenerated;
+    }
+
+    name () {
+        return this.existingName() || ('Squad ' + Util.shortId(this.id));
+    }
+
     isKO () {
         return this.creatures.every(
             cr => cr.isKO()
@@ -236,6 +244,10 @@ class Squad {
         json.creatures = this.creatures.map(cr => cr.toJson());
 
         return json;
+    }
+
+    static phoneticAlphabet () {
+        return ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Golf', 'Hotel', 'India', 'Juliet', 'Kilo', 'Lima', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'X-ray', 'Yankee', 'Zulu'];
     }
 
     static example (key, coord) {
