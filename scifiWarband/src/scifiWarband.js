@@ -869,6 +869,9 @@ class ScifiWarband {
     }
 
     static async run () {
+        const canvas = document.getElementById('canvas');
+        if (! canvas) { return; }
+
         ScifiWarband.test();
 
         const game = new ScifiWarband();
