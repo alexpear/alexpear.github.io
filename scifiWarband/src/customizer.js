@@ -63,6 +63,14 @@ class Customizer {
         button.component = component;
         button.componentType = component.constructor.name;
         button.innerHTML = component.name();
+
+        // const self = this;
+        button.onclick = () => {
+            const infoPane = document.getElementById('infoPane');
+
+            infoPane.innerHTML = button.component.name() + ' - ' + Util.stringify(button.component.toJson());
+        }
+
         return button;
     }
 

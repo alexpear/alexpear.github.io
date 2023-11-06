@@ -76,14 +76,11 @@ class Company {
     }
 
     toJson () {
-        // const json = Util.certainKeysOf(
-        //     this,
-        //     ['id', 'template', 'team', 'coord', 'ready']
-        // );
-
-        // json.creatures = this.creatures.map(cr => cr.toJson());
-
-        // return json;
+        return {
+            id: this.id,
+            faction: this.faction,
+            squads: this.squads.map(sq => sq.toJson()),
+        };
     }
 
     static example () {
