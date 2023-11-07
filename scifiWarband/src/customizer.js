@@ -18,6 +18,8 @@ class Customizer {
     initUI () {
         window.customizer = this;
         this.overviewPane = document.getElementById('companyOverview');
+        if (! this.overviewPane) { return; }
+
         this.setUI();
     }
 
