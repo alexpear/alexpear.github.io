@@ -625,13 +625,12 @@ class ScifiWarband {
                     for (let thing of things) {
                         if (thing.isKO()) {
                             if (things.every(th => th.isKO())) {
-                                // LATER find real KO image(s)
-                                this.drawLoadedImage(this.images.sentinel, x, y);
+                                this.drawSquad(thing);
                                 break;
                             }
                         }
                         else {
-                            this.drawLoadedImage(this.images[thing.imageName()], x, y);
+                            this.drawSquad(thing);
                             break;
                         }
                     }
@@ -723,12 +722,47 @@ class ScifiWarband {
         Util.logDebug(`testNearestFoes() ending test at ${endDate.getUTCMilliseconds()}\n  Total time was ${ms / 1000} seconds, or ${ms / 1000 / this.things.length} seconds per nearestFoes() call.`);
     }
 
-    // Deprecated - too slow to load during drawing.
-    drawSquare (imageName, x, y) {
-        const imgElement = new Image();
-        imgElement.src = imageURL;
+    drawSquad (squad) {
+        const x = squad.coord.x;
+        const y = squad.coord.y;
+        let image;
+        let quantityString;
 
-        imgElement.onload = () => this.drawLoadedImage(imgElement, x, y);
+        if (squad.isKO()) {
+            image = this.images.sand;
+            quantityString = 'KO';
+        }
+        else {
+            image = this.images[squad.imageName()];
+            quantityString = String(
+                Math.min(squad.quantity(), 99)
+            );
+        }
+
+        this.drawLoadedImage(image, x, y);
+
+        const WIDTH_PER_DIGIT = 11;
+        const QUANTBOX_HEIGHT = WIDTH_PER_DIGIT * 2;
+        this.canvasCtx.fillStyle = 'lightgrey';
+
+        const left = this.cornerOfSquare(x);
+        const top = this.cornerOfSquare(y + 1) - QUANTBOX_HEIGHT;
+        const width = quantityString.length * WIDTH_PER_DIGIT;
+        // TODO this.canvasCtx.measureText(quantityString).width + 4;
+        const height = QUANTBOX_HEIGHT;
+
+        this.canvasCtx.fillRect(left, top, width, height);
+
+        // LATER could move unchanging style assignment statements to a setup func, if they are slowing things down appreciably.
+        this.canvasCtx.font = '18px serif';
+        this.canvasCtx.textAlign = 'left';
+        this.canvasCtx.fillStyle = 'green';
+
+        this.canvasCtx.fillText(
+            quantityString,
+            this.cornerOfSquare(x) + 1,
+            this.cornerOfSquare(y + 1) - 7,
+        );
     }
 
     drawLoadedImage (imgElement, x, y) {
