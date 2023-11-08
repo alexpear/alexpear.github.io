@@ -174,11 +174,64 @@ class ScifiWarband {
 
     readySquads () {
         for (let thing of this.things) {
+            this.sanityCheck(thing);
+
             thing.ready = true;
         }
     }
 
-    findReadySquad (team) {
+    sanityCheck (thing) {
+        // LATER could functionize some or all of this into Util.js
+        // (or could move it to squad.js)
+        let sane = true;
+
+        if (
+            ! thing ||
+            ! thing.creatures
+        ) {
+            sane = false;
+        }
+        else {
+            const factions = Util.unique(
+                thing.creatures?.map(cr => cr.faction())
+            );
+
+            const activeCreature = thing.creatures.find(cr => ! cr.isKO());
+            const koCreature = thing.creatures.find(cr => cr.isKO());
+            const mixedKOStatus = activeCreature && koCreature;
+
+            if (
+                thing.creatures.length === 0 ||
+                factions.length !== 1 ||
+                mixedKOStatus
+            ) {
+                sane = false;
+            }
+        }
+
+        if (! sane) {
+            let info;
+
+            if (thing) {
+                if (thing.toJson) {
+                    info = thing.toJson();
+                }
+                else {
+                    info = {
+                        keys: Object.keys(thing),
+                        constructorName: info.constructor.name,
+                    };
+                }
+            }
+            else {
+                info = thing;
+            }
+
+            throw new Error(Util.stringify(info));
+        }
+    }
+
+    findReadySquad (faction) {
         return this.things.find(
             thing => thing.ready && 
                 thing.team === team && 
