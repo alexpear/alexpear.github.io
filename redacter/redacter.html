@@ -1,0 +1,61 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    html * {
+      display: block;
+      text-align: center;
+      margin: auto auto auto auto;
+      font-family: monospace;
+      font-size: 14;
+    }
+
+    body {
+      background: #111111;
+      color: #000000;
+    }
+
+    #uiTitle {
+      color: #000000;
+      margin: 15px 20px auto 20px;
+    }
+
+    #genDropdown {
+      height: 6%;
+    }
+
+    #genButton {
+      width: 15%;
+      height: 6%;
+    }
+
+    #descBox {
+      width: 90%;
+    }
+
+    #description {
+      line-height: 1.0;
+      white-space: pre-line;
+    }
+
+    style {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header">
+  </div>
+  <div id="mainDiv">
+    <article id="documentDisplay">
+    </article>
+    <div id="sidebar">
+      <input id="topButton" type="button" class="button" value="Top" onclick="window.redacter.top()">
+    </div>
+  </div>
+</body>
+</html>
+
+<script src="bundle.js"></script>
