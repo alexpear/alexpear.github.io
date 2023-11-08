@@ -838,7 +838,7 @@ class ProjectileEvent extends BEvent {
 
     static run () {
         // Only run test logic if the console command was something like 'node projectileEvent.js'
-        if (! process.argv[1].endsWith('projectileEvent.js')) {
+        if (! process.argv[1] || ! process.argv[1].endsWith('projectileEvent.js')) {
             return;
         }
 
