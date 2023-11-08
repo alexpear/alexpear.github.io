@@ -77,7 +77,13 @@ class ScifiWarband {
                 const curTeam = teams[teamIndex];
                 const curSquad = this.findReadySquad(curTeam);
 
-                if (! curSquad) { continue; } // This is normal for the team with less squads at the end of the round.
+                if (! curSquad) {
+                    if (! this.findReadySquad()) {
+                        break; // Case where all squads have been activated.
+                    }
+
+                    continue; // Case where curTeam has activated all their squads but a faction with more squads has not yet finished activating their squads.
+                }
 
                 this.record(
                     curSquad.update()
