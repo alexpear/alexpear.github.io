@@ -326,8 +326,8 @@ class WorldState {
 
     synopsis () {
         return `I am a ${this.newFactionCharacter(this.protagFaction).toString()} from the ${this.protagFaction.toString()}.\n` +
-            `I & my ${this.newFactionCharacter(this.protagFaction).toString()} friend are in the ${this.antagFaction.toString()}.\n` +
-            `We were thwarted by a ${this.newFactionCharacter(this.antagFaction).toString()} so we're going up against a ${this.newFactionCharacter(this.antagFaction).toString()} instead.`;
+            `My ${this.newFactionCharacter(this.protagFaction).toString()} companion has a lot to learn from me.\n` +
+            `We are confronting a ${this.newFactionCharacter(this.antagFaction).toString()} in the ${this.antagFaction.toString()}.`;
     }
 
     static run () {
