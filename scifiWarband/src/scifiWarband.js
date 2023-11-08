@@ -1052,7 +1052,7 @@ class ScifiWarband {
     exampleSquads () {
         const allSquads = [];
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 2; i++) {
             allSquads.push(Squad.example('Marine'));
             allSquads.push(Squad.example('Grunt'));
         }
