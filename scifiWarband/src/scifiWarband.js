@@ -233,10 +233,21 @@ class ScifiWarband {
 
     findReadySquad (faction) {
         return this.things.find(
-            thing => thing.ready && 
-                thing.team === team && 
-                ! thing.isKO()
+            thing => goodSquad(thing, faction)
         );
+
+        function goodSquad (thing, faction) {
+            if (! thing.ready || thing.isKO()) {
+                return false;
+            }
+
+            if (faction) {
+                return thing.faction() === faction;
+            }
+            else {
+                return true;
+            }
+        }
     }
 
     // returns boolean
