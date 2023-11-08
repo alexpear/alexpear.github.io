@@ -673,14 +673,14 @@ class ScifiWarband {
 
             const hitCount = events
                 .filter(e => e.type === Event.TYPE.Hit)
-               .length;
+                .length;
 
             const koCount = initialTargetCount - action.target.quantity();
             const eliminationMessage = action.target.quantity() === 0 ?
                 ' (SQUAD WIPE)' :
                 '';
 
-            Util.log(`${squad.terse()} attack ${targetTerse}: ${hitCount} hits, ${koCount} KOs${eliminationMessage}`);
+            Util.log(`t=${Event.t}: ${squad.terse()} attack ${targetTerse}: ${hitCount} hits, ${koCount} KOs${eliminationMessage}`);
 
             return;
         }
