@@ -12,11 +12,11 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 class Squad {
-    constructor (squadTemplate, team, coord) {
+    constructor (squadTemplate, _unused, coord) {
         this.id = Util.uuid();
         this.template = squadTemplate;
         this.creatures = [];
-        this.team = team || this.template.faction;
+        // this.team = team || this.template.faction;
         this.coord = coord || new Coord();
         this.ready = true;
 
@@ -44,6 +44,10 @@ class Squad {
 
     name () {
         return this.existingName() || ('Squad ' + Util.shortId(this.id));
+    }
+
+    faction () {
+        return this.creatures?.[0]?.faction();
     }
 
     isKO () {
@@ -208,13 +212,23 @@ class Squad {
 
     // 2 Grunts (5, 0)
     terse () {
-        const representative = this.quantity() >= 1 ?
-            this.activeCreatures()[0] :
-            this.creatures[0];
+        // Util.logDebug(`Squad.terse(): coord=${this.coord.toString()}, this.koSummary()=${this.koSummary()}`);
 
-        const name = representative.template.name;
+        const representative = this.isKO() ?
+            this.creatures[0] :
+            this.activeCreatures()[0];
+
+        const name = representative?.template.name || `<empty Squad>`;
 
         return `${this.quantity()} ${name}s ${this.coord.toString()}`;
+    }
+
+    // For debugging
+    koSummary () {
+        return this.creatures.map(
+            cr => cr.isKO() ? 'KO' : 'Active'
+        )
+        .join(',');
     }
 
     healthBar () {
@@ -238,12 +252,17 @@ class Squad {
     toJson () {
         const json = Util.certainKeysOf(
             this, 
-            ['id', 'template', 'team', 'coord', 'ready']
+            ['id', 'template', 'coord', 'ready']
         );
+        json.faction = this.faction();
 
         json.creatures = this.creatures.map(cr => cr.toJson());
 
         return json;
+    }
+
+    toJsonStr () {
+        return Util.stringify(this.toJson());
     }
 
     static phoneticAlphabet () {

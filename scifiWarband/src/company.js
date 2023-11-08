@@ -9,7 +9,7 @@ const Templates = require('./templates.js');
 // const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
-class Company {
+class Company { //extends Component {
     constructor (faction) {
         this.id = Util.uuid();
         this.faction = faction;

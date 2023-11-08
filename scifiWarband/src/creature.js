@@ -35,6 +35,10 @@ class Creature {
         return !! this.status.ko;
     }
 
+    faction () {
+        return this.template.faction;
+    }
+
     // creates Event
     update () {
         if (this.isKO()) { return; }
@@ -246,6 +250,11 @@ class Creature {
         json.squad = this.squad?.id;
 
         return json;
+    }
+
+    // LATER put in superclass Component.
+    toJsonStr () {
+        return Util.stringify(this.toJson());
     }
 
     name () {

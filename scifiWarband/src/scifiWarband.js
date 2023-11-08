@@ -61,13 +61,16 @@ class ScifiWarband {
     async runEncounter () {
         // LATER starting team could depend on who is attacker/defender, or who has most squads left at start of each round. Currently arbitrary.
         const teams = Object.keys(this.teamSummaries());
+        // LATER could support new teams appearing mid-battle.
 
         for (Event.t = 1; Event.t <= 100; Event.t++) {
             this.readySquads();
             this.logNewRound();
-            // Util.log(`t=${this.t}: ${this.things.filter(t => ! t.isKO()).length} squads left.`)
+            Util.logDebug(`t=${Event.t}: ${this.things.filter(t => ! t.isKO()).length} squads left.`);
 
             for (let activation = 1; activation <= 1e5; activation++) {
+                // ScifiWarband.logDebug(`runEncounter() at top of activation loop - activation=${activation}`);
+
                 if (this.encounterDone()) { return; }
 
                 const teamIndex = activation % teams.length;
@@ -82,15 +85,18 @@ class ScifiWarband {
 
                 const actions = this.chooseActions(curSquad);
 
-                // Util.logDebug(`runEncounter() loop - chosen actions are: ${Util.stringify(actions.map(a => a.toJson()))}`);
+                // ScifiWarband.logDebug(`runEncounter() loop - chosen actions are: ${Util.stringify(actions.map(a => a.toJson()))}`);
 
                 this.performActions(actions);
 
+                // ScifiWarband.logDebug(`runEncounter() after performActions(length ${actions.length}) - activation=${activation}`);
+
                 await Util.sleep(1);
                 this.setHTML();
-                // TODO bug - drawAttack() is not displaying on top currently.
-                // LATER UI where user steps forwards or back (event by event) thru the replay, instead of sleep()ing.
+                // LATER: A replay UI where user steps forwards or back (activation by activation) thru the replay, instead of sleep()ing.
             }
+
+            ScifiWarband.logDebug(`runEncounter() after activation loop`);
         }
     }
 
@@ -103,15 +109,17 @@ class ScifiWarband {
                 1 :
                 0;
 
-            if (teamSummaries[thing.team]) {
-                const obj = teamSummaries[thing.team];
+            const faction = thing.faction();
+
+            if (teamSummaries[faction]) {
+                const obj = teamSummaries[faction];
 
                 obj.squads += squadNumber;
                 obj.headcount += quantity;
                 obj.healthBar += thing.healthBar();
             }
             else {
-                teamSummaries[thing.team] = {
+                teamSummaries[faction] = {
                     squads: squadNumber,
                     headcount: quantity,
                     healthBar: thing.healthBar(),
@@ -138,20 +146,22 @@ class ScifiWarband {
         for (let thing of this.things) {
             if (thing.isKO()) { continue; }
 
-            if (squadCounts[thing.team]) {
-                squadCounts[thing.team] += 1;
+            const faction = thing.faction();
+
+            if (squadCounts[faction]) {
+                squadCounts[faction] += 1;
             }
             else {
                 if (Object.keys(squadCounts).length >= 1) {
                     return false;
                 }
 
-                squadCounts[thing.team] = 1;
+                squadCounts[faction] = 1;
             }
         }
 
         // Util.log(squadCounts);
-        // Util.log(`t=${this.t}: ${squadCounts.player} player squads vs ${squadCounts.enemy} enemy squads`);
+        // Util.log(`t=${Event.t}: ${squadCounts.player} player squads vs ${squadCounts.enemy} enemy squads`);
 
         return Object.keys(squadCounts).length <= 1;
     }
@@ -183,7 +193,7 @@ class ScifiWarband {
     // This function is the mind of the squad. LATER could move these behavioral funcs to a class Mind in a mind.js file.
     // Allowed to return illegal moves.
     chooseActions (curSquad) {
-        // Util.logDebug(curSquad.toJson());
+        // ScifiWarband.logDebug(curSquad.toJson());
 
         const sentiments = curSquad.creatures.map(cr => cr.morale());
         // LATER morale can inform chooseActions()
@@ -199,7 +209,7 @@ class ScifiWarband {
 
         const roll = Math.random() * (movePlan.desire + attackPlan.desire);
 
-        Util.logDebug(`${curSquad.terse()} is thinking of moving to ${movePlan.coord.toString()} with desire ${movePlan.desire}, or attacking ${attackPlan.target.terse()} with desire ${attackPlan.desire}`);
+        // ScifiWarband.logDebug(`${curSquad.terse()} is thinking of moving to ${movePlan.coord.toString()} with desire ${movePlan.desire}, or attacking ${attackPlan.target.terse()} with desire ${attackPlan.desire}`);
 
         if (! roll) {
             // Detect bugs with 0, undefined, NaN, etc.
@@ -245,7 +255,7 @@ class ScifiWarband {
         );
 
         let firstChoiceCoord = goodRangeCoord;
-        Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): positionImperfection=${positionImperfection} goodRangeCoord is ${goodRangeCoord.toString()}, nearest foe is ${nearestFoes[0].coord.toString()}, preferredDistance=${preferredDistance}, speed=${speed}`)
+        // ScifiWarband.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): positionImperfection=${positionImperfection} goodRangeCoord is ${goodRangeCoord.toString()}, nearest foe is ${nearestFoes[0].coord.toString()}, preferredDistance=${preferredDistance}, speed=${speed}`)
 
         if(curSquad.coord.distanceTo(goodRangeCoord) > speed) {
             firstChoiceCoord = this.coordAlongLine(
@@ -254,7 +264,7 @@ class ScifiWarband {
                 speed
             );
 
-            Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): goodRangeCoord was too far (${curSquad.coord.distanceTo(goodRangeCoord)} vs speed ${speed}) so we replaced it with ${firstChoiceCoord.toString()} `);
+            // ScifiWarband.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): goodRangeCoord was too far (${curSquad.coord.distanceTo(goodRangeCoord)} vs speed ${speed}) so we replaced it with ${firstChoiceCoord.toString()} `);
         }
 
         const candidates = this.adjacents(firstChoiceCoord);
@@ -271,7 +281,7 @@ class ScifiWarband {
                 bestCoord = candidate;
             }
 
-            Util.logDebug(`ScifiWarband.desiredMove(), candidates loop: candidate=${candidate.toString()}, rating=${rating}, curSquad=${curSquad.terse()}`);
+            // ScifiWarband.logDebug(`ScifiWarband.desiredMove(), candidates loop: candidate=${candidate.toString()}, rating=${rating}, curSquad=${curSquad.terse()}`);
         }
 
         // Desires should be numbers in range [0, 1]
@@ -450,13 +460,13 @@ class ScifiWarband {
         }
 
         if (! Util.exists(distToFoe)) {
-            const foeInfo = this.nearestFoesFromCoord(coord, squad.team);
+            const foeInfo = this.nearestFoesFromCoord(coord, squad.faction());
             distToFoe = foeInfo.dist;
         }
 
         const occupants = this.contentsOfCoord(coord);
         for (let occupant of occupants) {
-            Util.logDebug(`destinationRating(), comparing occupant ${occupant.terse()} to squad ${squad.terse()}`)
+            // ScifiWarband.logDebug(`destinationRating(), comparing occupant ${occupant.terse()} to squad ${squad.terse()}`)
             if (occupant === squad) {
                 return -9999;
             }
@@ -530,7 +540,7 @@ class ScifiWarband {
     performAction (action) {
         const squad = action.subject;
         if (squad.isKO()) {
-            throw new Error(squad.id); // illegal
+            throw new Error(Util.stringify(action)); // illegal
         }
 
         const distance = squad.coord.distanceTo(action.target);
@@ -542,29 +552,30 @@ class ScifiWarband {
             }
 
             if (distance > squad.speed()) {
-                Util.logError(`Illegal action submitted, can't move that far: ${action.toString()}`);
+                ScifiWarband.logDebug(`ERROR - Illegal action submitted, can't move that far: ${action.toString()}`);
                 // LATER interpret as a more reasonable move.
                 return;
             }
 
             if (! this.coordOnGrid(action.target)) {
-                Util.logError(`Illegal action submitted, can't move off the grid: ${action.toString()}`);
+                ScifiWarband.logDebug(`ERROR - Illegal action submitted, can't move off the grid: ${action.toString()}`);
                 // LATER interpret as a more reasonable move.
                 return;
             }
 
             // if (distance === 0) {
-                // Util.logError(`This is not so bad, but a squad decided to move 0 distance: ${action.toString()}`);
+                // ScifiWarband.logDebug(`ERROR - This is not so bad, but a squad decided to move 0 distance: ${action.toString()}`);
             // }
             const occupants = this.contentsOfCoord(action.target);
             for (let thing of occupants) {
                 if (! thing.isKO()) {
-                    Util.logError(`Illegal action - trying to move onto occupied square: ${action.toString()}`);
+                    ScifiWarband.logDebug(`ERROR - Illegal action - trying to move onto occupied square: ${action.toString()}`);
                     return;
                 }
             }
 
-            Util.log(`${squad.terse()} moves to ${action.target.toString()}, distance=${distance}, speed=${squad.speed()}`);
+            // LATER log this message at EVENT level, not DEBUG
+            ScifiWarband.logDebug(`EVENT - ${squad.terse()} moves to ${action.target.toString()}, distance=${distance}, speed=${squad.speed()}`);
 
             squad.coord = action.target;
             return;
@@ -573,11 +584,11 @@ class ScifiWarband {
         // LATER functionize into this.performAttack()
         if (action.type === Action.TYPE.Attack) {
             if (action.target.isKO()) {
-                throw new Error(action.target.id);
+                throw new Error(Util.stringify(action));
             }
 
             if (! squad.canSee(action.target)) {
-                Util.logError(`Illegal action submitted, can't see target squad: ${action.toString()}`);
+                ScifiWarband.logDebug(`ERROR - Illegal action submitted, can't see target squad: ${action.toString()}`);
                 // LATER interpret as a more reasonable action.
                 return;
             }
@@ -614,6 +625,7 @@ class ScifiWarband {
     drawGrid () {
         this.resetGrid();
 
+        // LATER maybe start from 1 not 0. Edit Squad.example() too if so.
         for (let y = 0; y < ScifiWarband.WINDOW_SQUARES; y++) {
             for (let x = 0; x < ScifiWarband.WINDOW_SQUARES; x++) {
                 const things = this.contentsOfCoord(new Coord(x, y));
@@ -657,7 +669,7 @@ class ScifiWarband {
 
     // Returns array of nearest foe - or foes tied for same distance.
     nearestFoes (squad) {
-        return this.nearestFoesFromCoord(squad.coord, squad.team);
+        return this.nearestFoesFromCoord(squad.coord, squad.faction());
     }
 
     nearestFoesFromCoord (coord, team) {
@@ -666,16 +678,16 @@ class ScifiWarband {
         let shortestDist = 99999; // unit: squares
 
         for (let thing of this.things) {
-            // Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, top. Teams: ${squad.team} vs ${thing.team}, canSee(thing)? ${squad.canSee(thing)}, thing.visibility = ${thing.visibility}`);
+            // ScifiWarband.logDebug(`nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, top. Teams: ${squad.team} vs ${thing.team}, canSee(thing)? ${squad.canSee(thing)}, thing.visibility = ${thing.visibility}`);
 
-            if (thing.team === team) { continue; }
+            if (thing.faction() === team) { continue; }
             if (thing.isKO()) { continue; }
 
             if (! Squad.coordCanSee(coord, thing)) { continue; }
 
             const dist = coord.distanceTo(thing.coord);
 
-            // Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, dist is ${dist}`);
+            // ScifiWarband.logDebug(`nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, dist is ${dist}`);
 
             if (dist < shortestDist) {
                 nearests = [thing];
@@ -709,7 +721,7 @@ class ScifiWarband {
         }
         // log start time & save in local variable
         const startDate = new Date();
-        Util.logDebug(`testNearestFoes() starting test at ${startDate.getUTCMilliseconds()}`);
+        ScifiWarband.logDebug(`testNearestFoes() starting test at ${startDate.getUTCMilliseconds()}`);
         
         // call nearestFoes for each squad
         for (let sq of this.things) {
@@ -719,7 +731,7 @@ class ScifiWarband {
         // log total time spent & time per call
         const endDate = new Date();
         const ms = endDate - startDate;
-        Util.logDebug(`testNearestFoes() ending test at ${endDate.getUTCMilliseconds()}\n  Total time was ${ms / 1000} seconds, or ${ms / 1000 / this.things.length} seconds per nearestFoes() call.`);
+        ScifiWarband.logDebug(`testNearestFoes() ending test at ${endDate.getUTCMilliseconds()}\n  Total time was ${ms / 1000} seconds, or ${ms / 1000 / this.things.length} seconds per nearestFoes() call.`);
     }
 
     drawSquad (squad) {
@@ -851,8 +863,26 @@ class ScifiWarband {
     }
 
     explainOutcome () {
+        ScifiWarband.logDebug(`explainOutcome() top.`);
         this.logNewRound();
+        this.debugLogState();
         // LATER Present outcome to user in more detail.
+    }
+
+    debugLogState () {
+        ScifiWarband.logDebug(`ScifiWarband.debugLogState()`);
+
+        for (let y = 0; y < ScifiWarband.WINDOW_SQUARES; y++) {
+            for (let x = 0; x < ScifiWarband.WINDOW_SQUARES; x++) {
+                const things = this.contentsOfCoord(new Coord(x, y));
+
+                if (things.length === 0) { continue; }
+
+                for (let thing of things) {
+                    ScifiWarband.logDebug(`${thing.terse()} with .creatures=${thing.koSummary()}`);
+                }
+            }
+        }
     }
 
     exampleSetup () {
@@ -895,9 +925,48 @@ class ScifiWarband {
         );
     }
 
+    static logDebug (input) {
+        const inputStr = Util.isString(input) ?
+            input :
+            Util.stringify(input);
+
+        Util.logDebug(`ScifiWarband t=${Event.t} - ${inputStr}`);
+    }
+
+    static testLogDebug () {
+        const sq = Squad.example('Marine');
+        const json = sq.toJson();
+
+        console.log(`ScifiWarband.testLogDebug() - Test S:`);
+        ScifiWarband.logDebug('This is just a string.');
+        // Good.
+
+        console.log(`ScifiWarband.testLogDebug() - Test J:`);
+        ScifiWarband.logDebug(json);
+        // Good.
+
+        console.log(`ScifiWarband.testLogDebug() - Test SJ:`);
+        ScifiWarband.logDebug(String(json));
+        // object Object
+
+        console.log(`ScifiWarband.testLogDebug() - Test SCJ:`);
+        ScifiWarband.logDebug(`string containing ${json}`);
+        // object Object
+
+        console.log(`ScifiWarband.testLogDebug() - Test USJ:`);
+        ScifiWarband.logDebug(Util.stringify(json));
+        // Good.
+
+        console.log(`ScifiWarband.testLogDebug() - Test SCUSJ:`);
+        ScifiWarband.logDebug(`string containing ${Util.stringify(json)}`);
+        // Good.
+    }
+
     static test () {
         ScifiWarband.testCoordAlongLine();
         ScifiWarband.testDestinationRating();
+        ScifiWarband.testTidyKOs();
+        // ScifiWarband.testLogDebug();
 
         Util.logDebug(`ScifiWarband.test() - All tests finished.`);
     }
