@@ -1142,7 +1142,8 @@ class ScifiWarband {
         game.initSquads();
         game.setHTML();
 
-        game.runEncounter();
+        await game.runEncounter();
+        ScifiWarband.logDebug(`run() after runEncounter()`);
         game.explainOutcome();
 
         // game.testNearestFoes();
