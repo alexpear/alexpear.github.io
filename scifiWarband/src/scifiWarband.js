@@ -102,7 +102,7 @@ class ScifiWarband {
                 // LATER: A replay UI where user steps forwards or back (activation by activation) thru the replay, instead of sleep()ing.
             }
 
-            ScifiWarband.logDebug(`runEncounter() after activation loop`);
+            // ScifiWarband.logDebug(`runEncounter() after activation loop`);
         }
     }
 
@@ -693,7 +693,7 @@ class ScifiWarband {
         if (koCount === 0) { return; }
 
         // TODO sometimes logs say damagedSquad is <empty Squad> - make sure situation is okay.
-        ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) top. - toJsonStr()=${damagedSquad.toJsonStr()}`);
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) top. - toJsonStr()=${damagedSquad.toJsonStr()}`);
 
         const koCreatures = damagedSquad.creatures.filter(cr => cr.isKO());
         if (koCreatures.length === 0) { return; }
@@ -711,11 +711,11 @@ class ScifiWarband {
             this.things.push(koSquad);
         }
 
-        ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) before concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) before concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
 
         koSquad.creatures = koSquad.creatures.concat(koCreatures);
 
-        ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) after concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) after concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
 
         damagedSquad.creatures = damagedSquad.creatures.filter(cr => ! cr.isKO());
 
@@ -726,7 +726,7 @@ class ScifiWarband {
         // TODO bug - sometimes at encounter end, the total number of KO creatures is too small. Like some KO squads are missing. Also i believe i saw an active squad vanish and not be replaced by a KO squad.
 
         const koCreaturesArrayStr = koCreatures.map(cr => cr.toJsonStr()).join(', ');
-        ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) bottom. - damagedSquad.toJsonStr()=${damagedSquad.toJsonStr()} \n koSquad.toJsonStr()=${koSquad.toJsonStr()}, local var koCreatures=[${koCreaturesArrayStr}]`);
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) bottom. - damagedSquad.toJsonStr()=${damagedSquad.toJsonStr()} \n koSquad.toJsonStr()=${koSquad.toJsonStr()}, local var koCreatures=[${koCreaturesArrayStr}]`);
 
         if (koSquad.creatures.length === 0) {
             throw new Error(Util.stringify({
