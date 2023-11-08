@@ -260,7 +260,7 @@ Templates.Halo = {
             Grunt: {
                 name: 'Grunt Lance',
                 creature: 'Creature.Grunt',
-                quantity: 4,
+                quantity: 3,
                 image: 'grunt.png',
            },
 
