@@ -810,6 +810,11 @@ class Util {
             `-${output}`;
     }
 
+    // returns number
+    // static digits (n) {
+
+    // }
+
     // Returns string
     static prettyDistance (meters) {
         meters = Math.abs(meters);
@@ -1030,7 +1035,9 @@ class Util {
         );
     }
 
-    // TODO Util.yaml(x)
+    // LATER - desired funcs:
+    // static yaml (x) {}
+    // static safeToStringify (x) {}
 
     static log (input, tag) {
         // Later: Use chalk functions instead.

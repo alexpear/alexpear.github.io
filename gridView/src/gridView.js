@@ -153,6 +153,7 @@ class GridView {
 
                 // img.height = 45;
                 // img.width = 60;
+                // LATER - stop loading image freshly every time we call setGridHtml()
                 img.src = this.spriteFor(
                     group && group.templateName
                 );
