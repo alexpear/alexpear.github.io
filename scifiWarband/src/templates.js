@@ -172,7 +172,7 @@ class Templates {
 
 Templates.ATTACK_TYPE = {
     Kinetic: 'Kinetic',
-    Plasma: 'Plasma',
+    Fire: 'Fire',
     Impact: 'Impact',
     Explosive: 'Explosive',
     Hardlight: 'Hardlight',
