@@ -682,10 +682,106 @@ class ScifiWarband {
 
             Util.log(`t=${Event.t}: ${squad.terse()} attack ${targetTerse}: ${hitCount} hits, ${koCount} KOs${eliminationMessage}`);
 
+            this.tidyKOs(action.target, koCount);
             return;
         }
 
         // LATER more action types
+    }
+
+    tidyKOs (damagedSquad, koCount) {
+        if (koCount === 0) { return; }
+
+        // TODO sometimes logs say damagedSquad is <empty Squad> - make sure situation is okay.
+        ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) top. - toJsonStr()=${damagedSquad.toJsonStr()}`);
+
+        const koCreatures = damagedSquad.creatures.filter(cr => cr.isKO());
+        if (koCreatures.length === 0) { return; }
+
+        const thingsHere = this.contentsOfCoord(damagedSquad.coord);
+
+        let koSquad = thingsHere.find(
+            th => th !== damagedSquad &&
+                th.faction() === damagedSquad.faction() &&
+                th.isKO()
+        );
+
+        if (! koSquad) {
+            koSquad = Squad.koSquad(damagedSquad.coord);
+            this.things.push(koSquad);
+        }
+
+        ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) before concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
+
+        koSquad.creatures = koSquad.creatures.concat(koCreatures);
+
+        ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) after concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
+
+        damagedSquad.creatures = damagedSquad.creatures.filter(cr => ! cr.isKO());
+
+        if (damagedSquad.creatures.length === 0) {
+            this.things = this.things.filter(th => th.creatures.length >= 1);
+        }
+
+        // TODO bug - sometimes at encounter end, the total number of KO creatures is too small. Like some KO squads are missing. Also i believe i saw an active squad vanish and not be replaced by a KO squad.
+
+        const koCreaturesArrayStr = koCreatures.map(cr => cr.toJsonStr()).join(', ');
+        ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) bottom. - damagedSquad.toJsonStr()=${damagedSquad.toJsonStr()} \n koSquad.toJsonStr()=${koSquad.toJsonStr()}, local var koCreatures=[${koCreaturesArrayStr}]`);
+
+        if (koSquad.creatures.length === 0) {
+            throw new Error(Util.stringify({
+                damagedSquad: damagedSquad.toJson(),
+                koSquad: koSquad.toJson(),
+            }));
+        }
+
+        return koSquad; // It's okay if this return value is not used.
+    }
+
+    static testTidyKOs () {
+        const game = new ScifiWarband();
+
+        const damagedSquad = Squad.example('Marine');
+        const startingCount = damagedSquad.creatures.length;
+        game.things = [damagedSquad];
+
+        damagedSquad.creatures[0].status.ko = true;
+        game.tidyKOs(damagedSquad);
+
+        const contents = game.contentsOfCoord(damagedSquad.coord);
+        const koSquad = contents.find(sq => sq.isKO());
+
+        // LATER add Util.js funcs to functionize unit tests like this one.
+
+        const summary = {
+            numberOfSquads: contents.length,
+            startingCount,
+            endingCount: damagedSquad.creatures.length,
+            endingQuantity: damagedSquad.quantity(),
+            koSquadCount: koSquad?.creatures.length,
+            koSquadQuantity: koSquad?.quantity(),
+            koSquadFaction: koSquad?.faction(),
+        };
+
+        const controlGroup = Squad.example('Marine');
+
+        const expected = {
+            numberOfSquads: 2,
+            startingCount: controlGroup.creatures.length,
+            endingCount: controlGroup.creatures.length - 1,
+            endingQuantity: controlGroup.creatures.length - 1,
+            koSquadCount: 1,
+            koSquadQuantity: 0,
+            koSquadFaction: controlGroup.faction(),
+        };
+
+        for (let key in expected) {
+            if (expected[key] !== summary[key]) {
+                throw new Error(
+                    `Saw (${key}: ${summary[key]}), but expected ${expected[key]}. \n  Summary: ${Util.stringify(summary)}`
+                );
+            }
+        }
     }
 
     setHTML () {
