@@ -899,29 +899,28 @@ class ScifiWarband {
         const x = squad.coord.x;
         const y = squad.coord.y;
         let image;
-        let quantityString;
+        let lowerLeftString;
 
         if (squad.isKO()) {
             image = this.images.sand;
-            quantityString = 'KO';
+            // LATER could display KO squads as a empty square, if that seems visually tidier.
+            lowerLeftString = 'KO';
         }
         else {
             image = this.images[squad.imageName()];
-            quantityString = String(
-                Math.min(squad.quantity(), 99)
+            lowerLeftString = String(
+                Math.min(squad.quantity(), 9999)
             );
         }
 
         this.drawLoadedImage(image, x, y);
 
-        const WIDTH_PER_DIGIT = 11;
-        const QUANTBOX_HEIGHT = WIDTH_PER_DIGIT * 2;
+        const QUANTBOX_HEIGHT = 22;
         this.canvasCtx.fillStyle = 'lightgrey';
 
         const left = this.cornerOfSquare(x);
         const top = this.cornerOfSquare(y + 1) - QUANTBOX_HEIGHT;
-        const width = quantityString.length * WIDTH_PER_DIGIT;
-        // TODO this.canvasCtx.measureText(quantityString).width + 4;
+        const width = this.canvasCtx.measureText(lowerLeftString).width + 4;
         const height = QUANTBOX_HEIGHT;
 
         this.canvasCtx.fillRect(left, top, width, height);
@@ -932,7 +931,7 @@ class ScifiWarband {
         this.canvasCtx.fillStyle = 'green';
 
         this.canvasCtx.fillText(
-            quantityString,
+            lowerLeftString,
             this.cornerOfSquare(x) + 1,
             this.cornerOfSquare(y + 1) - 7,
         );
