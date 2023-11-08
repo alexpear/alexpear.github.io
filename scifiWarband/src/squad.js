@@ -22,7 +22,7 @@ class Squad {
 
         // Note that this is how you create a homogenous squad from a template. LATER, might often have heterogenous squads coming from customization choices or from a save file.
         for (let i = 1; i <= this.template.quantity; i++) {
-            const cr = new Creature(this.template.creature); // todo translate Creature.Grunt string 
+            const cr = new Creature(this.template.creature);
             this.creatures.push(cr);
             cr.squad = this;
         }
@@ -85,7 +85,7 @@ class Squad {
     }
 
     // unit: squares
-    // TODO - decide whether to use squares as unit for codex stats (meaning i cant change meters per square) or express in meters.
+    // LATER - decide whether to use squares as unit for codex stats (meaning i cant change meters per square) or express in meters.
     distanceTo (otherSquad) {
         return this.coord.distanceTo(otherSquad.coord);
     }

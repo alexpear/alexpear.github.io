@@ -343,7 +343,6 @@ class ScifiWarband {
         let bestCoord = candidates[0];
         let bestRating = -Infinity;
 
-        // TODO bug - squad keeps moving further away from nearest foe despite holding a SMG with preferred range 1.
         for (let candidate of candidates) {
             const rating = this.destinationRating(candidate, curSquad);
             if (rating > bestRating) {
@@ -692,7 +691,6 @@ class ScifiWarband {
     tidyKOs (damagedSquad, koCount) {
         if (koCount === 0) { return; }
 
-        // TODO sometimes logs say damagedSquad is <empty Squad> - make sure situation is okay.
         // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) top. - toJsonStr()=${damagedSquad.toJsonStr()}`);
 
         const koCreatures = damagedSquad.creatures.filter(cr => cr.isKO());
@@ -722,8 +720,6 @@ class ScifiWarband {
         if (damagedSquad.creatures.length === 0) {
             this.things = this.things.filter(th => th.creatures.length >= 1);
         }
-
-        // TODO bug - sometimes at encounter end, the total number of KO creatures is too small. Like some KO squads are missing. Also i believe i saw an active squad vanish and not be replaced by a KO squad.
 
         const koCreaturesArrayStr = koCreatures.map(cr => cr.toJsonStr()).join(', ');
         // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) bottom. - damagedSquad.toJsonStr()=${damagedSquad.toJsonStr()} \n koSquad.toJsonStr()=${koSquad.toJsonStr()}, local var koCreatures=[${koCreaturesArrayStr}]`);
@@ -973,7 +969,6 @@ class ScifiWarband {
 
     drawAttack (squad, target, color) {
         this.drawAttackXY(
-            // TODO bug seen where .coord is undefined
             squad.coord.x,
             squad.coord.y,
             target.coord.x,

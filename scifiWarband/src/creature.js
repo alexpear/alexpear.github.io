@@ -155,7 +155,6 @@ class Creature {
         const events = [];
 
         for (let shot = 1; shot <= Math.ceil(weaponTemplate.rof || 1); shot++) {
-            //    static attack (t, attackingCreature, target, weaponTemplate, attackOutcome, shieldsTo, statusChanges) {
             const event = Event.attack(this, otherSquad, weaponTemplate);
             events.push(event);
 
@@ -185,7 +184,6 @@ class Creature {
         let damage = weaponTemplate.damage;
 
         if (this.shields) {
-            // TODO decide whether to get t by passing, by a static variable, or set it later.
             this.cooldownEnds = Event.t + (this.template.shieldDelay || 2);
 
             if (weaponTemplate.attackType === Creature.ATTACK_TYPE.Plasma) {
@@ -269,21 +267,6 @@ class Creature {
         return cr;
     }
 }
-
-// TODO move this and Squad.TEMPLATES to a WarbandTemplates.js file
-// TODO restructure - WarbandTemplates.UNSC.Creature.Marine
-// Creature.TEMPLATES = {
-//     Marine: {
-//         size: 2,
-//         speed: 1, 
-//         durability: 10,
-//         accuracy: 1, // Later finalize how this calc works.
-//         resistance: {},
-//         items: [Item.TEMPLATES.UNSC.Weapon.SMG]
-//     },
-//     // Motive for accuracy stat - Spartans better with firearms than Grunts, also makes takeUnshieldedDamage() status effects simpler.
-//     // LATER How does damage work for: Scorpion, Scarab, UNSC Frigate? Based on status debuffs?
-// };
 
 module.exports = Creature;
 
