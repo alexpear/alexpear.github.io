@@ -2,11 +2,18 @@
 
 //
 
+const ConfigString = require('../data/config.js');
 const Util = require('../../util/util.js');
+const yaml = require('js-yaml');
 
 class Templates {
     static init () {
-        // Util.logDebug(`Templates.init(), top.`);
+        // json: true means duplicate keys in a mapping will override values rather than throwing an error.
+        const Config = yaml.load(ConfigString, { json: true });
+
+        for (let topKey in Config) {
+            Templates[topKey] = Config[topKey];
+        }
 
         for (let universe of Templates.universes()) {
             for (let faction in universe) {
@@ -182,132 +189,6 @@ Templates.General = {
             }
         }
     }
-};
-
-// LATER this obj could be defined in its own file in YAML, to make it easier for nondevs to edit.
-Templates.Halo = {
-    name: 'Halo',
-    UNSC: {
-        Item: {
-            // Weapons
-            SMG: {
-                type: Templates.ATTACK_TYPE.Kinetic,
-                damage: 1,
-                rof: 4,
-                accuracy: 1,
-                preferredRange: 1,
-                color: 'yellow'
-            },
-
-            // Non-Weapons
-
-        },
-        Creature: {
-            // Infantry
-            Marine: {
-                size: 2,
-                speed: 1.5,
-                durability: 10,
-                accuracy: 1,
-                items: ['Item.SMG'],
-            },
-
-            // Vehicles
-
-            // Motive for accuracy stat - Spartans better with firearms than Grunts, also makes takeUnshieldedDamage() status effects simpler.
-        },
-        Squad: {
-            Marine: {
-                name: 'Marine Fireteam',
-                creature: 'Creature.Marine',
-                quantity: 3,
-                image: 'marine.png',
-           },
-
-        },
-    },
-    Covenant: {
-         Item: {
-            // Weapons
-            PlasmaPistol: {
-                name: 'Plasma Pistol',
-                type: Templates.ATTACK_TYPE.Plasma,
-                damage: 2,
-                rof: 2,
-                accuracy: 1.5,
-                preferredRange: 2,
-                color: 'lime',
-            }
-
-            // Non-Weapons
-
-        },
-        Creature: {
-            // Infantry
-            Grunt: {
-                size: 1.5,
-                speed: 1.5,
-                durability: 5,
-                accuracy: 0,
-                items: ['Item.PlasmaPistol'],
-            },
-            
-            // Vehicles
-
-        },
-        Squad: {
-            // Infantry
-            Grunt: {
-                name: 'Grunt Lance',
-                creature: 'Creature.Grunt',
-                quantity: 3,
-                image: 'grunt.png',
-           },
-
-            // Vehicles
-
-        },
-    },
-    Forerunner: {
-        Item: {
-            // Weapons
-
-            // Non-Weapons
-
-        },
-        Creature: {
-            // Infantry
-            
-            // Vehicles
-
-        },
-        Squad: {
-            // Infantry
-            
-            // Vehicles
-
-        },
-    },
-    Flood: {
-        Item: {
-            // Weapons
-
-            // Non-Weapons
-
-        },
-        Creature: {
-            // Infantry
-            
-            // Vehicles
-
-        },
-        Squad: {
-            // Infantry
-            
-            // Vehicles
-
-        },
-    },
 };
 
 module.exports = Templates;
