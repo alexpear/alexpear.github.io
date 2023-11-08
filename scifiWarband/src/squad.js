@@ -269,6 +269,14 @@ class Squad {
         return ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Golf', 'Hotel', 'India', 'Juliet', 'Kilo', 'Lima', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'X-ray', 'Yankee', 'Zulu'];
     }
 
+    static koSquad (coord) {
+        return new Squad(
+            Templates.General.General.Squad.KO,
+            undefined,
+            coord,
+        );
+    }
+
     static example (key, coord) {
         const examples = {
             Marine: {

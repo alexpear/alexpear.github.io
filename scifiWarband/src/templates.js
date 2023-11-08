@@ -172,6 +172,18 @@ Templates.ATTACK_TYPE = {
     Electric: 'Electric',
 };
 
+Templates.General = {
+    General: {
+        Squad: {
+            KO: {
+                name: 'KO Squad',
+                quantity: 0,
+                image: 'sand.jpg',
+            }
+        }
+    }
+};
+
 // LATER this obj could be defined in its own file in YAML, to make it easier for nondevs to edit.
 Templates.Halo = {
     name: 'Halo',
