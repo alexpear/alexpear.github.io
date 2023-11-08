@@ -798,25 +798,20 @@ class ScifiWarband {
 
                 if (things.length === 0) {
                     this.drawLoadedImage(this.images.sand, x, y);
+                    continue;
                 }
-                else {
-                    for (let thing of things) {
-                        if (thing.isKO()) {
-                            if (things.every(th => th.isKO())) {
-                                this.drawSquad(thing);
-                                break;
-                            }
-                        }
-                        else {
-                            this.drawSquad(thing);
-                            break;
-                        }
-                    }
 
-                    if (things.length >= 2) {
-                        Util.logDebug(`Coord ${x}, ${y} contains ${things.length} things, BTW.`);
-                    }
+                const activeThings = things.filter(th => ! th.isKO());
+
+                if (activeThings.length === 0) {
+                    this.drawSquad(things[0]); // Draw any of the KO squads.
+                    continue;
                 }
+                else if (activeThings.length >= 2) {
+                    ScifiWarband.logDebug(`ERROR - Coord ${x}, ${y} contains ${things.length} things, BTW.`);
+                }
+
+                this.drawSquad(activeThings[0]);
             }
         }
     }
