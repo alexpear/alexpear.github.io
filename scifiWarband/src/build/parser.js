@@ -102,21 +102,61 @@ const json2warband = (rowObjs) => {
     ];
 
     const propMap = {
-        faction: ['faction'],
-        type: ['damage type', 'attack type', 'infinite dmg type'],
-        damage: ['damage'],
-        rof: ['shots / sec'],
-        accuracy: ['hit', 'acc 4m'],
-        preferredRange: ['range (m)'],
-        size: ['squares / side', 'size'],
-        speed: ['m/s'],
-        durability: ['sp', 'durability est', 'hp', 'defense'],
-        name: ['name', 'creature', 'attack'],
-        scale: ['scale'],
-        classic: ['cool / classic', 'prevalence / 10'],
-        cost: ['cost'],
-        aoe: ['splash'],
-        source: ['from game'],
+        faction: {
+            synonyms: ['faction'],
+        },
+        type: {
+            synonyms: ['damage type', 'attack type', 'infinite dmg type'],
+        },
+        damage: {
+            synonyms: ['damage'],
+            ratio: 1,
+        },
+        rof: {
+            synonyms: ['shots / sec'],
+            ratio: 0.3,
+        },
+        accuracy: {
+            synonyms: ['hit', 'acc 4m'],
+            ratio: 1,
+        },
+        preferredRange: {
+            synonyms: ['range (m)'],
+            ratio: 1,
+        },
+        size: {
+            synonyms: ['squares / side', 'size'],
+            ratio: 1,
+        },
+        speed: {
+            synonyms: ['m/s'],
+            ratio: 1,
+        },
+        durability: {
+            synonyms: ['sp', 'durability est', 'hp', 'defense'],
+            ratio: 1,
+        },
+        name: {
+            synonyms: ['name', 'creature', 'attack'],
+        },
+        scale: {
+            synonyms: ['scale'],
+        },
+        classic: {
+            synonyms: ['cool / classic', 'prevalence / 10'],
+            ratio: 1,
+        },
+        cost: {
+            synonyms: ['cost'],
+            ratio: 1,
+        },
+        aoe: {
+            synonyms: ['splash'],
+            ratio: 1,
+        },
+        source: {
+            synonyms: ['from game'],
+        },
     };
 
     const warbandObjs = [];
@@ -125,17 +165,23 @@ const json2warband = (rowObjs) => {
         const warbandObj = {};
 
         for (let desiredKey in propMap) {
-            for (let synonymKey of propMap[desiredKey]) {
+            for (let synonymKey of propMap[desiredKey].synonyms) {
+                // Note - i know the acronym in csvValue is crazy.
+                const csvValue = obj[synonymKey];
 
-                // Util.logDebug({
-                //     context: 'Parser.json2warband()',
-                //     desiredKey,
-                //     synonymKey,
-                //     objValue: obj[synonymKey],
-                // });
+                if (Util.legit(csvValue)) {
+                    const asFloat = parseFloat(csvValue);
 
-                if (Util.legit(obj[synonymKey])) {
-                    warbandObj[desiredKey] = obj[synonymKey];
+                    if (Util.exists(asFloat)) {
+                        warbandObj[desiredKey] = Math.round(
+                            asFloat * (propMap[desiredKey].ratio || 1),
+                            1
+                        );
+                    }
+                    else {
+                        warbandObj[desiredKey] = csvValue;
+                    }
+
                     break;
                 }
             }
@@ -184,9 +230,10 @@ const organize = (fileObjs) => {
             }
 
             let componentType;
-            if (obj.durability) { componentType = 'Creature'; }
-            else if (obj.type)  { componentType = 'Item'; }
-            else                { componentType = 'Squad'; }
+            if (obj.scale === 'Battalion') { componentType = 'Squad'; }
+            else if (obj.durability)       { componentType = 'Creature'; }
+            else if (obj.type)             { componentType = 'Item'; }
+            else                           { componentType = 'Squad'; }
 
             halo[faction][componentType][obj.name || Util.newId(7)] = obj;
             delete obj.name;
