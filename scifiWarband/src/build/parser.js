@@ -35,7 +35,7 @@ const logConvertedCSVs = () => {
 
     const organized = organize(warbandDatasets);
 
-    const ymlString = yaml.dump(organized);
+    const ymlString = yaml.dump(organized, { indent: 4 });
     console.log(ymlString);
 };
 
@@ -67,7 +67,10 @@ const csv2json = (csvFileString) => {
             const value = vals[col];
             if (! Util.legit(value) || value === '\r') { continue; }
 
-            obj[keys[col]] = value;
+            // Note that we standardize to lower case.
+            const key = keys[col].toLowerCase();
+
+            obj[key] = value;
         }
     }
 
@@ -108,9 +111,10 @@ const json2warband = (rowObjs) => {
         size: ['squares / side', 'size'],
         speed: ['m/s'],
         durability: ['sp', 'durability est', 'hp', 'defense'],
-        name: ['name'],
+        name: ['name', 'creature', 'attack'],
         scale: ['scale'],
         classic: ['cool / classic', 'prevalence / 10'],
+        cost: ['cost'],
         aoe: ['splash'],
         source: ['from game'],
     };
@@ -120,35 +124,77 @@ const json2warband = (rowObjs) => {
     for (let obj of rowObjs) {
         const warbandObj = {};
 
-        for (let key in obj) {
-            let useKey = true;
+        for (let desiredKey in propMap) {
+            for (let synonymKey of propMap[desiredKey]) {
 
-            for (let prefix of ignoredPrefices) {
-                if (key.startsWith(prefix)) {
-                    useKey = false;
+                // Util.logDebug({
+                //     context: 'Parser.json2warband()',
+                //     desiredKey,
+                //     synonymKey,
+                //     objValue: obj[synonymKey],
+                // });
+
+                if (Util.legit(obj[synonymKey])) {
+                    warbandObj[desiredKey] = obj[synonymKey];
                     break;
                 }
             }
-
-            if (! useKey) { continue; }
-
-            // const warbandKey = key[0].toLowerCase() + key.slice(1);
-            const warbandKey = key.toLowerCase();
-
-            warbandObj[warbandKey] = obj[key];
-            // LATER translate traits into warband terms instead of just copying.
         }
 
-        warbandObjs.push(warbandObj);
+        // for (let key in obj) {
+        //     let useKey = true;
+
+        //     for (let prefix of ignoredPrefices) {
+        //         if (key.startsWith(prefix)) {
+        //             useKey = false;
+        //             break;
+        //         }
+        //     }
+
+        //     if (! useKey) { continue; }
+
+        //     const warbandKey = key.toLowerCase();
+
+        //     warbandObj[warbandKey] = obj[key];
+        //     // LATER translate traits into warband terms instead of just copying.
+        // }
+        if (Object.keys(warbandObj).length >= 1) {
+            warbandObjs.push(warbandObj);
+        }
     }
 
     return warbandObjs;
 };
 
 const organize = (fileObjs) => {
-    return fileObjs; // LATER implement
+    const halo = {};
 
+    for (let file of fileObjs) {
+        file.sort((a,b) => a.name.localeCompare(b.name));
 
+        for (let obj of file) {
+            const faction = obj.faction || 'Unsorted';
+
+            if (! halo[faction]) {
+                halo[faction] = {
+                    Item: {},
+                    Creature: {},
+                    Squad: {},
+                };
+            }
+
+            let componentType;
+            if (obj.durability) { componentType = 'Creature'; }
+            else if (obj.type)  { componentType = 'Item'; }
+            else                { componentType = 'Squad'; }
+
+            halo[faction][componentType][obj.name || Util.newId(7)] = obj;
+            delete obj.name;
+            delete obj.faction;
+        }
+    }
+
+    return halo;
 };
 
 /*
