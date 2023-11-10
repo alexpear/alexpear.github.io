@@ -254,12 +254,13 @@ Halo:
                 cost: 6
                 aoe: 1
             SMG:
-                type: Pierce
-                tags: infantry
+                type: Kinetic
                 damage: 1
-                rof: 5
-                accuracy: 2
+                rof: 4
+                accuracy: 1
                 preferredRange: 1
+                color: yellow
+                tags: infantry
                 classic: 9
                 cost: 6
                 aoe: 1
@@ -307,13 +308,6 @@ Halo:
                 rof: 0
                 classic: 2
                 aoe: 10
-            SMG:
-                type: Kinetic
-                damage: 1
-                rof: 4
-                accuracy: 1
-                preferredRange: 1
-                color: yellow
 
             NeedleChaingun:
                 type: Pierce
@@ -360,7 +354,7 @@ Halo:
                 accuracy: 0
                 preferredRange: 0
                 size: 8
-                durability: 23
+                durability: 200
                 classic: 6
             Falcon:
                 type: Bullet
@@ -378,7 +372,8 @@ Halo:
                 accuracy: 2
                 preferredRange: 7
                 size: 4
-                durability: 20
+                durability: 50
+                speed: 6
                 classic: 3
             Longsword:
                 type: Blast
@@ -629,8 +624,9 @@ Halo:
                 durability: 20
                 classic: 8
                 cost: 1
-            Spartan-III AR:
+            Spartan-III:
                 type: Bullet
+                gear: AssaultRifle
                 scale: Individual
                 damage: 4
                 accuracy: 1
@@ -645,8 +641,11 @@ Halo:
                 accuracy: 3
                 preferredRange: 833
                 size: 6
-                durability: 20
-                classic: 7
+                tags: Ground
+                speed: 0
+                durability: 21
+                classic: 4
+                cost: 66
             Warthog:
                 type: Bullet
                 scale: Individual
@@ -666,26 +665,12 @@ Halo:
                 size: 4
                 durability: 20
                 classic: 6
-
-            Elephant:
-                source: Halo 3
-                speed: 1
-                durability: 286
-            Hornet:
-                speed: 6
-                durability: 50
             Mammoth:
                 source: Halo 5
                 speed: 2
                 durability: 1429
             MarathonClassCruiser:
                 durability: 12857
-            Marine:
-                source: Halo 1
-                gear: BR
-                size: 2
-                speed: 2
-                durability: 10
             ODST:
                 source: Halo 2
                 gear: Silenced SMG
@@ -967,15 +952,6 @@ Halo:
                 durability: 21
                 classic: 4
                 cost: 62
-            TacticalMAC:
-                tags: Ground
-                damage: 23
-                preferredRange: 50
-                size: 6
-                speed: 0
-                durability: 21
-                classic: 4
-                cost: 66
             Marine:
                 size: 2
                 speed: 1.5
@@ -983,6 +959,7 @@ Halo:
                 accuracy: 1
                 items:
                     - Item.SMG
+                source: Halo 1
 
             UNSC captured Scarab:
                 type: Blast
@@ -1364,12 +1341,7 @@ Halo:
             Ghost:
                 speed: 6
                 durability: 50
-            Grunt:
-                speed: 1
-                durability: 4
-            Hunter:
-                speed: 1
-                durability: 64
+
             Jackal no shield:
                 speed: 2
                 durability: 9
@@ -1388,9 +1360,6 @@ Halo:
             Stealth Elite:
                 speed: 3
                 durability: 10
-            Wraith:
-                speed: 3
-                durability: 357
             AA Wraith:
                 tags: Ground
                 damage: 13
@@ -1526,7 +1495,7 @@ Halo:
                 preferredRange: 5
                 size: 2
                 speed: 2
-                durability: 23
+                durability: 64
                 classic: 8
                 cost: 37
             Jumppack Brutes carbine:
@@ -1613,13 +1582,16 @@ Halo:
             Spirit:
                 tags: Air
                 transport: yes
-                damage: 4
                 preferredRange: 5
                 size: 6
                 speed: 12
-                durability: 23
                 classic: 7
                 cost: 38
+                type: Blast
+                scale: Individual
+                damage: 8
+                accuracy: 1
+                durability: 24
             Stealth Elites plasma rifle:
                 tags: Ground
                 group: Elite
@@ -1741,6 +1713,7 @@ Halo:
                 size: 4
                 durability: 21
                 classic: 8
+                speed: 1
                 cost: 100
             Jackal focus rifle:
                 type: Bullet
@@ -1781,16 +1754,6 @@ Halo:
                 classic: 8
                 cost: 10
 
-            Spirit:
-                type: Blast
-                scale: Individual
-                damage: 8
-                accuracy: 1
-                preferredRange: 6
-                size: 6
-                durability: 24
-                classic: 5
-
             Wraith:
                 type: Blast
                 scale: Individual
@@ -1798,9 +1761,10 @@ Halo:
                 accuracy: 3
                 preferredRange: 33
                 size: 6
-                durability: 25
+                durability: 300
                 classic: 8
                 cost: 1
+                speed: 3
 
 
             Skirmisher PP:
@@ -1972,13 +1936,6 @@ Halo:
             Phaeton:
                 speed: 5
                 durability: 200
-            Sentinel:
-                source: Reach
-                speed: 4
-                durability: 17
-            Sentinel Enforcer:
-                speed: 1
-                durability: 57
             Soldier:
                 source: Halo 4
                 size: 2
@@ -2097,9 +2054,11 @@ Halo:
                 accuracy: 1
                 preferredRange: 5
                 size: 2
-                durability: 20
+                durability: 17
                 classic: 9
                 cost: 20
+                source: Reach
+                speed: 4
             Sentinel Enforcer:
                 type: Blast
                 scale: Individual
@@ -2107,8 +2066,9 @@ Halo:
                 accuracy: 3
                 preferredRange: 8
                 size: 4
-                durability: 25
+                durability: 55
                 classic: 6
+                speed: 1.5
             Sentinel division:
                 scale: Battalion
                 damage: 8
@@ -2117,7 +2077,7 @@ Halo:
                 size: 2
                 durability: 20
                 classic: 7
-        Squad: {}
+        # Squad:
 
     Flood:
         Item:
@@ -2267,4 +2227,4 @@ Halo:
                 classic: 8
                 cost: 1
 
-        Squad: {}
+        # Squad: 
