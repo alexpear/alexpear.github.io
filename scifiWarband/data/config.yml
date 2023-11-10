@@ -6,7 +6,7 @@ Halo:
 
     UNSC:
         Item:
-            Assault Rifle:
+            AssaultRifle:
                 type: Pierce
                 source: Reach
                 tags: infantry
@@ -17,7 +17,7 @@ Halo:
                 classic: 9
                 cost: 7
                 aoe: 1
-            Battle Rifle:
+            BattleRifle:
                 type: Pierce
                 tags: infantry
                 damage: 1
@@ -74,7 +74,7 @@ Halo:
                 preferredRange: 5
                 classic: 9
                 aoe: 3
-            Gauss Cannon:
+            GaussCannon:
                 type: Impact
                 tags: turret
                 damage: 33
@@ -82,7 +82,7 @@ Halo:
                 classic: 4
                 cost: 13
                 aoe: 1
-            Grenade Launcher:
+            GrenadeLauncher:
                 type: Impact
                 source: Reach
                 tags: infantry
@@ -91,20 +91,20 @@ Halo:
                 classic: 6
                 cost: 11
                 aoe: 3
-            Hannibal Cannon:
+            HannibalCannon:
                 type: Fire
                 gear: Hannibal Scorpion
                 damage: 67
                 rof: 0
                 preferredRange: 50
                 aoe: 5
-            Hannibal Pulse Lasers:
+            HannibalPulseLasers:
                 type: Fire
                 gear: Hannibal Wasp
                 damage: 4
                 rof: 1
                 aoe: 1
-            Heavy Pistol:
+            HeavyPistol:
                 type: Pierce
                 source: Halo 1
                 tags: infantry
@@ -115,7 +115,7 @@ Halo:
                 classic: 4
                 cost: 8
                 aoe: 1
-            Heavy SAW:
+            HeavySAW:
                 type: Impact
                 source: Halo 5
                 tags: biginfantry
@@ -132,7 +132,7 @@ Halo:
                 rof: 1
                 cost: 10
                 aoe: 1
-            Light Pistol:
+            LightPistol:
                 type: Pierce
                 source: Halo 2
                 tags: infantry
@@ -143,12 +143,12 @@ Halo:
                 classic: 9
                 cost: 4
                 aoe: 1
-            Marathon MAC:
+            MarathonMAC:
                 type: Impact
                 damage: 667
                 rof: 0
                 aoe: 100
-            Marine CQC:
+            MarineCQC:
                 type: Impact
                 tags: natural
                 damage: 0
@@ -157,7 +157,7 @@ Halo:
                 classic: 10
                 cost: 0
                 aoe: 1
-            Missile Pod:
+            MissilePod:
                 type: Impact
                 tags: turret
                 damage: 7
@@ -182,7 +182,7 @@ Halo:
                 classic: 4
                 cost: 10
                 aoe: 1
-            Rocket Launcher:
+            RocketLauncher:
                 type: Impact
                 source: Halo 2
                 tags: infantry
@@ -202,7 +202,7 @@ Halo:
                 classic: 5
                 cost: 10
                 aoe: 1
-            Scoped Pistol:
+            ScopedPistol:
                 type: Pierce
                 source: Reach
                 tags: infantry
@@ -213,14 +213,14 @@ Halo:
                 classic: 10
                 cost: 6
                 aoe: 1
-            Scorpion Cannon:
+            ScorpionCannon:
                 type: Impact
                 damage: 47
                 rof: 0
                 preferredRange: 150
                 classic: 6
                 aoe: 4
-            Selene's Lance:
+            Selene'sLance:
                 type: Fire
                 tags: infantry
                 damage: 53
@@ -237,7 +237,7 @@ Halo:
                 classic: 6
                 cost: 8
                 aoe: 1
-            Silenced Pistol:
+            SilencedPistol:
                 type: Pierce
                 tags: infantry
                 damage: 1
@@ -245,7 +245,7 @@ Halo:
                 classic: 2
                 cost: 6
                 aoe: 1
-            Silenced SMG:
+            SilencedSMG:
                 type: Pierce
                 tags: infantry
                 damage: 1
@@ -263,7 +263,7 @@ Halo:
                 classic: 9
                 cost: 6
                 aoe: 1
-            Sniper Rifle:
+            SniperRifle:
                 type: Pierce
                 tags: infantry
                 gear: Speed includes reloading and a little aiming
@@ -274,7 +274,7 @@ Halo:
                 classic: 6
                 cost: 13
                 aoe: 1
-            Spartan CQC:
+            SpartanCQC:
                 type: Impact
                 tags: natural
                 damage: 5
@@ -283,7 +283,7 @@ Halo:
                 classic: 1
                 cost: 0
                 aoe: 1
-            Spartan Laser:
+            SpartanLaser:
                 type: Fire
                 tags: infantry
                 damage: 27
@@ -291,7 +291,7 @@ Halo:
                 classic: 2
                 cost: 13
                 aoe: 1
-            Sticky Grenade Launcher:
+            StickyGrenadeLauncher:
                 type: Impact
                 source: Halo 4
                 tags: infantry
@@ -315,7 +315,7 @@ Halo:
                 preferredRange: 1
                 color: yellow
 
-            Needle Chaingun:
+            NeedleChaingun:
                 type: Pierce
                 tags: turret
                 gear: Needle Warthog
@@ -324,7 +324,7 @@ Halo:
                 classic: 1
                 cost: 11
                 aoe: 1
-            Vespin Rocket Turret:
+            VespinRocketTurret:
                 type: Impact
                 tags: turret
                 gear: Vespin Warthog
@@ -334,7 +334,7 @@ Halo:
                 cost: 12
                 aoe: 1
 
-            Heavy Chaingun:
+            HeavyChaingun:
                 type: Impact
                 tags: turret
                 gear: ONI Warthog
@@ -344,7 +344,7 @@ Halo:
                 cost: 11
                 aoe: 1
 
-            Hannibal Ion Launcher:
+            HannibalIonLauncher:
                 type: Fire
                 gear: Hannibal Wasp
                 damage: 10
@@ -398,7 +398,7 @@ Halo:
                 size: 4
                 durability: 25
                 classic: 6
-            Marine AR:
+            MarineAR:
                 type: Bullet
                 scale: Individual
                 damage: 8
@@ -408,7 +408,7 @@ Halo:
                 durability: 16
                 classic: 10
                 cost: 10
-            Marine BR:
+            MarineBR:
                 type: Bullet
                 scale: Individual
                 damage: 4
@@ -418,7 +418,7 @@ Halo:
                 durability: 16
                 classic: 8
                 cost: 20
-            Marine DMR:
+            MarineDMR:
                 type: Bullet
                 scale: Individual
                 damage: 4
@@ -428,7 +428,7 @@ Halo:
                 durability: 16
                 classic: 7
                 cost: 22
-            Marine frags:
+            MarineFrags:
                 type: Blast
                 scale: Individual
                 damage: 12
@@ -437,7 +437,7 @@ Halo:
                 size: 2
                 durability: 16
                 classic: 3
-            Marine Grenade Launcher:
+            MarineGrenadeLauncher:
                 type: Blast
                 scale: Individual
                 damage: 16
@@ -446,7 +446,7 @@ Halo:
                 size: 2
                 durability: 16
                 classic: 5
-            Marine Gungoose:
+            MarineGungoose:
                 type: Blast
                 scale: Individual
                 damage: 12
@@ -455,7 +455,7 @@ Halo:
                 size: 2
                 durability: 20
                 classic: 4
-            Marine Hydra:
+            MarineHydra:
                 type: Blast
                 scale: Individual
                 damage: 12
@@ -464,7 +464,7 @@ Halo:
                 size: 2
                 durability: 16
                 classic: 6
-            Marine Laser:
+            MarineLaser:
                 type: Fire
                 scale: Individual
                 damage: 12
@@ -473,7 +473,7 @@ Halo:
                 size: 2
                 durability: 16
                 classic: 6
-            Marine Rocket Launcher:
+            MarineRocketLauncher:
                 type: Blast
                 scale: Individual
                 damage: 20
@@ -482,7 +482,7 @@ Halo:
                 size: 2
                 durability: 16
                 classic: 6
-            Marine Shotgun:
+            MarineShotgun:
                 type: Bullet
                 scale: Individual
                 damage: 8
@@ -491,7 +491,7 @@ Halo:
                 size: 2
                 durability: 16
                 classic: 8
-            Marine SMG:
+            MarineSMG:
                 type: Bullet
                 scale: Individual
                 damage: 8
@@ -501,7 +501,7 @@ Halo:
                 durability: 16
                 classic: 6
                 cost: 9
-            Marine Sniper:
+            MarineSniper:
                 type: Bullet
                 scale: Individual
                 damage: 12
@@ -510,7 +510,7 @@ Halo:
                 size: 2
                 durability: 16
                 classic: 8
-            Marines Mongoose SMG:
+            MarinesMongooseSMG:
                 type: Bullet
                 scale: Individual
                 damage: 8
@@ -519,7 +519,7 @@ Halo:
                 size: 2
                 durability: 18
                 classic: 5
-            Missile Bunker:
+            MissileBunker:
                 type: Blast
                 scale: Individual
                 damage: 40
@@ -574,7 +574,7 @@ Halo:
                 size: 2
                 durability: 19
                 classic: 4
-            Officer Heavy Pistol:
+            OfficerHeavyPistol:
                 type: Bullet
                 scale: Individual
                 damage: 8
@@ -583,7 +583,7 @@ Halo:
                 size: 2
                 durability: 10
                 classic: 7
-            Officer Light Pistol:
+            OfficerLightPistol:
                 type: Bullet
                 scale: Individual
                 damage: 4
@@ -592,7 +592,7 @@ Halo:
                 size: 2
                 durability: 10
                 classic: 3
-            Officer Magnum:
+            OfficerMagnum:
                 type: Bullet
                 scale: Individual
                 damage: 4
@@ -601,7 +601,7 @@ Halo:
                 size: 2
                 durability: 10
                 classic: 3
-            Officer unarmed:
+            Officerunarmed:
                 type: Crush
                 scale: Individual
                 damage: 4
@@ -638,7 +638,7 @@ Halo:
                 size: 2
                 durability: 21
                 classic: 7
-            Tactical MAC:
+            TacticalMAC:
                 type: Blast
                 scale: Individual
                 damage: 40
@@ -678,7 +678,7 @@ Halo:
                 source: Halo 5
                 speed: 2
                 durability: 1429
-            Marathon-class Cruiser:
+            MarathonClassCruiser:
                 durability: 12857
             Marine:
                 source: Halo 1
@@ -698,16 +698,16 @@ Halo:
                 size: 2
                 speed: 2
                 durability: 2
-            Spartan armored:
+            SpartanArmored:
                 source: Halo 1
                 gear: SAW
                 size: 3
                 speed: 2
                 durability: 26
-            Spartan SPI armor:
+            SpartanSPI:
                 speed: 2
                 durability: 13
-            Spartan unarmored:
+            SpartanUnarmored:
                 size: 3
                 speed: 2
                 durability: 11
@@ -730,7 +730,7 @@ Halo:
                 durability: 26
                 classic: 2
                 cost: 18
-            Crew sidekick:
+            CrewSidekick:
                 tags: Ground
                 gear: Sidekick
                 damage: 2
@@ -740,7 +740,7 @@ Halo:
                 durability: 11
                 classic: 5
                 cost: 13
-            Falcon chaingun:
+            FalconChaingun:
                 tags: Air
                 transport: yes
                 damage: 10
@@ -750,7 +750,7 @@ Halo:
                 durability: 21
                 classic: 7
                 cost: 34
-            Falcon RPG:
+            FalconRPG:
                 tags: Air
                 transport: yes
                 preferredRange: 5
@@ -759,7 +759,7 @@ Halo:
                 durability: 21
                 classic: 1
                 cost: 29
-            Gauss Hog:
+            GaussHog:
                 tags: Ground
                 preferredRange: 5
                 size: 4
@@ -775,14 +775,14 @@ Halo:
                 durability: 14
                 classic: 4
                 cost: 20
-            Hannibal Scorpion:
+            HannibalScorpion:
                 tags: Ground
                 size: 4
                 speed: 2
                 durability: 23
                 classic: 3
                 cost: 17
-            Hannibal Wasp:
+            HannibalWasp:
                 tags: Air
                 preferredRange: 5
                 size: 4
@@ -790,7 +790,7 @@ Halo:
                 durability: 21
                 classic: 3
                 cost: 28
-            Helljumpers DMR jetpack:
+            HelljumpersDMR jetpack:
                 tags: Air
                 group: ODST
                 damage: 10
@@ -810,7 +810,7 @@ Halo:
                 durability: 21
                 classic: 6
                 cost: 38
-            Mammoth MAC:
+            MammothMAC:
                 tags: Ground
                 transport: yes
                 damage: 23
@@ -820,7 +820,7 @@ Halo:
                 durability: 24
                 classic: 5
                 cost: 63
-            Marines assault rifle:
+            MarinesAR:
                 tags: Ground
                 group: Marine
                 damage: 6
@@ -830,7 +830,7 @@ Halo:
                 durability: 14
                 classic: 10
                 cost: 19
-            Marines battle rifle:
+            MarinesBR:
                 tags: Ground
                 group: Marine
                 damage: 10
@@ -840,7 +840,7 @@ Halo:
                 durability: 12
                 classic: 5
                 cost: 22
-            Marines hydra:
+            MarinesHydra:
                 tags: Ground
                 group: 0
                 gear: Hydra
@@ -870,7 +870,7 @@ Halo:
                 durability: 12
                 classic: 4
                 cost: 14
-            Marines SMG:
+            MarinesSMG:
                 tags: Ground
                 group: Marine
                 damage: 4
@@ -890,7 +890,7 @@ Halo:
                 durability: 14
                 classic: 5
                 cost: 50
-            ODSTs DMR:
+            ODSTsDMR:
                 tags: Ground
                 group: ODST
                 damage: 6
@@ -919,7 +919,7 @@ Halo:
                 durability: 21
                 classic: 4
                 cost: 23
-            Rocket Hog:
+            RocketHog:
                 tags: Ground
                 preferredRange: 5
                 size: 4
@@ -927,7 +927,7 @@ Halo:
                 durability: 23
                 classic: 4
                 cost: 27
-            Spartan battle rifle:
+            SpartanBR:
                 tags: Ground
                 group: Spartan
                 damage: 8
@@ -967,7 +967,7 @@ Halo:
                 durability: 21
                 classic: 4
                 cost: 62
-            Tactical MAC:
+            TacticalMAC:
                 tags: Ground
                 damage: 23
                 preferredRange: 50
