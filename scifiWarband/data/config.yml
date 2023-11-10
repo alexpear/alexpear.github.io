@@ -6,6 +6,307 @@ Halo:
 
     UNSC:
         Item:
+            Assault Rifle:
+                type: Pierce
+                source: Reach
+                tags: infantry
+                damage: 1
+                rof: 5
+                accuracy: 2
+                preferredRange: 2
+                classic: 9
+                cost: 7
+                aoe: 1
+            Battle Rifle:
+                type: Pierce
+                tags: infantry
+                damage: 1
+                rof: 2
+                accuracy: 4
+                preferredRange: 5
+                classic: 8
+                cost: 8
+                aoe: 1
+            Bulldog:
+                type: Kinetic
+            Chaingun:
+                type: Pierce
+                tags: turret
+                damage: 2
+                rof: 2
+                accuracy: 3
+                preferredRange: 3
+                classic: 8
+                cost: 10
+                aoe: 1
+            Commando:
+                type: Kinetic
+            DMR:
+                type: Pierce
+                tags: infantry
+                damage: 3
+                rof: 1
+                accuracy: 27
+                preferredRange: 15
+                classic: 7
+                cost: 10
+                aoe: 1
+            Endgame:
+                type: Fire
+                tags: infantry
+                damage: 20
+                rof: 0
+                cost: 13
+                aoe: 1
+            Flamethrower:
+                type: Fire
+                tags: infantry
+                damage: 6
+                rof: 0
+                classic: 4
+                cost: 8
+                aoe: 2
+            Frag Grenade:
+                type: Impact
+                tags: infantry
+                damage: 10
+                accuracy: 1
+                preferredRange: 5
+                classic: 9
+                aoe: 3
+            Gauss Cannon:
+                type: Impact
+                tags: turret
+                damage: 33
+                rof: 0
+                classic: 4
+                cost: 13
+                aoe: 1
+            Grenade Launcher:
+                type: Impact
+                source: Reach
+                tags: infantry
+                damage: 13
+                rof: 0
+                classic: 6
+                cost: 11
+                aoe: 3
+            Hannibal Cannon:
+                type: Fire
+                gear: Hannibal Scorpion
+                damage: 67
+                rof: 0
+                preferredRange: 50
+                aoe: 5
+            Hannibal Pulse Lasers:
+                type: Fire
+                gear: Hannibal Wasp
+                damage: 4
+                rof: 1
+                aoe: 1
+            Heavy Pistol:
+                type: Pierce
+                source: Halo 1
+                tags: infantry
+                damage: 4
+                rof: 1
+                accuracy: 4
+                preferredRange: 5
+                classic: 4
+                cost: 8
+                aoe: 1
+            Heavy SAW:
+                type: Impact
+                source: Halo 5
+                tags: biginfantry
+                gear: The Answer
+                damage: 5
+                rof: 3
+                classic: 1
+                cost: 13
+                aoe: 1
+            Hydra:
+                type: Impact
+                tags: infantry
+                damage: 4
+                rof: 1
+                cost: 10
+                aoe: 1
+            Light Pistol:
+                type: Pierce
+                source: Halo 2
+                tags: infantry
+                damage: 1
+                rof: 2
+                accuracy: 0
+                preferredRange: 1
+                classic: 9
+                cost: 4
+                aoe: 1
+            Marathon MAC:
+                type: Impact
+                damage: 667
+                rof: 0
+                aoe: 100
+            Marine CQC:
+                type: Impact
+                tags: natural
+                damage: 0
+                rof: 0
+                preferredRange: 0
+                classic: 10
+                cost: 0
+                aoe: 1
+            Missile Pod:
+                type: Impact
+                tags: turret
+                damage: 7
+                rof: 0
+                classic: 3
+                cost: 13
+                aoe: 2
+            Pistol:
+                type: Pierce
+                source: Halo 3
+                tags: infantry
+                damage: 2
+                rof: 1
+                classic: 10
+                cost: 5
+                aoe: 1
+            Railgun:
+                type: Pierce
+                tags: infantry
+                damage: 13
+                rof: 0
+                classic: 4
+                cost: 10
+                aoe: 1
+            Rocket Launcher:
+                type: Impact
+                source: Halo 2
+                tags: infantry
+                damage: 27
+                rof: 0
+                preferredRange: 8
+                classic: 6
+                cost: 10
+                aoe: 3
+            SAW:
+                type: Pierce
+                tags: biginfantry
+                damage: 3
+                rof: 3
+                accuracy: 3
+                preferredRange: 3
+                classic: 5
+                cost: 10
+                aoe: 1
+            Scoped Pistol:
+                type: Pierce
+                source: Reach
+                tags: infantry
+                damage: 3
+                rof: 1
+                accuracy: 3
+                preferredRange: 4
+                classic: 10
+                cost: 6
+                aoe: 1
+            Scorpion Cannon:
+                type: Impact
+                damage: 47
+                rof: 0
+                preferredRange: 150
+                classic: 6
+                aoe: 4
+            Selene's Lance:
+                type: Fire
+                tags: infantry
+                damage: 53
+                rof: 0
+                cost: 13
+                aoe: 2
+            Shotgun:
+                type: Pierce
+                tags: infantry
+                damage: 6
+                rof: 0
+                accuracy: 140
+                preferredRange: 0
+                classic: 6
+                cost: 8
+                aoe: 1
+            Silenced Pistol:
+                type: Pierce
+                tags: infantry
+                damage: 1
+                rof: 2
+                classic: 2
+                cost: 6
+                aoe: 1
+            Silenced SMG:
+                type: Pierce
+                tags: infantry
+                damage: 1
+                rof: 5
+                classic: 2
+                cost: 6
+                aoe: 1
+            SMG:
+                type: Pierce
+                tags: infantry
+                damage: 1
+                rof: 5
+                accuracy: 2
+                preferredRange: 1
+                classic: 9
+                cost: 6
+                aoe: 1
+            Sniper Rifle:
+                type: Pierce
+                tags: infantry
+                gear: Speed includes reloading and a little aiming
+                damage: 10
+                rof: 0
+                accuracy: 30
+                preferredRange: 40
+                classic: 6
+                cost: 13
+                aoe: 1
+            Spartan CQC:
+                type: Impact
+                tags: natural
+                damage: 5
+                rof: 0
+                preferredRange: 0
+                classic: 1
+                cost: 0
+                aoe: 1
+            Spartan Laser:
+                type: Fire
+                tags: infantry
+                damage: 27
+                rof: 0
+                classic: 2
+                cost: 13
+                aoe: 1
+            Sticky Grenade Launcher:
+                type: Impact
+                source: Halo 4
+                tags: infantry
+                gear: Sticky Detonator
+                damage: 17
+                rof: 0
+                classic: 3
+                cost: 11
+                aoe: 2
+            Tactical MAC Cannon:
+                type: Impact
+                damage: 200
+                rof: 0
+                classic: 2
+                aoe: 10
             SMG:
                 type: Kinetic
                 damage: 1
@@ -14,7 +315,667 @@ Halo:
                 preferredRange: 1
                 color: yellow
 
+            Needle Chaingun:
+                type: Pierce
+                tags: turret
+                gear: Needle Warthog
+                damage: 2
+                rof: 2
+                classic: 1
+                cost: 11
+                aoe: 1
+            Vespin Rocket Turret:
+                type: Impact
+                tags: turret
+                gear: Vespin Warthog
+                damage: 13
+                rof: 1
+                classic: 1
+                cost: 12
+                aoe: 1
+
+            Heavy Chaingun:
+                type: Impact
+                tags: turret
+                gear: ONI Warthog
+                damage: 3
+                rof: 2
+                classic: 2
+                cost: 11
+                aoe: 1
+
+            Hannibal Ion Launcher:
+                type: Fire
+                gear: Hannibal Wasp
+                damage: 10
+                rof: 0
+                classic: 1
+                aoe: 4
+
         Creature:
+            Elephant:
+                type: Crush
+                scale: Individual
+                damage: 20
+                accuracy: 0
+                preferredRange: 0
+                size: 8
+                durability: 23
+                classic: 6
+            Falcon:
+                type: Bullet
+                scale: Individual
+                damage: 8
+                accuracy: 2
+                preferredRange: 6
+                size: 4
+                durability: 21
+                classic: 3
+            Hornet:
+                type: Blast
+                scale: Individual
+                damage: 12
+                accuracy: 2
+                preferredRange: 7
+                size: 4
+                durability: 20
+                classic: 3
+            Longsword:
+                type: Blast
+                scale: Individual
+                damage: 32
+                accuracy: 3
+                preferredRange: 8
+                size: 6
+                durability: 20
+                classic: 2
+            Mantis:
+                type: Blast
+                scale: Individual
+                damage: 20
+                accuracy: 2
+                preferredRange: 6
+                size: 4
+                durability: 25
+                classic: 6
+            Marine AR:
+                type: Bullet
+                scale: Individual
+                damage: 8
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 16
+                classic: 10
+                cost: 10
+            Marine BR:
+                type: Bullet
+                scale: Individual
+                damage: 4
+                accuracy: 2
+                preferredRange: 7
+                size: 2
+                durability: 16
+                classic: 8
+                cost: 20
+            Marine DMR:
+                type: Bullet
+                scale: Individual
+                damage: 4
+                accuracy: 2
+                preferredRange: 10
+                size: 2
+                durability: 16
+                classic: 7
+                cost: 22
+            Marine frags:
+                type: Blast
+                scale: Individual
+                damage: 12
+                accuracy: 2
+                preferredRange: 2
+                size: 2
+                durability: 16
+                classic: 3
+            Marine Grenade Launcher:
+                type: Blast
+                scale: Individual
+                damage: 16
+                accuracy: 2
+                preferredRange: 3
+                size: 2
+                durability: 16
+                classic: 5
+            Marine Gungoose:
+                type: Blast
+                scale: Individual
+                damage: 12
+                accuracy: 2
+                preferredRange: 3
+                size: 2
+                durability: 20
+                classic: 4
+            Marine Hydra:
+                type: Blast
+                scale: Individual
+                damage: 12
+                accuracy: 3
+                preferredRange: 8
+                size: 2
+                durability: 16
+                classic: 6
+            Marine Laser:
+                type: Fire
+                scale: Individual
+                damage: 12
+                accuracy: 3
+                preferredRange: 8
+                size: 2
+                durability: 16
+                classic: 6
+            Marine Rocket Launcher:
+                type: Blast
+                scale: Individual
+                damage: 20
+                accuracy: 2
+                preferredRange: 3
+                size: 2
+                durability: 16
+                classic: 6
+            Marine Shotgun:
+                type: Bullet
+                scale: Individual
+                damage: 8
+                accuracy: 2
+                preferredRange: 1
+                size: 2
+                durability: 16
+                classic: 8
+            Marine SMG:
+                type: Bullet
+                scale: Individual
+                damage: 8
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 16
+                classic: 6
+                cost: 9
+            Marine Sniper:
+                type: Bullet
+                scale: Individual
+                damage: 12
+                accuracy: 2
+                preferredRange: 29
+                size: 2
+                durability: 16
+                classic: 8
+            Marines Mongoose SMG:
+                type: Bullet
+                scale: Individual
+                damage: 8
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 18
+                classic: 5
+            Missile Bunker:
+                type: Blast
+                scale: Individual
+                damage: 40
+                accuracy: 3
+                preferredRange: 83333
+                size: 6
+                durability: 30
+                classic: 6
+            ODST BR:
+                type: Bullet
+                scale: Individual
+                damage: 4
+                accuracy: 2
+                preferredRange: 7
+                size: 2
+                durability: 19
+                classic: 7
+                cost: 30
+            ODST Flamethrower:
+                type: Fire
+                scale: Individual
+                damage: 16
+                accuracy: 2
+                preferredRange: 1
+                size: 2
+                durability: 19
+                classic: 4
+            ODST Railgun:
+                type: Bullet
+                scale: Individual
+                damage: 12
+                accuracy: 2
+                preferredRange: 5
+                size: 2
+                durability: 19
+                classic: 4
+            ODST SAW:
+                type: Bullet
+                scale: Individual
+                damage: 12
+                accuracy: 2
+                preferredRange: 6
+                size: 2
+                durability: 19
+                classic: 6
+            ODST Turret:
+                type: Bullet
+                scale: Individual
+                damage: 16
+                accuracy: 2
+                preferredRange: 6
+                size: 2
+                durability: 19
+                classic: 4
+            Officer Heavy Pistol:
+                type: Bullet
+                scale: Individual
+                damage: 8
+                accuracy: 2
+                preferredRange: 6
+                size: 2
+                durability: 10
+                classic: 7
+            Officer Light Pistol:
+                type: Bullet
+                scale: Individual
+                damage: 4
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 10
+                classic: 3
+            Officer Magnum:
+                type: Bullet
+                scale: Individual
+                damage: 4
+                accuracy: 1
+                preferredRange: 5
+                size: 2
+                durability: 10
+                classic: 3
+            Officer unarmed:
+                type: Crush
+                scale: Individual
+                damage: 4
+                accuracy: 0
+                preferredRange: 0
+                size: 2
+                durability: 10
+                classic: 3
+            Pelican:
+                type: Bullet
+                scale: Individual
+                damage: 8
+                accuracy: 2
+                preferredRange: 6
+                size: 6
+                durability: 21
+                classic: 6
+            Scorpion:
+                type: Blast
+                scale: Individual
+                damage: 32
+                accuracy: 4
+                preferredRange: 33
+                size: 6
+                durability: 20
+                classic: 8
+                cost: 1
+            Spartan-III AR:
+                type: Bullet
+                scale: Individual
+                damage: 4
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 21
+                classic: 7
+            Tactical MAC:
+                type: Blast
+                scale: Individual
+                damage: 40
+                accuracy: 3
+                preferredRange: 833
+                size: 6
+                durability: 20
+                classic: 7
+            Warthog:
+                type: Bullet
+                scale: Individual
+                damage: 8
+                accuracy: 2
+                preferredRange: 6
+                size: 4
+                durability: 20
+                classic: 9
+                cost: 200
+            Wasp:
+                type: Bullet
+                scale: Individual
+                damage: 8
+                accuracy: 2
+                preferredRange: 7
+                size: 4
+                durability: 20
+                classic: 6
+
+            Elephant:
+                source: Halo 3
+                speed: 1
+                durability: 286
+            Hornet:
+                speed: 6
+                durability: 50
+            Mammoth:
+                source: Halo 5
+                speed: 2
+                durability: 1429
+            Marathon-class Cruiser:
+                durability: 12857
+            Marine:
+                source: Halo 1
+                gear: BR
+                size: 2
+                speed: 2
+                durability: 10
+            ODST:
+                source: Halo 2
+                gear: Silenced SMG
+                size: 2
+                speed: 2
+                durability: 14
+            Sailor:
+                source: Halo 1
+                gear: Heavy Pistol
+                size: 2
+                speed: 2
+                durability: 2
+            Spartan armored:
+                source: Halo 1
+                gear: SAW
+                size: 3
+                speed: 2
+                durability: 26
+            Spartan SPI armor:
+                speed: 2
+                durability: 13
+            Spartan unarmored:
+                size: 3
+                speed: 2
+                durability: 11
+            UNSC Infinity:
+                durability: 142857
+            AA Tower:
+                tags: Ground
+                damage: 13
+                preferredRange: 25
+                size: 6
+                speed: 0
+                durability: 24
+                classic: 5
+                cost: 43
+            Base:
+                tags: Ground
+                transport: yes
+                size: 6
+                speed: 0
+                durability: 26
+                classic: 2
+                cost: 18
+            Crew sidekick:
+                tags: Ground
+                gear: Sidekick
+                damage: 2
+                preferredRange: 3
+                size: 2
+                speed: 2
+                durability: 11
+                classic: 5
+                cost: 13
+            Falcon chaingun:
+                tags: Air
+                transport: yes
+                damage: 10
+                preferredRange: 5
+                size: 4
+                speed: 8
+                durability: 21
+                classic: 7
+                cost: 34
+            Falcon RPG:
+                tags: Air
+                transport: yes
+                preferredRange: 5
+                size: 4
+                speed: 8
+                durability: 21
+                classic: 1
+                cost: 29
+            Gauss Hog:
+                tags: Ground
+                preferredRange: 5
+                size: 4
+                speed: 6
+                durability: 23
+                classic: 6
+                cost: 27
+            Gungoose:
+                tags: Ground
+                transport: yes
+                size: 4
+                speed: 8
+                durability: 14
+                classic: 4
+                cost: 20
+            Hannibal Scorpion:
+                tags: Ground
+                size: 4
+                speed: 2
+                durability: 23
+                classic: 3
+                cost: 17
+            Hannibal Wasp:
+                tags: Air
+                preferredRange: 5
+                size: 4
+                speed: 8
+                durability: 21
+                classic: 3
+                cost: 28
+            Helljumpers DMR jetpack:
+                tags: Air
+                group: ODST
+                damage: 10
+                preferredRange: 8
+                size: 2
+                speed: 3
+                durability: 14
+                classic: 6
+                cost: 30
+            Hornets:
+                tags: Air
+                transport: yes
+                damage: 13
+                preferredRange: 8
+                size: 4
+                speed: 8
+                durability: 21
+                classic: 6
+                cost: 38
+            Mammoth MAC:
+                tags: Ground
+                transport: yes
+                damage: 23
+                preferredRange: 40
+                size: 6
+                speed: 2
+                durability: 24
+                classic: 5
+                cost: 63
+            Marines assault rifle:
+                tags: Ground
+                group: Marine
+                damage: 6
+                preferredRange: 3
+                size: 2
+                speed: 2
+                durability: 14
+                classic: 10
+                cost: 19
+            Marines battle rifle:
+                tags: Ground
+                group: Marine
+                damage: 10
+                preferredRange: 5
+                size: 2
+                speed: 2
+                durability: 12
+                classic: 5
+                cost: 22
+            Marines hydra:
+                tags: Ground
+                group: 0
+                gear: Hydra
+                damage: 11
+                preferredRange: 8
+                size: 2
+                speed: 2
+                durability: 14
+                cost: 28
+            Marines rocket launcher:
+                tags: Ground
+                group: Marine
+                damage: 11
+                preferredRange: 8
+                size: 2
+                speed: 2
+                durability: 12
+                classic: 5
+                cost: 26
+            Marines shotgun:
+                tags: Ground
+                group: Marine
+                damage: 12
+                preferredRange: 0
+                size: 2
+                speed: 2
+                durability: 12
+                classic: 4
+                cost: 14
+            Marines SMG:
+                tags: Ground
+                group: Marine
+                damage: 4
+                preferredRange: 3
+                size: 2
+                speed: 2
+                durability: 14
+                classic: 10
+                cost: 18
+            Marines sniper rifle:
+                tags: Ground
+                group: Marine
+                damage: 11
+                preferredRange: 35
+                size: 2
+                speed: 2
+                durability: 14
+                classic: 5
+                cost: 50
+            ODSTs DMR:
+                tags: Ground
+                group: ODST
+                damage: 6
+                preferredRange: 8
+                size: 2
+                speed: 2
+                durability: 18
+                classic: 7
+                cost: 28
+            Officers sidekick:
+                tags: Ground
+                group: Marine
+                gear: Sidekick
+                damage: 2
+                preferredRange: 3
+                size: 2
+                speed: 2
+                durability: 11
+                classic: 3
+                cost: 13
+            Razorback:
+                tags: Ground
+                transport: yes
+                size: 4
+                speed: 6
+                durability: 21
+                classic: 4
+                cost: 23
+            Rocket Hog:
+                tags: Ground
+                preferredRange: 5
+                size: 4
+                speed: 6
+                durability: 23
+                classic: 4
+                cost: 27
+            Spartan battle rifle:
+                tags: Ground
+                group: Spartan
+                damage: 8
+                preferredRange: 5
+                size: 2
+                speed: 3
+                durability: 21
+                classic: 10
+                cost: 34
+            Spartan chaingun:
+                tags: Ground
+                group: Spartan
+                damage: 11
+                preferredRange: 5
+                size: 2
+                speed: 2
+                durability: 21
+                classic: 3
+                cost: 34
+            Spartan shotgun:
+                tags: Ground
+                group: Spartan
+                damage: 27
+                preferredRange: 0
+                size: 2
+                speed: 3
+                durability: 21
+                classic: 2
+                cost: 27
+            Spartan sniper rifle:
+                tags: Ground
+                group: Spartan
+                damage: 11
+                preferredRange: 38
+                size: 2
+                speed: 3
+                durability: 21
+                classic: 4
+                cost: 62
+            Tactical MAC:
+                tags: Ground
+                damage: 23
+                preferredRange: 50
+                size: 6
+                speed: 0
+                durability: 21
+                classic: 4
+                cost: 66
             Marine:
                 size: 2
                 speed: 1.5
@@ -22,6 +983,41 @@ Halo:
                 accuracy: 1
                 items:
                     - Item.SMG
+
+            UNSC captured Scarab:
+                type: Blast
+                scale: Battalion
+                damage: 40
+                accuracy: 3
+                preferredRange: 42
+                size: 12
+                durability: 25
+                classic: 6
+
+            Marine infantry division:
+                scale: Battalion
+                damage: 8
+                accuracy: 1
+                preferredRange: 4
+                size: 2
+                durability: 16
+                classic: 7
+            Scorpion division:
+                type: Blast
+                scale: Battalion
+                damage: 32
+                accuracy: 4
+                preferredRange: 25
+                size: 6
+                durability: 20
+                classic: 8
+            Fortified Marine division:
+                scale: Battalion
+                damage: 8
+                accuracy: 2
+                preferredRange: 8
+                durability: 25
+                classic: 7
 
         Squad:
             Marine:
@@ -40,119 +1036,308 @@ Halo:
                 accuracy: 1.5
                 preferredRange: 2
                 color: lime
-            Beam Rifle:
-                type: Hardlight
-                rof: 1.0
+            Brute CQC:
+                type: Impact
+                tags: natural
+                damage: 9
+                rof: 0
+                preferredRange: 0
+                classic: 10
+                cost: 0
+                aoe: 1
+                group: Brute
+            Brute Shot:
+                type: Impact
+                tags: biginfantry
+                damage: 6
+                rof: 1
+                preferredRange: 3
+                classic: 7
+                cost: 9
+                aoe: 1
+                group: Brute
+            Brute Shot CQC (from Brute):
+                type: Pierce
+                tags: infantry
+                damage: 13
+                rof: 0
+                preferredRange: 0
+                classic: 7
+                cost: 0
+                aoe: 1
+                group: Brute
+            Gravity Hammer:
+                type: Impact
+                tags: biginfantry
+                damage: 17
+                rof: 0
+                preferredRange: 0
+                classic: 4
+                cost: 8
+                aoe: 2
+                group: Brute
+            Incendiary Grenade:
+                type: Fire
+                tags: infantry
+                damage: 5
+                accuracy: 1
+                preferredRange: 5
+                classic: 3
+                aoe: 2
+                group: Brute
+            Mauler:
+                type: Pierce
+                tags: infantry
+                damage: 7
+                rof: 0
+                accuracy: 120
+                preferredRange: 0
+                classic: 3
+                cost: 5
+                aoe: 1
+                group: Brute
+            Spike Grenade:
+                type: Pierce
+                tags: infantry
+                damage: 13
+                accuracy: 1
+                preferredRange: 5
+                classic: 9
+                aoe: 2
+                group: Brute
+            Spiker:
+                type: Pierce
+                tags: infantry
+                gear: dmg should be higher. More than sailor sp.
+                damage: 1
+                rof: 2
+                classic: 9
+                cost: 4
+                aoe: 1
+                group: Brute
+            Spiker CQC (from Brute):
+                type: Pierce
+                tags: infantry
+                damage: 10
+                rof: 0
+                preferredRange: 0
+                classic: 9
+                cost: 0
+                aoe: 1
+                group: Brute
+            Tartarus' Gavel:
+                type: Impact
+                tags: biginfantry
+                damage: 27
+                rof: 0
+                classic: 1
+                cost: 13
+                aoe: 5
+                group: Brute
+
+            # TODO spaces -> camelCase
+            BeamRifle:
+                type: Pierce
+                tags: infantry
+                damage: 10
+                rof: 0
                 classic: 7
                 cost: 11
+                aoe: 2
             Carbine:
-                type: Kinetic
-                rof: 6.0
+                type: Pierce
+                tags: infantry
+                damage: 1
+                rof: 2
                 classic: 8
                 cost: 7
-            Concussion Rifle:
+                aoe: 1
+            ConcussionRifle:
                 type: Impact
-                rof: 3.0
+                tags: infantry
+                damage: 4
+                rof: 1
                 classic: 3
                 cost: 9
-            Elite CQC:
+                aoe: 2
+            EliteCQC:
                 type: Impact
-                rof: 0.5
+                tags: natural
+                damage: 12
+                rof: 0
+                preferredRange: 0
                 classic: 9
                 cost: 0
-            Energy Sword:
+                aoe: 1
+            EnergySword:
                 type: Fire
-                rof: 1.0
+                tags: biginfantry
+                damage: 13
+                rof: 0
+                preferredRange: 0
                 classic: 6
                 cost: 8
-            Focus Rifle:
+                aoe: 1
+            FocusRifle:
                 type: Fire
-                rof: 1.0
+                tags: infantry
+                damage: 4
+                rof: 0
                 classic: 4
                 cost: 12
-            Fuel Rod Cannon:
+                aoe: 1
+            FuelRodCannon:
                 type: Fire
-                rof: 2.0
+                tags: infantry
+                damage: 10
+                rof: 1
                 classic: 7
                 cost: 12
-            Grunt CQC:
+                aoe: 3
+            GruntCQC:
                 type: Impact
-                rof: 1.0
+                tags: natural
+                damage: 0
+                rof: 0
+                preferredRange: 0
                 classic: 10
                 cost: 0
+                aoe: 1
             Hunter Cannon:
                 type: Fire
-                rof: 2.0
+                source: Halo 1
+                damage: 8
+                rof: 1
                 classic: 5
                 cost: 12
-                source: Halo 1
+                aoe: 2
             Hunter CQC:
                 type: Impact
-                rof: 0.5
+                tags: natural
+                damage: 17
+                rof: 0
+                preferredRange: 0
                 classic: 5
                 cost: 0
+                aoe: 3
             Needle Rifle:
-                type: Explosive
-                rof: 4.0
+                type: Pierce
+                tags: infantry
+                damage: 4
+                rof: 1
                 classic: 4
                 cost: 8
+                aoe: 1
             Needler:
-                type: Explosive
-                rof: 9.0
+                type: Pierce
+                tags: infantry
+                damage: 2
+                rof: 3
                 classic: 10
                 cost: 5
+                aoe: 2
             Plasma Caster:
                 type: Fire
-                rof: 2.0
+                tags: infantry
+                damage: 12
+                rof: 1
                 cost: 11
+                aoe: 3
             Plasma Grenade:
                 type: Fire
-                accuracy: 2
+                tags: infantry
+                damage: 20
+                accuracy: 1
+                preferredRange: 5
                 classic: 10
+                aoe: 3
             Plasma Launcher:
                 type: Fire
-                rof: 0.5
+                tags: infantry
+                damage: 7
+                rof: 0
                 classic: 3
                 cost: 10
-            # Plasma Pistol:
-            #     type: Fire
-            #     rof: 6.0
-            #     classic: 10
-            #     cost: 3
+                aoe: 3
+            Plasma Pistol:
+                type: Fire
+                tags: infantry
+                damage: 1
+                rof: 2
+                classic: 10
+                cost: 3
+                aoe: 1
             Plasma Pistol Charged:
                 type: Fire
-                rof: 0.5
+                tags: infantry
+                damage: 1
+                rof: 0
                 classic: 9
+                aoe: 1
             Plasma Repeater:
                 type: Fire
-                rof: 11.0
+                tags: infantry
+                damage: 1
+                rof: 3
                 classic: 3
                 cost: 4
+                aoe: 1
             Plasma Rifle:
                 type: Fire
-                rof: 9.0
+                source: Halo 2
+                tags: infantry
+                damage: 1
+                rof: 3
                 classic: 8
                 cost: 3
-                source: Halo 2
+                aoe: 1
             Plasma Turret:
                 type: Fire
-                rof: 8.0
+                tags: turret
+                damage: 3
+                rof: 2
                 classic: 6
                 cost: 10
+                aoe: 1
             Scarab Cannon:
                 type: Fire
-                rof: 0.2
+                damage: 133
+                rof: 0
                 classic: 2
+                aoe: 10
             Shade Turret:
                 type: Fire
-                rof: 3.0
+                tags: turret
+                damage: 1
+                rof: 1
                 classic: 7
                 cost: 10
+                aoe: 3
             Wraith Mortar:
                 type: Fire
-                rof: 0.3
+                damage: 53
+                rof: 0
                 classic: 4
+                aoe: 5
+
         Creature:
+            Brute:
+                speed: 2
+                durability: 27
+                group: Brute
+            Brute Chieftain:
+                speed: 2
+                durability: 64
+                group: Brute
+            Chopper:
+                speed: 5
+                durability: 50
+                group: Brute
+            Prowler:
+                speed: 4
+                durability: 57
+                group: Brute
+
             Grunt:
                 size: 1.5
                 speed: 1.5
@@ -160,6 +1345,494 @@ Halo:
                 accuracy: 0
                 items:
                     - Item.PlasmaPistol
+            Banshee:
+                speed: 10
+                durability: 57
+            Covenant cruiser:
+                durability: 71429
+            Covenant supercarrier:
+                durability: 1428571
+            Drone:
+                speed: 5
+                durability: 4
+            Elite:
+                speed: 3
+                durability: 27
+            Elite Ultra:
+                speed: 3
+                durability: 30
+            Ghost:
+                speed: 6
+                durability: 50
+            Grunt:
+                speed: 1
+                durability: 4
+            Hunter:
+                speed: 1
+                durability: 64
+            Jackal no shield:
+                speed: 2
+                durability: 9
+            Jackal shield:
+                speed: 2
+                durability: 21
+            Lich:
+                source: Halo 4
+                durability: 2143
+            SpecOps Elite:
+                speed: 3
+                durability: 29
+            SpecOps Grunt:
+                speed: 2
+                durability: 11
+            Stealth Elite:
+                speed: 3
+                durability: 10
+            Wraith:
+                speed: 3
+                durability: 357
+            AA Wraith:
+                tags: Ground
+                damage: 13
+                preferredRange: 8
+                size: 4
+                speed: 2
+                durability: 24
+                classic: 3
+                cost: 31
+            Banshees:
+                tags: Air
+                damage: 11
+                preferredRange: 3
+                size: 4
+                speed: 11
+                durability: 21
+                classic: 7
+                cost: 36
+            Berserker Brutes:
+                tags: Ground
+                group: Brute
+                damage: 24
+                preferredRange: 0
+                size: 2
+                speed: 3
+                durability: 21
+                classic: 4
+                cost: 26
+            Brute Chieftain gravity hammer:
+                tags: Ground
+                group: Brute
+                gear: Has bodyguard brutes
+                damage: 27
+                preferredRange: 0
+                size: 2
+                speed: 2
+                durability: 23
+                classic: 7
+                cost: 26
+            Brute Stalkers mauler:
+                tags: Ground
+                group: Brute
+                damage: 6
+                preferredRange: 3
+                size: 2
+                speed: 2
+                durability: 26
+                classic: 4
+                cost: 32
+            Brutes spiker:
+                tags: Ground
+                group: Brute
+                gear: Spiker
+                damage: 6
+                preferredRange: 3
+                size: 2
+                speed: 2
+                durability: 21
+                classic: 8
+                cost: 28
+            Command Elites heavy weapons:
+                tags: Ground
+                group: Elite
+                damage: 15
+                preferredRange: 5
+                size: 2
+                speed: 3
+                durability: 23
+                classic: 6
+                cost: 40
+            Corvette:
+                tags: Air
+                transport: yes
+                damage: 23
+                preferredRange: 25
+                size: 6
+                speed: 6
+                durability: 27
+                classic: 3
+                cost: 59
+            Drones:
+                tags: Air
+                damage: 4
+                preferredRange: 3
+                size: 2
+                speed: 5
+                durability: 14
+                classic: 4
+                cost: 21
+            Elites carbine:
+                tags: Ground
+                group: Elite
+                gear: Carbine
+                damage: 6
+                preferredRange: 5
+                size: 2
+                speed: 3
+                durability: 21
+                classic: 8
+                cost: 31
+            Ghosts:
+                tags: Ground
+                damage: 10
+                preferredRange: 3
+                size: 4
+                speed: 8
+                durability: 21
+                classic: 7
+                cost: 31
+            Grunt Lance:
+                tags: Ground
+                group: Grunt
+                damage: 4
+                preferredRange: 3
+                size: 2
+                speed: 2
+                durability: 12
+                classic: 10
+                cost: 16
+            Heavy Grunts fuel rod cannon:
+                tags: Ground
+                group: Grunt
+                damage: 13
+                preferredRange: 5
+                size: 2
+                speed: 2
+                durability: 12
+                classic: 5
+                cost: 23
+            Hunters:
+                tags: Ground
+                damage: 15
+                preferredRange: 5
+                size: 2
+                speed: 2
+                durability: 23
+                classic: 8
+                cost: 37
+            Jumppack Brutes carbine:
+                tags: Air
+                group: Brute
+                gear: Carbine
+                damage: 8
+                preferredRange: 5
+                size: 2
+                speed: 5
+                durability: 21
+                classic: 7
+                cost: 35
+            Kraken:
+                tags: Ground
+                transport: yes
+                damage: 13
+                preferredRange: 8
+                size: 6
+                speed: 3
+                durability: 26
+                classic: 3
+                cost: 35
+            Ranger Elites needle rifle:
+                tags: Air
+                group: Elite
+                damage: 8
+                preferredRange: 5
+                size: 2
+                speed: 5
+                durability: 21
+                classic: 6
+                cost: 34
+            Ranger Lance plasma weapons:
+                tags: Air
+                group: Grunt
+                damage: 6
+                preferredRange: 3
+                size: 2
+                speed: 5
+                durability: 14
+                classic: 2
+                cost: 23
+            Shield Jackals plasma pistol:
+                tags: Ground
+                group: Jackal
+                damage: 4
+                preferredRange: 3
+                size: 2
+                speed: 2
+                durability: 20
+                classic: 9
+                cost: 22
+            Skimmers shock rifle:
+                tags: Air
+                damage: 6
+                preferredRange: 5
+                size: 2
+                speed: 3
+                durability: 12
+                classic: 5
+                cost: 22
+            Skirmishers needle rifle:
+                tags: Ground
+                group: Jackal
+                gear: Needle Rifle
+                damage: 8
+                preferredRange: 5
+                size: 2
+                speed: 5
+                durability: 15
+                classic: 6
+                cost: 29
+            Sniper Jackals beam rifle:
+                tags: Ground
+                group: Jackal
+                damage: 11
+                preferredRange: 35
+                size: 2
+                speed: 2
+                durability: 12
+                classic: 7
+                cost: 45
+            Spirit:
+                tags: Air
+                transport: yes
+                damage: 4
+                preferredRange: 5
+                size: 6
+                speed: 12
+                durability: 23
+                classic: 7
+                cost: 38
+            Stealth Elites plasma rifle:
+                tags: Ground
+                group: Elite
+                gear: Plasma Rifle
+                damage: 6
+                preferredRange: 3
+                size: 2
+                speed: 3
+                durability: 26
+                classic: 8
+                cost: 29
+            Wraiths:
+                tags: Ground
+                damage: 13
+                preferredRange: 8
+                size: 4
+                speed: 2
+                durability: 24
+                classic: 8
+                cost: 31
+            Zealots needle rifle:
+                tags: Ground
+                group: Elite
+                damage: 8
+                preferredRange: 5
+                size: 2
+                speed: 3
+                durability: 21
+                classic: 4
+                cost: 33
+            Brute division:
+                scale: Battalion
+                damage: 8
+                accuracy: 2
+                preferredRange: 4
+                size: 2
+                durability: 14
+                classic: 7
+                group: Brute
+            Covenant Armor division:
+                type: Blast
+                scale: Battalion
+                damage: 24
+                accuracy: 3
+                preferredRange: 42
+                size: 6
+                durability: 25
+                classic: 8
+
+            Covenant heavy infantry division:
+                scale: Battalion
+                size: 2
+                classic: 6
+            Covenant light vehicle division:
+                type: Fire
+                scale: Battalion
+                damage: 20
+                accuracy: 1
+                preferredRange: 5
+                durability: 20
+                classic: 8
+
+            Covenant Spec Ops division:
+                scale: Battalion
+                damage: 8
+                accuracy: 2
+                preferredRange: 3
+                size: 2
+                durability: 17
+                classic: 8
+
+
+            Grunt division:
+                type: Fire
+                scale: Battalion
+                damage: 4
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 11
+                classic: 8
+
+            Jackal division:
+                type: Fire
+                scale: Battalion
+                damage: 4
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 19
+                classic: 8
+
+            Scarab division:
+                type: Blast
+                scale: Battalion
+                damage: 40
+                accuracy: 3
+                preferredRange: 42
+                size: 12
+                durability: 25
+                classic: 9
+
+            Skirmisher division:
+                scale: Battalion
+                damage: 4
+                accuracy: 1
+                preferredRange: 4
+                size: 2
+                durability: 16
+                classic: 6
+
+
+            Hunter:
+                type: Blast
+                scale: Individual
+                damage: 12
+                accuracy: 2
+                preferredRange: 5
+                size: 4
+                durability: 21
+                classic: 8
+                cost: 100
+            Jackal focus rifle:
+                type: Bullet
+                scale: Individual
+                damage: 12
+                accuracy: 2
+                preferredRange: 29
+                size: 2
+                durability: 11
+                classic: 6
+            Jackal Shield PP:
+                type: Fire
+                scale: Individual
+                damage: 4
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 19
+                classic: 8
+                cost: 15
+            Phantom:
+                type: Blast
+                scale: Individual
+                damage: 4
+                accuracy: 1
+                preferredRange: 6
+                size: 6
+                durability: 24
+                classic: 7
+            Scarab + crew:
+                type: Blast
+                scale: Individual
+                damage: 40
+                accuracy: 3
+                preferredRange: 42
+                size: 12
+                durability: 25
+                classic: 8
+                cost: 10
+
+            Spirit:
+                type: Blast
+                scale: Individual
+                damage: 8
+                accuracy: 1
+                preferredRange: 6
+                size: 6
+                durability: 24
+                classic: 5
+
+            Wraith:
+                type: Blast
+                scale: Individual
+                damage: 24
+                accuracy: 3
+                preferredRange: 33
+                size: 6
+                durability: 25
+                classic: 8
+                cost: 1
+
+
+            Skirmisher PP:
+                type: Fire
+                scale: Individual
+                damage: 4
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 15
+                classic: 6
+
+            Elite PR:
+                type: Fire
+                scale: Individual
+                damage: 4
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 20
+                classic: 8
+                cost: 40
+            Grunt PP:
+                type: Fire
+                scale: Individual
+                damage: 4
+                accuracy: 1
+                preferredRange: 3
+                size: 2
+                durability: 11
+                classic: 8
+                cost: 8
 
         Squad:
             Grunt:
@@ -167,1403 +1840,431 @@ Halo:
                 creature: Creature.Grunt
                 quantity: 3
                 image: grunt.png
-
-    Forerunner:
-        Item: {}
-        Creature: {}
-        Squad: {}
-
-    Flood:
-        Item: {}
-        Creature: {}
-        Squad: {}
-
-
-
-# paste of generated entries:
-    Covenant:
-        Item:
-
-        Creature:
-            Banshee:
-                speed: 60
-                durability: 400
-            Covenant cruiser:
-                durability: 500000
-            Covenant supercarrier:
-                durability: 10000000
-            Drone:
-                speed: 30
-                durability: 30
-            Elite:
-                speed: 15
-                durability: 190
-            Elite Ultra:
-                speed: 15
-                durability: 210
-            Ghost:
-                speed: 35
-                durability: 350
-            Grunt:
-                speed: 8
-                durability: 30
-            Hunter:
-                speed: 8
-                durability: 450
-            Jackal no shield:
-                speed: 13
-                durability: 60
-            Jackal shield:
-                speed: 12
-                durability: 150
-            Lich:
-                durability: 15000
-                source: Halo 4
-            Phantom:
-                durability: 3500
-                source: Halo 1
-            Scarab:
-                speed: 8
-                durability: 10000
-            SpecOps Elite:
-                speed: 15
-                durability: 200
-            SpecOps Grunt:
-                speed: 9
-                durability: 75
-            Stealth Elite:
-                speed: 15
-                durability: 70
-            Wraith:
-                speed: 18
-                durability: 2500
-
-    Brute:
-        Item:
-            Brute CQC:
-                type: Impact
-                rof: 0.5
-                classic: 10
-                cost: 0
-            Brute Shot:
-                type: Impact
-                rof: 2.0
-                classic: 7
-                cost: 9
-            Brute Shot CQC (from Brute):
-                type: Kinetic
-                rof: 0.5
-                classic: 7
-                cost: 0
-            Disruptor:
-                type: Electric
-            Gravity Hammer:
-                type: Impact
-                rof: 1.3
-                classic: 4
-                cost: 8
-            Incendiary Grenade:
-                type: Fire
-                accuracy: 2
-                classic: 3
-            Mangler:
-                type: Kinetic
-            Mauler:
-                type: Kinetic
-                rof: 1.0
-                accuracy: 60%
-                classic: 3
-                cost: 5
-            Pulse Carbine:
-                type: Plasma
-            Ravager:
-                type: Plasma
-            Scrap Cannon:
-                type: Kinetic
-            Shock Rifle:
-                type: Electric
-            Skewer:
-                type: Heavy
-            Spike Grenade:
-                type: Kinetic
-                accuracy: 2
-                classic: 9
-            Spiker:
-                type: Kinetic
-                rof: 8.0
-                classic: 9
-                cost: 4
-            Spiker CQC (from Brute):
-                type: Kinetic
-                rof: 1.0
-                classic: 9
-                cost: 0
-            Stalker Rifle:
-                type: Hardlight
-            Tartarus Gavel:
-                type: Impact
-                rof: 1.3
-                classic: 1
-                cost: 13
-        Creature:
-            Brute:
-                speed: 9
-                durability: 190
-            Brute Chieftain:
-                speed: 14
-                durability: 450
-            Chopper:
-                speed: 28
-                durability: 350
-            Prowler:
-                speed: 24
-                durability: 400
-
+            Huragok:
+                tags: Air
+                size: 2
+                speed: 2
+                classic: 6
+                cost: 2
+            Prophet of Truth:
+                size: 2
+                classic: 5
     Forerunner:
         Item:
             Binary Rifle:
                 type: Fire
-                rof: 0.5
+                source: Halo 5
+                tags: infantry
+                damage: 13
+                rof: 0
                 classic: 4
                 cost: 12
-                source: Halo 5
+                aoe: 2
             Boltshot:
                 type: Fire
-                rof: 4.0
+                source: Halo 5
+                tags: infantry
+                damage: 2
+                rof: 1
                 classic: 10
                 cost: 8
-                source: Halo 5
+                aoe: 1
             Crawler CQC:
                 type: Impact
-                rof: 0.5
+                tags: natural
+                damage: 6
+                rof: 0
+                preferredRange: 0
                 classic: 9
                 cost: 0
-            Duelists Boltshot:
+                aoe: 1
+            Duelist's Boltshot:
                 type: Fire
-                rof: 4.0
+                source: Halo 4
+                tags: infantry
+                damage: 1
+                rof: 1
                 classic: 7
                 cost: 4
-                source: Halo 4
+                aoe: 1
             Heatwave:
                 type: Hardlight
             Incineration Cannon:
                 type: Fire
-                rof: 0.3
+                source: Halo 4
+                tags: biginfantry
+                damage: 27
+                rof: 0
                 classic: 4
                 cost: 10
-                source: Halo 4
+                aoe: 4
             Knightblade:
                 type: Fire
-                rof: 0.5
-                classic: 5
                 source: Halo 5
+                tags: natural
+                damage: 13
+                rof: 0
+                classic: 5
+                aoe: 2
             Lightrifle:
                 type: Fire
-                rof: 3.0
+                source: Halo 5
+                tags: infantry
+                damage: 3
+                rof: 1
                 classic: 8
                 cost: 8
-                source: Halo 5
+                aoe: 1
             Pulse Grenade:
                 type: Fire
-                classic: 8
                 source: Halo 4
+                tags: infantry
+                damage: 7
+                classic: 8
+                aoe: 1
             Sentinel Beam:
                 type: Fire
-                rof: 1.0
+                source: Halo 1
+                tags: infantry
+                damage: 3
+                rof: 0
                 classic: 9
                 cost: 8
-                source: Halo 1
+                aoe: 1
             Splinter Grenade:
                 type: Fire
-                classic: 8
                 source: Halo 5
+                tags: infantry
+                damage: 13
+                classic: 8
+                aoe: 2
             Splinter Turret:
                 type: Fire
-                rof: 1.0
+                source: Halo 5
+                tags: biginfantry
+                damage: 5
+                rof: 0
                 classic: 4
                 cost: 10
-                source: Halo 5
+                aoe: 2
             Suppressor:
                 type: Fire
-                rof: 14.0
+                source: Halo 5
+                tags: infantry
+                damage: 1
+                rof: 4
                 classic: 9
                 cost: 9
-                source: Halo 5
+                aoe: 1
         Creature:
             Crawler:
-                size: 1
-                speed: 18
-                durability: 70
                 source: Halo 5
+                size: 2
+                speed: 3
+                durability: 10
             Forerunner Keyship:
-                durability: 20000000
                 source: Halo 5
+                durability: 2857143
             Knight:
-                speed: 12
-                durability: 400
                 source: Halo 5
-            Monitor:
-                speed: 30
-                durability: 10000
-                source: Halo 4
+                speed: 2
+                durability: 57
             Phaeton:
-                speed: 28
-                durability: 1400
+                speed: 5
+                durability: 200
             Sentinel:
-                speed: 25
-                durability: 120
                 source: Reach
+                speed: 4
+                durability: 17
             Sentinel Enforcer:
-                speed: 8
-                durability: 400
+                speed: 1
+                durability: 57
             Soldier:
-                size: 1
-                speed: 23
-                durability: 100
                 source: Halo 4
-            Warden Eternal:
-                speed: 8
-                durability: 4000
-                source: Halo 5
-            Watcher:
-                size: 1
-                speed: 31
-                durability: 80
-                source: Halo 5
-        Squad: {}
-    UNSC:
-        Item:
-            Assault Rifle:
-                type: Kinetic
-                rof: 15.0
-                accuracy: 8
-                classic: 9
-                cost: 7
-                source: Reach
-            Battle Rifle:
-                type: Kinetic
-                rof: 7.2
-                accuracy: 13
-                classic: 8
-                cost: 8
-            Bulldog:
-                type: Kinetic
-            Chaingun:
-                type: Kinetic
-                rof: 5.0
-                accuracy: 10
-                classic: 8
-                cost: 10
-            Commando:
-                type: Kinetic
-            DMR:
-                type: Kinetic
-                rof: 3.0
-                accuracy: 90
-                classic: 7
-                cost: 10
-            Endgame:
-                type: Fire
-                rof: 1.0
-                cost: 13
-            Flamethrower:
-                type: Fire
-                rof: 1.0
-                classic: 4
-                cost: 8
-            Frag Grenade:
-                type: Impact
-                accuracy: 2
-                classic: 9
-            Gauss Cannon:
-                type: Impact
-                rof: 1.0
-                classic: 4
-                cost: 13
-            Grenade Launcher:
-                type: Impact
-                rof: 0.8
-                classic: 6
-                cost: 11
-                source: Reach
-            Hannibal Cannon:
-                type: Fire
-                rof: 0.2
-            Hannibal Pulse Lasers:
-                type: Fire
-                rof: 4.0
-            Heavy Pistol:
-                type: Kinetic
-                rof: 2.0
-                accuracy: 14
-                classic: 4
-                cost: 8
-                source: Halo 1
-            Heavy SAW:
-                type: Impact
-                rof: 9.0
-                classic: 1
-                cost: 13
-                source: Halo 5
-            Hydra:
-                type: Impact
-                rof: 2.5
-                cost: 10
-            Light Pistol:
-                type: Kinetic
-                rof: 6.0
-                accuracy: 1
-                classic: 9
-                cost: 4
-                source: Halo 2
-            Marathon MAC:
-                type: Impact
-                rof: 0.01
-            Marine CQC:
-                type: Impact
-                rof: 1.0
-                classic: 10
-                cost: 0
-            Missile Pod:
-                type: Impact
-                rof: 1.0
-                classic: 3
-                cost: 13
-            Pistol:
-                type: Kinetic
-                rof: 2.0
-                classic: 10
-                cost: 5
-                source: Halo 3
-            Railgun:
-                type: Kinetic
-                rof: 0.5
-                classic: 4
-                cost: 10
-            Rocket Launcher:
-                type: Impact
-                rof: 0.3
-                classic: 6
-                cost: 10
-                source: Halo 2
-            SAW:
-                type: Kinetic
-                rof: 9.0
-                accuracy: 9
-                classic: 5
-                cost: 10
-            Scoped Pistol:
-                type: Kinetic
-                rof: 2.0
-                accuracy: 11
-                classic: 10
-                cost: 6
-                source: Reach
-            Scorpion Cannon:
-                type: Impact
-                rof: 0.3
-                classic: 6
-            Selenes Lance:
-                type: Fire
-                rof: 0.2
-                cost: 13
-            Shotgun:
-                type: Kinetic
-                rof: 1.0
-                accuracy: 70%
-                classic: 6
-                cost: 8
-            Silenced Pistol:
-                type: Kinetic
-                rof: 6.0
-                classic: 2
-                cost: 6
-            Silenced SMG:
-                type: Kinetic
-                rof: 15.0
-                classic: 2
-                cost: 6
-            SMG:
-                type: Kinetic
-                rof: 15.0
-                accuracy: 6
-                classic: 9
-                cost: 6
-            Sniper Rifle:
-                type: Kinetic
-                rof: 1.1
-                accuracy: 100
-                classic: 6
-                cost: 13
-            Spartan CQC:
-                type: Impact
-                rof: 1.0
-                classic: 1
-                cost: 0
-            Spartan Laser:
-                type: Fire
-                rof: 0.3
-                classic: 2
-                cost: 13
-            Sticky Grenade Launcher:
-                type: Impact
-                rof: 0.5
-                classic: 3
-                cost: 11
-                source: Halo 4
-            Tactical MAC Cannon:
-                type: Impact
-                rof: 0.10
-                classic: 2
-        Creature:
-            Elephant:
-                speed: 8
-                durability: 2000
-                source: Halo 1
-            Frigate:
-                durability: 30000
-            Hornet:
-                speed: 35
-                durability: 350
-            Mammoth:
-                speed: 13
-                durability: 10000
-                source: Halo 5
-            Marathon-class Cruiser:
-                durability: 90000
-            Marine:
-                size: 1
-                speed: 9
-                durability: 70
-                source: Halo 1
-            Mongoose:
-                speed: 30
-                durability: 80
-                source: Halo 3
-            ODST:
-                size: 1
-                speed: 9
-                durability: 100
-                source: Halo 2
-            Pelican:
-                durability: 1400
-            Sailor:
-                size: 1
-                speed: 10
+                size: 2
+                speed: 4
                 durability: 14
-                source: Halo 1
-            Scorpion:
-                speed: 15
-                durability: 2200
-            Spartan armored:
-                size: 1.5
-                speed: 14
-                durability: 180
-                source: Halo 1
-            Spartan SPI armor:
-                speed: 13
-                durability: 90
-            Spartan unarmored:
-                size: 1.5
-                speed: 12
-                durability: 80
-            UNSC Infinity:
-                durability: 1000000
-            Warthog:
-                speed: 33
-                durability: 400
-            Wasp:
-                speed: 40
-                durability: 350
+            Warden Eternal:
                 source: Halo 5
+                speed: 1
+                durability: 571
+            Watcher:
+                source: Halo 5
+                size: 2
+                speed: 5
+                durability: 11
+            Battlewagon incineration cannon:
+                tags: Ground
+                group: Promethean
+                damage: 15
+                preferredRange: 5
+                size: 2
+                speed: 149
+                durability: 23
+                classic: 4
+                cost: 233
+            Crawlers:
+                tags: Ground
+                group: Promethean
+                damage: 2
+                preferredRange: 3
+                size: 2
+                speed: 149
+                durability: 12
+                classic: 6
+                cost: 212
+            Guardian:
+                tags: Air
+                damage: 25
+                preferredRange: 13
+                size: 6
+                speed: 3
+                durability: 30
+                classic: 1
+                cost: 47
+            Knights lightrifle:
+                tags: Ground
+                group: Promethean
+                gear: Lightrifle
+                damage: 8
+                preferredRange: 5
+                size: 2
+                speed: 149
+                durability: 23
+                classic: 5
+                cost: 228
+            Phaetons:
+                tags: Air
+                group: Promethean
+                damage: 10
+                preferredRange: 5
+                size: 4
+                speed: 8
+                durability: 21
+                classic: 4
+                cost: 33
+            Sentinels:
+                tags: Air
+                damage: 4
+                preferredRange: 3
+                size: 2
+                speed: 149
+                durability: 17
+                classic: 7
+                cost: 216
+            Soldier suppressor:
+                tags: Ground
+                damage: 4
+                preferredRange: 3
+                size: 2
+                speed: 149
+                durability: 18
+                classic: 2
+                cost: 217
+            Warden:
+                tags: Ground
+                group: Promethean
+                damage: 17
+                preferredRange: 13
+                size: 2
+                speed: 149
+                durability: 24
+                classic: 3
+                cost: 242
+            Watchers:
+                tags: Air
+                group: Promethean
+                damage: 2
+                preferredRange: 5
+                size: 2
+                speed: 149
+                durability: 12
+                classic: 5
+                cost: 212
+            Promethean Soldier suppressor:
+                type: Bullet
+                scale: Individual
+                damage: 8
+                accuracy: 1
+                preferredRange: 4
+                size: 2
+                durability: 17
+                classic: 3
+            Sentinel:
+                type: Fire
+                scale: Individual
+                damage: 8
+                accuracy: 1
+                preferredRange: 5
+                size: 2
+                durability: 20
+                classic: 9
+                cost: 20
+            Sentinel Enforcer:
+                type: Blast
+                scale: Individual
+                damage: 20
+                accuracy: 3
+                preferredRange: 8
+                size: 4
+                durability: 25
+                classic: 6
+            Sentinel division:
+                scale: Battalion
+                damage: 8
+                accuracy: 1
+                preferredRange: 5
+                size: 2
+                durability: 20
+                classic: 7
         Squad: {}
+
     Flood:
         Item:
             Flood Carrier blast:
                 type: Impact
+                damage: 6
+                aoe: 3
             Flood Combat Form CQC:
                 type: Impact
-                rof: 0.5
+                damage: 5
+                rof: 0
                 classic: 9
                 cost: 0
+                aoe: 1
             Flood Pod CQC:
-                type: Kinetic
-                rof: 0.5
+                type: Pierce
+                damage: 1
+                rof: 0
                 classic: 10
                 cost: 0
+                aoe: 1
             Flood spine munitions:
-                type: Kinetic
-                rof: 3.0
+                type: Pierce
+                damage: 1
+                rof: 1
                 classic: 4
                 cost: 0
+                aoe: 1
         Creature:
             Flood Carrier:
-                speed: 1
-                durability: 50
-                source: Halo 3
-            Flood Combat Form Brute:
-                speed: 11
-                durability: 130
-            Flood Combat Form Elite:
-                speed: 15
-                durability: 120
-            Flood Combat Form Human:
-                speed: 11
-                durability: 100
-            Flood Pod:
-                speed: 11
-                durability: 2
-                source: Halo 5
-            Flood Spider Form:
-                speed: 18
-                durability: 100
-                source: Halo 2
-            Flood Spiner Form:
-                speed: 0
-                durability: 100
                 source: Halo 1
+                speed: 0
+                durability: 7
+            Flood Combat Form Brute:
+                speed: 2
+                durability: 19
+            Flood Combat Form Elite:
+                speed: 3
+                durability: 17
+            Flood Combat Form Human:
+                speed: 2
+                durability: 14
+            Flood Spider Form:
+                source: Halo 3
+                speed: 3
+                durability: 14
+            Flood Spiner Form:
+                source: Halo 3
+                speed: 0
+                durability: 14
             Flood Tank Form:
-                speed: 1
-                durability: 350
-                source: Reach
-        Squad: {}
-    Unsorted:
-        Creature:
-            Brute division:
-                damage: 2
-                accuracy: 5
-                preferredRange: 50
-                size: 1
-                durability: 4
-                scale: Battalion
+                source: Halo 3
+                speed: 0
+                durability: 50
+            Carrier Forms:
+                tags: Ground
+                damage: 21
+                preferredRange: 0
+                size: 2
+                speed: 2
+                durability: 2
+                classic: 4
+                cost: 10
+            Combat Forms:
+                tags: Ground
+                damage: 4
+                preferredRange: 3
+                size: 2
+                speed: 3
+                durability: 15
                 classic: 7
+                cost: 24
+            Infection Pods:
+                tags: Ground
+                damage: 12
+                preferredRange: 0
+                size: 2
+                speed: 3
+                durability: 9
+                classic: 7
+                cost: 14
+            Pure Forms:
+                tags: Ground
+                damage: 4
+                preferredRange: 5
+                size: 2
+                speed: 5
+                durability: 21
+                classic: 3
+                cost: 33
+
             Combat horde (large bodies):
                 type: Blade
-                damage: 2
-                accuracy: 4
-                preferredRange: 2
-                size: 1
-                durability: 3
                 scale: Battalion
+                damage: 8
+                accuracy: 1
+                preferredRange: 0
+                size: 2
+                durability: 14
                 classic: 6
             Combat horde (small bodies):
                 type: Blade
-                damage: 2
-                accuracy: 4
-                preferredRange: 2
-                size: 1
-                durability: 3
                 scale: Battalion
-                classic: 9
-            Covenant Armor division:
-                type: Blast
-                damage: 6
-                accuracy: 9
-                preferredRange: 500
-                size: 3
-                durability: 6
-                scale: Battalion
-                classic: 8
-            Covenant light vehicle division:
-                type: Fire
-                damage: 5
-                accuracy: 4
-                preferredRange: 60
-                durability: 3
-                scale: Battalion
-                classic: 8
-            Covenant Spec Ops division:
-                damage: 2
-                accuracy: 5
-                preferredRange: 40
-                size: 1
-                durability: 2
-                scale: Battalion
-                classic: 8
-            Elephant:
-                type: Crush
-                damage: 5
-                accuracy: 0
-                preferredRange: 1
-                size: 4
-                durability: 6
-                scale: Individual
-                classic: 6
-            Elite PR:
-                type: Fire
-                damage: 1
-                accuracy: 4
-                preferredRange: 40
-                size: 1
-                durability: 4
-                scale: Individual
-                classic: 8
-            Falcon:
-                type: Bullet
-                damage: 2
-                accuracy: 8
-                preferredRange: 70
+                damage: 8
+                accuracy: 1
+                preferredRange: 0
                 size: 2
-                durability: 2
-                scale: Individual
-                classic: 3
+                durability: 14
+                classic: 9
+
+            Infection swarm:
+                scale: Battalion
+                damage: 4
+                accuracy: 0
+                preferredRange: 0
+                size: 1
+                durability: 10
+                classic: 8
+
             Flood Carrier Form:
                 type: Blast
-                damage: 4
-                accuracy: 8
-                preferredRange: 1
-                size: 1
-                durability: 1
                 scale: Individual
+                damage: 16
+                accuracy: 2
+                preferredRange: 0
+                size: 2
+                durability: 10
                 classic: 4
             Flood Combat Form (Marine):
                 type: Blade
-                damage: 2
-                accuracy: 4
-                preferredRange: 2
-                size: 1
-                durability: 3
                 scale: Individual
+                damage: 8
+                accuracy: 1
+                preferredRange: 0
+                size: 2
+                durability: 14
                 classic: 8
+                cost: 15
             Flood Infection Form:
                 type: Blade
-                damage: 1
-                accuracy: 0
-                preferredRange: 1
-                size: 1
-                durability: 1
                 scale: Individual
-                classic: 8
-            Fortified Marine division:
-                damage: 2
-                accuracy: 6
-                preferredRange: 100
-                durability: 2
-                scale: Battalion
-                classic: 7
-            Grunt division:
-                type: Fire
-                damage: 1
-                accuracy: 4
-                preferredRange: 30
-                size: 1
-                durability: 2
-                scale: Battalion
-                classic: 8
-            Grunt PP:
-                type: Fire
-                damage: 1
-                accuracy: 3
-                preferredRange: 30
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 8
-            Hornet:
-                type: Blast
-                damage: 3
-                accuracy: 8
-                preferredRange: 80
-                size: 2
-                durability: 2
-                scale: Individual
-                classic: 3
-            Hunter:
-                type: Blast
-                damage: 3
-                accuracy: 8
-                preferredRange: 60
-                size: 2
-                durability: 4
-                scale: Individual
-                classic: 8
-            Infection swarm:
-                damage: 1
-                accuracy: 0
-                preferredRange: 1
-                size: 0.5
-                durability: 1
-                scale: Battalion
-                classic: 8
-            Jackal division:
-                type: Fire
-                damage: 1
-                accuracy: 4
-                preferredRange: 40
-                size: 1
-                durability: 1
-                scale: Battalion
-                classic: 8
-            Jackal focus rifle:
-                type: Bullet
-                damage: 3
-                accuracy: 8
-                preferredRange: 350
-                size: 1
-                durability: 1
-                scale: Individual
-                classic: 6
-            Jackal Shield PP:
-                type: Fire
-                damage: 1
-                accuracy: 3
-                preferredRange: 40
-                size: 1
-                durability: 1
-                scale: Individual
-                classic: 8
-            Longsword:
-                type: Blast
-                damage: 8
-                accuracy: 10
-                preferredRange: 100
-                size: 3
-                durability: 4
-                scale: Individual
-                classic: 2
-            Mantis:
-                type: Blast
-                damage: 5
-                accuracy: 8
-                preferredRange: 70
-                size: 2
-                durability: 5
-                scale: Individual
-                classic: 6
-            Marine AR:
-                type: Bullet
-                damage: 2
-                accuracy: 4
-                preferredRange: 40
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 10
-            Marine BR:
-                type: Bullet
-                damage: 1
-                accuracy: 6
-                preferredRange: 80
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 8
-            Marine DMR:
-                type: Bullet
-                damage: 1
-                accuracy: 6
-                preferredRange: 120
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 7
-            Marine frags:
-                type: Blast
-                damage: 3
-                accuracy: 7
-                preferredRange: 20
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 3
-            Marine Grenade Launcher:
-                type: Blast
                 damage: 4
-                accuracy: 8
-                preferredRange: 40
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 5
-            Marine Gungoose:
-                type: Blast
-                damage: 3
-                accuracy: 8
-                preferredRange: 40
-                size: 1
-                durability: 3
-                scale: Individual
-                classic: 4
-            Marine Hydra:
-                type: Blast
-                damage: 3
-                accuracy: 9
-                preferredRange: 90
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 6
-            Marine infantry division:
-                damage: 2
-                accuracy: 4
-                preferredRange: 50
-                size: 1
-                durability: 2
-                scale: Battalion
-                classic: 7
-            Marine Laser:
-                type: Fire
-                damage: 3
-                accuracy: 10
-                preferredRange: 100
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 6
-            Marine Rocket Launcher:
-                type: Blast
-                damage: 5
-                accuracy: 8
-                preferredRange: 40
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 6
-            Marine Shotgun:
-                type: Bullet
-                damage: 2
-                accuracy: 7
-                preferredRange: 8
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 8
-            Marine SMG:
-                type: Bullet
-                damage: 2
-                accuracy: 3
-                preferredRange: 30
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 6
-            Marine Sniper:
-                type: Bullet
-                damage: 3
-                accuracy: 8
-                preferredRange: 350
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 8
-            Marines Mongoose SMG:
-                type: Bullet
-                damage: 2
-                accuracy: 2
-                preferredRange: 30
-                size: 1
-                durability: 3
-                scale: Individual
-                classic: 5
-            Missile Bunker:
-                type: Blast
-                damage: 10
-                accuracy: 10
-                preferredRange: 1000000
-                size: 3
-                durability: 6
-                scale: Individual
-                classic: 6
-            ODST BR:
-                type: Bullet
-                damage: 1
-                accuracy: 6
-                preferredRange: 80
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 7
-            ODST Flamethrower:
-                type: Fire
-                damage: 4
-                accuracy: 8
-                preferredRange: 10
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 4
-            ODST Railgun:
-                type: Bullet
-                damage: 3
-                accuracy: 8
-                preferredRange: 60
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 4
-            ODST SAW:
-                type: Bullet
-                damage: 3
-                accuracy: 7
-                preferredRange: 70
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 6
-            ODST Turret:
-                type: Bullet
-                damage: 4
-                accuracy: 7
-                preferredRange: 70
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 4
-            Officer Heavy Pistol:
-                type: Bullet
-                damage: 2
-                accuracy: 5
-                preferredRange: 70
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 7
-            Officer Light Pistol:
-                type: Bullet
-                damage: 1
-                accuracy: 2
-                preferredRange: 30
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 3
-            Officer Magnum:
-                type: Bullet
-                damage: 1
-                accuracy: 3
-                preferredRange: 60
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 3
-            Officer unarmed:
-                type: Crush
-                damage: 1
                 accuracy: 0
-                preferredRange: 1
-                size: 1
-                durability: 2
-                scale: Individual
-                classic: 3
-            Pelican:
-                type: Bullet
-                damage: 2
-                accuracy: 7
-                preferredRange: 70
-                size: 3
-                durability: 2
-                scale: Individual
-                classic: 6
-            Phantom:
-                type: Blast
-                damage: 1
-                accuracy: 4
-                preferredRange: 70
-                size: 3
-                durability: 5
-                scale: Individual
-                classic: 7
-            Promethean Soldier suppressor:
-                type: Bullet
-                damage: 2
-                accuracy: 4
-                preferredRange: 50
-                size: 1
-                durability: 3
-                scale: Individual
-                classic: 3
-            Scarab + crew:
-                type: Blast
-                damage: 10
-                accuracy: 10
-                preferredRange: 500
-                size: 6
-                durability: 20
-                scale: Individual
-                classic: 8
-            Scarab division:
-                type: Blast
-                damage: 10
-                accuracy: 10
-                preferredRange: 500
-                size: 6
-                durability: 20
-                scale: Battalion
-                classic: 9
-            Scorpion:
-                type: Blast
-                damage: 8
-                accuracy: 12
-                preferredRange: 400
-                size: 3
-                durability: 5
-                scale: Individual
-                classic: 8
-            Scorpion division:
-                type: Blast
-                damage: 8
-                accuracy: 12
-                preferredRange: 300
-                size: 3
-                durability: 5
-                scale: Battalion
-                classic: 8
-            Sentinel:
-                type: Fire
-                damage: 2
-                accuracy: 4
-                preferredRange: 60
-                size: 1
-                durability: 1
-                scale: Individual
-                classic: 9
-            Sentinel division:
-                damage: 2
-                accuracy: 4
-                preferredRange: 60
-                size: 1
-                durability: 1
-                scale: Battalion
-                classic: 7
-            Sentinel Enforcer:
-                type: Blast
-                damage: 5
-                accuracy: 9
-                preferredRange: 100
+                preferredRange: 0
                 size: 2
-                durability: 5
-                scale: Individual
-                classic: 6
-            Skirmisher division:
-                damage: 1
-                accuracy: 3
-                preferredRange: 50
-                size: 1
-                durability: 1
-                scale: Battalion
-                classic: 6
-            Skirmisher PP:
-                type: Fire
-                damage: 1
-                accuracy: 3
-                preferredRange: 40
-                size: 1
-                durability: 1
-                scale: Individual
-                classic: 6
-            Spartan-III AR:
-                type: Bullet
-                damage: 1
-                accuracy: 3
-                preferredRange: 40
-                size: 1
-                durability: 6
-                scale: Individual
-                classic: 7
-            Spirit:
-                type: Blast
-                damage: 2
-                accuracy: 4
-                preferredRange: 70
-                size: 3
-                durability: 5
-                scale: Individual
-                classic: 5
-            Tactical MAC:
-                type: Blast
-                damage: 10
-                accuracy: 10
-                preferredRange: 10000
-                size: 3
-                durability: 2
-                scale: Individual
-                classic: 7
-            UNSC captured Scarab:
-                type: Blast
-                damage: 10
-                accuracy: 10
-                preferredRange: 500
-                size: 6
-                durability: 20
-                scale: Battalion
-                classic: 6
-            Warthog:
-                type: Bullet
-                damage: 2
-                accuracy: 7
-                preferredRange: 70
-                size: 2
-                durability: 2
-                scale: Individual
-                classic: 9
-            Wasp:
-                type: Bullet
-                damage: 2
-                accuracy: 8
-                preferredRange: 80
-                size: 2
-                durability: 2
-                scale: Individual
-                classic: 6
-            Wraith:
-                type: Blast
-                damage: 6
-                accuracy: 9
-                preferredRange: 400
-                size: 3
-                durability: 6
-                scale: Individual
+                durability: 10
                 classic: 8
-        Squad:
-            Harvester: {}
-            Kraken: {}
-            AA Wraith:
-                scale: Individual
-                classic: 7
-            Arbiter Prophets Bane:
-                size: 1
-                scale: Individual
-                classic: 8
-            Brain complex:
-                scale: Battalion
-                classic: 6
-            Brute Brute plasma rifle:
-                size: 1
-                scale: Individual
-                classic: 3
-            Brute Brute shot:
-                size: 1
-                scale: Individual
-                classic: 5
-            Brute Chieftain hammer:
-                size: 1
-                scale: Individual
-                classic: 8
-            Brute Chopper:
-                scale: Individual
-                classic: 6
-            Brute light vehicle division:
-                scale: Battalion
-                classic: 3
-            Brute mauler:
-                size: 1
-                scale: Individual
-                classic: 3
-            Brute spiker:
-                size: 1
-                scale: Individual
-                classic: 6
-            Carrier brood:
-                size: 1
-                scale: Battalion
-                classic: 4
-            Corrupted capital ship:
-                scale: Battalion
-                classic: 7
-            Covenant AA Tower (Mantis):
-                scale: Individual
-                classic: 8
-            Covenant Air vehicle division:
-                scale: Battalion
-                classic: 7
-            Covenant capital ship:
-                scale: Battalion
-                classic: 9
-            Covenant heavy infantry division:
-                size: 1
-                scale: Battalion
-                classic: 6
-            Covenant Mechanized division:
-                scale: Battalion
-                classic: 7
-            Covenant Stealth division:
-                size: 1
-                scale: Battalion
-                classic: 5
-            Crawler division:
-                size: 0.8
-                scale: Battalion
-                classic: 6
-            Drone division:
-                size: 1
-                scale: Battalion
-                classic: 7
-            Drone PP:
-                size: 1
-                scale: Individual
-                classic: 5
-            Elite Concussion Rifle:
-                size: 1
-                scale: Individual
-                classic: 3
-            Elite division:
-                size: 1
-                scale: Battalion
-                classic: 6
-            Elite energy knife:
-                size: 1
-                scale: Individual
-                classic: 3
-            Elite Plasma Caster:
-                size: 1
-                scale: Individual
-                classic: 3
-            Elite Ranger PR x2:
-                size: 1
-                scale: Individual
-                classic: 6
-            Elite sword:
-                size: 1
-                scale: Individual
-                classic: 7
-            Elite Ultra PR:
-                size: 1
-                scale: Individual
-                classic: 6
-            Flood air division:
-                scale: Battalion
-                classic: 5
-            Flood armor division:
-                scale: Battalion
-                classic: 5
-            Flood light vehicle division:
-                scale: Battalion
-                classic: 6
-            Forerunner air factory:
-                scale: Battalion
-                classic: 7
-            Forerunner Heavy Air division:
-                size: 3
-                scale: Battalion
-                classic: 7
-            Grunt FRC:
-                size: 1
-                scale: Individual
-                classic: 5
-            Grunt needler:
-                size: 1
-                scale: Individual
-                classic: 6
-            Grunt plasma launcher:
-                size: 1
-                scale: Individual
-                classic: 3
-            Grunt plasma turret:
-                size: 1
-                scale: Individual
-                classic: 3
-            Grunt Shade turret:
-                size: 1
-                scale: Individual
-                classic: 5
-            Grunt voids tear:
-                size: 1
-                scale: Individual
-                classic: 3
-            Infected scarab division:
-                scale: Battalion
-                classic: 7
-            Jackal beam rifle:
-                size: 1
-                scale: Individual
-                classic: 5
-            Jackal carbine:
-                size: 1
-                scale: Individual
-                classic: 5
-            Jackal needle rifle:
-                size: 1
-                scale: Individual
-                classic: 3
-            Knight incineration cannon:
-                size: 2
-                scale: Individual
-                classic: 4
-            Marine airborne infantry:
-                scale: Battalion
-                classic: 6
-            Marine stationary turret:
-                size: 1
-                scale: Individual
-                classic: 3
-            Marine sticky launcher:
-                size: 1
-                scale: Individual
-                classic: 3
-            Mechanized Marine division:
-                scale: Battalion
-                classic: 7
-            ODST The Answer:
-                size: 1
-                scale: Individual
-                classic: 5
-            Promethean champion division:
-                size: 2
-                scale: Battalion
-                classic: 7
-            Promethean division:
-                size: 1
-                scale: Battalion
-                classic: 7
-            Promethean Knight scattershot:
-                size: 2
-                scale: Individual
-                classic: 6
-            Promethean Soldier Boltshot:
-                size: 1
-                scale: Individual
-                classic: 3
-            Promethean Soldier Lightrifle:
-                size: 1
-                scale: Individual
-                classic: 4
-            Pure swarm:
-                size: Large
-                scale: Battalion
-                classic: 6
-            Sentinel constructor division:
-                size: Tiny
-                scale: Battalion
-                classic: 3
-            Stealth Elite PR:
-                size: 1
-                scale: Individual
-                classic: 6
-            Stratosentinel:
-                scale: Battalion
-                classic: 6
-            UNSC air division:
-                size: 3
-                scale: Battalion
-                classic: 6
-            UNSC crew division:
-                size: 1
-                scale: Battalion
-                classic: 4
-    UNSC / Hannibal:
-        Item:
-            Hannibal Ion Launcher:
-                type: Fire
-                rof: 0.2
-                classic: 1
+                cost: 1
 
-    UNSC / ONI:
-        Item:
-            Heavy Chaingun:
-                type: Impact
-                rof: 5.0
-                classic: 2
-                cost: 11
-
-    UNSC / Elites:
-        Item:
-            Needle Chaingun:
-                type: Explosive
-                rof: 5.0
-                classic: 1
-                cost: 11
-            Vespin Rocket Turret:
-                type: Impact
-                rof: 2.0
-                classic: 1
-                cost: 12
+        Squad: {}
