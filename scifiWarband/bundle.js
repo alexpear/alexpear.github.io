@@ -116,6 +116,3993 @@ module.exports = commaNumber
 module.exports.bindWith = bindWith
 
 },{}],2:[function(require,module,exports){
+'use strict';
+
+
+var yaml = require('./lib/js-yaml.js');
+
+
+module.exports = yaml;
+
+},{"./lib/js-yaml.js":3}],3:[function(require,module,exports){
+'use strict';
+
+
+var loader = require('./js-yaml/loader');
+var dumper = require('./js-yaml/dumper');
+
+
+function deprecated(name) {
+  return function () {
+    throw new Error('Function ' + name + ' is deprecated and cannot be used.');
+  };
+}
+
+
+module.exports.Type                = require('./js-yaml/type');
+module.exports.Schema              = require('./js-yaml/schema');
+module.exports.FAILSAFE_SCHEMA     = require('./js-yaml/schema/failsafe');
+module.exports.JSON_SCHEMA         = require('./js-yaml/schema/json');
+module.exports.CORE_SCHEMA         = require('./js-yaml/schema/core');
+module.exports.DEFAULT_SAFE_SCHEMA = require('./js-yaml/schema/default_safe');
+module.exports.DEFAULT_FULL_SCHEMA = require('./js-yaml/schema/default_full');
+module.exports.load                = loader.load;
+module.exports.loadAll             = loader.loadAll;
+module.exports.safeLoad            = loader.safeLoad;
+module.exports.safeLoadAll         = loader.safeLoadAll;
+module.exports.dump                = dumper.dump;
+module.exports.safeDump            = dumper.safeDump;
+module.exports.YAMLException       = require('./js-yaml/exception');
+
+// Deprecated schema names from JS-YAML 2.0.x
+module.exports.MINIMAL_SCHEMA = require('./js-yaml/schema/failsafe');
+module.exports.SAFE_SCHEMA    = require('./js-yaml/schema/default_safe');
+module.exports.DEFAULT_SCHEMA = require('./js-yaml/schema/default_full');
+
+// Deprecated functions from JS-YAML 1.x.x
+module.exports.scan           = deprecated('scan');
+module.exports.parse          = deprecated('parse');
+module.exports.compose        = deprecated('compose');
+module.exports.addConstructor = deprecated('addConstructor');
+
+},{"./js-yaml/dumper":5,"./js-yaml/exception":6,"./js-yaml/loader":7,"./js-yaml/schema":9,"./js-yaml/schema/core":10,"./js-yaml/schema/default_full":11,"./js-yaml/schema/default_safe":12,"./js-yaml/schema/failsafe":13,"./js-yaml/schema/json":14,"./js-yaml/type":15}],4:[function(require,module,exports){
+'use strict';
+
+
+function isNothing(subject) {
+  return (typeof subject === 'undefined') || (subject === null);
+}
+
+
+function isObject(subject) {
+  return (typeof subject === 'object') && (subject !== null);
+}
+
+
+function toArray(sequence) {
+  if (Array.isArray(sequence)) return sequence;
+  else if (isNothing(sequence)) return [];
+
+  return [ sequence ];
+}
+
+
+function extend(target, source) {
+  var index, length, key, sourceKeys;
+
+  if (source) {
+    sourceKeys = Object.keys(source);
+
+    for (index = 0, length = sourceKeys.length; index < length; index += 1) {
+      key = sourceKeys[index];
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+
+function repeat(string, count) {
+  var result = '', cycle;
+
+  for (cycle = 0; cycle < count; cycle += 1) {
+    result += string;
+  }
+
+  return result;
+}
+
+
+function isNegativeZero(number) {
+  return (number === 0) && (Number.NEGATIVE_INFINITY === 1 / number);
+}
+
+
+module.exports.isNothing      = isNothing;
+module.exports.isObject       = isObject;
+module.exports.toArray        = toArray;
+module.exports.repeat         = repeat;
+module.exports.isNegativeZero = isNegativeZero;
+module.exports.extend         = extend;
+
+},{}],5:[function(require,module,exports){
+'use strict';
+
+/*eslint-disable no-use-before-define*/
+
+var common              = require('./common');
+var YAMLException       = require('./exception');
+var DEFAULT_FULL_SCHEMA = require('./schema/default_full');
+var DEFAULT_SAFE_SCHEMA = require('./schema/default_safe');
+
+var _toString       = Object.prototype.toString;
+var _hasOwnProperty = Object.prototype.hasOwnProperty;
+
+var CHAR_TAB                  = 0x09; /* Tab */
+var CHAR_LINE_FEED            = 0x0A; /* LF */
+var CHAR_CARRIAGE_RETURN      = 0x0D; /* CR */
+var CHAR_SPACE                = 0x20; /* Space */
+var CHAR_EXCLAMATION          = 0x21; /* ! */
+var CHAR_DOUBLE_QUOTE         = 0x22; /* " */
+var CHAR_SHARP                = 0x23; /* # */
+var CHAR_PERCENT              = 0x25; /* % */
+var CHAR_AMPERSAND            = 0x26; /* & */
+var CHAR_SINGLE_QUOTE         = 0x27; /* ' */
+var CHAR_ASTERISK             = 0x2A; /* * */
+var CHAR_COMMA                = 0x2C; /* , */
+var CHAR_MINUS                = 0x2D; /* - */
+var CHAR_COLON                = 0x3A; /* : */
+var CHAR_EQUALS               = 0x3D; /* = */
+var CHAR_GREATER_THAN         = 0x3E; /* > */
+var CHAR_QUESTION             = 0x3F; /* ? */
+var CHAR_COMMERCIAL_AT        = 0x40; /* @ */
+var CHAR_LEFT_SQUARE_BRACKET  = 0x5B; /* [ */
+var CHAR_RIGHT_SQUARE_BRACKET = 0x5D; /* ] */
+var CHAR_GRAVE_ACCENT         = 0x60; /* ` */
+var CHAR_LEFT_CURLY_BRACKET   = 0x7B; /* { */
+var CHAR_VERTICAL_LINE        = 0x7C; /* | */
+var CHAR_RIGHT_CURLY_BRACKET  = 0x7D; /* } */
+
+var ESCAPE_SEQUENCES = {};
+
+ESCAPE_SEQUENCES[0x00]   = '\\0';
+ESCAPE_SEQUENCES[0x07]   = '\\a';
+ESCAPE_SEQUENCES[0x08]   = '\\b';
+ESCAPE_SEQUENCES[0x09]   = '\\t';
+ESCAPE_SEQUENCES[0x0A]   = '\\n';
+ESCAPE_SEQUENCES[0x0B]   = '\\v';
+ESCAPE_SEQUENCES[0x0C]   = '\\f';
+ESCAPE_SEQUENCES[0x0D]   = '\\r';
+ESCAPE_SEQUENCES[0x1B]   = '\\e';
+ESCAPE_SEQUENCES[0x22]   = '\\"';
+ESCAPE_SEQUENCES[0x5C]   = '\\\\';
+ESCAPE_SEQUENCES[0x85]   = '\\N';
+ESCAPE_SEQUENCES[0xA0]   = '\\_';
+ESCAPE_SEQUENCES[0x2028] = '\\L';
+ESCAPE_SEQUENCES[0x2029] = '\\P';
+
+var DEPRECATED_BOOLEANS_SYNTAX = [
+  'y', 'Y', 'yes', 'Yes', 'YES', 'on', 'On', 'ON',
+  'n', 'N', 'no', 'No', 'NO', 'off', 'Off', 'OFF'
+];
+
+function compileStyleMap(schema, map) {
+  var result, keys, index, length, tag, style, type;
+
+  if (map === null) return {};
+
+  result = {};
+  keys = Object.keys(map);
+
+  for (index = 0, length = keys.length; index < length; index += 1) {
+    tag = keys[index];
+    style = String(map[tag]);
+
+    if (tag.slice(0, 2) === '!!') {
+      tag = 'tag:yaml.org,2002:' + tag.slice(2);
+    }
+    type = schema.compiledTypeMap['fallback'][tag];
+
+    if (type && _hasOwnProperty.call(type.styleAliases, style)) {
+      style = type.styleAliases[style];
+    }
+
+    result[tag] = style;
+  }
+
+  return result;
+}
+
+function encodeHex(character) {
+  var string, handle, length;
+
+  string = character.toString(16).toUpperCase();
+
+  if (character <= 0xFF) {
+    handle = 'x';
+    length = 2;
+  } else if (character <= 0xFFFF) {
+    handle = 'u';
+    length = 4;
+  } else if (character <= 0xFFFFFFFF) {
+    handle = 'U';
+    length = 8;
+  } else {
+    throw new YAMLException('code point within a string may not be greater than 0xFFFFFFFF');
+  }
+
+  return '\\' + handle + common.repeat('0', length - string.length) + string;
+}
+
+function State(options) {
+  this.schema        = options['schema'] || DEFAULT_FULL_SCHEMA;
+  this.indent        = Math.max(1, (options['indent'] || 2));
+  this.noArrayIndent = options['noArrayIndent'] || false;
+  this.skipInvalid   = options['skipInvalid'] || false;
+  this.flowLevel     = (common.isNothing(options['flowLevel']) ? -1 : options['flowLevel']);
+  this.styleMap      = compileStyleMap(this.schema, options['styles'] || null);
+  this.sortKeys      = options['sortKeys'] || false;
+  this.lineWidth     = options['lineWidth'] || 80;
+  this.noRefs        = options['noRefs'] || false;
+  this.noCompatMode  = options['noCompatMode'] || false;
+  this.condenseFlow  = options['condenseFlow'] || false;
+
+  this.implicitTypes = this.schema.compiledImplicit;
+  this.explicitTypes = this.schema.compiledExplicit;
+
+  this.tag = null;
+  this.result = '';
+
+  this.duplicates = [];
+  this.usedDuplicates = null;
+}
+
+// Indents every line in a string. Empty lines (\n only) are not indented.
+function indentString(string, spaces) {
+  var ind = common.repeat(' ', spaces),
+      position = 0,
+      next = -1,
+      result = '',
+      line,
+      length = string.length;
+
+  while (position < length) {
+    next = string.indexOf('\n', position);
+    if (next === -1) {
+      line = string.slice(position);
+      position = length;
+    } else {
+      line = string.slice(position, next + 1);
+      position = next + 1;
+    }
+
+    if (line.length && line !== '\n') result += ind;
+
+    result += line;
+  }
+
+  return result;
+}
+
+function generateNextLine(state, level) {
+  return '\n' + common.repeat(' ', state.indent * level);
+}
+
+function testImplicitResolving(state, str) {
+  var index, length, type;
+
+  for (index = 0, length = state.implicitTypes.length; index < length; index += 1) {
+    type = state.implicitTypes[index];
+
+    if (type.resolve(str)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// [33] s-white ::= s-space | s-tab
+function isWhitespace(c) {
+  return c === CHAR_SPACE || c === CHAR_TAB;
+}
+
+// Returns true if the character can be printed without escaping.
+// From YAML 1.2: "any allowed characters known to be non-printable
+// should also be escaped. [However,] This isn’t mandatory"
+// Derived from nb-char - \t - #x85 - #xA0 - #x2028 - #x2029.
+function isPrintable(c) {
+  return  (0x00020 <= c && c <= 0x00007E)
+      || ((0x000A1 <= c && c <= 0x00D7FF) && c !== 0x2028 && c !== 0x2029)
+      || ((0x0E000 <= c && c <= 0x00FFFD) && c !== 0xFEFF /* BOM */)
+      ||  (0x10000 <= c && c <= 0x10FFFF);
+}
+
+// [34] ns-char ::= nb-char - s-white
+// [27] nb-char ::= c-printable - b-char - c-byte-order-mark
+// [26] b-char  ::= b-line-feed | b-carriage-return
+// [24] b-line-feed       ::=     #xA    /* LF */
+// [25] b-carriage-return ::=     #xD    /* CR */
+// [3]  c-byte-order-mark ::=     #xFEFF
+function isNsChar(c) {
+  return isPrintable(c) && !isWhitespace(c)
+    // byte-order-mark
+    && c !== 0xFEFF
+    // b-char
+    && c !== CHAR_CARRIAGE_RETURN
+    && c !== CHAR_LINE_FEED;
+}
+
+// Simplified test for values allowed after the first character in plain style.
+function isPlainSafe(c, prev) {
+  // Uses a subset of nb-char - c-flow-indicator - ":" - "#"
+  // where nb-char ::= c-printable - b-char - c-byte-order-mark.
+  return isPrintable(c) && c !== 0xFEFF
+    // - c-flow-indicator
+    && c !== CHAR_COMMA
+    && c !== CHAR_LEFT_SQUARE_BRACKET
+    && c !== CHAR_RIGHT_SQUARE_BRACKET
+    && c !== CHAR_LEFT_CURLY_BRACKET
+    && c !== CHAR_RIGHT_CURLY_BRACKET
+    // - ":" - "#"
+    // /* An ns-char preceding */ "#"
+    && c !== CHAR_COLON
+    && ((c !== CHAR_SHARP) || (prev && isNsChar(prev)));
+}
+
+// Simplified test for values allowed as the first character in plain style.
+function isPlainSafeFirst(c) {
+  // Uses a subset of ns-char - c-indicator
+  // where ns-char = nb-char - s-white.
+  return isPrintable(c) && c !== 0xFEFF
+    && !isWhitespace(c) // - s-white
+    // - (c-indicator ::=
+    // “-” | “?” | “:” | “,” | “[” | “]” | “{” | “}”
+    && c !== CHAR_MINUS
+    && c !== CHAR_QUESTION
+    && c !== CHAR_COLON
+    && c !== CHAR_COMMA
+    && c !== CHAR_LEFT_SQUARE_BRACKET
+    && c !== CHAR_RIGHT_SQUARE_BRACKET
+    && c !== CHAR_LEFT_CURLY_BRACKET
+    && c !== CHAR_RIGHT_CURLY_BRACKET
+    // | “#” | “&” | “*” | “!” | “|” | “=” | “>” | “'” | “"”
+    && c !== CHAR_SHARP
+    && c !== CHAR_AMPERSAND
+    && c !== CHAR_ASTERISK
+    && c !== CHAR_EXCLAMATION
+    && c !== CHAR_VERTICAL_LINE
+    && c !== CHAR_EQUALS
+    && c !== CHAR_GREATER_THAN
+    && c !== CHAR_SINGLE_QUOTE
+    && c !== CHAR_DOUBLE_QUOTE
+    // | “%” | “@” | “`”)
+    && c !== CHAR_PERCENT
+    && c !== CHAR_COMMERCIAL_AT
+    && c !== CHAR_GRAVE_ACCENT;
+}
+
+// Determines whether block indentation indicator is required.
+function needIndentIndicator(string) {
+  var leadingSpaceRe = /^\n* /;
+  return leadingSpaceRe.test(string);
+}
+
+var STYLE_PLAIN   = 1,
+    STYLE_SINGLE  = 2,
+    STYLE_LITERAL = 3,
+    STYLE_FOLDED  = 4,
+    STYLE_DOUBLE  = 5;
+
+// Determines which scalar styles are possible and returns the preferred style.
+// lineWidth = -1 => no limit.
+// Pre-conditions: str.length > 0.
+// Post-conditions:
+//    STYLE_PLAIN or STYLE_SINGLE => no \n are in the string.
+//    STYLE_LITERAL => no lines are suitable for folding (or lineWidth is -1).
+//    STYLE_FOLDED => a line > lineWidth and can be folded (and lineWidth != -1).
+function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, testAmbiguousType) {
+  var i;
+  var char, prev_char;
+  var hasLineBreak = false;
+  var hasFoldableLine = false; // only checked if shouldTrackWidth
+  var shouldTrackWidth = lineWidth !== -1;
+  var previousLineBreak = -1; // count the first line correctly
+  var plain = isPlainSafeFirst(string.charCodeAt(0))
+          && !isWhitespace(string.charCodeAt(string.length - 1));
+
+  if (singleLineOnly) {
+    // Case: no block styles.
+    // Check for disallowed characters to rule out plain and single.
+    for (i = 0; i < string.length; i++) {
+      char = string.charCodeAt(i);
+      if (!isPrintable(char)) {
+        return STYLE_DOUBLE;
+      }
+      prev_char = i > 0 ? string.charCodeAt(i - 1) : null;
+      plain = plain && isPlainSafe(char, prev_char);
+    }
+  } else {
+    // Case: block styles permitted.
+    for (i = 0; i < string.length; i++) {
+      char = string.charCodeAt(i);
+      if (char === CHAR_LINE_FEED) {
+        hasLineBreak = true;
+        // Check if any line can be folded.
+        if (shouldTrackWidth) {
+          hasFoldableLine = hasFoldableLine ||
+            // Foldable line = too long, and not more-indented.
+            (i - previousLineBreak - 1 > lineWidth &&
+             string[previousLineBreak + 1] !== ' ');
+          previousLineBreak = i;
+        }
+      } else if (!isPrintable(char)) {
+        return STYLE_DOUBLE;
+      }
+      prev_char = i > 0 ? string.charCodeAt(i - 1) : null;
+      plain = plain && isPlainSafe(char, prev_char);
+    }
+    // in case the end is missing a \n
+    hasFoldableLine = hasFoldableLine || (shouldTrackWidth &&
+      (i - previousLineBreak - 1 > lineWidth &&
+       string[previousLineBreak + 1] !== ' '));
+  }
+  // Although every style can represent \n without escaping, prefer block styles
+  // for multiline, since they're more readable and they don't add empty lines.
+  // Also prefer folding a super-long line.
+  if (!hasLineBreak && !hasFoldableLine) {
+    // Strings interpretable as another type have to be quoted;
+    // e.g. the string 'true' vs. the boolean true.
+    return plain && !testAmbiguousType(string)
+      ? STYLE_PLAIN : STYLE_SINGLE;
+  }
+  // Edge case: block indentation indicator can only have one digit.
+  if (indentPerLevel > 9 && needIndentIndicator(string)) {
+    return STYLE_DOUBLE;
+  }
+  // At this point we know block styles are valid.
+  // Prefer literal style unless we want to fold.
+  return hasFoldableLine ? STYLE_FOLDED : STYLE_LITERAL;
+}
+
+// Note: line breaking/folding is implemented for only the folded style.
+// NB. We drop the last trailing newline (if any) of a returned block scalar
+//  since the dumper adds its own newline. This always works:
+//    • No ending newline => unaffected; already using strip "-" chomping.
+//    • Ending newline    => removed then restored.
+//  Importantly, this keeps the "+" chomp indicator from gaining an extra line.
+function writeScalar(state, string, level, iskey) {
+  state.dump = (function () {
+    if (string.length === 0) {
+      return "''";
+    }
+    if (!state.noCompatMode &&
+        DEPRECATED_BOOLEANS_SYNTAX.indexOf(string) !== -1) {
+      return "'" + string + "'";
+    }
+
+    var indent = state.indent * Math.max(1, level); // no 0-indent scalars
+    // As indentation gets deeper, let the width decrease monotonically
+    // to the lower bound min(state.lineWidth, 40).
+    // Note that this implies
+    //  state.lineWidth ≤ 40 + state.indent: width is fixed at the lower bound.
+    //  state.lineWidth > 40 + state.indent: width decreases until the lower bound.
+    // This behaves better than a constant minimum width which disallows narrower options,
+    // or an indent threshold which causes the width to suddenly increase.
+    var lineWidth = state.lineWidth === -1
+      ? -1 : Math.max(Math.min(state.lineWidth, 40), state.lineWidth - indent);
+
+    // Without knowing if keys are implicit/explicit, assume implicit for safety.
+    var singleLineOnly = iskey
+      // No block styles in flow mode.
+      || (state.flowLevel > -1 && level >= state.flowLevel);
+    function testAmbiguity(string) {
+      return testImplicitResolving(state, string);
+    }
+
+    switch (chooseScalarStyle(string, singleLineOnly, state.indent, lineWidth, testAmbiguity)) {
+      case STYLE_PLAIN:
+        return string;
+      case STYLE_SINGLE:
+        return "'" + string.replace(/'/g, "''") + "'";
+      case STYLE_LITERAL:
+        return '|' + blockHeader(string, state.indent)
+          + dropEndingNewline(indentString(string, indent));
+      case STYLE_FOLDED:
+        return '>' + blockHeader(string, state.indent)
+          + dropEndingNewline(indentString(foldString(string, lineWidth), indent));
+      case STYLE_DOUBLE:
+        return '"' + escapeString(string, lineWidth) + '"';
+      default:
+        throw new YAMLException('impossible error: invalid scalar style');
+    }
+  }());
+}
+
+// Pre-conditions: string is valid for a block scalar, 1 <= indentPerLevel <= 9.
+function blockHeader(string, indentPerLevel) {
+  var indentIndicator = needIndentIndicator(string) ? String(indentPerLevel) : '';
+
+  // note the special case: the string '\n' counts as a "trailing" empty line.
+  var clip =          string[string.length - 1] === '\n';
+  var keep = clip && (string[string.length - 2] === '\n' || string === '\n');
+  var chomp = keep ? '+' : (clip ? '' : '-');
+
+  return indentIndicator + chomp + '\n';
+}
+
+// (See the note for writeScalar.)
+function dropEndingNewline(string) {
+  return string[string.length - 1] === '\n' ? string.slice(0, -1) : string;
+}
+
+// Note: a long line without a suitable break point will exceed the width limit.
+// Pre-conditions: every char in str isPrintable, str.length > 0, width > 0.
+function foldString(string, width) {
+  // In folded style, $k$ consecutive newlines output as $k+1$ newlines—
+  // unless they're before or after a more-indented line, or at the very
+  // beginning or end, in which case $k$ maps to $k$.
+  // Therefore, parse each chunk as newline(s) followed by a content line.
+  var lineRe = /(\n+)([^\n]*)/g;
+
+  // first line (possibly an empty line)
+  var result = (function () {
+    var nextLF = string.indexOf('\n');
+    nextLF = nextLF !== -1 ? nextLF : string.length;
+    lineRe.lastIndex = nextLF;
+    return foldLine(string.slice(0, nextLF), width);
+  }());
+  // If we haven't reached the first content line yet, don't add an extra \n.
+  var prevMoreIndented = string[0] === '\n' || string[0] === ' ';
+  var moreIndented;
+
+  // rest of the lines
+  var match;
+  while ((match = lineRe.exec(string))) {
+    var prefix = match[1], line = match[2];
+    moreIndented = (line[0] === ' ');
+    result += prefix
+      + (!prevMoreIndented && !moreIndented && line !== ''
+        ? '\n' : '')
+      + foldLine(line, width);
+    prevMoreIndented = moreIndented;
+  }
+
+  return result;
+}
+
+// Greedy line breaking.
+// Picks the longest line under the limit each time,
+// otherwise settles for the shortest line over the limit.
+// NB. More-indented lines *cannot* be folded, as that would add an extra \n.
+function foldLine(line, width) {
+  if (line === '' || line[0] === ' ') return line;
+
+  // Since a more-indented line adds a \n, breaks can't be followed by a space.
+  var breakRe = / [^ ]/g; // note: the match index will always be <= length-2.
+  var match;
+  // start is an inclusive index. end, curr, and next are exclusive.
+  var start = 0, end, curr = 0, next = 0;
+  var result = '';
+
+  // Invariants: 0 <= start <= length-1.
+  //   0 <= curr <= next <= max(0, length-2). curr - start <= width.
+  // Inside the loop:
+  //   A match implies length >= 2, so curr and next are <= length-2.
+  while ((match = breakRe.exec(line))) {
+    next = match.index;
+    // maintain invariant: curr - start <= width
+    if (next - start > width) {
+      end = (curr > start) ? curr : next; // derive end <= length-2
+      result += '\n' + line.slice(start, end);
+      // skip the space that was output as \n
+      start = end + 1;                    // derive start <= length-1
+    }
+    curr = next;
+  }
+
+  // By the invariants, start <= length-1, so there is something left over.
+  // It is either the whole string or a part starting from non-whitespace.
+  result += '\n';
+  // Insert a break if the remainder is too long and there is a break available.
+  if (line.length - start > width && curr > start) {
+    result += line.slice(start, curr) + '\n' + line.slice(curr + 1);
+  } else {
+    result += line.slice(start);
+  }
+
+  return result.slice(1); // drop extra \n joiner
+}
+
+// Escapes a double-quoted string.
+function escapeString(string) {
+  var result = '';
+  var char, nextChar;
+  var escapeSeq;
+
+  for (var i = 0; i < string.length; i++) {
+    char = string.charCodeAt(i);
+    // Check for surrogate pairs (reference Unicode 3.0 section "3.7 Surrogates").
+    if (char >= 0xD800 && char <= 0xDBFF/* high surrogate */) {
+      nextChar = string.charCodeAt(i + 1);
+      if (nextChar >= 0xDC00 && nextChar <= 0xDFFF/* low surrogate */) {
+        // Combine the surrogate pair and store it escaped.
+        result += encodeHex((char - 0xD800) * 0x400 + nextChar - 0xDC00 + 0x10000);
+        // Advance index one extra since we already used that char here.
+        i++; continue;
+      }
+    }
+    escapeSeq = ESCAPE_SEQUENCES[char];
+    result += !escapeSeq && isPrintable(char)
+      ? string[i]
+      : escapeSeq || encodeHex(char);
+  }
+
+  return result;
+}
+
+function writeFlowSequence(state, level, object) {
+  var _result = '',
+      _tag    = state.tag,
+      index,
+      length;
+
+  for (index = 0, length = object.length; index < length; index += 1) {
+    // Write only valid elements.
+    if (writeNode(state, level, object[index], false, false)) {
+      if (index !== 0) _result += ',' + (!state.condenseFlow ? ' ' : '');
+      _result += state.dump;
+    }
+  }
+
+  state.tag = _tag;
+  state.dump = '[' + _result + ']';
+}
+
+function writeBlockSequence(state, level, object, compact) {
+  var _result = '',
+      _tag    = state.tag,
+      index,
+      length;
+
+  for (index = 0, length = object.length; index < length; index += 1) {
+    // Write only valid elements.
+    if (writeNode(state, level + 1, object[index], true, true)) {
+      if (!compact || index !== 0) {
+        _result += generateNextLine(state, level);
+      }
+
+      if (state.dump && CHAR_LINE_FEED === state.dump.charCodeAt(0)) {
+        _result += '-';
+      } else {
+        _result += '- ';
+      }
+
+      _result += state.dump;
+    }
+  }
+
+  state.tag = _tag;
+  state.dump = _result || '[]'; // Empty sequence if no valid values.
+}
+
+function writeFlowMapping(state, level, object) {
+  var _result       = '',
+      _tag          = state.tag,
+      objectKeyList = Object.keys(object),
+      index,
+      length,
+      objectKey,
+      objectValue,
+      pairBuffer;
+
+  for (index = 0, length = objectKeyList.length; index < length; index += 1) {
+
+    pairBuffer = '';
+    if (index !== 0) pairBuffer += ', ';
+
+    if (state.condenseFlow) pairBuffer += '"';
+
+    objectKey = objectKeyList[index];
+    objectValue = object[objectKey];
+
+    if (!writeNode(state, level, objectKey, false, false)) {
+      continue; // Skip this pair because of invalid key;
+    }
+
+    if (state.dump.length > 1024) pairBuffer += '? ';
+
+    pairBuffer += state.dump + (state.condenseFlow ? '"' : '') + ':' + (state.condenseFlow ? '' : ' ');
+
+    if (!writeNode(state, level, objectValue, false, false)) {
+      continue; // Skip this pair because of invalid value.
+    }
+
+    pairBuffer += state.dump;
+
+    // Both key and value are valid.
+    _result += pairBuffer;
+  }
+
+  state.tag = _tag;
+  state.dump = '{' + _result + '}';
+}
+
+function writeBlockMapping(state, level, object, compact) {
+  var _result       = '',
+      _tag          = state.tag,
+      objectKeyList = Object.keys(object),
+      index,
+      length,
+      objectKey,
+      objectValue,
+      explicitPair,
+      pairBuffer;
+
+  // Allow sorting keys so that the output file is deterministic
+  if (state.sortKeys === true) {
+    // Default sorting
+    objectKeyList.sort();
+  } else if (typeof state.sortKeys === 'function') {
+    // Custom sort function
+    objectKeyList.sort(state.sortKeys);
+  } else if (state.sortKeys) {
+    // Something is wrong
+    throw new YAMLException('sortKeys must be a boolean or a function');
+  }
+
+  for (index = 0, length = objectKeyList.length; index < length; index += 1) {
+    pairBuffer = '';
+
+    if (!compact || index !== 0) {
+      pairBuffer += generateNextLine(state, level);
+    }
+
+    objectKey = objectKeyList[index];
+    objectValue = object[objectKey];
+
+    if (!writeNode(state, level + 1, objectKey, true, true, true)) {
+      continue; // Skip this pair because of invalid key.
+    }
+
+    explicitPair = (state.tag !== null && state.tag !== '?') ||
+                   (state.dump && state.dump.length > 1024);
+
+    if (explicitPair) {
+      if (state.dump && CHAR_LINE_FEED === state.dump.charCodeAt(0)) {
+        pairBuffer += '?';
+      } else {
+        pairBuffer += '? ';
+      }
+    }
+
+    pairBuffer += state.dump;
+
+    if (explicitPair) {
+      pairBuffer += generateNextLine(state, level);
+    }
+
+    if (!writeNode(state, level + 1, objectValue, true, explicitPair)) {
+      continue; // Skip this pair because of invalid value.
+    }
+
+    if (state.dump && CHAR_LINE_FEED === state.dump.charCodeAt(0)) {
+      pairBuffer += ':';
+    } else {
+      pairBuffer += ': ';
+    }
+
+    pairBuffer += state.dump;
+
+    // Both key and value are valid.
+    _result += pairBuffer;
+  }
+
+  state.tag = _tag;
+  state.dump = _result || '{}'; // Empty mapping if no valid pairs.
+}
+
+function detectType(state, object, explicit) {
+  var _result, typeList, index, length, type, style;
+
+  typeList = explicit ? state.explicitTypes : state.implicitTypes;
+
+  for (index = 0, length = typeList.length; index < length; index += 1) {
+    type = typeList[index];
+
+    if ((type.instanceOf  || type.predicate) &&
+        (!type.instanceOf || ((typeof object === 'object') && (object instanceof type.instanceOf))) &&
+        (!type.predicate  || type.predicate(object))) {
+
+      state.tag = explicit ? type.tag : '?';
+
+      if (type.represent) {
+        style = state.styleMap[type.tag] || type.defaultStyle;
+
+        if (_toString.call(type.represent) === '[object Function]') {
+          _result = type.represent(object, style);
+        } else if (_hasOwnProperty.call(type.represent, style)) {
+          _result = type.represent[style](object, style);
+        } else {
+          throw new YAMLException('!<' + type.tag + '> tag resolver accepts not "' + style + '" style');
+        }
+
+        state.dump = _result;
+      }
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// Serializes `object` and writes it to global `result`.
+// Returns true on success, or false on invalid object.
+//
+function writeNode(state, level, object, block, compact, iskey) {
+  state.tag = null;
+  state.dump = object;
+
+  if (!detectType(state, object, false)) {
+    detectType(state, object, true);
+  }
+
+  var type = _toString.call(state.dump);
+
+  if (block) {
+    block = (state.flowLevel < 0 || state.flowLevel > level);
+  }
+
+  var objectOrArray = type === '[object Object]' || type === '[object Array]',
+      duplicateIndex,
+      duplicate;
+
+  if (objectOrArray) {
+    duplicateIndex = state.duplicates.indexOf(object);
+    duplicate = duplicateIndex !== -1;
+  }
+
+  if ((state.tag !== null && state.tag !== '?') || duplicate || (state.indent !== 2 && level > 0)) {
+    compact = false;
+  }
+
+  if (duplicate && state.usedDuplicates[duplicateIndex]) {
+    state.dump = '*ref_' + duplicateIndex;
+  } else {
+    if (objectOrArray && duplicate && !state.usedDuplicates[duplicateIndex]) {
+      state.usedDuplicates[duplicateIndex] = true;
+    }
+    if (type === '[object Object]') {
+      if (block && (Object.keys(state.dump).length !== 0)) {
+        writeBlockMapping(state, level, state.dump, compact);
+        if (duplicate) {
+          state.dump = '&ref_' + duplicateIndex + state.dump;
+        }
+      } else {
+        writeFlowMapping(state, level, state.dump);
+        if (duplicate) {
+          state.dump = '&ref_' + duplicateIndex + ' ' + state.dump;
+        }
+      }
+    } else if (type === '[object Array]') {
+      var arrayLevel = (state.noArrayIndent && (level > 0)) ? level - 1 : level;
+      if (block && (state.dump.length !== 0)) {
+        writeBlockSequence(state, arrayLevel, state.dump, compact);
+        if (duplicate) {
+          state.dump = '&ref_' + duplicateIndex + state.dump;
+        }
+      } else {
+        writeFlowSequence(state, arrayLevel, state.dump);
+        if (duplicate) {
+          state.dump = '&ref_' + duplicateIndex + ' ' + state.dump;
+        }
+      }
+    } else if (type === '[object String]') {
+      if (state.tag !== '?') {
+        writeScalar(state, state.dump, level, iskey);
+      }
+    } else {
+      if (state.skipInvalid) return false;
+      throw new YAMLException('unacceptable kind of an object to dump ' + type);
+    }
+
+    if (state.tag !== null && state.tag !== '?') {
+      state.dump = '!<' + state.tag + '> ' + state.dump;
+    }
+  }
+
+  return true;
+}
+
+function getDuplicateReferences(object, state) {
+  var objects = [],
+      duplicatesIndexes = [],
+      index,
+      length;
+
+  inspectNode(object, objects, duplicatesIndexes);
+
+  for (index = 0, length = duplicatesIndexes.length; index < length; index += 1) {
+    state.duplicates.push(objects[duplicatesIndexes[index]]);
+  }
+  state.usedDuplicates = new Array(length);
+}
+
+function inspectNode(object, objects, duplicatesIndexes) {
+  var objectKeyList,
+      index,
+      length;
+
+  if (object !== null && typeof object === 'object') {
+    index = objects.indexOf(object);
+    if (index !== -1) {
+      if (duplicatesIndexes.indexOf(index) === -1) {
+        duplicatesIndexes.push(index);
+      }
+    } else {
+      objects.push(object);
+
+      if (Array.isArray(object)) {
+        for (index = 0, length = object.length; index < length; index += 1) {
+          inspectNode(object[index], objects, duplicatesIndexes);
+        }
+      } else {
+        objectKeyList = Object.keys(object);
+
+        for (index = 0, length = objectKeyList.length; index < length; index += 1) {
+          inspectNode(object[objectKeyList[index]], objects, duplicatesIndexes);
+        }
+      }
+    }
+  }
+}
+
+function dump(input, options) {
+  options = options || {};
+
+  var state = new State(options);
+
+  if (!state.noRefs) getDuplicateReferences(input, state);
+
+  if (writeNode(state, 0, input, true, true)) return state.dump + '\n';
+
+  return '';
+}
+
+function safeDump(input, options) {
+  return dump(input, common.extend({ schema: DEFAULT_SAFE_SCHEMA }, options));
+}
+
+module.exports.dump     = dump;
+module.exports.safeDump = safeDump;
+
+},{"./common":4,"./exception":6,"./schema/default_full":11,"./schema/default_safe":12}],6:[function(require,module,exports){
+// YAML error class. http://stackoverflow.com/questions/8458984
+//
+'use strict';
+
+function YAMLException(reason, mark) {
+  // Super constructor
+  Error.call(this);
+
+  this.name = 'YAMLException';
+  this.reason = reason;
+  this.mark = mark;
+  this.message = (this.reason || '(unknown reason)') + (this.mark ? ' ' + this.mark.toString() : '');
+
+  // Include stack trace in error object
+  if (Error.captureStackTrace) {
+    // Chrome and NodeJS
+    Error.captureStackTrace(this, this.constructor);
+  } else {
+    // FF, IE 10+ and Safari 6+. Fallback for others
+    this.stack = (new Error()).stack || '';
+  }
+}
+
+
+// Inherit from Error
+YAMLException.prototype = Object.create(Error.prototype);
+YAMLException.prototype.constructor = YAMLException;
+
+
+YAMLException.prototype.toString = function toString(compact) {
+  var result = this.name + ': ';
+
+  result += this.reason || '(unknown reason)';
+
+  if (!compact && this.mark) {
+    result += ' ' + this.mark.toString();
+  }
+
+  return result;
+};
+
+
+module.exports = YAMLException;
+
+},{}],7:[function(require,module,exports){
+'use strict';
+
+/*eslint-disable max-len,no-use-before-define*/
+
+var common              = require('./common');
+var YAMLException       = require('./exception');
+var Mark                = require('./mark');
+var DEFAULT_SAFE_SCHEMA = require('./schema/default_safe');
+var DEFAULT_FULL_SCHEMA = require('./schema/default_full');
+
+
+var _hasOwnProperty = Object.prototype.hasOwnProperty;
+
+
+var CONTEXT_FLOW_IN   = 1;
+var CONTEXT_FLOW_OUT  = 2;
+var CONTEXT_BLOCK_IN  = 3;
+var CONTEXT_BLOCK_OUT = 4;
+
+
+var CHOMPING_CLIP  = 1;
+var CHOMPING_STRIP = 2;
+var CHOMPING_KEEP  = 3;
+
+
+var PATTERN_NON_PRINTABLE         = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/;
+var PATTERN_NON_ASCII_LINE_BREAKS = /[\x85\u2028\u2029]/;
+var PATTERN_FLOW_INDICATORS       = /[,\[\]\{\}]/;
+var PATTERN_TAG_HANDLE            = /^(?:!|!!|![a-z\-]+!)$/i;
+var PATTERN_TAG_URI               = /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i;
+
+
+function _class(obj) { return Object.prototype.toString.call(obj); }
+
+function is_EOL(c) {
+  return (c === 0x0A/* LF */) || (c === 0x0D/* CR */);
+}
+
+function is_WHITE_SPACE(c) {
+  return (c === 0x09/* Tab */) || (c === 0x20/* Space */);
+}
+
+function is_WS_OR_EOL(c) {
+  return (c === 0x09/* Tab */) ||
+         (c === 0x20/* Space */) ||
+         (c === 0x0A/* LF */) ||
+         (c === 0x0D/* CR */);
+}
+
+function is_FLOW_INDICATOR(c) {
+  return c === 0x2C/* , */ ||
+         c === 0x5B/* [ */ ||
+         c === 0x5D/* ] */ ||
+         c === 0x7B/* { */ ||
+         c === 0x7D/* } */;
+}
+
+function fromHexCode(c) {
+  var lc;
+
+  if ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) {
+    return c - 0x30;
+  }
+
+  /*eslint-disable no-bitwise*/
+  lc = c | 0x20;
+
+  if ((0x61/* a */ <= lc) && (lc <= 0x66/* f */)) {
+    return lc - 0x61 + 10;
+  }
+
+  return -1;
+}
+
+function escapedHexLen(c) {
+  if (c === 0x78/* x */) { return 2; }
+  if (c === 0x75/* u */) { return 4; }
+  if (c === 0x55/* U */) { return 8; }
+  return 0;
+}
+
+function fromDecimalCode(c) {
+  if ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) {
+    return c - 0x30;
+  }
+
+  return -1;
+}
+
+function simpleEscapeSequence(c) {
+  /* eslint-disable indent */
+  return (c === 0x30/* 0 */) ? '\x00' :
+        (c === 0x61/* a */) ? '\x07' :
+        (c === 0x62/* b */) ? '\x08' :
+        (c === 0x74/* t */) ? '\x09' :
+        (c === 0x09/* Tab */) ? '\x09' :
+        (c === 0x6E/* n */) ? '\x0A' :
+        (c === 0x76/* v */) ? '\x0B' :
+        (c === 0x66/* f */) ? '\x0C' :
+        (c === 0x72/* r */) ? '\x0D' :
+        (c === 0x65/* e */) ? '\x1B' :
+        (c === 0x20/* Space */) ? ' ' :
+        (c === 0x22/* " */) ? '\x22' :
+        (c === 0x2F/* / */) ? '/' :
+        (c === 0x5C/* \ */) ? '\x5C' :
+        (c === 0x4E/* N */) ? '\x85' :
+        (c === 0x5F/* _ */) ? '\xA0' :
+        (c === 0x4C/* L */) ? '\u2028' :
+        (c === 0x50/* P */) ? '\u2029' : '';
+}
+
+function charFromCodepoint(c) {
+  if (c <= 0xFFFF) {
+    return String.fromCharCode(c);
+  }
+  // Encode UTF-16 surrogate pair
+  // https://en.wikipedia.org/wiki/UTF-16#Code_points_U.2B010000_to_U.2B10FFFF
+  return String.fromCharCode(
+    ((c - 0x010000) >> 10) + 0xD800,
+    ((c - 0x010000) & 0x03FF) + 0xDC00
+  );
+}
+
+var simpleEscapeCheck = new Array(256); // integer, for fast access
+var simpleEscapeMap = new Array(256);
+for (var i = 0; i < 256; i++) {
+  simpleEscapeCheck[i] = simpleEscapeSequence(i) ? 1 : 0;
+  simpleEscapeMap[i] = simpleEscapeSequence(i);
+}
+
+
+function State(input, options) {
+  this.input = input;
+
+  this.filename  = options['filename']  || null;
+  this.schema    = options['schema']    || DEFAULT_FULL_SCHEMA;
+  this.onWarning = options['onWarning'] || null;
+  this.legacy    = options['legacy']    || false;
+  this.json      = options['json']      || false;
+  this.listener  = options['listener']  || null;
+
+  this.implicitTypes = this.schema.compiledImplicit;
+  this.typeMap       = this.schema.compiledTypeMap;
+
+  this.length     = input.length;
+  this.position   = 0;
+  this.line       = 0;
+  this.lineStart  = 0;
+  this.lineIndent = 0;
+
+  this.documents = [];
+
+  /*
+  this.version;
+  this.checkLineBreaks;
+  this.tagMap;
+  this.anchorMap;
+  this.tag;
+  this.anchor;
+  this.kind;
+  this.result;*/
+
+}
+
+
+function generateError(state, message) {
+  return new YAMLException(
+    message,
+    new Mark(state.filename, state.input, state.position, state.line, (state.position - state.lineStart)));
+}
+
+function throwError(state, message) {
+  throw generateError(state, message);
+}
+
+function throwWarning(state, message) {
+  if (state.onWarning) {
+    state.onWarning.call(null, generateError(state, message));
+  }
+}
+
+
+var directiveHandlers = {
+
+  YAML: function handleYamlDirective(state, name, args) {
+
+    var match, major, minor;
+
+    if (state.version !== null) {
+      throwError(state, 'duplication of %YAML directive');
+    }
+
+    if (args.length !== 1) {
+      throwError(state, 'YAML directive accepts exactly one argument');
+    }
+
+    match = /^([0-9]+)\.([0-9]+)$/.exec(args[0]);
+
+    if (match === null) {
+      throwError(state, 'ill-formed argument of the YAML directive');
+    }
+
+    major = parseInt(match[1], 10);
+    minor = parseInt(match[2], 10);
+
+    if (major !== 1) {
+      throwError(state, 'unacceptable YAML version of the document');
+    }
+
+    state.version = args[0];
+    state.checkLineBreaks = (minor < 2);
+
+    if (minor !== 1 && minor !== 2) {
+      throwWarning(state, 'unsupported YAML version of the document');
+    }
+  },
+
+  TAG: function handleTagDirective(state, name, args) {
+
+    var handle, prefix;
+
+    if (args.length !== 2) {
+      throwError(state, 'TAG directive accepts exactly two arguments');
+    }
+
+    handle = args[0];
+    prefix = args[1];
+
+    if (!PATTERN_TAG_HANDLE.test(handle)) {
+      throwError(state, 'ill-formed tag handle (first argument) of the TAG directive');
+    }
+
+    if (_hasOwnProperty.call(state.tagMap, handle)) {
+      throwError(state, 'there is a previously declared suffix for "' + handle + '" tag handle');
+    }
+
+    if (!PATTERN_TAG_URI.test(prefix)) {
+      throwError(state, 'ill-formed tag prefix (second argument) of the TAG directive');
+    }
+
+    state.tagMap[handle] = prefix;
+  }
+};
+
+
+function captureSegment(state, start, end, checkJson) {
+  var _position, _length, _character, _result;
+
+  if (start < end) {
+    _result = state.input.slice(start, end);
+
+    if (checkJson) {
+      for (_position = 0, _length = _result.length; _position < _length; _position += 1) {
+        _character = _result.charCodeAt(_position);
+        if (!(_character === 0x09 ||
+              (0x20 <= _character && _character <= 0x10FFFF))) {
+          throwError(state, 'expected valid JSON character');
+        }
+      }
+    } else if (PATTERN_NON_PRINTABLE.test(_result)) {
+      throwError(state, 'the stream contains non-printable characters');
+    }
+
+    state.result += _result;
+  }
+}
+
+function mergeMappings(state, destination, source, overridableKeys) {
+  var sourceKeys, key, index, quantity;
+
+  if (!common.isObject(source)) {
+    throwError(state, 'cannot merge mappings; the provided source object is unacceptable');
+  }
+
+  sourceKeys = Object.keys(source);
+
+  for (index = 0, quantity = sourceKeys.length; index < quantity; index += 1) {
+    key = sourceKeys[index];
+
+    if (!_hasOwnProperty.call(destination, key)) {
+      destination[key] = source[key];
+      overridableKeys[key] = true;
+    }
+  }
+}
+
+function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, startLine, startPos) {
+  var index, quantity;
+
+  // The output is a plain object here, so keys can only be strings.
+  // We need to convert keyNode to a string, but doing so can hang the process
+  // (deeply nested arrays that explode exponentially using aliases).
+  if (Array.isArray(keyNode)) {
+    keyNode = Array.prototype.slice.call(keyNode);
+
+    for (index = 0, quantity = keyNode.length; index < quantity; index += 1) {
+      if (Array.isArray(keyNode[index])) {
+        throwError(state, 'nested arrays are not supported inside keys');
+      }
+
+      if (typeof keyNode === 'object' && _class(keyNode[index]) === '[object Object]') {
+        keyNode[index] = '[object Object]';
+      }
+    }
+  }
+
+  // Avoid code execution in load() via toString property
+  // (still use its own toString for arrays, timestamps,
+  // and whatever user schema extensions happen to have @@toStringTag)
+  if (typeof keyNode === 'object' && _class(keyNode) === '[object Object]') {
+    keyNode = '[object Object]';
+  }
+
+
+  keyNode = String(keyNode);
+
+  if (_result === null) {
+    _result = {};
+  }
+
+  if (keyTag === 'tag:yaml.org,2002:merge') {
+    if (Array.isArray(valueNode)) {
+      for (index = 0, quantity = valueNode.length; index < quantity; index += 1) {
+        mergeMappings(state, _result, valueNode[index], overridableKeys);
+      }
+    } else {
+      mergeMappings(state, _result, valueNode, overridableKeys);
+    }
+  } else {
+    if (!state.json &&
+        !_hasOwnProperty.call(overridableKeys, keyNode) &&
+        _hasOwnProperty.call(_result, keyNode)) {
+      state.line = startLine || state.line;
+      state.position = startPos || state.position;
+      throwError(state, 'duplicated mapping key');
+    }
+    _result[keyNode] = valueNode;
+    delete overridableKeys[keyNode];
+  }
+
+  return _result;
+}
+
+function readLineBreak(state) {
+  var ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch === 0x0A/* LF */) {
+    state.position++;
+  } else if (ch === 0x0D/* CR */) {
+    state.position++;
+    if (state.input.charCodeAt(state.position) === 0x0A/* LF */) {
+      state.position++;
+    }
+  } else {
+    throwError(state, 'a line break is expected');
+  }
+
+  state.line += 1;
+  state.lineStart = state.position;
+}
+
+function skipSeparationSpace(state, allowComments, checkIndent) {
+  var lineBreaks = 0,
+      ch = state.input.charCodeAt(state.position);
+
+  while (ch !== 0) {
+    while (is_WHITE_SPACE(ch)) {
+      ch = state.input.charCodeAt(++state.position);
+    }
+
+    if (allowComments && ch === 0x23/* # */) {
+      do {
+        ch = state.input.charCodeAt(++state.position);
+      } while (ch !== 0x0A/* LF */ && ch !== 0x0D/* CR */ && ch !== 0);
+    }
+
+    if (is_EOL(ch)) {
+      readLineBreak(state);
+
+      ch = state.input.charCodeAt(state.position);
+      lineBreaks++;
+      state.lineIndent = 0;
+
+      while (ch === 0x20/* Space */) {
+        state.lineIndent++;
+        ch = state.input.charCodeAt(++state.position);
+      }
+    } else {
+      break;
+    }
+  }
+
+  if (checkIndent !== -1 && lineBreaks !== 0 && state.lineIndent < checkIndent) {
+    throwWarning(state, 'deficient indentation');
+  }
+
+  return lineBreaks;
+}
+
+function testDocumentSeparator(state) {
+  var _position = state.position,
+      ch;
+
+  ch = state.input.charCodeAt(_position);
+
+  // Condition state.position === state.lineStart is tested
+  // in parent on each call, for efficiency. No needs to test here again.
+  if ((ch === 0x2D/* - */ || ch === 0x2E/* . */) &&
+      ch === state.input.charCodeAt(_position + 1) &&
+      ch === state.input.charCodeAt(_position + 2)) {
+
+    _position += 3;
+
+    ch = state.input.charCodeAt(_position);
+
+    if (ch === 0 || is_WS_OR_EOL(ch)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function writeFoldedLines(state, count) {
+  if (count === 1) {
+    state.result += ' ';
+  } else if (count > 1) {
+    state.result += common.repeat('\n', count - 1);
+  }
+}
+
+
+function readPlainScalar(state, nodeIndent, withinFlowCollection) {
+  var preceding,
+      following,
+      captureStart,
+      captureEnd,
+      hasPendingContent,
+      _line,
+      _lineStart,
+      _lineIndent,
+      _kind = state.kind,
+      _result = state.result,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (is_WS_OR_EOL(ch)      ||
+      is_FLOW_INDICATOR(ch) ||
+      ch === 0x23/* # */    ||
+      ch === 0x26/* & */    ||
+      ch === 0x2A/* * */    ||
+      ch === 0x21/* ! */    ||
+      ch === 0x7C/* | */    ||
+      ch === 0x3E/* > */    ||
+      ch === 0x27/* ' */    ||
+      ch === 0x22/* " */    ||
+      ch === 0x25/* % */    ||
+      ch === 0x40/* @ */    ||
+      ch === 0x60/* ` */) {
+    return false;
+  }
+
+  if (ch === 0x3F/* ? */ || ch === 0x2D/* - */) {
+    following = state.input.charCodeAt(state.position + 1);
+
+    if (is_WS_OR_EOL(following) ||
+        withinFlowCollection && is_FLOW_INDICATOR(following)) {
+      return false;
+    }
+  }
+
+  state.kind = 'scalar';
+  state.result = '';
+  captureStart = captureEnd = state.position;
+  hasPendingContent = false;
+
+  while (ch !== 0) {
+    if (ch === 0x3A/* : */) {
+      following = state.input.charCodeAt(state.position + 1);
+
+      if (is_WS_OR_EOL(following) ||
+          withinFlowCollection && is_FLOW_INDICATOR(following)) {
+        break;
+      }
+
+    } else if (ch === 0x23/* # */) {
+      preceding = state.input.charCodeAt(state.position - 1);
+
+      if (is_WS_OR_EOL(preceding)) {
+        break;
+      }
+
+    } else if ((state.position === state.lineStart && testDocumentSeparator(state)) ||
+               withinFlowCollection && is_FLOW_INDICATOR(ch)) {
+      break;
+
+    } else if (is_EOL(ch)) {
+      _line = state.line;
+      _lineStart = state.lineStart;
+      _lineIndent = state.lineIndent;
+      skipSeparationSpace(state, false, -1);
+
+      if (state.lineIndent >= nodeIndent) {
+        hasPendingContent = true;
+        ch = state.input.charCodeAt(state.position);
+        continue;
+      } else {
+        state.position = captureEnd;
+        state.line = _line;
+        state.lineStart = _lineStart;
+        state.lineIndent = _lineIndent;
+        break;
+      }
+    }
+
+    if (hasPendingContent) {
+      captureSegment(state, captureStart, captureEnd, false);
+      writeFoldedLines(state, state.line - _line);
+      captureStart = captureEnd = state.position;
+      hasPendingContent = false;
+    }
+
+    if (!is_WHITE_SPACE(ch)) {
+      captureEnd = state.position + 1;
+    }
+
+    ch = state.input.charCodeAt(++state.position);
+  }
+
+  captureSegment(state, captureStart, captureEnd, false);
+
+  if (state.result) {
+    return true;
+  }
+
+  state.kind = _kind;
+  state.result = _result;
+  return false;
+}
+
+function readSingleQuotedScalar(state, nodeIndent) {
+  var ch,
+      captureStart, captureEnd;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch !== 0x27/* ' */) {
+    return false;
+  }
+
+  state.kind = 'scalar';
+  state.result = '';
+  state.position++;
+  captureStart = captureEnd = state.position;
+
+  while ((ch = state.input.charCodeAt(state.position)) !== 0) {
+    if (ch === 0x27/* ' */) {
+      captureSegment(state, captureStart, state.position, true);
+      ch = state.input.charCodeAt(++state.position);
+
+      if (ch === 0x27/* ' */) {
+        captureStart = state.position;
+        state.position++;
+        captureEnd = state.position;
+      } else {
+        return true;
+      }
+
+    } else if (is_EOL(ch)) {
+      captureSegment(state, captureStart, captureEnd, true);
+      writeFoldedLines(state, skipSeparationSpace(state, false, nodeIndent));
+      captureStart = captureEnd = state.position;
+
+    } else if (state.position === state.lineStart && testDocumentSeparator(state)) {
+      throwError(state, 'unexpected end of the document within a single quoted scalar');
+
+    } else {
+      state.position++;
+      captureEnd = state.position;
+    }
+  }
+
+  throwError(state, 'unexpected end of the stream within a single quoted scalar');
+}
+
+function readDoubleQuotedScalar(state, nodeIndent) {
+  var captureStart,
+      captureEnd,
+      hexLength,
+      hexResult,
+      tmp,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch !== 0x22/* " */) {
+    return false;
+  }
+
+  state.kind = 'scalar';
+  state.result = '';
+  state.position++;
+  captureStart = captureEnd = state.position;
+
+  while ((ch = state.input.charCodeAt(state.position)) !== 0) {
+    if (ch === 0x22/* " */) {
+      captureSegment(state, captureStart, state.position, true);
+      state.position++;
+      return true;
+
+    } else if (ch === 0x5C/* \ */) {
+      captureSegment(state, captureStart, state.position, true);
+      ch = state.input.charCodeAt(++state.position);
+
+      if (is_EOL(ch)) {
+        skipSeparationSpace(state, false, nodeIndent);
+
+        // TODO: rework to inline fn with no type cast?
+      } else if (ch < 256 && simpleEscapeCheck[ch]) {
+        state.result += simpleEscapeMap[ch];
+        state.position++;
+
+      } else if ((tmp = escapedHexLen(ch)) > 0) {
+        hexLength = tmp;
+        hexResult = 0;
+
+        for (; hexLength > 0; hexLength--) {
+          ch = state.input.charCodeAt(++state.position);
+
+          if ((tmp = fromHexCode(ch)) >= 0) {
+            hexResult = (hexResult << 4) + tmp;
+
+          } else {
+            throwError(state, 'expected hexadecimal character');
+          }
+        }
+
+        state.result += charFromCodepoint(hexResult);
+
+        state.position++;
+
+      } else {
+        throwError(state, 'unknown escape sequence');
+      }
+
+      captureStart = captureEnd = state.position;
+
+    } else if (is_EOL(ch)) {
+      captureSegment(state, captureStart, captureEnd, true);
+      writeFoldedLines(state, skipSeparationSpace(state, false, nodeIndent));
+      captureStart = captureEnd = state.position;
+
+    } else if (state.position === state.lineStart && testDocumentSeparator(state)) {
+      throwError(state, 'unexpected end of the document within a double quoted scalar');
+
+    } else {
+      state.position++;
+      captureEnd = state.position;
+    }
+  }
+
+  throwError(state, 'unexpected end of the stream within a double quoted scalar');
+}
+
+function readFlowCollection(state, nodeIndent) {
+  var readNext = true,
+      _line,
+      _tag     = state.tag,
+      _result,
+      _anchor  = state.anchor,
+      following,
+      terminator,
+      isPair,
+      isExplicitPair,
+      isMapping,
+      overridableKeys = {},
+      keyNode,
+      keyTag,
+      valueNode,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch === 0x5B/* [ */) {
+    terminator = 0x5D;/* ] */
+    isMapping = false;
+    _result = [];
+  } else if (ch === 0x7B/* { */) {
+    terminator = 0x7D;/* } */
+    isMapping = true;
+    _result = {};
+  } else {
+    return false;
+  }
+
+  if (state.anchor !== null) {
+    state.anchorMap[state.anchor] = _result;
+  }
+
+  ch = state.input.charCodeAt(++state.position);
+
+  while (ch !== 0) {
+    skipSeparationSpace(state, true, nodeIndent);
+
+    ch = state.input.charCodeAt(state.position);
+
+    if (ch === terminator) {
+      state.position++;
+      state.tag = _tag;
+      state.anchor = _anchor;
+      state.kind = isMapping ? 'mapping' : 'sequence';
+      state.result = _result;
+      return true;
+    } else if (!readNext) {
+      throwError(state, 'missed comma between flow collection entries');
+    }
+
+    keyTag = keyNode = valueNode = null;
+    isPair = isExplicitPair = false;
+
+    if (ch === 0x3F/* ? */) {
+      following = state.input.charCodeAt(state.position + 1);
+
+      if (is_WS_OR_EOL(following)) {
+        isPair = isExplicitPair = true;
+        state.position++;
+        skipSeparationSpace(state, true, nodeIndent);
+      }
+    }
+
+    _line = state.line;
+    composeNode(state, nodeIndent, CONTEXT_FLOW_IN, false, true);
+    keyTag = state.tag;
+    keyNode = state.result;
+    skipSeparationSpace(state, true, nodeIndent);
+
+    ch = state.input.charCodeAt(state.position);
+
+    if ((isExplicitPair || state.line === _line) && ch === 0x3A/* : */) {
+      isPair = true;
+      ch = state.input.charCodeAt(++state.position);
+      skipSeparationSpace(state, true, nodeIndent);
+      composeNode(state, nodeIndent, CONTEXT_FLOW_IN, false, true);
+      valueNode = state.result;
+    }
+
+    if (isMapping) {
+      storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode);
+    } else if (isPair) {
+      _result.push(storeMappingPair(state, null, overridableKeys, keyTag, keyNode, valueNode));
+    } else {
+      _result.push(keyNode);
+    }
+
+    skipSeparationSpace(state, true, nodeIndent);
+
+    ch = state.input.charCodeAt(state.position);
+
+    if (ch === 0x2C/* , */) {
+      readNext = true;
+      ch = state.input.charCodeAt(++state.position);
+    } else {
+      readNext = false;
+    }
+  }
+
+  throwError(state, 'unexpected end of the stream within a flow collection');
+}
+
+function readBlockScalar(state, nodeIndent) {
+  var captureStart,
+      folding,
+      chomping       = CHOMPING_CLIP,
+      didReadContent = false,
+      detectedIndent = false,
+      textIndent     = nodeIndent,
+      emptyLines     = 0,
+      atMoreIndented = false,
+      tmp,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch === 0x7C/* | */) {
+    folding = false;
+  } else if (ch === 0x3E/* > */) {
+    folding = true;
+  } else {
+    return false;
+  }
+
+  state.kind = 'scalar';
+  state.result = '';
+
+  while (ch !== 0) {
+    ch = state.input.charCodeAt(++state.position);
+
+    if (ch === 0x2B/* + */ || ch === 0x2D/* - */) {
+      if (CHOMPING_CLIP === chomping) {
+        chomping = (ch === 0x2B/* + */) ? CHOMPING_KEEP : CHOMPING_STRIP;
+      } else {
+        throwError(state, 'repeat of a chomping mode identifier');
+      }
+
+    } else if ((tmp = fromDecimalCode(ch)) >= 0) {
+      if (tmp === 0) {
+        throwError(state, 'bad explicit indentation width of a block scalar; it cannot be less than one');
+      } else if (!detectedIndent) {
+        textIndent = nodeIndent + tmp - 1;
+        detectedIndent = true;
+      } else {
+        throwError(state, 'repeat of an indentation width identifier');
+      }
+
+    } else {
+      break;
+    }
+  }
+
+  if (is_WHITE_SPACE(ch)) {
+    do { ch = state.input.charCodeAt(++state.position); }
+    while (is_WHITE_SPACE(ch));
+
+    if (ch === 0x23/* # */) {
+      do { ch = state.input.charCodeAt(++state.position); }
+      while (!is_EOL(ch) && (ch !== 0));
+    }
+  }
+
+  while (ch !== 0) {
+    readLineBreak(state);
+    state.lineIndent = 0;
+
+    ch = state.input.charCodeAt(state.position);
+
+    while ((!detectedIndent || state.lineIndent < textIndent) &&
+           (ch === 0x20/* Space */)) {
+      state.lineIndent++;
+      ch = state.input.charCodeAt(++state.position);
+    }
+
+    if (!detectedIndent && state.lineIndent > textIndent) {
+      textIndent = state.lineIndent;
+    }
+
+    if (is_EOL(ch)) {
+      emptyLines++;
+      continue;
+    }
+
+    // End of the scalar.
+    if (state.lineIndent < textIndent) {
+
+      // Perform the chomping.
+      if (chomping === CHOMPING_KEEP) {
+        state.result += common.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
+      } else if (chomping === CHOMPING_CLIP) {
+        if (didReadContent) { // i.e. only if the scalar is not empty.
+          state.result += '\n';
+        }
+      }
+
+      // Break this `while` cycle and go to the funciton's epilogue.
+      break;
+    }
+
+    // Folded style: use fancy rules to handle line breaks.
+    if (folding) {
+
+      // Lines starting with white space characters (more-indented lines) are not folded.
+      if (is_WHITE_SPACE(ch)) {
+        atMoreIndented = true;
+        // except for the first content line (cf. Example 8.1)
+        state.result += common.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
+
+      // End of more-indented block.
+      } else if (atMoreIndented) {
+        atMoreIndented = false;
+        state.result += common.repeat('\n', emptyLines + 1);
+
+      // Just one line break - perceive as the same line.
+      } else if (emptyLines === 0) {
+        if (didReadContent) { // i.e. only if we have already read some scalar content.
+          state.result += ' ';
+        }
+
+      // Several line breaks - perceive as different lines.
+      } else {
+        state.result += common.repeat('\n', emptyLines);
+      }
+
+    // Literal style: just add exact number of line breaks between content lines.
+    } else {
+      // Keep all line breaks except the header line break.
+      state.result += common.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
+    }
+
+    didReadContent = true;
+    detectedIndent = true;
+    emptyLines = 0;
+    captureStart = state.position;
+
+    while (!is_EOL(ch) && (ch !== 0)) {
+      ch = state.input.charCodeAt(++state.position);
+    }
+
+    captureSegment(state, captureStart, state.position, false);
+  }
+
+  return true;
+}
+
+function readBlockSequence(state, nodeIndent) {
+  var _line,
+      _tag      = state.tag,
+      _anchor   = state.anchor,
+      _result   = [],
+      following,
+      detected  = false,
+      ch;
+
+  if (state.anchor !== null) {
+    state.anchorMap[state.anchor] = _result;
+  }
+
+  ch = state.input.charCodeAt(state.position);
+
+  while (ch !== 0) {
+
+    if (ch !== 0x2D/* - */) {
+      break;
+    }
+
+    following = state.input.charCodeAt(state.position + 1);
+
+    if (!is_WS_OR_EOL(following)) {
+      break;
+    }
+
+    detected = true;
+    state.position++;
+
+    if (skipSeparationSpace(state, true, -1)) {
+      if (state.lineIndent <= nodeIndent) {
+        _result.push(null);
+        ch = state.input.charCodeAt(state.position);
+        continue;
+      }
+    }
+
+    _line = state.line;
+    composeNode(state, nodeIndent, CONTEXT_BLOCK_IN, false, true);
+    _result.push(state.result);
+    skipSeparationSpace(state, true, -1);
+
+    ch = state.input.charCodeAt(state.position);
+
+    if ((state.line === _line || state.lineIndent > nodeIndent) && (ch !== 0)) {
+      throwError(state, 'bad indentation of a sequence entry');
+    } else if (state.lineIndent < nodeIndent) {
+      break;
+    }
+  }
+
+  if (detected) {
+    state.tag = _tag;
+    state.anchor = _anchor;
+    state.kind = 'sequence';
+    state.result = _result;
+    return true;
+  }
+  return false;
+}
+
+function readBlockMapping(state, nodeIndent, flowIndent) {
+  var following,
+      allowCompact,
+      _line,
+      _pos,
+      _tag          = state.tag,
+      _anchor       = state.anchor,
+      _result       = {},
+      overridableKeys = {},
+      keyTag        = null,
+      keyNode       = null,
+      valueNode     = null,
+      atExplicitKey = false,
+      detected      = false,
+      ch;
+
+  if (state.anchor !== null) {
+    state.anchorMap[state.anchor] = _result;
+  }
+
+  ch = state.input.charCodeAt(state.position);
+
+  while (ch !== 0) {
+    following = state.input.charCodeAt(state.position + 1);
+    _line = state.line; // Save the current line.
+    _pos = state.position;
+
+    //
+    // Explicit notation case. There are two separate blocks:
+    // first for the key (denoted by "?") and second for the value (denoted by ":")
+    //
+    if ((ch === 0x3F/* ? */ || ch === 0x3A/* : */) && is_WS_OR_EOL(following)) {
+
+      if (ch === 0x3F/* ? */) {
+        if (atExplicitKey) {
+          storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
+          keyTag = keyNode = valueNode = null;
+        }
+
+        detected = true;
+        atExplicitKey = true;
+        allowCompact = true;
+
+      } else if (atExplicitKey) {
+        // i.e. 0x3A/* : */ === character after the explicit key.
+        atExplicitKey = false;
+        allowCompact = true;
+
+      } else {
+        throwError(state, 'incomplete explicit mapping pair; a key node is missed; or followed by a non-tabulated empty line');
+      }
+
+      state.position += 1;
+      ch = following;
+
+    //
+    // Implicit notation case. Flow-style node as the key first, then ":", and the value.
+    //
+    } else if (composeNode(state, flowIndent, CONTEXT_FLOW_OUT, false, true)) {
+
+      if (state.line === _line) {
+        ch = state.input.charCodeAt(state.position);
+
+        while (is_WHITE_SPACE(ch)) {
+          ch = state.input.charCodeAt(++state.position);
+        }
+
+        if (ch === 0x3A/* : */) {
+          ch = state.input.charCodeAt(++state.position);
+
+          if (!is_WS_OR_EOL(ch)) {
+            throwError(state, 'a whitespace character is expected after the key-value separator within a block mapping');
+          }
+
+          if (atExplicitKey) {
+            storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
+            keyTag = keyNode = valueNode = null;
+          }
+
+          detected = true;
+          atExplicitKey = false;
+          allowCompact = false;
+          keyTag = state.tag;
+          keyNode = state.result;
+
+        } else if (detected) {
+          throwError(state, 'can not read an implicit mapping pair; a colon is missed');
+
+        } else {
+          state.tag = _tag;
+          state.anchor = _anchor;
+          return true; // Keep the result of `composeNode`.
+        }
+
+      } else if (detected) {
+        throwError(state, 'can not read a block mapping entry; a multiline key may not be an implicit key');
+
+      } else {
+        state.tag = _tag;
+        state.anchor = _anchor;
+        return true; // Keep the result of `composeNode`.
+      }
+
+    } else {
+      break; // Reading is done. Go to the epilogue.
+    }
+
+    //
+    // Common reading code for both explicit and implicit notations.
+    //
+    if (state.line === _line || state.lineIndent > nodeIndent) {
+      if (composeNode(state, nodeIndent, CONTEXT_BLOCK_OUT, true, allowCompact)) {
+        if (atExplicitKey) {
+          keyNode = state.result;
+        } else {
+          valueNode = state.result;
+        }
+      }
+
+      if (!atExplicitKey) {
+        storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, _line, _pos);
+        keyTag = keyNode = valueNode = null;
+      }
+
+      skipSeparationSpace(state, true, -1);
+      ch = state.input.charCodeAt(state.position);
+    }
+
+    if (state.lineIndent > nodeIndent && (ch !== 0)) {
+      throwError(state, 'bad indentation of a mapping entry');
+    } else if (state.lineIndent < nodeIndent) {
+      break;
+    }
+  }
+
+  //
+  // Epilogue.
+  //
+
+  // Special case: last mapping's node contains only the key in explicit notation.
+  if (atExplicitKey) {
+    storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
+  }
+
+  // Expose the resulting mapping.
+  if (detected) {
+    state.tag = _tag;
+    state.anchor = _anchor;
+    state.kind = 'mapping';
+    state.result = _result;
+  }
+
+  return detected;
+}
+
+function readTagProperty(state) {
+  var _position,
+      isVerbatim = false,
+      isNamed    = false,
+      tagHandle,
+      tagName,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch !== 0x21/* ! */) return false;
+
+  if (state.tag !== null) {
+    throwError(state, 'duplication of a tag property');
+  }
+
+  ch = state.input.charCodeAt(++state.position);
+
+  if (ch === 0x3C/* < */) {
+    isVerbatim = true;
+    ch = state.input.charCodeAt(++state.position);
+
+  } else if (ch === 0x21/* ! */) {
+    isNamed = true;
+    tagHandle = '!!';
+    ch = state.input.charCodeAt(++state.position);
+
+  } else {
+    tagHandle = '!';
+  }
+
+  _position = state.position;
+
+  if (isVerbatim) {
+    do { ch = state.input.charCodeAt(++state.position); }
+    while (ch !== 0 && ch !== 0x3E/* > */);
+
+    if (state.position < state.length) {
+      tagName = state.input.slice(_position, state.position);
+      ch = state.input.charCodeAt(++state.position);
+    } else {
+      throwError(state, 'unexpected end of the stream within a verbatim tag');
+    }
+  } else {
+    while (ch !== 0 && !is_WS_OR_EOL(ch)) {
+
+      if (ch === 0x21/* ! */) {
+        if (!isNamed) {
+          tagHandle = state.input.slice(_position - 1, state.position + 1);
+
+          if (!PATTERN_TAG_HANDLE.test(tagHandle)) {
+            throwError(state, 'named tag handle cannot contain such characters');
+          }
+
+          isNamed = true;
+          _position = state.position + 1;
+        } else {
+          throwError(state, 'tag suffix cannot contain exclamation marks');
+        }
+      }
+
+      ch = state.input.charCodeAt(++state.position);
+    }
+
+    tagName = state.input.slice(_position, state.position);
+
+    if (PATTERN_FLOW_INDICATORS.test(tagName)) {
+      throwError(state, 'tag suffix cannot contain flow indicator characters');
+    }
+  }
+
+  if (tagName && !PATTERN_TAG_URI.test(tagName)) {
+    throwError(state, 'tag name cannot contain such characters: ' + tagName);
+  }
+
+  if (isVerbatim) {
+    state.tag = tagName;
+
+  } else if (_hasOwnProperty.call(state.tagMap, tagHandle)) {
+    state.tag = state.tagMap[tagHandle] + tagName;
+
+  } else if (tagHandle === '!') {
+    state.tag = '!' + tagName;
+
+  } else if (tagHandle === '!!') {
+    state.tag = 'tag:yaml.org,2002:' + tagName;
+
+  } else {
+    throwError(state, 'undeclared tag handle "' + tagHandle + '"');
+  }
+
+  return true;
+}
+
+function readAnchorProperty(state) {
+  var _position,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch !== 0x26/* & */) return false;
+
+  if (state.anchor !== null) {
+    throwError(state, 'duplication of an anchor property');
+  }
+
+  ch = state.input.charCodeAt(++state.position);
+  _position = state.position;
+
+  while (ch !== 0 && !is_WS_OR_EOL(ch) && !is_FLOW_INDICATOR(ch)) {
+    ch = state.input.charCodeAt(++state.position);
+  }
+
+  if (state.position === _position) {
+    throwError(state, 'name of an anchor node must contain at least one character');
+  }
+
+  state.anchor = state.input.slice(_position, state.position);
+  return true;
+}
+
+function readAlias(state) {
+  var _position, alias,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch !== 0x2A/* * */) return false;
+
+  ch = state.input.charCodeAt(++state.position);
+  _position = state.position;
+
+  while (ch !== 0 && !is_WS_OR_EOL(ch) && !is_FLOW_INDICATOR(ch)) {
+    ch = state.input.charCodeAt(++state.position);
+  }
+
+  if (state.position === _position) {
+    throwError(state, 'name of an alias node must contain at least one character');
+  }
+
+  alias = state.input.slice(_position, state.position);
+
+  if (!_hasOwnProperty.call(state.anchorMap, alias)) {
+    throwError(state, 'unidentified alias "' + alias + '"');
+  }
+
+  state.result = state.anchorMap[alias];
+  skipSeparationSpace(state, true, -1);
+  return true;
+}
+
+function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact) {
+  var allowBlockStyles,
+      allowBlockScalars,
+      allowBlockCollections,
+      indentStatus = 1, // 1: this>parent, 0: this=parent, -1: this<parent
+      atNewLine  = false,
+      hasContent = false,
+      typeIndex,
+      typeQuantity,
+      type,
+      flowIndent,
+      blockIndent;
+
+  if (state.listener !== null) {
+    state.listener('open', state);
+  }
+
+  state.tag    = null;
+  state.anchor = null;
+  state.kind   = null;
+  state.result = null;
+
+  allowBlockStyles = allowBlockScalars = allowBlockCollections =
+    CONTEXT_BLOCK_OUT === nodeContext ||
+    CONTEXT_BLOCK_IN  === nodeContext;
+
+  if (allowToSeek) {
+    if (skipSeparationSpace(state, true, -1)) {
+      atNewLine = true;
+
+      if (state.lineIndent > parentIndent) {
+        indentStatus = 1;
+      } else if (state.lineIndent === parentIndent) {
+        indentStatus = 0;
+      } else if (state.lineIndent < parentIndent) {
+        indentStatus = -1;
+      }
+    }
+  }
+
+  if (indentStatus === 1) {
+    while (readTagProperty(state) || readAnchorProperty(state)) {
+      if (skipSeparationSpace(state, true, -1)) {
+        atNewLine = true;
+        allowBlockCollections = allowBlockStyles;
+
+        if (state.lineIndent > parentIndent) {
+          indentStatus = 1;
+        } else if (state.lineIndent === parentIndent) {
+          indentStatus = 0;
+        } else if (state.lineIndent < parentIndent) {
+          indentStatus = -1;
+        }
+      } else {
+        allowBlockCollections = false;
+      }
+    }
+  }
+
+  if (allowBlockCollections) {
+    allowBlockCollections = atNewLine || allowCompact;
+  }
+
+  if (indentStatus === 1 || CONTEXT_BLOCK_OUT === nodeContext) {
+    if (CONTEXT_FLOW_IN === nodeContext || CONTEXT_FLOW_OUT === nodeContext) {
+      flowIndent = parentIndent;
+    } else {
+      flowIndent = parentIndent + 1;
+    }
+
+    blockIndent = state.position - state.lineStart;
+
+    if (indentStatus === 1) {
+      if (allowBlockCollections &&
+          (readBlockSequence(state, blockIndent) ||
+           readBlockMapping(state, blockIndent, flowIndent)) ||
+          readFlowCollection(state, flowIndent)) {
+        hasContent = true;
+      } else {
+        if ((allowBlockScalars && readBlockScalar(state, flowIndent)) ||
+            readSingleQuotedScalar(state, flowIndent) ||
+            readDoubleQuotedScalar(state, flowIndent)) {
+          hasContent = true;
+
+        } else if (readAlias(state)) {
+          hasContent = true;
+
+          if (state.tag !== null || state.anchor !== null) {
+            throwError(state, 'alias node should not have any properties');
+          }
+
+        } else if (readPlainScalar(state, flowIndent, CONTEXT_FLOW_IN === nodeContext)) {
+          hasContent = true;
+
+          if (state.tag === null) {
+            state.tag = '?';
+          }
+        }
+
+        if (state.anchor !== null) {
+          state.anchorMap[state.anchor] = state.result;
+        }
+      }
+    } else if (indentStatus === 0) {
+      // Special case: block sequences are allowed to have same indentation level as the parent.
+      // http://www.yaml.org/spec/1.2/spec.html#id2799784
+      hasContent = allowBlockCollections && readBlockSequence(state, blockIndent);
+    }
+  }
+
+  if (state.tag !== null && state.tag !== '!') {
+    if (state.tag === '?') {
+      // Implicit resolving is not allowed for non-scalar types, and '?'
+      // non-specific tag is only automatically assigned to plain scalars.
+      //
+      // We only need to check kind conformity in case user explicitly assigns '?'
+      // tag, for example like this: "!<?> [0]"
+      //
+      if (state.result !== null && state.kind !== 'scalar') {
+        throwError(state, 'unacceptable node kind for !<?> tag; it should be "scalar", not "' + state.kind + '"');
+      }
+
+      for (typeIndex = 0, typeQuantity = state.implicitTypes.length; typeIndex < typeQuantity; typeIndex += 1) {
+        type = state.implicitTypes[typeIndex];
+
+        if (type.resolve(state.result)) { // `state.result` updated in resolver if matched
+          state.result = type.construct(state.result);
+          state.tag = type.tag;
+          if (state.anchor !== null) {
+            state.anchorMap[state.anchor] = state.result;
+          }
+          break;
+        }
+      }
+    } else if (_hasOwnProperty.call(state.typeMap[state.kind || 'fallback'], state.tag)) {
+      type = state.typeMap[state.kind || 'fallback'][state.tag];
+
+      if (state.result !== null && type.kind !== state.kind) {
+        throwError(state, 'unacceptable node kind for !<' + state.tag + '> tag; it should be "' + type.kind + '", not "' + state.kind + '"');
+      }
+
+      if (!type.resolve(state.result)) { // `state.result` updated in resolver if matched
+        throwError(state, 'cannot resolve a node with !<' + state.tag + '> explicit tag');
+      } else {
+        state.result = type.construct(state.result);
+        if (state.anchor !== null) {
+          state.anchorMap[state.anchor] = state.result;
+        }
+      }
+    } else {
+      throwError(state, 'unknown tag !<' + state.tag + '>');
+    }
+  }
+
+  if (state.listener !== null) {
+    state.listener('close', state);
+  }
+  return state.tag !== null ||  state.anchor !== null || hasContent;
+}
+
+function readDocument(state) {
+  var documentStart = state.position,
+      _position,
+      directiveName,
+      directiveArgs,
+      hasDirectives = false,
+      ch;
+
+  state.version = null;
+  state.checkLineBreaks = state.legacy;
+  state.tagMap = {};
+  state.anchorMap = {};
+
+  while ((ch = state.input.charCodeAt(state.position)) !== 0) {
+    skipSeparationSpace(state, true, -1);
+
+    ch = state.input.charCodeAt(state.position);
+
+    if (state.lineIndent > 0 || ch !== 0x25/* % */) {
+      break;
+    }
+
+    hasDirectives = true;
+    ch = state.input.charCodeAt(++state.position);
+    _position = state.position;
+
+    while (ch !== 0 && !is_WS_OR_EOL(ch)) {
+      ch = state.input.charCodeAt(++state.position);
+    }
+
+    directiveName = state.input.slice(_position, state.position);
+    directiveArgs = [];
+
+    if (directiveName.length < 1) {
+      throwError(state, 'directive name must not be less than one character in length');
+    }
+
+    while (ch !== 0) {
+      while (is_WHITE_SPACE(ch)) {
+        ch = state.input.charCodeAt(++state.position);
+      }
+
+      if (ch === 0x23/* # */) {
+        do { ch = state.input.charCodeAt(++state.position); }
+        while (ch !== 0 && !is_EOL(ch));
+        break;
+      }
+
+      if (is_EOL(ch)) break;
+
+      _position = state.position;
+
+      while (ch !== 0 && !is_WS_OR_EOL(ch)) {
+        ch = state.input.charCodeAt(++state.position);
+      }
+
+      directiveArgs.push(state.input.slice(_position, state.position));
+    }
+
+    if (ch !== 0) readLineBreak(state);
+
+    if (_hasOwnProperty.call(directiveHandlers, directiveName)) {
+      directiveHandlers[directiveName](state, directiveName, directiveArgs);
+    } else {
+      throwWarning(state, 'unknown document directive "' + directiveName + '"');
+    }
+  }
+
+  skipSeparationSpace(state, true, -1);
+
+  if (state.lineIndent === 0 &&
+      state.input.charCodeAt(state.position)     === 0x2D/* - */ &&
+      state.input.charCodeAt(state.position + 1) === 0x2D/* - */ &&
+      state.input.charCodeAt(state.position + 2) === 0x2D/* - */) {
+    state.position += 3;
+    skipSeparationSpace(state, true, -1);
+
+  } else if (hasDirectives) {
+    throwError(state, 'directives end mark is expected');
+  }
+
+  composeNode(state, state.lineIndent - 1, CONTEXT_BLOCK_OUT, false, true);
+  skipSeparationSpace(state, true, -1);
+
+  if (state.checkLineBreaks &&
+      PATTERN_NON_ASCII_LINE_BREAKS.test(state.input.slice(documentStart, state.position))) {
+    throwWarning(state, 'non-ASCII line breaks are interpreted as content');
+  }
+
+  state.documents.push(state.result);
+
+  if (state.position === state.lineStart && testDocumentSeparator(state)) {
+
+    if (state.input.charCodeAt(state.position) === 0x2E/* . */) {
+      state.position += 3;
+      skipSeparationSpace(state, true, -1);
+    }
+    return;
+  }
+
+  if (state.position < (state.length - 1)) {
+    throwError(state, 'end of the stream or a document separator is expected');
+  } else {
+    return;
+  }
+}
+
+
+function loadDocuments(input, options) {
+  input = String(input);
+  options = options || {};
+
+  if (input.length !== 0) {
+
+    // Add tailing `\n` if not exists
+    if (input.charCodeAt(input.length - 1) !== 0x0A/* LF */ &&
+        input.charCodeAt(input.length - 1) !== 0x0D/* CR */) {
+      input += '\n';
+    }
+
+    // Strip BOM
+    if (input.charCodeAt(0) === 0xFEFF) {
+      input = input.slice(1);
+    }
+  }
+
+  var state = new State(input, options);
+
+  var nullpos = input.indexOf('\0');
+
+  if (nullpos !== -1) {
+    state.position = nullpos;
+    throwError(state, 'null byte is not allowed in input');
+  }
+
+  // Use 0 as string terminator. That significantly simplifies bounds check.
+  state.input += '\0';
+
+  while (state.input.charCodeAt(state.position) === 0x20/* Space */) {
+    state.lineIndent += 1;
+    state.position += 1;
+  }
+
+  while (state.position < (state.length - 1)) {
+    readDocument(state);
+  }
+
+  return state.documents;
+}
+
+
+function loadAll(input, iterator, options) {
+  if (iterator !== null && typeof iterator === 'object' && typeof options === 'undefined') {
+    options = iterator;
+    iterator = null;
+  }
+
+  var documents = loadDocuments(input, options);
+
+  if (typeof iterator !== 'function') {
+    return documents;
+  }
+
+  for (var index = 0, length = documents.length; index < length; index += 1) {
+    iterator(documents[index]);
+  }
+}
+
+
+function load(input, options) {
+  var documents = loadDocuments(input, options);
+
+  if (documents.length === 0) {
+    /*eslint-disable no-undefined*/
+    return undefined;
+  } else if (documents.length === 1) {
+    return documents[0];
+  }
+  throw new YAMLException('expected a single document in the stream, but found more');
+}
+
+
+function safeLoadAll(input, iterator, options) {
+  if (typeof iterator === 'object' && iterator !== null && typeof options === 'undefined') {
+    options = iterator;
+    iterator = null;
+  }
+
+  return loadAll(input, iterator, common.extend({ schema: DEFAULT_SAFE_SCHEMA }, options));
+}
+
+
+function safeLoad(input, options) {
+  return load(input, common.extend({ schema: DEFAULT_SAFE_SCHEMA }, options));
+}
+
+
+module.exports.loadAll     = loadAll;
+module.exports.load        = load;
+module.exports.safeLoadAll = safeLoadAll;
+module.exports.safeLoad    = safeLoad;
+
+},{"./common":4,"./exception":6,"./mark":8,"./schema/default_full":11,"./schema/default_safe":12}],8:[function(require,module,exports){
+'use strict';
+
+
+var common = require('./common');
+
+
+function Mark(name, buffer, position, line, column) {
+  this.name     = name;
+  this.buffer   = buffer;
+  this.position = position;
+  this.line     = line;
+  this.column   = column;
+}
+
+
+Mark.prototype.getSnippet = function getSnippet(indent, maxLength) {
+  var head, start, tail, end, snippet;
+
+  if (!this.buffer) return null;
+
+  indent = indent || 4;
+  maxLength = maxLength || 75;
+
+  head = '';
+  start = this.position;
+
+  while (start > 0 && '\x00\r\n\x85\u2028\u2029'.indexOf(this.buffer.charAt(start - 1)) === -1) {
+    start -= 1;
+    if (this.position - start > (maxLength / 2 - 1)) {
+      head = ' ... ';
+      start += 5;
+      break;
+    }
+  }
+
+  tail = '';
+  end = this.position;
+
+  while (end < this.buffer.length && '\x00\r\n\x85\u2028\u2029'.indexOf(this.buffer.charAt(end)) === -1) {
+    end += 1;
+    if (end - this.position > (maxLength / 2 - 1)) {
+      tail = ' ... ';
+      end -= 5;
+      break;
+    }
+  }
+
+  snippet = this.buffer.slice(start, end);
+
+  return common.repeat(' ', indent) + head + snippet + tail + '\n' +
+         common.repeat(' ', indent + this.position - start + head.length) + '^';
+};
+
+
+Mark.prototype.toString = function toString(compact) {
+  var snippet, where = '';
+
+  if (this.name) {
+    where += 'in "' + this.name + '" ';
+  }
+
+  where += 'at line ' + (this.line + 1) + ', column ' + (this.column + 1);
+
+  if (!compact) {
+    snippet = this.getSnippet();
+
+    if (snippet) {
+      where += ':\n' + snippet;
+    }
+  }
+
+  return where;
+};
+
+
+module.exports = Mark;
+
+},{"./common":4}],9:[function(require,module,exports){
+'use strict';
+
+/*eslint-disable max-len*/
+
+var common        = require('./common');
+var YAMLException = require('./exception');
+var Type          = require('./type');
+
+
+function compileList(schema, name, result) {
+  var exclude = [];
+
+  schema.include.forEach(function (includedSchema) {
+    result = compileList(includedSchema, name, result);
+  });
+
+  schema[name].forEach(function (currentType) {
+    result.forEach(function (previousType, previousIndex) {
+      if (previousType.tag === currentType.tag && previousType.kind === currentType.kind) {
+        exclude.push(previousIndex);
+      }
+    });
+
+    result.push(currentType);
+  });
+
+  return result.filter(function (type, index) {
+    return exclude.indexOf(index) === -1;
+  });
+}
+
+
+function compileMap(/* lists... */) {
+  var result = {
+        scalar: {},
+        sequence: {},
+        mapping: {},
+        fallback: {}
+      }, index, length;
+
+  function collectType(type) {
+    result[type.kind][type.tag] = result['fallback'][type.tag] = type;
+  }
+
+  for (index = 0, length = arguments.length; index < length; index += 1) {
+    arguments[index].forEach(collectType);
+  }
+  return result;
+}
+
+
+function Schema(definition) {
+  this.include  = definition.include  || [];
+  this.implicit = definition.implicit || [];
+  this.explicit = definition.explicit || [];
+
+  this.implicit.forEach(function (type) {
+    if (type.loadKind && type.loadKind !== 'scalar') {
+      throw new YAMLException('There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.');
+    }
+  });
+
+  this.compiledImplicit = compileList(this, 'implicit', []);
+  this.compiledExplicit = compileList(this, 'explicit', []);
+  this.compiledTypeMap  = compileMap(this.compiledImplicit, this.compiledExplicit);
+}
+
+
+Schema.DEFAULT = null;
+
+
+Schema.create = function createSchema() {
+  var schemas, types;
+
+  switch (arguments.length) {
+    case 1:
+      schemas = Schema.DEFAULT;
+      types = arguments[0];
+      break;
+
+    case 2:
+      schemas = arguments[0];
+      types = arguments[1];
+      break;
+
+    default:
+      throw new YAMLException('Wrong number of arguments for Schema.create function');
+  }
+
+  schemas = common.toArray(schemas);
+  types = common.toArray(types);
+
+  if (!schemas.every(function (schema) { return schema instanceof Schema; })) {
+    throw new YAMLException('Specified list of super schemas (or a single Schema object) contains a non-Schema object.');
+  }
+
+  if (!types.every(function (type) { return type instanceof Type; })) {
+    throw new YAMLException('Specified list of YAML types (or a single Type object) contains a non-Type object.');
+  }
+
+  return new Schema({
+    include: schemas,
+    explicit: types
+  });
+};
+
+
+module.exports = Schema;
+
+},{"./common":4,"./exception":6,"./type":15}],10:[function(require,module,exports){
+// Standard YAML's Core schema.
+// http://www.yaml.org/spec/1.2/spec.html#id2804923
+//
+// NOTE: JS-YAML does not support schema-specific tag resolution restrictions.
+// So, Core schema has no distinctions from JSON schema is JS-YAML.
+
+
+'use strict';
+
+
+var Schema = require('../schema');
+
+
+module.exports = new Schema({
+  include: [
+    require('./json')
+  ]
+});
+
+},{"../schema":9,"./json":14}],11:[function(require,module,exports){
+// JS-YAML's default schema for `load` function.
+// It is not described in the YAML specification.
+//
+// This schema is based on JS-YAML's default safe schema and includes
+// JavaScript-specific types: !!js/undefined, !!js/regexp and !!js/function.
+//
+// Also this schema is used as default base schema at `Schema.create` function.
+
+
+'use strict';
+
+
+var Schema = require('../schema');
+
+
+module.exports = Schema.DEFAULT = new Schema({
+  include: [
+    require('./default_safe')
+  ],
+  explicit: [
+    require('../type/js/undefined'),
+    require('../type/js/regexp'),
+    require('../type/js/function')
+  ]
+});
+
+},{"../schema":9,"../type/js/function":20,"../type/js/regexp":21,"../type/js/undefined":22,"./default_safe":12}],12:[function(require,module,exports){
+// JS-YAML's default schema for `safeLoad` function.
+// It is not described in the YAML specification.
+//
+// This schema is based on standard YAML's Core schema and includes most of
+// extra types described at YAML tag repository. (http://yaml.org/type/)
+
+
+'use strict';
+
+
+var Schema = require('../schema');
+
+
+module.exports = new Schema({
+  include: [
+    require('./core')
+  ],
+  implicit: [
+    require('../type/timestamp'),
+    require('../type/merge')
+  ],
+  explicit: [
+    require('../type/binary'),
+    require('../type/omap'),
+    require('../type/pairs'),
+    require('../type/set')
+  ]
+});
+
+},{"../schema":9,"../type/binary":16,"../type/merge":24,"../type/omap":26,"../type/pairs":27,"../type/set":29,"../type/timestamp":31,"./core":10}],13:[function(require,module,exports){
+// Standard YAML's Failsafe schema.
+// http://www.yaml.org/spec/1.2/spec.html#id2802346
+
+
+'use strict';
+
+
+var Schema = require('../schema');
+
+
+module.exports = new Schema({
+  explicit: [
+    require('../type/str'),
+    require('../type/seq'),
+    require('../type/map')
+  ]
+});
+
+},{"../schema":9,"../type/map":23,"../type/seq":28,"../type/str":30}],14:[function(require,module,exports){
+// Standard YAML's JSON schema.
+// http://www.yaml.org/spec/1.2/spec.html#id2803231
+//
+// NOTE: JS-YAML does not support schema-specific tag resolution restrictions.
+// So, this schema is not such strict as defined in the YAML specification.
+// It allows numbers in binary notaion, use `Null` and `NULL` as `null`, etc.
+
+
+'use strict';
+
+
+var Schema = require('../schema');
+
+
+module.exports = new Schema({
+  include: [
+    require('./failsafe')
+  ],
+  implicit: [
+    require('../type/null'),
+    require('../type/bool'),
+    require('../type/int'),
+    require('../type/float')
+  ]
+});
+
+},{"../schema":9,"../type/bool":17,"../type/float":18,"../type/int":19,"../type/null":25,"./failsafe":13}],15:[function(require,module,exports){
+'use strict';
+
+var YAMLException = require('./exception');
+
+var TYPE_CONSTRUCTOR_OPTIONS = [
+  'kind',
+  'resolve',
+  'construct',
+  'instanceOf',
+  'predicate',
+  'represent',
+  'defaultStyle',
+  'styleAliases'
+];
+
+var YAML_NODE_KINDS = [
+  'scalar',
+  'sequence',
+  'mapping'
+];
+
+function compileStyleAliases(map) {
+  var result = {};
+
+  if (map !== null) {
+    Object.keys(map).forEach(function (style) {
+      map[style].forEach(function (alias) {
+        result[String(alias)] = style;
+      });
+    });
+  }
+
+  return result;
+}
+
+function Type(tag, options) {
+  options = options || {};
+
+  Object.keys(options).forEach(function (name) {
+    if (TYPE_CONSTRUCTOR_OPTIONS.indexOf(name) === -1) {
+      throw new YAMLException('Unknown option "' + name + '" is met in definition of "' + tag + '" YAML type.');
+    }
+  });
+
+  // TODO: Add tag format check.
+  this.tag          = tag;
+  this.kind         = options['kind']         || null;
+  this.resolve      = options['resolve']      || function () { return true; };
+  this.construct    = options['construct']    || function (data) { return data; };
+  this.instanceOf   = options['instanceOf']   || null;
+  this.predicate    = options['predicate']    || null;
+  this.represent    = options['represent']    || null;
+  this.defaultStyle = options['defaultStyle'] || null;
+  this.styleAliases = compileStyleAliases(options['styleAliases'] || null);
+
+  if (YAML_NODE_KINDS.indexOf(this.kind) === -1) {
+    throw new YAMLException('Unknown kind "' + this.kind + '" is specified for "' + tag + '" YAML type.');
+  }
+}
+
+module.exports = Type;
+
+},{"./exception":6}],16:[function(require,module,exports){
+'use strict';
+
+/*eslint-disable no-bitwise*/
+
+var NodeBuffer;
+
+try {
+  // A trick for browserified version, to not include `Buffer` shim
+  var _require = require;
+  NodeBuffer = _require('buffer').Buffer;
+} catch (__) {}
+
+var Type       = require('../type');
+
+
+// [ 64, 65, 66 ] -> [ padding, CR, LF ]
+var BASE64_MAP = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\n\r';
+
+
+function resolveYamlBinary(data) {
+  if (data === null) return false;
+
+  var code, idx, bitlen = 0, max = data.length, map = BASE64_MAP;
+
+  // Convert one by one.
+  for (idx = 0; idx < max; idx++) {
+    code = map.indexOf(data.charAt(idx));
+
+    // Skip CR/LF
+    if (code > 64) continue;
+
+    // Fail on illegal characters
+    if (code < 0) return false;
+
+    bitlen += 6;
+  }
+
+  // If there are any bits left, source was corrupted
+  return (bitlen % 8) === 0;
+}
+
+function constructYamlBinary(data) {
+  var idx, tailbits,
+      input = data.replace(/[\r\n=]/g, ''), // remove CR/LF & padding to simplify scan
+      max = input.length,
+      map = BASE64_MAP,
+      bits = 0,
+      result = [];
+
+  // Collect by 6*4 bits (3 bytes)
+
+  for (idx = 0; idx < max; idx++) {
+    if ((idx % 4 === 0) && idx) {
+      result.push((bits >> 16) & 0xFF);
+      result.push((bits >> 8) & 0xFF);
+      result.push(bits & 0xFF);
+    }
+
+    bits = (bits << 6) | map.indexOf(input.charAt(idx));
+  }
+
+  // Dump tail
+
+  tailbits = (max % 4) * 6;
+
+  if (tailbits === 0) {
+    result.push((bits >> 16) & 0xFF);
+    result.push((bits >> 8) & 0xFF);
+    result.push(bits & 0xFF);
+  } else if (tailbits === 18) {
+    result.push((bits >> 10) & 0xFF);
+    result.push((bits >> 2) & 0xFF);
+  } else if (tailbits === 12) {
+    result.push((bits >> 4) & 0xFF);
+  }
+
+  // Wrap into Buffer for NodeJS and leave Array for browser
+  if (NodeBuffer) {
+    // Support node 6.+ Buffer API when available
+    return NodeBuffer.from ? NodeBuffer.from(result) : new NodeBuffer(result);
+  }
+
+  return result;
+}
+
+function representYamlBinary(object /*, style*/) {
+  var result = '', bits = 0, idx, tail,
+      max = object.length,
+      map = BASE64_MAP;
+
+  // Convert every three bytes to 4 ASCII characters.
+
+  for (idx = 0; idx < max; idx++) {
+    if ((idx % 3 === 0) && idx) {
+      result += map[(bits >> 18) & 0x3F];
+      result += map[(bits >> 12) & 0x3F];
+      result += map[(bits >> 6) & 0x3F];
+      result += map[bits & 0x3F];
+    }
+
+    bits = (bits << 8) + object[idx];
+  }
+
+  // Dump tail
+
+  tail = max % 3;
+
+  if (tail === 0) {
+    result += map[(bits >> 18) & 0x3F];
+    result += map[(bits >> 12) & 0x3F];
+    result += map[(bits >> 6) & 0x3F];
+    result += map[bits & 0x3F];
+  } else if (tail === 2) {
+    result += map[(bits >> 10) & 0x3F];
+    result += map[(bits >> 4) & 0x3F];
+    result += map[(bits << 2) & 0x3F];
+    result += map[64];
+  } else if (tail === 1) {
+    result += map[(bits >> 2) & 0x3F];
+    result += map[(bits << 4) & 0x3F];
+    result += map[64];
+    result += map[64];
+  }
+
+  return result;
+}
+
+function isBinary(object) {
+  return NodeBuffer && NodeBuffer.isBuffer(object);
+}
+
+module.exports = new Type('tag:yaml.org,2002:binary', {
+  kind: 'scalar',
+  resolve: resolveYamlBinary,
+  construct: constructYamlBinary,
+  predicate: isBinary,
+  represent: representYamlBinary
+});
+
+},{"../type":15}],17:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+function resolveYamlBoolean(data) {
+  if (data === null) return false;
+
+  var max = data.length;
+
+  return (max === 4 && (data === 'true' || data === 'True' || data === 'TRUE')) ||
+         (max === 5 && (data === 'false' || data === 'False' || data === 'FALSE'));
+}
+
+function constructYamlBoolean(data) {
+  return data === 'true' ||
+         data === 'True' ||
+         data === 'TRUE';
+}
+
+function isBoolean(object) {
+  return Object.prototype.toString.call(object) === '[object Boolean]';
+}
+
+module.exports = new Type('tag:yaml.org,2002:bool', {
+  kind: 'scalar',
+  resolve: resolveYamlBoolean,
+  construct: constructYamlBoolean,
+  predicate: isBoolean,
+  represent: {
+    lowercase: function (object) { return object ? 'true' : 'false'; },
+    uppercase: function (object) { return object ? 'TRUE' : 'FALSE'; },
+    camelcase: function (object) { return object ? 'True' : 'False'; }
+  },
+  defaultStyle: 'lowercase'
+});
+
+},{"../type":15}],18:[function(require,module,exports){
+'use strict';
+
+var common = require('../common');
+var Type   = require('../type');
+
+var YAML_FLOAT_PATTERN = new RegExp(
+  // 2.5e4, 2.5 and integers
+  '^(?:[-+]?(?:0|[1-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' +
+  // .2e4, .2
+  // special case, seems not from spec
+  '|\\.[0-9_]+(?:[eE][-+]?[0-9]+)?' +
+  // 20:59
+  '|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*' +
+  // .inf
+  '|[-+]?\\.(?:inf|Inf|INF)' +
+  // .nan
+  '|\\.(?:nan|NaN|NAN))$');
+
+function resolveYamlFloat(data) {
+  if (data === null) return false;
+
+  if (!YAML_FLOAT_PATTERN.test(data) ||
+      // Quick hack to not allow integers end with `_`
+      // Probably should update regexp & check speed
+      data[data.length - 1] === '_') {
+    return false;
+  }
+
+  return true;
+}
+
+function constructYamlFloat(data) {
+  var value, sign, base, digits;
+
+  value  = data.replace(/_/g, '').toLowerCase();
+  sign   = value[0] === '-' ? -1 : 1;
+  digits = [];
+
+  if ('+-'.indexOf(value[0]) >= 0) {
+    value = value.slice(1);
+  }
+
+  if (value === '.inf') {
+    return (sign === 1) ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
+
+  } else if (value === '.nan') {
+    return NaN;
+
+  } else if (value.indexOf(':') >= 0) {
+    value.split(':').forEach(function (v) {
+      digits.unshift(parseFloat(v, 10));
+    });
+
+    value = 0.0;
+    base = 1;
+
+    digits.forEach(function (d) {
+      value += d * base;
+      base *= 60;
+    });
+
+    return sign * value;
+
+  }
+  return sign * parseFloat(value, 10);
+}
+
+
+var SCIENTIFIC_WITHOUT_DOT = /^[-+]?[0-9]+e/;
+
+function representYamlFloat(object, style) {
+  var res;
+
+  if (isNaN(object)) {
+    switch (style) {
+      case 'lowercase': return '.nan';
+      case 'uppercase': return '.NAN';
+      case 'camelcase': return '.NaN';
+    }
+  } else if (Number.POSITIVE_INFINITY === object) {
+    switch (style) {
+      case 'lowercase': return '.inf';
+      case 'uppercase': return '.INF';
+      case 'camelcase': return '.Inf';
+    }
+  } else if (Number.NEGATIVE_INFINITY === object) {
+    switch (style) {
+      case 'lowercase': return '-.inf';
+      case 'uppercase': return '-.INF';
+      case 'camelcase': return '-.Inf';
+    }
+  } else if (common.isNegativeZero(object)) {
+    return '-0.0';
+  }
+
+  res = object.toString(10);
+
+  // JS stringifier can build scientific format without dots: 5e-100,
+  // while YAML requres dot: 5.e-100. Fix it with simple hack
+
+  return SCIENTIFIC_WITHOUT_DOT.test(res) ? res.replace('e', '.e') : res;
+}
+
+function isFloat(object) {
+  return (Object.prototype.toString.call(object) === '[object Number]') &&
+         (object % 1 !== 0 || common.isNegativeZero(object));
+}
+
+module.exports = new Type('tag:yaml.org,2002:float', {
+  kind: 'scalar',
+  resolve: resolveYamlFloat,
+  construct: constructYamlFloat,
+  predicate: isFloat,
+  represent: representYamlFloat,
+  defaultStyle: 'lowercase'
+});
+
+},{"../common":4,"../type":15}],19:[function(require,module,exports){
+'use strict';
+
+var common = require('../common');
+var Type   = require('../type');
+
+function isHexCode(c) {
+  return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) ||
+         ((0x41/* A */ <= c) && (c <= 0x46/* F */)) ||
+         ((0x61/* a */ <= c) && (c <= 0x66/* f */));
+}
+
+function isOctCode(c) {
+  return ((0x30/* 0 */ <= c) && (c <= 0x37/* 7 */));
+}
+
+function isDecCode(c) {
+  return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */));
+}
+
+function resolveYamlInteger(data) {
+  if (data === null) return false;
+
+  var max = data.length,
+      index = 0,
+      hasDigits = false,
+      ch;
+
+  if (!max) return false;
+
+  ch = data[index];
+
+  // sign
+  if (ch === '-' || ch === '+') {
+    ch = data[++index];
+  }
+
+  if (ch === '0') {
+    // 0
+    if (index + 1 === max) return true;
+    ch = data[++index];
+
+    // base 2, base 8, base 16
+
+    if (ch === 'b') {
+      // base 2
+      index++;
+
+      for (; index < max; index++) {
+        ch = data[index];
+        if (ch === '_') continue;
+        if (ch !== '0' && ch !== '1') return false;
+        hasDigits = true;
+      }
+      return hasDigits && ch !== '_';
+    }
+
+
+    if (ch === 'x') {
+      // base 16
+      index++;
+
+      for (; index < max; index++) {
+        ch = data[index];
+        if (ch === '_') continue;
+        if (!isHexCode(data.charCodeAt(index))) return false;
+        hasDigits = true;
+      }
+      return hasDigits && ch !== '_';
+    }
+
+    // base 8
+    for (; index < max; index++) {
+      ch = data[index];
+      if (ch === '_') continue;
+      if (!isOctCode(data.charCodeAt(index))) return false;
+      hasDigits = true;
+    }
+    return hasDigits && ch !== '_';
+  }
+
+  // base 10 (except 0) or base 60
+
+  // value should not start with `_`;
+  if (ch === '_') return false;
+
+  for (; index < max; index++) {
+    ch = data[index];
+    if (ch === '_') continue;
+    if (ch === ':') break;
+    if (!isDecCode(data.charCodeAt(index))) {
+      return false;
+    }
+    hasDigits = true;
+  }
+
+  // Should have digits and should not end with `_`
+  if (!hasDigits || ch === '_') return false;
+
+  // if !base60 - done;
+  if (ch !== ':') return true;
+
+  // base60 almost not used, no needs to optimize
+  return /^(:[0-5]?[0-9])+$/.test(data.slice(index));
+}
+
+function constructYamlInteger(data) {
+  var value = data, sign = 1, ch, base, digits = [];
+
+  if (value.indexOf('_') !== -1) {
+    value = value.replace(/_/g, '');
+  }
+
+  ch = value[0];
+
+  if (ch === '-' || ch === '+') {
+    if (ch === '-') sign = -1;
+    value = value.slice(1);
+    ch = value[0];
+  }
+
+  if (value === '0') return 0;
+
+  if (ch === '0') {
+    if (value[1] === 'b') return sign * parseInt(value.slice(2), 2);
+    if (value[1] === 'x') return sign * parseInt(value, 16);
+    return sign * parseInt(value, 8);
+  }
+
+  if (value.indexOf(':') !== -1) {
+    value.split(':').forEach(function (v) {
+      digits.unshift(parseInt(v, 10));
+    });
+
+    value = 0;
+    base = 1;
+
+    digits.forEach(function (d) {
+      value += (d * base);
+      base *= 60;
+    });
+
+    return sign * value;
+
+  }
+
+  return sign * parseInt(value, 10);
+}
+
+function isInteger(object) {
+  return (Object.prototype.toString.call(object)) === '[object Number]' &&
+         (object % 1 === 0 && !common.isNegativeZero(object));
+}
+
+module.exports = new Type('tag:yaml.org,2002:int', {
+  kind: 'scalar',
+  resolve: resolveYamlInteger,
+  construct: constructYamlInteger,
+  predicate: isInteger,
+  represent: {
+    binary:      function (obj) { return obj >= 0 ? '0b' + obj.toString(2) : '-0b' + obj.toString(2).slice(1); },
+    octal:       function (obj) { return obj >= 0 ? '0'  + obj.toString(8) : '-0'  + obj.toString(8).slice(1); },
+    decimal:     function (obj) { return obj.toString(10); },
+    /* eslint-disable max-len */
+    hexadecimal: function (obj) { return obj >= 0 ? '0x' + obj.toString(16).toUpperCase() :  '-0x' + obj.toString(16).toUpperCase().slice(1); }
+  },
+  defaultStyle: 'decimal',
+  styleAliases: {
+    binary:      [ 2,  'bin' ],
+    octal:       [ 8,  'oct' ],
+    decimal:     [ 10, 'dec' ],
+    hexadecimal: [ 16, 'hex' ]
+  }
+});
+
+},{"../common":4,"../type":15}],20:[function(require,module,exports){
+'use strict';
+
+var esprima;
+
+// Browserified version does not have esprima
+//
+// 1. For node.js just require module as deps
+// 2. For browser try to require mudule via external AMD system.
+//    If not found - try to fallback to window.esprima. If not
+//    found too - then fail to parse.
+//
+try {
+  // workaround to exclude package from browserify list.
+  var _require = require;
+  esprima = _require('esprima');
+} catch (_) {
+  /* eslint-disable no-redeclare */
+  /* global window */
+  if (typeof window !== 'undefined') esprima = window.esprima;
+}
+
+var Type = require('../../type');
+
+function resolveJavascriptFunction(data) {
+  if (data === null) return false;
+
+  try {
+    var source = '(' + data + ')',
+        ast    = esprima.parse(source, { range: true });
+
+    if (ast.type                    !== 'Program'             ||
+        ast.body.length             !== 1                     ||
+        ast.body[0].type            !== 'ExpressionStatement' ||
+        (ast.body[0].expression.type !== 'ArrowFunctionExpression' &&
+          ast.body[0].expression.type !== 'FunctionExpression')) {
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+function constructJavascriptFunction(data) {
+  /*jslint evil:true*/
+
+  var source = '(' + data + ')',
+      ast    = esprima.parse(source, { range: true }),
+      params = [],
+      body;
+
+  if (ast.type                    !== 'Program'             ||
+      ast.body.length             !== 1                     ||
+      ast.body[0].type            !== 'ExpressionStatement' ||
+      (ast.body[0].expression.type !== 'ArrowFunctionExpression' &&
+        ast.body[0].expression.type !== 'FunctionExpression')) {
+    throw new Error('Failed to resolve function');
+  }
+
+  ast.body[0].expression.params.forEach(function (param) {
+    params.push(param.name);
+  });
+
+  body = ast.body[0].expression.body.range;
+
+  // Esprima's ranges include the first '{' and the last '}' characters on
+  // function expressions. So cut them out.
+  if (ast.body[0].expression.body.type === 'BlockStatement') {
+    /*eslint-disable no-new-func*/
+    return new Function(params, source.slice(body[0] + 1, body[1] - 1));
+  }
+  // ES6 arrow functions can omit the BlockStatement. In that case, just return
+  // the body.
+  /*eslint-disable no-new-func*/
+  return new Function(params, 'return ' + source.slice(body[0], body[1]));
+}
+
+function representJavascriptFunction(object /*, style*/) {
+  return object.toString();
+}
+
+function isFunction(object) {
+  return Object.prototype.toString.call(object) === '[object Function]';
+}
+
+module.exports = new Type('tag:yaml.org,2002:js/function', {
+  kind: 'scalar',
+  resolve: resolveJavascriptFunction,
+  construct: constructJavascriptFunction,
+  predicate: isFunction,
+  represent: representJavascriptFunction
+});
+
+},{"../../type":15}],21:[function(require,module,exports){
+'use strict';
+
+var Type = require('../../type');
+
+function resolveJavascriptRegExp(data) {
+  if (data === null) return false;
+  if (data.length === 0) return false;
+
+  var regexp = data,
+      tail   = /\/([gim]*)$/.exec(data),
+      modifiers = '';
+
+  // if regexp starts with '/' it can have modifiers and must be properly closed
+  // `/foo/gim` - modifiers tail can be maximum 3 chars
+  if (regexp[0] === '/') {
+    if (tail) modifiers = tail[1];
+
+    if (modifiers.length > 3) return false;
+    // if expression starts with /, is should be properly terminated
+    if (regexp[regexp.length - modifiers.length - 1] !== '/') return false;
+  }
+
+  return true;
+}
+
+function constructJavascriptRegExp(data) {
+  var regexp = data,
+      tail   = /\/([gim]*)$/.exec(data),
+      modifiers = '';
+
+  // `/foo/gim` - tail can be maximum 4 chars
+  if (regexp[0] === '/') {
+    if (tail) modifiers = tail[1];
+    regexp = regexp.slice(1, regexp.length - modifiers.length - 1);
+  }
+
+  return new RegExp(regexp, modifiers);
+}
+
+function representJavascriptRegExp(object /*, style*/) {
+  var result = '/' + object.source + '/';
+
+  if (object.global) result += 'g';
+  if (object.multiline) result += 'm';
+  if (object.ignoreCase) result += 'i';
+
+  return result;
+}
+
+function isRegExp(object) {
+  return Object.prototype.toString.call(object) === '[object RegExp]';
+}
+
+module.exports = new Type('tag:yaml.org,2002:js/regexp', {
+  kind: 'scalar',
+  resolve: resolveJavascriptRegExp,
+  construct: constructJavascriptRegExp,
+  predicate: isRegExp,
+  represent: representJavascriptRegExp
+});
+
+},{"../../type":15}],22:[function(require,module,exports){
+'use strict';
+
+var Type = require('../../type');
+
+function resolveJavascriptUndefined() {
+  return true;
+}
+
+function constructJavascriptUndefined() {
+  /*eslint-disable no-undefined*/
+  return undefined;
+}
+
+function representJavascriptUndefined() {
+  return '';
+}
+
+function isUndefined(object) {
+  return typeof object === 'undefined';
+}
+
+module.exports = new Type('tag:yaml.org,2002:js/undefined', {
+  kind: 'scalar',
+  resolve: resolveJavascriptUndefined,
+  construct: constructJavascriptUndefined,
+  predicate: isUndefined,
+  represent: representJavascriptUndefined
+});
+
+},{"../../type":15}],23:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+module.exports = new Type('tag:yaml.org,2002:map', {
+  kind: 'mapping',
+  construct: function (data) { return data !== null ? data : {}; }
+});
+
+},{"../type":15}],24:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+function resolveYamlMerge(data) {
+  return data === '<<' || data === null;
+}
+
+module.exports = new Type('tag:yaml.org,2002:merge', {
+  kind: 'scalar',
+  resolve: resolveYamlMerge
+});
+
+},{"../type":15}],25:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+function resolveYamlNull(data) {
+  if (data === null) return true;
+
+  var max = data.length;
+
+  return (max === 1 && data === '~') ||
+         (max === 4 && (data === 'null' || data === 'Null' || data === 'NULL'));
+}
+
+function constructYamlNull() {
+  return null;
+}
+
+function isNull(object) {
+  return object === null;
+}
+
+module.exports = new Type('tag:yaml.org,2002:null', {
+  kind: 'scalar',
+  resolve: resolveYamlNull,
+  construct: constructYamlNull,
+  predicate: isNull,
+  represent: {
+    canonical: function () { return '~';    },
+    lowercase: function () { return 'null'; },
+    uppercase: function () { return 'NULL'; },
+    camelcase: function () { return 'Null'; }
+  },
+  defaultStyle: 'lowercase'
+});
+
+},{"../type":15}],26:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+var _hasOwnProperty = Object.prototype.hasOwnProperty;
+var _toString       = Object.prototype.toString;
+
+function resolveYamlOmap(data) {
+  if (data === null) return true;
+
+  var objectKeys = [], index, length, pair, pairKey, pairHasKey,
+      object = data;
+
+  for (index = 0, length = object.length; index < length; index += 1) {
+    pair = object[index];
+    pairHasKey = false;
+
+    if (_toString.call(pair) !== '[object Object]') return false;
+
+    for (pairKey in pair) {
+      if (_hasOwnProperty.call(pair, pairKey)) {
+        if (!pairHasKey) pairHasKey = true;
+        else return false;
+      }
+    }
+
+    if (!pairHasKey) return false;
+
+    if (objectKeys.indexOf(pairKey) === -1) objectKeys.push(pairKey);
+    else return false;
+  }
+
+  return true;
+}
+
+function constructYamlOmap(data) {
+  return data !== null ? data : [];
+}
+
+module.exports = new Type('tag:yaml.org,2002:omap', {
+  kind: 'sequence',
+  resolve: resolveYamlOmap,
+  construct: constructYamlOmap
+});
+
+},{"../type":15}],27:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+var _toString = Object.prototype.toString;
+
+function resolveYamlPairs(data) {
+  if (data === null) return true;
+
+  var index, length, pair, keys, result,
+      object = data;
+
+  result = new Array(object.length);
+
+  for (index = 0, length = object.length; index < length; index += 1) {
+    pair = object[index];
+
+    if (_toString.call(pair) !== '[object Object]') return false;
+
+    keys = Object.keys(pair);
+
+    if (keys.length !== 1) return false;
+
+    result[index] = [ keys[0], pair[keys[0]] ];
+  }
+
+  return true;
+}
+
+function constructYamlPairs(data) {
+  if (data === null) return [];
+
+  var index, length, pair, keys, result,
+      object = data;
+
+  result = new Array(object.length);
+
+  for (index = 0, length = object.length; index < length; index += 1) {
+    pair = object[index];
+
+    keys = Object.keys(pair);
+
+    result[index] = [ keys[0], pair[keys[0]] ];
+  }
+
+  return result;
+}
+
+module.exports = new Type('tag:yaml.org,2002:pairs', {
+  kind: 'sequence',
+  resolve: resolveYamlPairs,
+  construct: constructYamlPairs
+});
+
+},{"../type":15}],28:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+module.exports = new Type('tag:yaml.org,2002:seq', {
+  kind: 'sequence',
+  construct: function (data) { return data !== null ? data : []; }
+});
+
+},{"../type":15}],29:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+var _hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function resolveYamlSet(data) {
+  if (data === null) return true;
+
+  var key, object = data;
+
+  for (key in object) {
+    if (_hasOwnProperty.call(object, key)) {
+      if (object[key] !== null) return false;
+    }
+  }
+
+  return true;
+}
+
+function constructYamlSet(data) {
+  return data !== null ? data : {};
+}
+
+module.exports = new Type('tag:yaml.org,2002:set', {
+  kind: 'mapping',
+  resolve: resolveYamlSet,
+  construct: constructYamlSet
+});
+
+},{"../type":15}],30:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+module.exports = new Type('tag:yaml.org,2002:str', {
+  kind: 'scalar',
+  construct: function (data) { return data !== null ? data : ''; }
+});
+
+},{"../type":15}],31:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+var YAML_DATE_REGEXP = new RegExp(
+  '^([0-9][0-9][0-9][0-9])'          + // [1] year
+  '-([0-9][0-9])'                    + // [2] month
+  '-([0-9][0-9])$');                   // [3] day
+
+var YAML_TIMESTAMP_REGEXP = new RegExp(
+  '^([0-9][0-9][0-9][0-9])'          + // [1] year
+  '-([0-9][0-9]?)'                   + // [2] month
+  '-([0-9][0-9]?)'                   + // [3] day
+  '(?:[Tt]|[ \\t]+)'                 + // ...
+  '([0-9][0-9]?)'                    + // [4] hour
+  ':([0-9][0-9])'                    + // [5] minute
+  ':([0-9][0-9])'                    + // [6] second
+  '(?:\\.([0-9]*))?'                 + // [7] fraction
+  '(?:[ \\t]*(Z|([-+])([0-9][0-9]?)' + // [8] tz [9] tz_sign [10] tz_hour
+  '(?::([0-9][0-9]))?))?$');           // [11] tz_minute
+
+function resolveYamlTimestamp(data) {
+  if (data === null) return false;
+  if (YAML_DATE_REGEXP.exec(data) !== null) return true;
+  if (YAML_TIMESTAMP_REGEXP.exec(data) !== null) return true;
+  return false;
+}
+
+function constructYamlTimestamp(data) {
+  var match, year, month, day, hour, minute, second, fraction = 0,
+      delta = null, tz_hour, tz_minute, date;
+
+  match = YAML_DATE_REGEXP.exec(data);
+  if (match === null) match = YAML_TIMESTAMP_REGEXP.exec(data);
+
+  if (match === null) throw new Error('Date resolve error');
+
+  // match: [1] year [2] month [3] day
+
+  year = +(match[1]);
+  month = +(match[2]) - 1; // JS month starts with 0
+  day = +(match[3]);
+
+  if (!match[4]) { // no hour
+    return new Date(Date.UTC(year, month, day));
+  }
+
+  // match: [4] hour [5] minute [6] second [7] fraction
+
+  hour = +(match[4]);
+  minute = +(match[5]);
+  second = +(match[6]);
+
+  if (match[7]) {
+    fraction = match[7].slice(0, 3);
+    while (fraction.length < 3) { // milli-seconds
+      fraction += '0';
+    }
+    fraction = +fraction;
+  }
+
+  // match: [8] tz [9] tz_sign [10] tz_hour [11] tz_minute
+
+  if (match[9]) {
+    tz_hour = +(match[10]);
+    tz_minute = +(match[11] || 0);
+    delta = (tz_hour * 60 + tz_minute) * 60000; // delta in mili-seconds
+    if (match[9] === '-') delta = -delta;
+  }
+
+  date = new Date(Date.UTC(year, month, day, hour, minute, second, fraction));
+
+  if (delta) date.setTime(date.getTime() - delta);
+
+  return date;
+}
+
+function representYamlTimestamp(object /*, style*/) {
+  return object.toISOString();
+}
+
+module.exports = new Type('tag:yaml.org,2002:timestamp', {
+  kind: 'scalar',
+  resolve: resolveYamlTimestamp,
+  construct: constructYamlTimestamp,
+  instanceOf: Date,
+  represent: representYamlTimestamp
+});
+
+},{"../type":15}],32:[function(require,module,exports){
 (function (global){(function (){
 /**
  * @license
@@ -17328,7 +21315,7 @@ module.exports.bindWith = bindWith
 }.call(this));
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 //! moment.js
 //! version : 2.29.4
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -23015,7 +27002,2681 @@ module.exports.bindWith = bindWith
 
 })));
 
-},{}],4:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
+module.exports = `---
+# Edit this file to change various values in the Warband game.
+
+Halo:
+    name: Halo
+    Covenant:
+        Creature:
+            AAWraith:
+                classic: 3
+                cost: 31
+                damage: 13
+                durability: 24
+                name: AA Wraith
+                preferredRange: 8
+                size: 4
+                speed: 2
+                tags: Ground
+                items:
+                    - Item.FuelRodCannon
+            Banshee:
+                durability: 57
+                name: Banshee
+                speed: 10
+                size: 6
+                accuracy: 2
+                items:
+                    - Item.FuelRodCannon
+            Banshees:
+                classic: 7
+                cost: 36
+                damage: 11
+                durability: 21
+                name: Banshees
+                preferredRange: 3
+                size: 4
+                speed: 11
+                tags: Air
+            BerserkerBrutes:
+                classic: 4
+                cost: 26
+                damage: 24
+                durability: 21
+                group: Brute
+                name: Berserker Brutes
+                preferredRange: 0
+                size: 2
+                speed: 3
+                tags: Ground
+            Brute:
+                accuracy: 2
+                durability: 27
+                group: Brute
+                name: Brute
+                speed: 2
+                size: 3
+                items:
+                    - Item.Spiker
+            BruteChieftain:
+                accuracy: 4
+                classic: 7
+                cost: 26
+                damage: 27
+                durability: 44
+                gear: Has bodyguard brutes
+                group: Brute
+                name: Brute Chieftain
+                preferredRange: 0
+                size: 3
+                speed: 2
+                tags: Ground
+                items:
+                    - Item.GravityHammer
+            BruteDivision:
+                accuracy: 2
+                classic: 7
+                damage: 8
+                durability: 14
+                group: Brute
+                name: Brute Division
+                preferredRange: 4
+                scale: Battalion
+                size: 2
+            BruteStalkersMauler:
+                classic: 4
+                cost: 32
+                damage: 6
+                durability: 26
+                group: Brute
+                name: Brute Stalkers Mauler
+                preferredRange: 3
+                size: 2
+                speed: 2
+                tags: Ground
+            BrutesSpiker:
+                classic: 8
+                cost: 28
+                damage: 6
+                durability: 21
+                gear: Spiker
+                group: Brute
+                name: Brutes Spiker
+                preferredRange: 3
+                size: 2
+                speed: 2
+                tags: Ground
+            Chopper:
+                durability: 50
+                group: Brute
+                name: Chopper
+                speed: 5
+                accuracy: 2
+                size: 6
+                items:
+                    - Item.BruteShot
+            CommandElitesHeavyWeapons:
+                classic: 6
+                cost: 40
+                damage: 15
+                durability: 23
+                group: Elite
+                name: Command Elites heavy weapons
+                preferredRange: 5
+                size: 2
+                speed: 3
+                tags: Ground
+            Corvette:
+                accuracy: 0
+                classic: 3
+                cost: 59
+                damage: 23
+                durability: 27
+                name: Corvette
+                preferredRange: 25
+                size: 6
+                speed: 6
+                tags: Air
+                transport: yes
+                items:
+                    - Item.WraithMortar
+            CovenantArmorDivision:
+                accuracy: 3
+                classic: 8
+                damage: 24
+                durability: 25
+                name: Covenant Armor division
+                preferredRange: 42
+                scale: Battalion
+                size: 6
+                type: Explosive
+            CovenantCruiser:
+                durability: 71429
+                name: Covenant cruiser
+            CovenantHeavyInfantryDivision:
+                classic: 6
+                name: Covenant heavy infantry division
+                scale: Battalion
+                size: 2
+            CovenantLightVehicleDivision:
+                accuracy: 1
+                classic: 8
+                damage: 20
+                durability: 20
+                name: Covenant light vehicle division
+                preferredRange: 5
+                scale: Battalion
+                type: Fire
+            CovenantSpecOpsDivision:
+                accuracy: 2
+                classic: 8
+                damage: 8
+                durability: 17
+                name: Covenant Spec Ops division
+                preferredRange: 3
+                scale: Battalion
+                size: 2
+            CovenantSupercarrier:
+                durability: 1428571
+                name: Covenant Supercarrier
+            Drone:
+                durability: 4
+                name: Drone
+                speed: 5
+                size: 2
+                accuracy: 1
+                items:
+                    - Item.PlasmaPistol
+            Drones:
+                classic: 4
+                cost: 21
+                damage: 4
+                durability: 14
+                name: Drones
+                preferredRange: 3
+                size: 2
+                speed: 5
+                tags: Air
+            Elite:
+                accuracy: 3
+                durability: 27
+                name: Elite
+                speed: 3
+                size: 3
+                items:
+                    - Item.PlasmaRifle
+            ElitePR:
+                accuracy: 1
+                classic: 8
+                cost: 40
+                damage: 4
+                durability: 20
+                name: Elite PR
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Fire
+            EliteUltra:
+                durability: 30
+                name: Elite Ultra
+                speed: 3
+            ElitesCarbine:
+                classic: 8
+                cost: 31
+                damage: 6
+                durability: 21
+                gear: Carbine
+                group: Elite
+                name: Elites carbine
+                preferredRange: 5
+                size: 2
+                speed: 3
+                tags: Ground
+            Ghost:
+                durability: 50
+                name: Ghost
+                speed: 8
+                size: 5
+                accuracy: 2
+                items:
+                    - Item.PlasmaTurret
+            Grunt:
+                accuracy: 0
+                durability: 5
+                items:
+                    - Item.PlasmaPistol
+                name: Grunt
+                size: 1.5
+                speed: 1.5
+            GruntDivision:
+                accuracy: 1
+                classic: 8
+                damage: 4
+                durability: 11
+                name: Grunt division
+                preferredRange: 3
+                scale: Battalion
+                size: 2
+                type: Fire
+            GruntLance:
+                classic: 10
+                cost: 16
+                damage: 4
+                durability: 12
+                group: Grunt
+                name: Grunt Lance
+                preferredRange: 3
+                size: 2
+                speed: 2
+                tags: Ground
+            GruntPP:
+                accuracy: 1
+                classic: 8
+                cost: 8
+                damage: 4
+                durability: 11
+                name: Grunt PP
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Fire
+            HeavyGruntsFuelRodCannon:
+                classic: 5
+                cost: 23
+                damage: 13
+                durability: 12
+                group: Grunt
+                name: Heavy Grunts fuel rod cannon
+                preferredRange: 5
+                size: 2
+                speed: 2
+                tags: Ground
+            Hunter:
+                accuracy: 2
+                classic: 8
+                cost: 100
+                damage: 12
+                durability: 66
+                name: Hunter
+                preferredRange: 5
+                scale: Individual
+                size: 4
+                speed: 1
+                type: Explosive
+                tags: Ground
+                items:
+                    - Item.FuelRodCannon
+            Huragok:
+                classic: 6
+                cost: 2
+                name: Huragok
+                size: 2
+                speed: 2
+                tags: Air
+            JackalDivision:
+                accuracy: 1
+                classic: 8
+                damage: 4
+                durability: 19
+                name: Jackal division
+                preferredRange: 3
+                scale: Battalion
+                size: 2
+                type: Fire
+            JackalFocusRifle:
+                accuracy: 2
+                classic: 6
+                damage: 12
+                durability: 11
+                name: Jackal focus rifle
+                preferredRange: 29
+                scale: Individual
+                size: 2
+                type: Kinetic
+            JackalNoShield:
+                durability: 9
+                name: Jackal no shield
+                speed: 2
+            JackalShield:
+                durability: 21
+                name: Jackal shield
+                speed: 2
+            JackalShieldPP:
+                accuracy: 1
+                classic: 8
+                cost: 15
+                damage: 4
+                durability: 19
+                name: Jackal Shield PP
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Fire
+            JumppackBrutesCarbine:
+                classic: 7
+                cost: 35
+                damage: 8
+                durability: 21
+                gear: Carbine
+                group: Brute
+                name: Jumppack Brutes carbine
+                preferredRange: 5
+                size: 2
+                speed: 5
+                tags: Air
+            Kraken:
+                accuracy: 0
+                classic: 3
+                cost: 35
+                damage: 13
+                durability: 26
+                name: Kraken
+                preferredRange: 8
+                size: 6
+                speed: 3
+                tags: Ground
+                transport: yes
+                items:
+                    - Item.PlasmaTurret
+            Lich:
+                durability: 2143
+                name: Lich
+                source: Halo 4
+                tags: Air
+                speed: 3
+                accuracy: 0
+                size: 100
+                items:
+                    - Item.ShadeTurret
+            Phantom:
+                accuracy: 1
+                classic: 7
+                damage: 4
+                durability: 24
+                name: Phantom
+                preferredRange: 6
+                scale: Individual
+                size: 6
+                speed: 4
+                type: Explosive
+                items:
+                    - Item.ShadeTurret
+            Prowler:
+                durability: 57
+                group: Brute
+                name: Prowler
+                speed: 4
+            RangerElitesNeedleRifle:
+                classic: 6
+                cost: 34
+                damage: 8
+                durability: 21
+                group: Elite
+                name: Ranger Elites needle rifle
+                preferredRange: 5
+                size: 2
+                speed: 5
+                tags: Air
+            RangerLancePlasmaWeapons:
+                classic: 2
+                cost: 23
+                damage: 6
+                durability: 14
+                group: Grunt
+                name: Ranger Lance plasma weapons
+                preferredRange: 3
+                size: 2
+                speed: 5
+                tags: Air
+            Scarab+Crew:
+                accuracy: 3
+                classic: 8
+                cost: 10
+                damage: 40
+                durability: 25
+                name: Scarab + crew
+                preferredRange: 42
+                scale: Individual
+                size: 12
+                type: Explosive
+            ScarabDivision:
+                accuracy: 3
+                classic: 9
+                damage: 40
+                durability: 25
+                name: Scarab division
+                preferredRange: 42
+                scale: Battalion
+                size: 12
+                type: Explosive
+            ShieldJackalsPlasmaPistol:
+                classic: 9
+                cost: 22
+                damage: 4
+                durability: 20
+                group: Jackal
+                name: Shield Jackals plasma pistol
+                preferredRange: 3
+                size: 2
+                speed: 2
+                tags: Ground
+            SkimmersShockRifle:
+                classic: 5
+                cost: 22
+                damage: 6
+                durability: 12
+                name: Skimmers shock rifle
+                preferredRange: 5
+                size: 2
+                speed: 3
+                tags: Air
+            SkirmisherDivision:
+                accuracy: 1
+                classic: 6
+                damage: 4
+                durability: 16
+                name: Skirmisher division
+                preferredRange: 4
+                scale: Battalion
+                size: 2
+            SkirmisherPP:
+                accuracy: 1
+                classic: 6
+                damage: 4
+                durability: 15
+                name: Skirmisher PP
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Fire
+            SkirmishersNeedleRifle:
+                classic: 6
+                cost: 29
+                damage: 8
+                durability: 15
+                gear: Needle Rifle
+                group: Jackal
+                name: Skirmishers needle rifle
+                preferredRange: 5
+                size: 2
+                speed: 5
+                tags: Ground
+            SniperJackalsBeamRifle:
+                classic: 7
+                cost: 45
+                damage: 11
+                durability: 12
+                group: Jackal
+                name: Sniper Jackals beam rifle
+                preferredRange: 35
+                size: 2
+                speed: 2
+                tags: Ground
+            SpecOpsElite:
+                durability: 29
+                name: Spec Ops Elite
+                speed: 3
+            SpecOpsGrunt:
+                durability: 11
+                name: Spec Ops Grunt
+                speed: 2
+            Spirit:
+                accuracy: 1
+                classic: 7
+                cost: 38
+                damage: 8
+                durability: 24
+                name: Spirit
+                preferredRange: 5
+                scale: Individual
+                size: 6
+                speed: 12
+                tags: Air
+                transport: yes
+                type: Explosive
+            StealthElite:
+                durability: 10
+                name: Stealth Elite
+                speed: 3
+            StealthElitesPlasmaRifle:
+                classic: 8
+                cost: 29
+                damage: 6
+                durability: 26
+                gear: Plasma Rifle
+                group: Elite
+                name: Stealth Elites plasma rifle
+                preferredRange: 3
+                size: 2
+                speed: 3
+                tags: Ground
+            Wraith:
+                accuracy: 3
+                classic: 8
+                cost: 31
+                damage: 24
+                durability: 300
+                name: Wraith
+                preferredRange: 8
+                speed: 3
+                size: 6
+                scale: Individual
+                tags: Ground
+                type: Explosive
+                items:
+                    - Item.WraithMortar
+            ZealotsNeedleRifle:
+                classic: 4
+                cost: 33
+                damage: 8
+                durability: 21
+                group: Elite
+                name: Zealots needle rifle
+                preferredRange: 5
+                size: 2
+                speed: 3
+                tags: Ground
+        Item:
+            BeamRifle:
+                aoe: 2
+                classic: 7
+                cost: 11
+                damage: 10
+                name: Beam Rifle
+                rof: 1
+                tags: infantry
+                type: Hardlight
+                color: blue
+            BruteCQC:
+                aoe: 1
+                classic: 10
+                cost: 0
+                damage: 9
+                group: Brute
+                name: Brute CQC
+                preferredRange: 0
+                rof: 1
+                tags: natural
+                type: Impact
+            BruteShot:
+                aoe: 1
+                classic: 7
+                cost: 9
+                damage: 6
+                group: Brute
+                name: Brute Shot
+                preferredRange: 3
+                rof: 1
+                tags: biginfantry
+                type: Impact
+            BruteShotCQc(fromBrute):
+                aoe: 1
+                classic: 7
+                cost: 0
+                damage: 13
+                group: Brute
+                name: Brute Shot CQC (from Brute)
+                preferredRange: 0
+                rof: 1
+                tags: infantry
+                type: Kinetic
+            Carbine:
+                aoe: 1
+                classic: 8
+                cost: 7
+                damage: 1
+                name: Carbine
+                rof: 2
+                tags: infantry
+                type: Kinetic
+            ConcussionRifle:
+                aoe: 2
+                classic: 3
+                cost: 9
+                damage: 4
+                name: Concussion Rifle
+                rof: 1
+                tags: infantry
+                type: Impact
+            EliteCQC:
+                aoe: 1
+                classic: 9
+                cost: 0
+                damage: 12
+                name: Elite CQC
+                preferredRange: 0
+                rof: 1
+                tags: natural
+                type: Impact
+            EnergySword:
+                aoe: 1
+                classic: 6
+                cost: 8
+                damage: 13
+                name: Energy Sword
+                preferredRange: 0
+                rof: 1
+                tags: biginfantry
+                type: Fire
+            FocusRifle:
+                aoe: 1
+                classic: 4
+                cost: 12
+                damage: 4
+                name: Focus Rifle
+                rof: 1
+                tags: infantry
+                type: Fire
+                accuracy: 10
+            FuelRodCannon:
+                aoe: 3
+                classic: 7
+                cost: 12
+                damage: 10
+                name: Fuel Rod Cannon
+                rof: 1
+                tags: infantry
+                type: Fire
+            GravityHammer:
+                aoe: 2
+                classic: 4
+                cost: 8
+                damage: 17
+                group: Brute
+                name: Gravity Hammer
+                preferredRange: 0
+                rof: 1
+                tags: biginfantry
+                type: Impact
+            GruntCQC:
+                aoe: 1
+                classic: 10
+                cost: 0
+                damage: 0
+                name: Grunt CQC
+                preferredRange: 0
+                rof: 1
+                tags: natural
+                type: Impact
+            HunterCQC:
+                aoe: 3
+                classic: 5
+                cost: 0
+                damage: 17
+                name: Hunter CQC
+                preferredRange: 0
+                rof: 1
+                tags: natural
+                type: Impact
+            HunterCannon:
+                aoe: 2
+                classic: 5
+                cost: 12
+                damage: 8
+                name: Hunter Cannon
+                rof: 1
+                source: Halo 1
+                type: Fire
+            IncendiaryGrenade:
+                accuracy: 1
+                aoe: 2
+                classic: 3
+                damage: 5
+                group: Brute
+                name: Incendiary Grenade
+                preferredRange: 5
+                tags: infantry
+                type: Fire
+            Mauler:
+                accuracy: 120
+                aoe: 1
+                classic: 3
+                cost: 5
+                damage: 7
+                group: Brute
+                name: Mauler
+                preferredRange: 0
+                rof: 1
+                tags: infantry
+                type: Kinetic
+            NeedleRifle:
+                aoe: 1
+                classic: 4
+                cost: 8
+                damage: 4
+                name: Needle Rifle
+                rof: 1
+                tags: infantry
+                type: Kinetic
+                color: pink
+            Needler:
+                aoe: 2
+                classic: 10
+                cost: 5
+                damage: 2
+                name: Needler
+                rof: 3
+                tags: infantry
+                type: Kinetic
+                color: pink
+            PlasmaCaster:
+                aoe: 3
+                cost: 11
+                damage: 12
+                name: Plasma Caster
+                rof: 1
+                tags: infantry
+                type: Fire
+                color: blue
+            PlasmaGrenade:
+                accuracy: 1
+                aoe: 3
+                classic: 10
+                damage: 20
+                name: Plasma Grenade
+                preferredRange: 5
+                tags: infantry
+                type: Fire
+                color: blue
+            PlasmaLauncher:
+                aoe: 3
+                classic: 3
+                cost: 10
+                damage: 7
+                name: Plasma Launcher
+                rof: 0.5
+                tags: infantry
+                type: Fire
+                color: blue
+            PlasmaPistol:
+                aoe: 1
+                classic: 10
+                cost: 3
+                damage: 1
+                name: Plasma Pistol
+                rof: 2
+                tags: infantry
+                type: Fire
+                color: lime
+            PlasmaPistolCharged:
+                aoe: 1
+                classic: 9
+                damage: 1
+                name: Plasma Pistol Charged
+                rof: 1
+                tags: infantry
+                type: Fire
+            PlasmaRepeater:
+                aoe: 1
+                classic: 3
+                cost: 4
+                damage: 1
+                name: Plasma Repeater
+                rof: 3
+                tags: infantry
+                type: Fire
+            PlasmaRifle:
+                aoe: 1
+                classic: 8
+                cost: 3
+                damage: 1
+                name: Plasma Rifle
+                rof: 3
+                source: Halo 2
+                tags: infantry
+                type: Fire
+                color: blue
+            PlasmaTurret:
+                aoe: 1
+                classic: 6
+                cost: 10
+                damage: 3
+                name: Plasma Turret
+                rof: 2
+                tags: turret
+                type: Fire
+                color: blue
+            ScarabCannon:
+                aoe: 10
+                classic: 2
+                damage: 133
+                name: Scarab Cannon
+                rof: 0.1
+                type: Fire
+                color: green
+            ShadeTurret:
+                aoe: 3
+                classic: 7
+                cost: 10
+                damage: 1
+                name: Shade Turret
+                rof: 1
+                tags: turret
+                type: Fire
+                color: purple
+            SpikeGrenade:
+                accuracy: 1
+                aoe: 2
+                classic: 9
+                damage: 13
+                group: Brute
+                name: Spike Grenade
+                preferredRange: 5
+                tags: infantry
+                type: Kinetic
+                color: orange
+            Spiker:
+                aoe: 1
+                classic: 9
+                cost: 4
+                damage: 1
+                gear: dmg should be higher. More than sailor sp.
+                group: Brute
+                name: Spiker
+                rof: 2
+                tags: infantry
+                type: Kinetic
+                color: orange
+            SpikerCQc(fromBrute):
+                aoe: 1
+                classic: 9
+                cost: 0
+                damage: 10
+                group: Brute
+                name: Spiker CQC (from Brute)
+                preferredRange: 0
+                rof: 1
+                tags: infantry
+                type: Kinetic
+            TartarusGavel:
+                aoe: 5
+                classic: 1
+                cost: 13
+                damage: 27
+                group: Brute
+                name: Tartarus' Gavel
+                rof: 1
+                tags: biginfantry
+                type: Impact
+            WraithMortar:
+                aoe: 5
+                classic: 4
+                damage: 53
+                name: Wraith Mortar
+                rof: 1
+                type: Fire
+        Squad:
+            Banshee:
+                creature: Creature.Banshee
+                image: banshee.jpeg
+                name: Banshee
+                quantity: 1
+            Brute:
+                creature: Creature.Brute
+                image: brute.jpg
+                name: Brute
+                quantity: 3
+            BruteChieftain:
+                creature: Creature.BruteChieftain
+                image: bruteChieftain.png
+                name: BruteChieftain
+                quantity: 1
+            Chopper:
+                creature: Creature.Chopper
+                image: chopper.jpg
+                name: Chopper
+                quantity: 1
+            Corvette:
+                creature: Creature.Corvette
+                image: corvette.png
+                name: Corvette
+                quantity: 1
+            Drone:
+                creature: Creature.Drone
+                image: drone.png
+                name: Drone
+                quantity: 3
+            Elite:
+                creature: Creature.Elite
+                image: elite.jpg
+                name: Elite
+                quantity: 3
+            Ghost:
+                creature: Creature.Ghost
+                image: ghost.jpg
+                name: Ghost
+                quantity: 1
+            Grunt:
+                creature: Creature.Grunt
+                image: grunt.png
+                name: Grunt
+                quantity: 3
+            Hunter:
+                creature: Creature.Hunter
+                image: hunter.png
+                name: Hunter
+                quantity: 2
+            Kraken:
+                creature: Creature.Kraken
+                image: kraken.jpg
+                name: Kraken
+                quantity: 1
+            Lich:
+                creature: Creature.Lich
+                image: lich.png
+                name: Lich
+                quantity: 1
+            Phantom:
+                creature: Creature.Phantom
+                image: phantom.png
+                name: Phantom
+                quantity: 1
+            Wraith:
+                creature: Creature.Wraith
+                image: wraith.png
+                name: Wraith
+                quantity: 1
+    Flood:
+        Creature:
+            CarrierForm:
+                accuracy: 0
+                classic: 5
+                cost: 10
+                durability: 2
+                name: Carrier Form
+                size: 2
+                speed: 1
+                tags: Ground
+                items:
+                    - Item.CarrierBlast
+            CombatForm:
+                classic: 7
+                cost: 20
+                durability: 15
+                name: Combat Forms (Human)
+                size: 2
+                speed: 3
+                tags: Ground
+                items:
+                    - Item.CombatFormCQC
+            CombatHorde(largeBodies):
+                accuracy: 1
+                classic: 6
+                damage: 8
+                durability: 14
+                name: Combat horde (large bodies)
+                preferredRange: 0
+                scale: Battalion
+                size: 2
+                type: Blade
+            CombatHorde(smallBodies):
+                accuracy: 1
+                classic: 9
+                damage: 8
+                durability: 14
+                name: Combat horde (small bodies)
+                preferredRange: 0
+                scale: Battalion
+                size: 2
+                type: Blade
+            FloodCombatForm(Marine):
+                accuracy: 1
+                classic: 8
+                cost: 15
+                damage: 8
+                durability: 14
+                name: Flood Combat Form (Marine)
+                preferredRange: 0
+                scale: Individual
+                size: 2
+                type: Blade
+            FloodCombatFormBrute:
+                durability: 19
+                name: Flood Combat Form Brute
+                speed: 2
+            FloodCombatFormElite:
+                durability: 17
+                name: Flood Combat Form Elite
+                speed: 3
+            FloodCombatFormHuman:
+                durability: 14
+                name: Flood Combat Form Human
+                speed: 2
+            FloodInfectionForm:
+                accuracy: 0
+                classic: 8
+                cost: 1
+                damage: 4
+                durability: 10
+                name: Flood Infection Form
+                preferredRange: 0
+                scale: Individual
+                size: 2
+                type: Blade
+            FloodSpiderForm:
+                durability: 14
+                name: Flood Spider Form
+                source: Halo 3
+                speed: 3
+            FloodSpinerForm:
+                durability: 14
+                name: Flood Spiner Form
+                source: Halo 3
+                speed: 0
+            FloodTankForm:
+                durability: 50
+                name: Flood Tank Form
+                source: Halo 3
+                speed: 1
+            InfectionPods:
+                classic: 7
+                cost: 14
+                damage: 12
+                durability: 9
+                name: Infection Pods
+                preferredRange: 0
+                size: 2
+                speed: 3
+                tags: Ground
+            InfectionSwarm:
+                accuracy: 0
+                classic: 8
+                damage: 4
+                durability: 10
+                name: Infection swarm
+                preferredRange: 0
+                scale: Battalion
+                size: 1
+            PureForms:
+                classic: 3
+                cost: 33
+                damage: 4
+                durability: 21
+                name: Pure Forms
+                preferredRange: 5
+                size: 2
+                speed: 5
+                tags: Ground
+        Item:
+            CarrierBlast:
+                accuracy: 2
+                aoe: 3
+                damage: 16
+                rof: 1
+                name: Flood Carrier blast
+                type: Impact
+            CombatFormCQC:
+                accuracy: 2
+                aoe: 1
+                classic: 9
+                cost: 0
+                damage: 12
+                name: Flood Combat Form CQC
+                rof: 1
+                type: Impact
+            FloodPodCQC:
+                aoe: 1
+                classic: 10
+                cost: 0
+                damage: 1
+                name: Flood Pod CQC
+                rof: 1
+                type: Kinetic
+                color: brown
+            FloodSpineMunitions:
+                aoe: 1
+                classic: 4
+                cost: 0
+                damage: 1
+                name: Flood spine munitions
+                rof: 1
+                type: Kinetic
+        Squad:
+            CombatForm:
+                creature: Creature.CombatForm
+                image: combatForm.png
+                name: CombatForm
+                quantity: 3
+
+    Forerunner:
+        Creature:
+            BattlewagonIncinerationCannon:
+                classic: 4
+                cost: 233
+                damage: 15
+                durability: 23
+                group: Promethean
+                name: Battlewagon incineration cannon
+                preferredRange: 5
+                size: 2
+                speed: 149
+                tags: Ground
+            Crawler:
+                accuracy: 0
+                durability: 10
+                name: Crawler
+                size: 2
+                source: Halo 5
+                group: Promethean
+                speed: 3
+                items:
+                    - Item.Suppressor
+            ForerunnerKeyship:
+                durability: 2857143
+                name: Forerunner Keyship
+                source: Halo 5
+            Guardian:
+                classic: 1
+                cost: 47
+                damage: 25
+                durability: 30
+                name: Guardian
+                preferredRange: 13
+                size: 6
+                speed: 3
+                tags: Air
+            Knight:
+                durability: 57
+                name: Knight
+                source: Halo 5
+                speed: 4
+                size: 3
+                accuracy: 2
+                items:
+                    - Item.Lightrifle
+            KnightsLightrifle:
+                classic: 5
+                cost: 228
+                damage: 8
+                durability: 23
+                gear: Lightrifle
+                group: Promethean
+                name: Knights lightrifle
+                preferredRange: 5
+                size: 2
+                speed: 149
+                tags: Ground
+            Phaeton:
+                durability: 200
+                name: Phaeton
+                speed: 5
+            Phaetons:
+                classic: 4
+                cost: 33
+                damage: 10
+                durability: 21
+                group: Promethean
+                name: Phaetons
+                preferredRange: 5
+                size: 4
+                speed: 8
+                tags: Air
+            PrometheanSoldierSuppressor:
+                accuracy: 1
+                classic: 3
+                damage: 8
+                durability: 17
+                name: Promethean Soldier suppressor
+                preferredRange: 4
+                scale: Individual
+                size: 2
+                type: Kinetic
+            Sentinel:
+                accuracy: 1
+                classic: 9
+                cost: 20
+                damage: 8
+                durability: 17
+                name: Sentinel
+                preferredRange: 5
+                scale: Individual
+                size: 2
+                source: Reach
+                speed: 4
+                type: Fire
+                items:
+                    - Item.SentinelBeam
+            SentinelDivision:
+                accuracy: 1
+                classic: 7
+                damage: 8
+                durability: 20
+                name: Sentinel division
+                preferredRange: 5
+                scale: Battalion
+                size: 2
+            SentinelEnforcer:
+                accuracy: 3
+                classic: 6
+                damage: 20
+                durability: 55
+                name: Sentinel Enforcer
+                preferredRange: 8
+                scale: Individual
+                size: 4
+                speed: 1.5
+                type: Explosive
+            Sentinels:
+                classic: 7
+                cost: 216
+                damage: 4
+                durability: 17
+                name: Sentinels
+                preferredRange: 3
+                size: 2
+                speed: 149
+                tags: Air
+            Soldier:
+                durability: 14
+                name: Soldier
+                size: 2
+                source: Halo 4
+                speed: 4
+            SoldierSuppressor:
+                classic: 2
+                cost: 217
+                damage: 4
+                durability: 18
+                name: Soldier suppressor
+                preferredRange: 3
+                size: 2
+                speed: 149
+                tags: Ground
+            Warden:
+                classic: 3
+                cost: 242
+                damage: 17
+                durability: 24
+                group: Promethean
+                name: Warden
+                preferredRange: 13
+                size: 2
+                speed: 149
+                tags: Ground
+            WardenEternal:
+                durability: 571
+                name: Warden Eternal
+                source: Halo 5
+                speed: 1
+            Watcher:
+                durability: 11
+                name: Watcher
+                size: 2
+                source: Halo 5
+                speed: 5
+            Watchers:
+                classic: 5
+                cost: 212
+                damage: 2
+                durability: 12
+                group: Promethean
+                name: Watchers
+                preferredRange: 5
+                size: 2
+                speed: 149
+                tags: Air
+        Item:
+            BinaryRifle:
+                aoe: 2
+                classic: 4
+                cost: 12
+                damage: 13
+                name: Binary Rifle
+                rof: 1
+                source: Halo 5
+                tags: infantry
+                type: Fire
+                color: red
+            Boltshot:
+                aoe: 1
+                classic: 7
+                cost: 8
+                damage: 2
+                name: Boltshot
+                rof: 1
+                source: Halo 5
+                tags: infantry
+                type: Fire
+                color: orange
+            CrawlerCQC:
+                aoe: 1
+                classic: 9
+                cost: 0
+                damage: 6
+                name: Crawler CQC
+                preferredRange: 0
+                rof: 1
+                tags: natural
+                type: Impact
+            DuelistsBoltshot:
+                aoe: 1
+                classic: 7
+                cost: 4
+                damage: 1
+                name: Duelist's Boltshot
+                rof: 1
+                source: Halo 4
+                tags: infantry
+                type: Fire
+            Heatwave:
+                name: Heatwave
+                type: Hardlight
+                color: pink
+                damage: 15
+                accuracy: 1
+                rof: 2
+            IncinerationCannon:
+                aoe: 4
+                classic: 4
+                cost: 10
+                damage: 27
+                name: Incineration Cannon
+                rof: 1
+                source: Halo 4
+                tags: biginfantry
+                type: Fire
+            Knightblade:
+                aoe: 2
+                classic: 5
+                damage: 13
+                name: Knightblade
+                rof: 1
+                source: Halo 5
+                tags: natural
+                type: Fire
+            Lightrifle:
+                aoe: 1
+                classic: 8
+                cost: 8
+                damage: 3
+                name: Lightrifle
+                rof: 1
+                source: Halo 5
+                tags: infantry
+                type: Fire
+                accuracy: 8
+            PulseGrenade:
+                aoe: 1
+                classic: 8
+                damage: 7
+                name: Pulse Grenade
+                source: Halo 4
+                tags: infantry
+                type: Fire
+            SentinelBeam:
+                aoe: 1
+                classic: 9
+                cost: 8
+                damage: 3
+                name: Sentinel Beam
+                rof: 1
+                source: Halo 1
+                tags: infantry
+                type: Fire
+            SplinterGrenade:
+                aoe: 2
+                classic: 8
+                damage: 13
+                name: Splinter Grenade
+                source: Halo 5
+                tags: infantry
+                type: Fire
+            SplinterTurret:
+                aoe: 2
+                classic: 4
+                cost: 10
+                damage: 5
+                name: Splinter Turret
+                rof: 1
+                source: Halo 5
+                tags: biginfantry
+                type: Fire
+            Suppressor:
+                aoe: 1
+                classic: 9
+                cost: 9
+                damage: 1
+                name: Suppressor
+                rof: 4
+                source: Halo 5
+                tags: infantry
+                type: Fire
+        Squad:
+            Crawler:
+                creature: Creature.Crawler
+                image: crawler.png
+                name: Crawler
+                quantity: 3
+            Knight:
+                creature: Creature.Knight
+                image: knight.jpg
+                name: Knight
+                quantity: 2
+            Sentinel:
+                creature: Creature.Sentinel
+                image: sentinel.jpg
+                name: Sentinel
+                quantity: 3
+    UNSC:
+        Creature:
+            AaTower:
+                classic: 5
+                cost: 43
+                damage: 13
+                durability: 24
+                name: AA Tower
+                preferredRange: 25
+                size: 6
+                speed: 0
+                tags: Ground
+            Base:
+                classic: 2
+                cost: 18
+                durability: 26
+                name: Base
+                size: 6
+                speed: 0
+                tags: Ground
+                transport: yes
+            CrewSidekick:
+                classic: 5
+                cost: 13
+                damage: 2
+                durability: 11
+                gear: Sidekick
+                name: Crew Sidekick
+                preferredRange: 3
+                size: 2
+                speed: 2
+                tags: Ground
+            Elephant:
+                accuracy: 0
+                classic: 6
+                damage: 20
+                durability: 200
+                name: Elephant
+                preferredRange: 0
+                scale: Individual
+                size: 8
+                type: Crush
+            Falcon:
+                accuracy: 2
+                classic: 3
+                damage: 8
+                durability: 21
+                name: Falcon
+                preferredRange: 6
+                scale: Individual
+                size: 4
+                speed: 7
+                type: Kinetic
+                items:
+                    - Item.Chaingun
+            FalconChaingun:
+                classic: 7
+                cost: 34
+                damage: 10
+                durability: 21
+                name: Falcon Chaingun
+                preferredRange: 5
+                size: 4
+                speed: 8
+                tags: Air
+                transport: yes
+                color: yellow
+            FalconRPG:
+                classic: 1
+                cost: 29
+                durability: 21
+                name: Falcon RPG
+                preferredRange: 5
+                size: 4
+                speed: 8
+                tags: Air
+                transport: yes
+            FortifiedMarineDivision:
+                accuracy: 2
+                classic: 7
+                damage: 8
+                durability: 25
+                name: Fortified Marine division
+                preferredRange: 8
+                scale: Battalion
+            GaussHog:
+                classic: 6
+                cost: 27
+                durability: 23
+                name: Gauss Hog
+                preferredRange: 5
+                size: 4
+                speed: 6
+                tags: Ground
+            Gungoose:
+                classic: 4
+                cost: 20
+                durability: 14
+                name: Gungoose
+                size: 4
+                speed: 8
+                tags: Ground
+                transport: yes
+            HannibalScorpion:
+                classic: 3
+                cost: 17
+                durability: 23
+                name: Hannibal Scorpion
+                size: 4
+                speed: 2
+                tags: Ground
+            HannibalWasp:
+                classic: 3
+                cost: 28
+                durability: 21
+                name: Hannibal Wasp
+                preferredRange: 5
+                size: 4
+                speed: 8
+                tags: Air
+            HelljumpersDMRJetpack:
+                classic: 6
+                cost: 30
+                damage: 10
+                durability: 14
+                group: ODST
+                name: Helljumpers DMR jetpack
+                preferredRange: 8
+                size: 2
+                speed: 3
+                tags: Air
+            Hornet:
+                accuracy: 2
+                classic: 3
+                damage: 12
+                durability: 50
+                name: Hornet
+                preferredRange: 7
+                scale: Individual
+                size: 4
+                speed: 6
+                type: Explosive
+                items:
+                    - Item.GrenadeLauncher
+            Hornets:
+                classic: 6
+                cost: 38
+                damage: 13
+                durability: 21
+                name: Hornets
+                preferredRange: 8
+                size: 4
+                speed: 8
+                tags: Air
+                transport: yes
+            Longsword:
+                accuracy: 3
+                classic: 2
+                damage: 32
+                durability: 20
+                name: Longsword
+                preferredRange: 8
+                scale: Individual
+                size: 6
+                type: Explosive
+            Mammoth:
+                durability: 1429
+                cost: 100
+                classic: 5
+                name: Mammoth
+                source: Halo 5
+                speed: 2
+                tags: Ground
+                transport: yes
+                items:
+                    - Item.MammothMAC
+            Mantis:
+                accuracy: 2
+                classic: 6
+                damage: 20
+                durability: 25
+                name: Mantis
+                preferredRange: 6
+                scale: Individual
+                size: 4
+                speed: 1.5
+                type: Explosive
+                items:
+                    - Item.GrenadeLauncher
+            MarathonClassCruiser:
+                durability: 12857
+                name: Marathon Class Cruiser
+            Marine:
+                accuracy: 1
+                durability: 10
+                items:
+                    - Item.SMG
+                name: Marine
+                size: 2
+                source: Halo 1
+                speed: 1.5
+            MarineAR:
+                accuracy: 1
+                classic: 10
+                cost: 10
+                damage: 8
+                durability: 16
+                name: Marine AR
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Kinetic
+            MarineBR:
+                accuracy: 2
+                classic: 8
+                cost: 20
+                damage: 4
+                durability: 16
+                name: Marine BR
+                preferredRange: 7
+                scale: Individual
+                size: 2
+                type: Kinetic
+            MarineDMR:
+                accuracy: 2
+                classic: 7
+                cost: 22
+                damage: 4
+                durability: 16
+                name: Marine DMR
+                preferredRange: 10
+                scale: Individual
+                size: 2
+                type: Kinetic
+            MarineFrags:
+                accuracy: 2
+                classic: 3
+                damage: 12
+                durability: 16
+                name: Marine Frags
+                preferredRange: 2
+                scale: Individual
+                size: 2
+                type: Explosive
+            MarineGrenadeLauncher:
+                accuracy: 2
+                classic: 5
+                damage: 16
+                durability: 16
+                name: Marine Grenade Launcher
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Explosive
+            MarineGungoose:
+                accuracy: 2
+                classic: 4
+                damage: 12
+                durability: 20
+                name: Marine Gungoose
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Explosive
+            MarineHydra:
+                accuracy: 3
+                classic: 6
+                damage: 12
+                durability: 16
+                name: Marine Hydra
+                preferredRange: 8
+                scale: Individual
+                size: 2
+                type: Explosive
+            MarineInfantryDivision:
+                accuracy: 1
+                classic: 7
+                damage: 8
+                durability: 16
+                name: Marine infantry division
+                preferredRange: 4
+                scale: Battalion
+                size: 2
+            MarineLaser:
+                accuracy: 3
+                classic: 6
+                damage: 12
+                durability: 16
+                name: Marine Laser
+                preferredRange: 8
+                scale: Individual
+                size: 2
+                type: Fire
+            MarineRocketLauncher:
+                accuracy: 2
+                classic: 6
+                damage: 20
+                durability: 16
+                name: Marine Rocket Launcher
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Explosive
+            MarineSMG:
+                accuracy: 1
+                classic: 6
+                cost: 9
+                damage: 8
+                durability: 16
+                name: Marine SMG
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Kinetic
+            MarineShotgun:
+                accuracy: 2
+                classic: 8
+                damage: 8
+                durability: 16
+                name: Marine Shotgun
+                preferredRange: 1
+                scale: Individual
+                size: 2
+                type: Kinetic
+            MarineSniper:
+                accuracy: 2
+                classic: 8
+                damage: 12
+                durability: 16
+                name: Marine Sniper
+                preferredRange: 29
+                scale: Individual
+                size: 2
+                type: Kinetic
+            MarinesAR:
+                classic: 10
+                cost: 19
+                damage: 6
+                durability: 14
+                group: Marine
+                name: Marines AR
+                preferredRange: 3
+                size: 2
+                speed: 2
+                tags: Ground
+            MarinesBR:
+                classic: 5
+                cost: 22
+                damage: 10
+                durability: 12
+                group: Marine
+                name: Marines BR
+                preferredRange: 5
+                size: 2
+                speed: 2
+                tags: Ground
+            MarinesHydra:
+                cost: 28
+                damage: 11
+                durability: 14
+                gear: Hydra
+                group: 0
+                name: Marines Hydra
+                preferredRange: 8
+                size: 2
+                speed: 2
+                tags: Ground
+            MarinesMongooseSMG:
+                accuracy: 1
+                classic: 5
+                damage: 8
+                durability: 18
+                name: Marines Mongoose SMG
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Kinetic
+            MarinesRocketLauncher:
+                classic: 5
+                cost: 26
+                damage: 11
+                durability: 12
+                group: Marine
+                name: Marines rocket launcher
+                preferredRange: 8
+                size: 2
+                speed: 2
+                tags: Ground
+            MarinesSMG:
+                classic: 10
+                cost: 18
+                damage: 4
+                durability: 14
+                group: Marine
+                name: Marines SMG
+                preferredRange: 3
+                size: 2
+                speed: 2
+                tags: Ground
+            MarinesShotgun:
+                classic: 4
+                cost: 14
+                damage: 12
+                durability: 12
+                group: Marine
+                name: Marines shotgun
+                preferredRange: 0
+                size: 2
+                speed: 2
+                tags: Ground
+            MarinesSniperRifle:
+                classic: 5
+                cost: 50
+                damage: 11
+                durability: 14
+                group: Marine
+                name: Marines sniper rifle
+                preferredRange: 35
+                size: 2
+                speed: 2
+                tags: Ground
+            MissileBunker:
+                accuracy: 3
+                classic: 6
+                damage: 40
+                durability: 30
+                name: Missile Bunker
+                preferredRange: 83333
+                scale: Individual
+                size: 6
+                type: Explosive
+            ODST:
+                accuracy: 3
+                durability: 14
+                name: ODST
+                size: 2
+                source: Halo 3 Recon
+                speed: 2
+                items:
+                    - Item.SilencedSMG
+            ODSTDMR:
+                classic: 7
+                cost: 28
+                damage: 6
+                durability: 18
+                group: ODST
+                name: ODST w/ DMR
+                preferredRange: 8
+                size: 2
+                speed: 2
+                tags: Ground
+            ODSTBR:
+                accuracy: 2
+                classic: 7
+                cost: 30
+                damage: 4
+                durability: 19
+                name: ODST BR
+                preferredRange: 7
+                scale: Individual
+                size: 2
+                type: Kinetic
+            ODSTFlamethrower:
+                accuracy: 2
+                classic: 4
+                damage: 16
+                durability: 19
+                name: ODST Flamethrower
+                preferredRange: 1
+                scale: Individual
+                size: 2
+                type: Fire
+            ODSTRailgun:
+                accuracy: 2
+                classic: 4
+                damage: 12
+                durability: 19
+                name: ODST Railgun
+                preferredRange: 5
+                scale: Individual
+                size: 2
+                type: Kinetic
+            ODSTSAW:
+                accuracy: 2
+                classic: 6
+                damage: 12
+                durability: 19
+                name: ODST SAW
+                preferredRange: 6
+                scale: Individual
+                size: 2
+                type: Kinetic
+            ODSTTurret:
+                accuracy: 2
+                classic: 4
+                damage: 16
+                durability: 19
+                name: ODST Turret
+                preferredRange: 6
+                scale: Individual
+                size: 2
+                type: Kinetic
+            OfficerHeavyPistol:
+                accuracy: 2
+                classic: 7
+                damage: 8
+                durability: 10
+                name: Officer Heavy Pistol
+                preferredRange: 6
+                scale: Individual
+                size: 2
+                type: Kinetic
+            OfficerLightPistol:
+                accuracy: 1
+                classic: 3
+                damage: 4
+                durability: 10
+                name: Officer Light Pistol
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Kinetic
+            OfficerMagnum:
+                accuracy: 1
+                classic: 3
+                damage: 4
+                durability: 10
+                name: Officer Magnum
+                preferredRange: 5
+                scale: Individual
+                size: 2
+                type: Kinetic
+            OfficersSidekick:
+                classic: 3
+                cost: 13
+                damage: 2
+                durability: 11
+                gear: Sidekick
+                group: Marine
+                name: Officers sidekick
+                preferredRange: 3
+                size: 2
+                speed: 2
+                tags: Ground
+            OfficerUnarmed:
+                accuracy: 0
+                classic: 3
+                damage: 4
+                durability: 10
+                name: Officerunarmed
+                preferredRange: 0
+                scale: Individual
+                size: 2
+                type: Crush
+            Pelican:
+                accuracy: 2
+                classic: 6
+                damage: 8
+                durability: 21
+                name: Pelican
+                preferredRange: 6
+                scale: Individual
+                size: 6
+                speed: 6
+                type: Kinetic
+                items:
+                    - Item.Chaingun
+            Razorback:
+                classic: 4
+                cost: 23
+                durability: 21
+                name: Razorback
+                size: 4
+                speed: 6
+                tags: Ground
+                transport: yes
+            RocketHog:
+                classic: 4
+                cost: 27
+                durability: 23
+                name: Rocket Hog
+                preferredRange: 5
+                size: 4
+                speed: 6
+                tags: Ground
+            Sailor:
+                durability: 2
+                gear: Heavy Pistol
+                name: Sailor
+                size: 2
+                source: Halo 1
+                speed: 2
+            Scorpion:
+                accuracy: 4
+                classic: 8
+                cost: 1
+                damage: 32
+                durability: 20
+                name: Scorpion
+                preferredRange: 33
+                scale: Individual
+                size: 6
+                speed: 1.5
+                type: Explosive
+                items:
+                    - Item.ScorpionCannon
+            ScorpionDivision:
+                accuracy: 4
+                classic: 8
+                damage: 32
+                durability: 20
+                name: Scorpion division
+                preferredRange: 25
+                scale: Battalion
+                size: 6
+                type: Explosive
+            Spartan-III:
+                accuracy: 1
+                classic: 7
+                damage: 4
+                durability: 21
+                gear: AssaultRifle
+                name: Spartan- III
+                preferredRange: 3
+                scale: Individual
+                size: 2
+                type: Kinetic
+            SpartanArmored:
+                durability: 26
+                gear: SAW
+                name: Spartan Armored
+                size: 3
+                source: Halo 1
+                speed: 2
+            SpartanBR:
+                accuracy: 5
+                classic: 10
+                cost: 55
+                durability: 21
+                group: Spartan
+                name: Spartan BR
+                size: 2.5
+                speed: 3
+                tags: Ground
+                items:
+                    - Item.BattleRifle
+            SpartanChaingun:
+                classic: 3
+                cost: 34
+                damage: 11
+                durability: 21
+                group: Spartan
+                name: Spartan chaingun
+                preferredRange: 5
+                size: 2
+                speed: 2
+                tags: Ground
+            SpartanSPI:
+                durability: 13
+                name: Spartan SPI
+                speed: 2
+            SpartanShotgun:
+                classic: 2
+                cost: 27
+                damage: 27
+                durability: 21
+                group: Spartan
+                name: Spartan shotgun
+                preferredRange: 0
+                size: 2
+                speed: 3
+                tags: Ground
+            SpartanSniperRifle:
+                classic: 4
+                cost: 62
+                damage: 11
+                durability: 21
+                group: Spartan
+                name: Spartan sniper rifle
+                preferredRange: 38
+                size: 2
+                speed: 3
+                tags: Ground
+            SpartanUnarmored:
+                durability: 11
+                name: Spartan Unarmored
+                size: 3
+                speed: 2
+            TacticalMAC:
+                accuracy: 3
+                classic: 4
+                cost: 66
+                damage: 40
+                durability: 21
+                name: Tactical MAC
+                preferredRange: 833
+                scale: Individual
+                size: 6
+                speed: 0
+                tags: Ground
+                type: Explosive
+            UNSCCapturedScarab:
+                accuracy: 3
+                classic: 6
+                damage: 40
+                durability: 25
+                name: UNSC captured Scarab
+                preferredRange: 42
+                scale: Battalion
+                size: 12
+                type: Explosive
+            UNSCInfinity:
+                durability: 142857
+                name: UNSC Infinity
+            Warthog:
+                accuracy: 2
+                classic: 9
+                cost: 200
+                damage: 8
+                durability: 20
+                name: Warthog
+                preferredRange: 6
+                scale: Individual
+                size: 4
+                speed: 4
+                type: Kinetic
+                items:
+                    - Item.Chaingun
+            Wasp:
+                accuracy: 2
+                classic: 6
+                damage: 8
+                durability: 20
+                name: Wasp
+                preferredRange: 7
+                scale: Individual
+                size: 4
+                speed: 8
+                type: Kinetic
+                items:
+                    - Item.GrenadeLauncher
+        Item:
+            AssaultRifle:
+                accuracy: 2
+                aoe: 1
+                classic: 9
+                cost: 7
+                damage: 1
+                name: Assault Rifle
+                preferredRange: 2
+                rof: 5
+                source: Reach
+                tags: infantry
+                type: Kinetic
+                color: yellow
+            BattleRifle:
+                accuracy: 4
+                aoe: 1
+                classic: 8
+                cost: 8
+                damage: 1
+                name: Battle Rifle
+                preferredRange: 5
+                rof: 2
+                tags: infantry
+                type: Kinetic
+                color: yellow
+            Bulldog:
+                name: Bulldog
+                type: Kinetic
+                color: yellow
+                rof: 2
+                accuracy: 0
+                damage: 12
+            Chaingun:
+                accuracy: 3
+                aoe: 1
+                classic: 8
+                cost: 10
+                damage: 5
+                name: Chaingun
+                preferredRange: 3
+                rof: 3
+                tags: turret
+                type: Kinetic
+                color: yellow
+            Commando:
+                name: Commando
+                type: Kinetic
+                color: yellow
+                rof: 3
+                damage: 4
+                accuracy: 5
+            DMR:
+                accuracy: 27
+                aoe: 1
+                classic: 7
+                cost: 10
+                damage: 3
+                name: DMR
+                preferredRange: 15
+                rof: 1
+                tags: infantry
+                type: Kinetic
+                color: yellow
+            Endgame:
+                aoe: 1
+                cost: 13
+                damage: 20
+                name: Endgame
+                rof: 1
+                tags: infantry
+                type: Fire
+                color: red
+            Flamethrower:
+                aoe: 2
+                classic: 4
+                cost: 8
+                damage: 6
+                name: Flamethrower
+                rof: 3
+                tags: infantry
+                type: Fire
+            FragGrenade:
+                accuracy: 1
+                aoe: 3
+                classic: 9
+                damage: 10
+                name: Frag Grenade
+                preferredRange: 5
+                tags: infantry
+                type: Kinetic
+            GaussCannon:
+                aoe: 1
+                classic: 4
+                cost: 13
+                damage: 33
+                name: Gauss Cannon
+                rof: 1
+                tags: turret
+                type: Impact
+                color: blue
+            GrenadeLauncher:
+                aoe: 3
+                classic: 6
+                cost: 11
+                damage: 13
+                name: Grenade Launcher
+                rof: 1
+                source: Reach
+                tags: infantry
+                type: Explosive
+            HannibalCannon:
+                aoe: 5
+                damage: 67
+                gear: Hannibal Scorpion
+                name: Hannibal Cannon
+                preferredRange: 50
+                rof: 1
+                type: Fire
+                color: blue
+            HannibalIonLauncher:
+                aoe: 4
+                classic: 1
+                damage: 10
+                gear: Hannibal Wasp
+                name: Hannibal Ion Launcher
+                rof: 0.5
+                type: Fire
+                color: blue
+            HannibalPulseLasers:
+                aoe: 1
+                damage: 4
+                gear: Hannibal Wasp
+                name: Hannibal Pulse Lasers
+                rof: 1
+                type: Fire
+                color: blue
+            HeavyChaingun:
+                aoe: 1
+                classic: 2
+                cost: 11
+                damage: 3
+                gear: ONI Warthog
+                name: Heavy Chaingun
+                rof: 2
+                tags: turret
+                type: Explosive
+                color: yellow
+            HeavyPistol:
+                accuracy: 4
+                aoe: 1
+                classic: 4
+                cost: 8
+                damage: 4
+                name: Heavy Pistol
+                preferredRange: 5
+                rof: 1
+                source: Halo 1
+                tags: infantry
+                type: Kinetic
+                color: yellow
+            HeavySAW:
+                aoe: 1
+                classic: 1
+                cost: 13
+                damage: 5
+                gear: The Answer
+                name: Heavy SAW
+                rof: 3
+                source: Halo 5
+                tags: biginfantry
+                type: Explosive
+                color: yellow
+            Hydra:
+                aoe: 1
+                cost: 10
+                damage: 8
+                name: Hydra
+                rof: 2
+                tags: infantry
+                type: Explosive
+                color: orange
+                accuracy: 7
+            LightPistol:
+                accuracy: 0
+                aoe: 1
+                classic: 9
+                cost: 4
+                damage: 1
+                name: Light Pistol
+                preferredRange: 1
+                rof: 2
+                source: Halo 2
+                tags: infantry
+                type: Kinetic
+                color: yellow
+            MammothMAC:
+                classic: 5
+                cost: 63
+                damage: 23
+                accuracy: 7
+                name: Mammoth MAC
+                preferredRange: 40
+                size: 6
+                speed: 2
+                color: red
+            MarathonMAC:
+                aoe: 100
+                damage: 667
+                name: Marathon MAC
+                rof: 0.1
+                type: Impact
+                color: yellow
+            MarineCQC:
+                aoe: 1
+                classic: 10
+                cost: 0
+                damage: 0
+                name: Marine CQC
+                preferredRange: 0
+                rof: 1
+                tags: natural
+                type: Impact
+            MissilePod:
+                aoe: 2
+                classic: 3
+                cost: 13
+                damage: 7
+                name: Missile Pod
+                rof: 1
+                tags: turret
+                type: Impact
+            NeedleChaingun:
+                aoe: 1
+                classic: 1
+                cost: 11
+                damage: 2
+                gear: Needle Warthog
+                name: Needle Chaingun
+                rof: 2
+                tags: turret
+                type: Kinetic
+            Pistol:
+                aoe: 1
+                classic: 10
+                cost: 5
+                damage: 2
+                name: Pistol
+                rof: 1
+                source: Halo 3
+                tags: infantry
+                type: Kinetic
+                color: yellow
+            Railgun:
+                aoe: 1
+                classic: 4
+                cost: 10
+                damage: 13
+                name: Railgun
+                rof: 1
+                tags: infantry
+                type: Kinetic
+                color: blue
+            RocketLauncher:
+                aoe: 3
+                classic: 6
+                cost: 10
+                damage: 27
+                name: Rocket Launcher
+                preferredRange: 8
+                rof: 1
+                source: Halo 2
+                tags: infantry
+                type: Impact
+            SAW:
+                accuracy: 3
+                aoe: 1
+                classic: 5
+                cost: 10
+                damage: 3
+                name: SAW
+                preferredRange: 3
+                rof: 3
+                tags: biginfantry
+                type: Kinetic
+                color: yellow
+            SMG:
+                accuracy: 1
+                aoe: 1
+                classic: 9
+                color: yellow
+                cost: 6
+                damage: 1
+                name: SMG
+                preferredRange: 1
+                rof: 4
+                tags: infantry
+                type: Kinetic
+            ScopedPistol:
+                accuracy: 3
+                aoe: 1
+                classic: 10
+                cost: 6
+                damage: 3
+                name: Scoped Pistol
+                preferredRange: 4
+                rof: 1
+                source: Reach
+                tags: infantry
+                type: Kinetic
+                color: yellow
+            ScorpionCannon:
+                aoe: 4
+                classic: 6
+                damage: 47
+                accuracy: 8
+                name: Scorpion Cannon
+                preferredRange: 150
+                rof: 0.5
+                type: Explosive
+                color: grey
+            SelenesLance:
+                aoe: 2
+                cost: 13
+                damage: 53
+                name: Selene's Lance
+                rof: 0.5
+                tags: infantry
+                type: Fire
+            Shotgun:
+                accuracy: 140
+                aoe: 1
+                classic: 6
+                cost: 8
+                damage: 6
+                name: Shotgun
+                preferredRange: 0
+                rof: 1
+                tags: infantry
+                type: Kinetic
+                color: yellow
+            SilencedPistol:
+                aoe: 1
+                classic: 2
+                cost: 6
+                damage: 1
+                name: Silenced Pistol
+                rof: 2
+                tags: infantry
+                type: Kinetic
+            SilencedSMG:
+                aoe: 1
+                classic: 2
+                cost: 6
+                damage: 1
+                name: Silenced SMG
+                rof: 5
+                tags: infantry
+                type: Kinetic
+            SniperRifle:
+                accuracy: 30
+                aoe: 1
+                classic: 6
+                cost: 13
+                damage: 10
+                gear: Speed includes reloading and a little aiming
+                name: Sniper Rifle
+                preferredRange: 40
+                rof: 1
+                tags: infantry
+                type: Kinetic
+                color: lightgrey
+            SpartanCQC:
+                aoe: 1
+                classic: 1
+                cost: 0
+                damage: 5
+                name: Spartan CQC
+                preferredRange: 0
+                rof: 1
+                tags: natural
+                type: Impact
+            SpartanLaser:
+                aoe: 1
+                classic: 2
+                cost: 13
+                damage: 27
+                name: Spartan Laser
+                rof: 1
+                tags: infantry
+                type: Fire
+            StickyGrenadeLauncher:
+                aoe: 2
+                classic: 3
+                cost: 11
+                damage: 17
+                gear: Sticky Detonator
+                name: Sticky Grenade Launcher
+                rof: 1
+                source: Halo 4
+                tags: infantry
+                type: Impact
+            TacticalMACCannon:
+                aoe: 10
+                classic: 2
+                damage: 200
+                name: Tactical MAC Cannon
+                rof: 0.1
+                type: Impact
+            VespinRocketTurret:
+                aoe: 1
+                classic: 1
+                cost: 12
+                damage: 13
+                gear: Vespin Warthog
+                name: Vespin Rocket Turret
+                rof: 1
+                tags: turret
+                type: Impact
+        Squad:
+            Falcon:
+                creature: Creature.Falcon
+                image: falcon.png
+                name: Falcon
+                quantity: 1
+            Hornet:
+                creature: Creature.Hornet
+                image: hornet.png
+                name: Hornet
+                quantity: 1
+            Mammoth:
+                creature: Creature.Mammoth
+                image: mammoth.png
+                name: Mammoth
+                quantity: 1
+            Mantis:
+                creature: Creature.Mantis
+                image: mantis.png
+                name: Mantis
+                quantity: 1
+            Marine:
+                creature: Creature.Marine
+                image: marine.png
+                name: Marine
+                quantity: 3
+            ODST:
+                creature: Creature.ODST
+                image: odst.jpg
+                name: ODST
+                quantity: 3
+            Pelican:
+                creature: Creature.Pelican
+                image: pelican.png
+                name: Pelican
+                quantity: 1
+            Scorpion:
+                creature: Creature.Scorpion
+                image: scorpion.png
+                name: Scorpion
+                quantity: 1
+            Spartan:
+                creature: Creature.SpartanBR
+                image: spartan.png
+                name: Spartan
+                quantity: 3
+            Warthog:
+                creature: Creature.Warthog
+                image: warthog.jpg
+                name: Warthog
+                quantity: 1
+            Wasp:
+                creature: Creature.Wasp
+                image: wasp.png
+                name: Wasp
+                quantity: 1
+`;
+},{}],35:[function(require,module,exports){
 'use strict';
 
 //
@@ -23071,28 +29732,153 @@ Action.TYPE = {
 
 module.exports = Action;
 
-},{"../../util/util.js":11}],5:[function(require,module,exports){
+},{"../../util/util.js":45}],36:[function(require,module,exports){
+'use strict';
+
+// const Creature = require('./creature.js');
+const Squad = require('./squad.js');
+// const Action = require('./action.js');
+// const Item = require('./Item.js');
+const Templates = require('./templates.js');
+// const Event = require('./event.js');
+// const Coord = require('../../util/coord.js');
+const Util = require('../../util/util.js');
+
+class Company { //extends Component {
+    constructor (faction) {
+        this.id = Util.uuid();
+        this.faction = faction;
+        this.squads = [];
+    }
+
+    terse () {
+        // return `${this.quantity()} ${name}s ${this.coord.toString()}`;
+    }
+
+    name () {
+        return this.nameFromUser || this.nameGenerated || ('Company ' + Util.shortId(this.id));
+    }
+
+    activeSquads () {
+        return this.squads.filter(sq => ! sq.isKO());
+    }
+
+    activeSquadCount () {
+        return this.activeSquads().length;
+    }
+
+    healthBar () {
+        return this.activeSquadCount() / this.squads.length;
+    }
+
+    nameSquads () {
+        for (let squad of this.squads) {
+            this.nameSquad(squad);
+        }
+    }
+
+    nameSquad (squad) {
+        if (squad.nameFromUser) { return; }
+
+        const names = this.squads.map(sq => sq.existingName());
+
+        if (squad.nameGenerated) {
+            const squadsWithThatName = names.filter(name => name === squad.nameGenerated);
+
+            if (squadsWithThatName.length === 1) { return; }
+        }
+
+        const commonestCreatureName = Util.commonest(
+            squad.creatures.map(cr => cr.template.name)
+        );
+
+        const similarNames = names.filter(
+            name => name?.startsWith(commonestCreatureName + ' Squad ')
+        );
+
+        const suffixesUsed = similarNames.map(
+            name => name.split(' Squad ')[1]
+        );
+
+        for (let letter of Squad.phoneticAlphabet()) {
+            if (! suffixesUsed.includes(letter)) {
+                squad.nameGenerated = commonestCreatureName + ' Squad ' + letter;
+                return;
+            }
+        }
+
+        squad.nameGenerated = commonestCreatureName + ' Squad ' + Util.newId(3).toUpperCase();
+    }
+
+    toJson () {
+        return {
+            id: this.id,
+            faction: this.faction,
+            squads: this.squads.map(sq => sq.toJson()),
+        };
+    }
+
+    static example () {
+        const comp = new Company(Templates.Halo.UNSC.name);
+
+        comp.squads = Company.exampleSquads();
+        comp.nameSquads();
+        return comp;
+    }
+
+    static exampleSquads () {
+        const squads = [];
+
+        for (let i = 0; i < 3; i++) {
+            squads.push(Squad.example('Marine'));
+        }
+
+        return squads;
+    }
+}
+
+module.exports = Company;
+
+},{"../../util/util.js":45,"./squad.js":42,"./templates.js":43}],37:[function(require,module,exports){
 'use strict';
 
 //
 
+const Item = require('./item.js');
 const Event = require('./event.js');
 const Templates = require('./templates.js');
 const Util = require('../../util/util.js');
 
 class Creature {
-    constructor (creatureTemplate) {
+    constructor (creatureTemplate, items) {
         this.id = Util.uuid();
         this.template = creatureTemplate;
+        this.items = [];
         this.shields = this.template.shields || 0;
         this.cooldownEnds = Infinity;
 
         // Used to track buffs, debuffs, injuries, whether ko, etc.
         this.status = {};
+
+        if (items) {
+            this.items = items;
+        }
+        else {
+            const templateItems = this.template.items || [];
+            for (let itemTemplate of templateItems) {
+                this.items.push(
+                    new Item(itemTemplate)
+                );
+            }
+        }
     }
 
     isKO () {
         return !! this.status.ko;
+    }
+
+    faction () {
+        return this.template.faction;
     }
 
     // creates Event
@@ -23211,7 +29997,6 @@ class Creature {
         const events = [];
 
         for (let shot = 1; shot <= Math.ceil(weaponTemplate.rof || 1); shot++) {
-            //    static attack (t, attackingCreature, target, weaponTemplate, attackOutcome, shieldsTo, statusChanges) {
             const event = Event.attack(this, otherSquad, weaponTemplate);
             events.push(event);
 
@@ -23241,7 +30026,6 @@ class Creature {
         let damage = weaponTemplate.damage;
 
         if (this.shields) {
-            // TODO decide whether to get t by passing, by a static variable, or set it later.
             this.cooldownEnds = Event.t + (this.template.shieldDelay || 2);
 
             if (weaponTemplate.attackType === Creature.ATTACK_TYPE.Plasma) {
@@ -23308,6 +30092,15 @@ class Creature {
         return json;
     }
 
+    // LATER put in superclass Component.
+    toJsonStr () {
+        return Util.stringify(this.toJson());
+    }
+
+    name () {
+        return this.nameGenerated || (this.template.name + ' ' + Util.shortId(this.id));
+    }
+
     static example () {
         const cr = new Creature(
             Templates.Halo.UNSC.Creature.Marine
@@ -23317,26 +30110,117 @@ class Creature {
     }
 }
 
-// TODO move this and Squad.TEMPLATES to a WarbandTemplates.js file
-// TODO restructure - WarbandTemplates.UNSC.Creature.Marine
-// Creature.TEMPLATES = {
-//     Marine: {
-//         size: 2,
-//         speed: 1, 
-//         durability: 10,
-//         accuracy: 1, // Later finalize how this calc works.
-//         resistance: {},
-//         items: [Item.TEMPLATES.UNSC.Weapon.SMG]
-//     },
-//     // Motive for accuracy stat - Spartans better with firearms than Grunts, also makes takeUnshieldedDamage() status effects simpler.
-//     // LATER How does damage work for: Scorpion, Scarab, UNSC Frigate? Based on status debuffs?
-// };
-
 module.exports = Creature;
 
 // Creature.testHealthBar();
 
-},{"../../util/util.js":11,"./event.js":6,"./templates.js":9}],6:[function(require,module,exports){
+},{"../../util/util.js":45,"./event.js":39,"./item.js":40,"./templates.js":43}],38:[function(require,module,exports){
+'use strict';
+
+// Army customization UI class
+
+const Creature = require('./creature.js');
+const Company = require('./company.js');
+const Item = require('./item.js');
+const Squad = require('./squad.js');
+const Templates = require('./templates.js');
+const Util = require('../../util/util.js');
+
+class Customizer {
+    constructor () {
+        this.companies = [];
+        this.initUI();
+    }
+
+    initUI () {
+        window.customizer = this;
+        this.overviewPane = document.getElementById('companyOverview');
+        if (! this.overviewPane) { return; }
+
+        this.setUI();
+    }
+
+    setUI () {
+        for (let company of this.companies) {
+            this.addButton(company);
+
+            for (let squad of company.squads) {
+                this.addButton(squad);
+
+                for (let creature of squad.creatures) {
+                    this.addButton(creature);
+
+                    for (let item of creature.items) {
+                        this.addButton(item);
+                    }
+                }
+            }
+        }
+    }
+
+    addButton (component) {
+        const INDENT_BASE = 20;
+
+        const INDENT = {
+            Company: 0,
+            Squad: 1,
+            Creature: 2,
+            Item: 3
+        };
+
+        const button = this.buttonForComponent(component);
+        const pixels = INDENT_BASE * INDENT[component.constructor.name];
+        button.setAttribute('style', `margin-left: ${pixels}px;`);
+
+        this.overviewPane.append(button);
+    }
+
+    buttonForComponent (component) {
+        const button = document.createElement('button');
+        button.setAttribute('class', 'component');
+        // LATER - better to store these values as props of JS obj, or as HTML attrs?
+        button.component = component;
+        button.componentType = component.constructor.name;
+        button.innerHTML = component.name();
+
+        // const self = this;
+        button.onclick = () => {
+            const infoPane = document.getElementById('infoPane');
+
+            infoPane.innerHTML = button.component.name() + ' - ' + Util.stringify(button.component.toJson());
+        }
+
+        return button;
+    }
+
+    setCompanies (companies) {
+        this.companies = companies;
+        this.companies.map(c => c.nameSquads());
+        this.initUI();
+    }
+
+    static exampleCompanies () {
+        return [Company.example()];
+    }
+
+    static test () {
+        Util.logDebug(`Customizer.test() - All tests finished.`);
+    }
+
+    static async run () {
+        // Customizer.test();
+
+        const cmizer = new Customizer();
+        cmizer.setCompanies(Customizer.exampleCompanies());
+
+    }
+}
+
+module.exports = Customizer;
+
+Customizer.run();
+
+},{"../../util/util.js":45,"./company.js":36,"./creature.js":37,"./item.js":40,"./squad.js":42,"./templates.js":43}],39:[function(require,module,exports){
 'use strict';
 
 // const Creature = require('./creature.js');
@@ -23351,8 +30235,7 @@ class Event {
         this.type = type;
         this.t = Event.t;
         this.details = details || {};
-
-        this.log();
+        // this.log();
     }
 
     log () {
@@ -23438,7 +30321,41 @@ Event.ATTACK_OUTCOME = {
 
 module.exports = Event;
 
-},{"../../util/util.js":11}],7:[function(require,module,exports){
+},{"../../util/util.js":45}],40:[function(require,module,exports){
+'use strict';
+
+//
+
+const Templates = require('./templates.js');
+const Util = require('../../util/util.js');
+
+// LATER could make class Component, superclass of Item, Creature, Squad, & Company.
+class Item {
+    constructor (template) {
+        this.id = Util.uuid();
+        this.template = template;
+    }
+
+    toJson () {
+        return this;
+    }
+
+    name () {
+        return this.template.name; // + ' ' + Util.shortId(this.id);
+    }
+
+    static example () {
+        const item = new Item(
+            Templates.Halo.UNSC.Item.SMG
+        );
+
+        return item;
+    }
+}
+
+module.exports = Item;
+
+},{"../../util/util.js":45,"./templates.js":43}],41:[function(require,module,exports){
 'use strict';
 
 // Autobattler game in browser. WIP.
@@ -23459,7 +30376,7 @@ class ScifiWarband {
     constructor () {
         this.things = [];
         this.canvas = document.getElementById('canvas');
-        this.canvasCtx = canvas.getContext('2d');
+        this.canvasCtx = this.canvas.getContext('2d');
         this.events = [
             Event.encounterStart()
         ];
@@ -23502,21 +30419,29 @@ class ScifiWarband {
     async runEncounter () {
         // LATER starting team could depend on who is attacker/defender, or who has most squads left at start of each round. Currently arbitrary.
         const teams = Object.keys(this.teamSummaries());
-        // LATER 3-team support by indexing teams[activation % teams.length]
+        // LATER could support new teams appearing mid-battle.
 
         for (Event.t = 1; Event.t <= 100; Event.t++) {
             this.readySquads();
             this.logNewRound();
-            // Util.log(`t=${this.t}: ${this.things.filter(t => ! t.isKO()).length} squads left.`)
+            Util.logDebug(`t=${Event.t}: ${this.things.filter(t => ! t.isKO()).length} squads left.`);
 
             for (let activation = 1; activation <= 1e5; activation++) {
+                // ScifiWarband.logDebug(`runEncounter() at top of activation loop - activation=${activation}`);
+
                 if (this.encounterDone()) { return; }
 
                 const teamIndex = activation % teams.length;
                 const curTeam = teams[teamIndex];
                 const curSquad = this.findReadySquad(curTeam);
 
-                if (! curSquad) { continue; } // This is normal for the team with less squads at the end of the round.
+                if (! curSquad) {
+                    if (! this.findReadySquad()) {
+                        break; // Case where all squads have been activated.
+                    }
+
+                    continue; // Case where curTeam has activated all their squads but a faction with more squads has not yet finished activating their squads.
+                }
 
                 this.record(
                     curSquad.update()
@@ -23524,15 +30449,18 @@ class ScifiWarband {
 
                 const actions = this.chooseActions(curSquad);
 
-                // Util.logDebug(`runEncounter() loop - chosen actions are: ${Util.stringify(actions.map(a => a.toJson()))}`);
+                // ScifiWarband.logDebug(`runEncounter() loop - chosen actions are: ${Util.stringify(actions.map(a => a.toJson()))}`);
 
                 this.performActions(actions);
 
+                // ScifiWarband.logDebug(`runEncounter() after performActions(length ${actions.length}) - activation=${activation}`);
+
                 await Util.sleep(1);
                 this.setHTML();
-                // TODO bug - drawAttack() is not displaying on top currently.
-                // LATER UI where user steps forwards or back (event by event) thru the replay, instead of sleep()ing.
+                // LATER: A replay UI where user steps forwards or back (activation by activation) thru the replay, instead of sleep()ing.
             }
+
+            // ScifiWarband.logDebug(`runEncounter() after activation loop`);
         }
     }
 
@@ -23545,15 +30473,17 @@ class ScifiWarband {
                 1 :
                 0;
 
-            if (teamSummaries[thing.team]) {
-                const obj = teamSummaries[thing.team];
+            const faction = thing.faction();
+
+            if (teamSummaries[faction]) {
+                const obj = teamSummaries[faction];
 
                 obj.squads += squadNumber;
                 obj.headcount += quantity;
                 obj.healthBar += thing.healthBar();
             }
             else {
-                teamSummaries[thing.team] = {
+                teamSummaries[faction] = {
                     squads: squadNumber,
                     headcount: quantity,
                     healthBar: thing.healthBar(),
@@ -23580,36 +30510,102 @@ class ScifiWarband {
         for (let thing of this.things) {
             if (thing.isKO()) { continue; }
 
-            if (squadCounts[thing.team]) {
-                squadCounts[thing.team] += 1;
+            const faction = thing.faction();
+
+            if (squadCounts[faction]) {
+                squadCounts[faction] += 1;
             }
             else {
                 if (Object.keys(squadCounts).length >= 1) {
                     return false;
                 }
 
-                squadCounts[thing.team] = 1;
+                squadCounts[faction] = 1;
             }
         }
 
         // Util.log(squadCounts);
-        // Util.log(`t=${this.t}: ${squadCounts.player} player squads vs ${squadCounts.enemy} enemy squads`);
+        // Util.log(`t=${Event.t}: ${squadCounts.player} player squads vs ${squadCounts.enemy} enemy squads`);
 
         return Object.keys(squadCounts).length <= 1;
     }
 
     readySquads () {
         for (let thing of this.things) {
+            this.sanityCheck(thing);
+
             thing.ready = true;
         }
     }
 
-    findReadySquad (team) {
+    sanityCheck (thing) {
+        // LATER could functionize some or all of this into Util.js
+        // (or could move it to squad.js)
+        let sane = true;
+
+        if (
+            ! thing ||
+            ! thing.creatures
+        ) {
+            sane = false;
+        }
+        else {
+            const factions = Util.unique(
+                thing.creatures?.map(cr => cr.faction())
+            );
+
+            const activeCreature = thing.creatures.find(cr => ! cr.isKO());
+            const koCreature = thing.creatures.find(cr => cr.isKO());
+            const mixedKOStatus = activeCreature && koCreature;
+
+            if (
+                thing.creatures.length === 0 ||
+                factions.length !== 1 ||
+                mixedKOStatus
+            ) {
+                sane = false;
+            }
+        }
+
+        if (! sane) {
+            let info;
+
+            if (thing) {
+                if (thing.toJson) {
+                    info = thing.toJson();
+                }
+                else {
+                    info = {
+                        keys: Object.keys(thing),
+                        constructorName: info.constructor.name,
+                    };
+                }
+            }
+            else {
+                info = thing;
+            }
+
+            throw new Error(Util.stringify(info));
+        }
+    }
+
+    findReadySquad (faction) {
         return this.things.find(
-            thing => thing.ready && 
-                thing.team === team && 
-                ! thing.isKO()
+            thing => goodSquad(thing, faction)
         );
+
+        function goodSquad (thing, faction) {
+            if (! thing.ready || thing.isKO()) {
+                return false;
+            }
+
+            if (faction) {
+                return thing.faction() === faction;
+            }
+            else {
+                return true;
+            }
+        }
     }
 
     // returns boolean
@@ -23625,7 +30621,7 @@ class ScifiWarband {
     // This function is the mind of the squad. LATER could move these behavioral funcs to a class Mind in a mind.js file.
     // Allowed to return illegal moves.
     chooseActions (curSquad) {
-        // Util.logDebug(curSquad.toJson());
+        // ScifiWarband.logDebug(curSquad.toJson());
 
         const sentiments = curSquad.creatures.map(cr => cr.morale());
         // LATER morale can inform chooseActions()
@@ -23641,7 +30637,7 @@ class ScifiWarband {
 
         const roll = Math.random() * (movePlan.desire + attackPlan.desire);
 
-        Util.logDebug(`${curSquad.terse()} is thinking of moving to ${movePlan.coord.toString()} with desire ${movePlan.desire}, or attacking ${attackPlan.target.terse()} with desire ${attackPlan.desire}`);
+        // ScifiWarband.logDebug(`${curSquad.terse()} is thinking of moving to ${movePlan.coord.toString()} with desire ${movePlan.desire}, or attacking ${attackPlan.target.terse()} with desire ${attackPlan.desire}`);
 
         if (! roll) {
             // Detect bugs with 0, undefined, NaN, etc.
@@ -23687,7 +30683,7 @@ class ScifiWarband {
         );
 
         let firstChoiceCoord = goodRangeCoord;
-        Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): positionImperfection=${positionImperfection} goodRangeCoord is ${goodRangeCoord.toString()}, nearest foe is ${nearestFoes[0].coord.toString()}, preferredDistance=${preferredDistance}, speed=${speed}`)
+        // ScifiWarband.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): positionImperfection=${positionImperfection} goodRangeCoord is ${goodRangeCoord.toString()}, nearest foe is ${nearestFoes[0].coord.toString()}, preferredDistance=${preferredDistance}, speed=${speed}`)
 
         if(curSquad.coord.distanceTo(goodRangeCoord) > speed) {
             firstChoiceCoord = this.coordAlongLine(
@@ -23696,7 +30692,7 @@ class ScifiWarband {
                 speed
             );
 
-            Util.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): goodRangeCoord was too far (${curSquad.coord.distanceTo(goodRangeCoord)} vs speed ${speed}) so we replaced it with ${firstChoiceCoord.toString()} `);
+            // ScifiWarband.logDebug(`ScifiWarband.desiredMove(${curSquad.terse()}): goodRangeCoord was too far (${curSquad.coord.distanceTo(goodRangeCoord)} vs speed ${speed}) so we replaced it with ${firstChoiceCoord.toString()} `);
         }
 
         const candidates = this.adjacents(firstChoiceCoord);
@@ -23705,7 +30701,6 @@ class ScifiWarband {
         let bestCoord = candidates[0];
         let bestRating = -Infinity;
 
-        // TODO bug - squad keeps moving further away from nearest foe despite holding a SMG with preferred range 1.
         for (let candidate of candidates) {
             const rating = this.destinationRating(candidate, curSquad);
             if (rating > bestRating) {
@@ -23713,7 +30708,7 @@ class ScifiWarband {
                 bestCoord = candidate;
             }
 
-            Util.logDebug(`ScifiWarband.desiredMove(), candidates loop: candidate=${candidate.toString()}, rating=${rating}, curSquad=${curSquad.terse()}`);
+            // ScifiWarband.logDebug(`ScifiWarband.desiredMove(), candidates loop: candidate=${candidate.toString()}, rating=${rating}, curSquad=${curSquad.terse()}`);
         }
 
         // Desires should be numbers in range [0, 1]
@@ -23892,13 +30887,13 @@ class ScifiWarband {
         }
 
         if (! Util.exists(distToFoe)) {
-            const foeInfo = this.nearestFoesFromCoord(coord, squad.team);
+            const foeInfo = this.nearestFoesFromCoord(coord, squad.faction());
             distToFoe = foeInfo.dist;
         }
 
         const occupants = this.contentsOfCoord(coord);
         for (let occupant of occupants) {
-            Util.logDebug(`destinationRating(), comparing occupant ${occupant.terse()} to squad ${squad.terse()}`)
+            // ScifiWarband.logDebug(`destinationRating(), comparing occupant ${occupant.terse()} to squad ${squad.terse()}`)
             if (occupant === squad) {
                 return -9999;
             }
@@ -23972,7 +30967,7 @@ class ScifiWarband {
     performAction (action) {
         const squad = action.subject;
         if (squad.isKO()) {
-            throw new Error(squad.id); // illegal
+            throw new Error(Util.stringify(action)); // illegal
         }
 
         const distance = squad.coord.distanceTo(action.target);
@@ -23984,29 +30979,30 @@ class ScifiWarband {
             }
 
             if (distance > squad.speed()) {
-                Util.logError(`Illegal action submitted, can't move that far: ${action.toString()}`);
+                ScifiWarband.logDebug(`ERROR - Illegal action submitted, can't move that far: ${action.toString()}`);
                 // LATER interpret as a more reasonable move.
                 return;
             }
 
             if (! this.coordOnGrid(action.target)) {
-                Util.logError(`Illegal action submitted, can't move off the grid: ${action.toString()}`);
+                ScifiWarband.logDebug(`ERROR - Illegal action submitted, can't move off the grid: ${action.toString()}`);
                 // LATER interpret as a more reasonable move.
                 return;
             }
 
             // if (distance === 0) {
-                // Util.logError(`This is not so bad, but a squad decided to move 0 distance: ${action.toString()}`);
+                // ScifiWarband.logDebug(`ERROR - This is not so bad, but a squad decided to move 0 distance: ${action.toString()}`);
             // }
             const occupants = this.contentsOfCoord(action.target);
             for (let thing of occupants) {
                 if (! thing.isKO()) {
-                    Util.logError(`Illegal action - trying to move onto occupied square: ${action.toString()}`);
+                    ScifiWarband.logDebug(`ERROR - Illegal action - trying to move onto occupied square: ${action.toString()}`);
                     return;
                 }
             }
 
-            Util.log(`${squad.terse()} moves to ${action.target.toString()}, distance=${distance}, speed=${squad.speed()}`);
+            // LATER log this message at EVENT level, not DEBUG
+            ScifiWarband.logDebug(`EVENT - ${squad.terse()} moves to ${action.target.toString()}, distance=${distance}, speed=${squad.speed()}`);
 
             squad.coord = action.target;
             return;
@@ -24015,11 +31011,11 @@ class ScifiWarband {
         // LATER functionize into this.performAttack()
         if (action.type === Action.TYPE.Attack) {
             if (action.target.isKO()) {
-                throw new Error(action.target.id);
+                throw new Error(Util.stringify(action));
             }
 
             if (! squad.canSee(action.target)) {
-                Util.logError(`Illegal action submitted, can't see target squad: ${action.toString()}`);
+                ScifiWarband.logDebug(`ERROR - Illegal action submitted, can't see target squad: ${action.toString()}`);
                 // LATER interpret as a more reasonable action.
                 return;
             }
@@ -24034,19 +31030,112 @@ class ScifiWarband {
 
             const hitCount = events
                 .filter(e => e.type === Event.TYPE.Hit)
-               .length;
+                .length;
 
             const koCount = initialTargetCount - action.target.quantity();
             const eliminationMessage = action.target.quantity() === 0 ?
                 ' (SQUAD WIPE)' :
                 '';
 
-            Util.log(`${squad.terse()} attack ${targetTerse}: ${hitCount} hits, ${koCount} KOs${eliminationMessage}`);
+            Util.log(`t=${Event.t}: ${squad.terse()} attack ${targetTerse}: ${hitCount} hits, ${koCount} KOs${eliminationMessage}`);
 
+            this.tidyKOs(action.target, koCount);
             return;
         }
 
         // LATER more action types
+    }
+
+    tidyKOs (damagedSquad, koCount) {
+        if (koCount === 0) { return; }
+
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) top. - toJsonStr()=${damagedSquad.toJsonStr()}`);
+
+        const koCreatures = damagedSquad.creatures.filter(cr => cr.isKO());
+        if (koCreatures.length === 0) { return; }
+
+        const thingsHere = this.contentsOfCoord(damagedSquad.coord);
+
+        let koSquad = thingsHere.find(
+            th => th !== damagedSquad &&
+                th.faction() === damagedSquad.faction() &&
+                th.isKO()
+        );
+
+        if (! koSquad) {
+            koSquad = Squad.koSquad(damagedSquad.coord);
+            this.things.push(koSquad);
+        }
+
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) before concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
+
+        koSquad.creatures = koSquad.creatures.concat(koCreatures);
+
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) after concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
+
+        damagedSquad.creatures = damagedSquad.creatures.filter(cr => ! cr.isKO());
+
+        if (damagedSquad.creatures.length === 0) {
+            this.things = this.things.filter(th => th.creatures.length >= 1);
+        }
+
+        const koCreaturesArrayStr = koCreatures.map(cr => cr.toJsonStr()).join(', ');
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) bottom. - damagedSquad.toJsonStr()=${damagedSquad.toJsonStr()} \n koSquad.toJsonStr()=${koSquad.toJsonStr()}, local var koCreatures=[${koCreaturesArrayStr}]`);
+
+        if (koSquad.creatures.length === 0) {
+            throw new Error(Util.stringify({
+                damagedSquad: damagedSquad.toJson(),
+                koSquad: koSquad.toJson(),
+            }));
+        }
+
+        return koSquad; // It's okay if this return value is not used.
+    }
+
+    static testTidyKOs () {
+        const game = new ScifiWarband();
+
+        const damagedSquad = Squad.example('Marine');
+        const startingCount = damagedSquad.creatures.length;
+        game.things = [damagedSquad];
+
+        damagedSquad.creatures[0].status.ko = true;
+        game.tidyKOs(damagedSquad);
+
+        const contents = game.contentsOfCoord(damagedSquad.coord);
+        const koSquad = contents.find(sq => sq.isKO());
+
+        // LATER add Util.js funcs to functionize unit tests like this one.
+
+        const summary = {
+            numberOfSquads: contents.length,
+            startingCount,
+            endingCount: damagedSquad.creatures.length,
+            endingQuantity: damagedSquad.quantity(),
+            koSquadCount: koSquad?.creatures.length,
+            koSquadQuantity: koSquad?.quantity(),
+            koSquadFaction: koSquad?.faction(),
+        };
+
+        const controlGroup = Squad.example('Marine');
+
+        const expected = {
+            numberOfSquads: 2,
+            startingCount: controlGroup.creatures.length,
+            endingCount: controlGroup.creatures.length - 1,
+            endingQuantity: controlGroup.creatures.length - 1,
+            koSquadCount: 1,
+            koSquadQuantity: 0,
+            koSquadFaction: controlGroup.faction(),
+        };
+
+        for (let key in expected) {
+            if (expected[key] !== summary[key]) {
+                throw new Error(
+                    `Saw (${key}: ${summary[key]}), but expected ${expected[key]}. \n  Summary: ${Util.stringify(summary)}`
+                );
+            }
+        }
     }
 
     setHTML () {
@@ -24056,32 +31145,27 @@ class ScifiWarband {
     drawGrid () {
         this.resetGrid();
 
+        // LATER maybe start from 1 not 0. Edit Squad.example() too if so.
         for (let y = 0; y < ScifiWarband.WINDOW_SQUARES; y++) {
             for (let x = 0; x < ScifiWarband.WINDOW_SQUARES; x++) {
                 const things = this.contentsOfCoord(new Coord(x, y));
 
                 if (things.length === 0) {
                     this.drawLoadedImage(this.images.sand, x, y);
+                    continue;
                 }
-                else {
-                    for (let thing of things) {
-                        if (thing.isKO()) {
-                            if (things.every(th => th.isKO())) {
-                                // LATER find real KO image(s)
-                                this.drawLoadedImage(this.images.sentinel, x, y);
-                                break;
-                            }
-                        }
-                        else {
-                            this.drawLoadedImage(this.images[thing.imageName()], x, y);
-                            break;
-                        }
-                    }
 
-                    if (things.length >= 2) {
-                        Util.logDebug(`Coord ${x}, ${y} contains ${things.length} things, BTW.`);
-                    }
+                const activeThings = things.filter(th => ! th.isKO());
+
+                if (activeThings.length === 0) {
+                    this.drawSquad(things[0]); // Draw any of the KO squads.
+                    continue;
                 }
+                else if (activeThings.length >= 2) {
+                    ScifiWarband.logDebug(`ERROR - Coord ${x}, ${y} contains ${things.length} things, BTW.`);
+                }
+
+                this.drawSquad(activeThings[0]);
             }
         }
     }
@@ -24100,7 +31184,7 @@ class ScifiWarband {
 
     // Returns array of nearest foe - or foes tied for same distance.
     nearestFoes (squad) {
-        return this.nearestFoesFromCoord(squad.coord, squad.team);
+        return this.nearestFoesFromCoord(squad.coord, squad.faction());
     }
 
     nearestFoesFromCoord (coord, team) {
@@ -24109,16 +31193,16 @@ class ScifiWarband {
         let shortestDist = 99999; // unit: squares
 
         for (let thing of this.things) {
-            // Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, top. Teams: ${squad.team} vs ${thing.team}, canSee(thing)? ${squad.canSee(thing)}, thing.visibility = ${thing.visibility}`);
+            // ScifiWarband.logDebug(`nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, top. Teams: ${squad.team} vs ${thing.team}, canSee(thing)? ${squad.canSee(thing)}, thing.visibility = ${thing.visibility}`);
 
-            if (thing.team === team) { continue; }
+            if (thing.faction() === team) { continue; }
             if (thing.isKO()) { continue; }
 
             if (! Squad.coordCanSee(coord, thing)) { continue; }
 
             const dist = coord.distanceTo(thing.coord);
 
-            // Util.logDebug(`ScifiWarband.nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, dist is ${dist}`);
+            // ScifiWarband.logDebug(`nearestFoes(${squad.terse()}): contemplating ${thing.terse()}, dist is ${dist}`);
 
             if (dist < shortestDist) {
                 nearests = [thing];
@@ -24145,14 +31229,14 @@ class ScifiWarband {
             this.things.push(
                 new Squad(
                     Templates.Halo.UNSC.Squad.Marine,
-                    Util.randomOf([Squad.TEAM.Player, Squad.TEAM.Enemy]),
+                    undefined, //Util.randomOf([Squad.TEAM.Player, Squad.TEAM.Enemy]),
                     Coord.random2d(10)
                 )
             );
         }
         // log start time & save in local variable
         const startDate = new Date();
-        Util.logDebug(`testNearestFoes() starting test at ${startDate.getUTCMilliseconds()}`);
+        ScifiWarband.logDebug(`testNearestFoes() starting test at ${startDate.getUTCMilliseconds()}`);
         
         // call nearestFoes for each squad
         for (let sq of this.things) {
@@ -24162,15 +31246,49 @@ class ScifiWarband {
         // log total time spent & time per call
         const endDate = new Date();
         const ms = endDate - startDate;
-        Util.logDebug(`testNearestFoes() ending test at ${endDate.getUTCMilliseconds()}\n  Total time was ${ms / 1000} seconds, or ${ms / 1000 / this.things.length} seconds per nearestFoes() call.`);
+        ScifiWarband.logDebug(`testNearestFoes() ending test at ${endDate.getUTCMilliseconds()}\n  Total time was ${ms / 1000} seconds, or ${ms / 1000 / this.things.length} seconds per nearestFoes() call.`);
     }
 
-    // Deprecated - too slow to load during drawing.
-    drawSquare (imageName, x, y) {
-        const imgElement = new Image();
-        imgElement.src = imageURL;
+    drawSquad (squad) {
+        const x = squad.coord.x;
+        const y = squad.coord.y;
+        let image;
+        let lowerLeftString;
 
-        imgElement.onload = () => this.drawLoadedImage(imgElement, x, y);
+        if (squad.isKO()) {
+            image = this.images.sand;
+            // LATER could display KO squads as a empty square, if that seems visually tidier.
+            lowerLeftString = 'KO';
+        }
+        else {
+            image = this.images[squad.imageName()];
+            lowerLeftString = String(
+                Math.min(squad.quantity(), 9999)
+            );
+        }
+
+        this.drawLoadedImage(image, x, y);
+
+        const QUANTBOX_HEIGHT = 22;
+        this.canvasCtx.fillStyle = 'lightgrey';
+
+        const left = this.cornerOfSquare(x);
+        const top = this.cornerOfSquare(y + 1) - QUANTBOX_HEIGHT;
+        const width = this.canvasCtx.measureText(lowerLeftString).width + 4;
+        const height = QUANTBOX_HEIGHT;
+
+        this.canvasCtx.fillRect(left, top, width, height);
+
+        // LATER could move unchanging style assignment statements to a setup func, if they are slowing things down appreciably.
+        this.canvasCtx.font = '18px serif';
+        this.canvasCtx.textAlign = 'left';
+        this.canvasCtx.fillStyle = 'green';
+
+        this.canvasCtx.fillText(
+            lowerLeftString,
+            this.cornerOfSquare(x) + 1,
+            this.cornerOfSquare(y + 1) - 7,
+        );
     }
 
     drawLoadedImage (imgElement, x, y) {
@@ -24209,7 +31327,6 @@ class ScifiWarband {
 
     drawAttack (squad, target, color) {
         this.drawAttackXY(
-            // TODO bug seen where .coord is undefined
             squad.coord.x,
             squad.coord.y,
             target.coord.x,
@@ -24259,8 +31376,26 @@ class ScifiWarband {
     }
 
     explainOutcome () {
+        ScifiWarband.logDebug(`explainOutcome() top.`);
         this.logNewRound();
+        this.debugLogState();
         // LATER Present outcome to user in more detail.
+    }
+
+    debugLogState () {
+        ScifiWarband.logDebug(`ScifiWarband.debugLogState()`);
+
+        for (let y = 0; y < ScifiWarband.WINDOW_SQUARES; y++) {
+            for (let x = 0; x < ScifiWarband.WINDOW_SQUARES; x++) {
+                const things = this.contentsOfCoord(new Coord(x, y));
+
+                if (things.length === 0) { continue; }
+
+                for (let thing of things) {
+                    ScifiWarband.logDebug(`${thing.terse()} with .creatures=${thing.koSummary()}`);
+                }
+            }
+        }
     }
 
     exampleSetup () {
@@ -24268,11 +31403,20 @@ class ScifiWarband {
     }
 
     exampleSquads () {
+        const factionA = Templates.randomFaction();
+        const factionB = Templates.randomFaction();
+
         const allSquads = [];
 
-        for (let i = 0; i < 10; i++) {
-            allSquads.push(Squad.example('Marine'));
-            allSquads.push(Squad.example('Grunt'));
+        for (let i = 0; i < 2; i++) {
+            allSquads.push(Squad.randomOfFaction(
+                factionA,
+                new Coord(i, 0)
+            ));
+            allSquads.push(Squad.randomOfFaction(
+                factionB,
+                new Coord(i, ScifiWarband.WINDOW_SQUARES - 1)
+            ));
         }
 
         return allSquads;
@@ -24303,14 +31447,56 @@ class ScifiWarband {
         );
     }
 
+    static logDebug (input) {
+        const inputStr = Util.isString(input) ?
+            input :
+            Util.stringify(input);
+
+        Util.logDebug(`ScifiWarband t=${Event.t} - ${inputStr}`);
+    }
+
+    static testLogDebug () {
+        const sq = Squad.example('Marine');
+        const json = sq.toJson();
+
+        console.log(`ScifiWarband.testLogDebug() - Test S:`);
+        ScifiWarband.logDebug('This is just a string.');
+        // Good.
+
+        console.log(`ScifiWarband.testLogDebug() - Test J:`);
+        ScifiWarband.logDebug(json);
+        // Good.
+
+        console.log(`ScifiWarband.testLogDebug() - Test SJ:`);
+        ScifiWarband.logDebug(String(json));
+        // object Object
+
+        console.log(`ScifiWarband.testLogDebug() - Test SCJ:`);
+        ScifiWarband.logDebug(`string containing ${json}`);
+        // object Object
+
+        console.log(`ScifiWarband.testLogDebug() - Test USJ:`);
+        ScifiWarband.logDebug(Util.stringify(json));
+        // Good.
+
+        console.log(`ScifiWarband.testLogDebug() - Test SCUSJ:`);
+        ScifiWarband.logDebug(`string containing ${Util.stringify(json)}`);
+        // Good.
+    }
+
     static test () {
         ScifiWarband.testCoordAlongLine();
         ScifiWarband.testDestinationRating();
+        ScifiWarband.testTidyKOs();
+        // ScifiWarband.testLogDebug();
 
         Util.logDebug(`ScifiWarband.test() - All tests finished.`);
     }
 
     static async run () {
+        const canvas = document.getElementById('canvas');
+        if (! canvas) { return; }
+
         ScifiWarband.test();
 
         const game = new ScifiWarband();
@@ -24318,7 +31504,8 @@ class ScifiWarband {
         game.initSquads();
         game.setHTML();
 
-        game.runEncounter();
+        await game.runEncounter();
+        ScifiWarband.logDebug(`run() after runEncounter()`);
         game.explainOutcome();
 
         // game.testNearestFoes();
@@ -24329,16 +31516,11 @@ ScifiWarband.WINDOW_SQUARES = 9; // number of squares
 ScifiWarband.DEFAULT_SQUARE_SIZE = 4; // meters
 ScifiWarband.SQUARE_PIXELS = 60;
 
-// LATER new file
-class Item {
-    
-}
-
 module.exports = ScifiWarband;
 
 ScifiWarband.run();
 
-},{"../../util/coord.js":10,"../../util/util.js":11,"./action.js":4,"./creature.js":5,"./event.js":6,"./squad.js":8,"./templates.js":9}],8:[function(require,module,exports){
+},{"../../util/coord.js":44,"../../util/util.js":45,"./action.js":35,"./creature.js":37,"./event.js":39,"./squad.js":42,"./templates.js":43}],42:[function(require,module,exports){
 'use strict';
 
 const Creature = require('./creature.js');
@@ -24353,17 +31535,17 @@ const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
 class Squad {
-    constructor (squadTemplate, team, coord) {
+    constructor (squadTemplate, _unused, coord) {
         this.id = Util.uuid();
         this.template = squadTemplate;
         this.creatures = [];
-        this.team = team;
+        // this.team = team || this.template.faction;
         this.coord = coord || new Coord();
         this.ready = true;
 
         // Note that this is how you create a homogenous squad from a template. LATER, might often have heterogenous squads coming from customization choices or from a save file.
         for (let i = 1; i <= this.template.quantity; i++) {
-            const cr = new Creature(this.template.creature); // todo translate Creature.Grunt string 
+            const cr = new Creature(this.template.creature);
             this.creatures.push(cr);
             cr.squad = this;
         }
@@ -24377,6 +31559,18 @@ class Squad {
         this.imgElement.src = Squad.IMAGE_PREFIX + this.template.image;
 
         // imgElement.onload = () => this.drawLoadedImage(imgElement, x, y);
+    }
+
+    existingName () {
+        return this.nameFromUser || this.nameGenerated;
+    }
+
+    name () {
+        return this.existingName() || ('Squad ' + Util.shortId(this.id));
+    }
+
+    faction () {
+        return this.creatures?.[0]?.faction();
     }
 
     isKO () {
@@ -24414,7 +31608,7 @@ class Squad {
     }
 
     // unit: squares
-    // TODO - decide whether to use squares as unit for codex stats (meaning i cant change meters per square) or express in meters.
+    // LATER - decide whether to use squares as unit for codex stats (meaning i cant change meters per square) or express in meters.
     distanceTo (otherSquad) {
         return this.coord.distanceTo(otherSquad.coord);
     }
@@ -24541,13 +31735,23 @@ class Squad {
 
     // 2 Grunts (5, 0)
     terse () {
-        const representative = this.quantity() >= 1 ?
-            this.activeCreatures()[0] :
-            this.creatures[0];
+        // Util.logDebug(`Squad.terse(): coord=${this.coord.toString()}, this.koSummary()=${this.koSummary()}`);
 
-        const name = representative.template.name;
+        const representative = this.isKO() ?
+            this.creatures[0] :
+            this.activeCreatures()[0];
+
+        const name = representative?.template.name || `<empty Squad>`;
 
         return `${this.quantity()} ${name}s ${this.coord.toString()}`;
+    }
+
+    // For debugging
+    koSummary () {
+        return this.creatures.map(
+            cr => cr.isKO() ? 'KO' : 'Active'
+        )
+        .join(',');
     }
 
     healthBar () {
@@ -24562,26 +31766,49 @@ class Squad {
         );
     }
 
+    commonestCreature () {
+        return Util.commonest(
+            this.creatures.map(cr => cr.template.name)
+        );
+    }
+
     toJson () {
         const json = Util.certainKeysOf(
             this, 
-            ['id', 'template', 'team', 'coord', 'ready']
+            ['id', 'template', 'coord', 'ready']
         );
+        json.faction = this.faction();
 
         json.creatures = this.creatures.map(cr => cr.toJson());
 
         return json;
     }
 
+    toJsonStr () {
+        return Util.stringify(this.toJson());
+    }
+
+    static phoneticAlphabet () {
+        return ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Golf', 'Hotel', 'India', 'Juliet', 'Kilo', 'Lima', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'X-ray', 'Yankee', 'Zulu'];
+    }
+
+    static koSquad (coord) {
+        return new Squad(
+            Templates.General.General.Squad.KO,
+            undefined,
+            coord,
+        );
+    }
+
     static example (key, coord) {
         const examples = {
             Marine: {
                 template: Templates.Halo.UNSC.Squad.Marine,
-                team: Squad.TEAM.Player, // LATER use template faction names for .team, instead of Player/Enemy
+                // team: Squad.TEAM.Player, // LATER use template faction names for .team, instead of Player/Enemy
             },
             Grunt: {
                 template: Templates.Halo.Covenant.Squad.Grunt,
-                team: Squad.TEAM.Enemy,
+                // team: Squad.TEAM.Enemy,
             },
         };
 
@@ -24589,11 +31816,19 @@ class Squad {
 
         const sq = new Squad(
             info.template,
-            info.team,
+            undefined,
             coord || Coord.random2d(9),
         );
 
         return sq;
+    }
+
+    static randomOfFaction (factionKey, coord) {
+        return new Squad(
+            Templates.randomSquad(factionKey),
+            undefined,
+            coord || Coord.random2d(9),
+        );
     }
 }
 
@@ -24606,22 +31841,35 @@ Squad.IMAGE_PREFIX = 'https://alexpear.github.io/gridView/images/';
 
 module.exports = Squad;
 
-},{"../../util/coord.js":10,"../../util/util.js":11,"./creature.js":5,"./event.js":6,"./templates.js":9}],9:[function(require,module,exports){
+},{"../../util/coord.js":44,"../../util/util.js":45,"./creature.js":37,"./event.js":39,"./templates.js":43}],43:[function(require,module,exports){
 'use strict';
 
 //
 
+const ConfigString = require('../data/config.js');
 const Util = require('../../util/util.js');
+const yaml = require('js-yaml');
 
 class Templates {
     static init () {
-        // Util.logDebug(`Templates.init(), top.`);
+        // json: true means duplicate keys in a mapping will override values rather than throwing an error.
+        const Config = yaml.load(ConfigString, { json: true });
 
+        for (let topKey in Config) {
+            // eg topKey === 'Halo'
+            Templates[topKey] = Config[topKey];
+        }
+
+        const entryNotes = [];
+
+        // Populate some values in-memory that would be too repetitive to store in the .yml file.
         for (let universe of Templates.universes()) {
             for (let faction in universe) {
                 // Util.logDebug(`Templates.init(), faction=${faction}`);
 
                 if (Util.isString(universe[faction])) { continue; }
+
+                universe[faction].name = faction;
 
                 for (let section in universe[faction]) {
                     const sectionObj = universe[faction][section];
@@ -24632,6 +31880,12 @@ class Templates {
                         const entryObj = sectionObj[entryName];
 
                         // Util.logDebug(`Templates.init() loop, faction=${faction} entryName=${entryName}`)
+
+                        entryNotes.push({
+                            entryObj,
+                            section,
+                            missingInfo: Templates.missingFields(entryObj, section),
+                        });
 
                         if (section === 'Creature') {
                             Templates.setupCreature(entryObj);
@@ -24648,11 +31902,16 @@ class Templates {
                 }
             }
         }
+
+        // Util.logDebug(entryNotes);
+
+        Templates.logDiagnostics(entryNotes);
     }
 
     static setupAnything (obj, pathArray) {
         // Util.logDebug(`Templates.setupAnything(obj=${Util.stringify(obj)}, pathArray=${pathArray})`)
 
+        // LATER if pathArray[3] is camelCase (ie contains [a-z][A-Z]), add spaces back into the name using replaceAll(regex, ' ')
         obj.name = obj.name || pathArray[pathArray.length - 1];
         obj.faction = obj.faction || pathArray[1];
 
@@ -24666,6 +31925,7 @@ class Templates {
                 obj.items[i] = Templates.translateDotPath(pathArray, obj.items[i]);
             }
         }
+
     }
 
     static translateDotPath (pathArray, dotPath) {
@@ -24746,17 +32006,152 @@ class Templates {
                 // Util.logDebug(`Templates.allEntries(${type || ''}), factionKey=${factionKey}`);
 
                 if (type) {
-                    entries = entries.concat(Object.values(faction[type]));
+                    entries = entries.concat(Object.values(faction[type] || {}));
                 }
                 else {
-                    entries = entries.concat(Object.values(faction.Item));
-                    entries = entries.concat(Object.values(faction.Creature));
-                    entries = entries.concat(Object.values(faction.Squad));
+                    entries = entries.concat(Object.values(faction.Item || {}));
+                    entries = entries.concat(Object.values(faction.Creature || {}));
+                    entries = entries.concat(Object.values(faction.Squad || {}));
                 }
             }
         }
 
         return entries;
+    }
+
+    static randomFaction () {
+        return Util.randomOf([
+            'Covenant',
+            'Flood',
+            'Forerunner',
+            'UNSC',
+        ]);
+    }
+
+    static randomSquad (factionKey) {
+        const keys = Object.keys(Templates.Halo[factionKey].Squad);
+
+        return Templates.Halo[factionKey].Squad[
+            Util.randomOf(keys)
+        ];
+    }
+
+    static missingFields (entry, type) {
+        const FIELDS = {
+            Item: {
+                core: ['damage', 'rof'],
+                extra: ['accuracy', 'aoe', 'classic', 'color', 'cost', 'name', 'preferredRange', 'tags', 'type'],
+            },
+            Creature: {
+                core: ['accuracy', 'durability', 'items', 'size', 'speed'],
+                extra: ['classic', 'scale'] // 'source',
+            },
+            Squad: {
+                core: ['creature', 'image'],
+                extra: ['quantity']
+            }
+        };
+
+        if (! type) { throw new Error(Util.stringify(entry)); }
+
+        const fieldNames = FIELDS[type];
+        const missing = { core: [], extra: [], incompleteness: 0, };
+
+        for (let coreKey of fieldNames.core) {
+            const blankItems = coreKey === 'items' && ! entry.items?.length;
+            // if (coreKey === 'items') {
+            //     throw new Error(Util.stringify(entry));
+            // }
+
+            if (! Util.legit(entry[coreKey]) || blankItems) {
+                missing.core.push(coreKey);
+                missing.incompleteness += 10;
+            }
+        }
+
+        for (let extraKey of fieldNames.extra) {
+            if (! Util.legit(entry[extraKey])) {
+                missing.extra.push(extraKey);
+                missing.incompleteness += 1;
+            }
+        }
+
+        return missing;
+    }
+
+    static logDiagnostics (entryNotes) {
+        const extensions = {
+            banshee: 'jpeg',
+            brute: 'jpg',
+            bruteChieftain: 'png',
+            bruteProwler: 'jpg',
+            ccsLightCruiser: 'png',
+            chopper: 'jpg',
+            combatForm: 'png',
+            corvette: 'png',
+            crawler: 'png',
+            cryptum: 'png',
+            didact: 'png',
+            drone: 'png',
+            elite: 'jpg',
+            enforcer: 'png',
+            falcon: 'png',
+            floodCarrier: 'png',
+            floodTank: 'png',
+            frigate: 'png',
+            ghost: 'jpg',
+            goldElite: 'jpg',
+            grunt: 'png',
+            harvester: 'jpg',
+            highCharity: 'jpg',
+            hornet: 'png',
+            hunter: 'png',
+            infinity: 'jpeg',
+            jackal: 'png',
+            keyship: 'png',
+            knight: 'jpg',
+            kraken: 'jpg',
+            lich: 'png',
+            mammoth: 'png',
+            mantis: 'png',
+            marathonCruiser: 'png',
+            marine: 'png',
+            missileSilo: 'jpg',
+            mongoose: 'gif',
+            odst: 'jpg',
+            officer: 'jpg',
+            pelican: 'png',
+            phantom: 'png',
+            pod: 'jpg',
+            rifleJackal: 'png',
+            sand: 'jpg',
+            scarab: 'png',
+            scorpion: 'png',
+            sentinel: 'jpg',
+            shade: 'png',
+            sniperJackal: 'png',
+            spartan: 'png',
+            spire: 'jpg',
+            transportWarthog: 'png',
+            warthog: 'jpg',
+            wasp: 'png',
+            wraith: 'png'
+        };
+
+        entryNotes.sort(
+            (a, b) => b.missingInfo.incompleteness - a.missingInfo.incompleteness
+        );
+
+        for (let notes of entryNotes) {
+            const camelName = Util.toCamelCase(notes.entryObj.name);
+
+            if (! notes.entryObj.image && extensions[camelName]) {
+                console.log(`--> ${notes.entryObj.name} could use image: ${camelName}.${extensions[camelName]}`);
+            }
+
+            if (notes.missingInfo.incompleteness === 0) { continue; }
+            console.log(`${notes.entryObj.name} (${notes.missingInfo.incompleteness}) is missing fields: ${notes.missingInfo.core.join(', ')} ... ${notes.missingInfo.extra.join(', ')}.`);
+        }
     }
 
     static test () {
@@ -24772,136 +32167,23 @@ class Templates {
 
 Templates.ATTACK_TYPE = {
     Kinetic: 'Kinetic',
-    Plasma: 'Plasma',
+    Fire: 'Fire',
     Impact: 'Impact',
     Explosive: 'Explosive',
     Hardlight: 'Hardlight',
     Electric: 'Electric',
 };
 
-Templates.Halo = {
-    name: 'Halo',
-    UNSC: {
-        Item: {
-            // Weapons
-            SMG: {
-                type: Templates.ATTACK_TYPE.Kinetic,
-                damage: 1,
-                rof: 4,
-                accuracy: 1,
-                preferredRange: 1,
-                color: 'yellow'
-            },
-
-            // Non-Weapons
-
-        },
-        Creature: {
-            // Infantry
-            Marine: {
-                size: 2,
-                speed: 1.5,
-                durability: 10,
-                accuracy: 1,
-                items: ['Item.SMG'],
-            },
-
-            // Vehicles
-
-            // Motive for accuracy stat - Spartans better with firearms than Grunts, also makes takeUnshieldedDamage() status effects simpler.
-        },
+Templates.General = {
+    General: {
         Squad: {
-            Marine: {
-                name: 'Marine Fireteam',
-                creature: 'Creature.Marine',
-                quantity: 3,
-                image: 'marine.png',
-           },
-
-        },
-    },
-    Covenant: {
-         Item: {
-            // Weapons
-            PlasmaPistol: {
-                name: 'Plasma Pistol',
-                type: Templates.ATTACK_TYPE.Plasma,
-                damage: 2,
-                rof: 2,
-                accuracy: 1.5,
-                preferredRange: 2,
-                color: 'lime',
+            KO: {
+                name: 'KO Squad',
+                quantity: 0,
+                image: 'sand.jpg',
             }
-
-            // Non-Weapons
-
-        },
-        Creature: {
-            // Infantry
-            Grunt: {
-                size: 1.5,
-                speed: 1.5,
-                durability: 5,
-                accuracy: 0,
-                items: ['Item.PlasmaPistol'],
-            },
-            
-            // Vehicles
-
-        },
-        Squad: {
-            // Infantry
-            Grunt: {
-                name: 'Grunt Lance',
-                creature: 'Creature.Grunt',
-                quantity: 4,
-                image: 'grunt.png',
-           },
-
-            // Vehicles
-
-        },
-    },
-    Forerunner: {
-        Item: {
-            // Weapons
-
-            // Non-Weapons
-
-        },
-        Creature: {
-            // Infantry
-            
-            // Vehicles
-
-        },
-        Squad: {
-            // Infantry
-            
-            // Vehicles
-
-        },
-    },
-    Flood: {
-        Item: {
-            // Weapons
-
-            // Non-Weapons
-
-        },
-        Creature: {
-            // Infantry
-            
-            // Vehicles
-
-        },
-        Squad: {
-            // Infantry
-            
-            // Vehicles
-
-        },
-    },
+        }
+    }
 };
 
 module.exports = Templates;
@@ -24909,7 +32191,7 @@ module.exports = Templates;
 Templates.init();
 // Templates.test();
 
-},{"../../util/util.js":11}],10:[function(require,module,exports){
+},{"../../util/util.js":45,"../data/config.js":34,"js-yaml":2}],44:[function(require,module,exports){
 'use strict';
 
 // TODO make this name lowercase.
@@ -25117,26 +32399,1184 @@ Coord.DECIMAL_PLACES = 2;
 
 module.exports = Coord;
 
-},{"./util.js":11}],11:[function(require,module,exports){
+},{"./util.js":45}],45:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
 const commaNumber = require('comma-number');
 const moment = require('moment');
 
-// TODO: import util funcs from util.js in the warband repo
-// TODO: Maybe make this file generic, usable by most of my projects.
-// Can split out Battle20 specific stuff into another utils file.
-const util = module.exports;
+// TODO: import Util funcs from util.js in the warband repo
+class Util {
+    static colored (str, colorName) {
+        return (Util.COLORS[colorName] || Util.COLORS.purple) +
+            str +
+            Util.COLORS.balance;
+    }
 
-util.DEFAULTS = {
+    static customColored (str, foreground, background) {
+        const FMAP = {
+            black: 30,
+            red: 31,
+            green: 32,
+            yellow: 33,
+            blue: 34,
+            magenta: 35,
+            cyan: 36,
+            white: 37,
+            brightGrey: 90,
+            brightRed: 91,
+            brightGreen: 92,
+            brightYellow: 93,
+            brightBlue: 94,
+            brightMagenta: 95,
+            brightCyan: 96,
+            brightWhite: 97,
+        };
+
+        const BMAP = {
+            black: 40,
+            red: 41,
+            green: 42,
+            yellow: 44,
+            blue: 44,
+            magenta: 45,
+            cyan: 46,
+            white: 47,
+            brightGrey: 100,
+            brightRed: 101,
+            brightGreen: 102,
+            brightYellow: 103,
+            brightBlue: 104,
+            brightMagenta: 105,
+            brightCyan: 106,
+            brightWhite: 107,
+        };
+
+        const fcode = FMAP[foreground] || FMAP.blue;
+        const bcode = BMAP[background] || BMAP.grey;
+
+        return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
+    }
+
+    static randomPastel () {
+        const min = 0x70;
+
+        let hexCode = '#';
+
+        for (let i = 0; i < 3; i++) {
+            const decimal = Util.randomIntBetween(min, 0x100);
+            hexCode += decimal.toString(16);
+        }
+
+        return hexCode;
+    }
+
+    static colorDiff (hex1, hex2) {
+        // later standardize inputs to strings
+        let diff = 0;
+
+        for (let i = 0; i < 6; i += 2) {
+            const str1 = hex1.slice(i, i + 2);
+            const color1 = Util.hexStringToNumber(str1); // later implement func https://stackoverflow.com/questions/52261494/hex-to-string-string-to-hex-conversion-in-nodejs
+
+            const str2 = hex2.slice(i, i + 2);
+            const color2 = Util.hexStringToNumber(str2);
+
+            diff += Math.abs(color1 - color2);
+        }
+
+        // Max value is 256 * 3 = 768
+        return diff;
+    }
+
+    static exists (x) {
+        return x !== undefined &&
+            x !== null &&
+            x !== '' &&
+            ! Util.isNaN(x);
+    }
+
+    static legit (x) {
+        return Util.exists(x) &&
+            x !== [] &&
+            x !== {};
+    }
+
+    static default (input, defaultValue) {
+        if (input === undefined) {
+            return defaultValue;
+        } else {
+            return input;
+        }
+    }
+
+    static contains (array, fugitive) {
+        return array.indexOf(fugitive) >= 0;
+    }
+
+    static hasOverlap (arrayA, arrayB) {
+        if (! arrayA || ! arrayB) {
+            return false;
+        }
+
+        for (let i = 0; i < arrayA.length; i++) {
+            if (Util.contains(arrayB, arrayA[i])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Returns number
+    // Default 0
+    static sum (array) {
+        return Util.array(array).reduce(
+            (sumSoFar, element) => {
+                const n = Number(element) || 0;
+                return sumSoFar + n;
+            },
+            0
+        );
+    }
+
+    // Average
+    // LATER could support multiple param usage: Util.mean(3, 5, 7)
+    static mean (array) {
+        array = Util.array(array);
+        if (array.length === 0) { return 0; }
+
+        const sum = Util.sum(array);
+        return sum / array.length;
+    }
+
+    // More robust variant of Math.min()
+    static min (...args) {
+        if (args.length === 1 && Util.isArray(args[0])) {
+            return Math.min(...args[0]);
+        }
+
+        return Math.min(...args);
+    }
+
+    // More robust variant of Math.max()
+    static max (...args) {
+        if (args.length === 1 && Util.isArray(args[0])) {
+            return Math.max(...args[0]);
+        }
+
+        return Math.max(...args);
+    }
+
+    static commonest (array) {
+        const dict = {};
+
+        for (let value of array) {
+            if (dict[value]) {
+                dict[value] += 1;
+            }
+            else {
+                dict[value] = 1;
+            }
+        }
+
+        let mostAppearances = 0;
+        let winner;
+
+        for (let value in dict) {
+            if (dict[value] > mostAppearances) {
+                mostAppearances = dict[value];
+                winner = value;
+            }
+        }
+
+        return winner;
+    }
+
+    static shuffle (array) {
+        array.sort(
+            (a, b) => Math.random()
+        );
+
+        return array;
+    }
+
+    static constrain (n, minInclusive, maxInclusive) {
+        if (n <= minInclusive) {
+            return minInclusive;
+        }
+        if (n >= maxInclusive) {
+            return maxInclusive;
+        }
+
+        return n;
+    }
+
+    static randomIntBetween (minInclusive, maxExclusive) {
+        if (! Util.exists(minInclusive) || ! Util.exists(maxExclusive)) {
+            console.log('error: Util.randomIntBetween() called with missing parameters.');
+            throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
+        }
+        else if (maxExclusive <= minInclusive) {
+            console.log('error: Util.randomIntBetween() called with max <= min.');
+            throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
+        }
+
+        return Math.floor( Math.random() * (maxExclusive - minInclusive) + minInclusive );
+    }
+
+    // Returns value in range [0, input]
+    static randomUpTo (maxInclusive) {
+        return maxInclusive >= 0 ?
+            Util.randomIntBetween(0, maxInclusive + 1) :
+            maxInclusive;
+    }
+
+    static randomBelow (maxExclusive) {
+        return Math.floor(Math.random() * maxExclusive);
+    }
+
+    static randomOf (array) {
+        return array[
+            Util.randomBelow(array.length)
+        ];
+    }
+
+    static randomFromObj (obj) {
+        const key = Util.randomOf(Object.keys(obj));
+        return obj[key];
+    }
+
+    // Param: obj, whose values are also objects.
+    // Side effect: writes to .name prop of child objs.
+    static randomWithName (obj) {
+        const name = _.sample(Object.keys(obj));
+
+        const entry = obj[name];
+        entry.name = name;
+        return entry;
+    }
+
+    // decimalPlaces param is optional and lodash defaults it to 0.
+    static randomRange (minInclusive, maxExclusive, decimalPlaces) {
+        if (maxExclusive < minInclusive) {
+            const temp = minInclusive;
+            minInclusive = maxExclusive;
+            maxExclusive = temp;
+        }
+
+        const unrounded = (Math.random() * (maxExclusive - minInclusive))
+            + minInclusive;
+
+        return _.round(unrounded, decimalPlaces);
+    }
+
+    // Often we want to fill a bag with tokens of different kinds and draw one.
+    // More likely outcomes get more tokens and are thus more likely to happen.
+    // But all outcomes are possible.
+    // Example bag describing St George at a disadvantage:
+    // {
+    //     stGeorge: 7,
+    //     dragon: 12
+    // }
+    static randomBagDraw (bag) {
+        const total = Util.sum(
+            Object.values(bag)
+        );
+
+        let drawn = Math.random() * total;
+
+        let name;
+        for (name in bag) {
+            drawn -= bag[name];
+
+            if (drawn < 0) {
+                return name;
+            }
+        }
+
+        return name;
+    }
+
+    static randomLetter () {
+        return Util.randomOf(`ABCDEFGHIJKLMNOPQRSTUVWXYZ`);
+    }
+
+    // Returns string
+    static newId (idLength) {
+        // Later research the most performant way to run this.
+        // Later could remove similar characters like 1i0O, maybe 5S
+        const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        let id = '';
+        for (let i = 0; i < (idLength || 50); i++) {
+            const index = Math.floor(
+                Math.random() * ALPHABET.length
+            );
+            id += ALPHABET[index];
+        }
+
+        return id;
+    }
+
+    // Similar to newId()
+    static uuid () {
+        return crypto.randomUUID();
+    }
+
+    // Returns string
+    static shortId (id) {
+        return id ?
+            `${id.slice(0, 3).toUpperCase()}` :
+            '';
+    }
+
+    // Input 2d array of strings or stringables
+    // Output string formatted like a spreadsheet, suitable for printing
+    static toChartString (grid) {
+        let maxLengths = new Array(grid[0].length).fill(1);
+
+        for (let r = 0; r < grid.length; r++) {
+
+            for (let c = 0; c < grid[4].length; c++) {
+                const len = String(grid[r][c]).length;
+
+                if (maxLengths[c] < len) {
+                    maxLengths[c] = len;
+                }
+            }
+        }
+
+        return grid.map(
+            row => row.map(
+                (cell, c) => String(cell).padEnd(maxLengths[c])
+            )
+            .join(' ')
+        )
+        .join('\n');
+    }
+
+    // grid is of type string[][]
+    static textGrid (grid, width, height) {
+        // These currently need to be set to the dimensions shown in the top of the terminal window.
+        Util.SCREEN_WIDTH = width || 181;
+        Util.SCREEN_HEIGHT = height || 46;
+
+        const colCount = grid[0].length;
+        const rightExcess = (Util.SCREEN_WIDTH - 1) % colCount;
+
+        const HORIZ_WALL = '-'.repeat(Util.SCREEN_WIDTH - rightExcess);
+        let lines = [HORIZ_WALL];
+
+        for (let r = 0; r < grid.length; r++) {
+            const lineSets = [];
+
+            for (let c = 0; c < grid[0].length; c++) {
+                lineSets.push(
+                    Util.boxAsLines(grid, r, c)
+                );
+
+                // Util.logDebug(`Util.textGrid(), lineSets is ${Util.stringify(lineSets)}`);
+            }
+
+            const rowLines = Util.stitchBoxRow(lineSets);
+            rowLines.push(HORIZ_WALL);
+
+            lines = lines.concat(rowLines);
+        }
+
+        return lines.join('\n');
+    }
+
+    static boxAsLines (grid, row, column) {
+        const boxHeight = Math.floor(
+            (Util.SCREEN_HEIGHT - grid.length - 1) / grid.length
+        );
+
+        const topRow = grid[0];
+
+        const boxWidth = Math.floor(
+            (Util.SCREEN_WIDTH - topRow.length - 1) / topRow.length
+        );
+
+        const boxLines = grid[row][column].split('\n');
+        const outLines = [];
+
+        // Util.logDebug('lines[0].length is ' + lines[0].length + ', and boxWidth is ' + boxWidth);
+
+        for (let i = 0; i < boxHeight - 1; i++) {
+            outLines.push(
+                Util.padSides(boxLines[i], boxWidth)
+            );
+        }
+
+        if (boxLines[boxHeight - 1]) {
+            outLines.push(
+                Util.padSides('...', boxWidth)
+            );
+        }
+
+        // Util.logDebug(`Util.boxAsLines(), current box contains: ${grid[row][column]}. boxLines is ${JSON.stringify(boxLines, undefined, '    ')},\n  outLines is ${JSON.stringify(outLines, undefined, '    ')}`)
+
+        return outLines;
+    }
+
+    static stitchBoxRow (lineSets) {
+        const WALL = '|';
+        const lines = [];
+
+        for (let r = 0; r < lineSets[0].length; r++) {
+            let line = WALL;
+
+            for (let i = 0; i < lineSets.length; i++) {
+                line += lineSets[i][r] + WALL;
+
+                // Util.logDebug(`Util.stitchBoxRow(), lineSets[i][r] is ${lineSets[i][r]}`)
+            }
+
+            lines.push(line);
+        }
+
+        return lines;
+    }
+
+
+    // Input string[]
+    // Returns string summarizing redundancies
+    static arraySummary (a) {
+        const dict = {};
+
+        a.forEach(
+            s => {
+                if (dict[s]) {
+                    dict[s]++;
+                }
+                else {
+                    dict[s] = 1;
+                }
+            }
+        );
+
+        const archetypes = Object.keys(dict)
+            .map(
+                s => `${s} x${Util.abbrvNumber(dict[s])}`
+            );
+
+        return archetypes.join(', ');
+    }
+
+    static repeat (str, n) {
+        let outStr = '';
+        for (let i = 0; i < n; i++) {
+            outStr += str;
+        }
+
+        return outStr;
+    }
+
+    static formatProp (object, propName) {
+        const value = object[propName];
+        if (! Util.legit(value)) {
+            return '';
+        }
+
+        // Later handle special and modification objects better.
+        return `${ propName }: ${ Util.formatExpression(value) }`;
+    }
+
+    static formatExpression (input) {
+        const type = typeof input;
+        if (Util.isArray(input)) {
+            return input.map(
+                x => Util.formatExpression(x)
+            )
+            .join(', ');
+        }
+        if (type === 'object') {
+            return Util.formatObj(input);
+        }
+
+        return input;
+    }
+
+    static formatObj (obj) {
+        // if (typeof obj !== 'object') {
+        //     return obj;
+        // }
+
+        const pairs = Object.keys(obj)
+            .map(
+                key => `${key}: ${obj[key]}`
+            )
+            .join(', ');
+        return `{${pairs}}`;
+    }
+
+    static containsVowels (s) {
+        const chars = s.toUpperCase()
+            .split('');
+
+        for (let char of chars) {
+            if (Util.contains('AEIOUY', char)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static capitalized (s) {
+        if (! Util.exists(s)) {
+            return '';
+        }
+        else if (s.length === 1) {
+            return s.toUpperCase();
+        }
+        // Controversially, interpret no-vowel strings as acronyms
+        else if (! Util.containsVowels(s)) {
+            return s.toUpperCase();
+        }
+
+        return s[0].toUpperCase() +
+            s.slice(1);
+            // s.slice(1).toLowerCase();
+    }
+
+    static uncapitalized (s) {
+        if (! Util.exists(s)) {
+            return '';
+        }
+        else if (s.length === 1) {
+            return s.toLowerCase();
+        }
+
+        return s[0].toLowerCase() +
+            s.slice(1);
+    }
+
+    static capitalizedAllWords (s) {
+        if (! Util.exists(s)) {
+            return '';
+        }
+
+        const words = s.split(' ');
+
+        return words.map(
+            w => Util.capitalized(w)
+        ).join(' ');
+    }
+
+    static toCamelCase (s) {
+        if (! Util.exists(s)) {
+            return '';
+        }
+
+        const words = s.split(/\s/);
+        const tail = words.slice(1)
+            .map(sub => Util.capitalized(sub))
+            .join('');
+
+        return words[0].toLowerCase() +
+            tail;
+    }
+
+    // input: 'dolphinWithWings'
+    // returns: 'Dolphin With Wings'
+    static fromCamelCase (s) {
+        if (! Util.exists(s)) {
+            return '';
+        }
+        else if (s.length === 1) {
+            return s.toUpperCase();
+        }
+
+        const wordStarts = [0];
+        const words = [];
+
+        for (let i = 1; i < s.length; i++) {
+            // Util.logDebug(`fromCamelCase(), s is ${s}, i is ${i}, s[i] is ${s[i]}`)
+
+            if (Util.isCapitalized(s[i])) {
+                if (Util.isCapitalized(s[i-1])) {
+                    // Detect acronym words and leave them uppercase.
+                    // eg: openHTMLFile
+                    const followedByLowercase = (i < s.length - 1) &&
+                        ! Util.isCapitalized(s[i+1]);
+                    if (! followedByLowercase) {
+                        continue;
+                    }
+                }
+
+                wordStarts.push(i);
+
+                const firstLetter = wordStarts[wordStarts.length - 2];
+                const word = s.slice(firstLetter, i);
+                words.push(word);
+            }
+
+            // Also want to consider a digit after a nondigit, or vice versa, to be a word start.
+            else if (Util.alphanumericTransition(s, i)) {
+                wordStarts.push(i);
+
+                const firstLetter = wordStarts[wordStarts.length - 2];
+                const word = s.slice(firstLetter, i);
+                words.push(word);
+            }
+        }
+
+        const lastCapital = wordStarts[wordStarts.length - 1];
+        const lastWord = s.slice(lastCapital);
+        words.push(lastWord);
+
+        return words.map(
+            // Do not change acronyms
+            w => Util.isAllCaps(w) ?
+                w :
+                Util.capitalized(w)
+        )
+        .join(' ');
+    }
+
+    // center-aligns string in spaces, to a specified total length.
+    // ('foo', 7) => '  foo  '
+    static padSides (string, length) {
+        // Later could detect if 'string' is a nonstring and convert it.
+        string = string || '';
+        length = Math.floor(length);
+
+        const leftover = length - string.length;
+
+        if (leftover <= 0) {
+            return string.slice(0, length);
+        }
+
+        const padAmount = leftover / 2;
+        const left = ' '.repeat(
+            Math.floor(padAmount)
+        );
+
+        const right = ' '.repeat(
+            Math.ceil(padAmount)
+        );
+
+        // return left + string + right;
+        return (left + string).padEnd(length);
+    }
+
+    static testPadSides () {
+        for (let l = 1; l < 10; l++) {
+
+            for (let sl = 0; sl < 3; sl++) {
+                const input = ' 👁 e'.repeat(sl);
+                const output = Util.padSides(input, l);
+
+                const summary = `padSides(${input}, ${l}) => \n'${output}'`;
+                console.log(summary);
+
+                if (output.length !== l) {
+                    throw new Error(summary);
+                }
+            }
+        }
+    }
+
+    static alphanumericTransition (string, i2) {
+        const digitStart = Util.isNumeric(
+            string[i2 - 1]
+        );
+
+        const digitEnd = Util.isNumeric(
+            string[i2]
+        );
+
+        return digitStart && ! digitEnd ||
+            ! digitStart && digitEnd;
+    }
+
+    static testCamelCase () {
+        const tests = [
+            ['Hector Breaker Of Horses', 'hectorBreakerOfHorses'],
+            ['Cellar Door', 'cellarDoor'],
+            ['C Deck', 'cDeck'],
+            ['Awakening', 'awakening']
+        ];
+
+        tests.forEach(t => {
+            const camelized = Util.toCamelCase(t[0]);
+            const uncamelized = Util.fromCamelCase(t[1]);
+
+            if (camelized !== t[1]) {
+                throw new Error(camelized);
+            }
+            if (uncamelized !== t[0]) {
+                throw new Error(uncamelized);
+            }
+        });
+    }
+
+    // True when input is a number or a string containing digits.
+    static isNumeric (x) {
+        return /[0-9]/.test(x);
+    }
+
+    // Note that typeof NaN is also 'number',
+    // but it is still despicable.
+    static isNumber (x) {
+        return typeof x === 'number' &&
+            ! Util.isNaN(x);
+    }
+
+    static isString (x) {
+        return typeof x === 'string';
+    }
+
+    static isNaN (x) {
+        return Number.isNaN(x);
+    }
+
+    static isObject (x) {
+        return typeof x === 'object' &&
+            x !== null;
+    }
+
+    static isFunction (x) {
+        return typeof x === 'function';
+    }
+
+    static isArray (x) {
+        // Later make this more sophisticated, or use a library.
+        return x &&
+            typeof x.length === 'number' &&
+            ! Util.isString(x) &&
+            x.length >= 0 &&
+            (x.length === 0 || x[0] !== undefined);
+    }
+
+    static array (x) {
+        return Util.isArray(x) ? x : [x];
+    }
+
+    static unique (array) {
+        return Array.from(new Set(array));
+    }
+
+    static union (a1, a2) {
+        return Util.unique(
+            (a1 || []).concat(a2 || [])
+        );
+    }
+
+    // Returns a shallow copy of a array.
+    static arrayCopy (a) {
+        return a.map(x => x);
+    }
+
+    static clone (obj) {
+        return _.cloneDeep(obj);
+    }
+
+    static round (n, precision) {
+        return _.round(n, precision);
+    }
+
+    static commaNumber (n) {
+        return commaNumber(n);
+    }
+
+    static abbrvNumber (n) {
+        let output = '';
+        const pos = Math.abs(n);
+
+        if (pos < 1000) {
+            output = pos.toString();
+        }
+        else if (pos < 1e6) {
+            output = _.round(pos / 1000)
+                .toFixed(0)
+                + 'k';
+        }
+        else if (pos < 1e9) {
+            output = _.round(pos / 1e6)
+                .toFixed(0)
+                + 'mn';
+        }
+        else {
+            output = _.round(pos / 1e9)
+                .toFixed(0)
+                + 'bn';
+        }
+
+        return n >= 0 ?
+            output :
+            `-${output}`;
+    }
+
+    // returns number
+    // static digits (n) {
+
+    // }
+
+    // Returns string
+    static prettyDistance (meters) {
+        meters = Math.abs(meters);
+
+        const AU = 149597870700;
+        const LIGHT_YEAR = 9460730472580800;
+
+        if (meters < 3) {
+            const rounded = _.round(meters, 2);
+
+            return `${rounded} m`;
+        }
+        else if (meters < 1000) {
+            const rounded = _.round(meters);
+
+            return `${rounded} m`;
+        }
+        else if (meters < 3000) {
+            const klicks = _.round(meters / 1000, 1);
+
+            return `${klicks} km`;
+        }
+        else if (meters < AU * 0.1) {
+            const klicks = Util.commaNumber(
+                _.round(meters / 1000)
+            );
+
+            return `${klicks} km`;
+        }
+        else if (meters < AU * 3) {
+            const au = _.round(meters / AU, 1)
+                .toFixed(1);
+
+            return `${au} AU`;
+        }
+        else if (meters < LIGHT_YEAR * 0.1) {
+            const au = Util.commaNumber(
+                _.round(meters / AU)
+            );
+
+            return `${au} AU`;
+        } else if (meters < LIGHT_YEAR * 3) {
+            const ly = _.round(meters / LIGHT_YEAR, 1);
+
+            return `${ly} lightyears`;
+        }
+        else {
+            const ly = Util.commaNumber(
+                _.round(meters / LIGHT_YEAR)
+            );
+
+            return `${ly} lightyears`;
+        }
+    }
+
+    static testPrettyDistance () {
+        for (let n = 0.197842357; n < 94607304725808000000; n = 2 * n) {
+            console.log(Util.prettyDistance(n));
+        }
+    }
+
+    static prettyMeters (meters) {
+        return `${Util.commaNumber(meters)}m`;
+    }
+
+    static prettyTime (seconds) {
+        if (seconds < 59.5) {
+            const rounded = _.round(seconds);
+            return `${rounded} seconds`;
+        }
+        else if (seconds < 90) {
+            return `1 minute`;
+        }
+        // 3570 seconds is 59.5 minutes
+        else if (seconds < 3570) {
+            const minutes = _.round(seconds / 60);
+            return `${minutes} minutes`;
+        }
+        // 5400 seconds is 1.5 hours
+        else if (seconds < 5400) {
+            return `1 hour`;
+        }
+        // 84600 seconds is 23.5 hours
+        else if (seconds < 84600) {
+            const hours = _.round(seconds / 3600, 1);
+            return `${hours} hours`;
+        }
+        // 31556736 seconds is roughly 1 year
+        else if (seconds < 31556736) {
+            const days = _.round(seconds / 86400, 1);
+            return `${days} days`;
+        }
+        else {
+            const years = _.round(seconds / 31556736, 1);
+            return `${years} years`;
+        }
+    }
+
+    static asBar (n) {
+        let bar = '';
+
+        for (let i = 0; i < n; i++) {
+            bar = bar + '█';
+        }
+
+        return bar;
+    }
+
+    // Returns the input number rounded up or down to 1 sigfig.
+    static sigfigRound (n, sigfigs) {
+        sigfigs = sigfigs || 1;
+
+        const log = Math.log10(Math.abs(n));
+
+        return _.round(
+            n,
+            sigfigs - (1 + Math.floor(log))
+        );
+    }
+
+    static testSigfigRound () {
+        for (let f = 1; f < 3; f++) {
+            for (let n = 1; n < 1000000; n++) {
+                const output = Util.sigfigRound(n, f);
+                const figs = Util.sigfigsOf(output);
+
+                if (figs > f) {
+                    const originalFigs = Util.sigfigsOf(n);
+                    if (originalFigs < f) {
+                        continue;
+                    }
+
+                    // Note that this test does not check whether it gets rid of TOO MANY sigfigs. In the case of (1950, 2) this seems hard to test for. It is correct to oversimplify to 2000, which has only 1 sigfig.
+
+                    Util.logError(`In testSigfigRound(), sigfigRound(${n}, ${f}) === ${output}. This has ${figs} sigfigs, but it should have ${f}.`);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    static sigfigsOf (n) {
+        if (! Util.isNumber(n)) {
+            n = parseFloat(n);
+        }
+
+        const s = n.toString();
+        const parts = s.split('.');
+
+        // Post decimal
+        if (parts[1]) {
+            if (parts[0] === '0') {
+                // eg 0.0705 => 3
+                const zeroes = Util.charCountAtStart(parts[1], '0');
+                return parts[1].length - zeroes;
+            }
+            else {
+                // eg 400.01 => 5
+                return parts[0].length + parts[1].length;
+            }
+        }
+        else {
+            // eg 108000 => 3
+            const zeroes = Util.charCountAtEnd(s, '0');
+            return s.length - zeroes;
+        }
+    }
+
+    // Call like 'await Util.sleep(6);'
+    static sleep (seconds) {
+        if (! Util.exists(seconds)) {
+            seconds = 1;
+        }
+
+        return new Promise(
+            funcWhenResolved => setTimeout(funcWhenResolved, seconds * 1000)
+        );
+    }
+
+    // eg ('00705', '0') => 2
+    static charCountAtStart (str, char) {
+        for (let i = 0; i < str.length; i++) {
+            if (str[i] !== char) {
+                return i;
+            }
+        }
+
+        return str.length;
+    }
+
+    // eg ('108000', '0') => 3
+    static charCountAtEnd (str, char) {
+        for (let i = str.length - 1; i >= 0; i--) {
+            if (str[i] !== char) {
+                return (str.length - 1) - i;
+            }
+        }
+
+        return str.length;
+    }
+
+    static isCapitalized (s) {
+        return /[A-Z]/.test(s[0]);
+    }
+
+    static isAllCaps (s) {
+        // TODO implement this.
+        return false;
+    }
+
+    static stringify (x) {
+        return JSON.stringify(
+            x,
+            undefined,
+            '    '
+        );
+    }
+
+    // LATER - desired funcs:
+    // static yaml (x) {}
+    // static safeToStringify (x) {}
+
+    static log (input, tag) {
+        // Later: Use chalk functions instead.
+        // const TAG_COLORS = {
+        //     error: 'red',
+        //     warn: 'yellow',
+        //     beacon: 'purple',
+        //     event: 'blue',
+        //     noisy: 'cyan',
+        //     debug: 'green'
+        // };
+
+        tag = tag || 'event';
+        const tagStr = tag.toUpperCase();
+        // const tagColor = TAG_COLORS[tag.toLowerCase()] || TAG_COLORS['event'];
+        // const tagStr = tagColor ?
+        //     Util.colored(tag.toUpperCase(), tagColor) :
+        //     tag;
+
+        const dateTime = moment().format('YYYY MMM D hh:mm:ss.S');
+
+        const info = Util.isString(input) ?
+            input :
+            Util.stringify(input);
+
+        // Later: Red error and beacon text
+        console.log(`  ${tagStr} (${ dateTime }) \n${ info }\n`);
+    }
+
+    static logDebug (input) {
+        Util.log(input, 'debug');
+    }
+
+    static logWarn (input) {
+        Util.log(input, 'warn');
+    }
+
+    static logError (input) {
+        Util.log(input, 'error');
+    }
+
+    static makeEnum (vals) {
+        const dict = {};
+        for (let val of vals) {
+            dict[Util.capitalized(val)] = Util.uncapitalized(val);
+        }
+
+        return dict;
+    }
+
+    static withProp (array, key) {
+        return array.filter(x => x[key]);
+    }
+
+    static toJson (x) {
+        return x && Util.isFunction(x.toJson) ?
+            x.toJson() :
+            x;
+    }
+
+    // Useful for dicts of objects like wGenerator.aliasTables
+    static dictToJson (dict) {
+        const serialized = {};
+
+        Object.keys(dict)
+            .forEach(
+                key => {
+                    const value = dict[key];
+
+                    serialized[key] = (value && value.toJson) ?
+                        value.toJson() :
+                        value;
+                }
+            );
+
+        return serialized;
+    }
+
+    static valuesAsIDs (obj) {
+        const converted = {};
+
+        for (let key in obj) {
+            const val = obj[key];
+
+            converted[key] = val?.id || val;
+        }
+
+        return converted;
+    }
+
+    static certainKeysOf (obj, keyArray) {
+        const output = {};
+
+        for (let key of keyArray) {
+            output[key] = obj[key];
+        }
+
+        return output;
+    }
+
+    // Myers-Briggs Type Indicator (personality category)
+    static mbti () {
+        return [
+            Util.randomOf(['I', 'E']),
+            Util.randomOf(['S', 'N']),
+            Util.randomOf(['T', 'F']),
+            Util.randomOf(['P', 'J'])
+        ]
+        .join('');
+    }
+
+    static testAll () {
+        Util.testPrettyDistance();
+        Util.testCamelCase();
+        Util.testPadSides();
+        Util.testSigfigRound();
+        Util.logDebug(`Done with unit tests for Util module :)`);
+    }
+}
+
+// aliases
+Util.includes = Util.contains;
+Util.sample = Util.sampleFrom = Util.randomOf;
+
+Util.DEFAULTS = {
     ROWCOUNT: 12,
     COLCOUNT: 12
 };
 
+Util.NODE_TYPES = {
+    region: 'region',
+    location: 'location'  // deprecated
+};
+
 // These are like preselected color profiles.
 // The background is as described, and the foreground is black or white, whichever is most visible.
-util.COLORS = {
+Util.COLORS = {
     red: '\x1b[1;37;41m',
     yellow: '\x1b[1;37;43m',
     green: '\x1b[1;30;42m',
@@ -25148,1127 +33588,8 @@ util.COLORS = {
     balance: '\x1b[0m'
 };
 
-util.colored = (str, colorName) => {
-    return (util.COLORS[colorName] || util.COLORS.purple) +
-        str +
-        util.COLORS.balance;
-};
+module.exports = Util;
 
-util.customColored = (str, foreground, background) => {
-    const FMAP = {
-        black: 30,
-        red: 31,
-        green: 32,
-        yellow: 33,
-        blue: 34,
-        magenta: 35,
-        cyan: 36,
-        white: 37,
-        brightGrey: 90,
-        brightRed: 91,
-        brightGreen: 92,
-        brightYellow: 93,
-        brightBlue: 94,
-        brightMagenta: 95,
-        brightCyan: 96,
-        brightWhite: 97,
-    };
+// Util.testAll();
 
-    const BMAP = {
-        black: 40,
-        red: 41,
-        green: 42,
-        yellow: 44,
-        blue: 44,
-        magenta: 45,
-        cyan: 46,
-        white: 47,
-        brightGrey: 100,
-        brightRed: 101,
-        brightGreen: 102,
-        brightYellow: 103,
-        brightBlue: 104,
-        brightMagenta: 105,
-        brightCyan: 106,
-        brightWhite: 107,
-    };
-
-    const fcode = FMAP[foreground] || FMAP.blue;
-    const bcode = BMAP[background] || BMAP.grey;
-
-    return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
-};
-
-util.randomPastel = () => {
-    const min = 0x70;
-
-    let hexCode = '#';
-
-    for (let i = 0; i < 3; i++) {
-        const decimal = util.randomIntBetween(min, 0x100);
-        hexCode += decimal.toString(16);
-    }
-
-    return hexCode;
-};
-
-util.colorDiff = (hex1, hex2) => {
-    // later standardize inputs to strings
-    let diff = 0;
-
-    for (let i = 0; i < 6; i += 2) {
-        const str1 = hex1.slice(i, i + 2);
-        const color1 = util.hexStringToNumber(str1); // later implement func https://stackoverflow.com/questions/52261494/hex-to-string-string-to-hex-conversion-in-nodejs
-
-        const str2 = hex2.slice(i, i + 2);
-        const color2 = util.hexStringToNumber(str2);
-
-        diff += Math.abs(color1 - color2);
-    }
-
-    // Max value is 256 * 3 = 768
-    return diff;
-};
-
-util.NODE_TYPES = {
-    region: 'region',
-    location: 'location'  // deprecated
-};
-
-// TODO: Specify all this as a class with static member funcs, not this silly function assignment syntax.
-util.exists = (x) => {
-    return x !== undefined &&
-        x !== null &&
-        x !== '' &&
-        ! util.isNaN(x);
-};
-
-util.legit = (x) =>
-    util.exists(x) &&
-    x !== [] &&
-    x !== {};
-
-// TODO reconsider this weird function syntax throughout util.js. Maybe declare a class of functions, then assign the field props to it?
-
-util.default = function (input, defaultValue) {
-    if (input === undefined) {
-        return defaultValue;
-    } else {
-        return input;
-    }
-};
-
-util.contains = function (array, fugitive) {
-    return array.indexOf(fugitive) >= 0;
-};
-
-util.includes = util.contains;
-
-util.hasOverlap = function (arrayA, arrayB) {
-    if (! arrayA || ! arrayB) {
-        return false;
-    }
-
-    for (let i = 0; i < arrayA.length; i++) {
-        if (util.contains(arrayB, arrayA[i])) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-// Returns number
-// Default 0
-util.sum = function (array) {
-    return util.array(array).reduce(
-        (sumSoFar, element) => {
-            const n = Number(element) || 0;
-            return sumSoFar + n;
-        },
-        0
-    );
-};
-
-// Average
-// LATER could support multiple param usage: Util.mean(3, 5, 7)
-util.mean = (array) => {
-    array = util.array(array);
-    if (array.length === 0) { return 0; }
-
-    const sum = util.sum(array);
-    return sum / array.length;
-};
-
-// More robust variant of Math.min()
-util.min = (...args) => {
-    if (args.length === 1 && util.isArray(args[0])) {
-        return Math.min(...args[0]);
-    }
-
-    return Math.min(...args);
-};
-
-// More robust variant of Math.max()
-util.max = (...args) => {
-    if (args.length === 1 && util.isArray(args[0])) {
-        return Math.max(...args[0]);
-    }
-
-    return Math.max(...args);
-};
-
-util.shuffle = (array) => {
-    array.sort(
-        (a, b) => Math.random()
-    );
-
-    return array;
-};
-
-util.constrain = (n, minInclusive, maxInclusive) => {
-    if (n <= minInclusive) {
-        return minInclusive;
-    }
-    if (n >= maxInclusive) {
-        return maxInclusive;
-    }
-
-    return n;
-};
-
-util.randomIntBetween = function (minInclusive, maxExclusive) {
-    if (! util.exists(minInclusive) || ! util.exists(maxExclusive)) {
-        console.log('error: util.randomIntBetween() called with missing parameters.');
-        throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
-    }
-    else if (maxExclusive <= minInclusive) {
-        console.log('error: util.randomIntBetween() called with max <= min.');
-        throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
-    }
-
-    return Math.floor( Math.random() * (maxExclusive - minInclusive) + minInclusive );
-};
-
-// Returns value in range [0, input]
-util.randomUpTo = function (maxInclusive) {
-    return maxInclusive >= 0 ?
-        util.randomIntBetween(0, maxInclusive + 1) :
-        maxInclusive;
-};
-
-util.randomBelow = function (maxExclusive) {
-    return Math.floor(Math.random() * maxExclusive);
-};
-
-util.randomOf = function (array) {
-    return array[
-        util.randomBelow(array.length)
-    ];
-};
-util.sample = util.sampleFrom = util.randomOf; // alias
-
-util.randomFromObj = function (obj) {
-    const key = util.randomOf(Object.keys(obj));
-    return obj[key];
-};
-
-// Param: obj, whose values are also objects.
-// Side effect: writes to .name prop of child objs.
-util.randomWithName = (obj) => {
-    const name = _.sample(Object.keys(obj));
-
-    const entry = obj[name];
-    entry.name = name;
-    return entry;
-};
-
-// decimalPlaces param is optional and lodash defaults it to 0.
-util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
-    if (maxExclusive < minInclusive) {
-        const temp = minInclusive;
-        minInclusive = maxExclusive;
-        maxExclusive = temp;
-    }
-
-    const unrounded = (Math.random() * (maxExclusive - minInclusive))
-        + minInclusive;
-
-    return _.round(unrounded, decimalPlaces);
-};
-
-// Often we want to fill a bag with tokens of different kinds and draw one.
-// More likely outcomes get more tokens and are thus more likely to happen.
-// But all outcomes are possible.
-// Example bag describing St George at a disadvantage:
-// {
-//     stGeorge: 7,
-//     dragon: 12
-// }
-util.randomBagDraw = (bag) => {
-    const total = util.sum(
-        Object.values(bag)
-    );
-
-    let drawn = Math.random() * total;
-
-    let name;
-    for (name in bag) {
-        drawn -= bag[name];
-
-        if (drawn < 0) {
-            return name;
-        }
-    }
-
-    return name;
-};
-
-util.randomLetter = () => {
-    return util.randomOf(`ABCDEFGHIJKLMNOPQRSTUVWXYZ`);
-};
-
-// Returns string
-util.newId = function (idLength) {
-    // Later research the most performant way to run this.
-    // Later could remove similar characters like 1i0O, maybe 5S
-    const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-    let id = '';
-    for (let i = 0; i < (idLength || 50); i++) {
-        const index = Math.floor( 
-            Math.random() * ALPHABET.length 
-        );
-        id += ALPHABET[index];
-    }
-
-    return id;
-};
-
-// Similar to newId()
-util.uuid = () => crypto.randomUUID();
-
-// Returns string
-util.shortId = function (id) {
-    return id ?
-        `${id.slice(0, 3).toUpperCase()}` :
-        '';
-};
-
-// Input 2d array of strings or stringables
-// Output string formatted like a spreadsheet, suitable for printing
-util.toChartString = (grid) => {
-    let maxLengths = new Array(grid[0].length).fill(1);
-
-    for (let r = 0; r < grid.length; r++) {
-
-        for (let c = 0; c < grid[4].length; c++) {
-            const len = String(grid[r][c]).length;
-
-            if (maxLengths[c] < len) {
-                maxLengths[c] = len;
-            }
-        }
-    }
-
-    return grid.map(
-        row => row.map(
-            (cell, c) => String(cell).padEnd(maxLengths[c])
-        )
-        .join(' ')
-    )
-    .join('\n');
-};
-
-// grid is of type string[][]
-util.textGrid = (grid, width, height) => {
-    // These currently need to be set to the dimensions shown in the top of the terminal window.
-    util.SCREEN_WIDTH = width || 181;
-    util.SCREEN_HEIGHT = height || 46;
-
-    const colCount = grid[0].length;
-    const rightExcess = (util.SCREEN_WIDTH - 1) % colCount;
-
-    const HORIZ_WALL = '-'.repeat(util.SCREEN_WIDTH - rightExcess);
-    let lines = [HORIZ_WALL];
-
-    for (let r = 0; r < grid.length; r++) {
-        const lineSets = [];
-
-        for (let c = 0; c < grid[0].length; c++) {
-            lineSets.push(
-                util.boxAsLines(grid, r, c)
-            );
-
-            // util.logDebug(`Util.textGrid(), lineSets is ${util.stringify(lineSets)}`);
-        }
-
-        const rowLines = util.stitchBoxRow(lineSets);
-        rowLines.push(HORIZ_WALL);
-
-        lines = lines.concat(rowLines);
-    }
-
-    return lines.join('\n');
-};
-
-util.boxAsLines = (grid, row, column) => {
-    const boxHeight = Math.floor(
-        (util.SCREEN_HEIGHT - grid.length - 1) / grid.length
-    );
-
-    const topRow = grid[0];
-
-    const boxWidth = Math.floor(
-        (util.SCREEN_WIDTH - topRow.length - 1) / topRow.length
-    );
-
-    const boxLines = grid[row][column].split('\n');
-    const outLines = [];
-
-    // Util.logDebug('lines[0].length is ' + lines[0].length + ', and boxWidth is ' + boxWidth);
-
-    for (let i = 0; i < boxHeight - 1; i++) {
-        outLines.push(
-            util.padSides(boxLines[i], boxWidth)
-        );
-    }
-
-    if (boxLines[boxHeight - 1]) {
-        outLines.push(
-            util.padSides('...', boxWidth)
-        );
-    }
-
-    // util.logDebug(`Util.boxAsLines(), current box contains: ${grid[row][column]}. boxLines is ${JSON.stringify(boxLines, undefined, '    ')},\n  outLines is ${JSON.stringify(outLines, undefined, '    ')}`)
-
-    return outLines;
-};
-
-util.stitchBoxRow = (lineSets) => {
-    const WALL = '|';
-    const lines = [];
-
-    for (let r = 0; r < lineSets[0].length; r++) {
-        let line = WALL;
-
-        for (let i = 0; i < lineSets.length; i++) {
-            line += lineSets[i][r] + WALL;
-
-            // util.logDebug(`Util.stitchBoxRow(), lineSets[i][r] is ${lineSets[i][r]}`)
-        }
-
-        lines.push(line);
-    }
-
-    return lines;
-};
-
-
-// Input string[]
-// Returns string summarizing redundancies
-util.arraySummary = (a) => {
-    const dict = {};
-
-    a.forEach(
-        s => {
-            if (dict[s]) {
-                dict[s]++;
-            }
-            else {
-                dict[s] = 1;
-            }
-        }
-    );
-
-    const archetypes = Object.keys(dict)
-        .map(
-            s => `${s} x${util.abbrvNumber(dict[s])}`
-        );
-
-    return archetypes.join(', ');
-};
-
-util.repeat = function (str, n) {
-    let outStr = '';
-    for (let i = 0; i < n; i++) {
-        outStr += str;
-    }
-
-    return outStr;
-};
-
-util.formatProp = function (object, propName) {
-    const value = object[propName];
-    if (! util.legit(value)) {
-        return '';
-    }
-
-    // Later handle special and modification objects better.
-    return `${ propName }: ${ util.formatExpression(value) }`;
-};
-
-util.formatExpression = function (input) {
-    const type = typeof input;
-    if (util.isArray(input)) {
-        return input.map(
-            x => util.formatExpression(x)
-        )
-        .join(', ');
-    }
-    if (type === 'object') {
-        return util.formatObj(input);
-    }
-
-    return input;
-}
-
-util.formatObj = function (obj) {
-    // if (typeof obj !== 'object') {
-    //     return obj;
-    // }
-
-    const pairs = Object.keys(obj)
-        .map(
-            key => `${key}: ${obj[key]}`
-        )
-        .join(', ');
-    return `{${pairs}}`;
-}
-
-util.containsVowels = (s) => {
-    const chars = s.toUpperCase()
-        .split('');
-
-    for (let char of chars) {
-        if (util.contains('AEIOUY', char)) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-util.capitalized = (s) => {
-    if (! util.exists(s)) {
-        return '';
-    }
-    else if (s.length === 1) {
-        return s.toUpperCase();
-    }
-    // Controversially, interpret no-vowel strings as acronyms
-    else if (! util.containsVowels(s)) {
-        return s.toUpperCase();
-    }
-
-    return s[0].toUpperCase() +
-        s.slice(1);
-        // s.slice(1).toLowerCase();
-};
-
-util.uncapitalized = (s) => {
-    if (! util.exists(s)) {
-        return '';
-    }
-    else if (s.length === 1) {
-        return s.toLowerCase();
-    }
-
-    return s[0].toLowerCase() +
-        s.slice(1);
-};
-
-util.capitalizedAllWords = (s) => {
-    if (! util.exists(s)) {
-        return '';
-    }
-
-    const words = s.split(' ');
-
-    return words.map(
-        w => util.capitalized(w)
-    ).join(' ');
-};
-
-util.toCamelCase = (s) => {
-    if (! util.exists(s)) {
-        return '';
-    }
-
-    const words = s.split(/\s/);
-    const tail = words.slice(1)
-        .map(sub => util.capitalized(sub))
-        .join('');
-
-    return words[0].toLowerCase() +
-        tail;
-};
-
-// input: 'dolphinWithWings'
-// returns: 'Dolphin With Wings'
-util.fromCamelCase = (s) => {
-    if (! util.exists(s)) {
-        return '';
-    }
-    else if (s.length === 1) {
-        return s.toUpperCase();
-    }
-
-    const wordStarts = [0];
-    const words = [];
-
-    for (let i = 1; i < s.length; i++) {
-        // util.logDebug(`fromCamelCase(), s is ${s}, i is ${i}, s[i] is ${s[i]}`)
-
-        if (util.isCapitalized(s[i])) {
-            if (util.isCapitalized(s[i-1])) {
-                // Detect acronym words and leave them uppercase.
-                // eg: openHTMLFile
-                const followedByLowercase = (i < s.length - 1) &&
-                    ! util.isCapitalized(s[i+1]);
-                if (! followedByLowercase) {
-                    continue;
-                }
-            }
-
-            wordStarts.push(i);
-
-            const firstLetter = wordStarts[wordStarts.length - 2];
-            const word = s.slice(firstLetter, i);
-            words.push(word);
-        }
-
-        // Also want to consider a digit after a nondigit, or vice versa, to be a word start.
-        else if (util.alphanumericTransition(s, i)) {
-            wordStarts.push(i);
-
-            const firstLetter = wordStarts[wordStarts.length - 2];
-            const word = s.slice(firstLetter, i);
-            words.push(word);
-        }
-    }
-
-    const lastCapital = wordStarts[wordStarts.length - 1];
-    const lastWord = s.slice(lastCapital);
-    words.push(lastWord);
-
-    return words.map(
-        // Do not change acronyms
-        w => util.isAllCaps(w) ?
-            w :
-            util.capitalized(w)
-    )
-    .join(' ');
-};
-
-// center-aligns string in spaces, to a specified total length.
-// ('foo', 7) => '  foo  '
-util.padSides = (string, length) => {
-    // Later could detect if 'string' is a nonstring and convert it.
-    string = string || '';
-    length = Math.floor(length);
-
-    const leftover = length - string.length;
-
-    if (leftover <= 0) {
-        return string.slice(0, length);
-    }
-
-    const padAmount = leftover / 2;
-    const left = ' '.repeat(
-        Math.floor(padAmount)
-    );
-
-    const right = ' '.repeat(
-        Math.ceil(padAmount)
-    );
-    
-    // return left + string + right;
-    return (left + string).padEnd(length);
-}
-
-util.testPadSides = () => {
-    for (let l = 1; l < 10; l++) {
-
-        for (let sl = 0; sl < 3; sl++) {
-            const input = ' 👁 e'.repeat(sl);
-            const output = util.padSides(input, l);
-
-            const summary = `padSides(${input}, ${l}) => \n'${output}'`;
-            console.log(summary);
-
-            if (output.length !== l) {
-                throw new Error(summary);
-            }
-        }
-    }
-};
-
-util.alphanumericTransition = (string, i2) => {
-    const digitStart = util.isNumeric(
-        string[i2 - 1]
-    );
-
-    const digitEnd = util.isNumeric(
-        string[i2]
-    );
-
-    return digitStart && ! digitEnd ||
-        ! digitStart && digitEnd;
-};
-
-util.testCamelCase = () => {
-    const tests = [
-        ['Hector Breaker Of Horses', 'hectorBreakerOfHorses'],
-        ['Cellar Door', 'cellarDoor'],
-        ['C Deck', 'cDeck'],
-        ['Awakening', 'awakening']
-    ];
-
-    tests.forEach(t => {
-        const camelized = util.toCamelCase(t[0]);
-        const uncamelized = util.fromCamelCase(t[1]);
-
-        if (camelized !== t[1]) {
-            throw new Error(camelized);
-        }
-        if (uncamelized !== t[0]) {
-            throw new Error(uncamelized);
-        }
-    });
-};
-
-// True when input is a number or a string containing digits.
-util.isNumeric = (x) => /[0-9]/.test(x);
-
-// Note that typeof NaN is also 'number',
-// but it is still despicable.
-util.isNumber = function (x) {
-    return typeof x === 'number' &&
-        ! util.isNaN(x);
-};
-
-util.isString = function (x) {
-    return typeof x === 'string';
-};
-
-util.isNaN = function (x) {
-    return Number.isNaN(x);
-};
-
-util.isObject = function (x) {
-    return typeof x === 'object' &&
-        x !== null;
-};
-
-util.isFunction = function (x) {
-    return typeof x === 'function';
-};
-
-util.isArray = function (x) {
-    // Later make this more sophisticated, or use a library.
-    return x &&
-        typeof x.length === 'number' &&
-        ! util.isString(x) &&
-        x.length >= 0 &&
-        (x.length === 0 || x[0] !== undefined);
-};
-
-util.array = (x) => {
-    return util.isArray(x) ? x : [x];
-};
-
-util.unique = (array) => {
-    return Array.from(new Set(array));
-};
-
-util.union = (a1, a2) => {
-    return util.unique(
-        (a1 || []).concat(a2 || [])
-    );
-};
-
-// Returns a shallow copy of a array.
-util.arrayCopy = (a) => {
-    return a.map(x => x);
-};
-
-util.clone = (obj) => _.cloneDeep(obj);
-
-util.round = (n) => _.round(n);
-
-util.commaNumber = (n) =>
-    commaNumber(n);
-
-util.abbrvNumber = (n) => {
-    let output = '';
-    const pos = Math.abs(n);
-
-    if (pos < 1000) {
-        output = pos.toString();
-    }
-    else if (pos < 1e6) {
-        output = _.round(pos / 1000)
-            .toFixed(0)
-            + 'k';
-    }
-    else if (pos < 1e9) {
-        output = _.round(pos / 1e6)
-            .toFixed(0)
-            + 'mn';
-    }
-    else {
-        output = _.round(pos / 1e9)
-            .toFixed(0)
-            + 'bn';
-    }
-
-    return n >= 0 ?
-        output :
-        `-${output}`;
-};
-
-// Returns string
-util.prettyDistance = (meters) => {
-    meters = Math.abs(meters);
-
-    const AU = 149597870700;
-    const LIGHT_YEAR = 9460730472580800;
-
-    if (meters < 3) {
-        const rounded = _.round(meters, 2);
-
-        return `${rounded} m`;
-    }
-    else if (meters < 1000) {
-        const rounded = _.round(meters);
-
-        return `${rounded} m`;
-    }
-    else if (meters < 3000) {
-        const klicks = _.round(meters / 1000, 1);
-
-        return `${klicks} km`;
-    }
-    else if (meters < AU * 0.1) {
-        const klicks = util.commaNumber(
-            _.round(meters / 1000)
-        );
-
-        return `${klicks} km`;
-    }
-    else if (meters < AU * 3) {
-        const au = _.round(meters / AU, 1)
-            .toFixed(1);
-
-        return `${au} AU`;
-    }
-    else if (meters < LIGHT_YEAR * 0.1) {
-        const au = util.commaNumber(
-            _.round(meters / AU)
-        );
-
-        return `${au} AU`;
-    } else if (meters < LIGHT_YEAR * 3) {
-        const ly = _.round(meters / LIGHT_YEAR, 1);
-
-        return `${ly} lightyears`;
-    }
-    else {
-        const ly = util.commaNumber(
-            _.round(meters / LIGHT_YEAR)
-        );
-
-        return `${ly} lightyears`;
-    }
-};
-
-util.testPrettyDistance = () => {
-    for (let n = 0.197842357; n < 94607304725808000000; n = 2 * n) {
-        console.log(util.prettyDistance(n));
-    }
-};
-
-util.prettyMeters = (meters) => {
-    return `${util.commaNumber(meters)}m`;
-};
-
-util.prettyTime = (seconds) => {
-    if (seconds < 59.5) {
-        const rounded = _.round(seconds);
-        return `${rounded} seconds`;
-    }
-    else if (seconds < 90) {
-        return `1 minute`;
-    }
-    // 3570 seconds is 59.5 minutes
-    else if (seconds < 3570) {
-        const minutes = _.round(seconds / 60);
-        return `${minutes} minutes`;
-    }
-    // 5400 seconds is 1.5 hours
-    else if (seconds < 5400) {
-        return `1 hour`;
-    }
-    // 84600 seconds is 23.5 hours
-    else if (seconds < 84600) {
-        const hours = _.round(seconds / 3600, 1);
-        return `${hours} hours`;
-    }
-    // 31556736 seconds is roughly 1 year
-    else if (seconds < 31556736) {
-        const days = _.round(seconds / 86400, 1);
-        return `${days} days`;
-    }
-    else {
-        const years = _.round(seconds / 31556736, 1);
-        return `${years} years`;
-    }
-};
-
-util.asBar = (n) => {
-    let bar = '';
-
-    for (let i = 0; i < n; i++) {
-        bar = bar + '█';
-    }
-
-    return bar;
-};
-
-// Returns the input number rounded up or down to 1 sigfig.
-util.sigfigRound = (n, sigfigs) => {
-    sigfigs = sigfigs || 1;
-
-    const log = Math.log10(Math.abs(n));
-
-    return _.round(
-        n,
-        sigfigs - (1 + Math.floor(log))
-    );
-};
-
-util.testSigfigRound = () => {
-    for (let f = 1; f < 3; f++) {
-        for (let n = 1; n < 1000000; n++) {
-            const output = util.sigfigRound(n, f);
-            const figs = util.sigfigsOf(output);
-
-            if (figs > f) {
-                const originalFigs = util.sigfigsOf(n);
-                if (originalFigs < f) {
-                    continue;
-                }
-
-                // Note that this test does not check whether it gets rid of TOO MANY sigfigs. In the case of (1950, 2) this seems hard to test for. It is correct to oversimplify to 2000, which has only 1 sigfig.
-
-                util.logError(`In testSigfigRound(), sigfigRound(${n}, ${f}) === ${output}. This has ${figs} sigfigs, but it should have ${f}.`);
-                return false;
-            }
-        }
-    }
-
-    return true;
-};
-
-util.sigfigsOf = (n) => {
-    if (! util.isNumber(n)) {
-        n = parseFloat(n);
-    }
-
-    const s = n.toString();
-    const parts = s.split('.');
-
-    // Post decimal
-    if (parts[1]) {
-        if (parts[0] === '0') {
-            // eg 0.0705 => 3
-            const zeroes = util.charCountAtStart(parts[1], '0');
-            return parts[1].length - zeroes;
-        }
-        else {
-            // eg 400.01 => 5
-            return parts[0].length + parts[1].length;
-        }
-    }
-    else {
-        // eg 108000 => 3
-        const zeroes = util.charCountAtEnd(s, '0');
-        return s.length - zeroes;
-    }
-};
-
-// Call like 'await Util.sleep(6);'
-util.sleep = (seconds) => {
-    if (! util.exists(seconds)) {
-        seconds = 1;
-    }
-
-    return new Promise(
-        funcWhenResolved => setTimeout(funcWhenResolved, seconds * 1000)
-    );
-}
-
-// eg ('00705', '0') => 2
-util.charCountAtStart = (str, char) => {
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] !== char) {
-            return i;
-        }
-    }
-
-    return str.length;
-};
-
-// eg ('108000', '0') => 3
-util.charCountAtEnd = (str, char) => {
-    for (let i = str.length - 1; i >= 0; i--) {
-        if (str[i] !== char) {
-            return (str.length - 1) - i;
-        }
-    }
-
-    return str.length;
-};
-
-util.isCapitalized = (s) => {
-    // TODO: /[A-Z]/ is more like 'contains capitals'.
-    return /[A-Z]/.test(s);
-};
-
-util.isAllCaps = (s) => {
-    // TODO implement this.
-    return false;
-};
-
-util.stringify = function (x) {
-    return JSON.stringify(
-        x,
-        undefined,
-        '    '
-    );
-};
-
-// TODO util.yaml(x)
-
-util.log = function (input, tag) {
-    // Later: Use chalk functions instead.
-    // const TAG_COLORS = {
-    //     error: 'red',
-    //     warn: 'yellow',
-    //     beacon: 'purple',
-    //     event: 'blue',
-    //     noisy: 'cyan',
-    //     debug: 'green'
-    // };
-
-    tag = tag || 'event';
-    const tagStr = tag.toUpperCase();
-    // const tagColor = TAG_COLORS[tag.toLowerCase()] || TAG_COLORS['event'];
-    // const tagStr = tagColor ?
-    //     util.colored(tag.toUpperCase(), tagColor) :
-    //     tag;
-
-    const dateTime = moment().format('YYYY MMM D hh:mm:ss.S');
-
-    const info = util.isString(input) ?
-        input :
-        util.stringify(input);
-
-    // Later: Red error and beacon text
-    console.log(`  ${tagStr} (${ dateTime }) \n${ info }\n`);
-};
-
-util.logDebug = function (input) {
-    util.log(input, 'debug');
-};
-
-util.logWarn = function (input) {
-    util.log(input, 'warn');
-};
-
-util.logError = function (input) {
-    util.log(input, 'error');
-};
-
-util.makeEnum = (vals) => {
-    const dict = {};
-    for (let val of vals) {
-        dict[util.capitalized(val)] = util.uncapitalized(val);
-    }
-
-    return dict;
-};
-
-util.withProp = (array, key) => {
-    return array.filter(x => x[key]);
-};
-
-util.toJson = (x) => {
-    return x && util.isFunction(x.toJson) ?
-        x.toJson() :
-        x;
-}
-
-// Useful for dicts of objects like wGenerator.aliasTables
-util.dictToJson = (dict) => {
-    const serialized = {};
-
-    Object.keys(dict)
-        .forEach(
-            key => {
-                const value = dict[key];
-
-                serialized[key] = (value && value.toJson) ?
-                    value.toJson() :
-                    value;
-            }
-        );
-
-    return serialized;
-};
-
-util.valuesAsIDs = (obj) => {
-    const converted = {};
-
-    for (let key in obj) {
-        const val = obj[key];
-
-        converted[key] = val?.id || val;
-    }
-
-    return converted;
-};
-
-util.certainKeysOf = (obj, keyArray) => {
-    const output = {};
-
-    for (let key of keyArray) {
-        output[key] = obj[key];
-    }
-
-    return output;
-};
-
-// Myers-Briggs Type Indicator (personality category)
-util.mbti = () => {
-    return [
-        util.randomOf(['I', 'E']),
-        util.randomOf(['S', 'N']),
-        util.randomOf(['T', 'F']),
-        util.randomOf(['P', 'J'])
-    ]
-    .join('');
-};
-
-util.testAll = () => {
-    util.testPrettyDistance();
-    util.testCamelCase();
-    util.testPadSides();
-    util.testSigfigRound();
-    util.logDebug(`Done with unit tests for Util module :)`);
-};
-
-// util.testAll();
-
-},{"comma-number":1,"lodash":2,"moment":3}]},{},[4,5,6,7,8,9]);
+},{"comma-number":1,"lodash":32,"moment":33}]},{},[35,36,37,38,39,40,41,42,43]);
