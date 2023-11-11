@@ -774,8 +774,8 @@ class Util {
         return _.cloneDeep(obj);
     }
 
-    static round (n) {
-        return _.round(n);
+    static round (n, precision) {
+        return _.round(n, precision);
     }
 
     static commaNumber (n) {
