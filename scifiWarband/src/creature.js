@@ -226,6 +226,8 @@ class Creature {
 
         const harmedTrait = Util.randomOf(['speed', 'accuracy', 'durability']);
 
+        /* LATER support tough, unshielded, slow creatures. Perhaps omit low traits (eg speed) from harmedTrait random array above if it's zero (or if harm > speed()).*/
+
         if (this.status[harmedTrait]) {
             this.status[harmedTrait] -= Math.floor(harm);
         }

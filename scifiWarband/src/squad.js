@@ -281,11 +281,11 @@ class Squad {
         const examples = {
             Marine: {
                 template: Templates.Halo.UNSC.Squad.Marine,
-                team: Squad.TEAM.Player, // LATER use template faction names for .team, instead of Player/Enemy
+                // team: Squad.TEAM.Player, // LATER use template faction names for .team, instead of Player/Enemy
             },
             Grunt: {
                 template: Templates.Halo.Covenant.Squad.Grunt,
-                team: Squad.TEAM.Enemy,
+                // team: Squad.TEAM.Enemy,
             },
         };
 
@@ -298,6 +298,14 @@ class Squad {
         );
 
         return sq;
+    }
+
+    static randomOfFaction (factionKey, coord) {
+        return new Squad(
+            Templates.randomSquad(factionKey),
+            undefined,
+            coord || Coord.random2d(9),
+        );
     }
 }
 

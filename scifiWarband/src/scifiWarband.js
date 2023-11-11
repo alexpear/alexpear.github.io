@@ -680,6 +680,7 @@ class ScifiWarband {
                 '';
 
             Util.log(`t=${Event.t}: ${squad.terse()} attack ${targetTerse}: ${hitCount} hits, ${koCount} KOs${eliminationMessage}`);
+            // LATER i want the logs here or at round start to express exactly how a straggler is injured.
 
             this.tidyKOs(action.target, koCount);
             return;
@@ -1045,11 +1046,20 @@ class ScifiWarband {
     }
 
     exampleSquads () {
+        const factionA = Templates.randomFaction();
+        const factionB = Templates.randomFaction();
+
         const allSquads = [];
 
         for (let i = 0; i < 2; i++) {
-            allSquads.push(Squad.example('Marine'));
-            allSquads.push(Squad.example('Grunt'));
+            allSquads.push(Squad.randomOfFaction(
+                factionA,
+                new Coord(i, 0)
+            ));
+            allSquads.push(Squad.randomOfFaction(
+                factionB,
+                new Coord(i, ScifiWarband.WINDOW_SQUARES - 1)
+            ));
         }
 
         return allSquads;
