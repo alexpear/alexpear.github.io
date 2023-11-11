@@ -537,5 +537,5 @@ const translateConfig = () => {
 };
 
 // logConvertedCSVs();
-tidyConfig();
+// tidyConfig();
 translateConfig();

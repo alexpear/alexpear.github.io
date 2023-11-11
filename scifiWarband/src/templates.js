@@ -12,9 +12,13 @@ class Templates {
         const Config = yaml.load(ConfigString, { json: true });
 
         for (let topKey in Config) {
+            // eg topKey === 'Halo'
             Templates[topKey] = Config[topKey];
         }
 
+        const entryNotes = [];
+
+        // Populate some values in-memory that would be too repetitive to store in the .yml file.
         for (let universe of Templates.universes()) {
             for (let faction in universe) {
                 // Util.logDebug(`Templates.init(), faction=${faction}`);
@@ -33,6 +37,12 @@ class Templates {
 
                         // Util.logDebug(`Templates.init() loop, faction=${faction} entryName=${entryName}`)
 
+                        entryNotes.push({
+                            entryObj,
+                            section,
+                            missingInfo: Templates.missingFields(entryObj, section),
+                        });
+
                         if (section === 'Creature') {
                             Templates.setupCreature(entryObj);
                         }
@@ -48,11 +58,16 @@ class Templates {
                 }
             }
         }
+
+        // Util.logDebug(entryNotes);
+
+        Templates.logDiagnostics(entryNotes);
     }
 
     static setupAnything (obj, pathArray) {
         // Util.logDebug(`Templates.setupAnything(obj=${Util.stringify(obj)}, pathArray=${pathArray})`)
 
+        // LATER if pathArray[3] is camelCase (ie contains [a-z][A-Z]), add spaces back into the name using replaceAll(regex, ' ')
         obj.name = obj.name || pathArray[pathArray.length - 1];
         obj.faction = obj.faction || pathArray[1];
 
@@ -66,6 +81,7 @@ class Templates {
                 obj.items[i] = Templates.translateDotPath(pathArray, obj.items[i]);
             }
         }
+
     }
 
     static translateDotPath (pathArray, dotPath) {
@@ -146,17 +162,152 @@ class Templates {
                 // Util.logDebug(`Templates.allEntries(${type || ''}), factionKey=${factionKey}`);
 
                 if (type) {
-                    entries = entries.concat(Object.values(faction[type]));
+                    entries = entries.concat(Object.values(faction[type] || {}));
                 }
                 else {
-                    entries = entries.concat(Object.values(faction.Item));
-                    entries = entries.concat(Object.values(faction.Creature));
-                    entries = entries.concat(Object.values(faction.Squad));
+                    entries = entries.concat(Object.values(faction.Item || {}));
+                    entries = entries.concat(Object.values(faction.Creature || {}));
+                    entries = entries.concat(Object.values(faction.Squad || {}));
                 }
             }
         }
 
         return entries;
+    }
+
+    static randomFaction () {
+        return Util.randomOf([
+            'Covenant',
+            'Flood',
+            'Forerunner',
+            'UNSC',
+        ]);
+    }
+
+    static randomSquad (factionKey) {
+        const keys = Object.keys(Templates.Halo[factionKey].Squad);
+
+        return Templates.Halo[factionKey].Squad[
+            Util.randomOf(keys)
+        ];
+    }
+
+    static missingFields (entry, type) {
+        const FIELDS = {
+            Item: {
+                core: ['damage', 'rof'],
+                extra: ['accuracy', 'aoe', 'classic', 'color', 'cost', 'name', 'preferredRange', 'tags', 'type'],
+            },
+            Creature: {
+                core: ['accuracy', 'durability', 'items', 'size', 'speed'],
+                extra: ['classic', 'scale'] // 'source',
+            },
+            Squad: {
+                core: ['creature', 'image'],
+                extra: ['quantity']
+            }
+        };
+
+        if (! type) { throw new Error(Util.stringify(entry)); }
+
+        const fieldNames = FIELDS[type];
+        const missing = { core: [], extra: [], incompleteness: 0, };
+
+        for (let coreKey of fieldNames.core) {
+            const blankItems = coreKey === 'items' && ! entry.items?.length;
+            // if (coreKey === 'items') {
+            //     throw new Error(Util.stringify(entry));
+            // }
+
+            if (! Util.legit(entry[coreKey]) || blankItems) {
+                missing.core.push(coreKey);
+                missing.incompleteness += 10;
+            }
+        }
+
+        for (let extraKey of fieldNames.extra) {
+            if (! Util.legit(entry[extraKey])) {
+                missing.extra.push(extraKey);
+                missing.incompleteness += 1;
+            }
+        }
+
+        return missing;
+    }
+
+    static logDiagnostics (entryNotes) {
+        const extensions = {
+            banshee: 'jpeg',
+            brute: 'jpg',
+            bruteChieftain: 'png',
+            bruteProwler: 'jpg',
+            ccsLightCruiser: 'png',
+            chopper: 'jpg',
+            combatForm: 'png',
+            corvette: 'png',
+            crawler: 'png',
+            cryptum: 'png',
+            didact: 'png',
+            drone: 'png',
+            elite: 'jpg',
+            enforcer: 'png',
+            falcon: 'png',
+            floodCarrier: 'png',
+            floodTank: 'png',
+            frigate: 'png',
+            ghost: 'jpg',
+            goldElite: 'jpg',
+            grunt: 'png',
+            harvester: 'jpg',
+            highCharity: 'jpg',
+            hornet: 'png',
+            hunter: 'png',
+            infinity: 'jpeg',
+            jackal: 'png',
+            keyship: 'png',
+            knight: 'jpg',
+            kraken: 'jpg',
+            lich: 'png',
+            mammoth: 'png',
+            mantis: 'png',
+            marathonCruiser: 'png',
+            marine: 'png',
+            missileSilo: 'jpg',
+            mongoose: 'gif',
+            odst: 'jpg',
+            officer: 'jpg',
+            pelican: 'png',
+            phantom: 'png',
+            pod: 'jpg',
+            rifleJackal: 'png',
+            sand: 'jpg',
+            scarab: 'png',
+            scorpion: 'png',
+            sentinel: 'jpg',
+            shade: 'png',
+            sniperJackal: 'png',
+            spartan: 'png',
+            spire: 'jpg',
+            transportWarthog: 'png',
+            warthog: 'jpg',
+            wasp: 'png',
+            wraith: 'png'
+        };
+
+        entryNotes.sort(
+            (a, b) => b.missingInfo.incompleteness - a.missingInfo.incompleteness
+        );
+
+        for (let notes of entryNotes) {
+            const camelName = Util.toCamelCase(notes.entryObj.name);
+
+            if (! notes.entryObj.image && extensions[camelName]) {
+                console.log(`--> ${notes.entryObj.name} could use image: ${camelName}.${extensions[camelName]}`);
+            }
+
+            if (notes.missingInfo.incompleteness === 0) { continue; }
+            console.log(`${notes.entryObj.name} (${notes.missingInfo.incompleteness}) is missing fields: ${notes.missingInfo.core.join(', ')} ... ${notes.missingInfo.extra.join(', ')}.`);
+        }
     }
 
     static test () {
