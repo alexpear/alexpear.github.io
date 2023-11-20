@@ -1,0 +1,32 @@
+body {
+  padding: 5px;
+  text-align: justify;
+  font-family: serif;
+  font-size: 20pt;
+  line-height: 1.4;
+  background: #000000;
+  color: white;
+}
+
+#main {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  max-width: 35em;
+}
+
+label {
+  font-size: 48;
+  text-align: center;
+  color: white;
+}
+
+a {
+  font-size: 20pt;
+  color: rosybrown;
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  font-family: serif;
+  cursor: pointer;
+}
