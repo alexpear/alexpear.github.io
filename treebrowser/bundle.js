@@ -8595,7 +8595,7 @@ module.exports.bindWith = bindWith
 
 },{}],45:[function(require,module,exports){
 /**! 
- * hotkeys-js v3.10.2 
+ * hotkeys-js v3.10.4 
  * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies. 
  * 
  * Copyright (c) 2023 kenny wong <wowohoo@qq.com> 
@@ -9060,7 +9060,7 @@ function dispatch(event, element) {
 
   for (var _i = 0; _i < _handlers[key].length; _i++) {
     if (event.type === 'keydown' && _handlers[key][_i].keydown || event.type === 'keyup' && _handlers[key][_i].keyup) {
-      if (_handlers[key][_i].key) {
+      if (_handlers[key][_i].key && _handlers[key][_i].scope === scope) {
         var record = _handlers[key][_i];
         var splitKey = record.splitKey;
         var keyShortcut = record.key.split(splitKey);
@@ -9219,8 +9219,8 @@ if (typeof window !== 'undefined') {
 module.exports = hotkeys;
 
 },{}],46:[function(require,module,exports){
-/*! hotkeys-js v3.10.2 | MIT © 2023 kenny wong <wowohoo@qq.com> http://jaywcjlove.github.io/hotkeys */
-"use strict";var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,n,t,o){e.addEventListener?e.addEventListener(n,t,o):e.attachEvent&&e.attachEvent("on".concat(n),function(){t(window.event)})}function getMods(e,n){for(var t=n.slice(0,n.length-1),o=0;o<t.length;o++)t[o]=e[t[o].toLowerCase()];return t}function getKeys(e){for(var n=(e=(e="string"!=typeof e?"":e).replace(/\s/g,"")).split(","),t=n.lastIndexOf("");0<=t;)n[t-1]+=",",n.splice(t,1),t=n.lastIndexOf("");return n}function compareArray(e,n){for(var t=e.length<n.length?n:e,o=e.length<n.length?e:n,r=!0,i=0;i<t.length;i++)~o.indexOf(t[i])||(r=!1);return r}for(var _keyMap={backspace:8,"\u232b":8,tab:9,clear:12,enter:13,"\u21a9":13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,num_0:96,num_1:97,num_2:98,num_3:99,num_4:100,num_5:101,num_6:102,num_7:103,num_8:104,num_9:105,num_multiply:106,num_add:107,num_enter:108,num_subtract:109,num_decimal:110,num_divide:111,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":91,cmd:91,command:91},modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey",91:"metaKey",shiftKey:16,ctrlKey:17,altKey:18,metaKey:91},_mods={16:!1,18:!1,17:!1,91:!1},_handlers={},k=1;k<20;k++)_keyMap["f".concat(k)]=111+k;var _downKeys=[],winListendFocus=!1,_scope="all",elementHasBindEvent=[],code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)},getKey=function(n){return Object.keys(_keyMap).find(function(e){return _keyMap[e]===n})},getModifier=function(n){return Object.keys(_modifier).find(function(e){return _modifier[e]===n})};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function getPressedKeyString(){return _downKeys.map(function(e){return getKey(e)||getModifier(e)||String.fromCharCode(e)})}function filter(e){var e=e.target||e.srcElement,n=e.tagName;return!e.isContentEditable&&("INPUT"!==n&&"TEXTAREA"!==n&&"SELECT"!==n||e.readOnly)?!0:!1}function isPressed(e){return"string"==typeof e&&(e=code(e)),!!~_downKeys.indexOf(e)}function deleteScope(e,n){var t,o,r;for(r in e=e||getScope(),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,r))for(t=_handlers[r],o=0;o<t.length;)t[o].scope===e?t.splice(o,1):o++;getScope()===e&&setScope(n||"all")}function clearModifier(e){var n=e.keyCode||e.which||e.charCode,t=_downKeys.indexOf(n);if(t<0||_downKeys.splice(t,1),e.key&&"meta"==e.key.toLowerCase()&&_downKeys.splice(0,_downKeys.length),(n=93!==n&&224!==n?n:91)in _mods)for(var o in _mods[n]=!1,_modifier)_modifier[o]===n&&(hotkeys[o]=!1)}function unbind(e){if(void 0===e)Object.keys(_handlers).forEach(function(e){return delete _handlers[e]});else if(Array.isArray(e))e.forEach(function(e){e.key&&eachUnbind(e)});else if("object"==typeof e)e.key&&eachUnbind(e);else if("string"==typeof e){for(var n=arguments.length,t=Array(1<n?n-1:0),o=1;o<n;o++)t[o-1]=arguments[o];var r=t[0],i=t[1];"function"==typeof r&&(i=r,r=""),eachUnbind({key:e,scope:r,method:i,splitKey:"+"})}}var eachUnbind=function(e){var r=e.scope,i=e.method,n=e.splitKey,s=void 0===n?"+":n;getKeys(e.key).forEach(function(e){var n,e=e.split(s),t=e.length,o=e[t-1],o="*"===o?"*":code(o);_handlers[o]&&(r=r||getScope(),n=1<t?getMods(_modifier,e):[],_handlers[o]=_handlers[o].filter(function(e){return!((!i||e.method===i)&&e.scope===r&&compareArray(e.mods,n))}))})};function eventHandler(e,n,t,o){var r;if(n.element===o&&(n.scope===t||"all"===n.scope)){for(var i in r=0<n.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,i)&&(!_mods[i]&&~n.mods.indexOf(+i)||_mods[i]&&!~n.mods.indexOf(+i))&&(r=!1);(0!==n.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!r&&"*"!==n.shortcut||!1===n.method(e,n)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(t,e){var n=_handlers["*"],o=t.keyCode||t.which||t.charCode;if(hotkeys.filter.call(this,t)){if(~_downKeys.indexOf(o=93!==o&&224!==o?o:91)||229===o||_downKeys.push(o),["ctrlKey","altKey","shiftKey","metaKey"].forEach(function(e){var n=modifierMap[e];t[e]&&!~_downKeys.indexOf(n)?_downKeys.push(n):!t[e]&&~_downKeys.indexOf(n)?_downKeys.splice(_downKeys.indexOf(n),1):"metaKey"!==e||!t[e]||3!==_downKeys.length||t.ctrlKey||t.shiftKey||t.altKey||(_downKeys=_downKeys.slice(_downKeys.indexOf(n)))}),o in _mods){for(var r in _mods[o]=!0,_modifier)_modifier[r]===o&&(hotkeys[r]=!0);if(!n)return}for(var i in _mods)Object.prototype.hasOwnProperty.call(_mods,i)&&(_mods[i]=t[modifierMap[i]]);t.getModifierState&&(!t.altKey||t.ctrlKey)&&t.getModifierState("AltGraph")&&(~_downKeys.indexOf(17)||_downKeys.push(17),~_downKeys.indexOf(18)||_downKeys.push(18),_mods[17]=!0,_mods[18]=!0);var s=getScope();if(n)for(var d=0;d<n.length;d++)n[d].scope===s&&("keydown"===t.type&&n[d].keydown||"keyup"===t.type&&n[d].keyup)&&eventHandler(t,n[d],s,e);if(o in _handlers)for(var a=0;a<_handlers[o].length;a++)if(("keydown"===t.type&&_handlers[o][a].keydown||"keyup"===t.type&&_handlers[o][a].keyup)&&_handlers[o][a].key){for(var c=_handlers[o][a],f=c.key.split(c.splitKey),l=[],y=0;y<f.length;y++)l.push(code(f[y]));l.sort().join("")===_downKeys.sort().join("")&&eventHandler(t,c,s,e)}}}function isElementBind(e){return!!~elementHasBindEvent.indexOf(e)}function hotkeys(e,n,t){_downKeys=[];var o=getKeys(e),r=[],i="all",s=document,d=0,a=!1,c=!0,f="+",l=!1;for(void 0===t&&"function"==typeof n&&(t=n),"[object Object]"===Object.prototype.toString.call(n)&&(n.scope&&(i=n.scope),n.element&&(s=n.element),n.keyup&&(a=n.keyup),void 0!==n.keydown&&(c=n.keydown),void 0!==n.capture&&(l=n.capture),"string"==typeof n.splitKey&&(f=n.splitKey)),"string"==typeof n&&(i=n);d<o.length;d++)r=[],1<(e=o[d].split(f)).length&&(r=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({keyup:a,keydown:c,scope:i,mods:r,shortcut:o[d],method:t,key:o[d],splitKey:f,element:s});void 0!==s&&!isElementBind(s)&&window&&(elementHasBindEvent.push(s),addEvent(s,"keydown",function(e){dispatch(e,s)},l),winListendFocus||(winListendFocus=!0,addEvent(window,"focus",function(){_downKeys=[]},l)),addEvent(s,"keyup",function(e){dispatch(e,s),clearModifier(e)},l))}function trigger(n){var t=1<arguments.length&&void 0!==arguments[1]?arguments[1]:"all";Object.keys(_handlers).forEach(function(e){_handlers[e].filter(function(e){return e.scope===t&&e.shortcut===n}).forEach(function(e){e&&e.method&&e.method()})})}var a,_hotkeys,_api={getPressedKeyString:getPressedKeyString,setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,trigger:trigger,unbind:unbind,keyMap:_keyMap,modifier:_modifier,modifierMap:modifierMap};for(a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);"undefined"!=typeof window&&(_hotkeys=window.hotkeys,hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys),module.exports=hotkeys;
+/*! hotkeys-js v3.10.4 | MIT © 2023 kenny wong <wowohoo@qq.com> http://jaywcjlove.github.io/hotkeys */
+"use strict";var isff="undefined"!=typeof navigator&&0<navigator.userAgent.toLowerCase().indexOf("firefox");function addEvent(e,n,t,o){e.addEventListener?e.addEventListener(n,t,o):e.attachEvent&&e.attachEvent("on".concat(n),function(){t(window.event)})}function getMods(e,n){for(var t=n.slice(0,n.length-1),o=0;o<t.length;o++)t[o]=e[t[o].toLowerCase()];return t}function getKeys(e){for(var n=(e=(e="string"!=typeof e?"":e).replace(/\s/g,"")).split(","),t=n.lastIndexOf("");0<=t;)n[t-1]+=",",n.splice(t,1),t=n.lastIndexOf("");return n}function compareArray(e,n){for(var t=e.length<n.length?n:e,o=e.length<n.length?e:n,r=!0,i=0;i<t.length;i++)~o.indexOf(t[i])||(r=!1);return r}for(var _keyMap={backspace:8,"\u232b":8,tab:9,clear:12,enter:13,"\u21a9":13,return:13,esc:27,escape:27,space:32,left:37,up:38,right:39,down:40,del:46,delete:46,ins:45,insert:45,home:36,end:35,pageup:33,pagedown:34,capslock:20,num_0:96,num_1:97,num_2:98,num_3:99,num_4:100,num_5:101,num_6:102,num_7:103,num_8:104,num_9:105,num_multiply:106,num_add:107,num_enter:108,num_subtract:109,num_decimal:110,num_divide:111,"\u21ea":20,",":188,".":190,"/":191,"`":192,"-":isff?173:189,"=":isff?61:187,";":isff?59:186,"'":222,"[":219,"]":221,"\\":220},_modifier={"\u21e7":16,shift:16,"\u2325":18,alt:18,option:18,"\u2303":17,ctrl:17,control:17,"\u2318":91,cmd:91,command:91},modifierMap={16:"shiftKey",18:"altKey",17:"ctrlKey",91:"metaKey",shiftKey:16,ctrlKey:17,altKey:18,metaKey:91},_mods={16:!1,18:!1,17:!1,91:!1},_handlers={},k=1;k<20;k++)_keyMap["f".concat(k)]=111+k;var _downKeys=[],winListendFocus=!1,_scope="all",elementHasBindEvent=[],code=function(e){return _keyMap[e.toLowerCase()]||_modifier[e.toLowerCase()]||e.toUpperCase().charCodeAt(0)},getKey=function(n){return Object.keys(_keyMap).find(function(e){return _keyMap[e]===n})},getModifier=function(n){return Object.keys(_modifier).find(function(e){return _modifier[e]===n})};function setScope(e){_scope=e||"all"}function getScope(){return _scope||"all"}function getPressedKeyCodes(){return _downKeys.slice(0)}function getPressedKeyString(){return _downKeys.map(function(e){return getKey(e)||getModifier(e)||String.fromCharCode(e)})}function filter(e){var e=e.target||e.srcElement,n=e.tagName;return!e.isContentEditable&&("INPUT"!==n&&"TEXTAREA"!==n&&"SELECT"!==n||e.readOnly)?!0:!1}function isPressed(e){return"string"==typeof e&&(e=code(e)),!!~_downKeys.indexOf(e)}function deleteScope(e,n){var t,o,r;for(r in e=e||getScope(),_handlers)if(Object.prototype.hasOwnProperty.call(_handlers,r))for(t=_handlers[r],o=0;o<t.length;)t[o].scope===e?t.splice(o,1):o++;getScope()===e&&setScope(n||"all")}function clearModifier(e){var n=e.keyCode||e.which||e.charCode,t=_downKeys.indexOf(n);if(t<0||_downKeys.splice(t,1),e.key&&"meta"==e.key.toLowerCase()&&_downKeys.splice(0,_downKeys.length),(n=93!==n&&224!==n?n:91)in _mods)for(var o in _mods[n]=!1,_modifier)_modifier[o]===n&&(hotkeys[o]=!1)}function unbind(e){if(void 0===e)Object.keys(_handlers).forEach(function(e){return delete _handlers[e]});else if(Array.isArray(e))e.forEach(function(e){e.key&&eachUnbind(e)});else if("object"==typeof e)e.key&&eachUnbind(e);else if("string"==typeof e){for(var n=arguments.length,t=Array(1<n?n-1:0),o=1;o<n;o++)t[o-1]=arguments[o];var r=t[0],i=t[1];"function"==typeof r&&(i=r,r=""),eachUnbind({key:e,scope:r,method:i,splitKey:"+"})}}var eachUnbind=function(e){var r=e.scope,i=e.method,n=e.splitKey,s=void 0===n?"+":n;getKeys(e.key).forEach(function(e){var n,e=e.split(s),t=e.length,o=e[t-1],o="*"===o?"*":code(o);_handlers[o]&&(r=r||getScope(),n=1<t?getMods(_modifier,e):[],_handlers[o]=_handlers[o].filter(function(e){return!((!i||e.method===i)&&e.scope===r&&compareArray(e.mods,n))}))})};function eventHandler(e,n,t,o){var r;if(n.element===o&&(n.scope===t||"all"===n.scope)){for(var i in r=0<n.mods.length,_mods)Object.prototype.hasOwnProperty.call(_mods,i)&&(!_mods[i]&&~n.mods.indexOf(+i)||_mods[i]&&!~n.mods.indexOf(+i))&&(r=!1);(0!==n.mods.length||_mods[16]||_mods[18]||_mods[17]||_mods[91])&&!r&&"*"!==n.shortcut||!1===n.method(e,n)&&(e.preventDefault?e.preventDefault():e.returnValue=!1,e.stopPropagation&&e.stopPropagation(),e.cancelBubble&&(e.cancelBubble=!0))}}function dispatch(t,e){var n=_handlers["*"],o=t.keyCode||t.which||t.charCode;if(hotkeys.filter.call(this,t)){if(~_downKeys.indexOf(o=93!==o&&224!==o?o:91)||229===o||_downKeys.push(o),["ctrlKey","altKey","shiftKey","metaKey"].forEach(function(e){var n=modifierMap[e];t[e]&&!~_downKeys.indexOf(n)?_downKeys.push(n):!t[e]&&~_downKeys.indexOf(n)?_downKeys.splice(_downKeys.indexOf(n),1):"metaKey"!==e||!t[e]||3!==_downKeys.length||t.ctrlKey||t.shiftKey||t.altKey||(_downKeys=_downKeys.slice(_downKeys.indexOf(n)))}),o in _mods){for(var r in _mods[o]=!0,_modifier)_modifier[r]===o&&(hotkeys[r]=!0);if(!n)return}for(var i in _mods)Object.prototype.hasOwnProperty.call(_mods,i)&&(_mods[i]=t[modifierMap[i]]);t.getModifierState&&(!t.altKey||t.ctrlKey)&&t.getModifierState("AltGraph")&&(~_downKeys.indexOf(17)||_downKeys.push(17),~_downKeys.indexOf(18)||_downKeys.push(18),_mods[17]=!0,_mods[18]=!0);var s=getScope();if(n)for(var d=0;d<n.length;d++)n[d].scope===s&&("keydown"===t.type&&n[d].keydown||"keyup"===t.type&&n[d].keyup)&&eventHandler(t,n[d],s,e);if(o in _handlers)for(var a=0;a<_handlers[o].length;a++)if(("keydown"===t.type&&_handlers[o][a].keydown||"keyup"===t.type&&_handlers[o][a].keyup)&&_handlers[o][a].key&&_handlers[o][a].scope===s){for(var c=_handlers[o][a],f=c.key.split(c.splitKey),l=[],y=0;y<f.length;y++)l.push(code(f[y]));l.sort().join("")===_downKeys.sort().join("")&&eventHandler(t,c,s,e)}}}function isElementBind(e){return!!~elementHasBindEvent.indexOf(e)}function hotkeys(e,n,t){_downKeys=[];var o=getKeys(e),r=[],i="all",s=document,d=0,a=!1,c=!0,f="+",l=!1;for(void 0===t&&"function"==typeof n&&(t=n),"[object Object]"===Object.prototype.toString.call(n)&&(n.scope&&(i=n.scope),n.element&&(s=n.element),n.keyup&&(a=n.keyup),void 0!==n.keydown&&(c=n.keydown),void 0!==n.capture&&(l=n.capture),"string"==typeof n.splitKey&&(f=n.splitKey)),"string"==typeof n&&(i=n);d<o.length;d++)r=[],1<(e=o[d].split(f)).length&&(r=getMods(_modifier,e)),(e="*"===(e=e[e.length-1])?"*":code(e))in _handlers||(_handlers[e]=[]),_handlers[e].push({keyup:a,keydown:c,scope:i,mods:r,shortcut:o[d],method:t,key:o[d],splitKey:f,element:s});void 0!==s&&!isElementBind(s)&&window&&(elementHasBindEvent.push(s),addEvent(s,"keydown",function(e){dispatch(e,s)},l),winListendFocus||(winListendFocus=!0,addEvent(window,"focus",function(){_downKeys=[]},l)),addEvent(s,"keyup",function(e){dispatch(e,s),clearModifier(e)},l))}function trigger(n){var t=1<arguments.length&&void 0!==arguments[1]?arguments[1]:"all";Object.keys(_handlers).forEach(function(e){_handlers[e].filter(function(e){return e.scope===t&&e.shortcut===n}).forEach(function(e){e&&e.method&&e.method()})})}var a,_hotkeys,_api={getPressedKeyString:getPressedKeyString,setScope:setScope,getScope:getScope,deleteScope:deleteScope,getPressedKeyCodes:getPressedKeyCodes,isPressed:isPressed,filter:filter,trigger:trigger,unbind:unbind,keyMap:_keyMap,modifier:_modifier,modifierMap:modifierMap};for(a in _api)Object.prototype.hasOwnProperty.call(_api,a)&&(hotkeys[a]=_api[a]);"undefined"!=typeof window&&(_hotkeys=window.hotkeys,hotkeys.noConflict=function(e){return e&&window.hotkeys===hotkeys&&(window.hotkeys=_hotkeys),hotkeys},window.hotkeys=hotkeys),module.exports=hotkeys;
 },{}],47:[function(require,module,exports){
 (function (process){(function (){
 if (process.env.NODE_ENV === 'production') {
@@ -36663,20 +36663,31 @@ class Coord {
         return candidateNeighbor;
     }
 
-    static random (xCount, yCount) {
-        if (! Util.exists(xCount)) {
-            console.log('ERROR: Coord.random() called without r argument');
-            return new Coord(-1,-1);
-            // LATER throw exception, make supervisor reboot, et cetera.
+    // a 2d func.
+    inBox (xMin, yMin, xMax, yMax) {
+        return xMin <= this.x &&
+            this.x <= xMax &&
+            yMin <= this.y &&
+            this.y <= yMax;
+    }
+
+    static random2d (xMax, yMax) {
+        return Coord.random(xMax, yMax);
+    }
+
+    // LATER rename to random2d or add 3d support. Note: ringWorldState's call might need updating if we change this.
+    static random (xMax, yMax) {
+        if (! xMax) {
+            xMax = 10;
+            yMax = 10;
+        }
+        else if (! yMax) {
+            yMax = xMax;
         }
 
-        const c = yCount ?
-            Util.randomUpTo(yCount - 1) :
-            0;
-
         return new Coord(
-            Util.randomUpTo(xCount-1),
-            c
+            Util.randomUpTo(xMax - 1),
+            Util.randomUpTo(yMax - 1)
         );
     }
 
@@ -36727,19 +36738,1177 @@ const _ = require('lodash');
 const commaNumber = require('comma-number');
 const moment = require('moment');
 
-// TODO: import util funcs from util.js in the warband repo
-// TODO: Maybe make this file generic, usable by most of my projects.
-// Can split out Battle20 specific stuff into another utils file.
-const util = module.exports;
+// TODO: import Util funcs from util.js in the warband repo
+class Util {
+    static colored (str, colorName) {
+        return (Util.COLORS[colorName] || Util.COLORS.purple) +
+            str +
+            Util.COLORS.balance;
+    }
 
-util.DEFAULTS = {
+    static customColored (str, foreground, background) {
+        const FMAP = {
+            black: 30,
+            red: 31,
+            green: 32,
+            yellow: 33,
+            blue: 34,
+            magenta: 35,
+            cyan: 36,
+            white: 37,
+            brightGrey: 90,
+            brightRed: 91,
+            brightGreen: 92,
+            brightYellow: 93,
+            brightBlue: 94,
+            brightMagenta: 95,
+            brightCyan: 96,
+            brightWhite: 97,
+        };
+
+        const BMAP = {
+            black: 40,
+            red: 41,
+            green: 42,
+            yellow: 44,
+            blue: 44,
+            magenta: 45,
+            cyan: 46,
+            white: 47,
+            brightGrey: 100,
+            brightRed: 101,
+            brightGreen: 102,
+            brightYellow: 103,
+            brightBlue: 104,
+            brightMagenta: 105,
+            brightCyan: 106,
+            brightWhite: 107,
+        };
+
+        const fcode = FMAP[foreground] || FMAP.blue;
+        const bcode = BMAP[background] || BMAP.grey;
+
+        return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
+    }
+
+    static randomPastel () {
+        const min = 0x70;
+
+        let hexCode = '#';
+
+        for (let i = 0; i < 3; i++) {
+            const decimal = Util.randomIntBetween(min, 0x100);
+            hexCode += decimal.toString(16);
+        }
+
+        return hexCode;
+    }
+
+    static colorDiff (hex1, hex2) {
+        // later standardize inputs to strings
+        let diff = 0;
+
+        for (let i = 0; i < 6; i += 2) {
+            const str1 = hex1.slice(i, i + 2);
+            const color1 = Util.hexStringToNumber(str1); // later implement func https://stackoverflow.com/questions/52261494/hex-to-string-string-to-hex-conversion-in-nodejs
+
+            const str2 = hex2.slice(i, i + 2);
+            const color2 = Util.hexStringToNumber(str2);
+
+            diff += Math.abs(color1 - color2);
+        }
+
+        // Max value is 256 * 3 = 768
+        return diff;
+    }
+
+    static exists (x) {
+        return x !== undefined &&
+            x !== null &&
+            x !== '' &&
+            ! Util.isNaN(x);
+    }
+
+    static legit (x) {
+        return Util.exists(x) &&
+            x !== [] &&
+            x !== {};
+    }
+
+    static default (input, defaultValue) {
+        if (input === undefined) {
+            return defaultValue;
+        } else {
+            return input;
+        }
+    }
+
+    static contains (array, fugitive) {
+        return array.indexOf(fugitive) >= 0;
+    }
+
+    static hasOverlap (arrayA, arrayB) {
+        if (! arrayA || ! arrayB) {
+            return false;
+        }
+
+        for (let i = 0; i < arrayA.length; i++) {
+            if (Util.contains(arrayB, arrayA[i])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Returns number
+    // Default 0
+    static sum (array) {
+        return Util.array(array).reduce(
+            (sumSoFar, element) => {
+                const n = Number(element) || 0;
+                return sumSoFar + n;
+            },
+            0
+        );
+    }
+
+    // Average
+    // LATER could support multiple param usage: Util.mean(3, 5, 7)
+    static mean (array) {
+        array = Util.array(array);
+        if (array.length === 0) { return 0; }
+
+        const sum = Util.sum(array);
+        return sum / array.length;
+    }
+
+    // More robust variant of Math.min()
+    static min (...args) {
+        if (args.length === 1 && Util.isArray(args[0])) {
+            return Math.min(...args[0]);
+        }
+
+        return Math.min(...args);
+    }
+
+    // More robust variant of Math.max()
+    static max (...args) {
+        if (args.length === 1 && Util.isArray(args[0])) {
+            return Math.max(...args[0]);
+        }
+
+        return Math.max(...args);
+    }
+
+    static commonest (array) {
+        const dict = {};
+
+        for (let value of array) {
+            if (dict[value]) {
+                dict[value] += 1;
+            }
+            else {
+                dict[value] = 1;
+            }
+        }
+
+        let mostAppearances = 0;
+        let winner;
+
+        for (let value in dict) {
+            if (dict[value] > mostAppearances) {
+                mostAppearances = dict[value];
+                winner = value;
+            }
+        }
+
+        return winner;
+    }
+
+    static shuffle (array) {
+        array.sort(
+            (a, b) => Math.random()
+        );
+
+        return array;
+    }
+
+    static constrain (n, minInclusive, maxInclusive) {
+        if (n <= minInclusive) {
+            return minInclusive;
+        }
+        if (n >= maxInclusive) {
+            return maxInclusive;
+        }
+
+        return n;
+    }
+
+    static randomIntBetween (minInclusive, maxExclusive) {
+        if (! Util.exists(minInclusive) || ! Util.exists(maxExclusive)) {
+            console.log('error: Util.randomIntBetween() called with missing parameters.');
+            throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
+        }
+        else if (maxExclusive <= minInclusive) {
+            console.log('error: Util.randomIntBetween() called with max <= min.');
+            throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
+        }
+
+        return Math.floor( Math.random() * (maxExclusive - minInclusive) + minInclusive );
+    }
+
+    // Returns value in range [0, input]
+    static randomUpTo (maxInclusive) {
+        return maxInclusive >= 0 ?
+            Util.randomIntBetween(0, maxInclusive + 1) :
+            maxInclusive;
+    }
+
+    static randomBelow (maxExclusive) {
+        return Math.floor(Math.random() * maxExclusive);
+    }
+
+    static randomOf (array) {
+        return array[
+            Util.randomBelow(array.length)
+        ];
+    }
+
+    static randomFromObj (obj) {
+        const key = Util.randomOf(Object.keys(obj));
+        return obj[key];
+    }
+
+    // Param: obj, whose values are also objects.
+    // Side effect: writes to .name prop of child objs.
+    static randomWithName (obj) {
+        const name = _.sample(Object.keys(obj));
+
+        const entry = obj[name];
+        entry.name = name;
+        return entry;
+    }
+
+    // decimalPlaces param is optional and lodash defaults it to 0.
+    static randomRange (minInclusive, maxExclusive, decimalPlaces) {
+        if (maxExclusive < minInclusive) {
+            const temp = minInclusive;
+            minInclusive = maxExclusive;
+            maxExclusive = temp;
+        }
+
+        const unrounded = (Math.random() * (maxExclusive - minInclusive))
+            + minInclusive;
+
+        return _.round(unrounded, decimalPlaces);
+    }
+
+    // Often we want to fill a bag with tokens of different kinds and draw one.
+    // More likely outcomes get more tokens and are thus more likely to happen.
+    // But all outcomes are possible.
+    // Example bag describing St George at a disadvantage:
+    // {
+    //     stGeorge: 7,
+    //     dragon: 12
+    // }
+    static randomBagDraw (bag) {
+        const total = Util.sum(
+            Object.values(bag)
+        );
+
+        let drawn = Math.random() * total;
+
+        let name;
+        for (name in bag) {
+            drawn -= bag[name];
+
+            if (drawn < 0) {
+                return name;
+            }
+        }
+
+        return name;
+    }
+
+    static randomLetter () {
+        return Util.randomOf(`ABCDEFGHIJKLMNOPQRSTUVWXYZ`);
+    }
+
+    // Returns string
+    static newId (idLength) {
+        // Later research the most performant way to run this.
+        // Later could remove similar characters like 1i0O, maybe 5S
+        const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        let id = '';
+        for (let i = 0; i < (idLength || 50); i++) {
+            const index = Math.floor(
+                Math.random() * ALPHABET.length
+            );
+            id += ALPHABET[index];
+        }
+
+        return id;
+    }
+
+    // Similar to newId()
+    static uuid () {
+        return crypto.randomUUID();
+    }
+
+    // Returns string
+    static shortId (id) {
+        return id ?
+            `${id.slice(0, 3).toUpperCase()}` :
+            '';
+    }
+
+    // Input 2d array of strings or stringables
+    // Output string formatted like a spreadsheet, suitable for printing
+    static toChartString (grid) {
+        let maxLengths = new Array(grid[0].length).fill(1);
+
+        for (let r = 0; r < grid.length; r++) {
+
+            for (let c = 0; c < grid[4].length; c++) {
+                const len = String(grid[r][c]).length;
+
+                if (maxLengths[c] < len) {
+                    maxLengths[c] = len;
+                }
+            }
+        }
+
+        return grid.map(
+            row => row.map(
+                (cell, c) => String(cell).padEnd(maxLengths[c])
+            )
+            .join(' ')
+        )
+        .join('\n');
+    }
+
+    // grid is of type string[][]
+    static textGrid (grid, width, height) {
+        // These currently need to be set to the dimensions shown in the top of the terminal window.
+        Util.SCREEN_WIDTH = width || 181;
+        Util.SCREEN_HEIGHT = height || 46;
+
+        const colCount = grid[0].length;
+        const rightExcess = (Util.SCREEN_WIDTH - 1) % colCount;
+
+        const HORIZ_WALL = '-'.repeat(Util.SCREEN_WIDTH - rightExcess);
+        let lines = [HORIZ_WALL];
+
+        for (let r = 0; r < grid.length; r++) {
+            const lineSets = [];
+
+            for (let c = 0; c < grid[0].length; c++) {
+                lineSets.push(
+                    Util.boxAsLines(grid, r, c)
+                );
+
+                // Util.logDebug(`Util.textGrid(), lineSets is ${Util.stringify(lineSets)}`);
+            }
+
+            const rowLines = Util.stitchBoxRow(lineSets);
+            rowLines.push(HORIZ_WALL);
+
+            lines = lines.concat(rowLines);
+        }
+
+        return lines.join('\n');
+    }
+
+    static boxAsLines (grid, row, column) {
+        const boxHeight = Math.floor(
+            (Util.SCREEN_HEIGHT - grid.length - 1) / grid.length
+        );
+
+        const topRow = grid[0];
+
+        const boxWidth = Math.floor(
+            (Util.SCREEN_WIDTH - topRow.length - 1) / topRow.length
+        );
+
+        const boxLines = grid[row][column].split('\n');
+        const outLines = [];
+
+        // Util.logDebug('lines[0].length is ' + lines[0].length + ', and boxWidth is ' + boxWidth);
+
+        for (let i = 0; i < boxHeight - 1; i++) {
+            outLines.push(
+                Util.padSides(boxLines[i], boxWidth)
+            );
+        }
+
+        if (boxLines[boxHeight - 1]) {
+            outLines.push(
+                Util.padSides('...', boxWidth)
+            );
+        }
+
+        // Util.logDebug(`Util.boxAsLines(), current box contains: ${grid[row][column]}. boxLines is ${JSON.stringify(boxLines, undefined, '    ')},\n  outLines is ${JSON.stringify(outLines, undefined, '    ')}`)
+
+        return outLines;
+    }
+
+    static stitchBoxRow (lineSets) {
+        const WALL = '|';
+        const lines = [];
+
+        for (let r = 0; r < lineSets[0].length; r++) {
+            let line = WALL;
+
+            for (let i = 0; i < lineSets.length; i++) {
+                line += lineSets[i][r] + WALL;
+
+                // Util.logDebug(`Util.stitchBoxRow(), lineSets[i][r] is ${lineSets[i][r]}`)
+            }
+
+            lines.push(line);
+        }
+
+        return lines;
+    }
+
+
+    // Input string[]
+    // Returns string summarizing redundancies
+    static arraySummary (a) {
+        const dict = {};
+
+        a.forEach(
+            s => {
+                if (dict[s]) {
+                    dict[s]++;
+                }
+                else {
+                    dict[s] = 1;
+                }
+            }
+        );
+
+        const archetypes = Object.keys(dict)
+            .map(
+                s => `${s} x${Util.abbrvNumber(dict[s])}`
+            );
+
+        return archetypes.join(', ');
+    }
+
+    static repeat (str, n) {
+        let outStr = '';
+        for (let i = 0; i < n; i++) {
+            outStr += str;
+        }
+
+        return outStr;
+    }
+
+    static formatProp (object, propName) {
+        const value = object[propName];
+        if (! Util.legit(value)) {
+            return '';
+        }
+
+        // Later handle special and modification objects better.
+        return `${ propName }: ${ Util.formatExpression(value) }`;
+    }
+
+    static formatExpression (input) {
+        const type = typeof input;
+        if (Util.isArray(input)) {
+            return input.map(
+                x => Util.formatExpression(x)
+            )
+            .join(', ');
+        }
+        if (type === 'object') {
+            return Util.formatObj(input);
+        }
+
+        return input;
+    }
+
+    static formatObj (obj) {
+        // if (typeof obj !== 'object') {
+        //     return obj;
+        // }
+
+        const pairs = Object.keys(obj)
+            .map(
+                key => `${key}: ${obj[key]}`
+            )
+            .join(', ');
+        return `{${pairs}}`;
+    }
+
+    static containsVowels (s) {
+        const chars = s.toUpperCase()
+            .split('');
+
+        for (let char of chars) {
+            if (Util.contains('AEIOUY', char)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static capitalized (s) {
+        if (! Util.exists(s)) {
+            return '';
+        }
+        else if (s.length === 1) {
+            return s.toUpperCase();
+        }
+        // Controversially, interpret no-vowel strings as acronyms
+        else if (! Util.containsVowels(s)) {
+            return s.toUpperCase();
+        }
+
+        return s[0].toUpperCase() +
+            s.slice(1);
+            // s.slice(1).toLowerCase();
+    }
+
+    static uncapitalized (s) {
+        if (! Util.exists(s)) {
+            return '';
+        }
+        else if (s.length === 1) {
+            return s.toLowerCase();
+        }
+
+        return s[0].toLowerCase() +
+            s.slice(1);
+    }
+
+    static capitalizedAllWords (s) {
+        if (! Util.exists(s)) {
+            return '';
+        }
+
+        const words = s.split(' ');
+
+        return words.map(
+            w => Util.capitalized(w)
+        ).join(' ');
+    }
+
+    static toCamelCase (s) {
+        if (! Util.exists(s)) {
+            return '';
+        }
+
+        const words = s.split(/\s/);
+        const tail = words.slice(1)
+            .map(sub => Util.capitalized(sub))
+            .join('');
+
+        return words[0].toLowerCase() +
+            tail;
+    }
+
+    // input: 'dolphinWithWings'
+    // returns: 'Dolphin With Wings'
+    static fromCamelCase (s) {
+        if (! Util.exists(s)) {
+            return '';
+        }
+        else if (s.length === 1) {
+            return s.toUpperCase();
+        }
+
+        const wordStarts = [0];
+        const words = [];
+
+        for (let i = 1; i < s.length; i++) {
+            // Util.logDebug(`fromCamelCase(), s is ${s}, i is ${i}, s[i] is ${s[i]}`)
+
+            if (Util.isCapitalized(s[i])) {
+                if (Util.isCapitalized(s[i-1])) {
+                    // Detect acronym words and leave them uppercase.
+                    // eg: openHTMLFile
+                    const followedByLowercase = (i < s.length - 1) &&
+                        ! Util.isCapitalized(s[i+1]);
+                    if (! followedByLowercase) {
+                        continue;
+                    }
+                }
+
+                wordStarts.push(i);
+
+                const firstLetter = wordStarts[wordStarts.length - 2];
+                const word = s.slice(firstLetter, i);
+                words.push(word);
+            }
+
+            // Also want to consider a digit after a nondigit, or vice versa, to be a word start.
+            else if (Util.alphanumericTransition(s, i)) {
+                wordStarts.push(i);
+
+                const firstLetter = wordStarts[wordStarts.length - 2];
+                const word = s.slice(firstLetter, i);
+                words.push(word);
+            }
+        }
+
+        const lastCapital = wordStarts[wordStarts.length - 1];
+        const lastWord = s.slice(lastCapital);
+        words.push(lastWord);
+
+        return words.map(
+            // Do not change acronyms
+            w => Util.isAllCaps(w) ?
+                w :
+                Util.capitalized(w)
+        )
+        .join(' ');
+    }
+
+    // center-aligns string in spaces, to a specified total length.
+    // ('foo', 7) => '  foo  '
+    static padSides (string, length) {
+        // Later could detect if 'string' is a nonstring and convert it.
+        string = string || '';
+        length = Math.floor(length);
+
+        const leftover = length - string.length;
+
+        if (leftover <= 0) {
+            return string.slice(0, length);
+        }
+
+        const padAmount = leftover / 2;
+        const left = ' '.repeat(
+            Math.floor(padAmount)
+        );
+
+        const right = ' '.repeat(
+            Math.ceil(padAmount)
+        );
+
+        // return left + string + right;
+        return (left + string).padEnd(length);
+    }
+
+    static testPadSides () {
+        for (let l = 1; l < 10; l++) {
+
+            for (let sl = 0; sl < 3; sl++) {
+                const input = ' 👁 e'.repeat(sl);
+                const output = Util.padSides(input, l);
+
+                const summary = `padSides(${input}, ${l}) => \n'${output}'`;
+                console.log(summary);
+
+                if (output.length !== l) {
+                    throw new Error(summary);
+                }
+            }
+        }
+    }
+
+    static alphanumericTransition (string, i2) {
+        const digitStart = Util.isNumeric(
+            string[i2 - 1]
+        );
+
+        const digitEnd = Util.isNumeric(
+            string[i2]
+        );
+
+        return digitStart && ! digitEnd ||
+            ! digitStart && digitEnd;
+    }
+
+    static testCamelCase () {
+        const tests = [
+            ['Hector Breaker Of Horses', 'hectorBreakerOfHorses'],
+            ['Cellar Door', 'cellarDoor'],
+            ['C Deck', 'cDeck'],
+            ['Awakening', 'awakening']
+        ];
+
+        tests.forEach(t => {
+            const camelized = Util.toCamelCase(t[0]);
+            const uncamelized = Util.fromCamelCase(t[1]);
+
+            if (camelized !== t[1]) {
+                throw new Error(camelized);
+            }
+            if (uncamelized !== t[0]) {
+                throw new Error(uncamelized);
+            }
+        });
+    }
+
+    // True when input is a number or a string containing digits.
+    static isNumeric (x) {
+        return /[0-9]/.test(x);
+    }
+
+    // Note that typeof NaN is also 'number',
+    // but it is still despicable.
+    static isNumber (x) {
+        return typeof x === 'number' &&
+            ! Util.isNaN(x);
+    }
+
+    static isString (x) {
+        return typeof x === 'string';
+    }
+
+    static isNaN (x) {
+        return Number.isNaN(x);
+    }
+
+    static isObject (x) {
+        return typeof x === 'object' &&
+            x !== null;
+    }
+
+    static isFunction (x) {
+        return typeof x === 'function';
+    }
+
+    static isArray (x) {
+        // Later make this more sophisticated, or use a library.
+        return x &&
+            typeof x.length === 'number' &&
+            ! Util.isString(x) &&
+            x.length >= 0 &&
+            (x.length === 0 || x[0] !== undefined);
+    }
+
+    static array (x) {
+        return Util.isArray(x) ? x : [x];
+    }
+
+    static unique (array) {
+        return Array.from(new Set(array));
+    }
+
+    static union (a1, a2) {
+        return Util.unique(
+            (a1 || []).concat(a2 || [])
+        );
+    }
+
+    // Returns a shallow copy of a array.
+    static arrayCopy (a) {
+        return a.map(x => x);
+    }
+
+    static clone (obj) {
+        return _.cloneDeep(obj);
+    }
+
+    static round (n, precision) {
+        return _.round(n, precision);
+    }
+
+    static commaNumber (n) {
+        return commaNumber(n);
+    }
+
+    static abbrvNumber (n) {
+        let output = '';
+        const pos = Math.abs(n);
+
+        if (pos < 1000) {
+            output = pos.toString();
+        }
+        else if (pos < 1e6) {
+            output = _.round(pos / 1000)
+                .toFixed(0)
+                + 'k';
+        }
+        else if (pos < 1e9) {
+            output = _.round(pos / 1e6)
+                .toFixed(0)
+                + 'mn';
+        }
+        else {
+            output = _.round(pos / 1e9)
+                .toFixed(0)
+                + 'bn';
+        }
+
+        return n >= 0 ?
+            output :
+            `-${output}`;
+    }
+
+    // returns number
+    // static digits (n) {
+
+    // }
+
+    // Returns string
+    static prettyDistance (meters) {
+        meters = Math.abs(meters);
+
+        const AU = 149597870700;
+        const LIGHT_YEAR = 9460730472580800;
+
+        if (meters < 3) {
+            const rounded = _.round(meters, 2);
+
+            return `${rounded} m`;
+        }
+        else if (meters < 1000) {
+            const rounded = _.round(meters);
+
+            return `${rounded} m`;
+        }
+        else if (meters < 3000) {
+            const klicks = _.round(meters / 1000, 1);
+
+            return `${klicks} km`;
+        }
+        else if (meters < AU * 0.1) {
+            const klicks = Util.commaNumber(
+                _.round(meters / 1000)
+            );
+
+            return `${klicks} km`;
+        }
+        else if (meters < AU * 3) {
+            const au = _.round(meters / AU, 1)
+                .toFixed(1);
+
+            return `${au} AU`;
+        }
+        else if (meters < LIGHT_YEAR * 0.1) {
+            const au = Util.commaNumber(
+                _.round(meters / AU)
+            );
+
+            return `${au} AU`;
+        } else if (meters < LIGHT_YEAR * 3) {
+            const ly = _.round(meters / LIGHT_YEAR, 1);
+
+            return `${ly} lightyears`;
+        }
+        else {
+            const ly = Util.commaNumber(
+                _.round(meters / LIGHT_YEAR)
+            );
+
+            return `${ly} lightyears`;
+        }
+    }
+
+    static testPrettyDistance () {
+        for (let n = 0.197842357; n < 94607304725808000000; n = 2 * n) {
+            console.log(Util.prettyDistance(n));
+        }
+    }
+
+    static prettyMeters (meters) {
+        return `${Util.commaNumber(meters)}m`;
+    }
+
+    static prettyTime (seconds) {
+        if (seconds < 59.5) {
+            const rounded = _.round(seconds);
+            return `${rounded} seconds`;
+        }
+        else if (seconds < 90) {
+            return `1 minute`;
+        }
+        // 3570 seconds is 59.5 minutes
+        else if (seconds < 3570) {
+            const minutes = _.round(seconds / 60);
+            return `${minutes} minutes`;
+        }
+        // 5400 seconds is 1.5 hours
+        else if (seconds < 5400) {
+            return `1 hour`;
+        }
+        // 84600 seconds is 23.5 hours
+        else if (seconds < 84600) {
+            const hours = _.round(seconds / 3600, 1);
+            return `${hours} hours`;
+        }
+        // 31556736 seconds is roughly 1 year
+        else if (seconds < 31556736) {
+            const days = _.round(seconds / 86400, 1);
+            return `${days} days`;
+        }
+        else {
+            const years = _.round(seconds / 31556736, 1);
+            return `${years} years`;
+        }
+    }
+
+    static asBar (n) {
+        let bar = '';
+
+        for (let i = 0; i < n; i++) {
+            bar = bar + '█';
+        }
+
+        return bar;
+    }
+
+    // Returns the input number rounded up or down to 1 sigfig.
+    static sigfigRound (n, sigfigs) {
+        sigfigs = sigfigs || 1;
+
+        const log = Math.log10(Math.abs(n));
+
+        return _.round(
+            n,
+            sigfigs - (1 + Math.floor(log))
+        );
+    }
+
+    static testSigfigRound () {
+        for (let f = 1; f < 3; f++) {
+            for (let n = 1; n < 1000000; n++) {
+                const output = Util.sigfigRound(n, f);
+                const figs = Util.sigfigsOf(output);
+
+                if (figs > f) {
+                    const originalFigs = Util.sigfigsOf(n);
+                    if (originalFigs < f) {
+                        continue;
+                    }
+
+                    // Note that this test does not check whether it gets rid of TOO MANY sigfigs. In the case of (1950, 2) this seems hard to test for. It is correct to oversimplify to 2000, which has only 1 sigfig.
+
+                    Util.logError(`In testSigfigRound(), sigfigRound(${n}, ${f}) === ${output}. This has ${figs} sigfigs, but it should have ${f}.`);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    static sigfigsOf (n) {
+        if (! Util.isNumber(n)) {
+            n = parseFloat(n);
+        }
+
+        const s = n.toString();
+        const parts = s.split('.');
+
+        // Post decimal
+        if (parts[1]) {
+            if (parts[0] === '0') {
+                // eg 0.0705 => 3
+                const zeroes = Util.charCountAtStart(parts[1], '0');
+                return parts[1].length - zeroes;
+            }
+            else {
+                // eg 400.01 => 5
+                return parts[0].length + parts[1].length;
+            }
+        }
+        else {
+            // eg 108000 => 3
+            const zeroes = Util.charCountAtEnd(s, '0');
+            return s.length - zeroes;
+        }
+    }
+
+    // Call like 'await Util.sleep(6);'
+    static sleep (seconds) {
+        if (! Util.exists(seconds)) {
+            seconds = 1;
+        }
+
+        return new Promise(
+            funcWhenResolved => setTimeout(funcWhenResolved, seconds * 1000)
+        );
+    }
+
+    // eg ('00705', '0') => 2
+    static charCountAtStart (str, char) {
+        for (let i = 0; i < str.length; i++) {
+            if (str[i] !== char) {
+                return i;
+            }
+        }
+
+        return str.length;
+    }
+
+    // eg ('108000', '0') => 3
+    static charCountAtEnd (str, char) {
+        for (let i = str.length - 1; i >= 0; i--) {
+            if (str[i] !== char) {
+                return (str.length - 1) - i;
+            }
+        }
+
+        return str.length;
+    }
+
+    static isCapitalized (s) {
+        return /[A-Z]/.test(s[0]);
+    }
+
+    static isAllCaps (s) {
+        // TODO implement this.
+        return false;
+    }
+
+    static stringify (x) {
+        return JSON.stringify(
+            x,
+            undefined,
+            '    '
+        );
+    }
+
+    // LATER - desired funcs:
+    // static yaml (x) {}
+    // static safeToStringify (x) {}
+
+    static log (input, tag) {
+        // Later: Use chalk functions instead.
+        // const TAG_COLORS = {
+        //     error: 'red',
+        //     warn: 'yellow',
+        //     beacon: 'purple',
+        //     event: 'blue',
+        //     noisy: 'cyan',
+        //     debug: 'green'
+        // };
+
+        tag = tag || 'event';
+        const tagStr = tag.toUpperCase();
+        // const tagColor = TAG_COLORS[tag.toLowerCase()] || TAG_COLORS['event'];
+        // const tagStr = tagColor ?
+        //     Util.colored(tag.toUpperCase(), tagColor) :
+        //     tag;
+
+        const dateTime = moment().format('YYYY MMM D hh:mm:ss.S');
+
+        const info = Util.isString(input) ?
+            input :
+            Util.stringify(input);
+
+        // Later: Red error and beacon text
+        console.log(`  ${tagStr} (${ dateTime }) \n${ info }\n`);
+    }
+
+    static logDebug (input) {
+        Util.log(input, 'debug');
+    }
+
+    static logWarn (input) {
+        Util.log(input, 'warn');
+    }
+
+    static logError (input) {
+        Util.log(input, 'error');
+    }
+
+    static makeEnum (vals) {
+        const dict = {};
+        for (let val of vals) {
+            dict[Util.capitalized(val)] = Util.uncapitalized(val);
+        }
+
+        return dict;
+    }
+
+    static withProp (array, key) {
+        return array.filter(x => x[key]);
+    }
+
+    static toJson (x) {
+        return x && Util.isFunction(x.toJson) ?
+            x.toJson() :
+            x;
+    }
+
+    // Useful for dicts of objects like wGenerator.aliasTables
+    static dictToJson (dict) {
+        const serialized = {};
+
+        Object.keys(dict)
+            .forEach(
+                key => {
+                    const value = dict[key];
+
+                    serialized[key] = (value && value.toJson) ?
+                        value.toJson() :
+                        value;
+                }
+            );
+
+        return serialized;
+    }
+
+    static valuesAsIDs (obj) {
+        const converted = {};
+
+        for (let key in obj) {
+            const val = obj[key];
+
+            converted[key] = val?.id || val;
+        }
+
+        return converted;
+    }
+
+    static certainKeysOf (obj, keyArray) {
+        const output = {};
+
+        for (let key of keyArray) {
+            output[key] = obj[key];
+        }
+
+        return output;
+    }
+
+    // Myers-Briggs Type Indicator (personality category)
+    static mbti () {
+        return [
+            Util.randomOf(['I', 'E']),
+            Util.randomOf(['S', 'N']),
+            Util.randomOf(['T', 'F']),
+            Util.randomOf(['P', 'J'])
+        ]
+        .join('');
+    }
+
+    static testAll () {
+        Util.testPrettyDistance();
+        Util.testCamelCase();
+        Util.testPadSides();
+        Util.testSigfigRound();
+        Util.logDebug(`Done with unit tests for Util module :)`);
+    }
+}
+
+// aliases
+Util.includes = Util.contains;
+Util.sample = Util.sampleFrom = Util.randomOf;
+
+Util.DEFAULTS = {
     ROWCOUNT: 12,
     COLCOUNT: 12
 };
 
+Util.NODE_TYPES = {
+    region: 'region',
+    location: 'location'  // deprecated
+};
+
 // These are like preselected color profiles.
 // The background is as described, and the foreground is black or white, whichever is most visible.
-util.COLORS = {
+Util.COLORS = {
     red: '\x1b[1;37;41m',
     yellow: '\x1b[1;37;43m',
     green: '\x1b[1;30;42m',
@@ -36751,1060 +37920,9 @@ util.COLORS = {
     balance: '\x1b[0m'
 };
 
-util.colored = (str, colorName) => {
-    return (util.COLORS[colorName] || util.COLORS.purple) +
-        str +
-        util.COLORS.balance;
-};
+module.exports = Util;
 
-util.customColored = (str, foreground, background) => {
-    const FMAP = {
-        black: 30,
-        red: 31,
-        green: 32,
-        yellow: 33,
-        blue: 34,
-        magenta: 35,
-        cyan: 36,
-        white: 37,
-        brightGrey: 90,
-        brightRed: 91,
-        brightGreen: 92,
-        brightYellow: 93,
-        brightBlue: 94,
-        brightMagenta: 95,
-        brightCyan: 96,
-        brightWhite: 97,
-    };
-
-    const BMAP = {
-        black: 40,
-        red: 41,
-        green: 42,
-        yellow: 44,
-        blue: 44,
-        magenta: 45,
-        cyan: 46,
-        white: 47,
-        brightGrey: 100,
-        brightRed: 101,
-        brightGreen: 102,
-        brightYellow: 103,
-        brightBlue: 104,
-        brightMagenta: 105,
-        brightCyan: 106,
-        brightWhite: 107,
-    };
-
-    const fcode = FMAP[foreground] || FMAP.blue;
-    const bcode = BMAP[background] || BMAP.grey;
-
-    return '\x1b[1;' + fcode + ';' + bcode + 'm' + str + '\x1b[0m';
-};
-
-util.randomPastel = () => {
-    const min = 0x70;
-
-    let hexCode = '#';
-
-    for (let i = 0; i < 3; i++) {
-        const decimal = util.randomIntBetween(min, 0x100);
-        hexCode += decimal.toString(16);
-    }
-
-    return hexCode;
-};
-
-util.colorDiff = (hex1, hex2) => {
-    // later standardize inputs to strings
-    let diff = 0;
-
-    for (let i = 0; i < 6; i += 2) {
-        const str1 = hex1.slice(i, i + 2);
-        const color1 = util.hexStringToNumber(str1); // later implement func https://stackoverflow.com/questions/52261494/hex-to-string-string-to-hex-conversion-in-nodejs
-
-        const str2 = hex2.slice(i, i + 2);
-        const color2 = util.hexStringToNumber(str2);
-
-        diff += Math.abs(color1 - color2);
-    }
-
-    // Max value is 256 * 3 = 768
-    return diff;
-};
-
-util.NODE_TYPES = {
-    region: 'region',
-    location: 'location'  // deprecated
-};
-
-// TODO: Specify all this as a class with static member funcs, not this silly function assignment syntax.
-util.exists = (x) => {
-    return x !== undefined &&
-        x !== null &&
-        x !== '' &&
-        ! util.isNaN(x);
-};
-
-util.legit = (x) =>
-    util.exists(x) &&
-    x !== [] &&
-    x !== {};
-
-// TODO reconsider this weird function syntax throughout util.js. Maybe declare a class of functions, then assign the field props to it?
-
-util.default = function (input, defaultValue) {
-    if (input === undefined) {
-        return defaultValue;
-    } else {
-        return input;
-    }
-};
-
-util.contains = function (array, fugitive) {
-    return array.indexOf(fugitive) >= 0;
-};
-
-util.includes = util.contains;
-
-util.hasOverlap = function (arrayA, arrayB) {
-    if (! arrayA || ! arrayB) {
-        return false;
-    }
-
-    for (let i = 0; i < arrayA.length; i++) {
-        if (util.contains(arrayB, arrayA[i])) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-// Returns number
-// Default 0
-util.sum = function (array) {
-    return util.array(array).reduce(
-        (sumSoFar, element) => {
-            const n = Number(element) || 0;
-            return sumSoFar + n;
-        },
-        0
-    );
-};
-
-// Average
-util.mean = (array) => {
-    array = util.array(array);
-    const sum = util.sum(array);
-    return sum / array.length;
-};
-
-util.constrain = (n, minInclusive, maxInclusive) => {
-    if (n <= minInclusive) {
-        return minInclusive;
-    }
-    if (n >= maxInclusive) {
-        return maxInclusive;
-    }
-
-    return n;
-};
-
-util.randomIntBetween = function (minInclusive, maxExclusive) {
-    if (! util.exists(minInclusive) || ! util.exists(maxExclusive)) {
-        console.log('error: util.randomIntBetween() called with missing parameters.');
-        throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
-    }
-    else if (maxExclusive <= minInclusive) {
-        console.log('error: util.randomIntBetween() called with max <= min.');
-        throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
-    }
-
-    return Math.floor( Math.random() * (maxExclusive - minInclusive) + minInclusive );
-};
-
-// Returns value in range [0, input]
-util.randomUpTo = function (maxInclusive) {
-    return maxInclusive >= 0 ?
-        util.randomIntBetween(0, maxInclusive + 1) :
-        maxInclusive;
-};
-
-util.randomBelow = function (maxExclusive) {
-    return Math.floor(Math.random() * maxExclusive);
-};
-
-util.randomOf = function (array) {
-    return array[
-        util.randomBelow(array.length)
-    ];
-};
-util.sample = util.sampleFrom = util.randomOf; // alias
-
-util.randomFromObj = function (obj) {
-    const key = util.randomOf(Object.keys(obj));
-    return obj[key];
-};
-
-// Param: obj, whose values are also objects.
-// Side effect: writes to .name prop of child objs.
-util.randomWithName = (obj) => {
-    const name = _.sample(Object.keys(obj));
-
-    const entry = obj[name];
-    entry.name = name;
-    return entry;
-};
-
-// decimalPlaces param is optional and lodash defaults it to 0.
-util.randomRange = function (minInclusive, maxExclusive, decimalPlaces) {
-    if (maxExclusive < minInclusive) {
-        const temp = minInclusive;
-        minInclusive = maxExclusive;
-        maxExclusive = temp;
-    }
-
-    const unrounded = (Math.random() * (maxExclusive - minInclusive))
-        + minInclusive;
-
-    return _.round(unrounded, decimalPlaces);
-};
-
-// Often we want to fill a bag with tokens of different kinds and draw one.
-// More likely outcomes get more tokens and are thus more likely to happen.
-// But all outcomes are possible.
-// Example bag describing St George at a disadvantage:
-// {
-//     stGeorge: 7,
-//     dragon: 12
-// }
-util.randomBagDraw = (bag) => {
-    const total = util.sum(
-        Object.values(bag)
-    );
-
-    let drawn = Math.random() * total;
-
-    let name;
-    for (name in bag) {
-        drawn -= bag[name];
-
-        if (drawn < 0) {
-            return name;
-        }
-    }
-
-    return name;
-};
-
-// Returns string
-util.newId = function (idLength) {
-    // Later research the most performant way to run this.
-    // Later could remove similar characters like 1i0O, maybe 5S
-    const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-    let id = '';
-    for (let i = 0; i < (idLength || 50); i++) {
-        const index = Math.floor( Math.random() * ALPHABET.length );
-        id += ALPHABET[index];
-    }
-
-    return id;
-};
-
-// Returns string
-util.shortId = function (id) {
-    return id ?
-        `${id.slice(0, 3).toUpperCase()}` :
-        '';
-};
-
-// Input 2d array of strings or stringables
-// Output string formatted like a spreadsheet, suitable for printing
-util.toChartString = (grid) => {
-    let maxLengths = new Array(grid[0].length).fill(1);
-
-    for (let r = 0; r < grid.length; r++) {
-
-        for (let c = 0; c < grid[4].length; c++) {
-            const len = String(grid[r][c]).length;
-
-            if (maxLengths[c] < len) {
-                maxLengths[c] = len;
-            }
-        }
-    }
-
-    return grid.map(
-        row => row.map(
-            (cell, c) => String(cell).padEnd(maxLengths[c])
-        )
-        .join(' ')
-    )
-    .join('\n');
-};
-
-// grid is of type string[][]
-util.textGrid = (grid, width, height) => {
-    // These currently need to be set to the dimensions shown in the top of the terminal window.
-    util.SCREEN_WIDTH = width || 139;
-    util.SCREEN_HEIGHT = height || 37;
-
-    const colCount = grid[0].length;
-    const rightExcess = (util.SCREEN_WIDTH - 1) % colCount;
-
-    const HORIZ_WALL = '-'.repeat(util.SCREEN_WIDTH - rightExcess);
-    let lines = [HORIZ_WALL];
-
-    for (let r = 0; r < grid.length; r++) {
-        const lineSets = [];
-
-        for (let c = 0; c < grid[0].length; c++) {
-            lineSets.push(
-                util.boxAsLines(grid, r, c)
-            );
-
-            // util.logDebug(`Util.textGrid(), lineSets is ${util.stringify(lineSets)}`);
-        }
-
-        const rowLines = util.stitchBoxRow(lineSets);
-        rowLines.push(HORIZ_WALL);
-
-        lines = lines.concat(rowLines);
-    }
-
-    return lines.join('\n');
-};
-
-util.boxAsLines = (grid, row, column) => {
-    const boxHeight = Math.floor(
-        (util.SCREEN_HEIGHT - grid.length - 1) / grid.length
-    );
-
-    const topRow = grid[0];
-
-    const boxWidth = Math.floor(
-        (util.SCREEN_WIDTH - topRow.length - 1) / topRow.length
-    );
-
-    const boxLines = grid[row][column].split('\n');
-    const outLines = [];
-
-    // Util.logDebug('lines[0].length is ' + lines[0].length + ', and boxWidth is ' + boxWidth);
-
-    for (let i = 0; i < boxHeight - 1; i++) {
-        outLines.push(
-            util.padSides(boxLines[i], boxWidth)
-        );
-    }
-
-    if (boxLines[boxHeight - 1]) {
-        outLines.push(
-            util.padSides('...', boxWidth)
-        );
-    }
-
-    // util.logDebug(`Util.boxAsLines(), current box contains: ${grid[row][column]}. boxLines is ${JSON.stringify(boxLines, undefined, '    ')},\n  outLines is ${JSON.stringify(outLines, undefined, '    ')}`)
-
-    return outLines;
-};
-
-util.stitchBoxRow = (lineSets) => {
-    const WALL = '|';
-    const lines = [];
-
-    for (let r = 0; r < lineSets[0].length; r++) {
-        let line = WALL;
-
-        for (let i = 0; i < lineSets.length; i++) {
-            line += lineSets[i][r] + WALL;
-
-            // util.logDebug(`Util.stitchBoxRow(), lineSets[i][r] is ${lineSets[i][r]}`)
-        }
-
-        lines.push(line);
-    }
-
-    return lines;
-};
-
-
-// Input string[]
-// Returns string summarizing redundancies
-util.arraySummary = (a) => {
-    const dict = {};
-
-    a.forEach(
-        s => {
-            if (dict[s]) {
-                dict[s]++;
-            }
-            else {
-                dict[s] = 1;
-            }
-        }
-    );
-
-    const archetypes = Object.keys(dict)
-        .map(
-            s => `${s} x${util.abbrvNumber(dict[s])}`
-        );
-
-    return archetypes.join(', ');
-};
-
-util.repeat = function (str, n) {
-    let outStr = '';
-    for (let i = 0; i < n; i++) {
-        outStr += str;
-    }
-
-    return outStr;
-};
-
-util.formatProp = function (object, propName) {
-    const value = object[propName];
-    if (! util.legit(value)) {
-        return '';
-    }
-
-    // Later handle special and modification objects better.
-    return `${ propName }: ${ util.formatExpression(value) }`;
-};
-
-util.formatExpression = function (input) {
-    const type = typeof input;
-    if (util.isArray(input)) {
-        return input.map(
-            x => util.formatExpression(x)
-        )
-        .join(', ');
-    }
-    if (type === 'object') {
-        return util.formatObj(input);
-    }
-
-    return input;
-}
-
-util.formatObj = function (obj) {
-    // if (typeof obj !== 'object') {
-    //     return obj;
-    // }
-
-    const pairs = Object.keys(obj)
-        .map(
-            key => `${key}: ${obj[key]}`
-        )
-        .join(', ');
-    return `{${pairs}}`;
-}
-
-util.containsVowels = (s) => {
-    const chars = s.toUpperCase()
-        .split('');
-
-    for (let char of chars) {
-        if (util.contains('AEIOUY', char)) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-util.capitalized = (s) => {
-    if (! util.exists(s)) {
-        return '';
-    }
-    else if (s.length === 1) {
-        return s.toUpperCase();
-    }
-    // Controversially, interpret no-vowel strings as acronyms
-    else if (! util.containsVowels(s)) {
-        return s.toUpperCase();
-    }
-
-    return s[0].toUpperCase() +
-        s.slice(1);
-        // s.slice(1).toLowerCase();
-};
-
-util.uncapitalized = (s) => {
-    if (! util.exists(s)) {
-        return '';
-    }
-    else if (s.length === 1) {
-        return s.toLowerCase();
-    }
-
-    return s[0].toLowerCase() +
-        s.slice(1);
-};
-
-util.capitalizedAllWords = (s) => {
-    if (! util.exists(s)) {
-        return '';
-    }
-
-    const words = s.split(' ');
-
-    return words.map(
-        w => util.capitalized(w)
-    ).join(' ');
-};
-
-util.toCamelCase = (s) => {
-    if (! util.exists(s)) {
-        return '';
-    }
-
-    const words = s.split(/\s/);
-    const tail = words.slice(1)
-        .map(sub => util.capitalized(sub))
-        .join('');
-
-    return words[0].toLowerCase() +
-        tail;
-};
-
-// input: 'dolphinWithWings'
-// returns: 'Dolphin With Wings'
-util.fromCamelCase = (s) => {
-    if (! util.exists(s)) {
-        return '';
-    }
-    else if (s.length === 1) {
-        return s.toUpperCase();
-    }
-
-    const wordStarts = [0];
-    const words = [];
-
-    for (let i = 1; i < s.length; i++) {
-        // util.logDebug(`fromCamelCase(), s is ${s}, i is ${i}, s[i] is ${s[i]}`)
-
-        if (util.isCapitalized(s[i])) {
-            if (util.isCapitalized(s[i-1])) {
-                // Detect acronym words and leave them uppercase.
-                // eg: openHTMLFile
-                const followedByLowercase = (i < s.length - 1) &&
-                    ! util.isCapitalized(s[i+1]);
-                if (! followedByLowercase) {
-                    continue;
-                }
-            }
-
-            wordStarts.push(i);
-
-            const firstLetter = wordStarts[wordStarts.length - 2];
-            const word = s.slice(firstLetter, i);
-            words.push(word);
-        }
-
-        // Also want to consider a digit after a nondigit, or vice versa, to be a word start.
-        else if (util.alphanumericTransition(s, i)) {
-            wordStarts.push(i);
-
-            const firstLetter = wordStarts[wordStarts.length - 2];
-            const word = s.slice(firstLetter, i);
-            words.push(word);
-        }
-    }
-
-    const lastCapital = wordStarts[wordStarts.length - 1];
-    const lastWord = s.slice(lastCapital);
-    words.push(lastWord);
-
-    return words.map(
-        // Do not change acronyms
-        w => util.isAllCaps(w) ?
-            w :
-            util.capitalized(w)
-    )
-    .join(' ');
-};
-
-// center-aligns string in spaces, to a specified total length.
-// ('foo', 7) => '  foo  '
-util.padSides = (string, length) => {
-    // Later could detect if 'string' is a nonstring and convert it.
-    string = string || '';
-    length = Math.floor(length);
-
-    const leftover = length - string.length;
-
-    if (leftover <= 0) {
-        return string.slice(0, length);
-    }
-
-    const padAmount = leftover / 2;
-    const left = ' '.repeat(
-        Math.floor(padAmount)
-    );
-
-    const right = ' '.repeat(
-        Math.ceil(padAmount)
-    );
-    
-    return left + string + right;
-};
-
-util.testPadSides = () => {
-    for (let l = 1; l < 10; l++) {
-
-        for (let sl = 0; sl < 10; sl++) {
-            const input = 'x'.repeat(sl);
-            const output = util.padSides(input, l);
-
-            const summary = `padSides(${input}, ${l}) => \n'${output}'`;
-            console.log(summary);
-
-            if (output.length !== l) {
-                throw new Error(summary);
-            }
-        }
-    }
-};
-
-util.alphanumericTransition = (string, i2) => {
-    const digitStart = util.isNumeric(
-        string[i2 - 1]
-    );
-
-    const digitEnd = util.isNumeric(
-        string[i2]
-    );
-
-    return digitStart && ! digitEnd ||
-        ! digitStart && digitEnd;
-};
-
-util.testCamelCase = () => {
-    const tests = [
-        ['Hector Breaker Of Horses', 'hectorBreakerOfHorses'],
-        ['Cellar Door', 'cellarDoor'],
-        ['C Deck', 'cDeck'],
-        ['Awakening', 'awakening']
-    ];
-
-    tests.forEach(t => {
-        const camelized = util.toCamelCase(t[0]);
-        const uncamelized = util.fromCamelCase(t[1]);
-
-        if (camelized !== t[1]) {
-            throw new Error(camelized);
-        }
-        if (uncamelized !== t[0]) {
-            throw new Error(uncamelized);
-        }
-    });
-};
-
-// True when input is a number or a string containing digits.
-util.isNumeric = (x) => /[0-9]/.test(x);
-
-// Note that typeof NaN is also 'number',
-// but it is still despicable.
-util.isNumber = function (x) {
-    return typeof x === 'number' &&
-        ! util.isNaN(x);
-};
-
-util.isString = function (x) {
-    return typeof x === 'string';
-};
-
-util.isNaN = function (x) {
-    return Number.isNaN(x);
-};
-
-util.isObject = function (x) {
-    return typeof x === 'object' &&
-        x !== null;
-};
-
-util.isFunction = function (x) {
-    return typeof x === 'function';
-};
-
-util.isArray = function (x) {
-    // Later make this more sophisticated, or use a library.
-    return x &&
-        typeof x.length === 'number' &&
-        ! util.isString(x) &&
-        x.length >= 0 &&
-        (x.length === 0 || x[0] !== undefined);
-};
-
-util.array = (x) => {
-    return util.isArray(x) ? x : [x];
-};
-
-util.unique = (array) => {
-    return Array.from(new Set(array));
-};
-
-util.union = (a1, a2) => {
-    return util.unique(
-        (a1 || []).concat(a2 || [])
-    );
-};
-
-// Returns a shallow copy of a array.
-util.arrayCopy = (a) => {
-    return a.map(x => x);
-};
-
-util.round = (n) => _.round(n);
-
-util.commaNumber = (n) =>
-    commaNumber(n);
-
-util.abbrvNumber = (n) => {
-    let output = '';
-    const pos = Math.abs(n);
-
-    if (pos < 1000) {
-        output = pos.toString();
-    }
-    else if (pos < 1e6) {
-        output = _.round(pos / 1000)
-            .toFixed(0)
-            + 'k';
-    }
-    else if (pos < 1e9) {
-        output = _.round(pos / 1e6)
-            .toFixed(0)
-            + 'mn';
-    }
-    else {
-        output = _.round(pos / 1e9)
-            .toFixed(0)
-            + 'tn';
-    }
-
-    return n >= 0 ?
-        output :
-        `-${output}`;
-};
-
-// Returns string
-util.prettyDistance = (meters) => {
-    meters = Math.abs(meters);
-
-    const AU = 149597870700;
-    const LIGHT_YEAR = 9460730472580800;
-
-    if (meters < 3) {
-        const rounded = _.round(meters, 2);
-
-        return `${rounded} m`;
-    }
-    else if (meters < 1000) {
-        const rounded = _.round(meters);
-
-        return `${rounded} m`;
-    }
-    else if (meters < 3000) {
-        const klicks = _.round(meters / 1000, 1);
-
-        return `${klicks} km`;
-    }
-    else if (meters < AU * 0.1) {
-        const klicks = util.commaNumber(
-            _.round(meters / 1000)
-        );
-
-        return `${klicks} km`;
-    }
-    else if (meters < AU * 3) {
-        const au = _.round(meters / AU, 1)
-            .toFixed(1);
-
-        return `${au} AU`;
-    }
-    else if (meters < LIGHT_YEAR * 0.1) {
-        const au = util.commaNumber(
-            _.round(meters / AU)
-        );
-
-        return `${au} AU`;
-    } else if (meters < LIGHT_YEAR * 3) {
-        const ly = _.round(meters / LIGHT_YEAR, 1);
-
-        return `${ly} lightyears`;
-    }
-    else {
-        const ly = util.commaNumber(
-            _.round(meters / LIGHT_YEAR)
-        );
-
-        return `${ly} lightyears`;
-    }
-};
-
-util.testPrettyDistance = () => {
-    for (let n = 0.197842357; n < 94607304725808000000; n = 2 * n) {
-        console.log(util.prettyDistance(n));
-    }
-};
-
-util.prettyMeters = (meters) => {
-    return `${util.commaNumber(meters)}m`;
-};
-
-util.prettyTime = (seconds) => {
-    if (seconds < 59.5) {
-        const rounded = _.round(seconds);
-        return `${rounded} seconds`;
-    }
-    else if (seconds < 90) {
-        return `1 minute`;
-    }
-    // 3570 seconds is 59.5 minutes
-    else if (seconds < 3570) {
-        const minutes = _.round(seconds / 60);
-        return `${minutes} minutes`;
-    }
-    // 5400 seconds is 1.5 hours
-    else if (seconds < 5400) {
-        return `1 hour`;
-    }
-    // 84600 seconds is 23.5 hours
-    else if (seconds < 84600) {
-        const hours = _.round(seconds / 3600, 1);
-        return `${hours} hours`;
-    }
-    // 31556736 seconds is roughly 1 year
-    else if (seconds < 31556736) {
-        const days = _.round(seconds / 86400, 1);
-        return `${days} days`;
-    }
-    else {
-        const years = _.round(seconds / 31556736, 1);
-        return `${years} years`;
-    }
-};
-
-util.asBar = (n) => {
-    let bar = '';
-
-    for (let i = 0; i < n; i++) {
-        bar = bar + '█';
-    }
-
-    return bar;
-};
-
-// Returns the input number rounded up or down to 1 sigfig.
-util.sigfigRound = (n, sigfigs) => {
-    sigfigs = sigfigs || 1;
-
-    const log = Math.log10(Math.abs(n));
-
-    return _.round(
-        n,
-        sigfigs - (1 + Math.floor(log))
-    );
-};
-
-util.testSigfigRound = () => {
-    for (let f = 1; f < 3; f++) {
-        for (let n = 1; n < 1000000; n++) {
-            const output = util.sigfigRound(n, f);
-            const figs = util.sigfigsOf(output);
-
-            if (figs > f) {
-                const originalFigs = util.sigfigsOf(n);
-                if (originalFigs < f) {
-                    continue;
-                }
-
-                // Note that this test does not check whether it gets rid of TOO MANY sigfigs. In the case of (1950, 2) this seems hard to test for. It is correct to oversimplify to 2000, which has only 1 sigfig.
-
-                util.logError(`In testSigfigRound(), sigfigRound(${n}, ${f}) === ${output}. This has ${figs} sigfigs, but it should have ${f}.`);
-                return false;
-            }
-        }
-    }
-
-    return true;
-};
-
-util.sigfigsOf = (n) => {
-    if (! util.isNumber(n)) {
-        n = parseFloat(n);
-    }
-
-    const s = n.toString();
-    const parts = s.split('.');
-
-    // Post decimal
-    if (parts[1]) {
-        if (parts[0] === '0') {
-            // eg 0.0705 => 3
-            const zeroes = util.charCountAtStart(parts[1], '0');
-            return parts[1].length - zeroes;
-        }
-        else {
-            // eg 400.01 => 5
-            return parts[0].length + parts[1].length;
-        }
-    }
-    else {
-        // eg 108000 => 3
-        const zeroes = util.charCountAtEnd(s, '0');
-        return s.length - zeroes;
-    }
-};
-
-// Call like 'await Util.sleep(6);'
-util.sleep = (seconds) =>
-    new Promise(
-        funcWhenResolved => setTimeout(funcWhenResolved, seconds * 1000)
-    );
-
-// eg ('00705', '0') => 2
-util.charCountAtStart = (str, char) => {
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] !== char) {
-            return i;
-        }
-    }
-
-    return str.length;
-};
-
-// eg ('108000', '0') => 3
-util.charCountAtEnd = (str, char) => {
-    for (let i = str.length - 1; i >= 0; i--) {
-        if (str[i] !== char) {
-            return (str.length - 1) - i;
-        }
-    }
-
-    return str.length;
-};
-
-util.isCapitalized = (s) => {
-    // TODO: /[A-Z]/ is more like 'contains capitals'.
-    return /[A-Z]/.test(s);
-};
-
-util.isAllCaps = (s) => {
-    // TODO implement this.
-    return false;
-};
-
-util.stringify = function (x) {
-    return JSON.stringify(
-        x,
-        undefined,
-        '    '
-    );
-};
-
-// TODO util.yaml(x)
-
-util.log = function (input, tag) {
-    // Later: Use chalk functions instead.
-    // const TAG_COLORS = {
-    //     error: 'red',
-    //     warn: 'yellow',
-    //     beacon: 'purple',
-    //     event: 'blue',
-    //     noisy: 'cyan',
-    //     debug: 'green'
-    // };
-
-    tag = tag || 'event';
-    const tagStr = tag.toUpperCase();
-    // const tagColor = TAG_COLORS[tag.toLowerCase()] || TAG_COLORS['event'];
-    // const tagStr = tagColor ?
-    //     util.colored(tag.toUpperCase(), tagColor) :
-    //     tag;
-
-    const dateTime = moment().format('YYYY MMM D hh:mm:ss.S');
-
-    const info = util.isString(input) ?
-        input :
-        util.stringify(input);
-
-    // Later: Red error and beacon text
-    console.log(`  ${tagStr} (${ dateTime }) \n${ info }\n`);
-};
-
-util.logDebug = function (input) {
-    util.log(input, 'debug');
-};
-
-util.logWarn = function (input) {
-    util.log(input, 'warn');
-};
-
-util.logError = function (input) {
-    util.log(input, 'error');
-};
-
-util.makeEnum = (vals) => {
-    const dict = {};
-    for (let val of vals) {
-        dict[util.capitalized(val)] = util.uncapitalized(val);
-    }
-
-    return dict;
-};
-
-util.withProp = (array, key) => {
-    return array.filter(x => x[key]);
-};
-
-util.toJson = (x) => {
-    return x && util.isFunction(x.toJson) ?
-        x.toJson() :
-        x;
-}
-
-// Useful for dicts of objects like wGenerator.aliasTables
-util.dictToJson = (dict) => {
-    const serialized = {};
-
-    Object.keys(dict)
-        .forEach(
-            key => {
-                const value = dict[key];
-
-                serialized[key] = (value && value.toJson) ?
-                    value.toJson() :
-                    value;
-            }
-        );
-
-    return serialized;
-};
-
-// Myers-Briggs Type Indicator (personality category)
-util.mbti = () => {
-    return [
-        util.randomOf(['I', 'E']),
-        util.randomOf(['S', 'N']),
-        util.randomOf(['T', 'F']),
-        util.randomOf(['P', 'J'])
-    ]
-    .join('');
-};
-
-util.testAll = () => {
-    util.testPrettyDistance();
-    util.testCamelCase();
-    util.testPadSides();
-    util.testSigfigRound();
-    util.logDebug(`Done with unit tests for Util module :)`);
-};
-
-// util.testAll();
+// Util.testAll();
 
 },{"comma-number":44,"lodash":78,"moment":79}],84:[function(require,module,exports){
 'use strict';
@@ -38582,8 +38700,8 @@ class WNode {
 
         const embellishments = {
             LG: '📖',
-            LE: '💎 ',
-            CE: '👁 ',
+            LE: '💎',
+            CE: '',
             CG: '🔥'
         };
 

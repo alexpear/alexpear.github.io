@@ -27066,10 +27066,11 @@ Halo:
                 cost: 26
                 damage: 27
                 durability: 44
-                gear: Has bodyguard brutes
                 group: Brute
                 name: Brute Chieftain
                 preferredRange: 0
+                shields: 200
+                shieldDelay: 4
                 size: 3
                 speed: 2
                 tags: Ground
@@ -27135,7 +27136,7 @@ Halo:
                 damage: 23
                 durability: 27
                 name: Corvette
-                preferredRange: 25
+                preferredRange: 14
                 size: 6
                 speed: 6
                 tags: Air
@@ -27148,7 +27149,7 @@ Halo:
                 damage: 24
                 durability: 25
                 name: Covenant Armor division
-                preferredRange: 42
+                preferredRange: 14
                 scale: Battalion
                 size: 6
                 type: Explosive
@@ -27203,6 +27204,8 @@ Halo:
                 accuracy: 3
                 durability: 27
                 name: Elite
+                shields: 50
+                shieldRegen: 10
                 speed: 3
                 size: 3
                 items:
@@ -27331,7 +27334,7 @@ Halo:
                 damage: 12
                 durability: 11
                 name: Jackal focus rifle
-                preferredRange: 29
+                preferredRange: 14
                 scale: Individual
                 size: 2
                 type: Kinetic
@@ -27437,7 +27440,7 @@ Halo:
                 damage: 40
                 durability: 25
                 name: Scarab + crew
-                preferredRange: 42
+                preferredRange: 14
                 scale: Individual
                 size: 12
                 type: Explosive
@@ -27447,7 +27450,7 @@ Halo:
                 damage: 40
                 durability: 25
                 name: Scarab division
-                preferredRange: 42
+                preferredRange: 14
                 scale: Battalion
                 size: 12
                 type: Explosive
@@ -27510,7 +27513,7 @@ Halo:
                 durability: 12
                 group: Jackal
                 name: Sniper Jackals beam rifle
-                preferredRange: 35
+                preferredRange: 14
                 size: 2
                 speed: 2
                 tags: Ground
@@ -27995,9 +27998,9 @@ Halo:
                 classic: 7
                 cost: 20
                 durability: 15
-                name: Combat Forms (Human)
+                name: Combat Form (Human)
                 size: 2
-                speed: 3
+                speed: 2
                 tags: Ground
                 items:
                     - Item.CombatFormCQC
@@ -28467,7 +28470,7 @@ Halo:
                 damage: 13
                 durability: 24
                 name: AA Tower
-                preferredRange: 25
+                preferredRange: 14
                 size: 6
                 speed: 0
                 tags: Ground
@@ -28789,7 +28792,7 @@ Halo:
                 damage: 12
                 durability: 16
                 name: Marine Sniper
-                preferredRange: 29
+                preferredRange: 14
                 scale: Individual
                 size: 2
                 type: Kinetic
@@ -28876,7 +28879,7 @@ Halo:
                 durability: 14
                 group: Marine
                 name: Marines sniper rifle
-                preferredRange: 35
+                preferredRange: 14
                 size: 2
                 speed: 2
                 tags: Ground
@@ -28886,7 +28889,7 @@ Halo:
                 damage: 40
                 durability: 30
                 name: Missile Bunker
-                preferredRange: 83333
+                preferredRange: 14
                 scale: Individual
                 size: 6
                 type: Explosive
@@ -29058,7 +29061,7 @@ Halo:
                 damage: 32
                 durability: 20
                 name: Scorpion
-                preferredRange: 33
+                preferredRange: 9
                 scale: Individual
                 size: 6
                 speed: 1.5
@@ -29071,7 +29074,7 @@ Halo:
                 damage: 32
                 durability: 20
                 name: Scorpion division
-                preferredRange: 25
+                preferredRange: 14
                 scale: Battalion
                 size: 6
                 type: Explosive
@@ -29100,6 +29103,7 @@ Halo:
                 durability: 21
                 group: Spartan
                 name: Spartan BR
+                shields: 50
                 size: 2.5
                 speed: 3
                 tags: Ground
@@ -29138,7 +29142,7 @@ Halo:
                 durability: 21
                 group: Spartan
                 name: Spartan sniper rifle
-                preferredRange: 38
+                preferredRange: 14
                 size: 2
                 speed: 3
                 tags: Ground
@@ -29154,7 +29158,7 @@ Halo:
                 damage: 40
                 durability: 21
                 name: Tactical MAC
-                preferredRange: 833
+                preferredRange: 14
                 scale: Individual
                 size: 6
                 speed: 0
@@ -29166,7 +29170,7 @@ Halo:
                 damage: 40
                 durability: 25
                 name: UNSC captured Scarab
-                preferredRange: 42
+                preferredRange: 14
                 scale: Battalion
                 size: 12
                 type: Explosive
@@ -29316,7 +29320,7 @@ Halo:
                 damage: 67
                 gear: Hannibal Scorpion
                 name: Hannibal Cannon
-                preferredRange: 50
+                preferredRange: 14
                 rof: 1
                 type: Fire
                 color: blue
@@ -29402,7 +29406,7 @@ Halo:
                 damage: 23
                 accuracy: 7
                 name: Mammoth MAC
-                preferredRange: 40
+                preferredRange: 14
                 size: 6
                 speed: 2
                 color: red
@@ -29517,7 +29521,7 @@ Halo:
                 damage: 47
                 accuracy: 8
                 name: Scorpion Cannon
-                preferredRange: 150
+                preferredRange: 14
                 rof: 0.5
                 type: Explosive
                 color: grey
@@ -29567,7 +29571,7 @@ Halo:
                 damage: 10
                 gear: Speed includes reloading and a little aiming
                 name: Sniper Rifle
-                preferredRange: 40
+                preferredRange: 14
                 rof: 1
                 tags: infantry
                 type: Kinetic
@@ -29887,7 +29891,7 @@ class Creature {
 
         if (this.cooldownEnds <= Event.t) {
             if (this.shields < this.template.shields) {
-                this.shields = this.shields + this.template.shieldRegen;
+                this.shields = this.shields + (this.template.shieldRegen || 25);
 
                 if (this.shields >= this.template.shields) {
                     this.shields = this.template.shields;
@@ -29918,9 +29922,16 @@ class Creature {
         return this.template.durability + (this.status.durability || 0);
     }
 
+    // Param currently unused, but could affect choice of weapon in future.
     weapon (targetSquad) {
         return this.template.items[0]; // LATER choose a weapon, or have a better preset system.
         // LATER use this.items, to track things theyve picked up during battle.
+    }
+
+    preferredRange (targetSquad) {
+        const weapon = this.weapon(targetSquad);
+
+        return weapon?.preferredRange || this.template.preferredRange || 1;
     }
 
     // Returns number in range [0, 1]
@@ -30067,6 +30078,8 @@ class Creature {
         if (harm < 1) { return; }
 
         const harmedTrait = Util.randomOf(['speed', 'accuracy', 'durability']);
+
+        /* LATER support tough, unshielded, slow creatures. Perhaps omit low traits (eg speed) from harmedTrait random array above if it's zero (or if harm > speed()).*/
 
         if (this.status[harmedTrait]) {
             this.status[harmedTrait] -= Math.floor(harm);
@@ -30457,6 +30470,7 @@ class ScifiWarband {
 
                 await Util.sleep(1);
                 this.setHTML();
+                // LATER - Bug: UI shows a move, does not sleep(1), and also shows a attack
                 // LATER: A replay UI where user steps forwards or back (activation by activation) thru the replay, instead of sleep()ing.
             }
 
@@ -30937,13 +30951,26 @@ class ScifiWarband {
         const foeInfo = this.nearestFoes(curSquad);
         const imperfection = Math.abs(foeInfo.dist - curSquad.preferredDistance());
         const positionRating = Math.max(
-            10 - imperfection,
+            20 - imperfection,
             0
         );
 
+        const desire = positionRating / (positionRating + 1);
+
+        if (! desire) {
+            throw new Error(Util.stringify({
+                curSquad: curSquad.toJson(),
+                dist: foeInfo.dist,
+                imperfection,
+                positionRating,
+                desire,
+                target: foeInfo.foes[0].toJson(),
+            }));
+        }
+
         return {
             target: foeInfo.foes[0],
-            desire: positionRating / (positionRating + 1),
+            desire,
         };
     }
 
@@ -31038,6 +31065,7 @@ class ScifiWarband {
                 '';
 
             Util.log(`t=${Event.t}: ${squad.terse()} attack ${targetTerse}: ${hitCount} hits, ${koCount} KOs${eliminationMessage}`);
+            // LATER i want the logs here or at round start to express exactly how a straggler is injured.
 
             this.tidyKOs(action.target, koCount);
             return;
@@ -31404,11 +31432,16 @@ class ScifiWarband {
 
     exampleSquads () {
         const factionA = Templates.randomFaction();
-        const factionB = Templates.randomFaction();
+
+        let factionB;
+        do { factionB = Templates.randomFaction(); }
+        while (factionA === factionB);
+
+        // const factionB = Templates.randomFaction();
 
         const allSquads = [];
 
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < ScifiWarband.WINDOW_SQUARES; i++) {
             allSquads.push(Squad.randomOfFaction(
                 factionA,
                 new Coord(i, 0)
@@ -31621,9 +31654,10 @@ class Squad {
         return squad.visibility >= coord.distanceTo(squad.coord);
     }
 
+    // LATER standardize name to preferredRange()
     preferredDistance () {
         const prefs = this.activeCreatures().map(
-            cr => cr.weapon().preferredRange
+            cr => cr.preferredRange()
         );
 
         return Util.mean(prefs);
@@ -31743,7 +31777,7 @@ class Squad {
 
         const name = representative?.template.name || `<empty Squad>`;
 
-        return `${this.quantity()} ${name}s ${this.coord.toString()}`;
+        return `${this.quantity()}x ${name} ${this.coord.toString()}`;
     }
 
     // For debugging
@@ -31852,6 +31886,8 @@ const yaml = require('js-yaml');
 
 class Templates {
     static init () {
+        Templates.errors = [];
+
         // json: true means duplicate keys in a mapping will override values rather than throwing an error.
         const Config = yaml.load(ConfigString, { json: true });
 
@@ -31906,6 +31942,10 @@ class Templates {
         // Util.logDebug(entryNotes);
 
         Templates.logDiagnostics(entryNotes);
+
+        if (Templates.errors.length >= 1) {
+            throw new Error(Templates.errors.join(' | '));
+        }
     }
 
     static setupAnything (obj, pathArray) {
@@ -31914,6 +31954,10 @@ class Templates {
         // LATER if pathArray[3] is camelCase (ie contains [a-z][A-Z]), add spaces back into the name using replaceAll(regex, ' ')
         obj.name = obj.name || pathArray[pathArray.length - 1];
         obj.faction = obj.faction || pathArray[1];
+
+        if (obj.preferredRange && obj.preferredRange > 15) {
+            Templates.errors.push(Util.stringify(obj));
+        }
 
         // Links
         if (obj.creature) {

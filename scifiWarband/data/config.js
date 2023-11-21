@@ -61,10 +61,11 @@ Halo:
                 cost: 26
                 damage: 27
                 durability: 44
-                gear: Has bodyguard brutes
                 group: Brute
                 name: Brute Chieftain
                 preferredRange: 0
+                shields: 200
+                shieldDelay: 4
                 size: 3
                 speed: 2
                 tags: Ground
@@ -130,7 +131,7 @@ Halo:
                 damage: 23
                 durability: 27
                 name: Corvette
-                preferredRange: 25
+                preferredRange: 14
                 size: 6
                 speed: 6
                 tags: Air
@@ -143,7 +144,7 @@ Halo:
                 damage: 24
                 durability: 25
                 name: Covenant Armor division
-                preferredRange: 42
+                preferredRange: 14
                 scale: Battalion
                 size: 6
                 type: Explosive
@@ -198,6 +199,8 @@ Halo:
                 accuracy: 3
                 durability: 27
                 name: Elite
+                shields: 50
+                shieldRegen: 10
                 speed: 3
                 size: 3
                 items:
@@ -326,7 +329,7 @@ Halo:
                 damage: 12
                 durability: 11
                 name: Jackal focus rifle
-                preferredRange: 29
+                preferredRange: 14
                 scale: Individual
                 size: 2
                 type: Kinetic
@@ -432,7 +435,7 @@ Halo:
                 damage: 40
                 durability: 25
                 name: Scarab + crew
-                preferredRange: 42
+                preferredRange: 14
                 scale: Individual
                 size: 12
                 type: Explosive
@@ -442,7 +445,7 @@ Halo:
                 damage: 40
                 durability: 25
                 name: Scarab division
-                preferredRange: 42
+                preferredRange: 14
                 scale: Battalion
                 size: 12
                 type: Explosive
@@ -505,7 +508,7 @@ Halo:
                 durability: 12
                 group: Jackal
                 name: Sniper Jackals beam rifle
-                preferredRange: 35
+                preferredRange: 14
                 size: 2
                 speed: 2
                 tags: Ground
@@ -990,9 +993,9 @@ Halo:
                 classic: 7
                 cost: 20
                 durability: 15
-                name: Combat Forms (Human)
+                name: Combat Form (Human)
                 size: 2
-                speed: 3
+                speed: 2
                 tags: Ground
                 items:
                     - Item.CombatFormCQC
@@ -1462,7 +1465,7 @@ Halo:
                 damage: 13
                 durability: 24
                 name: AA Tower
-                preferredRange: 25
+                preferredRange: 14
                 size: 6
                 speed: 0
                 tags: Ground
@@ -1784,7 +1787,7 @@ Halo:
                 damage: 12
                 durability: 16
                 name: Marine Sniper
-                preferredRange: 29
+                preferredRange: 14
                 scale: Individual
                 size: 2
                 type: Kinetic
@@ -1871,7 +1874,7 @@ Halo:
                 durability: 14
                 group: Marine
                 name: Marines sniper rifle
-                preferredRange: 35
+                preferredRange: 14
                 size: 2
                 speed: 2
                 tags: Ground
@@ -1881,7 +1884,7 @@ Halo:
                 damage: 40
                 durability: 30
                 name: Missile Bunker
-                preferredRange: 83333
+                preferredRange: 14
                 scale: Individual
                 size: 6
                 type: Explosive
@@ -2053,7 +2056,7 @@ Halo:
                 damage: 32
                 durability: 20
                 name: Scorpion
-                preferredRange: 33
+                preferredRange: 9
                 scale: Individual
                 size: 6
                 speed: 1.5
@@ -2066,7 +2069,7 @@ Halo:
                 damage: 32
                 durability: 20
                 name: Scorpion division
-                preferredRange: 25
+                preferredRange: 14
                 scale: Battalion
                 size: 6
                 type: Explosive
@@ -2095,6 +2098,7 @@ Halo:
                 durability: 21
                 group: Spartan
                 name: Spartan BR
+                shields: 50
                 size: 2.5
                 speed: 3
                 tags: Ground
@@ -2133,7 +2137,7 @@ Halo:
                 durability: 21
                 group: Spartan
                 name: Spartan sniper rifle
-                preferredRange: 38
+                preferredRange: 14
                 size: 2
                 speed: 3
                 tags: Ground
@@ -2149,7 +2153,7 @@ Halo:
                 damage: 40
                 durability: 21
                 name: Tactical MAC
-                preferredRange: 833
+                preferredRange: 14
                 scale: Individual
                 size: 6
                 speed: 0
@@ -2161,7 +2165,7 @@ Halo:
                 damage: 40
                 durability: 25
                 name: UNSC captured Scarab
-                preferredRange: 42
+                preferredRange: 14
                 scale: Battalion
                 size: 12
                 type: Explosive
@@ -2311,7 +2315,7 @@ Halo:
                 damage: 67
                 gear: Hannibal Scorpion
                 name: Hannibal Cannon
-                preferredRange: 50
+                preferredRange: 14
                 rof: 1
                 type: Fire
                 color: blue
@@ -2397,7 +2401,7 @@ Halo:
                 damage: 23
                 accuracy: 7
                 name: Mammoth MAC
-                preferredRange: 40
+                preferredRange: 14
                 size: 6
                 speed: 2
                 color: red
@@ -2512,7 +2516,7 @@ Halo:
                 damage: 47
                 accuracy: 8
                 name: Scorpion Cannon
-                preferredRange: 150
+                preferredRange: 14
                 rof: 0.5
                 type: Explosive
                 color: grey
@@ -2562,7 +2566,7 @@ Halo:
                 damage: 10
                 gear: Speed includes reloading and a little aiming
                 name: Sniper Rifle
-                preferredRange: 40
+                preferredRange: 14
                 rof: 1
                 tags: infantry
                 type: Kinetic
