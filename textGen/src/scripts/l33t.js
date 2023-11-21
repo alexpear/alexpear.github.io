@@ -4,9 +4,9 @@
 
 const fs = require('fs');
 const WORDS_PATH = '/usr/share/dict/words';
-const HexCode = require('./hexCode.js');
-const TextGen = require('./textGen.js');
-const Util = require('../../util/util.js');
+const HexCode = require('../hexCode.js');
+const TextGen = require('../textGen.js');
+const Util = require('../../../util/util.js');
 
 class L33tWords extends TextGen {
     constructor () {
