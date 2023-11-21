@@ -178,7 +178,7 @@
 
           const textElement = document.createElement('p');
           const siteName = randomOf(FACILITIES);
-          textElement.setHTML(withArrow(siteName));
+          textElement.innerHTML = withArrow(siteName);
           button.appendChild(textElement);
 
           const directionDiv = document.createElement('div');
