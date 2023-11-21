@@ -199,6 +199,8 @@ Halo:
                 accuracy: 3
                 durability: 27
                 name: Elite
+                shields: 50
+                shieldRegen: 10
                 speed: 3
                 size: 3
                 items:
@@ -991,9 +993,9 @@ Halo:
                 classic: 7
                 cost: 20
                 durability: 15
-                name: Combat Forms (Human)
+                name: Combat Form (Human)
                 size: 2
-                speed: 3
+                speed: 2
                 tags: Ground
                 items:
                     - Item.CombatFormCQC
@@ -1639,6 +1641,8 @@ Halo:
                 name: Mantis
                 preferredRange: 6
                 scale: Individual
+                shields: 200
+                shieldDelay: 3
                 size: 4
                 speed: 1.5
                 type: Explosive
@@ -2096,6 +2100,7 @@ Halo:
                 durability: 21
                 group: Spartan
                 name: Spartan BR
+                shields: 50
                 size: 2.5
                 speed: 3
                 tags: Ground
