@@ -580,13 +580,26 @@ class ScifiWarband {
         const foeInfo = this.nearestFoes(curSquad);
         const imperfection = Math.abs(foeInfo.dist - curSquad.preferredDistance());
         const positionRating = Math.max(
-            10 - imperfection,
+            20 - imperfection,
             0
         );
 
+        const desire = positionRating / (positionRating + 1);
+
+        if (! desire) {
+            throw new Error(Util.stringify({
+                curSquad: curSquad.toJson(),
+                dist: foeInfo.dist,
+                imperfection,
+                positionRating,
+                desire,
+                target: foeInfo.foes[0].toJson(),
+            }));
+        }
+
         return {
             target: foeInfo.foes[0],
-            desire: positionRating / (positionRating + 1),
+            desire,
         };
     }
 
@@ -1048,11 +1061,16 @@ class ScifiWarband {
 
     exampleSquads () {
         const factionA = Templates.randomFaction();
-        const factionB = Templates.randomFaction();
+
+        let factionB;
+        do { factionB = Templates.randomFaction(); }
+        while (factionA === factionB);
+
+        // const factionB = Templates.randomFaction();
 
         const allSquads = [];
 
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < ScifiWarband.WINDOW_SQUARES; i++) {
             allSquads.push(Squad.randomOfFaction(
                 factionA,
                 new Coord(i, 0)

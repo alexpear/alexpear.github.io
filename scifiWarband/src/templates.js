@@ -8,6 +8,8 @@ const yaml = require('js-yaml');
 
 class Templates {
     static init () {
+        Templates.errors = [];
+
         // json: true means duplicate keys in a mapping will override values rather than throwing an error.
         const Config = yaml.load(ConfigString, { json: true });
 
@@ -62,6 +64,10 @@ class Templates {
         // Util.logDebug(entryNotes);
 
         Templates.logDiagnostics(entryNotes);
+
+        if (Templates.errors.length >= 1) {
+            throw new Error(Templates.errors.join(' | '));
+        }
     }
 
     static setupAnything (obj, pathArray) {
@@ -70,6 +76,10 @@ class Templates {
         // LATER if pathArray[3] is camelCase (ie contains [a-z][A-Z]), add spaces back into the name using replaceAll(regex, ' ')
         obj.name = obj.name || pathArray[pathArray.length - 1];
         obj.faction = obj.faction || pathArray[1];
+
+        if (obj.preferredRange && obj.preferredRange > 15) {
+            Templates.errors.push(Util.stringify(obj));
+        }
 
         // Links
         if (obj.creature) {

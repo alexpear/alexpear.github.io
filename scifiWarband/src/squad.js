@@ -98,9 +98,10 @@ class Squad {
         return squad.visibility >= coord.distanceTo(squad.coord);
     }
 
+    // LATER standardize name to preferredRange()
     preferredDistance () {
         const prefs = this.activeCreatures().map(
-            cr => cr.weapon().preferredRange
+            cr => cr.preferredRange()
         );
 
         return Util.mean(prefs);
@@ -220,7 +221,7 @@ class Squad {
 
         const name = representative?.template.name || `<empty Squad>`;
 
-        return `${this.quantity()} ${name}s ${this.coord.toString()}`;
+        return `${this.quantity()}x ${name} ${this.coord.toString()}`;
     }
 
     // For debugging
