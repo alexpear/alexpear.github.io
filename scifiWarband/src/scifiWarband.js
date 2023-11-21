@@ -99,6 +99,7 @@ class ScifiWarband {
 
                 await Util.sleep(1);
                 this.setHTML();
+                // LATER - Bug: UI shows a move, does not sleep(1), and also shows a attack
                 // LATER: A replay UI where user steps forwards or back (activation by activation) thru the replay, instead of sleep()ing.
             }
 

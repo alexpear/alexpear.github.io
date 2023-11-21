@@ -45,7 +45,7 @@ class Creature {
 
         if (this.cooldownEnds <= Event.t) {
             if (this.shields < this.template.shields) {
-                this.shields = this.shields + this.template.shieldRegen;
+                this.shields = this.shields + (this.template.shieldRegen || 25);
 
                 if (this.shields >= this.template.shields) {
                     this.shields = this.template.shields;
@@ -76,9 +76,16 @@ class Creature {
         return this.template.durability + (this.status.durability || 0);
     }
 
+    // Param currently unused, but could affect choice of weapon in future.
     weapon (targetSquad) {
         return this.template.items[0]; // LATER choose a weapon, or have a better preset system.
         // LATER use this.items, to track things theyve picked up during battle.
+    }
+
+    preferredRange (targetSquad) {
+        const weapon = this.weapon(targetSquad);
+
+        return weapon?.preferredRange || this.template.preferredRange || 1;
     }
 
     // Returns number in range [0, 1]
@@ -186,7 +193,7 @@ class Creature {
         if (this.shields) {
             this.cooldownEnds = Event.t + (this.template.shieldDelay || 2);
 
-            if (weaponTemplate.attackType === Creature.ATTACK_TYPE.Plasma) {
+            if (weaponTemplate.attackType === Templates.ATTACK_TYPE.Fire) {
                 this.shields -= damage * 2;
 
                 if (this.shields < 0) {
