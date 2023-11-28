@@ -107,7 +107,6 @@ class WikiWriter {
     }
 
     setupPages () {
-
         // console.log(`setupPages() - this.structure: ${Util.stringify(this.structure)}`);
 
         this.pages = [];
@@ -143,14 +142,18 @@ class WikiWriter {
     pageDesc (page) {
         let desc = `${page.title} is a ${page.typeName()}`;
 
-        const star = this.structure[page.path[0]];
-        const planet = this.structure[page.path[1]];
+        const starKey = page.path[0];
+        const planetKey = page.path[1];
+
+        const star = this.structure[ starKey ];
+        const planet = this.structure[ starKey ][ planetKey ];
 
         // Util.logDebug({
         //     desc,
         //     star,
         //     planet,
         //     page,
+        //     pageTypeName: page.typeName(),
         //     context: `pageDesc() top`,
         // });
 
@@ -172,7 +175,7 @@ class WikiWriter {
 
             desc += ` orbiting the ${parentType} ${parent}.`;
 
-            if (page.typeName === 'planet') {
+            if (page.typeName() === 'planet' && ! Util.isString(planet)) {
                 const orbitList = Object.keys(planet)
                     .map(moon => Util.fromCamelCase(moon))
                     .join(', ');
