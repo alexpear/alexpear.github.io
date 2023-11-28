@@ -98,7 +98,7 @@ class WikiWriter {
                 neoZeo: 'hide',
                 samox: 'hide', // Samoa
                 micropolis: 'hide', // Micronesia
-                hadronii: 'hide', // Hawai'i
+                hedronii: 'hide', // Hawai'i
             },
             niflheim: {
                 erebus: 'hide', // Antarctica
