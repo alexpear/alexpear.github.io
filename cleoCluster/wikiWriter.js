@@ -106,6 +106,84 @@ class WikiWriter {
         };
     }
 
+    setupPages () {
+
+        // console.log(`setupPages() - this.structure: ${Util.stringify(this.structure)}`);
+
+        this.pages = [];
+
+        for (let starKey in this.structure) {
+            // console.log(`operating on star ${starKey}`);
+            const star = new Page(starKey);
+            this.pages.push(star);
+
+            for (let planetKey in this.structure[starKey]) {
+                const planet = new Page(starKey, planetKey);
+                this.pages.push(planet);
+
+                const planetStructure = this.structure[starKey][planetKey];
+                if (Util.isString(planetStructure)) { continue; }
+
+                for (let moonKey in planetStructure) {
+                    const moon = new Page(starKey, planetKey, moonKey);
+                    this.pages.push(moon);
+
+                    // console.log(`operating on moon ${moonKey} - starKey ${starKey}, planetKey ${planetKey}`)
+                }
+            }
+        }
+
+        this.pages.map(p => console.log(this.pageDesc(p)));
+    }
+
+    /* Tactica Mania is a moon orbiting the planet Australis.
+    Australis is a planet orbiting the star Pacificus. It is orbited by: Tactica Mania.
+    Pacificus is a star. It is orbited by: Australis, Technofiji, Neo Zeo, ..., & Hedronii.
+    */
+    pageDesc (page) {
+        let desc = `${page.title} is a ${page.typeName()}`;
+
+        const star = this.structure[page.path[0]];
+        const planet = this.structure[page.path[1]];
+
+        // Util.logDebug({
+        //     desc,
+        //     star,
+        //     planet,
+        //     page,
+        //     context: `pageDesc() top`,
+        // });
+
+        if (page.typeName() === 'star') {
+            const orbitList = Object.keys(star)
+                .map(planet => Util.fromCamelCase(planet))
+                .join(', ');
+
+            desc += `. It is orbited by: ${orbitList}.`;
+        }
+        else {
+            const parentIndex = page.path.length - 2;
+            const parent = Util.fromCamelCase(
+                page.path[parentIndex]
+            );
+            const parentType = parentIndex === 0 ?
+                'star' :
+                'planet';
+
+            desc += ` orbiting the ${parentType} ${parent}.`;
+
+            if (page.typeName === 'planet') {
+                const orbitList = Object.keys(planet)
+                    .map(moon => Util.fromCamelCase(moon))
+                    .join(', ');
+
+                desc += ` It is orbited by: ${orbitList}.`;
+            }
+        }
+
+        return desc;
+    }
+
     htmlPassage (content) {
         return this.asElement(content, 'p');
     }
@@ -117,6 +195,29 @@ class WikiWriter {
 
     static run () {
         const wiki = new WikiWriter();
+        wiki.setupPages();
+    }
+}
+
+class Page {
+    constructor (starKey, planetKey, moonKey) {
+        this.path = [starKey, planetKey, moonKey]
+            .filter(k => !! k);
+
+        this.key = this.path[this.path.length - 1];
+        this.title = Util.fromCamelCase(this.key);
+
+        // this.path = this.path.map(k => Util.fromCamelCase(k));
+    }
+
+    typeName () {
+        const MAP = {
+            1: 'star',
+            2: 'planet',
+            3: 'moon',
+        };
+
+        return MAP[this.path.length];
     }
 }
 
