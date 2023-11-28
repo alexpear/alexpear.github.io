@@ -2,7 +2,7 @@
 
 // Generates HTML wiki pages
 
-const Util = require('../../util/util.js');
+const Util = require('../util/util.js');
 
 class WikiWriter {
     constructor () {
