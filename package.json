@@ -43,6 +43,7 @@
     "buildTextGen": "browserify textGen/src/*.js -o textGen/bundle.js",
     "buildVillainverse": "browserify villainverse/src/*.js -o villainverse/bundle.js",
     "buildScifiWarband": "node scifiWarband/src/build/parser.js && browserify scifiWarband/src/*.js -o scifiWarband/bundle.js",
+    "buildCleoCluster": "node cleoCluster/wikiWriter.js",
     "gridWar": "npm run buildGroupGrid && npm run server",
     "server": "http-server",
     "cape": "node wnode/cape.js",
