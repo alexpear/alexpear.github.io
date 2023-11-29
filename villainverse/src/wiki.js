@@ -186,6 +186,7 @@ class Wiki {
                     e: 'china',
                     se: 'junglebook',
                     s: 'pridelands',
+                    exotic3: 'zootopia',
                 }
             },
             junglebook: {
@@ -240,6 +241,7 @@ class Wiki {
                 neighbors: {
                     exotic: 'britain',
                     exotic2: 'pleasureisland',
+                    exotic3: 'wonderland',
                 }
             },
             wonderland: {
@@ -247,6 +249,7 @@ class Wiki {
                 desc: 'In your house or mine, the pet is the guest of humanity. But in different worlds it is otherwise. The Red Queen is in truth a kitten, but to call her that is to violate her fiercest edict, since a cat on the throne would make no sense.',
                 neighbors: {
                     exotic2: 'britain',
+                    exotic3: 'neverneverland',
                 }
             },
             strangeworld: {
@@ -263,7 +266,7 @@ class Wiki {
                 neighbors: {
                     exotic: 'bambi',
                     exotic2: 'pridelands',
-                    exotic3: 'wonderland',
+                    exotic3: 'agrabah',
                 }
             },
         };
@@ -303,10 +306,13 @@ class Wiki {
                 desc: 'The children of Pleasure Island know well the rumor that eels will grab your ankle & pull you into the sea. Thinking their peers liars, they swim anyway. On one occasion, an overambitious eel was herself captured thanks to the whale Monstro, & held prisoner in an old bathtub. When thousands of murky lobsters crawled up the beach to rescue her, the children decided to fight to the death. And they would surely have been pinched to smithereens, had not a winged woman in an elegant blue dress descended, fighting on the front lines with them.',
             },
             greeceursula: {
-                desc: 'Even water dies as it pours down the River Styx. Draining from the ocean to Tartarus, it bears the Mermaid Kingdom\'s toughest strike force of sharks & lobsters, who tear into the defending shades of Persephone, ruler of the underworld in Hades\' absence. Ferryman Chiron flees before Ursula\'s new allies: beastbodied Scylla & Thetis, mother of Achilles.',
+                desc: 'Even water dies as it pours down the River Styx. Draining from the ocean to Tartarus, it bears the Mermaid Kingdom\'s toughest strike force of sharks & lobsters, who tear into the defending shades of Persephone, ruler of the underworld in Hades\' absence. Ferryman Chiron flees before Ursula\'s new allies: beastbodied Scylla & austere Thetis, mother of Achilles.',
             },
             agrabahursula: {
-                desc: '',
+                desc: 'At the feet of Agrabah\'s walls huddle throngs of pilgrims from every land. And here shelter too two lovers, who arrived in a battered regal stagecoach full of knickknacks & fish. Suddenly, they are assailed by two enchanted sharks, their tails replaced with powerful legs! Fleeing these attackers, the redheaded lover trips & stumbles. As the sharks leap at her, she twists & draws two finecrafted blades from the scabbards on her back. In a crash of knees & fins, she slashes the hunters dead, for her arms are her most skillful limbs.',
+            },
+            agrabahzootopia: {
+                desc: 'Every full moon in Zootopia\'s Sahara Square, the winged Simurgh carries armed emissaries from Agrabah. Bridled hyenas she bears, with hares in the saddles. These intruders are resisted immediately by Zootopia\'s Herbivore Corps. Tortoise veterans strike at the hyenas with spears. Gorilla charioteers toss nets to capture the away-darting fallen hares.',
             },
             atlantisursula: {
                 desc: 'As giant squid grapple the sensors of the Atlantean Leviathan, a delegation of sharks rushes past, surging into the waterways of the lost city. They carry shipwreck gold & paperwork. Ursula wishes to make a generous donation to the Smithsonian Institution, & become a minority shareholder in the Ulysses expedition. For Ursula\'s endgame is to be queen of Atlantis & the one profession the Americans forgot to bring is lawyer.',
@@ -333,7 +339,7 @@ class Wiki {
                 desc: 'The fairies of Neverland were born in London, but fled its iron fences, iron mills, iron doorknobs. Fey armies of Maleficent regularly alight upon Neverland\'s shores to steal its fabulous treasures. But the locals are wily & stubborn, & defend their isle like crows against hawks.',
             },
             britainwonderland: {
-                desc: '',
+                desc: 'Many beings have failed to map Wonderland. One cartographer, called Alice of Oxford, instead models that land as a probabilistic vector grid, with each square of the grid sending you up, down, left, or right with peculiar likelihoods. These peculiarities can be summed into overall chances of being ejected off the grid into various other lands. Alice landed in Northern Oz, where she now lives with her scarecrow husband.',
             },
             britainpridelands: {
                 desc: 'English ships bearing gold & dried meat support the Pride regime, for King John is in fact a descendant of the Scar dynasty.',
@@ -357,7 +363,7 @@ class Wiki {
                 desc: '',
             },
             coronapleasureisland: {
-                desc: '',
+                desc: '"Back at home," the children often say mid-horseplay, "did you ever see anything crazy? Did you ever see anything that glows?" For there are such things in this world. "Cause you should never talk about it! Or the purple people will lock you up!" And indeed, there are grownups in purple finery sometimes, grownups more interested in children than in donkeys. They ask you if you\'ve ever seen a fallen star, or a sad little angel, the same color as your hair, perhaps.',
             },
             coronagreece: {
                 desc: '',
@@ -365,23 +371,23 @@ class Wiki {
             greecepleasureisland: {
                 desc: '',
             },
-            agrabahpridelands: {
-                desc: '',
+            agrabahpridelands: { // Book of Daniel
+                desc: 'Some nights, the lions sing pride-songs of their preparations for conquest. One night, they were midsong silenced & their mouths shut, for in the central bonfire there had flickered up from nowhere a human. "Lo!", she said, "I am Nasira, emissary of Almighty Jafar. I know that you have dreamed of four kingdoms. A reign of lions. A reign of demons. A reign of lesser cats. And a reign of iron. You dream the truth! The world will bristle with the armies of conquerors, & the fourth conqueror will be the great Jafar." And throughout the den the lions\' mouths were shut.',
             },
             claytonvillepridelands: {
                 desc: '',
             },
             agrabahgreece: {
-                desc: '',
+                desc: '', // Serpent vs Titans 
             },
             greecespace: {
-                desc: '',
+                desc: 'We rent our bodies from Hades, we do not own. Yet the Stovetop Tyrant asks the Federation for an advance, a tithe of early death. Asphyxiation imps & starlight Titans besiege once-healthy planets. But thousands of creatures fire back in defense - one Galactic Armada uniform worn by bodies of a thousand shapes & sizes',
             },
             agrabahchina: {
-                desc: '',
+                desc: 'Asura Jafar, as he is known to the Khan, forgets the Earth, & his green Garden walls stand lightly guarded. But when the sagittary cavalry breach the East Gate, marvels assail them ex nihilo. King David, young, resists, ringed by slingslain corpses. Fishhooked Leviathan churns the Palace moat. Bow-armed Lazarus is shot down twelve times, but plucks & refires arrows from his own corpse.',
             },
             agrabahjunglebook: {
-                desc: '',
+                desc: 'On his morning walk through the Garden, Jafar caresses a mighty jungle vine curiously. Then he asks: "Interloper, name thyself!" The vine unloops: a great python. "The name\'s Kaa, of the Jungle of the Bonfire King." Jafar unloops also, rising tree-tall in form of serpent. "You hide from a friend, legless one," says Jafar. "I too am of fire." Kaa replies, with hungry eyes: "I know, the smokeless fire at your fingertips. But I wonder if your mind is of similar strength, or if that is your weakness..." And Jafar gazes back, & wonders also.',
             },
             chinajunglebook: {
                 desc: 'Surprised by the agility & aggression of the Bonfire King\'s apes, the Hun armies have retreated to the Great Wall, defending it from the Chinese side. Horse archers skirmish against elephant-riding monkeys, while macaques throw stolen gunpowder bombs.',
@@ -397,6 +403,9 @@ class Wiki {
             },
             kumandramotunui: {
                 desc: 'On a beach full of sand-dusted statues, a huge glimmering monster sidles out of the water. It is the crab Tamatoa, who uses the silent cities of Kumandra as his personal jewelry-box.',
+            },
+            neverneverlandwonderland: {
+                desc: 'Beyond the waking world, beyond the stars & planets, the rules that we call Story bend & discontinue. The abyss of un-space can access our planet at our moments of loosest ontology: day-dreams & night-dreams. And beyond Neverland, beyond Wonderland, there wells a benthic void of Nightmare, a don\'t-place of echoes that are not coachmen, of smiles that are not cats.',
             },
         };
 
