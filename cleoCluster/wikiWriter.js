@@ -36,7 +36,7 @@ class WikiWriter {
                     byzantium: 'hide',
                 },
                 medeaRegnum: {
-                    niphon: 'hide', // Japan
+                    niphon: 'hide', // Japan - Nohin?
                     formosa: 'hide', // Taiwan
                     arkeo: 'hide', // Korea
                     omnigaol: 'hide', // Mongolia
