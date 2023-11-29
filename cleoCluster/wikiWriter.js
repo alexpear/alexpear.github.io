@@ -3,6 +3,8 @@
 // Generates HTML wiki pages
 
 const Util = require('../util/util.js');
+const fs = require('fs');
+const path = require('path');
 
 class WikiWriter {
     constructor () {
@@ -132,7 +134,20 @@ class WikiWriter {
             }
         }
 
-        this.pages.map(p => console.log(this.pageDesc(p)));
+        this.pages.map(
+            p => {
+                const html = this.pageHtml(p);
+                const desiredFileName = p.key + '.html';
+
+                // if (p.key !== 'medeaTerra') { return; }
+
+                fs.writeFileSync(
+                    path.join(__filename, '..', desiredFileName),
+                    html,
+                    'utf8'
+                );
+            }
+        );
     }
 
     /* Tactica Mania is a moon orbiting the planet Australis.
@@ -159,25 +174,26 @@ class WikiWriter {
 
         if (page.typeName() === 'star') {
             const orbitList = Object.keys(star)
-                .map(planet => Util.fromCamelCase(planet))
+                .map(planet => this.link(planet))
                 .join(', ');
 
-            desc += `. It is orbited by: ${orbitList}.`;
+            desc += ` in the <a href="cluster.html">Cleo Cluster</a>. It is orbited by: ${orbitList}.`;
         }
         else {
+            // <a href="juno.html">
+
             const parentIndex = page.path.length - 2;
-            const parent = Util.fromCamelCase(
-                page.path[parentIndex]
-            );
+            const parentKey = page.path[parentIndex];
+            const parentTitle = Util.fromCamelCase(parentKey);
             const parentType = parentIndex === 0 ?
                 'star' :
                 'planet';
 
-            desc += ` orbiting the ${parentType} ${parent}.`;
+            desc += ` orbiting the ${parentType} ${this.link(parentKey)}.`;
 
             if (page.typeName() === 'planet' && ! Util.isString(planet)) {
                 const orbitList = Object.keys(planet)
-                    .map(moon => Util.fromCamelCase(moon))
+                    .map(moon => this.link(moon))
                     .join(', ');
 
                 desc += ` It is orbited by: ${orbitList}.`;
@@ -185,6 +201,28 @@ class WikiWriter {
         }
 
         return desc;
+    }
+
+    link (key) {
+        return `<a href="${key}.html">${Util.fromCamelCase(key)}</a>`;
+    }
+
+    pageHtml (page) {
+        return `<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="wikiPage.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div id="header"></div>
+
+    <div id="main">
+      <label id="title">${page.title}</label>
+      <p id="desc">${this.pageDesc(page)}</p>
+    </div>
+  </body>
+</html>`;
     }
 
     htmlPassage (content) {
