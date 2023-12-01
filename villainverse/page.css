@@ -1,0 +1,46 @@
+body {
+  padding: 5px;
+  text-align: justify;
+  font-family: serif;
+  font-size: 20pt;
+  line-height: 1.4;
+  background: #000000;
+  color: #bad;
+}
+
+#header {
+    background: #bad;
+    width: fit-content;
+    padding: 5px 15px;
+}
+
+#header > .wikilink {
+    color: black;
+    font-family: cursive;
+    font-style: bold;
+    font-size: xx-large;
+}
+
+#main {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  max-width: 35em;
+}
+
+label {
+  font-size: 48;
+  text-align: center;
+  color: white;
+}
+
+.wikilink {
+  font-size: 20pt;
+  color: white;
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  font-family: serif;
+  text-decoration: none;
+  cursor: pointer;
+}

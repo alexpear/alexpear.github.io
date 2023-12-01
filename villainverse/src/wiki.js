@@ -100,7 +100,6 @@ class Wiki {
                     n: 'arendelle',
                     e: 'corona',
                     w: 'paris',
-                    s: 'pleasureisland',
                 }
             },
             // Beauty & the Beast characters under siege
@@ -140,10 +139,8 @@ class Wiki {
                 desc: 'The fairies were angels once. When they fell from Heaven, some (like Tinker Bell) wavered in their convictions, flirting again with virtue. Pleasure Island is the work of a fairy who did not waver. Here, children live forgotten by the world. Here, kicking & shouting is permitted. Here, children never grow up - they grow into asses.',
                 neighbors: {
                     nw: 'paris',
-                    n: 'germany',
                     ne: 'corona',
                     s: 'ursula',
-                    e: 'greece',
                     exotic2: 'neverneverland',
                 }
             },
@@ -171,7 +168,6 @@ class Wiki {
                 desc: 'Having unleashed the Titans once more against his brother Zeus, fire-headed Hades now rules heaven. The gods have been imprisoned on the other planets, save Ares, who serves Hades, & Artemis, who no foe can catch. The blasphemous Titans now stride knee-deep in the Mediterranean, & thousands of mortals have fled Greece to evade their fickle gaze.',
                 neighbors: {
                     n: 'corona',
-                    w: 'pleasureisland',
                     sw: 'ursula',
                     se: 'agrabah',
                     interplanetary2: 'space',
@@ -200,7 +196,7 @@ class Wiki {
             },
             china: {
                 displayName: 'China',
-                desc: 'After Bori Khan touched his torch to the kindling & burned the Emperor alive, he sent messengers to every village of China & of his conquered lands (in other words to every corner of Asia) saying the Emperor had not been killed. "The Emperor could no longer ignore the will of Heaven & declared Bori Khan his heir. Now he attends higher matters on pilgramage to the Four Mountains." But to me he said, "Return to Venice, beyond even my grasp. Of every land in this world, listen to its multiple stories, & record that which glows brightest in your heart." And so I have done.',
+                desc: 'After Bori Khan touched his torch to the kindling & burned the Emperor alive, he sent messengers to every village of China & of his conquered lands (in other words to every corner of Asia) saying the Emperor had not been killed. "The Emperor could no longer ignore the will of Heaven & declared Bori Khan his heir. Now he attends higher matters on pilgramage to the Four Mountains." But to me he said, "Return to Venezia, beyond even my grasp. Of every land in this world, listen to its multiple stories, & record that which glows brightest in your heart." And so I have done.',
                 neighbors: {
                     w: 'agrabah',
                     sw: 'junglebook',
@@ -318,7 +314,7 @@ class Wiki {
                 desc: 'As giant squid grapple the sensors of the Atlantean Leviathan, a delegation of sharks rushes past, surging into the waterways of the lost city. They carry shipwreck gold & paperwork. Ursula wishes to make a generous donation to the Smithsonian Institution, & become a minority shareholder in the Ulysses expedition. For Ursula\'s endgame is to be queen of Atlantis & the one profession the Americans forgot to bring is lawyer.',
             },
             atlantismotunui: {
-                desc: '',
+                desc: 'Although the life-giving Titan Te Fiti never harbored any intention of war, the ancient Atlanteans watched her with fearful mistrust. The mere existence of beings like her motivated the development of their incredible forcefields & weaponry.',
             },
             atlantisspace: {
                 desc: 'Atlantis has long known the secrets of riding a pillar of alchemical fire up into the heavens. Now, American expeditions ride Atlantean spacecraft they barely understand into deep space. Speeding boldly towards planets rumored to contain lost technology, they pray to evade the telescopes of Captain Flint\'s pirates.',
@@ -348,37 +344,31 @@ class Wiki {
                 desc: '"I don\'t know how you got in here," says the women beneath Arendelle Castle, "but I want nothing of your sorcery. Vade retro me satana!" But the hook-nosed witch smiles patiently.',
             },
             coronagermany: {
-                desc: '',
+                desc: 'The relationship between Queen Gothel & the Mirrorqueen is long & wrinkled with complications. Recent betrayals have poisoned the trust that was cultivated over a century of stable cold war. Queen Gothel stares into a basin of shimmering quicksilver. In the unnatural reflection, the Mirrorqueen\'s Garden of Fey Flowers shines in twelve colors, none quite as fair as sunlight.',
             },
             germanyparis: {
                 desc: 'The Mirrorqueen has instructed Quasimodo, by letter from beggar to Beggar King to hunchback, to sprinkle the false Pope\'s food with soporific powder. Holding the readied apple in his hands, he watches mass from above, praying.',
-            },
-            germanypleasureisland: {
-                desc: '',
             },
             parispleasureisland: {
                 desc: 'Every year on Good Friday, French soldiers storm Pleasure Island, fighting their way past a new form of beast or illusion. If they win, they sheath their swords & seize as many children as they can. Terrific are the yells of the all-fighting children as they unwisely resist the rescue.',
             },
             arendellecorona: {
-                desc: '',
+                desc: 'The trolls fear Corona, & will not sail upon its waters. They believe its clear sunlight will turn them to stone.',
             },
             coronapleasureisland: {
                 desc: '"Back at home," the children often say mid-horseplay, "did you ever see anything crazy? Did you ever see anything that glows?" For there are such things in this world. "Cause you should never talk about it! Or the purple people will lock you up!" And indeed, there are grownups in purple finery sometimes, grownups more interested in children than in donkeys. They ask you if you\'ve ever seen a fallen star, or a sad little angel, the same color as your hair, perhaps.',
             },
             coronagreece: {
-                desc: '',
-            },
-            greecepleasureisland: {
-                desc: '',
+                desc: 'One night per year, the Titan Tethys lowers her bone-cold palm to the gate of Corona, to collect three wagonloads of tithed gold. The following night, as they have for decades, the cofferless Coronans light flying lanterns & speak of hope.',
             },
             agrabahpridelands: { // Book of Daniel
                 desc: 'Some nights, the lions sing pride-songs of their preparations for conquest. One night, they were midsong silenced & their mouths shut, for in the central bonfire there had flickered up from nowhere a human. "Lo!", she said, "I am Nasira, emissary of Almighty Jafar. I know that you have dreamed of four kingdoms. A reign of lions. A reign of demons. A reign of lesser cats. And a reign of iron. You dream the truth! The world will bristle with the armies of conquerors, & the fourth conqueror will be the great Jafar." And throughout the den the lions\' mouths were shut.',
             },
             claytonvillepridelands: {
-                desc: '',
+                desc: 'Cruel traps perimeter the woods around Claytonville. Any beast netted is sold by weight to the farms of the meat-hungry Pride.',
             },
             agrabahgreece: {
-                desc: '', // Serpent vs Titans 
+                desc: 'The Agrabah Sultinate is the only power in the Mediterranean that can match the might of Mount Olympos. Serpents of fire patrol Jerusalem\'s walls, as the jealous Cyclops wades out of the sea to make war.',
             },
             greecespace: {
                 desc: 'We rent our bodies from Hades, we do not own. Yet the Stovetop Tyrant asks the Federation for an advance, a tithe of early death. Asphyxiation imps & starlight Titans besiege once-healthy planets. But thousands of creatures fire back in defense - one Galactic Armada uniform worn by bodies of a thousand shapes & sizes',
@@ -403,6 +393,9 @@ class Wiki {
             },
             kumandramotunui: {
                 desc: 'On a beach full of sand-dusted statues, a huge glimmering monster sidles out of the water. It is the crab Tamatoa, who uses the silent cities of Kumandra as his personal jewelry-box.',
+            },
+            neverneverlandpleasureisland: {
+                desc: 'The Blue Fairy\'s reach is long, but the starscape is vast, & she cannot save everyone. She focuses on those lost children who pass a test of virtue (a banquet-table abandoned, forested with treats...), spiriting them to Neverland. Those who feast, well, the Coachman finds them before she returns.',
             },
             neverneverlandwonderland: {
                 desc: 'Beyond the waking world, beyond the stars & planets, the rules that we call Story bend & discontinue. The abyss of un-space can access our planet at our moments of loosest ontology: day-dreams & night-dreams. And beyond Neverland, beyond Wonderland, there wells a benthic void of Nightmare, a don\'t-place of echoes that are not coachmen, of smiles that are not cats.',
@@ -435,12 +428,20 @@ class Wiki {
         document.body.scrollTop = 0;
     }
 
-    random () {
-        this.go(
-            Util.randomOf(
-                Object.keys(this.regionDict)
-            )
+    // random () {
+    //     this.go(
+    //         Util.randomOf(
+    //             Object.keys(this.regionDict)
+    //         )
+    //     );
+    // }
+
+    randomLink () {
+        const key = Util.randomOf(
+            Object.keys(this.regionDict)
         );
+
+        return this.asWikiLink(key, 'Read more...');
     }
 
     pageHtmlStr (pageKey) {
@@ -464,6 +465,38 @@ class Wiki {
         }
 
         return elements.join('\n');
+    }
+
+    writeHtmlFiles () {
+        const fs = require('fs');
+        const path = require('path');
+
+        for (let regionKey in this.regionDict) {
+            fs.writeFileSync(
+                path.join(__filename, '..', '..', regionKey + '.html'),
+                this.fullHtml(regionKey),
+                'utf8'
+            );
+        }
+    }
+
+    fullHtml (pageKey) {
+        return `<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="page.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div id="header">
+      <a href="index.html" class="wikilink">Villainverse of Neydis</a>
+    </div>
+    <div id="main">
+      ${this.pageHtmlStr(pageKey)}
+    </div>
+  </body>
+</html>
+`;
     }
 
     addLinkPassage (pageKey, elements, dir) {
@@ -508,7 +541,8 @@ class Wiki {
     }
 
     asWikiLink (pageKey, displayName) {
-        return `<button type="button" class="wikilink" onclick="window.wiki.go('${pageKey}')">${displayName}</button>`;
+        // return `<button type="button" class="wikilink" onclick="window.wiki.go('${pageKey}')">${displayName}</button>`;
+        return `<a href="${pageKey}.html" class="wikilink">${displayName}</a>`;
     }
 
     directions () {
@@ -577,7 +611,7 @@ class Wiki {
                 const borderInfo = this.borderDict[borderKey];
 
                 const goodBorderDesc = borderInfo &&
-                    borderInfo.desc.length >= this.meanDescLength;
+                    borderInfo.desc.length >= (this.meanDescLength / 2);
 
                 const message = borderInfo ?
                     borderInfo.desc.length + ' characters' :
@@ -587,8 +621,11 @@ class Wiki {
                     // Add it in-memory for later printing.
                     this.borderDict[borderKey] = borderInfo || {desc: ''};
 
-                    // Temporarily comment this to reduce noise.
-                    console.log(`  this.borderDict.${borderKey}.desc -- ${message}`);
+                    if (key.localeCompare(neighborKey) < 0) {
+                        // Only log each border once.
+                        // You can temporarily comment this to reduce noise.
+                        console.log(`  this.borderDict.${borderKey}.desc -- ${message}`);
+                    }
                 }
             }
         }
@@ -606,7 +643,7 @@ class Wiki {
 
         let legit = !! content;
 
-        if (legit && fieldName === 'desc' && content.length < this.meanDescLength) {
+        if (legit && fieldName === 'desc' && content.length < (this.meanDescLength / 2)) {
             legit = false;
         }
 
@@ -626,16 +663,32 @@ class Wiki {
         }
     }
 
-    updateHTML (pageKey) {
-        // this.articleMain.innerHTML = displayString;
+    initUI () {
+        window.wiki = this;
+
+        const randomizer = document.getElementById('randomButtonP');
+        randomizer.removeChild(randomizer.firstChild);
+
+        randomizer.innerHTML = this.randomLink();
     }
 
     static run () {
         const wiki = new Wiki();
-        wiki.testPages();
+        // wiki.testPages();
         wiki.testRegionDict();
 
-        window.wiki = wiki;
+        if (process.argv &&
+            process.argv.length === 2 &&
+            process.argv[0] &&
+            process.argv[0].endsWith('node') &&
+            process.argv[1].endsWith('wiki.js')) {
+
+            wiki.writeHtmlFiles();
+
+            return; // When testing via command line, skip window setup.
+        }
+
+        wiki.initUI();
     }
 }
 

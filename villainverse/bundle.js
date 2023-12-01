@@ -1,4 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+
+},{}],2:[function(require,module,exports){
 'use strict'
 
 // return a string with the provided number formatted with commas.
@@ -115,7 +117,7 @@ function bindWith(separator, decimalChar) {
 module.exports = commaNumber
 module.exports.bindWith = bindWith
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 (function (global){(function (){
 /**
  * @license
@@ -17328,7 +17330,7 @@ module.exports.bindWith = bindWith
 }.call(this));
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 //! moment.js
 //! version : 2.29.4
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -23015,7 +23017,726 @@ module.exports.bindWith = bindWith
 
 })));
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+(function (process){(function (){
+// 'path' module extracted from Node.js v8.11.1 (only the posix part)
+// transplited with Babel
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+function assertPath(path) {
+  if (typeof path !== 'string') {
+    throw new TypeError('Path must be a string. Received ' + JSON.stringify(path));
+  }
+}
+
+// Resolves . and .. elements in a path with directory names
+function normalizeStringPosix(path, allowAboveRoot) {
+  var res = '';
+  var lastSegmentLength = 0;
+  var lastSlash = -1;
+  var dots = 0;
+  var code;
+  for (var i = 0; i <= path.length; ++i) {
+    if (i < path.length)
+      code = path.charCodeAt(i);
+    else if (code === 47 /*/*/)
+      break;
+    else
+      code = 47 /*/*/;
+    if (code === 47 /*/*/) {
+      if (lastSlash === i - 1 || dots === 1) {
+        // NOOP
+      } else if (lastSlash !== i - 1 && dots === 2) {
+        if (res.length < 2 || lastSegmentLength !== 2 || res.charCodeAt(res.length - 1) !== 46 /*.*/ || res.charCodeAt(res.length - 2) !== 46 /*.*/) {
+          if (res.length > 2) {
+            var lastSlashIndex = res.lastIndexOf('/');
+            if (lastSlashIndex !== res.length - 1) {
+              if (lastSlashIndex === -1) {
+                res = '';
+                lastSegmentLength = 0;
+              } else {
+                res = res.slice(0, lastSlashIndex);
+                lastSegmentLength = res.length - 1 - res.lastIndexOf('/');
+              }
+              lastSlash = i;
+              dots = 0;
+              continue;
+            }
+          } else if (res.length === 2 || res.length === 1) {
+            res = '';
+            lastSegmentLength = 0;
+            lastSlash = i;
+            dots = 0;
+            continue;
+          }
+        }
+        if (allowAboveRoot) {
+          if (res.length > 0)
+            res += '/..';
+          else
+            res = '..';
+          lastSegmentLength = 2;
+        }
+      } else {
+        if (res.length > 0)
+          res += '/' + path.slice(lastSlash + 1, i);
+        else
+          res = path.slice(lastSlash + 1, i);
+        lastSegmentLength = i - lastSlash - 1;
+      }
+      lastSlash = i;
+      dots = 0;
+    } else if (code === 46 /*.*/ && dots !== -1) {
+      ++dots;
+    } else {
+      dots = -1;
+    }
+  }
+  return res;
+}
+
+function _format(sep, pathObject) {
+  var dir = pathObject.dir || pathObject.root;
+  var base = pathObject.base || (pathObject.name || '') + (pathObject.ext || '');
+  if (!dir) {
+    return base;
+  }
+  if (dir === pathObject.root) {
+    return dir + base;
+  }
+  return dir + sep + base;
+}
+
+var posix = {
+  // path.resolve([from ...], to)
+  resolve: function resolve() {
+    var resolvedPath = '';
+    var resolvedAbsolute = false;
+    var cwd;
+
+    for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+      var path;
+      if (i >= 0)
+        path = arguments[i];
+      else {
+        if (cwd === undefined)
+          cwd = process.cwd();
+        path = cwd;
+      }
+
+      assertPath(path);
+
+      // Skip empty entries
+      if (path.length === 0) {
+        continue;
+      }
+
+      resolvedPath = path + '/' + resolvedPath;
+      resolvedAbsolute = path.charCodeAt(0) === 47 /*/*/;
+    }
+
+    // At this point the path should be resolved to a full absolute path, but
+    // handle relative paths to be safe (might happen when process.cwd() fails)
+
+    // Normalize the path
+    resolvedPath = normalizeStringPosix(resolvedPath, !resolvedAbsolute);
+
+    if (resolvedAbsolute) {
+      if (resolvedPath.length > 0)
+        return '/' + resolvedPath;
+      else
+        return '/';
+    } else if (resolvedPath.length > 0) {
+      return resolvedPath;
+    } else {
+      return '.';
+    }
+  },
+
+  normalize: function normalize(path) {
+    assertPath(path);
+
+    if (path.length === 0) return '.';
+
+    var isAbsolute = path.charCodeAt(0) === 47 /*/*/;
+    var trailingSeparator = path.charCodeAt(path.length - 1) === 47 /*/*/;
+
+    // Normalize the path
+    path = normalizeStringPosix(path, !isAbsolute);
+
+    if (path.length === 0 && !isAbsolute) path = '.';
+    if (path.length > 0 && trailingSeparator) path += '/';
+
+    if (isAbsolute) return '/' + path;
+    return path;
+  },
+
+  isAbsolute: function isAbsolute(path) {
+    assertPath(path);
+    return path.length > 0 && path.charCodeAt(0) === 47 /*/*/;
+  },
+
+  join: function join() {
+    if (arguments.length === 0)
+      return '.';
+    var joined;
+    for (var i = 0; i < arguments.length; ++i) {
+      var arg = arguments[i];
+      assertPath(arg);
+      if (arg.length > 0) {
+        if (joined === undefined)
+          joined = arg;
+        else
+          joined += '/' + arg;
+      }
+    }
+    if (joined === undefined)
+      return '.';
+    return posix.normalize(joined);
+  },
+
+  relative: function relative(from, to) {
+    assertPath(from);
+    assertPath(to);
+
+    if (from === to) return '';
+
+    from = posix.resolve(from);
+    to = posix.resolve(to);
+
+    if (from === to) return '';
+
+    // Trim any leading backslashes
+    var fromStart = 1;
+    for (; fromStart < from.length; ++fromStart) {
+      if (from.charCodeAt(fromStart) !== 47 /*/*/)
+        break;
+    }
+    var fromEnd = from.length;
+    var fromLen = fromEnd - fromStart;
+
+    // Trim any leading backslashes
+    var toStart = 1;
+    for (; toStart < to.length; ++toStart) {
+      if (to.charCodeAt(toStart) !== 47 /*/*/)
+        break;
+    }
+    var toEnd = to.length;
+    var toLen = toEnd - toStart;
+
+    // Compare paths to find the longest common path from root
+    var length = fromLen < toLen ? fromLen : toLen;
+    var lastCommonSep = -1;
+    var i = 0;
+    for (; i <= length; ++i) {
+      if (i === length) {
+        if (toLen > length) {
+          if (to.charCodeAt(toStart + i) === 47 /*/*/) {
+            // We get here if `from` is the exact base path for `to`.
+            // For example: from='/foo/bar'; to='/foo/bar/baz'
+            return to.slice(toStart + i + 1);
+          } else if (i === 0) {
+            // We get here if `from` is the root
+            // For example: from='/'; to='/foo'
+            return to.slice(toStart + i);
+          }
+        } else if (fromLen > length) {
+          if (from.charCodeAt(fromStart + i) === 47 /*/*/) {
+            // We get here if `to` is the exact base path for `from`.
+            // For example: from='/foo/bar/baz'; to='/foo/bar'
+            lastCommonSep = i;
+          } else if (i === 0) {
+            // We get here if `to` is the root.
+            // For example: from='/foo'; to='/'
+            lastCommonSep = 0;
+          }
+        }
+        break;
+      }
+      var fromCode = from.charCodeAt(fromStart + i);
+      var toCode = to.charCodeAt(toStart + i);
+      if (fromCode !== toCode)
+        break;
+      else if (fromCode === 47 /*/*/)
+        lastCommonSep = i;
+    }
+
+    var out = '';
+    // Generate the relative path based on the path difference between `to`
+    // and `from`
+    for (i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i) {
+      if (i === fromEnd || from.charCodeAt(i) === 47 /*/*/) {
+        if (out.length === 0)
+          out += '..';
+        else
+          out += '/..';
+      }
+    }
+
+    // Lastly, append the rest of the destination (`to`) path that comes after
+    // the common path parts
+    if (out.length > 0)
+      return out + to.slice(toStart + lastCommonSep);
+    else {
+      toStart += lastCommonSep;
+      if (to.charCodeAt(toStart) === 47 /*/*/)
+        ++toStart;
+      return to.slice(toStart);
+    }
+  },
+
+  _makeLong: function _makeLong(path) {
+    return path;
+  },
+
+  dirname: function dirname(path) {
+    assertPath(path);
+    if (path.length === 0) return '.';
+    var code = path.charCodeAt(0);
+    var hasRoot = code === 47 /*/*/;
+    var end = -1;
+    var matchedSlash = true;
+    for (var i = path.length - 1; i >= 1; --i) {
+      code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          if (!matchedSlash) {
+            end = i;
+            break;
+          }
+        } else {
+        // We saw the first non-path separator
+        matchedSlash = false;
+      }
+    }
+
+    if (end === -1) return hasRoot ? '/' : '.';
+    if (hasRoot && end === 1) return '//';
+    return path.slice(0, end);
+  },
+
+  basename: function basename(path, ext) {
+    if (ext !== undefined && typeof ext !== 'string') throw new TypeError('"ext" argument must be a string');
+    assertPath(path);
+
+    var start = 0;
+    var end = -1;
+    var matchedSlash = true;
+    var i;
+
+    if (ext !== undefined && ext.length > 0 && ext.length <= path.length) {
+      if (ext.length === path.length && ext === path) return '';
+      var extIdx = ext.length - 1;
+      var firstNonSlashEnd = -1;
+      for (i = path.length - 1; i >= 0; --i) {
+        var code = path.charCodeAt(i);
+        if (code === 47 /*/*/) {
+            // If we reached a path separator that was not part of a set of path
+            // separators at the end of the string, stop now
+            if (!matchedSlash) {
+              start = i + 1;
+              break;
+            }
+          } else {
+          if (firstNonSlashEnd === -1) {
+            // We saw the first non-path separator, remember this index in case
+            // we need it if the extension ends up not matching
+            matchedSlash = false;
+            firstNonSlashEnd = i + 1;
+          }
+          if (extIdx >= 0) {
+            // Try to match the explicit extension
+            if (code === ext.charCodeAt(extIdx)) {
+              if (--extIdx === -1) {
+                // We matched the extension, so mark this as the end of our path
+                // component
+                end = i;
+              }
+            } else {
+              // Extension does not match, so our result is the entire path
+              // component
+              extIdx = -1;
+              end = firstNonSlashEnd;
+            }
+          }
+        }
+      }
+
+      if (start === end) end = firstNonSlashEnd;else if (end === -1) end = path.length;
+      return path.slice(start, end);
+    } else {
+      for (i = path.length - 1; i >= 0; --i) {
+        if (path.charCodeAt(i) === 47 /*/*/) {
+            // If we reached a path separator that was not part of a set of path
+            // separators at the end of the string, stop now
+            if (!matchedSlash) {
+              start = i + 1;
+              break;
+            }
+          } else if (end === -1) {
+          // We saw the first non-path separator, mark this as the end of our
+          // path component
+          matchedSlash = false;
+          end = i + 1;
+        }
+      }
+
+      if (end === -1) return '';
+      return path.slice(start, end);
+    }
+  },
+
+  extname: function extname(path) {
+    assertPath(path);
+    var startDot = -1;
+    var startPart = 0;
+    var end = -1;
+    var matchedSlash = true;
+    // Track the state of characters (if any) we see before our first dot and
+    // after any path separator we find
+    var preDotState = 0;
+    for (var i = path.length - 1; i >= 0; --i) {
+      var code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          // If we reached a path separator that was not part of a set of path
+          // separators at the end of the string, stop now
+          if (!matchedSlash) {
+            startPart = i + 1;
+            break;
+          }
+          continue;
+        }
+      if (end === -1) {
+        // We saw the first non-path separator, mark this as the end of our
+        // extension
+        matchedSlash = false;
+        end = i + 1;
+      }
+      if (code === 46 /*.*/) {
+          // If this is our first dot, mark it as the start of our extension
+          if (startDot === -1)
+            startDot = i;
+          else if (preDotState !== 1)
+            preDotState = 1;
+      } else if (startDot !== -1) {
+        // We saw a non-dot and non-path separator before our dot, so we should
+        // have a good chance at having a non-empty extension
+        preDotState = -1;
+      }
+    }
+
+    if (startDot === -1 || end === -1 ||
+        // We saw a non-dot character immediately before the dot
+        preDotState === 0 ||
+        // The (right-most) trimmed path component is exactly '..'
+        preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+      return '';
+    }
+    return path.slice(startDot, end);
+  },
+
+  format: function format(pathObject) {
+    if (pathObject === null || typeof pathObject !== 'object') {
+      throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + typeof pathObject);
+    }
+    return _format('/', pathObject);
+  },
+
+  parse: function parse(path) {
+    assertPath(path);
+
+    var ret = { root: '', dir: '', base: '', ext: '', name: '' };
+    if (path.length === 0) return ret;
+    var code = path.charCodeAt(0);
+    var isAbsolute = code === 47 /*/*/;
+    var start;
+    if (isAbsolute) {
+      ret.root = '/';
+      start = 1;
+    } else {
+      start = 0;
+    }
+    var startDot = -1;
+    var startPart = 0;
+    var end = -1;
+    var matchedSlash = true;
+    var i = path.length - 1;
+
+    // Track the state of characters (if any) we see before our first dot and
+    // after any path separator we find
+    var preDotState = 0;
+
+    // Get non-dir info
+    for (; i >= start; --i) {
+      code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          // If we reached a path separator that was not part of a set of path
+          // separators at the end of the string, stop now
+          if (!matchedSlash) {
+            startPart = i + 1;
+            break;
+          }
+          continue;
+        }
+      if (end === -1) {
+        // We saw the first non-path separator, mark this as the end of our
+        // extension
+        matchedSlash = false;
+        end = i + 1;
+      }
+      if (code === 46 /*.*/) {
+          // If this is our first dot, mark it as the start of our extension
+          if (startDot === -1) startDot = i;else if (preDotState !== 1) preDotState = 1;
+        } else if (startDot !== -1) {
+        // We saw a non-dot and non-path separator before our dot, so we should
+        // have a good chance at having a non-empty extension
+        preDotState = -1;
+      }
+    }
+
+    if (startDot === -1 || end === -1 ||
+    // We saw a non-dot character immediately before the dot
+    preDotState === 0 ||
+    // The (right-most) trimmed path component is exactly '..'
+    preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+      if (end !== -1) {
+        if (startPart === 0 && isAbsolute) ret.base = ret.name = path.slice(1, end);else ret.base = ret.name = path.slice(startPart, end);
+      }
+    } else {
+      if (startPart === 0 && isAbsolute) {
+        ret.name = path.slice(1, startDot);
+        ret.base = path.slice(1, end);
+      } else {
+        ret.name = path.slice(startPart, startDot);
+        ret.base = path.slice(startPart, end);
+      }
+      ret.ext = path.slice(startDot, end);
+    }
+
+    if (startPart > 0) ret.dir = path.slice(0, startPart - 1);else if (isAbsolute) ret.dir = '/';
+
+    return ret;
+  },
+
+  sep: '/',
+  delimiter: ':',
+  win32: null,
+  posix: null
+};
+
+posix.posix = posix;
+
+module.exports = posix;
+
+}).call(this)}).call(this,require('_process'))
+},{"_process":6}],6:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],7:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -24208,7 +24929,8 @@ module.exports = Util;
 
 // Util.testAll();
 
-},{"comma-number":1,"lodash":2,"moment":3}],5:[function(require,module,exports){
+},{"comma-number":2,"lodash":3,"moment":4}],8:[function(require,module,exports){
+(function (process,__filename){(function (){
 'use strict';
 
 // Wiki for Disney Villainverse fanfiction project
@@ -24311,7 +25033,6 @@ class Wiki {
                     n: 'arendelle',
                     e: 'corona',
                     w: 'paris',
-                    s: 'pleasureisland',
                 }
             },
             // Beauty & the Beast characters under siege
@@ -24351,10 +25072,8 @@ class Wiki {
                 desc: 'The fairies were angels once. When they fell from Heaven, some (like Tinker Bell) wavered in their convictions, flirting again with virtue. Pleasure Island is the work of a fairy who did not waver. Here, children live forgotten by the world. Here, kicking & shouting is permitted. Here, children never grow up - they grow into asses.',
                 neighbors: {
                     nw: 'paris',
-                    n: 'germany',
                     ne: 'corona',
                     s: 'ursula',
-                    e: 'greece',
                     exotic2: 'neverneverland',
                 }
             },
@@ -24382,7 +25101,6 @@ class Wiki {
                 desc: 'Having unleashed the Titans once more against his brother Zeus, fire-headed Hades now rules heaven. The gods have been imprisoned on the other planets, save Ares, who serves Hades, & Artemis, who no foe can catch. The blasphemous Titans now stride knee-deep in the Mediterranean, & thousands of mortals have fled Greece to evade their fickle gaze.',
                 neighbors: {
                     n: 'corona',
-                    w: 'pleasureisland',
                     sw: 'ursula',
                     se: 'agrabah',
                     interplanetary2: 'space',
@@ -24397,6 +25115,7 @@ class Wiki {
                     e: 'china',
                     se: 'junglebook',
                     s: 'pridelands',
+                    exotic3: 'zootopia',
                 }
             },
             junglebook: {
@@ -24410,7 +25129,7 @@ class Wiki {
             },
             china: {
                 displayName: 'China',
-                desc: 'After Bori Khan touched his torch to the kindling & burned the Emperor alive, he sent messengers to every village of China & of his conquered lands (in other words to every corner of Asia) saying the Emperor had not been killed. "The Emperor could no longer ignore the will of Heaven & declared Bori Khan his heir. Now he attends higher matters on pilgramage to the Four Mountains." But to me he said, "Return to Venice, beyond even my grasp. Of every land in this world, listen to its multiple stories, & record that which glows brightest in your heart." And so I have done.',
+                desc: 'After Bori Khan touched his torch to the kindling & burned the Emperor alive, he sent messengers to every village of China & of his conquered lands (in other words to every corner of Asia) saying the Emperor had not been killed. "The Emperor could no longer ignore the will of Heaven & declared Bori Khan his heir. Now he attends higher matters on pilgramage to the Four Mountains." But to me he said, "Return to Venezia, beyond even my grasp. Of every land in this world, listen to its multiple stories, & record that which glows brightest in your heart." And so I have done.',
                 neighbors: {
                     w: 'agrabah',
                     sw: 'junglebook',
@@ -24451,6 +25170,7 @@ class Wiki {
                 neighbors: {
                     exotic: 'britain',
                     exotic2: 'pleasureisland',
+                    exotic3: 'wonderland',
                 }
             },
             wonderland: {
@@ -24458,6 +25178,7 @@ class Wiki {
                 desc: 'In your house or mine, the pet is the guest of humanity. But in different worlds it is otherwise. The Red Queen is in truth a kitten, but to call her that is to violate her fiercest edict, since a cat on the throne would make no sense.',
                 neighbors: {
                     exotic2: 'britain',
+                    exotic3: 'neverneverland',
                 }
             },
             strangeworld: {
@@ -24474,7 +25195,7 @@ class Wiki {
                 neighbors: {
                     exotic: 'bambi',
                     exotic2: 'pridelands',
-                    exotic3: 'wonderland',
+                    exotic3: 'agrabah',
                 }
             },
         };
@@ -24514,16 +25235,19 @@ class Wiki {
                 desc: 'The children of Pleasure Island know well the rumor that eels will grab your ankle & pull you into the sea. Thinking their peers liars, they swim anyway. On one occasion, an overambitious eel was herself captured thanks to the whale Monstro, & held prisoner in an old bathtub. When thousands of murky lobsters crawled up the beach to rescue her, the children decided to fight to the death. And they would surely have been pinched to smithereens, had not a winged woman in an elegant blue dress descended, fighting on the front lines with them.',
             },
             greeceursula: {
-                desc: 'Even water dies as it pours down the River Styx. Draining from the ocean to Tartarus, it bears the Mermaid Kingdom\'s toughest strike force of sharks & lobsters, who tear into the defending shades of Persephone, ruler of the underworld in Hades\' absence. Ferryman Chiron flees before Ursula\'s new allies: beastbodied Scylla & Thetis, mother of Achilles.',
+                desc: 'Even water dies as it pours down the River Styx. Draining from the ocean to Tartarus, it bears the Mermaid Kingdom\'s toughest strike force of sharks & lobsters, who tear into the defending shades of Persephone, ruler of the underworld in Hades\' absence. Ferryman Chiron flees before Ursula\'s new allies: beastbodied Scylla & austere Thetis, mother of Achilles.',
             },
             agrabahursula: {
-                desc: '',
+                desc: 'At the feet of Agrabah\'s walls huddle throngs of pilgrims from every land. And here shelter too two lovers, who arrived in a battered regal stagecoach full of knickknacks & fish. Suddenly, they are assailed by two enchanted sharks, their tails replaced with powerful legs! Fleeing these attackers, the redheaded lover trips & stumbles. As the sharks leap at her, she twists & draws two finecrafted blades from the scabbards on her back. In a crash of knees & fins, she slashes the hunters dead, for her arms are her most skillful limbs.',
+            },
+            agrabahzootopia: {
+                desc: 'Every full moon in Zootopia\'s Sahara Square, the winged Simurgh carries armed emissaries from Agrabah. Bridled hyenas she bears, with hares in the saddles. These intruders are resisted immediately by Zootopia\'s Herbivore Corps. Tortoise veterans strike at the hyenas with spears. Gorilla charioteers toss nets to capture the away-darting fallen hares.',
             },
             atlantisursula: {
                 desc: 'As giant squid grapple the sensors of the Atlantean Leviathan, a delegation of sharks rushes past, surging into the waterways of the lost city. They carry shipwreck gold & paperwork. Ursula wishes to make a generous donation to the Smithsonian Institution, & become a minority shareholder in the Ulysses expedition. For Ursula\'s endgame is to be queen of Atlantis & the one profession the Americans forgot to bring is lawyer.',
             },
             atlantismotunui: {
-                desc: '',
+                desc: 'Although the life-giving Titan Te Fiti never harbored any intention of war, the ancient Atlanteans watched her with fearful mistrust. The mere existence of beings like her motivated the development of their incredible forcefields & weaponry.',
             },
             atlantisspace: {
                 desc: 'Atlantis has long known the secrets of riding a pillar of alchemical fire up into the heavens. Now, American expeditions ride Atlantean spacecraft they barely understand into deep space. Speeding boldly towards planets rumored to contain lost technology, they pray to evade the telescopes of Captain Flint\'s pirates.',
@@ -24544,7 +25268,7 @@ class Wiki {
                 desc: 'The fairies of Neverland were born in London, but fled its iron fences, iron mills, iron doorknobs. Fey armies of Maleficent regularly alight upon Neverland\'s shores to steal its fabulous treasures. But the locals are wily & stubborn, & defend their isle like crows against hawks.',
             },
             britainwonderland: {
-                desc: '',
+                desc: 'Many beings have failed to map Wonderland. One cartographer, called Alice of Oxford, instead models that land as a probabilistic vector grid, with each square of the grid sending you up, down, left, or right with peculiar likelihoods. These peculiarities can be summed into overall chances of being ejected off the grid into various other lands. Alice landed in Northern Oz, where she now lives with her scarecrow husband.',
             },
             britainpridelands: {
                 desc: 'English ships bearing gold & dried meat support the Pride regime, for King John is in fact a descendant of the Scar dynasty.',
@@ -24553,46 +25277,40 @@ class Wiki {
                 desc: '"I don\'t know how you got in here," says the women beneath Arendelle Castle, "but I want nothing of your sorcery. Vade retro me satana!" But the hook-nosed witch smiles patiently.',
             },
             coronagermany: {
-                desc: '',
+                desc: 'The relationship between Queen Gothel & the Mirrorqueen is long & wrinkled with complications. Recent betrayals have poisoned the trust that was cultivated over a century of stable cold war. Queen Gothel stares into a basin of shimmering quicksilver. In the unnatural reflection, the Mirrorqueen\'s Garden of Fey Flowers shines in twelve colors, none quite as fair as sunlight.',
             },
             germanyparis: {
                 desc: 'The Mirrorqueen has instructed Quasimodo, by letter from beggar to Beggar King to hunchback, to sprinkle the false Pope\'s food with soporific powder. Holding the readied apple in his hands, he watches mass from above, praying.',
-            },
-            germanypleasureisland: {
-                desc: '',
             },
             parispleasureisland: {
                 desc: 'Every year on Good Friday, French soldiers storm Pleasure Island, fighting their way past a new form of beast or illusion. If they win, they sheath their swords & seize as many children as they can. Terrific are the yells of the all-fighting children as they unwisely resist the rescue.',
             },
             arendellecorona: {
-                desc: '',
+                desc: 'The trolls fear Corona, & will not sail upon its waters. They believe its clear sunlight will turn them to stone.',
             },
             coronapleasureisland: {
-                desc: '',
+                desc: '"Back at home," the children often say mid-horseplay, "did you ever see anything crazy? Did you ever see anything that glows?" For there are such things in this world. "Cause you should never talk about it! Or the purple people will lock you up!" And indeed, there are grownups in purple finery sometimes, grownups more interested in children than in donkeys. They ask you if you\'ve ever seen a fallen star, or a sad little angel, the same color as your hair, perhaps.',
             },
             coronagreece: {
-                desc: '',
+                desc: 'One night per year, the Titan Tethys lowers her bone-cold palm to the gate of Corona, to collect three wagonloads of tithed gold. The following night, as they have for decades, the cofferless Coronans light flying lanterns & speak of hope.',
             },
-            greecepleasureisland: {
-                desc: '',
-            },
-            agrabahpridelands: {
-                desc: '',
+            agrabahpridelands: { // Book of Daniel
+                desc: 'Some nights, the lions sing pride-songs of their preparations for conquest. One night, they were midsong silenced & their mouths shut, for in the central bonfire there had flickered up from nowhere a human. "Lo!", she said, "I am Nasira, emissary of Almighty Jafar. I know that you have dreamed of four kingdoms. A reign of lions. A reign of demons. A reign of lesser cats. And a reign of iron. You dream the truth! The world will bristle with the armies of conquerors, & the fourth conqueror will be the great Jafar." And throughout the den the lions\' mouths were shut.',
             },
             claytonvillepridelands: {
-                desc: '',
+                desc: 'Cruel traps perimeter the woods around Claytonville. Any beast netted is sold by weight to the farms of the meat-hungry Pride.',
             },
             agrabahgreece: {
-                desc: '',
+                desc: 'The Agrabah Sultinate is the only power in the Mediterranean that can match the might of Mount Olympos. Serpents of fire patrol Jerusalem\'s walls, as the jealous Cyclops wades out of the sea to make war.',
             },
             greecespace: {
-                desc: '',
+                desc: 'We rent our bodies from Hades, we do not own. Yet the Stovetop Tyrant asks the Federation for an advance, a tithe of early death. Asphyxiation imps & starlight Titans besiege once-healthy planets. But thousands of creatures fire back in defense - one Galactic Armada uniform worn by bodies of a thousand shapes & sizes',
             },
             agrabahchina: {
-                desc: '',
+                desc: 'Asura Jafar, as he is known to the Khan, forgets the Earth, & his green Garden walls stand lightly guarded. But when the sagittary cavalry breach the East Gate, marvels assail them ex nihilo. King David, young, resists, ringed by slingslain corpses. Fishhooked Leviathan churns the Palace moat. Bow-armed Lazarus is shot down twelve times, but plucks & refires arrows from his own corpse.',
             },
             agrabahjunglebook: {
-                desc: '',
+                desc: 'On his morning walk through the Garden, Jafar caresses a mighty jungle vine curiously. Then he asks: "Interloper, name thyself!" The vine unloops: a great python. "The name\'s Kaa, of the Jungle of the Bonfire King." Jafar unloops also, rising tree-tall in form of serpent. "You hide from a friend, legless one," says Jafar. "I too am of fire." Kaa replies, with hungry eyes: "I know, the smokeless fire at your fingertips. But I wonder if your mind is of similar strength, or if that is your weakness..." And Jafar gazes back, & wonders also.',
             },
             chinajunglebook: {
                 desc: 'Surprised by the agility & aggression of the Bonfire King\'s apes, the Hun armies have retreated to the Great Wall, defending it from the Chinese side. Horse archers skirmish against elephant-riding monkeys, while macaques throw stolen gunpowder bombs.',
@@ -24608,6 +25326,12 @@ class Wiki {
             },
             kumandramotunui: {
                 desc: 'On a beach full of sand-dusted statues, a huge glimmering monster sidles out of the water. It is the crab Tamatoa, who uses the silent cities of Kumandra as his personal jewelry-box.',
+            },
+            neverneverlandpleasureisland: {
+                desc: 'The Blue Fairy\'s reach is long, but the starscape is vast, & she cannot save everyone. She focuses on those lost children who pass a test of virtue (a banquet-table abandoned, forested with treats...), spiriting them to Neverland. Those who feast, well, the Coachman finds them before she returns.',
+            },
+            neverneverlandwonderland: {
+                desc: 'Beyond the waking world, beyond the stars & planets, the rules that we call Story bend & discontinue. The abyss of un-space can access our planet at our moments of loosest ontology: day-dreams & night-dreams. And beyond Neverland, beyond Wonderland, there wells a benthic void of Nightmare, a don\'t-place of echoes that are not coachmen, of smiles that are not cats.',
             },
         };
 
@@ -24637,12 +25361,20 @@ class Wiki {
         document.body.scrollTop = 0;
     }
 
-    random () {
-        this.go(
-            Util.randomOf(
-                Object.keys(this.regionDict)
-            )
+    // random () {
+    //     this.go(
+    //         Util.randomOf(
+    //             Object.keys(this.regionDict)
+    //         )
+    //     );
+    // }
+
+    randomLink () {
+        const key = Util.randomOf(
+            Object.keys(this.regionDict)
         );
+
+        return this.asWikiLink(key, 'Read more...');
     }
 
     pageHtmlStr (pageKey) {
@@ -24666,6 +25398,38 @@ class Wiki {
         }
 
         return elements.join('\n');
+    }
+
+    writeHtmlFiles () {
+        const fs = require('fs');
+        const path = require('path');
+
+        for (let regionKey in this.regionDict) {
+            fs.writeFileSync(
+                path.join(__filename, '..', '..', regionKey + '.html'),
+                this.fullHtml(regionKey),
+                'utf8'
+            );
+        }
+    }
+
+    fullHtml (pageKey) {
+        return `<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="page.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div id="header">
+      <a href="index.html" class="wikilink">Villainverse of Neydis</a>
+    </div>
+    <div id="main">
+      ${this.pageHtmlStr(pageKey)}
+    </div>
+  </body>
+</html>
+`;
     }
 
     addLinkPassage (pageKey, elements, dir) {
@@ -24710,7 +25474,8 @@ class Wiki {
     }
 
     asWikiLink (pageKey, displayName) {
-        return `<button type="button" class="wikilink" onclick="window.wiki.go('${pageKey}')">${displayName}</button>`;
+        // return `<button type="button" class="wikilink" onclick="window.wiki.go('${pageKey}')">${displayName}</button>`;
+        return `<a href="${pageKey}.html" class="wikilink">${displayName}</a>`;
     }
 
     directions () {
@@ -24779,7 +25544,7 @@ class Wiki {
                 const borderInfo = this.borderDict[borderKey];
 
                 const goodBorderDesc = borderInfo &&
-                    borderInfo.desc.length >= this.meanDescLength;
+                    borderInfo.desc.length >= (this.meanDescLength / 2);
 
                 const message = borderInfo ?
                     borderInfo.desc.length + ' characters' :
@@ -24789,8 +25554,11 @@ class Wiki {
                     // Add it in-memory for later printing.
                     this.borderDict[borderKey] = borderInfo || {desc: ''};
 
-                    // Temporarily comment this to reduce noise.
-                    console.log(`  this.borderDict.${borderKey}.desc -- ${message}`);
+                    if (key.localeCompare(neighborKey) < 0) {
+                        // Only log each border once.
+                        // You can temporarily comment this to reduce noise.
+                        console.log(`  this.borderDict.${borderKey}.desc -- ${message}`);
+                    }
                 }
             }
         }
@@ -24808,7 +25576,7 @@ class Wiki {
 
         let legit = !! content;
 
-        if (legit && fieldName === 'desc' && content.length < this.meanDescLength) {
+        if (legit && fieldName === 'desc' && content.length < (this.meanDescLength / 2)) {
             legit = false;
         }
 
@@ -24828,16 +25596,32 @@ class Wiki {
         }
     }
 
-    updateHTML (pageKey) {
-        // this.articleMain.innerHTML = displayString;
+    initUI () {
+        window.wiki = this;
+
+        const randomizer = document.getElementById('randomButtonP');
+        randomizer.removeChild(randomizer.firstChild);
+
+        randomizer.innerHTML = this.randomLink();
     }
 
     static run () {
         const wiki = new Wiki();
-        wiki.testPages();
+        // wiki.testPages();
         wiki.testRegionDict();
 
-        window.wiki = wiki;
+        if (process.argv &&
+            process.argv.length === 2 &&
+            process.argv[0] &&
+            process.argv[0].endsWith('node') &&
+            process.argv[1].endsWith('wiki.js')) {
+
+            wiki.writeHtmlFiles();
+
+            return; // When testing via command line, skip window setup.
+        }
+
+        wiki.initUI();
     }
 }
 
@@ -24845,4 +25629,5 @@ Wiki.run();
 
 // TODO pin down details of entry point; how the starting pagename param is input to this script.
 
-},{"../../util/util.js":4}]},{},[5]);
+}).call(this)}).call(this,require('_process'),"/villainverse/src/wiki.js")
+},{"../../util/util.js":7,"_process":6,"fs":1,"path":5}]},{},[8]);
