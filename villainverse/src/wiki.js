@@ -477,6 +477,8 @@ class Wiki {
                 this.fullHtml(regionKey),
                 'utf8'
             );
+
+            console.log(`Wrote file ${regionKey}.html`);
         }
     }
 
@@ -491,6 +493,7 @@ class Wiki {
     <div id="header">
       <a href="index.html" class="wikilink">Villainverse of Neydis</a>
     </div>
+    <br/>
     <div id="main">
       ${this.pageHtmlStr(pageKey)}
     </div>
