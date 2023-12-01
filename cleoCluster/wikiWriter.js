@@ -31,7 +31,7 @@ class WikiWriter {
                     amorocco: 'hide',
                     iberia: 'hide',
                     gallia: 'hide',
-                    italica: 'hide',
+                    remia: 'hide',
                     aegea: 'hide',
                     byzantium: 'hide',
                 },
@@ -139,13 +139,18 @@ class WikiWriter {
                 const html = this.pageHtml(p);
                 const desiredFileName = p.key + '.html';
 
-                // if (p.key !== 'medeaTerra') { return; }
-
-                fs.writeFileSync(
-                    path.join(__filename, '..', desiredFileName),
+                console.log(); // Newline.
+                Util.logDebug({
+                    desiredFileName,
                     html,
-                    'utf8'
-                );
+                });
+
+                // NOTE - Uncomment this to overwrite html files in this dir:
+                // fs.writeFileSync(
+                //     path.join(__filename, '..', desiredFileName),
+                //     html,
+                //     'utf8'
+                // );
             }
         );
     }
@@ -222,7 +227,8 @@ class WikiWriter {
       <p id="desc">${this.pageDesc(page)}</p>
     </div>
   </body>
-</html>`;
+</html>
+`;
     }
 
     htmlPassage (content) {
@@ -234,9 +240,77 @@ class WikiWriter {
         return `<${elementName}>${content}</${elementName}>`;
     }
 
+    // One-off script for ease of writing HTML.
+    convertShorthandCache () {
+        const shorthand = `
+            Cyc 48: The Universal Stellar Compass is invented on [medeaRegnum].
+            Cyc 49: Kaesar Julius invades his own Republic from orbit, then declares himself the first Emperor of [remia].
+            Cyc 50: Godmind DEI_YESHUA takes human form, then is crucified by [remia] on [urusalim]. The Second Temple of Urusalim is soon destroyed.
+            Cyc 51: Kaesar Markus Aurelius of [remia] writes his Meditations on philosophy.
+            Cyc 52: Saint George slays the Dragon of DEI_LUCIFER on [britannia].
+            Cyc 53: Known records about DEI_YESHUA are collected & called the New Testament. Kaesar Constantine of [remia] forsakes DEI_ZEUS & pledges his empire to DEI_YESHUA.
+            Cyc 54: Saint Jerome translates the New Testament into the Remian language so that it can be read more widely. [remia] is sacked by a fleet from [borea], but [byzantium] remains unconquered.
+            Cyc 55: The Church of DEI_YESHUA is a Pentarchy of [nilus], [urusalim], Antioculus, [byzantium], & [remia]. On [britannia], King Arthur Pendragon gathers the Mecha of Camelot. Beowulf slays the mechamonster Grendel.
+            Cyc 56: Prophet Mohammed, Sybil of [mechapolis], receives the Revelation of DEI_MONAD.
+            Cyc 57: The Revelation of Mohammed is recognized as far west as [iberia].
+            Cyc 58: Charlemagne is crowned Holy Emperor of [borea] by the Pope of [remia]. Borea buckles under the Viking pressure of [midgard].
+            Cyc 59: Deadly plasma arrows are developed by the armies of [medeaRegnum].
+            Cyc 60: Leif Erikson of is the first mortal in many cycles to travel from [juno] to [americus]. He lives briefly in [nacada] then returns to [midgard]. The Church of DEI_YESHUA schisms between [remia] & [byzantium]. William of [gallia] conquers [britannia]. The first modern university is founded in Bologna, [iberia]. Avicenna of [ur] pioneers the study of minds.
+            Cyc 61: University of Oxford founded in [britannia].
+            Cyc 62: The Great Khan of [omnigaol] conquers many worlds, including [medeaRegnum]. Plasma cannons & bombs enter wider use in the Medea Regnum zone. [neoZeo] & [hedronii] are settled by Pacificus ships.
+            Cyc 63: The Extinguishing Plague infects Venezia & leaves [borea] & [medeaTerra] severely underpopulated. Dante of [remia] writes his epic vision of [samsara].
+            Cyc 64: Johannes Gutenberg publishes Yeshuan texts on an early commnet in [germanus]. The plasma rifle is perfected. Zheng He's treasure fleet launches from [medeaRegnum]. Cristóbal Colón returns to [iberia] from the [americus] system & advocates interstellar conquest.
+            Cyc 65: Starting in [Borea], the Yeshuan Church enters into civil war over disagreements about how to interpret Network logs.
+            Cyc 66: In [britannia], Isaac Newton supplants the Aristotelian theory of planetary motion with his gravitas model.
+            Cyc 67: The Revolution of [gallia] brings democracy to the world stage.
+        `;
+
+        // TODO - name & page for Easter Island, settled Cyc 53. Also Tahiti, settled earlier.
+
+        console.log(
+            this.shorthand2Html(shorthand)
+        );
+    }
+
+    shorthand2Html (shorthand) {
+        const lines = shorthand.split('\n');
+
+        return lines.map(
+            line => {
+                line = line.trim();
+                let leftI = line.indexOf('[');
+
+                while (leftI >= 0) {
+                    // const rightI = line.slice(leftI).indexOf(']');
+                    const rightI = line.indexOf(']');
+                    const key = line.slice(leftI + 1, rightI);
+                    const displayName = Util.fromCamelCase(key);
+
+                    line = line.slice(0, leftI) + `<a href="${key}.html">${displayName}</a>` + line.slice(rightI + 1);
+
+                    leftI = line.indexOf('[');
+
+                    Util.logDebug({
+                        line,
+                        leftI,
+                        rightI,
+                        key,
+                        displayName,
+                    });
+
+                    // break;
+                }
+
+                return this.htmlPassage(line);
+            }
+        )
+        .join('\n');
+    }
+
     static run () {
         const wiki = new WikiWriter();
-        wiki.setupPages();
+        // wiki.setupPages();
+        wiki.convertShorthandCache();
     }
 }
 
