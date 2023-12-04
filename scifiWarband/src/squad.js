@@ -31,6 +31,10 @@ class Squad {
         this.loadImage();
     }
 
+    type () {
+        return this.constructor.name;
+    }
+
     loadImage () {
         this.imgElement = new Image();
         this.imgElement.src = Squad.IMAGE_PREFIX + this.template.image;
@@ -48,6 +52,10 @@ class Squad {
 
     faction () {
         return this.creatures?.[0]?.faction();
+    }
+
+    parent () {
+        return this.company;
     }
 
     isKO () {

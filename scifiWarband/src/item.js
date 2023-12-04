@@ -20,6 +20,14 @@ class Item {
         return this.template.name; // + ' ' + Util.shortId(this.id);
     }
 
+    type () {
+        return this.constructor.name;
+    }
+
+    parent () {
+        return this.creature;
+    }
+
     static example () {
         const item = new Item(
             Templates.Halo.UNSC.Item.SMG

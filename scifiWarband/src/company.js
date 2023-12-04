@@ -24,6 +24,10 @@ class Company { //extends Component {
         return this.nameFromUser || this.nameGenerated || ('Company ' + Util.shortId(this.id));
     }
 
+    type () {
+        return this.constructor.name;
+    }
+
     activeSquads () {
         return this.squads.filter(sq => ! sq.isKO());
     }
@@ -34,6 +38,11 @@ class Company { //extends Component {
 
     healthBar () {
         return this.activeSquadCount() / this.squads.length;
+    }
+
+    addSquad (squad) {
+        this.squads.push(squad);
+        squad.company = this;
     }
 
     nameSquads () {

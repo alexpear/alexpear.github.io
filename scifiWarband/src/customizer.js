@@ -20,6 +20,8 @@ class Customizer {
         this.overviewPane = document.getElementById('companyOverview');
         if (! this.overviewPane) { return; }
 
+        this.infoPane = document.getElementById('infoPane');
+
         this.setUI();
     }
 
@@ -63,59 +65,76 @@ class Customizer {
         button.setAttribute('class', 'component');
         // LATER - better to store these values as props of JS obj, or as HTML attrs?
         button.component = component;
-        button.componentType = component.constructor.name;
+        button.componentType = component.constructor.name; // LATER add member func component.type()
         button.innerHTML = component.name();
 
-        // const self = this;
-        button.onclick = () => {
-            const infoPane = document.getElementById('infoPane');
-
-            // infoPane.innerHTML = button.component.name() + ' - ' + Util.stringify(button.component.toJson());
-            infoPane.innerHTML = this.infoPaneContents(button.component, button);
-        }
+        button.onclick = () => this.setInfoPane(button);
 
         return button;
     }
 
-    infoPaneContents (component, button) {
+    setInfoPane (button) {
+        const component = button.component;
         const componentType = button?.componentType;
 
-        //temp debug
-        const pHtml = Util.htmlPassage(
-            component.name() + ` (${componentType}) - ` + Util.stringify(component.toJson())
-        );
+        Util.clearHtmlChildren(this.infoPane);
+
+        const titleP = document.createElement('p');
+        titleP.innerHTML = `${component.name()} (${componentType})`;
+        titleP.setAttribute('class', 'infoPaneTitle');
+        this.infoPane.appendChild(titleP);
+
+        Util.logDebug({
+            componentType,
+            componentJson: component.toJson(),
+            context: `Customizer.infoPaneContents(): before if(Company). `,
+            // pInnerHtml: infoPHtml.innerHTML,
+        });
 
         if (componentType === 'Company') {
             const newSquadButton = this.infoPaneButton('New Squad', component);
 
-            return pHtml + newSquadButton;
+            // LATER onclick
+
+            this.infoPane.appendChild(newSquadButton);
         }
+        else {
+            const removeButton = this.infoPaneButton(`Remove ${componentType || 'This'}`, component);
 
-        const removeButton = this.infoPaneButton(`Remove ${componentType || 'This'}`, component);
+            // removeButton.onclick = () => this.removeComponent(component, parent);
 
-        const html = pHtml + removeButton;
+            this.infoPane.appendChild(removeButton);
+        }
 
         if (componentType === 'Squad') {
             const newMemberButton = this.infoPaneButton('New Squad Member', component);
 
-            return html + newMemberButton;
+            // LATER onclick
+
+            this.infoPane.appendChild(newMemberButton);
         }
         else if (componentType === 'Creature') {
             const newItemButton = this.infoPaneButton('New Item', component);
 
-            return html + newItemButton;
+            // LATER onclick
+
+            this.infoPane.appendChild(newItemButton);
         }
         else if (componentType === 'Item') {
-            return html;
+            const unused = 0;
+        }
+        else {
+            Util.logError({
+                componentType,
+                componentJson: component.toJson(),
+                error: `Customizer.infoPaneContents(): componentType not recognized.`,
+            });
         }
 
-        Util.logError({
-            componentType,
-            componentJson: component.toJson(),
-            error: `Customizer.infoPaneContents(): componentType not recognized.`,
-        });
-
-        return html;
+        //temp debug
+        const infoPHtml = document.createElement('p');
+        infoPHtml.innerHTML = Util.stringify(component.toJson());
+        infoPane.appendChild(infoPHtml);
     }
 
     infoPaneButton (text, relevantComponent) {
@@ -125,6 +144,73 @@ class Customizer {
         button.relevantComponent = relevantComponent;
 
         return button;
+    }
+
+    setNewComponentMenu (button) {
+        this.selectedComponent = button.component;
+
+        Util.clearHtmlChildren(this.infoPane);
+
+        this.infoPane.appendChild(
+            Util.pElement(
+                `Add ${'<type>'} to ${this.selectedComponent.type()} ${this.selectedComponent.name()}:`,
+                'infoPaneTitle',
+            )
+        );
+
+        const cancelButton = Util.button(
+            'Cancel',
+            'infoPaneButton',
+            undefined, // onclick LATER
+        );
+        this.infoPane.appendChild(cancelButton);
+
+        const newComponentTemplates = [
+            // temp wip
+            Templates.Halo.UNSC.Item.SMG,
+            Templates.Halo.UNSC.Item.SMG,
+            Templates.Halo.UNSC.Item.SMG,
+        ];
+
+        newComponentTemplates.map(template => {
+            const newComponentButton = Util.button(
+                template.name,
+                'infoPaneButton',
+            );
+
+            newComponentButton.template = template;
+            newComponentButton.relevantComponent = this.selectedComponent;
+
+            button.onclick = () => this.addComponent(
+                newComponentButton.template,
+                newComponentButton.relevantComponent
+            );
+
+            this.infoPane.appendChild(newComponentButton);
+        });
+    }
+
+    addComponent (template, relevantComponent) {
+        let newComponent;
+
+        if (relevantComponent.type() === 'Company') {
+            newComponent = new Squad(template);
+            relevantComponent.squads.push(newComponent);
+        }
+        else if (relevantComponent.type() === 'Squad') {
+            newComponent = new Creature(template);
+        }
+        else if (relevantComponent.type() === 'Creature') {
+            newComponent = new Item(template);
+        }
+
+        // Append to relevantComponent
+        this.selectedComponent = newComponent;
+        // Refresh left pane
+    }
+
+    removeComponent (component, parent) {
+
     }
 
     setCompanies (companies) {

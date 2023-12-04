@@ -31,6 +31,10 @@ class Creature {
         }
     }
 
+    type () {
+        return this.constructor.name;
+    }
+
     isKO () {
         return !! this.status.ko;
     }
@@ -38,6 +42,16 @@ class Creature {
     faction () {
         return this.template.faction;
     }
+
+    // LATER - use Component.parent, not Creature.squad
+    // parent () {
+    //     return this.squad;
+    // }
+
+    // addItem (item) {
+    //     this.items.push(item);
+
+    // }
 
     // creates Event
     update () {

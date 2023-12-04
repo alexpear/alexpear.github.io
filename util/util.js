@@ -713,6 +713,49 @@ class Util {
         });
     }
 
+    // Returns string with '<'s in it.
+    static htmlPassage (content) {
+        return Util.asElement(content, 'p');
+    }
+
+    // Returns string with '<'s in it.
+    static asElement (content, elementName) {
+        // TODO make content HTML-friendly, escape etc.
+        return `<${elementName}>${content}</${elementName}>`;
+    }
+
+    static pElement (text, className) {
+        const p = document.createElement('p');
+
+        p.innerHTML = text;
+
+        if (className) {
+            p.setAttribute('class', className);
+        }
+
+        return p;
+    }
+
+    static button (text, className, func) {
+        const b = document.createElement('button');
+
+        b.innerHTML = text;
+
+        if (className) {
+            b.setAttribute('class', className);
+        }
+
+        b.onclick = func;
+
+        return b;
+    }
+
+    static clearHtmlChildren (element) {
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+    }
+
     // True when input is a number or a string containing digits.
     static isNumeric (x) {
         return /[0-9]/.test(x);
