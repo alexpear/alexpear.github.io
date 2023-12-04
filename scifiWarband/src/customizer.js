@@ -70,8 +70,51 @@ class Customizer {
         button.onclick = () => {
             const infoPane = document.getElementById('infoPane');
 
-            infoPane.innerHTML = button.component.name() + ' - ' + Util.stringify(button.component.toJson());
+            // infoPane.innerHTML = button.component.name() + ' - ' + Util.stringify(button.component.toJson());
+            infoPane.innerHTML = this.infoPaneContents(button.component, button);
         }
+
+        return button;
+    }
+
+    infoPaneContents (component, button) {
+        const componentType = button?.componentType;
+
+        //temp debug
+        const pHtml = Util.htmlPassage(
+            component.name() + ` (${componentType}) - ` + Util.stringify(component.toJson())
+        );
+
+        if (componentType === 'Company') {
+            return pHtml + this.infoPaneButton('New Squad', component);
+        }
+
+        const html = pHtml + this.infoPaneButton(`Remove ${componentType || 'This'}`, component);
+
+        if (componentType === 'Squad') {
+            return html + this.infoPaneButton('New Squad Member', component);
+        }
+        else if (componentType === 'Creature') {
+            return html + this.infoPaneButton('New Item', component);
+        }
+        else if (componentType === 'Item') {
+            return html;
+        }
+
+        Util.logError({
+            componentType,
+            componentJson: component.toJson(),
+            error: `Customizer.infoPaneContents(): componentType not recognized.`,
+        });
+
+        return html;
+    }
+
+    infoPaneButton (text, relevantComponent) {
+        const button = document.createElement('button');
+        button.setAttribute('class', 'infoPaneButton');
+        button.innerHTML = text;
+        button.relevantComponent = relevantComponent;
 
         return button;
     }
