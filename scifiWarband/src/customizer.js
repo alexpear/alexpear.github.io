@@ -86,16 +86,24 @@ class Customizer {
         );
 
         if (componentType === 'Company') {
-            return pHtml + this.infoPaneButton('New Squad', component);
+            const newSquadButton = this.infoPaneButton('New Squad', component);
+
+            return pHtml + newSquadButton;
         }
 
-        const html = pHtml + this.infoPaneButton(`Remove ${componentType || 'This'}`, component);
+        const removeButton = this.infoPaneButton(`Remove ${componentType || 'This'}`, component);
+
+        const html = pHtml + removeButton;
 
         if (componentType === 'Squad') {
-            return html + this.infoPaneButton('New Squad Member', component);
+            const newMemberButton = this.infoPaneButton('New Squad Member', component);
+
+            return html + newMemberButton;
         }
         else if (componentType === 'Creature') {
-            return html + this.infoPaneButton('New Item', component);
+            const newItemButton = this.infoPaneButton('New Item', component);
+
+            return html + newItemButton;
         }
         else if (componentType === 'Item') {
             return html;
