@@ -1,14 +1,14 @@
 'use strict';
 
-//
+// Physical items such as weapons, tools, armor.
 
+const Component = require('./component.js');
 const Templates = require('./templates.js');
 const Util = require('../../util/util.js');
 
-// LATER could make class Component, superclass of Item, Creature, Squad, & Company.
-class Item {
+class Item extends Component {
     constructor (template) {
-        this.id = Util.uuid();
+        super();
         this.template = template;
     }
 
@@ -22,10 +22,6 @@ class Item {
 
     type () {
         return this.constructor.name;
-    }
-
-    parent () {
-        return this.creature;
     }
 
     static example () {

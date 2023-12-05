@@ -29,13 +29,13 @@ class Customizer {
         for (let company of this.companies) {
             this.addButton(company);
 
-            for (let squad of company.squads) {
+            for (let squad of company.children) {
                 this.addButton(squad);
 
-                for (let creature of squad.creatures) {
+                for (let creature of squad.children) {
                     this.addButton(creature);
 
-                    for (let item of creature.items) {
+                    for (let item of creature.children) {
                         this.addButton(item);
                     }
                 }
@@ -195,7 +195,6 @@ class Customizer {
 
         if (relevantComponent.type() === 'Company') {
             newComponent = new Squad(template);
-            relevantComponent.squads.push(newComponent);
         }
         else if (relevantComponent.type() === 'Squad') {
             newComponent = new Creature(template);
@@ -204,8 +203,9 @@ class Customizer {
             newComponent = new Item(template);
         }
 
-        // Append to relevantComponent
+        relevantComponent.addChild(newComponent);
         this.selectedComponent = newComponent;
+
         // Refresh left pane
     }
 

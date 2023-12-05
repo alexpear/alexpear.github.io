@@ -1,21 +1,19 @@
 'use strict';
 
-const Creature = require('./creature.js');
-// const Squad = require('./squad.js');
-// const Action = require('./action.js');
-// const Item = require('./Item.js');
-const Templates = require('./templates.js');
+// For Scifi Warband autobattler game.
 
+const Component = require('./component.js');
+const Creature = require('./creature.js');
 const Event = require('./event.js');
+const Templates = require('./templates.js');
 
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
-class Squad {
+class Squad extends Component {
     constructor (squadTemplate, _unused, coord) {
-        this.id = Util.uuid();
+        super();
         this.template = squadTemplate;
-        this.creatures = [];
         // this.team = team || this.template.faction;
         this.coord = coord || new Coord();
         this.ready = true;
@@ -23,16 +21,11 @@ class Squad {
         // Note that this is how you create a homogenous squad from a template. LATER, might often have heterogenous squads coming from customization choices or from a save file.
         for (let i = 1; i <= this.template.quantity; i++) {
             const cr = new Creature(this.template.creature);
-            this.creatures.push(cr);
-            cr.squad = this;
+            this.addChild(cr);
         }
 
         this.resetVisibility();
         this.loadImage();
-    }
-
-    type () {
-        return this.constructor.name;
     }
 
     loadImage () {
@@ -51,15 +44,11 @@ class Squad {
     }
 
     faction () {
-        return this.creatures?.[0]?.faction();
-    }
-
-    parent () {
-        return this.company;
+        return this.children?.[0]?.faction();
     }
 
     isKO () {
-        return this.creatures.every(
+        return this.children.every(
             cr => cr.isKO()
         );
     }
@@ -67,7 +56,7 @@ class Squad {
     // LATER if useful, we could add a func like .available(), which checks both .ready and .isKO()
 
     activeCreatures () {
-        return this.creatures.filter(cr => ! cr.isKO())
+        return this.children.filter(cr => ! cr.isKO())
     }
 
     quantity () {
@@ -120,7 +109,7 @@ class Squad {
             return;
         }
  
-        const events = this.creatures.map(cr => cr.update())
+        const events = this.children.map(cr => cr.update())
             .filter(e => !! e);
 
         this.resetVisibility();
@@ -166,7 +155,7 @@ class Squad {
         }
 
         Util.logDebug(`Squad.whoGotHit() default case happened for Squad ${this.id}.`);
-        return this.creatures[this.creatures.length - 1];
+        return this.children[this.children.length - 1];
     }
 
     // For display
@@ -224,7 +213,7 @@ class Squad {
         // Util.logDebug(`Squad.terse(): coord=${this.coord.toString()}, this.koSummary()=${this.koSummary()}`);
 
         const representative = this.isKO() ?
-            this.creatures[0] :
+            this.children[0] :
             this.activeCreatures()[0];
 
         const name = representative?.template.name || `<empty Squad>`;
@@ -234,7 +223,7 @@ class Squad {
 
     // For debugging
     koSummary () {
-        return this.creatures.map(
+        return this.children.map(
             cr => cr.isKO() ? 'KO' : 'Active'
         )
         .join(',');
@@ -254,7 +243,7 @@ class Squad {
 
     commonestCreature () {
         return Util.commonest(
-            this.creatures.map(cr => cr.template.name)
+            this.children.map(cr => cr.template.name)
         );
     }
 
@@ -265,7 +254,7 @@ class Squad {
         );
         json.faction = this.faction();
 
-        json.creatures = this.creatures.map(cr => cr.toJson());
+        json.creatures = this.children.map(cr => cr.toJson());
 
         return json;
     }

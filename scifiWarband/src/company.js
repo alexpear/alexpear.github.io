@@ -1,19 +1,16 @@
 'use strict';
 
-// const Creature = require('./creature.js');
+// A Company is the main top-level grouping of Squads in the Warband game.
+
+const Component = require('./component.js');
 const Squad = require('./squad.js');
-// const Action = require('./action.js');
-// const Item = require('./Item.js');
 const Templates = require('./templates.js');
-// const Event = require('./event.js');
-// const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
-class Company { //extends Component {
+class Company extends Component {
     constructor (faction) {
-        this.id = Util.uuid();
+        super();
         this.faction = faction;
-        this.squads = [];
     }
 
     terse () {
@@ -24,12 +21,8 @@ class Company { //extends Component {
         return this.nameFromUser || this.nameGenerated || ('Company ' + Util.shortId(this.id));
     }
 
-    type () {
-        return this.constructor.name;
-    }
-
     activeSquads () {
-        return this.squads.filter(sq => ! sq.isKO());
+        return this.children.filter(sq => ! sq.isKO());
     }
 
     activeSquadCount () {
@@ -37,16 +30,11 @@ class Company { //extends Component {
     }
 
     healthBar () {
-        return this.activeSquadCount() / this.squads.length;
-    }
-
-    addSquad (squad) {
-        this.squads.push(squad);
-        squad.company = this;
+        return this.activeSquadCount() / this.children.length;
     }
 
     nameSquads () {
-        for (let squad of this.squads) {
+        for (let squad of this.children) {
             this.nameSquad(squad);
         }
     }
@@ -54,7 +42,7 @@ class Company { //extends Component {
     nameSquad (squad) {
         if (squad.nameFromUser) { return; }
 
-        const names = this.squads.map(sq => sq.existingName());
+        const names = this.children.map(sq => sq.existingName());
 
         if (squad.nameGenerated) {
             const squadsWithThatName = names.filter(name => name === squad.nameGenerated);
@@ -88,7 +76,7 @@ class Company { //extends Component {
         return {
             id: this.id,
             faction: this.faction,
-            squads: this.squads.map(sq => sq.toJson()),
+            squads: this.children.map(sq => sq.toJson()),
         };
     }
 

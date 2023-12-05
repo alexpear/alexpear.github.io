@@ -188,21 +188,21 @@ class ScifiWarband {
 
         if (
             ! thing ||
-            ! thing.creatures
+            ! thing.children
         ) {
             sane = false;
         }
         else {
             const factions = Util.unique(
-                thing.creatures?.map(cr => cr.faction())
+                thing.children?.map(cr => cr.faction())
             );
 
-            const activeCreature = thing.creatures.find(cr => ! cr.isKO());
-            const koCreature = thing.creatures.find(cr => cr.isKO());
+            const activeCreature = thing.children.find(cr => ! cr.isKO());
+            const koCreature = thing.children.find(cr => cr.isKO());
             const mixedKOStatus = activeCreature && koCreature;
 
             if (
-                thing.creatures.length === 0 ||
+                thing.children.length === 0 ||
                 factions.length !== 1 ||
                 mixedKOStatus
             ) {
@@ -266,7 +266,7 @@ class ScifiWarband {
     chooseActions (curSquad) {
         // ScifiWarband.logDebug(curSquad.toJson());
 
-        const sentiments = curSquad.creatures.map(cr => cr.morale());
+        const sentiments = curSquad.children.map(cr => cr.morale());
         // LATER morale can inform chooseActions()
 
         // A squad may do ONE action (eg move OR attack) each turn.
@@ -708,7 +708,7 @@ class ScifiWarband {
 
         // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) top. - toJsonStr()=${damagedSquad.toJsonStr()}`);
 
-        const koCreatures = damagedSquad.creatures.filter(cr => cr.isKO());
+        const koCreatures = damagedSquad.children.filter(cr => cr.isKO());
         if (koCreatures.length === 0) { return; }
 
         const thingsHere = this.contentsOfCoord(damagedSquad.coord);
@@ -724,22 +724,22 @@ class ScifiWarband {
             this.things.push(koSquad);
         }
 
-        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) before concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) before concat(). koSquad.children.length=${koSquad.children.length}, koCreatures.length=${koCreatures.length}`);
 
-        koSquad.creatures = koSquad.creatures.concat(koCreatures);
+        koSquad.children = koSquad.children.concat(koCreatures);
 
-        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) after concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) after concat(). koSquad.children.length=${koSquad.children.length}, koCreatures.length=${koCreatures.length}`);
 
-        damagedSquad.creatures = damagedSquad.creatures.filter(cr => ! cr.isKO());
+        damagedSquad.children = damagedSquad.children.filter(cr => ! cr.isKO());
 
-        if (damagedSquad.creatures.length === 0) {
-            this.things = this.things.filter(th => th.creatures.length >= 1);
+        if (damagedSquad.children.length === 0) {
+            this.things = this.things.filter(th => th.children.length >= 1);
         }
 
         const koCreaturesArrayStr = koCreatures.map(cr => cr.toJsonStr()).join(', ');
         // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) bottom. - damagedSquad.toJsonStr()=${damagedSquad.toJsonStr()} \n koSquad.toJsonStr()=${koSquad.toJsonStr()}, local var koCreatures=[${koCreaturesArrayStr}]`);
 
-        if (koSquad.creatures.length === 0) {
+        if (koSquad.children.length === 0) {
             throw new Error(Util.stringify({
                 damagedSquad: damagedSquad.toJson(),
                 koSquad: koSquad.toJson(),
@@ -753,10 +753,10 @@ class ScifiWarband {
         const game = new ScifiWarband();
 
         const damagedSquad = Squad.example('Marine');
-        const startingCount = damagedSquad.creatures.length;
+        const startingCount = damagedSquad.children.length;
         game.things = [damagedSquad];
 
-        damagedSquad.creatures[0].status.ko = true;
+        damagedSquad.children[0].status.ko = true;
         game.tidyKOs(damagedSquad);
 
         const contents = game.contentsOfCoord(damagedSquad.coord);
@@ -767,9 +767,9 @@ class ScifiWarband {
         const summary = {
             numberOfSquads: contents.length,
             startingCount,
-            endingCount: damagedSquad.creatures.length,
+            endingCount: damagedSquad.children.length,
             endingQuantity: damagedSquad.quantity(),
-            koSquadCount: koSquad?.creatures.length,
+            koSquadCount: koSquad?.children.length,
             koSquadQuantity: koSquad?.quantity(),
             koSquadFaction: koSquad?.faction(),
         };
@@ -778,9 +778,9 @@ class ScifiWarband {
 
         const expected = {
             numberOfSquads: 2,
-            startingCount: controlGroup.creatures.length,
-            endingCount: controlGroup.creatures.length - 1,
-            endingQuantity: controlGroup.creatures.length - 1,
+            startingCount: controlGroup.children.length,
+            endingCount: controlGroup.children.length - 1,
+            endingQuantity: controlGroup.children.length - 1,
             koSquadCount: 1,
             koSquadQuantity: 0,
             koSquadFaction: controlGroup.faction(),
@@ -1049,7 +1049,7 @@ class ScifiWarband {
                 if (things.length === 0) { continue; }
 
                 for (let thing of things) {
-                    ScifiWarband.logDebug(`${thing.terse()} with .creatures=${thing.koSummary()}`);
+                    ScifiWarband.logDebug(`${thing.terse()} with .children=${thing.koSummary()}`);
                 }
             }
         }

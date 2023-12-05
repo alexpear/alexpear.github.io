@@ -1,17 +1,17 @@
 'use strict';
 
-//
+// For Scifi Warband autobattler game.
 
-const Item = require('./item.js');
+const Component = require('./component.js');
 const Event = require('./event.js');
+const Item = require('./item.js');
 const Templates = require('./templates.js');
 const Util = require('../../util/util.js');
 
-class Creature {
+class Creature extends Component {
     constructor (creatureTemplate, items) {
-        this.id = Util.uuid();
+        super();
         this.template = creatureTemplate;
-        this.items = [];
         this.shields = this.template.shields || 0;
         this.cooldownEnds = Infinity;
 
@@ -19,20 +19,16 @@ class Creature {
         this.status = {};
 
         if (items) {
-            this.items = items;
+            this.children = items;
         }
         else {
             const templateItems = this.template.items || [];
             for (let itemTemplate of templateItems) {
-                this.items.push(
+                this.children.push(
                     new Item(itemTemplate)
                 );
             }
         }
-    }
-
-    type () {
-        return this.constructor.name;
     }
 
     isKO () {
@@ -42,16 +38,6 @@ class Creature {
     faction () {
         return this.template.faction;
     }
-
-    // LATER - use Component.parent, not Creature.squad
-    // parent () {
-    //     return this.squad;
-    // }
-
-    // addItem (item) {
-    //     this.items.push(item);
-
-    // }
 
     // creates Event
     update () {
@@ -93,7 +79,7 @@ class Creature {
     // Param currently unused, but could affect choice of weapon in future.
     weapon (targetSquad) {
         return this.template.items[0]; // LATER choose a weapon, or have a better preset system.
-        // LATER use this.items, to track things theyve picked up during battle.
+        // LATER use this.children, to track things theyve picked up during battle.
     }
 
     preferredRange (targetSquad) {
@@ -163,7 +149,7 @@ class Creature {
     // LATER Could move this to main encounter class if that makes cover calc easier.
     // returns Event[]
     attack (otherSquad, coverPercent = 0) {
-        const distance = this.squad.distanceTo(otherSquad);
+        const distance = this.parent.distanceTo(otherSquad);
         const weaponTemplate = this.weapon(); 
 
         // eg: Melee weapons have a strict max range.
@@ -268,14 +254,9 @@ class Creature {
             ['id', 'template', 'shields', 'cooldownEnds', 'status']
         );
 
-        json.squad = this.squad?.id;
+        json.parent = this.parent?.id;
 
         return json;
-    }
-
-    // LATER put in superclass Component.
-    toJsonStr () {
-        return Util.stringify(this.toJson());
     }
 
     name () {
