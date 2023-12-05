@@ -1122,6 +1122,12 @@ class Util {
         Util.log(input, 'error');
     }
 
+    static error (summary) {
+        throw new Error(
+            Util.stringify(summary)
+        );
+    }
+
     static makeEnum (vals) {
         const dict = {};
         for (let val of vals) {
