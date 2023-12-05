@@ -201,6 +201,8 @@ class ScifiWarband {
             const koCreature = thing.children.find(cr => cr.isKO());
             const mixedKOStatus = activeCreature && koCreature;
 
+            // LATER also check all parent pointers are correct in the squad's tree.
+
             if (
                 thing.children.length === 0 ||
                 factions.length !== 1 ||

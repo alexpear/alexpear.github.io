@@ -51,7 +51,7 @@ class Company extends Component {
         }
 
         const commonestCreatureName = Util.commonest(
-            squad.creatures.map(cr => cr.template.name)
+            squad.children.map(cr => cr.template.name)
         );
 
         const similarNames = names.filter(
@@ -83,7 +83,7 @@ class Company extends Component {
     static example () {
         const comp = new Company(Templates.Halo.UNSC.name);
 
-        comp.squads = Company.exampleSquads();
+        comp.children = Company.exampleSquads();
         comp.nameSquads();
         return comp;
     }

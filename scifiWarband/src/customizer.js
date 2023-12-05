@@ -123,7 +123,7 @@ class Customizer {
         else if (componentType === 'Item') {
             const unused = 0;
         }
-        else {
+        else if (componentType !== 'Company') {
             Util.logError({
                 componentType,
                 componentJson: component.toJson(),

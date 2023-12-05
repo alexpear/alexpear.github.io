@@ -254,7 +254,7 @@ class Squad extends Component {
         );
         json.faction = this.faction();
 
-        json.creatures = this.children.map(cr => cr.toJson());
+        json.children = this.children.map(cr => cr.toJson());
 
         return json;
     }
