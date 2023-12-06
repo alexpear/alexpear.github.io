@@ -24,9 +24,8 @@ class Creature extends Component {
         else {
             const templateItems = this.template.items || [];
             for (let itemTemplate of templateItems) {
-                this.children.push(
-                    new Item(itemTemplate)
-                );
+                const item = new Item(itemTemplate);
+                this.addChild(item);
             }
         }
     }

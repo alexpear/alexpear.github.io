@@ -13,7 +13,12 @@ class Item extends Component {
     }
 
     toJson () {
-        return this;
+        return {
+            id: this.id,
+            template: this.template,
+            type: this.constructor.name,
+            parentId: this?.parent?.id,
+        };
     }
 
     name () {

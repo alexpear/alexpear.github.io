@@ -73,11 +73,9 @@ class Company extends Component {
     }
 
     toJson () {
-        return {
-            id: this.id,
-            faction: this.faction,
-            squads: this.children.map(sq => sq.toJson()),
-        };
+        const json = super.toJson();
+        json.faction = this.faction;
+        return json;
     }
 
     static example () {

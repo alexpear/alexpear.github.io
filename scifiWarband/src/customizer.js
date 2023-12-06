@@ -65,7 +65,7 @@ class Customizer {
         button.setAttribute('class', 'component');
         // LATER - better to store these values as props of JS obj, or as HTML attrs?
         button.component = component;
-        button.componentType = component.constructor.name; // LATER add member func component.type()
+        button.componentType = component.type();
         button.innerHTML = component.name();
 
         button.onclick = () => this.setInfoPane(button);
@@ -166,7 +166,7 @@ class Customizer {
         this.infoPane.appendChild(cancelButton);
 
         const newComponentTemplates = [
-            // temp wip
+            // temp wip TODO
             Templates.Halo.UNSC.Item.SMG,
             Templates.Halo.UNSC.Item.SMG,
             Templates.Halo.UNSC.Item.SMG,
@@ -232,6 +232,8 @@ class Customizer {
 
         const cmizer = new Customizer();
         cmizer.setCompanies(Customizer.exampleCompanies());
+
+        cmizer.companies.map(company => company.sanityCheck());
 
     }
 }

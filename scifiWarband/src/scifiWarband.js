@@ -183,7 +183,7 @@ class ScifiWarband {
 
     sanityCheck (thing) {
         // LATER could functionize some or all of this into Util.js
-        // (or could move it to squad.js)
+        // (or could move it to component.js)
         let sane = true;
 
         if (
