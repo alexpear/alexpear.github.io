@@ -81,19 +81,16 @@ class Company extends Component {
     static example () {
         const comp = new Company(Templates.Halo.UNSC.name);
 
-        comp.children = Company.exampleSquads();
+        comp.addExampleSquads();
         comp.nameSquads();
+
         return comp;
     }
 
-    static exampleSquads () {
-        const squads = [];
-
+    addExampleSquads () {
         for (let i = 0; i < 3; i++) {
-            squads.push(Squad.example('Marine'));
+            this.addChild(Squad.example('Marine'));
         }
-
-        return squads;
     }
 }
 
