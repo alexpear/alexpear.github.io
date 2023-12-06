@@ -43,6 +43,11 @@ class Customizer {
         }
     }
 
+    refreshOverview () {
+        Util.clearHtmlChildren(this.overviewPane);
+        this.setUI();
+    }
+
     addButton (component) {
         const INDENT_BASE = 20;
 
@@ -73,9 +78,12 @@ class Customizer {
         return button;
     }
 
-    setInfoPane (button) {
-        const component = button.component;
-        const componentType = button?.componentType;
+    // subject can be a button or a Component or undefined.
+    // LATER - would like to visually highlight the button in left overview pane corresponding to selectedComponent.
+    setInfoPane (subject) {
+        const component = subject?.component || subject || this.selectedComponent;
+        const componentType = component.type();
+        this.selectedComponent = component;
 
         Util.clearHtmlChildren(this.infoPane);
 
@@ -92,38 +100,35 @@ class Customizer {
         });
 
         if (componentType === 'Company') {
-            const newSquadButton = this.infoPaneButton('New Squad', component);
-
-            // LATER onclick
-
-            this.infoPane.appendChild(newSquadButton);
+            this.addInfoPaneButton(
+                'New Squad',
+                component,
+                () => this.setChooseNewComponentMenu(component),
+            );
         }
         else {
-            const removeButton = this.infoPaneButton(`Remove ${componentType || 'This'}`, component);
-
-            // removeButton.onclick = () => this.removeComponent(component, parent);
-
-            this.infoPane.appendChild(removeButton);
+            this.addInfoPaneButton(
+                `Remove ${componentType || 'This'}`,
+                component,
+                () => this.removeComponent(component),
+            );
         }
 
         if (componentType === 'Squad') {
-            const newMemberButton = this.infoPaneButton('New Squad Member', component);
-
-            // LATER onclick
-
-            this.infoPane.appendChild(newMemberButton);
+            this.addInfoPaneButton(
+                'New Squad Member',
+                component,
+                () => this.setChooseNewComponentMenu(component),
+            );
         }
         else if (componentType === 'Creature') {
-            const newItemButton = this.infoPaneButton('New Item', component);
-
-            // LATER onclick
-
-            this.infoPane.appendChild(newItemButton);
+            this.addInfoPaneButton(
+                'New Item',
+                component,
+                () => this.setChooseNewComponentMenu(component),
+            );
         }
-        else if (componentType === 'Item') {
-            const unused = 0;
-        }
-        else if (componentType !== 'Company') {
+        else if (! ['Item', 'Company'].includes(componentType)) {
             Util.logError({
                 componentType,
                 componentJson: component.toJson(),
@@ -137,23 +142,26 @@ class Customizer {
         infoPane.appendChild(infoPHtml);
     }
 
-    infoPaneButton (text, relevantComponent) {
+    addInfoPaneButton (text, relevantComponent, func) {
         const button = document.createElement('button');
         button.setAttribute('class', 'infoPaneButton');
         button.innerHTML = text;
         button.relevantComponent = relevantComponent;
+        button.onclick = func;
+
+        this.infoPane.appendChild(button);
 
         return button;
     }
 
-    setNewComponentMenu (button) {
-        this.selectedComponent = button.component;
+    setChooseNewComponentMenu (parent) {
+        this.selectedComponent = parent;
 
         Util.clearHtmlChildren(this.infoPane);
 
         this.infoPane.appendChild(
             Util.pElement(
-                `Add ${'<type>'} to ${this.selectedComponent.type()} ${this.selectedComponent.name()}:`,
+                `Add a new ${parent.childType()} to ${parent.type()} ${parent.name()}:`,
                 'infoPaneTitle',
             )
         );
@@ -161,7 +169,9 @@ class Customizer {
         const cancelButton = Util.button(
             'Cancel',
             'infoPaneButton',
-            undefined, // onclick LATER
+            () => {
+                this.setInfoPane(parent);
+            },
         );
         this.infoPane.appendChild(cancelButton);
 
@@ -179,43 +189,47 @@ class Customizer {
             );
 
             newComponentButton.template = template;
-            newComponentButton.relevantComponent = this.selectedComponent;
+            newComponentButton.parent = parent;
 
-            button.onclick = () => this.addComponent(
-                newComponentButton.template,
-                newComponentButton.relevantComponent
-            );
+            newComponentButton.onclick = () => this.addComponent(template, parent);
 
             this.infoPane.appendChild(newComponentButton);
         });
     }
 
-    addComponent (template, relevantComponent) {
+    addComponent (template, parent) {
         let newComponent;
 
-        if (relevantComponent.type() === 'Company') {
+        if (parent.type() === 'Company') {
             newComponent = new Squad(template);
         }
-        else if (relevantComponent.type() === 'Squad') {
+        else if (parent.type() === 'Squad') {
             newComponent = new Creature(template);
         }
-        else if (relevantComponent.type() === 'Creature') {
+        else if (parent.type() === 'Creature') {
             newComponent = new Item(template);
         }
 
-        relevantComponent.addChild(newComponent);
-        this.selectedComponent = newComponent;
+        parent.addChild(newComponent);
 
-        // Refresh left pane
+        this.setInfoPane(newComponent);
+        this.refreshOverview();
     }
 
-    removeComponent (component, parent) {
+    removeComponent (component) {
+        this.selectedComponent = component.parent;
+        component.removeSelf();
 
+        // LATER - move the component to the reserve.
+
+        this.setInfoPane();
+        this.refreshOverview();
     }
 
     setCompanies (companies) {
         this.companies = companies;
         this.companies.map(c => c.nameSquads());
+        this.selectedComponent = this.companies[0];
         this.initUI();
     }
 
