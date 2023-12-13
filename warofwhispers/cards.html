@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <style type="text/css">
+            td {
+                width: 250px;
+                height: 350px;
+                border: 2px solid;
+                display: grid;
+                grid-template-rows: 40% 20% 20% 20%;
+            }
+
+            td > div {
+                display: flex;
+                align-items: center;
+            }
+
+            .stage {
+                justify-content: center;
+            }
+
+            div.bear {
+                background-color: #0c4ca1; /* European blue */
+            }
+
+            div.horse {
+                background-color: #6b137a; /* Masonic purple */
+            }
+
+            img {
+                height: 100%;
+                max-width: 100%;
+                max-height: 100%;
+            }
+
+            .square {
+                width: 20px;
+                height: 20px;
+                border: 2px solid;
+                margin: 1px;
+            }
+
+            p {
+                padding-left: 5px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div>
+            <table id="main">
+                <tr id="row1">
+                    <td>
+                        <div class="stage">
+                            <img src="media/mason.jpg" />
+                        </div>
+                        <div>
+                            <div class="square">
+                                <img src="media/mason.jpg" />
+                            </div>
+                            <p>Simple effect</p>
+                        </div>
+                        <div>
+                            <div class="square">
+                                <img src="media/mason.jpg" />
+                            </div>
+                            <div class="square">
+                                <img src="media/mason.jpg" />
+                            </div>
+                            <p>Double effect</p>
+                        </div>
+                        <div>
+                            <div class="square">
+                                <img src="media/mason.jpg" />
+                            </div>
+                            <div class="square">
+                                <img src="media/europe.jpg" />
+                            </div>
+                            <p>Combo effect</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+
+    <script src="bundle.js"></script>
+</html>
