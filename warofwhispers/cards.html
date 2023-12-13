@@ -7,16 +7,18 @@
                 height: 350px;
                 border: 2px solid;
                 display: grid;
-                grid-template-rows: 40% 20% 20% 20%;
+                grid-template-rows: 40%;
             }
 
-            td > div {
-                display: flex;
+            td > span {
                 align-items: center;
+                margin: 0 3px 3px 3px;
             }
 
             .stage {
+                display: flex;
                 justify-content: center;
+                margin: 0 0 5px 0;
             }
 
             div.bear {
@@ -27,6 +29,10 @@
                 background-color: #6b137a; /* Masonic purple */
             }
 
+            span > * {
+                display: inline;
+            }
+
             img {
                 height: 100%;
                 max-width: 100%;
@@ -34,6 +40,7 @@
             }
 
             .square {
+                display: inline-block;
                 width: 20px;
                 height: 20px;
                 border: 2px solid;
@@ -42,6 +49,7 @@
 
             p {
                 padding-left: 5px;
+                font-size: 14;
             }
         </style>
     </head>
@@ -50,35 +58,6 @@
         <div>
             <table id="main">
                 <tr id="row1">
-                    <td>
-                        <div class="stage">
-                            <img src="media/mason.jpg" />
-                        </div>
-                        <div>
-                            <div class="square">
-                                <img src="media/mason.jpg" />
-                            </div>
-                            <p>Simple effect</p>
-                        </div>
-                        <div>
-                            <div class="square">
-                                <img src="media/mason.jpg" />
-                            </div>
-                            <div class="square">
-                                <img src="media/mason.jpg" />
-                            </div>
-                            <p>Double effect</p>
-                        </div>
-                        <div>
-                            <div class="square">
-                                <img src="media/mason.jpg" />
-                            </div>
-                            <div class="square">
-                                <img src="media/europe.jpg" />
-                            </div>
-                            <p>Combo effect</p>
-                        </div>
-                    </td>
                 </tr>
             </table>
         </div>

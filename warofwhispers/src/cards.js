@@ -49,12 +49,12 @@ class Card {
 
     // NOTE - sometimes animal1 === animal2 here
     addRow (td, animal1, animal2) {
-        const rowDiv = Util.htmlElement('span');
+        const rowSpan = Util.htmlElement('span');
 
-        this.addSquareIcon(rowDiv, animal1);
+        this.addSquareIcon(rowSpan, animal1);
 
         if (animal2) {
-            this.addSquareIcon(rowDiv, animal2);
+            this.addSquareIcon(rowSpan, animal2);
         }
 
         const text = this.effects(animal1, animal2);
@@ -70,11 +70,11 @@ class Card {
             italicized = `<i>${title}</i>${effect}`;
         }
 
-        rowDiv.appendChild(
+        rowSpan.appendChild(
             Util.pElement(italicized)
         );
 
-        td.appendChild(rowDiv);
+        td.appendChild(rowSpan);
     }
 
     addSquareIcon (div, animal) {

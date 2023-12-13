@@ -724,6 +724,20 @@ class Util {
         return `<${elementName}>${content}</${elementName}>`;
     }
 
+    static htmlElement (tag, className, text) {
+        const el = document.createElement(tag);
+
+        if (className) {
+            el.setAttribute('class', className);
+        }
+
+        if (text) {
+            el.innerHTML = text;
+        }
+
+        return el;
+    }
+
     static pElement (text, className) {
         const p = document.createElement('p');
 
