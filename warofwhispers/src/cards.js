@@ -58,8 +58,12 @@ class Card {
         const fullName = this.fullHiveName(this.animal1);
         const words = fullName.split(' ');
 
+        const textDiv = Util.htmlElement('div', 'nameDiv');
+        textDiv.classList.add(this.animal1);
+        cardDiv.appendChild(textDiv);
+
         for (let word of words) {
-            this.addBigText(cardDiv, word);
+            this.addBigText(textDiv, word, this.animal1);
         }
 
         return td;
@@ -110,9 +114,11 @@ class Card {
         div.appendChild(square);
     }
 
-    addBigText (card, text) {
+    addBigText (card, text, animal) {
         const house = Util.htmlElement('div', 'textRow');
-        const header = Util.htmlElement('h1', 'bigText', text);
+        // house.classList.add(animal);
+
+        const header = Util.htmlElement('p', 'bigText', text);
 
         house.appendChild(header);
         card.appendChild(house);
