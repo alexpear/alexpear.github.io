@@ -50,11 +50,17 @@ class Card {
         }
 
         stageDiv.appendChild(stageImage);
-        td.appendChild(stageDiv);
+        cardDiv.appendChild(stageDiv);
 
-        this.addRow(td, this.animal1);
-        this.addRow(td, this.animal1, this.animal1);
-        this.addRow(td, this.animal1, this.animal2);
+        const topSpacer = Util.htmlElement('div', 'houseSpacer');
+        cardDiv.appendChild(topSpacer);
+
+        const fullName = this.fullHiveName(this.animal1);
+        const words = fullName.split(' ');
+
+        for (let word of words) {
+            this.addBigText(cardDiv, word);
+        }
 
         return td;
     }
@@ -104,6 +110,14 @@ class Card {
         div.appendChild(square);
     }
 
+    addBigText (card, text) {
+        const house = Util.htmlElement('div', 'textRow');
+        const header = Util.htmlElement('h1', 'bigText', text);
+
+        house.appendChild(header);
+        card.appendChild(house);
+    }
+
     static animals () {
         return ['bear', 'eagle', 'elephant', 'lion', 'horse'];
     }
@@ -115,6 +129,18 @@ class Card {
             elephant: 'cousin',
             lion: 'mitsubishi',
             horse: 'mason',
+        };
+
+        return MAP[animal];
+    }
+
+    fullHiveName (animal) {
+        const MAP = {
+            bear: 'European Union',
+            eagle: 'Humanist Hive',
+            elephant: 'Cousins Collective',
+            lion: 'Mitsubishi Corporation',
+            horse: 'Masonic Empire',
         };
 
         return MAP[animal];
@@ -198,8 +224,11 @@ class Card {
             }
         }
 
-                const card = new Card(theme, animal1, animal2);
-                const td = card.html();
+        // Also cards for facedown loyalties.
+        for (let animal of Card.animals()) {
+            for (let i = 1; i <= 4; i++) {
+                const card = new Card(theme, animal);
+                const td = card.loyalty(animal);
 
                 if (colNum > 3) {
                     row = Util.htmlElement('tr');
