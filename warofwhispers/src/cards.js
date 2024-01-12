@@ -22,6 +22,33 @@ class Card {
 
     html () {
         const td = Util.htmlElement('td');
+        const cardDiv = Util.htmlElement('div', 'cardBody');
+        td.appendChild(cardDiv);
+
+        const stageImage = new Image();
+        stageImage.src = this.imagePath();
+
+        const stageDiv = Util.htmlElement('div', 'stage');
+
+        if (['bear', 'horse'].includes(this.animal1)) {
+            stageDiv.setAttribute('class', this.animal1 + ' stage');
+        }
+
+        stageDiv.appendChild(stageImage);
+        cardDiv.appendChild(stageDiv);
+
+        this.addRow(cardDiv, this.animal1);
+        this.addRow(cardDiv, this.animal1, this.animal1);
+        this.addRow(cardDiv, this.animal1, this.animal2);
+
+        return td;
+    }
+
+    loyalty () {
+        const td = Util.htmlElement('td');
+        const cardDiv = Util.htmlElement('div', 'cardBody');
+        td.appendChild(cardDiv);
+
         const stageImage = new Image();
         stageImage.src = this.imagePath();
 
@@ -48,7 +75,7 @@ class Card {
     }
 
     // NOTE - sometimes animal1 === animal2 here
-    addRow (td, animal1, animal2) {
+    addRow (card, animal1, animal2) {
         const rowSpan = Util.htmlElement('span');
 
         this.addSquareIcon(rowSpan, animal1);
@@ -74,7 +101,7 @@ class Card {
             Util.pElement(italicized)
         );
 
-        td.appendChild(rowSpan);
+        card.appendChild(rowSpan);
     }
 
     addSquareIcon (div, animal) {
@@ -123,7 +150,7 @@ class Card {
                 bearelephant: 'Red Crystal: Add 3 friendly troops to any empty location(s).', // recruit
                 bearhorse: 'The Prince Speaks: Take all troops in any location (abandoning it) & move them to any number of adjacent locations controlled by that hive.', // disperse
                 bearlion: 'Peacewash: After your attack, for each enemy troop killed, add 1 troop of the active hive to any location the active hive controls.', // subjugate
-                eagleelephant: 'Gorgons: Choose 1 troop of the active hive. Kill up to 5 enemy troops in any adjacent locations.', // alchemist's fire
+                eagleelephant: 'Missiles Launched: Choose 1 troop of the active hive. Kill up to 5 enemy troops in any adjacent locations.', // alchemist's fire // gorgons
                 eaglehorse: 'World Civil War: Your attack may target any location on the map.', // armada
                 eaglelion: 'Servicers: Add a troop to each location the active hive controls.', // populate
                 elephanthorse: 'Operation Baskerville: Add 4 friendly troops to any empty location that has no Harbinger Knowledge or Fortified Position.', // uprising
@@ -158,11 +185,27 @@ class Card {
         theme = theme || 'terraignota';
         const table = document.getElementById('main');
         let row;// = document.getElementById('row1');
-        let colNum = 99;
+        let colNum = 99; // Must start >= row width.
 
         for (let animal1 of Card.animals()) {
             for (let animal2 of Card.animals()) {
-                if (animal1 === animal2) { continue; }
+                for (let repeat = 1; repeat <= 2; repeat++) {
+                    if (animal1 === animal2) { continue; }
+
+                    const card = new Card(theme, animal1, animal2);
+                    const td = card.html();
+
+                    if (colNum > 3) {
+                        row = Util.htmlElement('tr');
+                        table.appendChild(row);
+                        colNum = 1;
+                    }
+
+                    row.appendChild(td);
+                    colNum++;
+                }
+            }
+        }
 
                 const card = new Card(theme, animal1, animal2);
                 const td = card.html();
