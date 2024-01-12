@@ -3,21 +3,12 @@
 // Utility for reskins of the tabletop game A War of Whispers
 
 const Util = require('../../util/util.js');
-// const fs = require('fs');
-// const path = require('path');
 
 class Card {
     constructor (theme, animal1, animal2) {
         this.theme = theme;
         this.animal1 = animal1;
         this.animal2 = animal2;
-
-        // if (animal1 === 'bear') {
-        //     this.backdrop = '0c4ca1'; // European blue
-        // }
-        // else if (animal1 === 'horse') {
-        //     this.backdrop = '6b137a'; // Masonic purple
-        // }
     }
 
     html () {
@@ -184,7 +175,7 @@ class Card {
     static createCards (theme) {
         theme = theme || 'terraignota';
         const table = document.getElementById('main');
-        let row;// = document.getElementById('row1');
+        let row;
         let colNum = 99; // Must start >= row width.
 
         for (let animal1 of Card.animals()) {
