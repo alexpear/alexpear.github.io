@@ -57,8 +57,7 @@ class Card {
         const topSpacer = Util.htmlElement('div', 'houseSpacer');
         cardDiv.appendChild(topSpacer);
 
-        // LATER make theme-agnostic
-        const fullName = this.fullHiveName(this.animal1);
+        const fullName = this.fullEmpireName(this.animal1);
         const words = fullName.split(' ');
 
         const textDiv = Util.htmlElement('div', 'nameDiv');
@@ -78,6 +77,7 @@ class Card {
         if (this.theme === 'masseffect') {
             return this.imageME(animal);
         }
+        // LATER if i want to add a 3rd theme, i should make this func more robust.
 
         return `media/${ this.animal2theme(animal) }.jpg`;
     }
@@ -91,7 +91,7 @@ class Card {
             horse: 'quarian.png',
         };
 
-        return 'media/' + MAP[animal];
+        return 'media/masseffect/' + MAP[animal];
     }
 
     // NOTE - sometimes animal1 === animal2 here
@@ -170,6 +170,21 @@ class Card {
         return MAP[animal];
     }
 
+    fullEmpireName (animal) {
+        if (this.theme === 'terraignota') {
+            return this.fullHiveName(animal);
+        }
+        else if (this.theme === 'masseffect') {
+            return this.fullFactionNameME(animal);
+        }
+        else {
+            throw new Error({
+                theme: this.theme,
+                animal,
+            });
+        }
+    }
+
     fullHiveName (animal) {
         const MAP = {
             bear: 'European Union',
@@ -177,6 +192,18 @@ class Card {
             elephant: 'Cousins Collective',
             lion: 'Mitsubishi Corporation',
             horse: 'Masonic Empire',
+        };
+
+        return MAP[animal];
+    }
+
+    fullFactionNameME (animal) {
+        const MAP = {
+            bear: 'Krogan Clans',
+            eagle: 'Systems Alliance',
+            elephant: 'Geth Network',
+            lion: 'Citadel Council',
+            horse: 'Quarian Conclave',
         };
 
         return MAP[animal];
@@ -218,9 +245,9 @@ class Card {
                     bearlion: 'Peacewash: After your attack, for each enemy troop killed, add 1 troop of the active hive to any location the active hive controls.', // subjugate
                     eagleelephant: 'Missiles Launched: Choose 1 troop of the active hive. Kill up to 5 enemy troops in any adjacent locations.', // alchemist's fire // gorgons
                     eaglehorse: 'World Civil War: Your attack may target any location on the map.', // armada
-                    eaglelion: 'Servicers: Add 1 troop to each location the active hive controls.', // populate
+                    eaglelion: 'Servicers: Add 1 troop to each location the active hive controls.', // populate // myrmidons
                     elephanthorse: 'Operation Baskerville: Reinforce an empty location with no Harbinger or Fortified Position by adding 4 troops of the controlling hive.', // uprising
-                    elephantlion: 'World-Ringing River: Add up to 6 troops to the current attack from any location the active hive controls.', // reinforce
+                    elephantlion: 'World-Ringing River: Add up to 6 troops to the current attack from any locations the active hive controls.', // reinforce
                     horselion: 'Antisleep: After performing an action with an agent, take the same action again.', // midnight oil
                 },
             },
@@ -228,7 +255,6 @@ class Card {
             masseffect: {
                 Single: {
                     bear: 'After your attack, you may make an additional attack with any surviving units.',
-                    // LATER make theme-agnostic
                     eagle: 'Move the active agent to any empty VIP square & immediately take that VIP\'s action instead. Then proceed from after where it was.',
                     elephant: 'Add 1 unit to your attack.',
                     lion: 'Instead of the current VIP\'s actions, use an action controlled by one of your other agents.',
@@ -238,20 +264,20 @@ class Card {
                     bear: 'After your attack, kill ALL units involved in that attack (on both sides).',
                     eagle: 'Your attack may target any empty enemy planet.',
                     elephant: 'Add 3 units to your attack.',
-                    lion: 'Add 3 friendly units to any 1 planet with a Prothean beacon.',
+                    lion: 'Reinforce a Prothean beacon planet by adding 3 units of the controlling faction.',
                     horse: 'Rearrange any faction\'s units within its controlled planets. (Do not abandon a planet or exceed supply.)',
                 },
                 Combo: {
-                    beareagle: 'Atë: Kill up to 3 units in any 1 planet.', // mercenaries
-                    bearelephant: 'Red Crystal: Add 3 friendly units to any empty planet(s).', // recruit
-                    bearhorse: 'The Prince Speaks: Take all units in any planet (abandoning it) & move them to any number of adjacent planets controlled by that faction.', // disperse
-                    bearlion: 'Peacewash: After your attack, for each enemy unit killed, add 1 unit of the active faction to any planet the active faction controls.', // subjugate
-                    eagleelephant: 'Missiles Launched: Choose 1 unit of the active faction. Kill up to 5 enemy units in any adjacent planets.', // alchemist's fire // gorgons
-                    eaglehorse: 'World Civil War: Your attack may target any planet on the map.', // armada
-                    eaglelion: 'Servicers: Add 1 unit to each planet the active faction controls.', // populate
-                    elephanthorse: 'Operation Baskerville: Add 4 friendly units to any empty planet that has no Harbinger Knowledge or Fortified Position.', // uprising
-                    elephantlion: 'World-Ringing River: Add up to 6 units to the current attack from any planet the active faction controls.', // reinforce
-                    horselion: 'Antisleep: After performing an action with an agent, take the same action again.', // midnight oil
+                    beareagle: 'Blue Suns: Kill up to 3 units on any 1 planet.', // mercenaries
+                    bearelephant: 'Stealth Troops: Reinforce an empty planet with 3 units of the controlling faction.', // recruit
+                    bearhorse: 'Quarantine: Take all units on any planet (abandoning it) & move them to any number of adjacent planets controlled by that faction.', // disperse
+                    bearlion: 'Control: After your attack, for each enemy unit killed, add 1 unit of the active faction to any planet the active faction controls.', // subjugate
+                    eagleelephant: 'Destroy: Choose 1 unit of the active faction. Kill up to 5 enemy units on any adjacent planets.', // alchemist's fire // gorgons
+                    eaglehorse: 'SSV Normandy: Your attack may target any planet in the galaxy.', // armada
+                    eaglelion: 'Synthesis: Add 1 unit to each planet the active faction controls.', // populate
+                    elephanthorse: 'Secret Base: Reinforce an empty planet with no beacon or orbital station by adding 4 units of the controlling faction.', // uprising // TODO check if this text is too long & pushes the card bottom downwards.
+                    elephantlion: 'Loyalty: Add up to 6 units to the current attack from any planets the active faction controls.', // reinforce
+                    horselion: 'Operation Overdrive: After performing an action with an agent, take the same action again.', // midnight oil
                 },
             },
         };
@@ -260,12 +286,18 @@ class Card {
         banner -> troop
         army -> battle group (unused)
         region -> location
+        city -> Harbinger Knowledge
+        farm -> city
+        tower -> Fortified Position
         empire -> hive
         council position -> hive square
 
         for Mass Effect
         empire -> faction
         region -> planet (despite incorrect for citadel etc)
+        city -> Prothean beacon
+        farm -> city
+        tower -> orbital station
         banner -> unit
         army -> army (unused)
         agent -> agent
@@ -289,7 +321,7 @@ class Card {
     }
 
     static createCards (theme) {
-        theme = theme || 'terraignota';
+        theme = theme || window.AWOWtheme || 'terraignota';
         const table = document.getElementById('main');
         let row;
         let colNum = 99; // Must start >= row width.
