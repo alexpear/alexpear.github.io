@@ -20,11 +20,7 @@ class Card {
         stageImage.src = this.imagePath();
 
         const stageDiv = Util.htmlElement('div', 'stage');
-
-        // LATER make theme-agnostic
-        if (['bear', 'horse'].includes(this.animal1)) {
-            stageDiv.setAttribute('class', this.animal1 + ' stage');
-        }
+        this.divColor(stageDiv);
 
         stageDiv.appendChild(stageImage);
         cardDiv.appendChild(stageDiv);
@@ -36,6 +32,19 @@ class Card {
         return td;
     }
 
+    divColor (div, animal) {
+        animal = animal || this.animal1;
+
+        if (this.theme === 'terraignota') {
+            if (['elephant', 'lion', 'eagle'].includes(animal)) {
+                // These have white backgrounds.
+                return;
+            }
+        }
+
+        div.classList.add(animal);
+    }
+
     loyalty () {
         const td = Util.htmlElement('td');
         const cardDiv = Util.htmlElement('div', 'cardBody');
@@ -45,11 +54,7 @@ class Card {
         stageImage.src = this.imagePath();
 
         const stageDiv = Util.htmlElement('div', 'stage');
-
-        // LATER make theme-agnostic
-        if (['bear', 'horse'].includes(this.animal1)) {
-            stageDiv.setAttribute('class', this.animal1 + ' stage');
-        }
+        this.divColor(stageDiv);
 
         stageDiv.appendChild(stageImage);
         cardDiv.appendChild(stageDiv);
@@ -129,6 +134,8 @@ class Card {
         image.src = this.imagePath(animal);
 
         const square = Util.htmlElement('div', 'square');
+        this.divColor(square, animal);
+
         square.appendChild(image);
         div.appendChild(square);
     }
