@@ -282,7 +282,7 @@ class Card {
                     eagleelephant: 'Destroy: Choose 1 unit of the active faction. Kill up to 5 enemy units on any adjacent planets.', // alchemist's fire // gorgons
                     eaglehorse: 'SSV Normandy: Your attack may target any planet in the galaxy.', // armada
                     eaglelion: 'Synthesis: Add 1 unit to each planet the active faction controls.', // populate
-                    elephanthorse: 'Secret Base: Reinforce an empty planet with no beacon or orbital station by adding 4 units of the controlling faction.', // uprising // TODO check if this text is too long & pushes the card bottom downwards.
+                    elephanthorse: 'Secret Base: Reinforce an empty planet with no Prothean beacon & no orbital station by adding 4 units of the controlling faction.', // uprising // TODO check if this text is too long & pushes the card bottom downwards.
                     elephantlion: 'Loyalty: Add up to 6 units to the current attack from any planets the active faction controls.', // reinforce
                     horselion: 'Operation Overdrive: After performing an action with an agent, take the same action again.', // midnight oil
                 },
