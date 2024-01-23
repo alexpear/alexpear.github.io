@@ -32,6 +32,9 @@ class CapePopulation {
         cp.tiff = await cp.file.getImage();
         Util.logDebug(`Done with getImage()`);
 
+        await cp.load();
+        Util.logDebug(`Done with load()`);
+
         return cp;
     }
 
@@ -47,8 +50,30 @@ class CapePopulation {
         );
     }
 
-    async equatorPixels () {
+    /* Returns obj:
+    {
+        0: [array of length 808704000],
+        length: 1,
+        width: 43200,
+        height: 18720,
+    }
+    */
+    async load () {
+        this.rasterData = await this.tiff.readRasters();
+    }
 
+    equatorPixels () {
+        const output = [];
+
+        const y = Math.floor(this.rasterData.height / 2);
+
+        for (let x = 0; x < this.rasterData.width; x++) {
+            output.push(
+                this.rasterData[0][ y * this.rasterData.width + x ]
+            );
+        }
+
+        return output;
     }
 
     printPixel (pixelData) {
@@ -84,12 +109,24 @@ class CapePopulation {
         console.log(str);
     }
 
+    printPixelArray (pixels) {
+        // LATER Could abbreviate negative sequences with `...`s.
+
+        const str = pixels
+            .map(n => Util.round(n))
+            .join('\n');
+
+        console.log(str);
+    }
+
     static async run () {
         const cp = await CapePopulation.new();
 
-        const sample = await cp.dataAt(111, 111);
+        // const sample = await cp.dataAt(111, 111);
+        // cp.printPixel(sample);
 
-        cp.printPixel(sample);
+        const equator = cp.equatorPixels();
+        cp.printPixelArray(equator);
 
         Util.logDebug(`Done with test.`);
     }
