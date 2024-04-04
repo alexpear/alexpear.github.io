@@ -7,8 +7,9 @@ class ComplicityMassEffect {
     static run () {
         const character = new Character();
 
-        Util.logDebug(character);
+        // Util.logDebug(character);
 
+        console.log();
         console.log(character.toFullString());
     }
 }
@@ -107,10 +108,39 @@ class Card {
 
     static random (constraints) {
         const ALL_CARDS = [
-            { name: 'asari', type: 'species', skills: 'combat' },
+            { name: 'human',    type: 'species' },
+            { name: 'asari',    type: 'species', skills: 'combat' },
+            { name: 'turian',   type: 'species', skills: 'combat' },
+            { name: 'salarian', type: 'species', skills: 'tech' },
+            { name: 'krogan',   type: 'species', skills: 'combat combat' },
+            { name: 'quarian',  type: 'species', skills: 'tech' },
+            { name: 'batarian', type: 'species' },
+            { name: 'drell',    type: 'species' },
+            { name: 'volus',    type: 'species', skills: 'social' },
+            { name: 'synthetic', type: 'species', skills: 'tech' },
+            { name: 'hanar',    type: 'species' },
+            { name: 'elcor',    type: 'species', },
+            { name: 'vorcha',   type: 'species', },
+            { name: 'prothean', type: 'species', skills: 'science' },
+            // { name: 'angara',   type: 'species', },
+            // { name: 'kett',     type: 'species', },
+            // { name: 'yahg',     type: 'species', },
+            // { name: 'rachni',   type: 'species', skills: 'combat' },
+            // { name: 'collector', type: 'species', skills: 'science' },
+            // { name: 'keeper',   type: 'species', skills: 'tech' },
+            // { name: 'jardaan',  type: 'species', skills: 'tech' },
 
-            { name: 'engineer', type: 'role', skills: 'science tech' },
+            { name: 'soldier',      type: 'role', skills: 'combat combat' },
+            { name: 'scientist',    type: 'role', skills: 'science science' },
+            { name: 'boss',         type: 'role', skills: 'social social' },
+            { name: 'technician',   type: 'role', skills: 'tech tech' },
 
+            { name: 'vanguard',     type: 'role', skills: 'combat science' },
+            { name: 'spy',          type: 'role', skills: 'combat social' },
+            { name: 'sentinel',     type: 'role', skills: 'combat tech' },
+            { name: 'administrator', type: 'role', skills: 'science social' },
+            { name: 'engineer',     type: 'role', skills: 'science tech' },
+            { name: 'analyst',      type: 'role', skills: 'social tech' },
         ];
 
         const subset = ALL_CARDS.filter(
