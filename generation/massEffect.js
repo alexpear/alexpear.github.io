@@ -61,18 +61,30 @@ class Character {
         return output;
     }
 
-    skillStr () {
-        let str = '';
+    // Rival format to skillObj()
+    skillArray () {
+        let array = this.speciesCard.skillArray();
 
-        const obj = this.skillObj();
-
-        for (let skill in obj) {
-            str += ` ${skill} ${obj[skill]}`;
+        for (let roleCard of this.roleCards) {
+            array = array.concat(
+                roleCard.skillArray()
+            );
         }
 
-        return str ?
-            ` (${str.trim()})` :
-            ``;
+        return array.map(
+            sk => Util.capitalized(sk)
+        )
+        .sort();
+    }
+
+    skillStr () {
+        const array = this.skillArray();
+
+        if (array.length === 0) {
+            return ``;
+        }
+
+        return ` (${array.join(' ')})`;
     }
 
     toString () {
@@ -161,6 +173,12 @@ class Card {
         }
 
         return obj;
+    }
+
+    skillArray () {
+        return this.skills ?
+            this.skills.split(' ') :
+            [];
     }
 }
 
