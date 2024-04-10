@@ -28646,6 +28646,8 @@ Halo:
                 name: Mantis
                 preferredRange: 6
                 scale: Individual
+                shields: 200
+                shieldDelay: 3
                 size: 4
                 speed: 1.5
                 type: Explosive
@@ -29736,23 +29738,20 @@ Action.TYPE = {
 
 module.exports = Action;
 
-},{"../../util/util.js":45}],36:[function(require,module,exports){
+},{"../../util/util.js":46}],36:[function(require,module,exports){
 'use strict';
 
-// const Creature = require('./creature.js');
+// A Company is the main top-level grouping of Squads in the Warband game.
+
+const Component = require('./component.js');
 const Squad = require('./squad.js');
-// const Action = require('./action.js');
-// const Item = require('./Item.js');
 const Templates = require('./templates.js');
-// const Event = require('./event.js');
-// const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
-class Company { //extends Component {
+class Company extends Component {
     constructor (faction) {
-        this.id = Util.uuid();
+        super();
         this.faction = faction;
-        this.squads = [];
     }
 
     terse () {
@@ -29764,7 +29763,7 @@ class Company { //extends Component {
     }
 
     activeSquads () {
-        return this.squads.filter(sq => ! sq.isKO());
+        return this.children.filter(sq => ! sq.isKO());
     }
 
     activeSquadCount () {
@@ -29772,11 +29771,11 @@ class Company { //extends Component {
     }
 
     healthBar () {
-        return this.activeSquadCount() / this.squads.length;
+        return this.activeSquadCount() / this.children.length;
     }
 
     nameSquads () {
-        for (let squad of this.squads) {
+        for (let squad of this.children) {
             this.nameSquad(squad);
         }
     }
@@ -29784,7 +29783,7 @@ class Company { //extends Component {
     nameSquad (squad) {
         if (squad.nameFromUser) { return; }
 
-        const names = this.squads.map(sq => sq.existingName());
+        const names = this.children.map(sq => sq.existingName());
 
         if (squad.nameGenerated) {
             const squadsWithThatName = names.filter(name => name === squad.nameGenerated);
@@ -29793,7 +29792,7 @@ class Company { //extends Component {
         }
 
         const commonestCreatureName = Util.commonest(
-            squad.creatures.map(cr => cr.template.name)
+            squad.children.map(cr => cr.template.name)
         );
 
         const similarNames = names.filter(
@@ -29815,49 +29814,162 @@ class Company { //extends Component {
     }
 
     toJson () {
-        return {
-            id: this.id,
-            faction: this.faction,
-            squads: this.squads.map(sq => sq.toJson()),
-        };
+        const json = super.toJson();
+        json.faction = this.faction;
+        return json;
     }
 
     static example () {
         const comp = new Company(Templates.Halo.UNSC.name);
 
-        comp.squads = Company.exampleSquads();
+        comp.addExampleSquads();
         comp.nameSquads();
+
         return comp;
     }
 
-    static exampleSquads () {
-        const squads = [];
-
+    addExampleSquads () {
         for (let i = 0; i < 3; i++) {
-            squads.push(Squad.example('Marine'));
+            this.addChild(Squad.example('Marine'));
         }
-
-        return squads;
     }
 }
 
 module.exports = Company;
 
-},{"../../util/util.js":45,"./squad.js":42,"./templates.js":43}],37:[function(require,module,exports){
+},{"../../util/util.js":46,"./component.js":37,"./squad.js":43,"./templates.js":44}],37:[function(require,module,exports){
 'use strict';
 
-//
+const Util = require('../../util/util.js');
 
-const Item = require('./item.js');
+class Component {
+    constructor () {
+        this.id = Util.uuid();
+        this.children = [];
+    }
+
+    type () {
+        return this.constructor.name;
+    }
+
+    toJson () {
+        return {
+            id: this.id,
+            children: this.children.map(child => child.toJson?.() || child?.constructor?.name || typeof child),
+        };
+    }
+
+    // NOTE - use .toJson() instead if the output will be passed into another .stringify() call.
+    toJsonStr () {
+        return Util.stringify(this.toJson());
+    }
+
+    addChild (child) {
+        this.children.push(child);
+        child.parent = this;
+    }
+
+    removeSelf () {
+        if (! this.parent) {
+            Util.error({
+                context: `ScifiWarband: Component.removeSelf() called on Component with no parent.`,
+                json: this.toJson(),
+            });
+        }
+
+        this.parent.children = this.parent.children.filter(
+            child => child !== this
+        );
+
+        this.parent = undefined;
+    }
+
+    parentType () {
+        return this.parent.type?.();
+    }
+
+    childType () {
+        const classes = Component.classes();
+
+        for (let i = 0; i < classes.length; i++) {
+            if (classes[i] === this.type()) {
+                return classes[i + 1];
+            }
+        }
+    }
+
+    sanityCheck() {
+        if (this.children.length === 0) {
+            if (['Company', 'Squad'].includes(this.type())) {
+                Util.error({
+                    message: `Empty company or squad`,
+                    json: this.toJson(),
+                    type: this.type(),
+                    context: `ScifiWarband - Component.js .sanityCheck()`,
+                });
+            }
+        }
+
+        for (let child of this.children) {
+            if (! child || ! child instanceof Component) {
+                Util.error({
+                    message: `Child is not a Component`,
+                    json: this.toJson(),
+                    child: child,
+                    type: this.type(),
+                    context: `ScifiWarband - Component.js .sanityCheck()`,
+                });
+            }
+
+            if (child.type() !== this.childType()) {
+                Util.error({
+                    message: `Child is wrong Component type`,
+                    json: this.toJson(),
+                    child: child.toJson(),
+                    type: this.type(),
+                    childType: child.type(),
+                    expectedChildType: this.childType(),
+                    context: `ScifiWarband - Component.js .sanityCheck()`,
+                });
+            }
+
+            if (child.parent !== this) {
+                Util.error({
+                    message: `Wrong parent pointer`,
+                    pointer: child?.parent?.toJson?.(),
+                    json: this.toJson(),
+                    child: child.toJson(),
+                    type: this.type(),
+                    context: `ScifiWarband - Component.js .sanityCheck()`,
+                });
+            }
+
+            child.sanityCheck();
+        }
+    }
+
+    static classes () {
+        return ['Company', 'Squad', 'Creature', 'Item', 'Mod'];
+    }
+}
+
+module.exports = Component;
+
+},{"../../util/util.js":46}],38:[function(require,module,exports){
+'use strict';
+
+// For Scifi Warband autobattler game.
+
+const Component = require('./component.js');
 const Event = require('./event.js');
+const Item = require('./item.js');
 const Templates = require('./templates.js');
 const Util = require('../../util/util.js');
 
-class Creature {
+class Creature extends Component {
     constructor (creatureTemplate, items) {
-        this.id = Util.uuid();
+        super();
         this.template = creatureTemplate;
-        this.items = [];
         this.shields = this.template.shields || 0;
         this.cooldownEnds = Infinity;
 
@@ -29865,14 +29977,13 @@ class Creature {
         this.status = {};
 
         if (items) {
-            this.items = items;
+            this.children = items;
         }
         else {
             const templateItems = this.template.items || [];
             for (let itemTemplate of templateItems) {
-                this.items.push(
-                    new Item(itemTemplate)
-                );
+                const item = new Item(itemTemplate);
+                this.addChild(item);
             }
         }
     }
@@ -29925,7 +30036,7 @@ class Creature {
     // Param currently unused, but could affect choice of weapon in future.
     weapon (targetSquad) {
         return this.template.items[0]; // LATER choose a weapon, or have a better preset system.
-        // LATER use this.items, to track things theyve picked up during battle.
+        // LATER use this.children, to track things theyve picked up during battle.
     }
 
     preferredRange (targetSquad) {
@@ -29995,7 +30106,7 @@ class Creature {
     // LATER Could move this to main encounter class if that makes cover calc easier.
     // returns Event[]
     attack (otherSquad, coverPercent = 0) {
-        const distance = this.squad.distanceTo(otherSquad);
+        const distance = this.parent.distanceTo(otherSquad);
         const weaponTemplate = this.weapon(); 
 
         // eg: Melee weapons have a strict max range.
@@ -30039,7 +30150,7 @@ class Creature {
         if (this.shields) {
             this.cooldownEnds = Event.t + (this.template.shieldDelay || 2);
 
-            if (weaponTemplate.attackType === Creature.ATTACK_TYPE.Plasma) {
+            if (weaponTemplate.attackType === Templates.ATTACK_TYPE.Fire) {
                 this.shields -= damage * 2;
 
                 if (this.shields < 0) {
@@ -30100,14 +30211,9 @@ class Creature {
             ['id', 'template', 'shields', 'cooldownEnds', 'status']
         );
 
-        json.squad = this.squad?.id;
+        json.parent = this.parent?.id;
 
         return json;
-    }
-
-    // LATER put in superclass Component.
-    toJsonStr () {
-        return Util.stringify(this.toJson());
     }
 
     name () {
@@ -30127,7 +30233,7 @@ module.exports = Creature;
 
 // Creature.testHealthBar();
 
-},{"../../util/util.js":45,"./event.js":39,"./item.js":40,"./templates.js":43}],38:[function(require,module,exports){
+},{"../../util/util.js":46,"./component.js":37,"./event.js":40,"./item.js":41,"./templates.js":44}],39:[function(require,module,exports){
 'use strict';
 
 // Army customization UI class
@@ -30136,12 +30242,12 @@ const Creature = require('./creature.js');
 const Company = require('./company.js');
 const Item = require('./item.js');
 const Squad = require('./squad.js');
-const Templates = require('./templates.js');
 const Util = require('../../util/util.js');
 
 class Customizer {
     constructor () {
         this.companies = [];
+        this.unusedComponents = [];
         this.initUI();
     }
 
@@ -30150,6 +30256,8 @@ class Customizer {
         this.overviewPane = document.getElementById('companyOverview');
         if (! this.overviewPane) { return; }
 
+        this.infoPane = document.getElementById('infoPane');
+
         this.setUI();
     }
 
@@ -30157,18 +30265,23 @@ class Customizer {
         for (let company of this.companies) {
             this.addButton(company);
 
-            for (let squad of company.squads) {
+            for (let squad of company.children) {
                 this.addButton(squad);
 
-                for (let creature of squad.creatures) {
+                for (let creature of squad.children) {
                     this.addButton(creature);
 
-                    for (let item of creature.items) {
+                    for (let item of creature.children) {
                         this.addButton(item);
                     }
                 }
             }
         }
+    }
+
+    refreshOverview () {
+        Util.clearHtmlChildren(this.overviewPane);
+        this.setUI();
     }
 
     addButton (component) {
@@ -30193,22 +30306,154 @@ class Customizer {
         button.setAttribute('class', 'component');
         // LATER - better to store these values as props of JS obj, or as HTML attrs?
         button.component = component;
-        button.componentType = component.constructor.name;
+        button.componentType = component.type();
         button.innerHTML = component.name();
 
-        // const self = this;
-        button.onclick = () => {
-            const infoPane = document.getElementById('infoPane');
-
-            infoPane.innerHTML = button.component.name() + ' - ' + Util.stringify(button.component.toJson());
-        }
+        button.onclick = () => this.setInfoPane(button);
 
         return button;
+    }
+
+    // subject can be a button or a Component or undefined.
+    // LATER - would like to visually highlight the button in left overview pane corresponding to selectedComponent.
+    setInfoPane (subject) {
+        const component = subject?.component || subject || this.selectedComponent;
+        const componentType = component.type();
+        this.selectedComponent = component;
+
+        Util.clearHtmlChildren(this.infoPane);
+
+        const titleP = document.createElement('p');
+        titleP.innerHTML = `${component.name()} (${componentType})`;
+        titleP.setAttribute('class', 'infoPaneTitle');
+        this.infoPane.appendChild(titleP);
+
+        Util.logDebug({
+            componentType,
+            componentJson: component.toJson(),
+            context: `Customizer.infoPaneContents(): before if(Company). `,
+            // pInnerHtml: infoPHtml.innerHTML,
+        });
+
+        if (componentType === 'Company') {
+            this.addInfoPaneButton(
+                'New Squad',
+                component,
+                () => this.setChooseNewComponentMenu(component),
+            );
+        }
+        else {
+            this.addInfoPaneButton(
+                `Remove ${componentType || 'This'}`,
+                component,
+                () => this.removeComponent(component),
+            );
+        }
+
+        if (componentType === 'Squad') {
+            this.addInfoPaneButton(
+                'New Squad Member',
+                component,
+                () => this.setChooseNewComponentMenu(component),
+            );
+        }
+        else if (componentType === 'Creature') {
+            this.addInfoPaneButton(
+                'New Item',
+                component,
+                () => this.setChooseNewComponentMenu(component),
+            );
+        }
+        else if (! ['Item', 'Company'].includes(componentType)) {
+            Util.logError({
+                componentType,
+                componentJson: component.toJson(),
+                error: `Customizer.infoPaneContents(): componentType not recognized.`,
+            });
+        }
+
+        //temp debug
+        const infoPHtml = document.createElement('p');
+        infoPHtml.innerHTML = Util.stringify(component.toJson());
+        infoPane.appendChild(infoPHtml);
+    }
+
+    addInfoPaneButton (text, relevantComponent, func) {
+        const button = document.createElement('button');
+        button.setAttribute('class', 'infoPaneButton');
+        button.innerHTML = text;
+        button.relevantComponent = relevantComponent;
+        button.onclick = func;
+
+        this.infoPane.appendChild(button);
+
+        return button;
+    }
+
+    setChooseNewComponentMenu (parent) {
+        this.selectedComponent = parent;
+
+        Util.clearHtmlChildren(this.infoPane);
+
+        this.infoPane.appendChild(
+            Util.pElement(
+                `Add a new ${parent.childType()} to ${parent.type()} ${parent.name()}:`,
+                'infoPaneTitle',
+            )
+        );
+
+        const cancelButton = Util.button(
+            'Cancel',
+            'infoPaneButton',
+            () => {
+                this.setInfoPane(parent);
+            },
+        );
+        this.infoPane.appendChild(cancelButton);
+
+        const newComponentOptions = this.unusedComponents.filter(
+            compo => compo.type() === parent.childType()
+        );
+
+        newComponentOptions.map(unusedCompo => {
+            const newComponentButton = Util.button(
+                unusedCompo.name(),
+                'infoPaneButton',
+            );
+
+            // These props might not be needed.
+            newComponentButton.component = unusedCompo;
+            newComponentButton.parent = parent;
+
+            newComponentButton.onclick = () => this.addComponent(unusedCompo, parent);
+
+            this.infoPane.appendChild(newComponentButton);
+        });
+    }
+
+    addComponent (unusedCompo, parent) {
+        parent.addChild(unusedCompo);
+
+        this.unusedComponents = this.unusedComponents.filter(c => c !== unusedCompo);
+
+        this.setInfoPane(unusedCompo);
+        this.refreshOverview();
+    }
+
+    removeComponent (component) {
+        this.selectedComponent = component.parent;
+        component.removeSelf();
+
+        this.unusedComponents.push(component);
+
+        this.setInfoPane();
+        this.refreshOverview();
     }
 
     setCompanies (companies) {
         this.companies = companies;
         this.companies.map(c => c.nameSquads());
+        this.selectedComponent = this.companies[0];
         this.initUI();
     }
 
@@ -30226,6 +30471,8 @@ class Customizer {
         const cmizer = new Customizer();
         cmizer.setCompanies(Customizer.exampleCompanies());
 
+        cmizer.companies.map(company => company.sanityCheck());
+
     }
 }
 
@@ -30233,7 +30480,7 @@ module.exports = Customizer;
 
 Customizer.run();
 
-},{"../../util/util.js":45,"./company.js":36,"./creature.js":37,"./item.js":40,"./squad.js":42,"./templates.js":43}],39:[function(require,module,exports){
+},{"../../util/util.js":46,"./company.js":36,"./creature.js":38,"./item.js":41,"./squad.js":43}],40:[function(require,module,exports){
 'use strict';
 
 // const Creature = require('./creature.js');
@@ -30334,27 +30581,36 @@ Event.ATTACK_OUTCOME = {
 
 module.exports = Event;
 
-},{"../../util/util.js":45}],40:[function(require,module,exports){
+},{"../../util/util.js":46}],41:[function(require,module,exports){
 'use strict';
 
-//
+// Physical items such as weapons, tools, armor.
 
+const Component = require('./component.js');
 const Templates = require('./templates.js');
 const Util = require('../../util/util.js');
 
-// LATER could make class Component, superclass of Item, Creature, Squad, & Company.
-class Item {
+class Item extends Component {
     constructor (template) {
-        this.id = Util.uuid();
+        super();
         this.template = template;
     }
 
     toJson () {
-        return this;
+        return {
+            id: this.id,
+            template: this.template,
+            type: this.constructor.name,
+            parentId: this?.parent?.id,
+        };
     }
 
     name () {
         return this.template.name; // + ' ' + Util.shortId(this.id);
+    }
+
+    type () {
+        return this.constructor.name;
     }
 
     static example () {
@@ -30368,7 +30624,7 @@ class Item {
 
 module.exports = Item;
 
-},{"../../util/util.js":45,"./templates.js":43}],41:[function(require,module,exports){
+},{"../../util/util.js":46,"./component.js":37,"./templates.js":44}],42:[function(require,module,exports){
 'use strict';
 
 // Autobattler game in browser. WIP.
@@ -30554,26 +30810,28 @@ class ScifiWarband {
 
     sanityCheck (thing) {
         // LATER could functionize some or all of this into Util.js
-        // (or could move it to squad.js)
+        // (or could move it to component.js)
         let sane = true;
 
         if (
             ! thing ||
-            ! thing.creatures
+            ! thing.children
         ) {
             sane = false;
         }
         else {
             const factions = Util.unique(
-                thing.creatures?.map(cr => cr.faction())
+                thing.children?.map(cr => cr.faction())
             );
 
-            const activeCreature = thing.creatures.find(cr => ! cr.isKO());
-            const koCreature = thing.creatures.find(cr => cr.isKO());
+            const activeCreature = thing.children.find(cr => ! cr.isKO());
+            const koCreature = thing.children.find(cr => cr.isKO());
             const mixedKOStatus = activeCreature && koCreature;
 
+            // LATER also check all parent pointers are correct in the squad's tree.
+
             if (
-                thing.creatures.length === 0 ||
+                thing.children.length === 0 ||
                 factions.length !== 1 ||
                 mixedKOStatus
             ) {
@@ -30637,7 +30895,7 @@ class ScifiWarband {
     chooseActions (curSquad) {
         // ScifiWarband.logDebug(curSquad.toJson());
 
-        const sentiments = curSquad.creatures.map(cr => cr.morale());
+        const sentiments = curSquad.children.map(cr => cr.morale());
         // LATER morale can inform chooseActions()
 
         // A squad may do ONE action (eg move OR attack) each turn.
@@ -31079,7 +31337,7 @@ class ScifiWarband {
 
         // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) top. - toJsonStr()=${damagedSquad.toJsonStr()}`);
 
-        const koCreatures = damagedSquad.creatures.filter(cr => cr.isKO());
+        const koCreatures = damagedSquad.children.filter(cr => cr.isKO());
         if (koCreatures.length === 0) { return; }
 
         const thingsHere = this.contentsOfCoord(damagedSquad.coord);
@@ -31095,22 +31353,22 @@ class ScifiWarband {
             this.things.push(koSquad);
         }
 
-        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) before concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) before concat(). koSquad.children.length=${koSquad.children.length}, koCreatures.length=${koCreatures.length}`);
 
-        koSquad.creatures = koSquad.creatures.concat(koCreatures);
+        koSquad.children = koSquad.children.concat(koCreatures);
 
-        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) after concat(). koSquad.creatures.length=${koSquad.creatures.length}, koCreatures.length=${koCreatures.length}`);
+        // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) after concat(). koSquad.children.length=${koSquad.children.length}, koCreatures.length=${koCreatures.length}`);
 
-        damagedSquad.creatures = damagedSquad.creatures.filter(cr => ! cr.isKO());
+        damagedSquad.children = damagedSquad.children.filter(cr => ! cr.isKO());
 
-        if (damagedSquad.creatures.length === 0) {
-            this.things = this.things.filter(th => th.creatures.length >= 1);
+        if (damagedSquad.children.length === 0) {
+            this.things = this.things.filter(th => th.children.length >= 1);
         }
 
         const koCreaturesArrayStr = koCreatures.map(cr => cr.toJsonStr()).join(', ');
         // ScifiWarband.logDebug(`tidyKOs(${damagedSquad.terse()}, ${koCount}) bottom. - damagedSquad.toJsonStr()=${damagedSquad.toJsonStr()} \n koSquad.toJsonStr()=${koSquad.toJsonStr()}, local var koCreatures=[${koCreaturesArrayStr}]`);
 
-        if (koSquad.creatures.length === 0) {
+        if (koSquad.children.length === 0) {
             throw new Error(Util.stringify({
                 damagedSquad: damagedSquad.toJson(),
                 koSquad: koSquad.toJson(),
@@ -31124,10 +31382,10 @@ class ScifiWarband {
         const game = new ScifiWarband();
 
         const damagedSquad = Squad.example('Marine');
-        const startingCount = damagedSquad.creatures.length;
+        const startingCount = damagedSquad.children.length;
         game.things = [damagedSquad];
 
-        damagedSquad.creatures[0].status.ko = true;
+        damagedSquad.children[0].status.ko = true;
         game.tidyKOs(damagedSquad);
 
         const contents = game.contentsOfCoord(damagedSquad.coord);
@@ -31138,9 +31396,9 @@ class ScifiWarband {
         const summary = {
             numberOfSquads: contents.length,
             startingCount,
-            endingCount: damagedSquad.creatures.length,
+            endingCount: damagedSquad.children.length,
             endingQuantity: damagedSquad.quantity(),
-            koSquadCount: koSquad?.creatures.length,
+            koSquadCount: koSquad?.children.length,
             koSquadQuantity: koSquad?.quantity(),
             koSquadFaction: koSquad?.faction(),
         };
@@ -31149,9 +31407,9 @@ class ScifiWarband {
 
         const expected = {
             numberOfSquads: 2,
-            startingCount: controlGroup.creatures.length,
-            endingCount: controlGroup.creatures.length - 1,
-            endingQuantity: controlGroup.creatures.length - 1,
+            startingCount: controlGroup.children.length,
+            endingCount: controlGroup.children.length - 1,
+            endingQuantity: controlGroup.children.length - 1,
             koSquadCount: 1,
             koSquadQuantity: 0,
             koSquadFaction: controlGroup.faction(),
@@ -31420,7 +31678,7 @@ class ScifiWarband {
                 if (things.length === 0) { continue; }
 
                 for (let thing of things) {
-                    ScifiWarband.logDebug(`${thing.terse()} with .creatures=${thing.koSummary()}`);
+                    ScifiWarband.logDebug(`${thing.terse()} with .children=${thing.koSummary()}`);
                 }
             }
         }
@@ -31553,25 +31811,23 @@ module.exports = ScifiWarband;
 
 ScifiWarband.run();
 
-},{"../../util/coord.js":44,"../../util/util.js":45,"./action.js":35,"./creature.js":37,"./event.js":39,"./squad.js":42,"./templates.js":43}],42:[function(require,module,exports){
+},{"../../util/coord.js":45,"../../util/util.js":46,"./action.js":35,"./creature.js":38,"./event.js":40,"./squad.js":43,"./templates.js":44}],43:[function(require,module,exports){
 'use strict';
 
-const Creature = require('./creature.js');
-// const Squad = require('./squad.js');
-// const Action = require('./action.js');
-// const Item = require('./Item.js');
-const Templates = require('./templates.js');
+// For Scifi Warband autobattler game.
 
+const Component = require('./component.js');
+const Creature = require('./creature.js');
 const Event = require('./event.js');
+const Templates = require('./templates.js');
 
 const Coord = require('../../util/coord.js');
 const Util = require('../../util/util.js');
 
-class Squad {
+class Squad extends Component {
     constructor (squadTemplate, _unused, coord) {
-        this.id = Util.uuid();
+        super();
         this.template = squadTemplate;
-        this.creatures = [];
         // this.team = team || this.template.faction;
         this.coord = coord || new Coord();
         this.ready = true;
@@ -31579,8 +31835,7 @@ class Squad {
         // Note that this is how you create a homogenous squad from a template. LATER, might often have heterogenous squads coming from customization choices or from a save file.
         for (let i = 1; i <= this.template.quantity; i++) {
             const cr = new Creature(this.template.creature);
-            this.creatures.push(cr);
-            cr.squad = this;
+            this.addChild(cr);
         }
 
         this.resetVisibility();
@@ -31603,11 +31858,11 @@ class Squad {
     }
 
     faction () {
-        return this.creatures?.[0]?.faction();
+        return this.children?.[0]?.faction();
     }
 
     isKO () {
-        return this.creatures.every(
+        return this.children.every(
             cr => cr.isKO()
         );
     }
@@ -31615,7 +31870,7 @@ class Squad {
     // LATER if useful, we could add a func like .available(), which checks both .ready and .isKO()
 
     activeCreatures () {
-        return this.creatures.filter(cr => ! cr.isKO())
+        return this.children.filter(cr => ! cr.isKO())
     }
 
     quantity () {
@@ -31668,7 +31923,7 @@ class Squad {
             return;
         }
  
-        const events = this.creatures.map(cr => cr.update())
+        const events = this.children.map(cr => cr.update())
             .filter(e => !! e);
 
         this.resetVisibility();
@@ -31714,7 +31969,7 @@ class Squad {
         }
 
         Util.logDebug(`Squad.whoGotHit() default case happened for Squad ${this.id}.`);
-        return this.creatures[this.creatures.length - 1];
+        return this.children[this.children.length - 1];
     }
 
     // For display
@@ -31772,7 +32027,7 @@ class Squad {
         // Util.logDebug(`Squad.terse(): coord=${this.coord.toString()}, this.koSummary()=${this.koSummary()}`);
 
         const representative = this.isKO() ?
-            this.creatures[0] :
+            this.children[0] :
             this.activeCreatures()[0];
 
         const name = representative?.template.name || `<empty Squad>`;
@@ -31782,7 +32037,7 @@ class Squad {
 
     // For debugging
     koSummary () {
-        return this.creatures.map(
+        return this.children.map(
             cr => cr.isKO() ? 'KO' : 'Active'
         )
         .join(',');
@@ -31802,7 +32057,7 @@ class Squad {
 
     commonestCreature () {
         return Util.commonest(
-            this.creatures.map(cr => cr.template.name)
+            this.children.map(cr => cr.template.name)
         );
     }
 
@@ -31813,7 +32068,7 @@ class Squad {
         );
         json.faction = this.faction();
 
-        json.creatures = this.creatures.map(cr => cr.toJson());
+        json.children = this.children.map(cr => cr.toJson());
 
         return json;
     }
@@ -31875,7 +32130,7 @@ Squad.IMAGE_PREFIX = 'https://alexpear.github.io/gridView/images/';
 
 module.exports = Squad;
 
-},{"../../util/coord.js":44,"../../util/util.js":45,"./creature.js":37,"./event.js":39,"./templates.js":43}],43:[function(require,module,exports){
+},{"../../util/coord.js":45,"../../util/util.js":46,"./component.js":37,"./creature.js":38,"./event.js":40,"./templates.js":44}],44:[function(require,module,exports){
 'use strict';
 
 //
@@ -32235,7 +32490,7 @@ module.exports = Templates;
 Templates.init();
 // Templates.test();
 
-},{"../../util/util.js":45,"../data/config.js":34,"js-yaml":2}],44:[function(require,module,exports){
+},{"../../util/util.js":46,"../data/config.js":34,"js-yaml":2}],45:[function(require,module,exports){
 'use strict';
 
 // TODO make this name lowercase.
@@ -32443,7 +32698,7 @@ Coord.DECIMAL_PLACES = 2;
 
 module.exports = Coord;
 
-},{"./util.js":45}],45:[function(require,module,exports){
+},{"./util.js":46}],46:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -33159,6 +33414,49 @@ class Util {
         });
     }
 
+    // Returns string with '<'s in it.
+    static htmlPassage (content) {
+        return Util.asElement(content, 'p');
+    }
+
+    // Returns string with '<'s in it.
+    static asElement (content, elementName) {
+        // TODO make content HTML-friendly, escape etc.
+        return `<${elementName}>${content}</${elementName}>`;
+    }
+
+    static pElement (text, className) {
+        const p = document.createElement('p');
+
+        p.innerHTML = text;
+
+        if (className) {
+            p.setAttribute('class', className);
+        }
+
+        return p;
+    }
+
+    static button (text, className, func) {
+        const b = document.createElement('button');
+
+        b.innerHTML = text;
+
+        if (className) {
+            b.setAttribute('class', className);
+        }
+
+        b.onclick = func;
+
+        return b;
+    }
+
+    static clearHtmlChildren (element) {
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+    }
+
     // True when input is a number or a string containing digits.
     static isNumeric (x) {
         return /[0-9]/.test(x);
@@ -33525,6 +33823,12 @@ class Util {
         Util.log(input, 'error');
     }
 
+    static error (summary) {
+        throw new Error(
+            Util.stringify(summary)
+        );
+    }
+
     static makeEnum (vals) {
         const dict = {};
         for (let val of vals) {
@@ -33636,4 +33940,4 @@ module.exports = Util;
 
 // Util.testAll();
 
-},{"comma-number":1,"lodash":32,"moment":33}]},{},[35,36,37,38,39,40,41,42,43]);
+},{"comma-number":1,"lodash":32,"moment":33}]},{},[35,36,37,38,39,40,41,42,43,44]);
