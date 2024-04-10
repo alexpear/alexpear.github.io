@@ -31,8 +31,14 @@ class Squad extends Component {
     loadImage () {
         this.imgElement = new Image();
         this.imgElement.src = Squad.IMAGE_PREFIX + this.template.image;
+    }
 
-        // imgElement.onload = () => this.drawLoadedImage(imgElement, x, y);
+    addChild (child) {
+        super.addChild(child);
+
+        if (! this.template) {
+            this.template = Templates.squadFromCreature(child);
+        }
     }
 
     existingName () {

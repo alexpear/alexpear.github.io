@@ -6,12 +6,12 @@ const Creature = require('./creature.js');
 const Company = require('./company.js');
 const Item = require('./item.js');
 const Squad = require('./squad.js');
-const Templates = require('./templates.js');
 const Util = require('../../util/util.js');
 
 class Customizer {
     constructor () {
         this.companies = [];
+        this.unusedComponents = [];
         this.initUI();
     }
 
@@ -175,44 +175,43 @@ class Customizer {
         );
         this.infoPane.appendChild(cancelButton);
 
-        const newComponentTemplates = [
-            // temp wip TODO
-            Templates.Halo.UNSC.Item.SMG,
-            Templates.Halo.UNSC.Item.SMG,
-            Templates.Halo.UNSC.Item.SMG,
-        ];
+        let newComponentOptions;
 
-        newComponentTemplates.map(template => {
+        if (parent.type() === 'Company') {
+            newComponentOptions = [new Squad()];
+        }
+        else {
+            newComponentOptions = this.unusedComponents.filter(
+                compo => compo.type() === parent.childType()
+            );
+        }
+
+        newComponentOptions.map(unusedCompo => {
             const newComponentButton = Util.button(
-                template.name,
+                unusedCompo.name(),
                 'infoPaneButton',
             );
 
-            newComponentButton.template = template;
+            // These props might not be needed.
+            newComponentButton.component = unusedCompo;
             newComponentButton.parent = parent;
 
-            newComponentButton.onclick = () => this.addComponent(template, parent);
+            newComponentButton.onclick = () => this.addComponent(unusedCompo, parent);
 
             this.infoPane.appendChild(newComponentButton);
         });
+
+        if (newComponentOptions.length === 0) {
+            `We don't have any more ${parent.childType()}s left, sorry.`
+        }
     }
 
-    addComponent (template, parent) {
-        let newComponent;
+    addComponent (unusedCompo, parent) {
+        parent.addChild(unusedCompo);
 
-        if (parent.type() === 'Company') {
-            newComponent = new Squad(template);
-        }
-        else if (parent.type() === 'Squad') {
-            newComponent = new Creature(template);
-        }
-        else if (parent.type() === 'Creature') {
-            newComponent = new Item(template);
-        }
+        this.unusedComponents = this.unusedComponents.filter(c => c !== unusedCompo);
 
-        parent.addChild(newComponent);
-
-        this.setInfoPane(newComponent);
+        this.setInfoPane(unusedCompo);
         this.refreshOverview();
     }
 
@@ -220,7 +219,10 @@ class Customizer {
         this.selectedComponent = component.parent;
         component.removeSelf();
 
-        // LATER - move the component to the reserve.
+        this.unusedComponents.push(component);
+
+        // TODO - if component has children, flatten the tree & push each Creature & Item separately.
+        // And dont push Companies or Squads in any case.
 
         this.setInfoPane();
         this.refreshOverview();

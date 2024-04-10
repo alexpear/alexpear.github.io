@@ -1641,6 +1641,8 @@ Halo:
                 name: Mantis
                 preferredRange: 6
                 scale: Individual
+                shields: 200
+                shieldDelay: 3
                 size: 4
                 speed: 1.5
                 type: Explosive
