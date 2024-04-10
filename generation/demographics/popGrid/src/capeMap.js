@@ -46,16 +46,21 @@ class CapeMap {
 
         for (let row of array2d) {
             for (let pop of row) {
-                
-                // Water can be #001795
-                const colorVal = pop >= 0 ?
-                    255 - Math.floor(pop / MAX * 255) :
-                    255;
+                if (pop >= 0) {
+                    const colorVal = 255 - Math.floor(pop / MAX * 255);
 
-                rgba.push(colorVal);
-                rgba.push(colorVal);
-                rgba.push(colorVal);
-                rgba.push(255);
+                    rgba.push(colorVal);
+                    rgba.push(colorVal);
+                    rgba.push(colorVal);
+                    rgba.push(255);
+                }
+                else {
+                    // Water
+                    rgba.push(30);
+                    rgba.push(144);
+                    rgba.push(255);
+                    rgba.push(255);
+                }
             }
         }
 
