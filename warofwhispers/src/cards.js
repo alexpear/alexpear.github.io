@@ -262,7 +262,7 @@ class Card {
             masseffect: {
                 Single: {
                     bear: 'After your attack, you may make an additional attack with any surviving units.',
-                    eagle: 'Move the active agent to any empty VIP square & immediately take that VIP\'s action instead. Then proceed from after where it was.',
+                    eagle: 'Move the active agent to any empty VIP space & immediately take that VIP\'s action instead. Then proceed from after where it was.',
                     elephant: 'Add 1 unit to your attack.',
                     lion: 'Instead of the current VIP\'s actions, use an action controlled by one of your other agents.',
                     horse: 'Choose 2 planets controlled by the active faction. Move any number of units between them.',
@@ -271,7 +271,7 @@ class Card {
                     bear: 'After your attack, kill ALL units involved in that attack (on both sides).',
                     eagle: 'Your attack may target any empty enemy planet.',
                     elephant: 'Add 3 units to your attack.',
-                    lion: 'Reinforce a Prothean beacon planet by adding 3 units of the controlling faction.',
+                    lion: 'Reinforce a Prothean artifact planet by adding 3 units of the controlling faction.',
                     horse: 'Rearrange any faction\'s units within its controlled planets. (Do not abandon a planet or exceed supply.)',
                 },
                 Combo: {
@@ -282,9 +282,9 @@ class Card {
                     eagleelephant: 'Destroy: Choose 1 unit of the active faction. Kill up to 5 enemy units on any adjacent planets.', // alchemist's fire // gorgons
                     eaglehorse: 'SSV Normandy: Your attack may target any planet in the galaxy.', // armada
                     eaglelion: 'Synthesis: Add 1 unit to each planet the active faction controls.', // populate
-                    elephanthorse: 'Secret Base: Reinforce an empty planet with no Prothean beacon & no orbital station by adding 4 units of the controlling faction.', // uprising // TODO check if this text is too long & pushes the card bottom downwards.
+                    elephanthorse: 'Secret Base: Reinforce an empty planet with no Prothean artifact & no orbital station by adding 4 units of the controlling faction.', // uprising // TODO check if this text is too long & pushes the card bottom downwards.
                     elephantlion: 'Loyalty: Add up to 6 units to the current attack from any planets the active faction controls.', // reinforce
-                    horselion: 'Operation Overdrive: After performing an action with an agent, take the same action again.', // midnight oil
+                    horselion: 'Operation Overdrive: After performing an action with an agent, take the same action again.', // midnight oil // Like a Hamster on Coffee
                 },
             },
         };
@@ -302,7 +302,7 @@ class Card {
         for Mass Effect
         empire -> faction
         region -> planet (despite incorrect for citadel etc)
-        city -> Prothean beacon
+        city -> Prothean artifact
         farm -> city
         tower -> orbital station
         banner -> unit
