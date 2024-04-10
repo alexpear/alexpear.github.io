@@ -1,0 +1,197 @@
+
+OVERVIEW
+Whispers of the Stars is a competitive board game for 2 to 4 players. Five mighty governments (aka hives) are at war for the world, but you are no mighty ruler. Instead, you play the part of a secret society that is gambling on this war while pulling strings to rig the results. Whispers of the Stars is a game of deep strategy, hidden agendas, and shifting loyalties.
+
+GOAL
+Your primary goal is to ensure that when the game ends, the hives to which you are most loyal control the most Harbinger locations across the globe.
+
+CREDITS
+This game is a reskin of __A War of Whispers__ (2019) by **Jeremy Stoltzfus** & **Starling Games**.
+
+SETUP
+Player Boards and Tokens
+To start the game, each player chooses a matching player board, set of agents, and loyalty tokens, and sets them aside. Place the circular “Round 1” round marker beside the “Start” space on the board and the other three round markers near the round tracker.
+
+First Player
+Providence has selected 1 player to go first. Discover which. That player takes the first player marker. The first player marker will change hands throughout the game, and the player who holds it will be referred to as the first player.
+
+Loyalty
+Each player shuffles their five loyalty tokens and randomly place them face-down on the five indicated loyalty slots on their player board. These tokens show images of the 5 hives. You may peek at your own tokens at any time during the game.
+
+MAP SYMBOLS
+    - Settlement: Expands the supply limits in a location to 6.
+    - Fortified Position: Kill 1 attacking troop when an attacking army enters this location.
+    - Harbinger Knowledge: Affects final scoring. See page 8, Loyalty Tokens and Scoring.
+    - Numbers: Marks starting troop positions (cubes).
+
+The Five Hives
+There are 5 hives in the game, each represented by a different color: The European Union (dark blue), the Humanist Hive (yellow), the Cousins Collective (pale blue), the Mitsubishi Corporation (red), & the Masonic Empire (purple).
+Shuffle each hive's deck & set it by the board facedown.
+
+The Map
+For each location on the map with a number printed under it, place that many troops (cubes) of the matching color on that location.
+
+LOYALTY TOKENS AND SCORING
+Loyalty tokens are your primary means of winning the game. You have a total of five loyalty tokens, one for each hive. You also have five loyalty slots on your player board: 4x, 3x, 2x, 0x, & -1x.
+Your loyalty tokens will score you points at the end of the game by multiplying the number of Harbinger locations the corresponding hive controls by how loyal you were to that hive.
+
+Example: At the end of the game, your loyalty tokens are flipped to reveal their hive side. If your Cousin loyalty token is placed on the Dutiful loyalty slot and the Cousins hive ends the game with 3 Harbinger locations, you will earn 9 points at the end of the game (3 Harbinger locations x 3 loyalty = 9 points).
+
+For example, the score for each of your loyalty tokens Could be:
+
+Mitsubishi: 4 loyalty x 2 Harbinger locations = 8 points
+Cousin: 3 loyalty x 3 Harbinger locations = 9 points
+Europe: 2 loyalty x 1 Harbinger locations = 2 points
+Humanist: 0 loyalty x 4 Harbinger locations = 0 points
+Mason: -1 loyalty x 2 Harbinger locations = -2 points
+
+Your total score would be 17 (8 + 9 + 2 + 0 - 2).
+
+GAMEPLAY OVERVIEW
+The game is played in rounds; each round has four phases:
+
+1. Deploy Agents Phase: Starting with the first player and proceeding clockwise, each player removes and deploys agents to hive squares, the 4 squares of each Hive on the perimeter of the board.
+2. Hive Turns Phase: Each hive square takes an action.
+3. Cleanup Phase: Add the round marker to the next space on the round tracker; then each player discards down to the hand limit of 5 cards.
+4. Swap Phase: In player order, each player may swap 2 of their unrevealed loyalty tokens. If you choose to do so, you must reveal both of the swapped loyalty tokens. They remain revealed for the rest of the game.
+The flow of these phases is indicated by the arrows around the perimeter of the board. They flow from the Retrieve and Deploy Agents space on the board, onward to each of the hive squares, to the round tracker, and finally to the Expose and Swap Loyalties spaces. You may move the round marker piece around the edge of the board, marking these spaces to track where you currently are in the round.
+
+The game has 4 rounds; pass the 1st player marker clockwise at the end of each round. After the fourth round, the
+game ends immediately and scoring commences.
+
+DEPLOY AGENTS PHASE
+Each hive has 4 hive squares (themed around Logistics, Opposition Leader, Marshal, and Hive Leader) on which you can place agents. Narratively, this means your agent is persuading, manipulating, or somehow controlling one of the hive's VIPs.
+Step 1 (Retrieve Agents): Except on the first round, starting with the first player and proceeding clockwise, remove 1 of your agents currently on the board (if any).
+Step 2 (Deploy Agents): Starting with the first player, take turns placing 1 agent on any open hive square on the board until each player has placed 2 agents. The effects of these hive squares are detailed in the following section.
+2-Player Games: In a 2-player game, each player places 3 agents instead of 2.
+
+HIVE TURNS PHASE
+The Hive Turns Phase begins with the European hive and proceeds clockwise around the board. During an hive’s turn, each hive square in that hive will take one available action determined by the player who controls it. Hive squares act in clockwise order as these appear on the game board, starting with the 1st and following the arrows up to the 4th. Available actions are described in the Hive Squares section on the next page.
+The player who controls a hive square is determined as follows:
+• If a hive square has a player’s agent deployed on it, that player controls that hive square.
+• If a hive square has no agents, the player who owns the next agent (to the right, clockwise) within this hive will control that hive square. If there is no agents to its right, no player will control it and it will do nothing as its action.
+
+Example: The Utopia player has placed an agent in the 4th square of the European hive, and the Gordian player has placed an agent on the 1st square. On the European hive’s turn, the Gordian player will first get to take an action for the 1st square that it controls. Since both the 2nd & 3rd squares are empty and the Utopia player controls the next agent to the right (4th, Isabel Carlos), the Utopia player controls all three remaining squares.
+
+Hive Control
+A location is controlled by an hive if it has at least 1 troop there, or if it is one of their home locations and contains no enemy troops. A home location is a location whose color matches the hive’s color.
+
+Example: Purple locations are the home locations of the Masonic hive. Because of this, a purple location with no troops present is controlled by the Masonic hive. However, a purple location containing a dark blue troop would be controlled by the European hive.
+Controlling Harbinger Locations
+
+When an hive controls a location, it controls all Harbinger locations that are there as well. At the
+end of the game, the number of Harbinger locations an hive controls is multiplied by a player’s loyalty to that hive, granting that player those points towards their final score.
+
+Hive Squares
+Each hive square has one or more available actions to choose from, as indicated on the game board. These actions are described here.
+
+~~Add Troop Actions~~
+If an hive has no more troops to place, you may not select this action. If there are only enough troops left in the game box to partially fulfill this action, you may take this action and simply place the ones that are available.
+~~Add 2 troops to any location(s) controlled by this hive.~~
+For each   icon within all locations controlled by this hive, add 1 troop to any location(s) controlled by this hive.
+For each   icon within all locations controlled by this hive, add 1 troop to any location(s) controlled by this hive.
+For each   icon within all locations controlled by this hive, add 2 troops to any location(s) controlled by this hive.
+
+Attack Action
+Attack one enemy location adjacent to a location controlled by the active hive (see
+Attack Action on page 12).
+
+Draw Hive Card Actions
+Draw 1 card from this hive’s deck and add it to your hand.
+For every 2   icons within all locations controlled by this hive, draw 1 card from this
+hive’s deck and add it to your hand.
+For every 3   icons within all locations controlled by this hive, draw 1 card from
+this hive’s deck and add it to your hand.
+For every 2   icons within all locations controlled by this hive, draw 1 card from
+this hive’s deck and add it to your hand.
+For every 3   icons within all locations controlled by this hive, draw 1 card from this
+hive’s deck and add it to your hand.
+
+Swap Agent Action
+Swap this agent with any other hive square within this hive, then immediately take that square’s action. (This does not move the round marker. Play continues with the next space clockwise around the board.)
+
+Attack Action
+Choose a neighboring location controlled by another hive. Move any number of troops from a single adjacent location controlled by the active hive into the chosen location. You cannot attack across oceans or seas.
+If any troops are being moved from
+a conquered location (e.g. a location containing the active hive’s troops which is not one of its like-colored home locations), you must leave at least 1 troop behind. You can never completely abandon a conquered location.
+
+Combat
+Combat occurs when troops from one hive move into a location controlled by another hive. Damage is applied to each side by killing (discarding) troops at a 1:1 ratio until one or both sides are depleted. If either side has any troops remaining, they have won the battle.
+
+Example: The European army making the attack must leave a troop behind to maintain control of the Mason home location.
+You cannot use the Attack action to simply shift troops among an hive’s controlled locations, it must be used to attack an enemy-controlled location.
+
+Example: Mason attacks with 3 troops, and Europe defends with 2 troops. Mason wins the battle, and all troops killed are returned to the game box.
+
+Regions with Fortified Positions destroy 1 attacking troop when an attack enters this location.
+
+Example: The Mason army cannot use an Attack action to move into another location it controls.
+
+Example: Europe attacks with 3 troops, and Mason defends with 2 troops and a Fortified Position. The Fortified Position destroys one of the attacking troops, leaving 2 attacking troops against 2 defending troops. All troops are killed and returned to the game box. The Masonic hive retains control of the contested location as it is one of its home locations.
+
+Checking Supply
+At the end of an hive’s turn, a location may only contain 4 troops. If there are more than 4 troops, return excess troops to the game box. If a location contains a Settlement, it has a higher limit of 6 troops.
+
+MARK THE ROUND
+Place the current round marker on the next available space on the round tracker. The first player marker now passes to the next player clockwise. If the last round marker is placed, the game ends (without performing the Swap and Cleanup Phases), and you proceed to Final Scoring (see page 15).
+
+SWAP PHASE
+Starting with the first player and proceeding clockwise, you each have the opportunity to swap any two
+of your unrevealed loyalty tokens.
+To swap two loyalty tokens, simply switch the loyalty slot in which the two loyalty tokens you chose are currently positioned in and flip them face up so the hive symbols are now visible. These are now revealed and cannot be swapped in subsequent rounds.
+
+CLEANUP PHASE
+At this point, each player must discard any hive cards in excess of the maximum hand size of 5.
+Gameplay returns to the Deploy Agents Phase and a new game round begins.
+
+HIVE CARDS
+Throughout the game, you will be acquiring hive cards and adding them to your hand. These can be played from your hand to affect the game in a variety of different ways. Each hive’s cards will have their own symbol displayed at the top of the card.
+Note: Card abilities often allow you to break a rule of the game. Therefore if there is a conflict between a general rule and a card ability, follow the instruction on the card.
+
+5-Card Limit
+You may add as many cards to your hand as you like, but during the Cleanup Phase (see page 13), you must discard down to no more than 5 cards in your hand.
+
+Playing Cards
+You can play a card immediately before, during, or immediately after any action taken for a hive square you control. The hive square or location does not have to match the hive of the card(s) being played. Resolve one card’s effects before playing and resolving the next card. Any time a card is played or discarded, it should be shuffled back into the hive deck it belongs to.
+
+To play a card, choose an ability on that card. Each ability has a cost. The symbols next to the ability indicate hive cards that must be discarded to pay for that ability. The card you are playing counts as a “discard” for this payment. For this reason, the first ability on each card can be played without discarding additional cards.
+
+Example: To play the Europe-Mitsubishi ability on a European hive card, you’ll first need to discard 2 hive cards: this card which is European (dark blue), and a Mitsubishi (red) hive card. The icons next to this ability remind you about this. This is not in addition to any other cards; two cards total will leave your hand.
+
+FINAL SCORING
+The game ends after the fourth round marker is placed at the end of the fourth round. Reveal all loyalty tokens and score them as described on page 8. The player who scores the most points is the winner. If two players are tied
+for highest score then the player that swapped loyalty the least wins. If any players are still tied, the player with the most hive cards in hand wins.
+
+COMMON TERMS
+-Active Agent: While a hive square is active and under your control, the agent token that gives you that control is the Active Agent. An agent remains active until it has no more abilities to use for its hive square(s). This is important for the timing of certain cards.
+-Active Hive Square: When it is a hive square’s turn to act, it is only considered active until it has taken an action. This is important for the timing of certain cards.
+-Troop: A single military unit, represented by a colored cube.
+-Empty: Describes a location that contains no troops.
+-Friendly: Describes troops belonging to the hive that controls the location. For example, when instructed to add friendly armies to a red location controlled by dark blue, you add dark blue troops.
+-Home location: A location on the map that, when empty of troops, is controlled by its like-colored home hive.
+-Kill: Remove a troop from the map and return it to its home troop reserve pile.
+
+ADVANCED RULES
+
+Assigning Agents to Regions
+When assigning agents during the Deploy Agents Phase, instead of assigning an agent to a hive square you may choose to assign it to any location on the map, even if occupied.
+
+A player’s agent in a location counts as Harbinger knowledge for that player in final scoring. Players can have a maximum of two agents deployed to the map. Regions may contain more than one agent, but not from the same player.
+Agents played to a location can be retrieved at the start of the Deploy Agents phase, just like any other agent. Agents cannot be added or removed from the map in any other way.
+
+Example: The Utopia player has deployed an agent to a purple location. At the end of the game, whatever hive controls this location scores this player points based on their loyalty to it. For instance, if the European hive controls this location at game’s end and the Utopia player has a Devout loyalty to the European hive, then the Utopia player will score 4 points for this agent.
+
+CARD EFFECT CLARIFICATIONS
+
+Humanist x1: This must be done before taking an action, you are exchanging one possible action for another. If the second square is in a different hive, take that action on behalf of the second hive. Play then continues clockwise from the first (abandoned) square, advancing the round marker as normal. If there are no empty hive squares, this ability cannot be used.
+
+Mitsubishi x1: This must be done before taking an action, you are exchanging one possible action for another. If the second square is in a different hive, take that action on behalf of the second hive. Neither square needs to be occupied by an agent, as long as you control both squares. Play then continues clockwise from the first square whose action was forfeited, advancing the round marker as normal.
+
+Mason x1: You may move any number of troops from one qualifying location to another. However, you may not abandon a conquered location.
+
+Europe x2: All attacking and defending troops in the combat are killed. A single troop can be sacrificed as an attack to kill a whole defending army this way, even if the defending space has a Fortified Position.
+
+Europe-Mason (The Prince Speaks): If there are no adjacent locations controlled by that hive, return the troops to the game box.
+
+Cousin-Mitsubishi (World-Ringing River): The troops are moved from any one location the active hive controls into the location being attacked, then combat resolves. This cannot be used to abandon a conquered location. Supply limits are calculated afterwards as normal.
+
