@@ -2,13 +2,16 @@
 
 // Tools for estimating number of superpowered people per location.
 // About the Parahumans fictional universe created by Wildbow.
+// See src/capeMap.js for leaner funcs that deal with the front end rather than with the data file.
+// See also - older funcs in alexpear.github.io/bottleWorld/worldPopGrid.js
 
 import Util from '../../../util/util.js';
 
-// const GeoTIFF = require('geotiff');
-// import GeoTIFF from 'geotiff';
+import FS from 'fs';
 import { fromFile } from 'geotiff';
+import JSONStream from 'JSONStream';
 import { dirname } from 'path';
+import Split from 'split';
 import { fileURLToPath } from 'url';
 
 // Using world population data from: https://hub.worldpop.org/geodata/summary?id=24777
@@ -28,8 +31,9 @@ class CapePopulation {
 
         Util.logDebug(`Now we call GeoTIFF fromFile()`);
 
-        const __dirname = dirname(fileURLToPath(import.meta.url));
-        cp.file = await fromFile(__dirname + '/data/ppp_2020_1km_Aggregated.tif');
+        cp.__dirname = dirname(fileURLToPath(import.meta.url));
+
+        cp.file = await fromFile(cp.__dirname + '/data/ppp_2020_1km_Aggregated.tif');
 
         Util.logDebug(`Now we call getImage()`);
         cp.tiff = await cp.file.getImage();
@@ -67,7 +71,11 @@ class CapePopulation {
     }
     */
     async load () {
-        this.rasterData = await this.tiff.readRasters();
+        fs.createReadStream(this.__dirname + '/squareList.txt')
+            .pipe(Split())
+            .on('data', (line) => {
+                // later
+            });
     }
 
     equatorPixels () {
@@ -147,7 +155,7 @@ class CapePopulation {
     }
 
     subbox (x, y, width, height) {
-        const box = [];
+        const box = [ [] ];
         let xInBox = 0;
         let yInBox = 0;
 
@@ -164,11 +172,11 @@ class CapePopulation {
         const start = y * this.rasterData.width + x;
 
         for (let i = start; i < start + width * height; i++) {
-            box[yInBox][xInBox] = this.rasterData[0][i];
-            // push and push row
+
+            box[yInBox].push( this.rasterData[0][i] );
 
             Util.logDebug({
-                box,
+                boxLength: box.length,
                 xInBox,
                 yInBox,
                 i,
@@ -179,6 +187,7 @@ class CapePopulation {
             });
 
             if (xInBox >= width) {
+                box.push([]);
                 yInBox++;
                 xInBox = 0;
             }
@@ -217,43 +226,75 @@ class CapePopulation {
         }
     }
 
-    setHtml () {
-        const imageData = window.ctx.getImageData(0, 0, 40, 40);
+    // moved to src/ dir.
+    // setHtml () {
+    //     const imageData = window.ctx.getImageData(0, 0, 40, 40);
 
-        imageData.data.set(
-            new Uint8ClampedArray(
-                this.box2rgba(
-                    this.sampleBox()
-                )
-            )
-        );
+    //     imageData.data.set(
+    //         new Uint8ClampedArray(
+    //             this.box2rgba(
+    //                 this.sampleBox()
+    //             )
+    //         )
+    //     );
 
-        window.ctx.putImageData(imageData, 0, 0);
+    //     window.ctx.putImageData(imageData, 0, 0);
+    // }
+
+    // "-1": 404,113,794,
+    // "0":   82,478,570,
+    // "1":   41,329,500,
+    // "10":  12,093,033,
+    // "100":  1,273,434,
+    // "1000":    45,945,
+    // "10000":       67,
+    histogram () {
+        const histo = {};
+        const benchmarks = [-1, 0, 1, 10, 100, 1000, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9];
+
+        for (let square of this.rasterData[0]) {
+            for (let bi = 0; bi < benchmarks.length; bi++) {
+                const mark = benchmarks[bi];
+
+                if (mark < square) {
+                    // Once we reach a benchmark that surpasses the square, then we know the previous benchmark describes it.
+
+                    const countsAsMark = (bi === 0) ?
+                        benchmarks[0] : // Low negative case. Lump it together.
+                        benchmarks[bi - 1];
+
+                    if (histo[countsAsMark] === undefined) {
+                        histo[countsAsMark] = 1;
+                    }
+                    else {
+                        histo[countsAsMark]++;
+                    }
+                }
+            }
+        }
+
+        Util.logDebug(histo);
+
+        return histo;
     }
 
-    /*
-    Select a box from rasters (to save space) (eg top left)
-    Equatorial is x = 35520 to 35560, y = 9320 to 9360
-    Print it comma-separated for later fast testing.
-    Convert to flat rgba array
-        ie, each number turns into 4 numbers
-        A, transparency, can be 255 always
-    Have a func to write to html canvas
-    Call it on html page load
-    var palette = ctx.getImageData(0,0,160,120); //x,y,w,h
-    palette.data.set(new Uint8ClampedArray(rgbaArray));
-    ctx.putImageData(palette,0,0);
-
-    https://stackoverflow.com/questions/15908179/draw-image-from-pixel-array-on-canvas-with-putimagedata
-    */
+    printSimple () {
+        for (let pop of this.rasterData[0]) {
+            console.log(
+                pop >= 0 ?
+                    Util.round(pop) :
+                    -1
+            );
+        }
+    }
 
     static async run () {
         const cp = await CapePopulation.new();
+        Util.logDebug(`Done with new().`);
 
-        cp.sampleBox();
+        cp.printSimple();
 
-
-        Util.logDebug(`Done with test.`);
+        Util.logDebug(`Done with run()`);
     }
 };
 
