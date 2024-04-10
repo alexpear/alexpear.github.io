@@ -2,6 +2,10 @@
 
 // Generates HTML wiki pages
 
+// Usage: uncomment the writeFileSync() call in WikiWriter.setupPages().
+// Then, from a terminal, run: node wikiWriter.js
+// This will overwrite all .html pages in this directory.
+
 const Util = require('../util/util.js');
 const fs = require('fs');
 const path = require('path');
@@ -14,61 +18,61 @@ class WikiWriter {
     starStructure () {
         return {
             juno: {
-                ur: {
-                    urusalim: 'page',
+                ur: { // SW Asia
+                    urusalim: 'page', // Jerusalem & surroundings
                     mechapolis: 'hide', // Mecca
                 },
-                indus: {
+                indus: { // S Asia
                     cylonca: 'hide', // Sri Lanka
                 },
-                gaia: {
+                gaia: { // Subsaharan Africa
                     madagasco: 'hide',
                 },
-                medeaTerra: {
+                medeaTerra: { // Mediterranean
                     nilus: 'hide', // Egypt
-                    aethyopae: 'hide',
+                    aethyopae: 'hide', // Ethiopia
                     tunis: 'hide', // Carthage
                     amorocco: 'hide',
                     iberia: 'hide',
-                    gallia: 'hide',
-                    remia: 'hide',
-                    aegea: 'hide',
+                    gallia: 'hide', // Gaul
+                    remia: 'hide', // Roma
+                    aegea: 'hide', // Greece
                     byzantium: 'hide',
                 },
-                medeaRegnum: {
+                medeaRegnum: { // East Asia (Middle Kingdom)
                     niphon: 'hide', // Japan - Nohin?
                     formosa: 'hide', // Taiwan
-                    arkeo: 'hide', // Korea
-                    omnigaol: 'hide', // Mongolia
+                    arkeo: 'hide', // Korea (anagram)
+                    omnigaol: 'hide', // Mongolia (anagram)
                     tibod: 'hide', // Tibet
                 },
-                borea: {
+                borea: { // Europe north of Mediterranean
                     germanus: 'hide',
                     magyarorbis: 'hide', // Hungary
                     austerost: 'hide', // Austria
                     polech: 'hide', // Poland
                     helvetica: 'hide', // Switzerland
-                    midgard: 'hide',
+                    midgard: 'hide', // Scandanavia
                     eire: 'hide',
                     britannia: 'hide',
                 },
-                cyberia: {
+                cyberia: { // East Europe to North Asia
                     ukrania: 'hide',
                     rus: 'hide',
                     kazhakia: 'hide',
                 },
-                thetis: {
+                thetis: { // SE Asia
                     lao: 'hide',
                     cambod: 'hide',
                     thailuna: 'hide',
                     indonus: 'hide', // Indonesia
-                    malazia: 'hide',
+                    malazia: 'hide', // Malaysia
                     mranmax: 'hide', // Myanmar/Burma
                     uvietu: 'hide', // Vietnam
                     panyupayana: 'hide', // Philippines
                 },
             },
-            americus: {
+            americus: { // North & South America & Caribbean
                 galapangaea: 'hide', // Galapagos
                 americusII: 'hide',
                 americusIII: 'hide',
@@ -80,11 +84,11 @@ class WikiWriter {
                 americusIX: 'hide',
                 americusX: 'hide',
                 americusXI: 'hide',
-                americusXII: {
+                americusXII: { // South America
                     amazonia: 'hide',
                     andea: 'hide',
                 },
-                nacada: {
+                nacada: { // North America (anagram of Canada)
                     cascadia: 'hide',
                     petramontia: 'hide', // Rocky Mountains
                     perardua: 'hide', // Kansas
@@ -93,11 +97,11 @@ class WikiWriter {
                 americusXIV: 'hide',
             },
             pacificus: {
-                australis: {
-                    tacticaMania: 'hide',
+                australis: { // Australia
+                    tacticaMania: 'hide', // Tasmania
                 },
                 technofiji: 'hide',
-                neoZeo: 'hide',
+                neoZeo: 'hide', // New Zealand
                 samox: 'hide', // Samoa
                 micropolis: 'hide', // Micronesia
                 hedronii: 'hide', // Hawai'i
