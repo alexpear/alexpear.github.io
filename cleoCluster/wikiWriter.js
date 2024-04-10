@@ -49,7 +49,7 @@ class WikiWriter {
                 borea: { // Europe north of Mediterranean
                     germanus: 'hide',
                     magyarorbis: 'hide', // Hungary
-                    austerost: 'hide', // Austria
+                    austerost: 'hide', // Austria (pun on Österreich, auster + ost, south + east)
                     polech: 'hide', // Poland
                     helvetica: 'hide', // Switzerland
                     midgard: 'hide', // Scandanavia

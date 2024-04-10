@@ -20,5 +20,5 @@ wikiWriter.js contains tools that were used to create these html files.
 
 Useful CLI commands:
 
-wc -c *html | sort -n
+wc -c *html | sort -nr
   This shows you which pages are most in need of more content.
