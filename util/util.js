@@ -1200,9 +1200,9 @@ class Util {
         );
     }
 
-    static makeEnum (vals) {
+    static makeEnum (array) {
         const dict = {};
-        for (let val of vals) {
+        for (let val of array) {
             dict[Util.capitalized(val)] = Util.uncapitalized(val);
         }
 
