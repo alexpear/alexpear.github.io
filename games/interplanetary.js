@@ -6,10 +6,14 @@ const Util = require('../util/util.js');
 
 class Interplanetary {
     constructor () {
-        Interplanetary.setup();
+        Interplanetary.staticSetup();
+
+        const p1 = new Player();
+        p1.number = 1;
+        this.players = [p1];
     }
 
-    static setup () {
+    static staticSetup () {
         for (let name in Interplanetary.LOCATIONS) {
             const body = Interplanetary.LOCATIONS[name];
 
@@ -23,22 +27,28 @@ class Interplanetary {
         }
     }
 
-    static run () {
+    gamestateStr () {
+        const locs = this.locationSummaries();
 
+        
+    }
+
+    static run () {
+        const game = new Interplanetary();
     }
 }
 
 Interplanetary.LOCATIONS = {
-    mercury: {
+    Mercury: {
         solDist: 1,
         gravity: 4,
     },
-    // 'mercuryOrbit' is how we represent the orbit of mercury.
-    venus: {
+    // 'MercuryOrbit' is how we represent the orbit of mercury.
+    Venus: {
         solDist: 2,
         gravity: 5,
     },
-    earth: {
+    Earth: {
         solDist: 3,
         gravity: 5,
         moons: {
@@ -47,7 +57,7 @@ Interplanetary.LOCATIONS = {
             },
         },
     },
-    mars: {
+    Mars: {
         solDist: 4,
         gravity: 2,
         moons: {
@@ -59,15 +69,15 @@ Interplanetary.LOCATIONS = {
             },
         },
     },
-    vesta: {
+    Vesta: {
         solDist: 5,
         gravity: 2,
     },
-    ceres: {
+    Ceres: {
         solDist: 5,
         gravity: 2,
     },
-    jupiter: {
+    Jupiter: {
         solDist: 6,
         gravity: 20,
         moons: {
@@ -85,7 +95,7 @@ Interplanetary.LOCATIONS = {
             },
         },
     },
-    saturn: {
+    Saturn: {
         solDist: 7,
         gravity: 12,
         moons: {
@@ -97,7 +107,7 @@ Interplanetary.LOCATIONS = {
             },
         },
     },
-    uranus: {
+    Uranus: {
         solDist: 8,
         gravity: 9,
         moons: {
@@ -109,7 +119,7 @@ Interplanetary.LOCATIONS = {
             }
         },
     },
-    neptune: {
+    Neptune: {
         solDist: 9,
         gravity: 9,
         moons: {
@@ -118,15 +128,15 @@ Interplanetary.LOCATIONS = {
             },
         },
     },
-    pluto: {
+    Pluto: {
         solDist: 10,
         gravity: 2,
     },
-    eris: {
+    Eris: {
         solDist: 11,
         gravity: 1,
     },
-    sedna: {
+    Sedna: {
         solDist: 30,
         gravity: 1,
     },
@@ -147,6 +157,7 @@ Interplanetary.PIECE = Util.makeEnum([
     'telescope',
     'station',
     'elevator',
+    'fire',
     'traitCard',
 ]);
 
@@ -174,11 +185,45 @@ class Player {
     }
 
     work () {
+        this.gainEarthIncome(this.hq);
 
+        for (let mission of this.missionCards) {
+            // LATER - a Fire prevents production.
+
+            if (mission.location === 'Earth') { continue; }
+
+            const stations = mission.stations();
+
+            if (mission.isOrbiting()) {
+                this.gainEarthIncome(stations);
+            }
+            else {
+                mission.fuel += this.incomeFromLocation(stations);
+            }
+        }
     }
 
-    buy (thing) {
+    gainEarthIncome (stationCount) {
+        this.launchpadFuel += this.incomeFromLocation(stationCount);
+    }
 
+    incomeFromLocation (stationCount) {
+        return Math.min(
+            stationCount,
+            this.techLevel
+        );
+    }
+
+    buy (name) {
+        const price = Interplanetary.SHOP[name];
+
+        if (this.launchpadFuel >= price) {
+            this.launchpadFuel -= price;
+            this.launchpad.push(name);
+        }
+        else {
+            Util.logError(`Cannot buy a ${name} when you only have ${this.launchpadFuel} fuel on Earth.`);
+        }
     }
 
     burn (action) {
@@ -188,24 +233,40 @@ class Player {
     look (action) {
 
     }
+}
 
+class Action {
+    // this.type = 'Burn'
+    // this.targetLocation = 'MarsOrbit'
+    // this.mission = <MissionCard>
 }
 
 class MissionCard {
     constructor () {
     // this.number = 1
-    // this.location = 'earth'
+    // this.location = 'Earth'
         this.pieces = [];
         this.fuel = 0;
     }
 
     stations () {
-        return this.pieces.filter(
+        const count = this.pieces.filter(
             piece => piece === Interplanetary.PIECE.Station
         ).length;
+
+        if (! (count >= 0)) {
+            throw new Error({
+                this,
+                count
+            });
+        }
+
+        return count;
     }
 
-
+    isOrbiting () {
+        return this.location?.endsWith('Orbit');
+    }
 }
 
 Interplanetary.run();
