@@ -23170,7 +23170,7 @@ module.exports = BionicleName;
 
 BionicleName.run();
 
-},{"../../util/util.js":18,"./textGen.js":15}],6:[function(require,module,exports){
+},{"../../util/util.js":19,"./textGen.js":16}],6:[function(require,module,exports){
 'use strict';
 
 // Outputs a prompt about the A-Z Agency fictional universe.
@@ -23261,7 +23261,7 @@ module.exports = DivisionPrompt;
 
 DivisionPrompt.run();
 
-},{"../../util/util.js":18,"./textGen.js":15}],7:[function(require,module,exports){
+},{"../../util/util.js":19,"./textGen.js":16}],7:[function(require,module,exports){
 'use strict';
 
 // Random card similar to the Dominion card game.
@@ -23561,7 +23561,7 @@ module.exports = DominionCard;
 
 DominionCard.run();
 
-},{"./textGen.js":15}],8:[function(require,module,exports){
+},{"./textGen.js":16}],8:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -24228,7 +24228,7 @@ module.exports = ScienceFantasy;
 
 // ScienceFantasy.run();
 
-},{"../../util/util.js":18,"./textGen.js":15}],9:[function(require,module,exports){
+},{"../../util/util.js":19,"./textGen.js":16}],9:[function(require,module,exports){
 'use strict';
 
 // Colors as RGB hexadecimal codes like #00FF00
@@ -24343,7 +24343,7 @@ module.exports = HexCode;
 
 // HexCode.run();
 
-},{"../../util/util.js":18}],10:[function(require,module,exports){
+},{"../../util/util.js":19}],10:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -24552,7 +24552,239 @@ module.exports = Humanistas;
 
 Humanistas.test();
 
-},{"../../util/util.js":18,"./textGen.js":15}],11:[function(require,module,exports){
+},{"../../util/util.js":19,"./textGen.js":16}],11:[function(require,module,exports){
+'use strict';
+
+const TextGen = require('./textGen.js');
+const Util = require('../../util/util.js');
+
+class ComplicityMassEffect extends TextGen {
+    // constructor () {
+    //     super();
+    // }
+
+    // Called by TextGen.outputHTML()
+    output () {
+        const character = new Character();
+
+        // Util.logDebug(character);
+
+        return character.toFullString();
+    }
+
+    static run () {
+        const gen = new ComplicityMassEffect();
+
+        const str = gen.output();
+
+        console.log();
+        console.log(str);
+    }
+}
+
+ComplicityMassEffect.SKILL = Util.makeEnum([
+    'Combat',
+    'Science',
+    'Social',
+    'Tech',
+]);
+
+class Character {
+    constructor (species, role) {
+        this.speciesCard = species || Card.randomSpecies();
+
+        this.roleCards = Util.array(role || Card.randomRole());
+    }
+
+    speciesName () {
+        return Util.capitalized(this.speciesCard.name);
+    }
+
+    cards () {
+        return [this.speciesCard].concat(this.roleCards);
+    }
+
+    skillObj () {
+        const output = {};
+
+        const skillObjs = this.cards().map(
+            c => c.skillObj()
+        );
+
+        for (let skill in ComplicityMassEffect.SKILL) {
+
+            for (let skillsFromCard of skillObjs) {
+
+                if (skillsFromCard[skill]) {
+
+                    if (output[skill]) {
+                        output[skill] += skillsFromCard[skill];
+                    }
+                    else {
+                        output[skill] = skillsFromCard[skill];
+                    }
+                }
+            }
+        }
+
+        return output;
+    }
+
+    // Rival format to skillObj()
+    skillArray () {
+        let array = this.speciesCard.skillArray();
+
+        for (let roleCard of this.roleCards) {
+            array = array.concat(
+                roleCard.skillArray()
+            );
+        }
+
+        return array.map(
+            sk => Util.capitalized(sk)
+        )
+        .sort();
+    }
+
+    skillStr () {
+        const array = this.skillArray();
+
+        if (array.length === 0) {
+            return ``;
+        }
+
+        return ` (skills: ${array.join(' ')})`;
+    }
+
+    toString () {
+        const roleNames = this.roleCards.map(
+            card => Util.capitalized(card.name)
+        ).join(' ');
+
+        return `${this.speciesName()} ${roleNames}`;
+    }
+
+    toFullString () {
+        return `${this.toString()}${this.skillStr()}`;
+    }
+}
+
+class Card {
+    constructor (template) {
+        Object.assign(this, template);
+    }
+
+    static random (constraints) {
+        const ALL_CARDS = [
+            { name: 'human',    type: 'species' },
+            { name: 'asari',    type: 'species', skills: 'combat' },
+            { name: 'turian',   type: 'species', skills: 'combat' },
+            { name: 'salarian', type: 'species', skills: 'tech' },
+            { name: 'krogan',   type: 'species', skills: 'combat combat' },
+            { name: 'quarian',  type: 'species', skills: 'tech' },
+            { name: 'batarian', type: 'species' },
+            { name: 'drell',    type: 'species' },
+            { name: 'volus',    type: 'species', skills: 'social' },
+            { name: 'synthetic', type: 'species', skills: 'tech' },
+            { name: 'hanar',    type: 'species' },
+            { name: 'elcor',    type: 'species', },
+            { name: 'vorcha',   type: 'species', },
+            { name: 'prothean', type: 'species', skills: 'science' },
+            // { name: 'angara',   type: 'species', },
+            // { name: 'kett',     type: 'species', },
+            // { name: 'yahg',     type: 'species', },
+            // { name: 'rachni',   type: 'species', skills: 'combat' },
+            // { name: 'collector', type: 'species', skills: 'science' },
+            // { name: 'keeper',   type: 'species', skills: 'tech' },
+            // { name: 'jardaan',  type: 'species', skills: 'tech' },
+
+            { name: 'soldier',      type: 'role', skills: 'combat combat' },
+            { name: 'scientist',    type: 'role', skills: 'science science' },
+            { name: 'boss',         type: 'role', skills: 'social social' },
+            { name: 'technician',   type: 'role', skills: 'tech tech' },
+
+            { name: 'vanguard',     type: 'role', skills: 'combat science' },
+            { name: 'spy',          type: 'role', skills: 'combat social' },
+            { name: 'sentinel',     type: 'role', skills: 'combat tech' },
+            { name: 'administrator', type: 'role', skills: 'science social' },
+            { name: 'engineer',     type: 'role', skills: 'science tech' },
+            { name: 'analyst',      type: 'role', skills: 'social tech' },
+        ];
+
+        const subset = ALL_CARDS.filter(
+            template => {
+                for (let key in (constraints || {}) ) {
+
+                    // Util.logDebug({
+                    //     key,
+                    //     constraintsKey: constraints[key],
+                    //     template,
+                    // });
+
+                    if (template[key] !== constraints[key]) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
+
+        // Util.logDebug({
+        //     constraints,
+        //     subset,
+        // });
+
+        return new Card(
+            Util.randomOf(subset)
+        );
+    }
+
+    static randomSpecies () {
+        return Card.random({
+            type: 'species',
+        });
+    }
+
+    static randomRole () {
+        return Card.random({
+            type: 'role',
+        });
+    }
+
+    skillObj () {
+        const obj = {};
+
+        if (! this.skills) { return obj; }
+
+        const words = this.skills.split(' ');
+
+        for (let w of words) {
+            const skill = Util.capitalized(w);
+
+            if (obj[skill]) {
+                obj[skill]++;
+            }
+            else {
+                obj[skill] = 1;
+            }
+        }
+
+        return obj;
+    }
+
+    skillArray () {
+        return this.skills ?
+            this.skills.split(' ') :
+            [];
+    }
+}
+
+module.exports = ComplicityMassEffect;
+
+ComplicityMassEffect.run();
+
+},{"../../util/util.js":19,"./textGen.js":16}],12:[function(require,module,exports){
 'use strict';
 
 // Misheard words
@@ -24593,7 +24825,7 @@ class Mispronounce extends TextGen {
 
 module.exports = Mispronounce;
 
-},{"../../util/util.js":18,"./textGen.js":15}],12:[function(require,module,exports){
+},{"../../util/util.js":19,"./textGen.js":16}],13:[function(require,module,exports){
 'use strict';
 
 // Etha is a nickname for Bethany.
@@ -24648,12 +24880,13 @@ class Nicknames extends TextGen {
 
 module.exports = Nicknames;
 
-},{"../../util/util.js":18,"./textGen.js":15}],13:[function(require,module,exports){
+},{"../../util/util.js":19,"./textGen.js":16}],14:[function(require,module,exports){
 'use strict';
 
 const Bionicle = require('./bionicle.js');
 const DominionCard = require('./dominionCard.js');
 const Humanistas = require('./humanistas.js');
+const MassEffect = require('./massEffect.js');
 const Mispronounce = require('./mispronounce.js');
 const Nicknames = require('./nicknames.js');
 const ScienceFantasy = require('./dracolich.js');
@@ -24668,6 +24901,7 @@ class Presenter {
             dominionCard: DominionCard,
             dracolich: ScienceFantasy,
             humanistas: Humanistas,
+            massEffect: MassEffect,
             mispronounce: Mispronounce,
             nicknames: Nicknames,
             wildbowTitles: Titles,
@@ -24701,7 +24935,7 @@ module.exports = Presenter;
 
 Presenter.run();
 
-},{"../../util/util.js":18,"./bionicle.js":5,"./dominionCard.js":7,"./dracolich.js":8,"./humanistas.js":10,"./mispronounce.js":11,"./nicknames.js":12,"./wildbowTitles.js":16,"./wizardingName.js":17}],14:[function(require,module,exports){
+},{"../../util/util.js":19,"./bionicle.js":5,"./dominionCard.js":7,"./dracolich.js":8,"./humanistas.js":10,"./massEffect.js":11,"./mispronounce.js":12,"./nicknames.js":13,"./wildbowTitles.js":17,"./wizardingName.js":18}],15:[function(require,module,exports){
 'use strict';
 
 // Randomly generate students from the Sunlight scifi series.
@@ -24906,7 +25140,7 @@ module.exports = Student;
 
 Student.run();
 
-},{"../../util/util.js":18,"./textGen.js":15}],15:[function(require,module,exports){
+},{"../../util/util.js":19,"./textGen.js":16}],16:[function(require,module,exports){
 'use strict';
 
 const Util = require('../../util/util.js');
@@ -24972,7 +25206,7 @@ module.exports = TextGen;
 // const gen = new BionicleNameGen();
 // const str = gen.output();
 
-},{"../../util/util.js":18}],16:[function(require,module,exports){
+},{"../../util/util.js":19}],17:[function(require,module,exports){
 'use strict';
 
 // Titles of projects of Wildbow or Leder Games
@@ -25073,7 +25307,7 @@ module.exports = Titles;
 
 Titles.run();
 
-},{"../../util/util.js":18,"./textGen.js":15,"fs":1}],17:[function(require,module,exports){
+},{"../../util/util.js":19,"./textGen.js":16,"fs":1}],18:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -25562,7 +25796,7 @@ module.exports = WizardingName;
 
 // WizardingName.test();
 
-},{"../../util/util.js":18,"./textGen.js":15}],18:[function(require,module,exports){
+},{"../../util/util.js":19,"./textGen.js":16}],19:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -25664,6 +25898,48 @@ class Util {
         return Util.exists(x) &&
             x !== [] &&
             x !== {};
+    }
+
+    // Logs information about unknown values.
+    static analyze (mysterious) {
+        Util.logDebug(
+            Util.analyzeHelper(mysterious)
+        );
+    }
+
+    static analyzeHelper (mysterious) {
+        const summary = { typeof: typeof mysterious };
+
+        if (Util.isPrimitive(mysterious)) {
+            summary.value = mysterious;
+            summary.analysis = `Stopped because this value is primitive.`;
+            return summary;
+        }
+
+        // BTW: This conditional is probably redundant after the conditional above.
+        if (! Util.exists(mysterious)) {
+            summary.analysis = `Stopped because this value does not exist.`;
+            return summary;
+        }
+
+        summary.length = mysterious?.length;
+
+        if (summary.length > 99) {
+            summary.analysis = `Stopped because .length is very long. Recursing into [0] only.`;
+            summary.fieldZero = Util.analyzeHelper(mysterious[0]);
+            return summary;
+        }
+
+        summary.propsArray = Object.getOwnPropertyNames(mysterious);
+
+        summary.propsOfProps = {};
+
+        summary.propsArray.map(
+            // prop => summary.propsOfProps[prop] = Object.getOwnPropertyNames(mysterious[prop])
+            prop => summary.propsOfProps[prop] = Util.analyzeHelper(mysterious[prop])
+        );
+
+        return summary;
     }
 
     static default (input, defaultValue) {
@@ -26373,6 +26649,22 @@ class Util {
             (x.length === 0 || x[0] !== undefined);
     }
 
+    static isPrimitive (x) {
+        if (x === undefined || x === null) {
+            return true;
+        }
+
+        return [
+            'boolean',
+            'symbol',
+            'bigint',
+            'number',
+            'string',
+        ].includes(
+            typeof x
+        );
+    }
+
     static array (x) {
         return Util.isArray(x) ? x : [x];
     }
@@ -26707,9 +26999,9 @@ class Util {
         );
     }
 
-    static makeEnum (vals) {
+    static makeEnum (array) {
         const dict = {};
-        for (let val of vals) {
+        for (let val of array) {
             dict[Util.capitalized(val)] = Util.uncapitalized(val);
         }
 
@@ -26818,4 +27110,4 @@ module.exports = Util;
 
 // Util.testAll();
 
-},{"comma-number":2,"lodash":3,"moment":4}]},{},[5,6,7,8,9,10,11,12,13,14,15,16,17]);
+},{"comma-number":2,"lodash":3,"moment":4}]},{},[5,6,7,8,9,10,11,12,13,14,15,16,17,18]);

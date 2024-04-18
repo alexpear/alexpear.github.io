@@ -40029,6 +40029,48 @@ class Util {
             x !== {};
     }
 
+    // Logs information about unknown values.
+    static analyze (mysterious) {
+        Util.logDebug(
+            Util.analyzeHelper(mysterious)
+        );
+    }
+
+    static analyzeHelper (mysterious) {
+        const summary = { typeof: typeof mysterious };
+
+        if (Util.isPrimitive(mysterious)) {
+            summary.value = mysterious;
+            summary.analysis = `Stopped because this value is primitive.`;
+            return summary;
+        }
+
+        // BTW: This conditional is probably redundant after the conditional above.
+        if (! Util.exists(mysterious)) {
+            summary.analysis = `Stopped because this value does not exist.`;
+            return summary;
+        }
+
+        summary.length = mysterious?.length;
+
+        if (summary.length > 99) {
+            summary.analysis = `Stopped because .length is very long. Recursing into [0] only.`;
+            summary.fieldZero = Util.analyzeHelper(mysterious[0]);
+            return summary;
+        }
+
+        summary.propsArray = Object.getOwnPropertyNames(mysterious);
+
+        summary.propsOfProps = {};
+
+        summary.propsArray.map(
+            // prop => summary.propsOfProps[prop] = Object.getOwnPropertyNames(mysterious[prop])
+            prop => summary.propsOfProps[prop] = Util.analyzeHelper(mysterious[prop])
+        );
+
+        return summary;
+    }
+
     static default (input, defaultValue) {
         if (input === undefined) {
             return defaultValue;
@@ -40736,6 +40778,22 @@ class Util {
             (x.length === 0 || x[0] !== undefined);
     }
 
+    static isPrimitive (x) {
+        if (x === undefined || x === null) {
+            return true;
+        }
+
+        return [
+            'boolean',
+            'symbol',
+            'bigint',
+            'number',
+            'string',
+        ].includes(
+            typeof x
+        );
+    }
+
     static array (x) {
         return Util.isArray(x) ? x : [x];
     }
@@ -41070,9 +41128,9 @@ class Util {
         );
     }
 
-    static makeEnum (vals) {
+    static makeEnum (array) {
         const dict = {};
-        for (let val of vals) {
+        for (let val of array) {
             dict[Util.capitalized(val)] = Util.uncapitalized(val);
         }
 
