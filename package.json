@@ -33,7 +33,7 @@
     "webpack-cli": "^4.5.0"
   },
   "scripts": {
-    "start": "npm i && npm run buildAll && npm run test",
+    "start": "npm i && npm run buildAll",
     "firstTimeSetup": "npm install && npm install -g browserify && npm install -g http-server && npm start",
     "refresh": "npm run buildAll && npm run server",
     "buildAll": "npm run buildTreeBrowser && npm run buildFishTank && npm run buildGroupGrid && npm run buildTitleGen && npm run buildTextGen && npm run buildVillainverse",
