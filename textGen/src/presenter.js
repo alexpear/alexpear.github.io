@@ -3,6 +3,7 @@
 const Bionicle = require('./bionicle.js');
 const DominionCard = require('./dominionCard.js');
 const Humanistas = require('./humanistas.js');
+const MassEffect = require('./massEffect.js');
 const Mispronounce = require('./mispronounce.js');
 const Nicknames = require('./nicknames.js');
 const ScienceFantasy = require('./dracolich.js');
@@ -17,6 +18,7 @@ class Presenter {
             dominionCard: DominionCard,
             dracolich: ScienceFantasy,
             humanistas: Humanistas,
+            massEffect: MassEffect,
             mispronounce: Mispronounce,
             nicknames: Nicknames,
             wildbowTitles: Titles,

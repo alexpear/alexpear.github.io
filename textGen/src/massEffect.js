@@ -1,16 +1,29 @@
 'use strict';
 
-const Util = require('../util/util.js');
+const TextGen = require('./textGen.js');
+const Util = require('../../util/util.js');
 
-class ComplicityMassEffect {
+class ComplicityMassEffect extends TextGen {
+    // constructor () {
+    //     super();
+    // }
 
-    static run () {
+    // Called by TextGen.outputHTML()
+    output () {
         const character = new Character();
 
         // Util.logDebug(character);
 
+        return character.toFullString();
+    }
+
+    static run () {
+        const gen = new ComplicityMassEffect();
+
+        const str = gen.output();
+
         console.log();
-        console.log(character.toFullString());
+        console.log(str);
     }
 }
 
