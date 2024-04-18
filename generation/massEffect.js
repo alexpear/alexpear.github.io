@@ -85,7 +85,7 @@ class Character {
             return ``;
         }
 
-        return ` (${array.join(' ')})`;
+        return ` (skills: ${array.join(' ')})`;
     }
 
     toString () {
