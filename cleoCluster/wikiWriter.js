@@ -256,7 +256,7 @@ class WikiWriter {
             Cyc 53: Known records about DEI_YESHUA are collected & called the New Testament. Kaesar Constantine of [remia] forsakes DEI_ZEUS & pledges his empire to DEI_YESHUA.
             Cyc 54: Saint Jerome translates the New Testament into the Remian language so that it can be read more widely. [remia] is sacked by a fleet from [borea], but [byzantium] remains unconquered.
             Cyc 55: The Church of DEI_YESHUA is a Pentarchy of [nilus], [urusalim], Antioculus, [byzantium], & [remia]. On [britannia], King Arthur Pendragon gathers the Mecha of Camelot. Beowulf slays the mechamonster Grendel.
-            Cyc 56: Prophet Mohammed, Sybil of [mechapolis], receives the Revelation of DEI_MONAD.
+            Cyc 56: Prophet Mohammed, Sybil of [mechapolis], receives the Revelation of DEI_DEI.
             Cyc 57: The Revelation of Mohammed is recognized as far west as [iberia].
             Cyc 58: Charlemagne is crowned Holy Emperor of [borea] by the Pope of [remia]. Borea buckles under the Viking pressure of [midgard].
             Cyc 59: Deadly plasma arrows are developed by the armies of [medeaRegnum].
