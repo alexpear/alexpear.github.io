@@ -229,6 +229,7 @@ class WikiWriter {
     <div id="main">
       <label id="title">${page.title}</label>
       <p id="desc">${this.pageDesc(page)}</p>
+      <p id="missing">// ERRATUM • DATA INCOMPLETA EST //</p>
     </div>
   </body>
 </html>
