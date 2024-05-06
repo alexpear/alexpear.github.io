@@ -314,8 +314,8 @@ class WikiWriter {
 
     static run () {
         const wiki = new WikiWriter();
-        // wiki.setupPages();
-        wiki.convertShorthandCache();
+        wiki.setupPages();
+        // wiki.convertShorthandCache();
     }
 }
 
