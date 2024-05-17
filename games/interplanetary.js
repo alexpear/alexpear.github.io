@@ -13,13 +13,18 @@ class Interplanetary {
         this.players = [p1];
     }
 
+    // Add properties to LOCATIONS obj.
     static staticSetup () {
         for (let name in Interplanetary.LOCATIONS) {
             const body = Interplanetary.LOCATIONS[name];
 
+            body.name = name;
+
             if (body.moons) {
                 for (let moonName in body.moons) {
                     const moon = body.moons[moonName];
+
+                    moon.name = moonName;
 
                     moon.solDist = body.solDist;
                 }
@@ -33,6 +38,18 @@ class Interplanetary {
         
     }
 
+    locationSummaries () {
+        // for (let name in Interplanetary.LOCATIONS) {
+        //     const body = Interplanetary.LOCATIONS[name];
+        // }
+
+        for (let player of this.players) {
+            for (let mission of player.missionCards) {
+
+            }
+        }
+    }
+
     static run () {
         const game = new Interplanetary();
     }
@@ -43,7 +60,7 @@ Interplanetary.LOCATIONS = {
         solDist: 1,
         gravity: 4,
     },
-    // 'MercuryOrbit' is how we represent the orbit of mercury.
+    // 'MercuryOrbit' is how we construct the name of the orbit zone of Mercury.
     Venus: {
         solDist: 2,
         gravity: 5,
@@ -52,7 +69,7 @@ Interplanetary.LOCATIONS = {
         solDist: 3,
         gravity: 5,
         moons: {
-            luna: {
+            Luna: {
                 gravity: 1,
             },
         },
@@ -61,10 +78,10 @@ Interplanetary.LOCATIONS = {
         solDist: 4,
         gravity: 2,
         moons: {
-            phobos: {
+            Phobos: {
                 gravity: 0,
             },
-            deimos: {
+            Deimos: {
                 gravity: 0,
             },
         },
@@ -81,16 +98,16 @@ Interplanetary.LOCATIONS = {
         solDist: 6,
         gravity: 20,
         moons: {
-            io: {
+            Io: {
                 gravity: 3,
             },
-            europa: {
+            Europa: {
                 gravity: 3,
             },
-            ganymede: {
+            Ganymede: {
                 gravity: 3,
             },
-            callisto: {
+            Callisto: {
                 gravity: 3,
             },
         },
@@ -99,10 +116,10 @@ Interplanetary.LOCATIONS = {
         solDist: 7,
         gravity: 12,
         moons: {
-            rhea: {
+            Rhea: {
                 gravity: 2,
             },
-            titan: {
+            Titan: {
                 gravity: 4,
             },
         },
@@ -111,10 +128,10 @@ Interplanetary.LOCATIONS = {
         solDist: 8,
         gravity: 9,
         moons: {
-            titania: {
+            Titania: {
                 gravity: 1,
             },
-            oberon: {
+            Oberon: {
                 gravity: 1,
             }
         },
@@ -123,7 +140,7 @@ Interplanetary.LOCATIONS = {
         solDist: 9,
         gravity: 9,
         moons: {
-            triton: {
+            Triton: {
                 gravity: 1,
             },
         },
@@ -136,10 +153,16 @@ Interplanetary.LOCATIONS = {
         solDist: 11,
         gravity: 1,
     },
+    // ...
     Sedna: {
         solDist: 30,
         gravity: 1,
     },
+
+    Luna: {
+        moonOf: Earth,
+        // TODO
+    }
 };
 
 Interplanetary.ACTION = Util.makeEnum([
@@ -257,7 +280,7 @@ class MissionCard {
         if (! (count >= 0)) {
             throw new Error({
                 this,
-                count
+                count,
             });
         }
 
@@ -266,6 +289,18 @@ class MissionCard {
 
     isOrbiting () {
         return this.location?.endsWith('Orbit');
+    }
+
+    solDist () {
+        if (! this.location) {
+            throw new Error(`MissionCard has no .location prop.`);
+        }
+
+        const planetoidName = this.isOrbiting() ?
+            this.location.slice(0, -5) :
+            this.location;
+
+        return Interplanetary.LOCATIONS[planetoidName].solDist;
     }
 }
 
