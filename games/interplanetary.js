@@ -37,39 +37,177 @@ class Interplanetary {
     }
 
     gamestateStr () {
-        const locs = this.locationSummaries();
+        const summaries = this.locationSummaries();
 
-        // LATER make each summary more pretty.
+        summaries.sort(
+            (a, b) => {
+                const dists = [a, b].map(
+                    summ => Interplanetary.LOCATIONS[ summ.locationName ].solDist
+                );
 
-        return locs.join('\n');
+                return dists[0] - dists[1];
+            }
+        );
+
+        return summaries.map(
+            summ => this.prettyLocationSummary(summ)
+        ).join('\n\n');
     }
 
     locationSummaries () {
-        // for (let name in Interplanetary.LOCATIONS) {
-        //     const body = Interplanetary.LOCATIONS[name];
-        // }
-
         const summaries = [];
 
         for (let player of this.players) {
+
+            // Also add what the player has on Earth.
+            const earthPresence = {
+                playerNumber: player.number,
+                fuel: player.launchpadFuel,
+                pieces: player.launchpad,
+                hq: player.hq,
+                techLevel: player.techLevel,
+            };
+
+            const existingEarthSummary = summaries.find(s => s.locationName === 'Earth');
+
+            if (existingEarthSummary) {
+                existingEarthSummary.presences.push(earthPresence);
+            }
+            else {
+                summaries.push({
+                    locationName: 'Earth',
+                    presences: [earthPresence],
+                });
+            }
+
+            // Now add all missions of this player.
             for (let mission of player.missionCards) {
                 const existingSummary = summaries.find(s => s.locationName === mission.locationName);
 
                 if (existingSummary) {
+                    const existingPresence = existingSummary.presences.find(
+                        pres => pres.playerNumber === player.number
+                    );
 
+                    if (existingPresence) {
+                        existingPresence.fuel += mission.fuel;
+                        existingPresence.pieces = existingPresence.pieces.concat(mission.pieces);
+                    }
+                    else {
+                        existingSummary.presences.push({
+                            playerNumber: player.number,
+                            fuel: mission.fuel,
+                            pieces: mission.pieces,
+                        });
+                    }
                 }
                 else {
                     summaries.push({
                         locationName: mission.locationName,
-
+                        presences: [{
+                            playerNumber: player.number,
+                            fuel: mission.fuel,
+                            pieces: mission.pieces,
+                        }],
                     });
                 }
             }
         }
+
+        return summaries;
+    }
+
+    prettyLocationSummary (summaryObj) {
+        // Util.logDebug(summaryObj);
+
+        const presenceStr = summaryObj.presences.map(
+            pres => this.prettyPresence(pres)
+        ).join('\n  ');
+
+        return `${summaryObj.locationName}\n  ${presenceStr}`;
+    }
+
+    prettyPresence (pres) {
+        const earthInfo = pres.hq ?
+            ` (HQ ${pres.hq}, Tech Level ${pres.techLevel})` :
+            '';
+
+        return `Player ${pres.playerNumber}: ${pres.fuel} fuel, ${ pres.pieces.join(', ') }${earthInfo}`
+    }
+
+    static randomLocation () {
+        return Interplanetary.LOCATIONS[
+            Util.randomOf(
+                Object.keys(
+                    Interplanetary.LOCATIONS
+                )
+            )
+        ];
+    }
+
+    // This is a test func.
+    addRandomMissions () {
+        if (this.players.length <= 1) {
+            this.players = [
+                new Player(1),
+                new Player(2),
+            ];
+        }
+
+        for (let m = 0; m < 5; m++) {
+            for (let player of this.players) {
+                const locationObj = Interplanetary.randomLocation();
+
+                const mission = player.addMission(locationObj.name);
+
+                mission.fuel = Util.randomUpTo(20);
+                mission.pieces = [Interplanetary.randomPiece()];
+
+                // Util.logDebug({
+                //     note: `Just added a mission of player ${player.number}`,
+                //     mission,
+                // });
+            }
+        }
+    }
+
+    // This is a test func.
+    static randomPiece () {
+        return Util.randomOf([
+            Interplanetary.PIECE.Robot,
+            Interplanetary.PIECE.Astronaut,
+            Interplanetary.PIECE.Telescope,
+            Interplanetary.PIECE.Station,
+        ]);
+    }
+
+    printGamestate() {
+        const prettySummary = this.gamestateStr();
+
+        console.log();
+        console.log(prettySummary);
+        console.log();
+    }
+
+    static test () {
+        const game = new Interplanetary();
+        game.addRandomMissions();
+
+        // Util.logDebug({
+        //     playerNumbers: game.players.map(p => p.number).join(', '),
+        // });
+
+        game.printGamestate();
+
+        Util.log(`Player 1 does a Work action.`);
+        game.players[0].work();
+
+        game.printGamestate();
     }
 
     static run () {
         const game = new Interplanetary();
+
     }
 }
 
@@ -216,7 +354,8 @@ Interplanetary.SHOP = {
 };
 
 class Player {
-    constructor () {
+    constructor (playerNumber) {
+        this.number = playerNumber;
         this.launchpad = []; // array of pieces. Excludes fuel.
         this.launchpadFuel = 0;
         this.hq = 1;
@@ -226,6 +365,21 @@ class Player {
 
     planAction () {
 
+    }
+
+    addMission (locationName) {
+        const mission = new MissionCard(locationName);
+
+        // .number = 1 higher than this player's previous mission number.
+        mission.number = this.missionCards.length === 0 ?
+            1 :
+            Math.max(...
+                (this.missionCards.map(m => m.number || 1))
+            ) + 1;
+
+        this.missionCards.push(mission);
+
+        return mission;
     }
 
     work () {
@@ -286,11 +440,11 @@ class Action {
 }
 
 class MissionCard {
-    constructor () {
-    // this.number = 1
-    // this.locationName = 'Earth'
-        this.pieces = [];
-        this.fuel = 0;
+    constructor (locationName, pieces, fuel) {
+        // this.number = 1
+        this.locationName = locationName || 'Earth';
+        this.pieces = pieces || [];
+        this.fuel = fuel || 0;
     }
 
     stations () {
@@ -300,7 +454,7 @@ class MissionCard {
 
         if (! (count >= 0)) {
             throw new Error({
-                this,
+                this: this,
                 count,
             });
         }
@@ -327,8 +481,9 @@ class MissionCard {
             throw new Error(`MissionCard has no .locationName prop.`);
         }
 
-        return this.closestPlanetoid().solDist;
+        return this.solDist;
     }
 }
 
 Interplanetary.run();
+Interplanetary.test();
