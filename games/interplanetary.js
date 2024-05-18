@@ -508,7 +508,7 @@ class Player {
             this.launchpad.push(name);
         }
         else {
-            Util.logError(`Cannot buy a ${name} when you only have ${this.launchpadFuel} fuel on Earth. It costs ${price}`);
+            throw new Error(`Cannot buy a ${name} when you only have ${this.launchpadFuel} fuel on Earth. It costs ${price}`);
         }
     }
 
