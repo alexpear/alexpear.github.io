@@ -171,7 +171,19 @@ class Interplanetary {
         }
     }
 
-    // This is a test func.
+    static randomBuy (budget) {
+        if (budget <= 0) { return; }
+
+        let piece = Interplanetary.randomPiece();
+
+        while (Interplanetary.SHOP[piece] > budget) {
+            piece = Interplanetary.randomPiece();
+            // Note - if a price of 1 ceases to be possible, this will need infinite loop protection.
+        }
+
+        return piece;
+    }
+
     static randomPiece () {
         return Util.randomOf([
             Interplanetary.PIECE.Robot,
@@ -179,6 +191,18 @@ class Interplanetary {
             Interplanetary.PIECE.Telescope,
             Interplanetary.PIECE.Station,
         ]);
+    }
+
+    loop () {
+        for (let t = 0; t < 99; t++) {
+            Util.log({ t });
+
+            for (let player of this.players) {
+                this.printGamestate();
+
+                player.doAction();
+            }
+        }
     }
 
     printGamestate() {
@@ -193,16 +217,7 @@ class Interplanetary {
         const game = new Interplanetary();
         game.addRandomMissions();
 
-        // Util.logDebug({
-        //     playerNumbers: game.players.map(p => p.number).join(', '),
-        // });
-
-        game.printGamestate();
-
-        Util.log(`Player 1 does a Work action.`);
-        game.players[0].work();
-
-        game.printGamestate();
+        game.loop();
     }
 
     static run () {
@@ -364,7 +379,46 @@ class Player {
     }
 
     planAction () {
+        const actions = [Interplanetary.ACTION.Work];
 
+        Util.logDebug({
+            launchpadFuel: this.launchpadFuel,
+            robotCost: Interplanetary.SHOP.Robot,
+            context: 'planAction()',
+        });
+
+        if (this.launchpadFuel >= Interplanetary.SHOP.Robot) {
+            actions.push(Interplanetary.ACTION.Buy);
+        }
+
+        // LATER Burn
+
+        // LATER perhaps output Action object that specifies exactly what they will do.
+        return Util.randomOf(actions);
+    }
+
+    doAction () {
+        const actionType = this.planAction();
+
+        Util.log(`Player ${this.number} does a ${actionType} action.`);
+
+        if (actionType === Interplanetary.ACTION.Work) {
+            this.work();
+        }
+        else if (actionType === Interplanetary.ACTION.Buy) {
+            this.buy(Interplanetary.randomPiece());
+        }
+        else if (actionType === Interplanetary.ACTION.Burn) {
+            // LATER implement
+            throw new Error({actionType});
+        }
+        else if (actionType === Interplanetary.ACTION.Look) {
+            // LATER implement
+            throw new Error({actionType});
+        }
+        else {
+            throw new Error({actionType});
+        }
     }
 
     addMission (locationName) {
@@ -420,16 +474,16 @@ class Player {
             this.launchpad.push(name);
         }
         else {
-            Util.logError(`Cannot buy a ${name} when you only have ${this.launchpadFuel} fuel on Earth.`);
+            Util.logError(`Cannot buy a ${name} when you only have ${this.launchpadFuel} fuel on Earth. It costs ${price}`);
         }
     }
 
     burn (action) {
-
+        // TODO
     }
 
     look (action) {
-
+        // LATER
     }
 }
 
