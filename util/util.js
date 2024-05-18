@@ -1200,10 +1200,14 @@ class Util {
         );
     }
 
-    static makeEnum (array) {
+    static makeEnum (array, allLower = false) {
         const dict = {};
         for (let val of array) {
-            dict[Util.capitalized(val)] = Util.uncapitalized(val);
+            const key = allLower ?
+                Util.uncapitalized(val) :
+                Util.capitalized(val);
+
+            dict[key] = Util.uncapitalized(val);
         }
 
         return dict;

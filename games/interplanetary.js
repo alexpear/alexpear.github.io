@@ -181,26 +181,35 @@ class Interplanetary {
             // Note - if a price of 1 ceases to be possible, this will need infinite loop protection.
         }
 
+        // Util.logDebug({
+        //     context: 'randomBuy',
+        //     piece,
+        //     budget,
+        //     price: Interplanetary.SHOP[piece],
+        // });
+
         return piece;
     }
 
     static randomPiece () {
         return Util.randomOf([
-            Interplanetary.PIECE.Robot,
-            Interplanetary.PIECE.Astronaut,
-            Interplanetary.PIECE.Telescope,
-            Interplanetary.PIECE.Station,
+            Interplanetary.PIECE.robot,
+            Interplanetary.PIECE.astronaut,
+            Interplanetary.PIECE.telescope,
+            Interplanetary.PIECE.station,
         ]);
     }
 
     loop () {
+        this.printGamestate();
+
         for (let t = 0; t < 99; t++) {
             Util.log({ t });
 
             for (let player of this.players) {
-                this.printGamestate();
-
                 player.doAction();
+
+                this.printGamestate();
             }
         }
     }
@@ -344,7 +353,8 @@ Interplanetary.ACTION = Util.makeEnum([
     'buy',
     'burn',
     'look'
-]);
+],
+true);
 
 Interplanetary.PIECE = Util.makeEnum([
     'fuel',
@@ -356,16 +366,17 @@ Interplanetary.PIECE = Util.makeEnum([
     'elevator',
     'fire',
     'traitCard',
-]);
+],
+true);
 
 Interplanetary.SHOP = {
-    Robot: 1,
-    Astronaut: 2,
-    Telescope: 2,
-    Station: 4,
-    Elevator: 10,
-    Tech: '?',
-    Card: '?',
+    robot: 1,
+    astronaut: 2,
+    telescope: 2,
+    station: 4,
+    elevator: 10,
+    tech: '?',
+    card: '?',
 };
 
 class Player {
@@ -379,16 +390,16 @@ class Player {
     }
 
     planAction () {
-        const actions = [Interplanetary.ACTION.Work];
+        const actions = [Interplanetary.ACTION.work];
 
-        Util.logDebug({
-            launchpadFuel: this.launchpadFuel,
-            robotCost: Interplanetary.SHOP.Robot,
-            context: 'planAction()',
-        });
+        // Util.logDebug({
+        //     launchpadFuel: this.launchpadFuel,
+        //     robotCost: Interplanetary.SHOP.robot,
+        //     context: 'planAction()',
+        // });
 
-        if (this.launchpadFuel >= Interplanetary.SHOP.Robot) {
-            actions.push(Interplanetary.ACTION.Buy);
+        if (this.launchpadFuel >= Interplanetary.SHOP.robot) {
+            actions.push(Interplanetary.ACTION.buy);
         }
 
         // LATER Burn
@@ -402,17 +413,18 @@ class Player {
 
         Util.log(`Player ${this.number} does a ${actionType} action.`);
 
-        if (actionType === Interplanetary.ACTION.Work) {
+        if (actionType === Interplanetary.ACTION.work) {
             this.work();
         }
-        else if (actionType === Interplanetary.ACTION.Buy) {
-            this.buy(Interplanetary.randomPiece());
+        else if (actionType === Interplanetary.ACTION.buy) {
+            // TODO bug - should be iteratively random
+            this.buy(Interplanetary.randomBuy(this.launchpadFuel));
         }
-        else if (actionType === Interplanetary.ACTION.Burn) {
+        else if (actionType === Interplanetary.ACTION.burn) {
             // LATER implement
             throw new Error({actionType});
         }
-        else if (actionType === Interplanetary.ACTION.Look) {
+        else if (actionType === Interplanetary.ACTION.look) {
             // LATER implement
             throw new Error({actionType});
         }
@@ -503,7 +515,7 @@ class MissionCard {
 
     stations () {
         const count = this.pieces.filter(
-            piece => piece === Interplanetary.PIECE.Station
+            piece => piece === Interplanetary.PIECE.station
         ).length;
 
         if (! (count >= 0)) {
