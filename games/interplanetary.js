@@ -439,7 +439,6 @@ class Player {
             this.work();
         }
         else if (actionType === Interplanetary.ACTION.buy) {
-            // TODO bug - should be iteratively random
             this.buy(Interplanetary.randomBuy(this.launchpadFuel));
         }
         else if (actionType === Interplanetary.ACTION.burn) {
