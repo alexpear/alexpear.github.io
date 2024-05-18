@@ -63,7 +63,7 @@ class Interplanetary {
             const earthPresence = {
                 playerNumber: player.number,
                 fuel: player.launchpadFuel,
-                pieces: player.launchpad,
+                pieces: Interplanetary.piecesStr(player.launchpad),
                 hq: player.hq,
                 techLevel: player.techLevel,
             };
@@ -97,7 +97,7 @@ class Interplanetary {
                         existingSummary.presences.push({
                             playerNumber: player.number,
                             fuel: mission.fuel,
-                            pieces: mission.pieces,
+                            pieces: Interplanetary.piecesStr(mission.pieces),
                         });
                     }
                 }
@@ -107,7 +107,7 @@ class Interplanetary {
                         presences: [{
                             playerNumber: player.number,
                             fuel: mission.fuel,
-                            pieces: mission.pieces,
+                            pieces: Interplanetary.piecesStr(mission.pieces),
                         }],
                     });
                 }
@@ -132,7 +132,29 @@ class Interplanetary {
             ` (HQ ${pres.hq}, Tech Level ${pres.techLevel})` :
             '';
 
-        return `Player ${pres.playerNumber}: ${pres.fuel} fuel, ${ pres.pieces.join(', ') }${earthInfo}`
+        return `Player ${pres.playerNumber}: ${pres.fuel} fuel, ${ pres.pieces }${earthInfo}`
+    }
+
+    static piecesStr (array) {
+        const obj = {};
+
+        for (let p of array) {
+            if (obj[p]) {
+                obj[p] += 1;
+            }
+            else {
+                obj[p] = 1;
+            }
+        }
+
+        const strings = [];
+
+        for (let k in obj) {
+            strings.push(`${k} x${obj[k]}`);
+        }
+
+        return strings.sort()
+            .join(', ');
     }
 
     static randomLocation () {
