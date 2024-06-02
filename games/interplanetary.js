@@ -510,21 +510,43 @@ class Player {
     }
 
     planAction () {
-        const actions = [Interplanetary.ACTION.work];
+        const actions = [new Action({
+            type: Interplanetary.ACTION.work
+        })];
 
         // Util.logDebug({
+            // actions,
         //     launchpadFuel: this.launchpadFuel,
         //     robotCost: Interplanetary.SHOP.robot,
         //     context: 'planAction()',
         // });
 
         if (this.launchpadFuel >= Interplanetary.SHOP.robot) {
-            actions.push(Interplanetary.ACTION.buy);
+            actions.push(new Action({
+                type: Interplanetary.ACTION.buy
+            }));
         }
 
-        // LATER Burn
+        // LATER could make burns from Earth more common.
+        const mission = Util.randomOf(this.missionCards);
+        let destination = Interplanetary.randomLocation().name;
 
-        // LATER perhaps output Action object that specifies exactly what they will do.
+        while (destination === mission.locationName) {
+            destination = Interplanetary.randomLocation().name;
+        }
+
+        const costs = Interplanetary.routeCosts(mission.locationName, destination);
+
+        if (costs.fuel * mission.pieces.length <= mission.fuel) {
+            actions.push(new Action({
+                type: Interplanetary.ACTION.burn,
+                mission,
+                targetLocation: destination,
+            }));
+        }
+
+        // LATER Look.
+
         return Util.randomOf(actions);
     }
 
