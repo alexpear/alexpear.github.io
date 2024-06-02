@@ -551,26 +551,49 @@ class Player {
     }
 
     doAction () {
-        const actionType = this.planAction();
+        const actionObj = this.planAction();
 
-        Util.log(`Player ${this.number} does a ${actionType} action.`);
+        Util.log(`Player ${this.number} does a ${actionObj.type} action.`);
 
-        if (actionType === Interplanetary.ACTION.work) {
+        if (actionObj.type === Interplanetary.ACTION.work) {
             this.work();
         }
-        else if (actionType === Interplanetary.ACTION.buy) {
-            this.buy(Interplanetary.randomBuy(this.launchpadFuel));
+
+        else if (actionObj.type === Interplanetary.ACTION.buy) {
+            this.buy(
+                actionObj.pieceType || Interplanetary.randomBuy(this.launchpadFuel)
+            );
         }
-        else if (actionType === Interplanetary.ACTION.burn) {
+
+        else if (actionObj.type === Interplanetary.ACTION.burn) {
+            // TODO move all this to Player.burn()
+            const mission = actionObj.mission;
+
+            const routeCost = Interplanetary.routeCosts(
+                mission.locationName,
+                actionObj.targetLocation
+            ).fuel;
+
+            const fuelCost = mission.pieces.length * routeCost;
+
+            if (mission.fuel < fuelCost) {
+                Util.error(actionObj);
+            }
+
+            // TODO implement Burn roll, Learning from Explosions, etc.
+            Util.log(`Burn from ${mission.locationName} to ${actionObj.targetLocation} (route cost: ${routeCost} fuel x weight: ${mission.pieces.length} = ${routeCost * mission.pieces.length}). ${mission.fuel - fuelCost} fuel left.`);
+
+            mission.locationName = actionObj.targetLocation;
+            mission.fuel -= fuelCost;
+        }
+
+        else if (actionObj.type === Interplanetary.ACTION.look) {
             // LATER implement
-            throw new Error({actionType});
+            throw new Error(actionObj.type);
         }
-        else if (actionType === Interplanetary.ACTION.look) {
-            // LATER implement
-            throw new Error({actionType});
-        }
+
         else {
-            throw new Error({actionType});
+            throw new Error(actionObj.type);
         }
     }
 
@@ -632,6 +655,9 @@ class Player {
     }
 
     burn (action) {
+        // const route = Interplanetary.locsAlongRoute(action.mission.locationName, action.targetLocation);
+        // const costs = Interplanetary.routeCosts(route);
+
         // TODO
     }
 
