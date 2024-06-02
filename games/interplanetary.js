@@ -339,15 +339,18 @@ Interplanetary.LOCATIONS = {
     Venus: {
         solDist: 2,
         gravity: 5,
+        atmosphere: true,
     },
     Earth: {
         solDist: 3,
         gravity: 5,
+        atmosphere: true,
         moons: ['Luna'],
     },
     Mars: {
         solDist: 4,
         gravity: 2,
+        atmosphere: true,
         moons: ['Deimos', 'Phobos'],
     },
     Vesta: {
@@ -361,21 +364,25 @@ Interplanetary.LOCATIONS = {
     Jupiter: {
         solDist: 6,
         gravity: 20,
+        atmosphere: true,
         moons: ['Io', 'Europa', 'Ganymede', 'Callisto'],
     },
     Saturn: {
         solDist: 7,
         gravity: 12,
+        atmosphere: true,
         moons: ['Rhea', 'Titan'],
     },
     Uranus: {
         solDist: 8,
         gravity: 9,
+        atmosphere: true,
         moons: ['Titania', 'Oberon'],
     },
     Neptune: {
         solDist: 9,
         gravity: 9,
+        atmosphere: true,
         moons: ['Triton'],
     },
     Pluto: {
@@ -388,7 +395,7 @@ Interplanetary.LOCATIONS = {
     },
     // ...
     Sedna: {
-        solDist: 30,
+        solDist: 12,
         gravity: 1,
     },
 
@@ -408,6 +415,7 @@ Interplanetary.LOCATIONS = {
     Io: {
         moonOf: 'Jupiter',
         gravity: 3,
+        // TODO add more .atmospheres
     },
     Europa: {
         moonOf: 'Jupiter',
@@ -428,6 +436,7 @@ Interplanetary.LOCATIONS = {
     Titan: {
         moonOf: 'Saturn',
         gravity: 4,
+        atmosphere: true,
     },
     Titania: {
         moonOf: 'Uranus',
@@ -442,6 +451,22 @@ Interplanetary.LOCATIONS = {
         gravity: 1,
     },
 };
+
+Interplanetary.ZONES_BY_SOLDIST = [
+    'Sol',
+    'Mercury',
+    'Venus',
+    'Earth',
+    'Mars',
+    'Ceres',
+    'Jupiter',
+    'Saturn',
+    'Uranus',
+    'Neptune',
+    'Pluto',
+    'Eris',
+    'Sedna',
+];
 
 Interplanetary.ACTION = Util.makeEnum([
     'work',
