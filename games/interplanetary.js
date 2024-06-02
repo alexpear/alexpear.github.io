@@ -157,6 +157,16 @@ class Interplanetary {
             .join(', ');
     }
 
+    static isOrbiting (locationName) {
+        if (! Util.isString(locationName)) {
+            Util.error(locationName);
+        }
+
+        // return locationName?.endsWith('Orbit') || false;
+        return locationName.endsWith?.('Orbit') || false;
+    }
+
+    // Returns a location obj.
     static randomLocation () {
         return Interplanetary.LOCATIONS[
             Util.randomOf(
@@ -550,7 +560,7 @@ class MissionCard {
     }
 
     isOrbiting () {
-        return this.locationName?.endsWith('Orbit');
+        return Interplanetary.isOrbiting(this.locationName);
     }
 
     // Returns the location obj this mission is at or is orbiting.
