@@ -667,9 +667,16 @@ class Player {
 }
 
 class Action {
+    constructor (opts) {
+        for (let key in opts) {
+            this[key] = opts[key];
+        }
+    }
+
     // this.type = 'Burn'
     // this.targetLocation = 'MarsOrbit'
     // this.mission = <MissionCard>
+    // this.pieceType = 'Astronaut'
 }
 
 class MissionCard {
@@ -687,6 +694,7 @@ class MissionCard {
 
         if (! (count >= 0)) {
             throw new Error({
+                // LATER if this doesnt format correctly, call Util.error() instead.
                 this: this,
                 count,
             });
