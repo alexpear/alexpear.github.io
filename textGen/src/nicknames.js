@@ -47,7 +47,12 @@ class Nicknames extends TextGen {
     }
 }
 
+function demo (fullName) {
+    const nn = new Nicknames();
+    nn.printNicknames(fullName);
+}
+
 // Run it.
-// printNicknames('Mephistopheles');
+demo('personification');
 
 module.exports = Nicknames;
