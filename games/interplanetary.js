@@ -527,8 +527,21 @@ class Player {
             }));
         }
 
-        // LATER could make burns from Earth more common.
-        const mission = Util.randomOf(this.missionCards);
+        const burnableMissions = this.missionCards.filter(
+            m => m.pieces.length > 0
+        );
+
+        const burnFromEarthChance = 1 / (burnableMissions.length + 1);
+        const burnFromEarth = burnFromEarthChance > Math.random();
+
+        // TODO burns from Earth lanuchpads are not yet fully implemented
+        let mission = Util.randomOf(this.missionCards);
+
+        // reroll missions with no pieces.
+        for (let i = 0; i < this.missionCards.length && mission.pieces.length === 0; i++) {
+            mission = Util.randomOf(this.missionCards);
+        }
+
         let destination = Interplanetary.randomLocation().name;
 
         while (destination === mission.locationName) {
@@ -536,8 +549,9 @@ class Player {
         }
 
         const costs = Interplanetary.routeCosts(mission.locationName, destination);
+        const weight = mission.pieces.length;
 
-        if (costs.fuel * mission.pieces.length <= mission.fuel) {
+        if (weight > 0 && costs.fuel * weight <= mission.fuel) {
             actions.push(new Action({
                 type: Interplanetary.ACTION.burn,
                 mission,
@@ -641,7 +655,7 @@ class Player {
 
         const routeCost = Interplanetary.routeCosts(
             mission.locationName,
-            actionObj.targetLocation
+            actionObj.targetLocation,
         ).fuel;
 
         const fuelCost = mission.pieces.length * routeCost;
