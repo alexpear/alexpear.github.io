@@ -203,6 +203,7 @@ class Interplanetary {
         }
     }
 
+    // LATER could move to class Player.
     static randomBuy (budget) {
         if (budget <= 0) { return; }
 
@@ -230,6 +231,68 @@ class Interplanetary {
             Interplanetary.PIECE.telescope,
             Interplanetary.PIECE.station,
         ]);
+    }
+
+    static locsAlongRoute (start, destination) {
+        const locs = [start];
+
+        if (! Interplanetary.isOrbiting(start)) {
+            locs.push(`${start}Orbit`);
+        }
+
+        if (! Interplanetary.isOrbiting(destination)) {
+            locs.push(`${destination}Orbit`);
+        }
+
+        locs.push(destination);
+
+        return locs;
+        // Complication: Coasting rules could make these into multi turn affairs.
+    }
+
+    static routeCosts (start, destination) {
+        const costs = {
+            fuel: 0,
+            turnStops: 0,
+        };
+        const locationNames = Interplanetary.locsAlongRoute(start, destination);
+
+        for (let i = 0; i < locationNames.length - 1; i++) {
+            const fromOrbit = Interplanetary.isOrbiting(locationNames[i]);
+            const toOrbit = Interplanetary.isOrbiting(locationNames[i + 1]);
+
+            if (fromOrbit && toOrbit) {
+                costs.fuel += 1;
+                // LATER - could add rules about needing to end turn for long interplanetary legs (route.turnStops)
+            }
+            else if (fromOrbit && ! toOrbit) {
+                // Descending to a planetoid.
+                const destinationObj = Interplanetary.LOCATIONS[locationNames[i + 1]];
+
+                // bug - destinationObj is undefined. Log for more info.
+                // Util.logDebug({
+                //     start,
+                //     destination,
+                //     destinationObj,
+                //     locationNames,
+                //     i,
+                //     costs,
+                // })
+
+                if (! destinationObj.atmosphere) {
+                    costs.fuel += destinationObj.gravity;
+                }
+            }
+            else if (! fromOrbit && toOrbit) {
+                // Ascending to orbit.
+                costs.fuel += Interplanetary.LOCATIONS[locationNames[i]].gravity;
+            }
+            else {
+                throw new Error(`Cannot go directly between 2 non orbital locations: ${locationNames[i]} to ${locationNames[i + 1]}`)
+            }
+        }
+
+        return costs;
     }
 
     loop () {
