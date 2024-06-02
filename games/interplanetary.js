@@ -566,25 +566,7 @@ class Player {
         }
 
         else if (actionObj.type === Interplanetary.ACTION.burn) {
-            // TODO move all this to Player.burn()
-            const mission = actionObj.mission;
-
-            const routeCost = Interplanetary.routeCosts(
-                mission.locationName,
-                actionObj.targetLocation
-            ).fuel;
-
-            const fuelCost = mission.pieces.length * routeCost;
-
-            if (mission.fuel < fuelCost) {
-                Util.error(actionObj);
-            }
-
-            // TODO implement Burn roll, Learning from Explosions, etc.
-            Util.log(`Burn from ${mission.locationName} to ${actionObj.targetLocation} (route cost: ${routeCost} fuel x weight: ${mission.pieces.length} = ${routeCost * mission.pieces.length}). ${mission.fuel - fuelCost} fuel left.`);
-
-            mission.locationName = actionObj.targetLocation;
-            mission.fuel -= fuelCost;
+            this.burn(actionObj);
         }
 
         else if (actionObj.type === Interplanetary.ACTION.look) {
@@ -654,11 +636,25 @@ class Player {
         }
     }
 
-    burn (action) {
-        // const route = Interplanetary.locsAlongRoute(action.mission.locationName, action.targetLocation);
-        // const costs = Interplanetary.routeCosts(route);
+    burn (actionObj) {
+        const mission = actionObj.mission;
 
-        // TODO
+        const routeCost = Interplanetary.routeCosts(
+            mission.locationName,
+            actionObj.targetLocation
+        ).fuel;
+
+        const fuelCost = mission.pieces.length * routeCost;
+
+        if (mission.fuel < fuelCost) {
+            Util.error(actionObj);
+        }
+
+        // TODO implement Burn roll, Learning from Explosions, etc.
+        Util.log(`Burn from ${mission.locationName} to ${actionObj.targetLocation} (route cost: ${routeCost} fuel x weight: ${mission.pieces.length} = ${routeCost * mission.pieces.length}). ${mission.fuel - fuelCost} fuel left.`);
+
+        mission.locationName = actionObj.targetLocation;
+        mission.fuel -= fuelCost;
     }
 
     look (action) {
