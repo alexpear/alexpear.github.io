@@ -664,11 +664,25 @@ class Player {
             Util.error(actionObj);
         }
 
-        // TODO implement Burn roll, Learning from Explosions, etc.
-        Util.log(`Burn from ${mission.locationName} to ${actionObj.targetLocation} (route cost: ${routeCost} fuel x weight: ${mission.pieces.length} = ${routeCost * mission.pieces.length}). ${mission.fuel - fuelCost} fuel left.`);
+        Util.log(`Burn from ${mission.locationName} to ${actionObj.targetLocation} (route cost: ${routeCost} fuel x weight: ${mission.pieces.length} = ${routeCost * mission.pieces.length}). ${mission.fuel - fuelCost} fuel will be left.`);
 
-        mission.locationName = actionObj.targetLocation;
+        const roll = Util.roll2d6();
+
         mission.fuel -= fuelCost;
+
+        if (roll > this.techLevel || roll === 12) {
+            mission.pieces = [];
+            // We don't remove the mission from the array because the fuel is still relevant.
+
+            this.techLevel++;
+            Util.log(`Burn failure! Tech Level ${this.techLevel} after Learning From Explosions.`);
+        }
+        else {
+            mission.locationName = actionObj.targetLocation;
+            Util.log(`Burn success.`);
+        }
+
+        // LATER - Also, separately, rolling Doubles mean a Fire marker must be placed.
     }
 
     look (action) {
