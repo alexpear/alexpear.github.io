@@ -50,13 +50,17 @@
       margin: auto auto 10px auto;
     }
 
-    p > * {
+    p > *, li > * {
       margin: auto 0 auto;
     }
 
     a {
       color: #93cb80;
       font-weight: bold;
+    }
+
+    body > a {
+      margin: 20px;
     }
 
     ul, li {
@@ -143,33 +147,49 @@
     <p>Yes, in fact any player can do so. Posterity choices don't <i>access</i> (ie modify) characters.</p>
   </div>
 
+
   <h1 class="center">Glossary</h1>
 
-  <p>'this character' = The character (ie pile) that this card is in.</p>
+  <ul>
+    <li><u>this character</u> = The character (ie pile) that this card is in.</li>
 
-  <p>'this ⛿ Hive' = The ⛿ Hive whose card is attached to this card.</p>
+    <li><u>this ⛿ Hive</u> = The ⛿ Hive whose card is attached to this card.</li>
 
-  <p>'existing character' = A character who existed at the start of this turn & exists now.</p>
+    <li><u>existing character</u> = A character who existed at the start of this turn & exists now.</li>
 
-  <p>'draw a card' = Pick up & look at the top card of a deck. If the text does not specify which deck, you may choose. (Note: When drawing multiple cards, you may look at the 1st card before deciding which deck to draw the 2nd card from, etc.) When you are done with the current action, put unused drawn cards into the appropriate discard piles.</p>
+    <li><u>draw a card</u> = Pick up & look at the top card of a deck.
+      <ul>
+        <li>Don't show it to others.</li>
+        <li>If the text does not specify which deck, you may choose which.</li>
+        <li>When drawing multiple cards, you may look at the 1st card before deciding which deck to draw the 2nd card from, etc.</li>
+        <li>When you are done with the current action, put unused drawn cards into the appropriate discard piles</li>
+      </ul>
+    </li>
 
-  <p>'remove' a card from a character = Includes:
-    <ul>
-      <li>Discarding that card</li>
-      <li>Swapping or replacing it with another card</li>
-    </ul>
-  </p>
+    <li><u>remove</u> a card from a character = Includes:
+      <ul>
+        <li>Discarding that card</li>
+        <li>Swapping or replacing it with another card</li>
+      </ul>
+    </li>
 
-  <p>'spend €1' = Move €1 to the Six-Hive Transit System card (NOT to the Bank). Unless otherwise noted, you can spend from any character of your ⛿ Hive. (And if it's your turn, you can of course rearrange your € freely during your turn.)</p>
+    <li><u>spend €1</u> = Move €1 to the Six-Hive Transit System card
+      <ul>
+        <li>NOT to the Bank.</li>
+        <li>Unless otherwise noted, you can spend from any character of your ⛿ Hive.</li>
+        <li>And if it's your turn, you can of course rearrange your € freely during your turn.</li>
+      </ul>
+    </li>
 
-  <p>'anywhere' (eg, on Living Miracle) = Includes:
-    <ul>
-      <li>A card of any character (except those on Mars)</li>
-      <li>The top card of either deck (without looking at it)</li>
-      <li>The 2nd, 3rd, 4th, etc card of either deck</li>
-      <li>A card in a discard pile</li>
-    </ul>
-  </p>
+    <li><u>anywhere</u> (eg, on Living Miracle) = Includes:
+      <ul>
+        <li>A card of any character (except those on Mars)</li>
+        <li>The top card of either deck (without looking at it)</li>
+        <li>The 2nd, 3rd, 4th, etc card of either deck</li>
+        <li>A card in a discard pile</li>
+      </ul>
+    </li>
+  </ul>
 
   <div class="spacer"></div>
 
