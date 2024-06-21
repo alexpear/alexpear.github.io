@@ -250,12 +250,12 @@ class Interplanetary {
         // Complication: Coasting rules could make these into multi turn affairs.
     }
 
-    static routeCosts (start, destination) {
+    static routeCosts (startName, destinationName) {
         const costs = {
             fuel: 0,
             turnStops: 0,
         };
-        const locationNames = Interplanetary.locsAlongRoute(start, destination);
+        const locationNames = Interplanetary.locsAlongRoute(startName, destinationName);
 
         for (let i = 0; i < locationNames.length - 1; i++) {
             const fromOrbit = Interplanetary.isOrbiting(locationNames[i]);
@@ -532,32 +532,38 @@ class Player {
         );
 
         const burnFromEarthChance = 1 / (burnableMissions.length + 1);
-        const burnFromEarth = burnFromEarthChance > Math.random();
 
-        // TODO burns from Earth lanuchpads are not yet fully implemented
-        let mission = Util.randomOf(this.missionCards);
+        const burnAction = new Action({
+            type: Interplanetary.ACTION.burn,
+        });
 
-        // reroll missions with no pieces.
-        for (let i = 0; i < this.missionCards.length && mission.pieces.length === 0; i++) {
-            mission = Util.randomOf(this.missionCards);
+        if (Math.random() < burnFromEarthChance) {
+            burnAction.fromLocationName = Interplanetary.LOCATIONS.Earth;
+        }
+        else {
+            burnAction.mission = Util.randomOf(burnableMissions);
+
+            burnAction.fromLocationName = burnAction.mission.locationName;
         }
 
-        let destination = Interplanetary.randomLocation().name;
+        burnAction.targetLocation = Interplanetary.randomLocation().name;
 
-        while (destination === mission.locationName) {
-            destination = Interplanetary.randomLocation().name;
+        while (burnAction.targetLocation === burnAction.fromLocationName) {
+            burnAction.targetLocation = Interplanetary.randomLocation().name;
         }
 
-        const costs = Interplanetary.routeCosts(mission.locationName, destination);
-        const weight = mission.pieces.length;
+        const costs = Interplanetary.routeCosts(burnAction.fromLocationName, burnAction.targetLocation);
 
-        if (weight > 0 && costs.fuel * weight <= mission.fuel) {
-            actions.push(new Action({
-                type: Interplanetary.ACTION.burn,
-                mission,
-                targetLocation: destination,
-            }));
-        }
+        // LATER burns are not yet fully implemented
+
+        // const weight = mission.pieces.length;
+        // if (weight > 0 && costs.fuel * weight <= mission.fuel) {
+        //     actions.push(new Action({
+        //         type: Interplanetary.ACTION.burn,
+        //         mission,
+        //         targetLocation: destination,
+        //     }));
+        // }
 
         // LATER Look.
 
@@ -700,6 +706,7 @@ class Action {
     // this.type = 'Burn'
     // this.targetLocation = 'MarsOrbit'
     // this.mission = <MissionCard>
+    // this.fromLocationName = 'Mars'
     // this.pieceType = 'Astronaut'
 }
 
