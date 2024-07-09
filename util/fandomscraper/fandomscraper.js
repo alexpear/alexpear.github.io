@@ -2,10 +2,11 @@
 
 const Util = require('../util.js');
 
-const { spawn } = require('child_process');
 const fs = require('fs');
 const https = require('node:https');
 const path = require('path');
+const { spawn } = require('child_process');
+const Split = require('split');
 
 class FandomScraper {
     static run () {
@@ -185,8 +186,32 @@ class FandomScraper {
 
     parseXml () {
         Util.logDebug(`start of parseXml()`);
-        // read stream... TODO
 
+        // const xml = new DOMParser().parseFromString(foo, 'text/xml');
+
+        let pause = false;
+
+        fs.createReadStream(`${this.wikiName}/${this.xmlName}`)
+            .pipe(Split('</page>'))
+            .on(
+                'data',
+                chunk => {
+                    if (chunk.indexOf(`<title>Order of the Long Death</title>`) === -1) {
+                        return;
+                    }
+
+                    console.log(chunk); // TODO
+                    console.log();
+
+                    pause = true;
+                }
+            )
+            .on(
+                'close',
+                e => {
+                    Util.log(`parseXml() done`);
+                }
+            );
     }
 }
 
