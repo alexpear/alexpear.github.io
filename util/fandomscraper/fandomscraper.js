@@ -2,6 +2,7 @@
 
 const Util = require('../util.js');
 
+const { exec } = require('child-process');
 const fs = require('fs');
 const https = require('node:https');
 const path = require('path');
@@ -17,45 +18,52 @@ class FandomScraper {
             return Util.logError(`Usage: node fandomscraper.js harrypotter`);
         }
 
-        const wikiName = process.argv[2];
-        const wikiDirPath = path.join(__filename, '..', wikiName);
+        const scraper = new FandomScraper(process.argv[2]);
+    }
 
-        if (fs.existsSync(wikiDirPath)) {
+    constructor (wikiName) {
+        this.wikiName = wikiName;
+        this.wikiDirPath = path.join(__filename, '..', this.wikiName);
+
+        this.start();
+    }
+
+    start () {
+        if (fs.existsSync(this.wikiDirPath)) {
             // A directory for this wiki already exists here.
 
-            const fileNames = fs.readdirSync(wikiDirPath);
+            const fileNames = fs.readdirSync(this.wikiDirPath);
 
             if (fileNames.some(
                 name => name.endsWith('.html')
             )) {
-                return Util.logError(`HTML files for ${wikiName}.fandom.com are already downloaded. Stopping.`);
+                return Util.logError(`HTML files for ${this.wikiName}.fandom.com are already downloaded. Stopping.`);
             }
         }
         else {
-            fs.mkdirSync(wikiDirPath);
+            fs.mkdirSync(this.wikiDirPath);
         }
 
         // Read this wiki's Statistics page
         const chunks = [];
 
+        // https.get() - LATER
         const statsRequest = https.request(
-            `https://${wikiName}.fandom.com/wiki/Special:Statistics`,
+            `https://${this.wikiName}.fandom.com/wiki/Special:Statistics`,
             {},
             response => {
                 console.log(`STATUS: ${response.statusCode}`);
-                // console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
 
                 response.setEncoding('utf8');
 
                 response.on('data', (chunk) => {
-                    // console.log(chunk);
                     chunks.push(chunk);
                 });
 
                 response.on('end', () => {
                     Util.log('No more data in response.');
 
-                    FandomScraper.parseStatisticsResponse(chunks);
+                    this.parseStatisticsResponse(chunks);
                 });
             },
         );
@@ -68,7 +76,7 @@ class FandomScraper {
         statsRequest.end();
     }
 
-    static parseStatisticsResponse (chunks) {
+    parseStatisticsResponse (chunks) {
         // Find the link to latest xml in the Statistics response.
         const ID_STRING = "id='mw-input-wp1'";
 
@@ -99,12 +107,45 @@ class FandomScraper {
             url,
         });
 
-        FandomScraper.downloadXml(url);
+        this.downloadXml(url);
     }
 
-    static downloadXml (url) {
-        const writeStream = fs.createWriteStream(`${wikiName}/pages_current.xml.7z`);
+    downloadXml (url) {
+        this.xmlName = 'pages_current.xml';
 
+        const writeStream = fs.createWriteStream(`${this.wikiName}/${this.xmlName}.7z`);
+
+        const xmlRequest = https.get(
+            url,
+            response => response.pipe(writeStream)
+        );
+
+        xmlRequest.on(
+            'error',
+            e => { throw new Error(e); }
+        );
+
+        xmlRequest.on(
+            'finish',
+            () => this.decompress()
+        );
+    }
+
+    decompress () {
+        exec(
+            `7za x ${this.wikiName}/${this.xmlName}.7z`,
+            (error, stdout, stderr) => {
+                if (error) {
+                    throw new Error(error);
+                }
+
+                if (stderr) {
+                    console.error(stderr);
+                }
+
+                console.log(stdout);
+            }
+        );
     }
 }
 
