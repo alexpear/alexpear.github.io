@@ -187,12 +187,11 @@ class FandomScraper {
     parseXml () {
         Util.logDebug(`start of parseXml()`);
 
-        // const xml = new DOMParser().parseFromString(foo, 'text/xml');
-
+        const SEPARATOR = '<page>';
         let pause = false;
 
         fs.createReadStream(`${this.wikiName}/${this.xmlName}`)
-            .pipe(Split('</page>'))
+            .pipe(Split(SEPARATOR))
             .on(
                 'data',
                 chunk => {
@@ -200,8 +199,15 @@ class FandomScraper {
                         return;
                     }
 
-                    console.log(chunk); // TODO
-                    console.log();
+                    const xml = new DOMParser().parseFromString(
+                        SEPARATOR + chunk,
+                        'text/xml'
+                    );
+
+                    Util.logDebug(xml.children);
+
+                    // console.log(chunk); // TODO
+                    // console.log();
 
                     pause = true;
                 }
