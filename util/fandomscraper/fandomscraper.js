@@ -43,11 +43,12 @@ class FandomScraper {
             {},
             response => {
                 console.log(`STATUS: ${response.statusCode}`);
-                console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
+                // console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
 
                 response.setEncoding('utf8');
 
                 response.on('data', (chunk) => {
+                    // console.log(chunk);
                     chunks.push(chunk);
                 });
 
@@ -63,36 +64,47 @@ class FandomScraper {
             throw new Error(e);
         });
 
+        // LATER - honestly i'm slightly confused what end() is doing.
         statsRequest.end();
+    }
 
+    static parseStatisticsResponse (chunks) {
         // Find the link to latest xml in the Statistics response.
         const ID_STRING = "id='mw-input-wp1'";
 
         const responseString = chunks.join('');
 
+        const beforeAfterId = responseString.split(ID_STRING);
+
+        // Then look for the next unescaped 'href' after that.
+        const afterHref = beforeAfterId[1]
+            .split('href="')[1]
+            .trim();
+
+        // const urlPart = afterHref.slice(2);
+        const endQuoteIndex = afterHref.indexOf('"');
+        const url = afterHref.slice(0, endQuoteIndex);
+
+        // debug
+        const snippetAfterHref = afterHref.slice(0, 6);
+
         Util.logDebug({
             wp1Index: responseString.indexOf('mw-input-wp1'),
             anyHrefIndex: responseString.indexOf('href'),
-            responseStart: responseString.slice(0, 9999),
+            // responseStart: responseString.slice(0, 9999),
+            beforeAfterLengths: beforeAfterId.map(s => s.length),
+            afterHrefStart: afterHref.slice(0, 99),
+            endQuoteIndex,
+            snippetAfterHref,
+            url,
         });
 
-        const beforeAfterId = responseString.split(ID_STRING);
-
-        // Then look for the next 'href' after that.
-        const afterHref = beforeAfterId[1]
-            .split('href')[1]
-            .trim();
-
-        const urlPart = afterHref.slice(2);
-        const endQuoteIndex = urlPart.indexOf('"');
-        const url = urlPart.slice(0, endQuoteIndex);
-
-        Util.log(url);
-
+        FandomScraper.downloadXml(url);
     }
 
-    static parseStatisticsResponse (chunks) {
-        // TODO
+    static downloadXml (url) {
+        const writeStream = fs.createWriteStream(`${wikiName}/pages_current.xml.7z`);
+
     }
 }
 
