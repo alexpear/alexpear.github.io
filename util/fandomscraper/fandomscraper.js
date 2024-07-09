@@ -4,6 +4,7 @@ const Util = require('../util.js');
 
 const fs = require('fs');
 const https = require('node:https');
+const { JSDOM } = require('jsdom');
 const path = require('path');
 const { spawn } = require('child_process');
 const Split = require('split');
@@ -199,12 +200,20 @@ class FandomScraper {
                         return;
                     }
 
-                    const xml = new DOMParser().parseFromString(
+                    const xml = new JSDOM(
                         SEPARATOR + chunk,
-                        'text/xml'
+                        { contentType: 'text/xml' }
                     );
 
-                    Util.logDebug(xml.children);
+                    Util.logDebug({
+                        xml,
+                        serialized: xml.serialize(),
+                        children: xml.children,
+                        keys: Object.keys(xml),
+                        keyswin: Object.keys(xml.window),
+                        keyswindoc: Object.keys(xml.window.document),
+                        windocchildren: xml.window.document.children,
+                    });
 
                     // console.log(chunk); // TODO
                     // console.log();
