@@ -2,7 +2,7 @@
 
 const Util = require('../util.js');
 
-const { exec } = require('child-process');
+const { spawn } = require('child_process');
 const fs = require('fs');
 const https = require('node:https');
 const path = require('path');
@@ -32,12 +32,8 @@ class FandomScraper {
         if (fs.existsSync(this.wikiDirPath)) {
             // A directory for this wiki already exists here.
 
-            const fileNames = fs.readdirSync(this.wikiDirPath);
-
-            if (fileNames.some(
-                name => name.endsWith('.html')
-            )) {
-                return Util.logError(`HTML files for ${this.wikiName}.fandom.com are already downloaded. Stopping.`);
+            if (this.dirContains('.html')) {
+                return;
             }
         }
         else {
@@ -74,6 +70,24 @@ class FandomScraper {
 
         // LATER - honestly i'm slightly confused what end() is doing.
         statsRequest.end();
+    }
+
+    dirContains (ending) {
+        if (fs.existsSync(this.wikiDirPath)) {
+            // A directory for this wiki already exists here.
+
+            const fileNames = fs.readdirSync(this.wikiDirPath);
+
+            if (fileNames.some(
+                name => name.endsWith(ending)
+            )) {
+                Util.log(`${ending} file(s) for ${this.wikiName}.fandom.com already downloaded.`);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     parseStatisticsResponse (chunks) {
@@ -113,6 +127,12 @@ class FandomScraper {
     downloadXml (url) {
         this.xmlName = 'pages_current.xml';
 
+        if (this.dirContains('.7z')) {
+            // Skip ahead.
+            this.decompress();
+            return;
+        }
+
         const writeStream = fs.createWriteStream(`${this.wikiName}/${this.xmlName}.7z`);
 
         const xmlRequest = https.get(
@@ -132,20 +152,41 @@ class FandomScraper {
     }
 
     decompress () {
-        exec(
-            `7za x ${this.wikiName}/${this.xmlName}.7z`,
-            (error, stdout, stderr) => {
-                if (error) {
-                    throw new Error(error);
-                }
+        if (this.dirContains('.xml')) {
+            // Skip ahead.
+            this.parseXml();
+            return;
+        }
 
-                if (stderr) {
-                    console.error(stderr);
-                }
+        const archivePath = `${this.wikiName}/${this.xmlName}.7z`;
 
-                console.log(stdout);
+        Util.logDebug(`7za x ${archivePath}`);
+
+        const decompression = spawn('7za', ['x', archivePath, `-o${this.wikiName}`]);
+
+        decompression.stdout.on(
+            'data',
+            data => console.log(data)
+        );
+
+        decompression.stderr.on(
+            'data',
+            data => console.error(data)
+        );
+
+        decompression.on(
+            'close',
+            exitCode => {
+                Util.log(`decompress() ended w/ exit code ${exitCode}`);
+                this.parseXml();
             }
         );
+    }
+
+    parseXml () {
+        Util.logDebug(`start of parseXml()`);
+        // read stream... TODO
+
     }
 }
 
