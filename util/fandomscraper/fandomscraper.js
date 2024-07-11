@@ -162,7 +162,7 @@ class FandomScraper {
 
         const archivePath = `${this.wikiName}/${this.xmlName}.7z`;
 
-        Util.logDebug(`7za x ${archivePath}`);
+        Util.logDebug(`7za x ${archivePath} -o${this.wikiName}`);
 
         const decompression = spawn('7za', ['x', archivePath, `-o${this.wikiName}`]);
 
