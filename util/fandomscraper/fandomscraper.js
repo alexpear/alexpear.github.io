@@ -107,7 +107,7 @@ class FandomScraper {
 
         // const urlPart = afterHref.slice(2);
         const endQuoteIndex = afterHref.indexOf('"');
-        const url = afterHref.slice(0, endQuoteIndex);
+        this.url = afterHref.slice(0, endQuoteIndex);
 
         // debug
         const snippetAfterHref = afterHref.slice(0, 6);
@@ -120,27 +120,44 @@ class FandomScraper {
             // afterHrefStart: afterHref.slice(0, 99),
             endQuoteIndex,
             // snippetAfterHref,
-            url,
+            url: this.url,
         });
 
-        this.downloadXml(url);
+        this.setupXml();
     }
 
-    downloadXml (url) {
+    setupXml () {
         this.xmlName = 'pages_current.xml';
 
         if (this.dirContains('.7z')) {
+            // Debug for cleaning up 0-byte .7z files.
+            // throw new Error(`You should call -> mv ${this.wikiName}/${this.xmlName}.7z backup/${this.wikiName}_${Math.random().toString().slice(2)}_${this.xmlName}.7z`);
+
             // Skip ahead.
             this.decompress();
             return;
         }
 
-        const writeStream = fs.createWriteStream(`${this.wikiName}/${this.xmlName}.7z`);
+        Util.logDebug({
+            context: `setupXml()`
+        });
 
-        // TODO - We end up with a .7z file of 0 bytes.
+        this.writeStream = fs.createWriteStream(`${this.wikiName}/${this.xmlName}.7z`);
+
+        this.writeStream.on(
+            'open',
+            fileDescriptor => this.downloadXml()
+        );
+    }
+
+    downloadXml () {
+        Util.logDebug({
+            context: `top of downloadXml()`
+        });
+
         const xmlRequest = https.get(
-            url,
-            response => response.pipe(writeStream)
+            this.url,
+            response => response.pipe(this.writeStream)
         );
 
         xmlRequest.on(
@@ -148,10 +165,14 @@ class FandomScraper {
             e => { throw new Error(e); }
         );
 
-        xmlRequest.on(
+        this.writeStream.on(
             'finish',
             () => {
-                writeStream.close();
+                Util.logDebug({
+                    context: `downloadXml(), 'finish' event emitted.`
+                });
+
+                this.writeStream.close();
                 this.decompress();
             }
         );
