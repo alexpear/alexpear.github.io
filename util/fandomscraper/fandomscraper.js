@@ -117,9 +117,9 @@ class FandomScraper {
             anyHrefIndex: responseString.indexOf('href'),
             // responseStart: responseString.slice(0, 9999),
             beforeAfterLengths: beforeAfterId.map(s => s.length),
-            afterHrefStart: afterHref.slice(0, 99),
+            // afterHrefStart: afterHref.slice(0, 99),
             endQuoteIndex,
-            snippetAfterHref,
+            // snippetAfterHref,
             url,
         });
 
@@ -137,6 +137,7 @@ class FandomScraper {
 
         const writeStream = fs.createWriteStream(`${this.wikiName}/${this.xmlName}.7z`);
 
+        // TODO - We end up with a .7z file of 0 bytes.
         const xmlRequest = https.get(
             url,
             response => response.pipe(writeStream)
@@ -149,7 +150,10 @@ class FandomScraper {
 
         xmlRequest.on(
             'finish',
-            () => this.decompress()
+            () => {
+                writeStream.close();
+                this.decompress();
+            }
         );
     }
 
