@@ -8,6 +8,7 @@ const { JSDOM } = require('jsdom');
 const path = require('path');
 const { spawn } = require('child_process');
 const Split = require('split');
+const XmlStream = require('xml-stream');
 
 class FandomScraper {
     static run () {
@@ -213,45 +214,35 @@ class FandomScraper {
     parseXml () {
         Util.logDebug(`start of parseXml()`);
 
-        const SEPARATOR = '<page>';
+        // const SEPARATOR = '<page>';
+
         let pause = false;
 
-        fs.createReadStream(`${this.wikiName}/${this.xmlName}`)
-            .pipe(Split(SEPARATOR))
-            .on(
-                'data',
-                chunk => {
-                    if (chunk.indexOf(`<title>Order of the Long Death</title>`) === -1) {
-                        return;
-                    }
+        const readStream = fs.createReadStream(`${this.wikiName}/${this.xmlName}`);
 
-                    const xml = new JSDOM(
-                        SEPARATOR + chunk,
-                        { contentType: 'text/xml' }
-                    );
+        const xmlStream = new XmlStream(readStream);
 
-                    Util.logDebug({
-                        xml,
-                        serialized: xml.serialize(),
-                        children: xml.children,
-                        keys: Object.keys(xml),
-                        keyswin: Object.keys(xml.window),
-                        keyswindoc: Object.keys(xml.window.document),
-                        windocchildren: xml.window.document.children,
-                    });
-
-                    // console.log(chunk); // TODO
-                    // console.log();
-
-                    pause = true;
+        xmlStream.on(
+            'endElement: page',
+            pageObj => {
+                if (pause) {
+                    return;
                 }
-            )
-            .on(
-                'close',
-                e => {
-                    Util.log(`parseXml() done`);
+
+                if (pageObj.title === 'Daniel Leong (New Earth)') {
+                    Util.logDebug(pageObj);
                 }
-            );
+
+                // TODO
+            }
+        );
+
+        readStream.on(
+            'close',
+            event => {
+                Util.log(`parseXml() done`);
+            }
+        );
     }
 }
 
