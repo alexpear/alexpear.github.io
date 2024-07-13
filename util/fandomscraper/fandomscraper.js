@@ -225,15 +225,16 @@ class FandomScraper {
         xmlStream.on(
             'endElement: page',
             pageObj => {
-                if (pause) {
-                    return;
-                }
+                // if (pageObj.title === 'Daniel Leong (New Earth)') {
+                if (pageObj.title.includes('Daniel')) {
+                    const textFormatted = pageObj?.revision?.text['$text']
+                        .replaceAll(' | ', '\n')
+                        .replaceAll(' *', '\n *');
 
-                if (pageObj.title === 'Daniel Leong (New Earth)') {
-                    Util.logDebug(pageObj);
+                    console.log(pageObj.title);
+                    console.log(textFormatted);
+                    console.log();
                 }
-
-                // TODO
             }
         );
 
