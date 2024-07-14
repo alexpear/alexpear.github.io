@@ -214,9 +214,7 @@ class FandomScraper {
     parseXml () {
         Util.logDebug(`start of parseXml()`);
 
-        // const SEPARATOR = '<page>';
-
-        let pause = false;
+        let examplesLogged = 0;
 
         const readStream = fs.createReadStream(`${this.wikiName}/${this.xmlName}`);
 
@@ -225,13 +223,35 @@ class FandomScraper {
         xmlStream.on(
             'endElement: page',
             pageObj => {
-                // if (pageObj.title === 'Daniel Leong (New Earth)') {
-                if (pageObj.title.includes('Daniel')) {
-                    const textFormatted = pageObj?.revision?.text['$text']
+                // If you have already logged many times, be less willing to log again.
+                if (Math.random() < 1) {//} (1 / (examplesLogged + 1))) {
+                    examplesLogged++;
+
+                    // TODO bug - i think this .js module crashes silently when logging one of the first DC pages.
+                    Util.logDebug({
+                        examplesLogged,
+                        pageObj,
+                        title: pageObj?.title,
+                    });
+
+                    // if (
+                    //     ! pageObj ||
+                    //     ! pageObj.revision
+                    // ) {
+
+                    // }
+
+                    // const textString = Util.access(pageObj, 'revision.text.$text');
+
+                    // if (! textString) {
+                    //     return;
+                    // }
+
+                    const textFormatted = pageObj?.revision?.text?.['$text']
                         .replaceAll(' | ', '\n')
                         .replaceAll(' *', '\n *');
 
-                    console.log(pageObj.title);
+                    console.log(pageObj?.title);
                     console.log(textFormatted);
                     console.log();
                 }
