@@ -216,6 +216,8 @@ class FandomScraper {
 
         let examplesLogged = 0;
 
+        const prefices = {};
+
         const readStream = fs.createReadStream(`${this.wikiName}/${this.xmlName}`);
 
         const xmlStream = new XmlStream(readStream);
@@ -223,34 +225,50 @@ class FandomScraper {
         xmlStream.on(
             'endElement: page',
             pageObj => {
+                const title = pageObj?.title;
+
+                let prefix;
+
+                if (title) {
+                    if (title.includes(':')) {
+                        prefix = title.split(':')[0];
+                    }
+                    else {
+                        prefix = 'normal';
+                    }
+                }
+                else {
+                    prefix = 'noTitle';
+                }
+
+                if (prefices[prefix]) {
+                    prefices[prefix]++;
+                }
+                else {
+                    prefices[prefix] = 1;
+                }
+
                 // If you have already logged many times, be less willing to log again.
-                if (Math.random() < 1) {//} (1 / (examplesLogged + 1))) {
+                // pow(2, examplesLogged) TODO
+                if (Math.random() < (1 / (examplesLogged * 1000 + 1))) {
                     examplesLogged++;
 
-                    // TODO bug - i think this .js module crashes silently when logging one of the first DC pages.
-                    Util.logDebug({
-                        examplesLogged,
-                        pageObj,
-                        title: pageObj?.title,
-                    });
+                    // Util.logDebug({
+                    //     examplesLogged,
+                    //     pageObj,
+                    //     title: pageObj?.title,
+                    // });
 
-                    // if (
-                    //     ! pageObj ||
-                    //     ! pageObj.revision
-                    // ) {
+                    const textString = Util.access(pageObj, 'revision.text.$text');
 
-                    // }
+                    if (! textString) {
+                        return Util.log(pageObj);
+                    }
 
-                    // const textString = Util.access(pageObj, 'revision.text.$text');
-
-                    // if (! textString) {
-                    //     return;
-                    // }
-
-                    const textFormatted = pageObj?.revision?.text?.['$text']
-                        .replaceAll(' | ', '\n')
+                    const textFormatted = textString.replaceAll(' | ', '\n')
                         .replaceAll(' *', '\n *');
 
+                    console.log(`Example ${examplesLogged}:`);
                     console.log(pageObj?.title);
                     console.log(textFormatted);
                     console.log();
@@ -261,6 +279,8 @@ class FandomScraper {
         readStream.on(
             'close',
             event => {
+                Util.log(prefices);
+
                 Util.log(`parseXml() done`);
             }
         );
