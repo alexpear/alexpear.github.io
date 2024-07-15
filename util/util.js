@@ -151,8 +151,28 @@ class Util {
         }
     }
 
+    // Safely dig deep into a nested obj.
+    // Example: Util.access(pageObj, 'revision.text.$text');
+    static access (obj, dotSeparatedFields) {
+        if (dotSeparatedFields[0] === '.') {
+            dotSeparatedFields = dotSeparatedFields.slice(1);
+        }
+
+        const fieldNames = dotSeparatedFields.split('.');
+
+        for (let name of fieldNames) {
+            if (! obj) {
+                return undefined;
+            }
+
+            obj = obj[name];
+        }
+
+        return obj;
+    }
+
     static contains (array, fugitive) {
-        return array.indexOf(fugitive) >= 0;
+        return array.includes(fugitive);
     }
 
     static hasOverlap (arrayA, arrayB) {

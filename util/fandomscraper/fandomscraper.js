@@ -214,7 +214,25 @@ class FandomScraper {
     parseXml () {
         Util.logDebug(`start of parseXml()`);
 
+        let pageCount = 0;
         let examplesLogged = 0;
+
+        const SKIPPED_PREFICES = [
+            'File',
+            'File Talk',
+            'User',
+            'Talk',
+            'User Talk',
+            'Category Talk',
+            'Template',
+            'Template Talk',
+            'Thread',
+            'Board Thread',
+            'Message Wall',
+            'User blog',
+            'User blog comment',
+            'MediaWiki',
+        ];
 
         const prefices = {};
 
@@ -225,6 +243,8 @@ class FandomScraper {
         xmlStream.on(
             'endElement: page',
             pageObj => {
+                pageCount++;
+
                 const title = pageObj?.title;
 
                 let prefix;
@@ -248,16 +268,19 @@ class FandomScraper {
                     prefices[prefix] = 1;
                 }
 
-                // If you have already logged many times, be less willing to log again.
-                // pow(2, examplesLogged) TODO
-                if (Math.random() < (1 / (examplesLogged * 1000 + 1))) {
-                    examplesLogged++;
+                // if (/^10+$/.test(pageCount)) {
+                //     console.log(`Page ${pageCount}:`);
 
-                    // Util.logDebug({
-                    //     examplesLogged,
-                    //     pageObj,
-                    //     title: pageObj?.title,
-                    // });
+                //     this.logHistogram(prefices);
+                // }
+
+                if (SKIPPED_PREFICES.includes(prefix)) {
+                    return;
+                }
+
+                // If you have already logged many times, be less willing to log again.
+                if (Math.random() < (1 / Math.pow(2, examplesLogged))) {
+                    examplesLogged++;
 
                     const textString = Util.access(pageObj, 'revision.text.$text');
 
@@ -272,6 +295,11 @@ class FandomScraper {
                     console.log(pageObj?.title);
                     console.log(textFormatted);
                     console.log();
+
+                    // TODO
+                    // Output as HTML (in some way)
+                    // Write to a .html file
+                    // Convert [[link]]s to <a href>s
                 }
             }
         );
@@ -279,11 +307,29 @@ class FandomScraper {
         readStream.on(
             'close',
             event => {
-                Util.log(prefices);
+                this.logHistogram(prefices);
 
                 Util.log(`parseXml() done`);
             }
         );
+    }
+
+    logHistogram (obj) {
+        const sorted = Object.entries(obj)
+            .sort(
+                (tupleA, tupleB) => {
+                    if (tupleA[1] !== tupleB[1]) {
+                        return tupleA[1] - tupleB[1];
+                    }
+
+                    return tupleB[0].localeCompare(tupleA[0]);
+                }
+            )
+            .map(
+                tuple => `${tuple[0]}: x${tuple[1]}`
+            );
+
+        Util.log(sorted);
     }
 }
 
