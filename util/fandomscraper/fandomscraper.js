@@ -278,6 +278,11 @@ class FandomScraper {
                     return;
                 }
 
+                // const debugStr = Util.access(pageObj, 'revision.text.$text');
+                // if (debugStr?.indexOf('| Province') >= 0) {
+                //     Util.logDebug(debugStr);
+                // }
+
                 // If you have already logged many times, be less willing to log again.
                 if (Math.random() < (1 / Math.pow(2, examplesLogged))) {
                     examplesLogged++;
@@ -297,12 +302,13 @@ class FandomScraper {
                     console.log();
 
                     // TODO
-                    // '| ' should be newlines that HTML recognizes
+                    // Some wikis still download empty .7z files
                     // Write to a .html file
                     // Convert {{curly link}}s to <a href>s as well as [[square]] ones
                     // Except not double-curlys like those big ones that cover almost the entire page, like {{DC Database:Character Template ...
                     // . Maybe do this by just skipping ahead if the first few chars are: {{DC Database:
-                    // Remove blank lines like: | Province                =
+                    // . But somehow make that initial string dynamic because it varies by wiki.
+                    // . Or perhaps check for another {{ while already inSquares === false.
                 }
             }
         );
@@ -350,8 +356,20 @@ class FandomScraper {
         let htmlStr = '';
         let index = 0;
 
-        wikiStr = wikiStr.replaceAll(' | ', '\n<br>')
+        wikiStr = wikiStr.replaceAll(/ [A-z]+\s+= \|/g, '') // Remove empty attributes.
+            .replaceAll(' | ', '\n<br>')
             .replaceAll(' *', '\n<br> *');
+
+        // If this conditional encounters a lot of pages like: {{template1}} {{template2}}, remove it.
+        if (
+            wikiStr.startsWith('{{') &&
+            wikiStr.endsWith('}}')
+        ) {
+            wikiStr = wikiStr.slice(
+                2,
+                wikiStr.length - 4
+            );
+        }
 
         for (let n = 0; n < 9999999; n++) {
             // Util.logDebug({
@@ -361,12 +379,40 @@ class FandomScraper {
             //     wikiStrLength: wikiStr.length,
             // });
 
-            const stepsToOpen = wikiStr.slice(index)
-                .indexOf('[[');
+            // LATER tidy or functionize if possible. And add tests.
 
-            if (stepsToOpen < 0) {
-                htmlStr += wikiStr.slice(index);
-                break;
+            const stepsToOpenSquare = wikiStr.slice(index)
+                .indexOf('[[');
+            const stepsToOpenCurly = wikiStr.slice(index)
+                .indexOf('{{');
+
+            let stepsToOpen = 0;
+            let inSquares = true;
+
+            if (stepsToOpenSquare < 0) {
+                if (stepsToOpenCurly < 0) {
+                    htmlStr += wikiStr.slice(index);
+                    break; // Done looping.
+                }
+
+                stepsToOpen = stepsToOpenCurly;
+                inSquares = false;
+            }
+            else {
+                if (stepsToOpenCurly < 0) {
+                    stepsToOpen = stepsToOpenSquare;
+                    inSquares = true;
+                }
+                else {
+                    if (stepsToOpenSquare < stepsToOpenCurly) {
+                        stepsToOpen = stepsToOpenSquare;
+                        inSquares = true;
+                    }
+                    else {
+                        stepsToOpen = stepsToOpenCurly;
+                        inSquares = false;
+                    }
+                }
             }
 
             // Add normal text
@@ -379,8 +425,26 @@ class FandomScraper {
 
             const stepsToBar = wikiStr.slice(index)
                 .indexOf('|');
+
+            const closeSymbol = inSquares ? ']]' : '}}';
+
             const stepsToClose = wikiStr.slice(index)
-                .indexOf(']]');
+                .indexOf(closeSymbol);
+
+            const stepsToNestedOpen = wikiStr.slice(index + 2)
+                .indexOf(
+                    inSquares ? '[[' : '{{'
+                );
+
+            if (
+                stepsToNestedOpen >= 0 &&
+                (stepsToNestedOpen + 2) < stepsToClose
+            ) {
+                // We discovered nesting, so we treat the outer brackets as inert text.
+                htmlStr += wikiStr.slice(index, index + 2);
+                index += 2;
+                continue;
+            }
 
             let linkedTitle = '';
             let linkName = '';
