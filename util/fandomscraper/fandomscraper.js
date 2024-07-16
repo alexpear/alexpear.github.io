@@ -292,14 +292,14 @@ class FandomScraper {
                         .replaceAll(' *', '\n *');
 
                     console.log(`Example ${examplesLogged}:`);
-                    console.log(pageObj?.title);
-                    console.log(textFormatted);
+                    // console.log(pageObj?.title);
+                    console.log(this.pageHtmlStr(pageObj?.title, textFormatted));
                     console.log();
 
                     // TODO
-                    // Output as HTML (in some way)
+                    // '| ' should be newlines that HTML recognizes
                     // Write to a .html file
-                    // Convert [[link]]s to <a href>s
+                    // Convert {{curly link}}s to <a href>s as well as [[square]] ones
                 }
             }
         );
@@ -312,6 +312,103 @@ class FandomScraper {
                 Util.log(`parseXml() done`);
             }
         );
+    }
+
+    pageHtmlStr (title, text) {
+        Util.logDebug({
+            context: `pageHtmlStr() top`,
+            title,
+            text,
+        });
+
+        const HEADSTUFF =
+`<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="wikiArticle.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div id="header"></div>
+
+    <div id="main">
+      <label id="title">`;
+
+        const ENDSTUFF =`
+     </div>
+  </body>
+</html>`;
+
+        return `${HEADSTUFF}${title}</label>
+        <p>${ this.strAsHtml(text) }</p>${ENDSTUFF}`;
+    }
+
+    strAsHtml (wikiStr) {
+        let htmlStr = '';
+        let index = 0;
+
+        for (let n = 0; n < 9999999; n++) {
+            Util.logDebug({
+                context: `strAsHtml() top of loop`,
+                index,
+                htmlStrLength: htmlStr.length,
+                wikiStrLength: wikiStr.length,
+            });
+
+            const stepsToOpen = wikiStr.slice(index)
+                .indexOf('[[');
+
+            if (stepsToOpen < 0) {
+                htmlStr += wikiStr.slice(index);
+                break;
+            }
+
+            // Add normal text
+            htmlStr += wikiStr.slice(
+                index,
+                index + stepsToOpen
+            );
+
+            index += stepsToOpen;
+
+            const stepsToBar = wikiStr.slice(index)
+                .indexOf('|');
+            const stepsToClose = wikiStr.slice(index)
+                .indexOf(']]');
+
+            let linkedTitle = '';
+            let linkName = '';
+
+            if (
+                0 <= stepsToBar &&
+                stepsToBar < stepsToClose
+            ) {
+                linkName = wikiStr.slice(
+                    index + 2,
+                    index + stepsToBar
+                );
+
+                linkedTitle = wikiStr.slice(
+                    index + stepsToBar + 1,
+                    index + stepsToClose
+               );
+            }
+            else {
+                // No bar in this link.
+                linkedTitle = wikiStr.slice(
+                    index + 2,
+                    index + stepsToClose
+                );
+
+                linkName = linkedTitle;
+            }
+
+            htmlStr += `<a href="${linkedTitle}.html">${linkName}</a>`;
+
+            index += stepsToClose + 2;
+        }
+
+        return htmlStr;
     }
 
     logHistogram (obj) {
