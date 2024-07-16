@@ -36,7 +36,7 @@ class FandomScraper {
             // A directory for this wiki already exists here.
 
             if (this.dirContains('.html')) {
-                return;
+                // return;
             }
         }
         else {
@@ -288,18 +288,21 @@ class FandomScraper {
                         return Util.log(pageObj);
                     }
 
-                    const textFormatted = textString.replaceAll(' | ', '\n')
-                        .replaceAll(' *', '\n *');
+                    // const textFormatted = textString.replaceAll(' | ', '\n')
+                    //     .replaceAll(' *', '\n *');
 
                     console.log(`Example ${examplesLogged}:`);
                     // console.log(pageObj?.title);
-                    console.log(this.pageHtmlStr(pageObj?.title, textFormatted));
+                    console.log(this.pageHtmlStr(pageObj?.title, textString));
                     console.log();
 
                     // TODO
                     // '| ' should be newlines that HTML recognizes
                     // Write to a .html file
                     // Convert {{curly link}}s to <a href>s as well as [[square]] ones
+                    // Except not double-curlys like those big ones that cover almost the entire page, like {{DC Database:Character Template ...
+                    // . Maybe do this by just skipping ahead if the first few chars are: {{DC Database:
+                    // Remove blank lines like: | Province                =
                 }
             }
         );
@@ -347,13 +350,16 @@ class FandomScraper {
         let htmlStr = '';
         let index = 0;
 
+        wikiStr = wikiStr.replaceAll(' | ', '\n<br>')
+            .replaceAll(' *', '\n<br> *');
+
         for (let n = 0; n < 9999999; n++) {
-            Util.logDebug({
-                context: `strAsHtml() top of loop`,
-                index,
-                htmlStrLength: htmlStr.length,
-                wikiStrLength: wikiStr.length,
-            });
+            // Util.logDebug({
+            //     context: `strAsHtml() top of loop`,
+            //     index,
+            //     htmlStrLength: htmlStr.length,
+            //     wikiStrLength: wikiStr.length,
+            // });
 
             const stepsToOpen = wikiStr.slice(index)
                 .indexOf('[[');
@@ -383,12 +389,12 @@ class FandomScraper {
                 0 <= stepsToBar &&
                 stepsToBar < stepsToClose
             ) {
-                linkName = wikiStr.slice(
+                linkedTitle = wikiStr.slice(
                     index + 2,
                     index + stepsToBar
                 );
 
-                linkedTitle = wikiStr.slice(
+                linkName = wikiStr.slice(
                     index + stepsToBar + 1,
                     index + stepsToClose
                );
