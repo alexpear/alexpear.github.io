@@ -431,10 +431,12 @@ class FandomScraper {
             const stepsToClose = wikiStr.slice(index)
                 .indexOf(closeSymbol);
 
-            const stepsToNestedOpen = wikiStr.slice(index + 2)
-                .indexOf(
-                    inSquares ? '[[' : '{{'
-                );
+            const stepsToNextSquares = wikiStr.slice(index + 2)
+                .indexOf('[[');
+            const stepsToNextCurlies = wikiStr.slice(index + 2)
+                .indexOf('{{');
+
+            const stepsToNestedOpen = Math.min(stepsToNextSquares, stepsToNextCurlies);
 
             if (
                 stepsToNestedOpen >= 0 &&
