@@ -40271,6 +40271,34 @@ class Util {
         return Util.randomOf(`ABCDEFGHIJKLMNOPQRSTUVWXYZ`);
     }
 
+    static roll2d6 () {
+        return Util.roll1d6() + Util.roll1d6();
+    }
+
+    static roll1d6 () {
+        return Util.rollDie(6);
+    }
+
+    static rollDie (sides) {
+        return Math.ceil(Math.random() * sides);
+    }
+
+    static testRoll1d6 () {
+        const results = [];
+
+        for (let i = 0; i < 5000; i++) {
+            results.push(
+                Util.roll1d6()
+            );
+        }
+
+        console.log();
+
+        Util.logDebug(
+            Util.arraySummary(results)
+        );
+    }
+
     // Returns string
     static newId (idLength) {
         // Later research the most performant way to run this.
@@ -40409,9 +40437,8 @@ class Util {
         return lines;
     }
 
-
     // Input string[]
-    // Returns string summarizing redundancies
+    // Returns string summarizing redundancies, like a histogram.
     static arraySummary (a) {
         const dict = {};
 
@@ -41128,10 +41155,14 @@ class Util {
         );
     }
 
-    static makeEnum (array) {
+    static makeEnum (array, allLower = false) {
         const dict = {};
         for (let val of array) {
-            dict[Util.capitalized(val)] = Util.uncapitalized(val);
+            const key = allLower ?
+                Util.uncapitalized(val) :
+                Util.capitalized(val);
+
+            dict[key] = Util.uncapitalized(val);
         }
 
         return dict;
@@ -41203,6 +41234,7 @@ class Util {
         Util.testCamelCase();
         Util.testPadSides();
         Util.testSigfigRound();
+        Util.testRoll1d6();
         Util.logDebug(`Done with unit tests for Util module :)`);
     }
 }
