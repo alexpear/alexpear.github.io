@@ -61,8 +61,8 @@ const countPairs = function(root, distance) {
     };
 
     const walkHelper = (i, hopsLeft, prev) => {
-        console.log(`Top of walkHelper(${i}, ${hopsLeft}, ${prev}).`);
-        if (exists(i)) { console.log(`Parent: ${parent(i)}, Self: ${i}, Left: ${left(i) || ''}, Right: ${right(i) || ''}`); }
+        // console.log(`Top of walkHelper(${i}, ${hopsLeft}, ${prev}).`);
+        // if (exists(i)) { console.log(`Parent: ${parent(i)}, Self: ${i}, Left: ${left(i) || ''}, Right: ${right(i) || ''}`); }
 
 
         if (! exists(i) || ! exists(root[i]) || i === prev || hopsLeft < 0) {
@@ -70,7 +70,7 @@ const countPairs = function(root, distance) {
         }
 
         if (isLeaf(i) && exists(prev) && ! doneIndices[i]) {
-            console.log(`pairCount++`);
+            // console.log(`pairCount++`);
             pairCount++;
         }
 
@@ -79,12 +79,18 @@ const countPairs = function(root, distance) {
         walkHelper(parent(i), hopsLeft - 1, i);
     };
 
-    for (let i = root.length - 1; i >= 1; i--) {
-        if (! exists(root[i]) || ! isLeaf(i)) {
+    // return root.length;
+
+    for (let start = root.length - 1; start >= 1; start--) {
+        // return 1000 + start;
+
+        if (! exists(root[start]) || ! isLeaf(start)) {
             continue;
         }
 
-        walkFrom(i);
+        // return start; // debug
+
+        walkFrom(start);
     }
 
     return pairCount;
