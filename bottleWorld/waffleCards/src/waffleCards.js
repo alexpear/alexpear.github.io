@@ -20,10 +20,10 @@ class Card {
 
         // TODO translate all props to html
 
-        return ```<div class="card">
+        return `<div class="card">
       <p class="center">${this.name}</p>
       <p>character human male child criminal biotech</p>
-    </div>```;
+    </div>`;
     }
 
     static random () {
@@ -68,7 +68,7 @@ class CardSet {
         )
         .join('\n    ');
 
-        return ```<!DOCTYPE html>
+        return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -89,13 +89,13 @@ class CardSet {
     ${cardsAsHtml}
   </div>
 </body>
-</html>```;
+</html>`;
     }
 
     // Writes a file cardSet.html that displays 1+ cards.
     writeHtml () {
         fs.writeFileSync(
-            __dirname + '/cardSet.html',
+            __dirname + '/../cardSet.html',
             this.asHtml(),
             'utf8'
         );
