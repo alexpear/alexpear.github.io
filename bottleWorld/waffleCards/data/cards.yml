@@ -1,5 +1,7 @@
 # This file defines all Waffle cards.
 
+# List of contexts:
+
 Generic:
   - name: TODO
 

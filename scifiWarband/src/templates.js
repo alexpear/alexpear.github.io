@@ -1,6 +1,6 @@
 'use strict';
 
-//
+// Functions for reading config.yml
 
 const ConfigString = require('../data/config.js');
 const Util = require('../../util/util.js');
