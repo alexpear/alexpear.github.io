@@ -332,7 +332,6 @@ Halo:
                 preferredRange: 14
                 scale: Individual
                 size: 2
-                type: Kinetic
             JackalNoShield:
                 durability: 9
                 name: Jackal no shield
