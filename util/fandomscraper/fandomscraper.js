@@ -223,15 +223,18 @@ class FandomScraper {
             'User',
             'Talk',
             'User Talk',
+            'User talk',
             'Category Talk',
             'Template',
             'Template Talk',
             'Thread',
             'Board Thread',
             'Message Wall',
+            'Forum',
             'User blog',
             'User blog comment',
             'MediaWiki',
+            'Module',
         ];
 
         const prefices = {};
@@ -284,7 +287,7 @@ class FandomScraper {
                 // }
 
                 // If you have already logged many times, be less willing to log again.
-                if (Math.random() < (1 / Math.pow(2, examplesLogged))) {
+                // if (Math.random() < (1 / Math.pow(2, examplesLogged))) {
                     examplesLogged++;
 
                     const textString = Util.access(pageObj, 'revision.text.$text');
@@ -293,34 +296,44 @@ class FandomScraper {
                         return Util.log(pageObj);
                     }
 
-                    // const textFormatted = textString.replaceAll(' | ', '\n')
-                    //     .replaceAll(' *', '\n *');
+                    const htmlStr = this.pageHtmlStr(pageObj?.title, textString);
 
                     console.log(`Example ${examplesLogged}:`);
                     // console.log(pageObj?.title);
-                    console.log(this.pageHtmlStr(pageObj?.title, textString));
+                    console.log(htmlStr);
                     console.log();
 
+                    // const htmlFile = fs.createWriteStream(`${this.wikiName}/${pageObj.title}.html`);
+                    const htmlFile = fs.createWriteStream(this.wikiName + '/' + this.fileName(pageObj?.title));
+
+                    htmlFile.on(
+                        'open',
+                        fileDescriptor => {
+                            htmlFile.write(htmlStr);
+                            htmlFile.end();
+                        }
+                    );
+
                     // TODO
-                    // Some wikis still download empty .7z files
-                    // Write to a .html file
-                    // Convert {{curly link}}s to <a href>s as well as [[square]] ones
-                    // Except not double-curlys like those big ones that cover almost the entire page, like {{DC Database:Character Template ...
-                    // . Maybe do this by just skipping ahead if the first few chars are: {{DC Database:
-                    // . But somehow make that initial string dynamic because it varies by wiki.
-                    // . Or perhaps check for another {{ while already inSquares === false.
-                }
+                    // Some wikis still download empty .7z files. Whitewolf, Shadowhunters. The download link doesn't work manually either.
+                    // When trying to write a file that already exists, overwrite it.
+
+                // }
             }
         );
 
         readStream.on(
             'close',
             event => {
-                this.logHistogram(prefices);
+                // this.logHistogram(prefices);
 
                 Util.log(`parseXml() done`);
             }
         );
+    }
+
+    fileName (title) {
+        return `${ title.replaceAll('/', '_') }.html`;
     }
 
     pageHtmlStr (title, text) {
@@ -475,7 +488,7 @@ class FandomScraper {
                 linkName = linkedTitle;
             }
 
-            htmlStr += `<a href="${linkedTitle}.html">${linkName}</a>`;
+            htmlStr += `<a href="${this.fileName(linkedTitle)}">${linkName}</a>`;
 
             index += stepsToClose + 2;
         }
