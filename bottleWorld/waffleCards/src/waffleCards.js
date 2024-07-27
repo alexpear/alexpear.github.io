@@ -9,20 +9,47 @@ const Yaml = require('js-yaml');
 
 class Card {
     constructor (template) {
-        Object.assign(this, template);
+        this.props = {};
+
+        Object.assign(this.props, template);
     }
 
     asHtml () {
         Util.logDebug({
             context: `Card.asHtml()`,
-            name: this.name,
+            name: this.props.name,
         });
 
         // TODO translate all props to html
+        const passageArray = [];
+
+        for (let prop of Card.PROPS) {
+            if (! this.props[prop]) {
+                continue;
+            }
+
+            const propName = Util.capitalized(prop);
+            let value = this.props[prop];
+
+            // if (! Util.isNumber(value) && ! Util.isString(value)) {
+            if (prop === 'resist') {
+                value = Object.entries(value)
+                    .sort()
+                    .map(
+                        pair => `${Util.capitalized(pair[0])} ${pair[1]}`
+                    )
+                    .join(', ');
+            }
+            // }
+
+            passageArray.push(`<p>${propName} ${this.props[prop]}</p>`)
+        }
+
+        const passagesStr = passageArray.join('\n');
 
         return `<div class="card">
-      <p class="center">${this.name}</p>
-      <p>character human male child criminal biotech</p>
+      <p class="center">${this.props.name}</p>
+      ${passagesStr}
     </div>`;
     }
 
@@ -54,6 +81,43 @@ class Card {
             cardsString,
             { json: true } // json: true means duplicate keys in a mapping will override values rather than throwing an error.
         );
+
+        // These are displayed in this order on the card:
+        Card.PROPS = [
+            'name',
+            'cost',
+            'tags',
+            'ruleTags',
+            // LATER should render the Context somewhere on paper cards, so players can sort them.
+
+            // Attack props
+            'attackName',
+            'range',
+            'accuracy', // Likely unused
+            'damage',
+
+            // Numbers:
+            'agility',
+            'durability',
+            'focus',
+            'knowledge',
+            'magic',
+            'observation',
+            'size',
+            'social',
+            'speed',
+            'stealth',
+
+            'resist',
+            'text',
+
+            // Not visually rendered on card:
+            'copiesInDeck',
+        ];
+
+        // Card.test();
+        // Test if any card has a prop not on PROPS list.
+        // Test for values that are not of expected type (number, string, resist obj).
     }
 }
 

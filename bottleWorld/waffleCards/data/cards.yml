@@ -3,32 +3,49 @@
 # List of contexts:
 
 Generic:
-  - name: TODO
+  - name: Knife
+    tags: item weapon blade
+    cost: 1
+    damage: 2
 
 GenericHistorical:
-  - name: TODO
+  - name: Shortsword
+    tags: item weapon blade
+    cost: 2
+    range: 1
+    damage: 3
 
 GenericModern:
-  - name: TODO
+  - name: Pistol
+    tags: item weapon gun
+    cost: 10
+    range: 50
+    damage: 20
 
 GenericScifi:
-  - name: TODO
+  - name: Spiderbot
+    tags: character robot CPU
+    observation: -2
+    size: -2
+    social: -10
+    stealth: 1
+    resist:
+      poison: 100
 
 Twig:
   - name: Sylvester
     tags: character human male child criminal biotech
     ruleTags: unique
     cost: 100
-    attack:
-      name: Throwing Knife
-      range: 10
-      damage: 2
+    attackName: Throwing Knife
+    range: 10
+    damage: 2
     focus: 5
     knowledge: 3
     observation: 4
     social: 5
     stealth: 3
-    resistance:
+    resist:
       poison: 1
     text: 'Romantic towards: Female'
 
