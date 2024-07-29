@@ -24,6 +24,7 @@ GenericModern:
 
 GenericScifi:
   - name: Spiderbot
+    cost: 10
     tags: character robot CPU
     observation: -2
     size: -2
