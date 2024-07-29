@@ -40,7 +40,7 @@ class Card {
             let value = this.props[prop];
 
             const propName = Util.capitalized(prop);
-            let displayStr = '';
+            let displayStr;
 
             if (TAG_PROPS.includes(prop)) {
                 // TODO combine ruleTags with tags list, in italics or something.
@@ -51,18 +51,26 @@ class Card {
                     )
                     .join(' ');
             }
-            // TODO dont prefix AttackName or Text
             // TODO group Attack info together somehow - perhaps at bottom?
-            else if (prop === 'resist') {
+            else if ('resist' === prop) {
                 value = Object.entries(value)
                     .sort()
                     .map(
                         pair => `${Util.capitalized(pair[0])} ${pair[1]}`
                     )
                     .join(', ');
-            }
 
-            displayStr = displayStr || `${propName} ${value}`;
+                displayStr = `${propName} ${value}`;
+            }
+            else if (['text', 'attackName'].includes(prop)) {
+                displayStr = `${value}`;
+            }
+            else if ('context' === prop) {
+                displayStr = `${propName}: ${value}`;
+            }
+            else {
+                displayStr = `${propName} ${value}`;
+            }
 
             passageArray.push(`<p>${displayStr}</p>`)
         }
@@ -108,6 +116,14 @@ class Card {
             { json: true } // json: true means duplicate keys in a mapping will override values rather than throwing an error.
         );
 
+        for (let contextName in Card.Contexts) {
+            const cards = Card.Contexts[contextName];
+
+            for (let card of cards) {
+                card.context = contextName;
+            }
+        }
+
         // These are displayed in this order on the card:
         Card.PROPS = [
             'name',
@@ -115,7 +131,6 @@ class Card {
             'cost',
             'tags',
             'ruleTags',
-            // LATER should render the Context somewhere on paper cards, so players can sort them.
 
             // Attack props
             'attackName',
@@ -137,6 +152,7 @@ class Card {
 
             'resist',
             'text',
+            'context',
 
             // Not visually rendered on card:
             'copiesInDeck',
