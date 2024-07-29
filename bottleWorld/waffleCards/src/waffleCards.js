@@ -22,12 +22,8 @@ class Card {
 
         const SKIP_PROPS = [
             'name',
-            'copiesInDeck',
-        ];
-
-        const TAG_PROPS = [
-            'tags',
             'ruleTags',
+            'copiesInDeck',
         ];
 
         const passageArray = [];
@@ -42,14 +38,12 @@ class Card {
             const propName = Util.capitalized(prop);
             let displayStr;
 
-            if (TAG_PROPS.includes(prop)) {
-                // TODO combine ruleTags with tags list, in italics or something.
+            if ('tags' === prop) {
+                displayStr = this.asTagStr(value);
 
-                displayStr = value.split(' ')
-                    .map(
-                        tag => Util.capitalized(tag)
-                    )
-                    .join(' ');
+                if (this.props.ruleTags) {
+                    displayStr += ` <i>${this.asTagStr(this.props.ruleTags)}</i>`;
+                }
             }
             // TODO group Attack info together somehow - perhaps at bottom?
             else if ('resist' === prop) {
@@ -66,7 +60,7 @@ class Card {
                 displayStr = `${value}`;
             }
             else if ('context' === prop) {
-                displayStr = `${propName}: ${value}`;
+                displayStr = `${propName}: ${Util.fromCamelCase(value)}`;
             }
             else {
                 displayStr = `${propName} ${value}`;
@@ -75,16 +69,20 @@ class Card {
             passageArray.push(`<p>${displayStr}</p>`)
         }
 
-        //2042
-
         const passagesStr = passageArray.join('\n');
-
-        // TODO in .css file, decrease spacing between <p>s.
 
         return `<div class="card">
       <p class="center">${this.props.name}</p>
       ${passagesStr}
     </div>`;
+    }
+
+    asTagStr (strFromYml) {
+        return strFromYml.split(/\s+/)
+            .map(
+                tag => Util.capitalized(tag)
+            )
+            .join(' ');
     }
 
     static random () {
