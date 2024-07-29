@@ -20,19 +20,40 @@ class Card {
             name: this.props.name,
         });
 
-        // TODO translate all props to html
+        const SKIP_PROPS = [
+            'name',
+            'copiesInDeck',
+        ];
+
+        const TAG_PROPS = [
+            'tags',
+            'ruleTags',
+        ];
+
         const passageArray = [];
 
         for (let prop of Card.PROPS) {
-            if (! this.props[prop]) {
+            if (! this.props[prop] || SKIP_PROPS.includes(prop)) {
                 continue;
             }
 
-            const propName = Util.capitalized(prop);
             let value = this.props[prop];
 
-            // if (! Util.isNumber(value) && ! Util.isString(value)) {
-            if (prop === 'resist') {
+            const propName = Util.capitalized(prop);
+            let displayStr = '';
+
+            if (TAG_PROPS.includes(prop)) {
+                // TODO combine ruleTags with tags list, in italics or something.
+
+                displayStr = value.split(' ')
+                    .map(
+                        tag => Util.capitalized(tag)
+                    )
+                    .join(' ');
+            }
+            // TODO dont prefix AttackName or Text
+            // TODO group Attack info together somehow - perhaps at bottom?
+            else if (prop === 'resist') {
                 value = Object.entries(value)
                     .sort()
                     .map(
@@ -40,12 +61,17 @@ class Card {
                     )
                     .join(', ');
             }
-            // }
 
-            passageArray.push(`<p>${propName} ${this.props[prop]}</p>`)
+            displayStr = displayStr || `${propName} ${value}`;
+
+            passageArray.push(`<p>${displayStr}</p>`)
         }
 
+        //2042
+
         const passagesStr = passageArray.join('\n');
+
+        // TODO in .css file, decrease spacing between <p>s.
 
         return `<div class="card">
       <p class="center">${this.props.name}</p>
@@ -85,6 +111,7 @@ class Card {
         // These are displayed in this order on the card:
         Card.PROPS = [
             'name',
+            // LATER could put a whole obj here describing 'name', how to render it, what type it expects, abbreviation, etc.
             'cost',
             'tags',
             'ruleTags',
