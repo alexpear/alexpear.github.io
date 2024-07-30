@@ -107,18 +107,16 @@ class Card {
 
     // TODO operate on a in-memory list of contexts so we dont have to recompute it every time.
     // contextArray is the list of cards within a context.
-    static random (contextArray) {
-        contextArray = contextArray || Util.randomOf(
+    static random (cardList) {
+        cardList = cardList || Util.randomOf(
             Object.values(Card.Contexts)
                 .filter(
                     array => array[0].name !== 'TODO'
                 )
         );
 
-        // TODO ignore meta entries in the array.
-
         return new Card(
-            Util.randomOf(contextArray)
+            Util.randomOf(cardList)
         );
     }
 
@@ -179,6 +177,9 @@ class Card {
 class CardSet {
     constructor (cards) {
         this.cards = cards || [];
+
+        // The list of all cards that could have been drawn for this CardSet.
+        this.deck = [];
     }
 
     asHtml () {
@@ -220,17 +221,71 @@ class CardSet {
         );
     }
 
-    static fromRandomContext () {
-        const [contextName, context] = Util.randomOf(
-            Object.entries(Card.Contexts)
-        );
+    deckSubset (criteria) {
+        let subset = this.deck;
 
-        // LATER make this from a more sophisticated distribution of possible combinations of contexts.
+        for (let [prop, value] of Object.entries(criteria)) {
+            if (prop.toLowerCase().startsWith('tag')) {
+                const requiredTags = value.split(/\s/+);
+
+                subset = subset.filter(
+                    card => requiredTags.every(
+                        tag => card.prop.tags.includes(tag)
+                    )
+                );
+            }
+            else {
+                subset = subset.filter(
+                    card => card.props[prop] === value
+                );
+            }
+        }
+
+        return subset;
+    }
+
+    static fromRandomContext () {
         const set = new CardSet();
 
-        for (let i = 0; i < 4; i++) {
-            set.cards.push(Card.random());
+        const [contextName, context] = Util.randomOf(
+            Object.entries(Card.Contexts)
+                .filter(
+                    pair => ! pair[0].startsWith('Generic')
+                )
+        );
+
+        if (context[0].meta) {
+            const names = context[0]?.pairWith
+                ?.split(/\s+/)
+                || [];
+
+            set.deck = context.slice(1);
+
+            for (let name of names) {
+                let otherContext = Card.Contexts[name];
+
+                if (otherContext[0].meta) {
+                    otherContext = otherContext.slice(0);
+                }
+
+                set.deck = set.deck.concat(otherContext);
+            }
         }
+        else {
+            set.deck = context;
+        }
+
+        for (let i = 0; i < 6; i++) {
+            set.cards.push(
+                new Card(
+                    Util.randomOf(set.deck)
+                )
+            );
+        }
+
+        // LATER deal exactly 1 Character card
+        // LATER avoid 2 of the same Unique card
+        // LATER pay attention to .copiesInDeck prop
 
         return set;
     }
