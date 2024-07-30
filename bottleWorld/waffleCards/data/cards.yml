@@ -83,6 +83,8 @@ Twig:
     observation: 1
     social: 1
     stealth: 1
+    actions:
+      - Heal 8
     text: 'Romantic towards: Female, Male'
     # Her exosuit is a separate card.
 
@@ -93,6 +95,7 @@ Halo:
   -
       name: Beam Rifle
       cost: 11
+      # TODO all these items should say Item Weapon & maybe also Gun
       tags: Item Covenant infantry Hardlight
       range: 10
       damage: 10
@@ -414,6 +417,8 @@ Halo:
       size: 3
       has: GravityHammer
       speed: 0
+
+      # TODO tag or remove all divisions, battalions, etc
   -
       name: Brute Division
       tags: Character Covenant Brute
