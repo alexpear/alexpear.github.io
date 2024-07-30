@@ -254,12 +254,67 @@ class Util {
         return winner;
     }
 
+    // Modifies the array.
     static shuffle (array) {
-        array.sort(
-            (a, b) => Math.random()
-        );
+        for (let i = 0; i <= array.length - 2; i++) {
+            const untouchedCount = array.length - 1 - i;
+
+            const swapWith = i + Math.ceil(Math.random() * untouchedCount);
+
+            const temp = array[i];
+            array[i] = array[swapWith];
+            array[swapWith] = temp;
+        }
 
         return array;
+    }
+
+    static testShuffle () {
+        for (let repeat = 0; repeat <= 999; repeat++) {
+            const len = Math.floor(Math.random() * 100);
+
+            const array = [...Array(len)]
+                .map(
+                    x => Math.random()
+                );
+
+            const backup = Array.from(array);
+
+            const shuffled = Util.shuffle(array);
+
+            let good = true;
+
+            if (backup.length !== shuffled.length) {
+                good = false;
+            }
+
+            let identical = true;
+
+            for (let i = 0; i < shuffled.length; i++) {
+                if (backup[i] !== shuffled[i]) {
+                    identical = false;
+                    break;
+                }
+            }
+
+            if (identical && backup.length >= 3) {
+                good = false;
+            }
+
+            if (! good) {
+                Util.error({
+                    repeat,
+                    array,
+                    backup,
+                    shuffled,
+                    identical,
+                    len,
+                    arrayLength: array.length,
+                    backupLength: backup.length,
+                    shuffledLength: shuffled.length,
+                });
+            }
+        }
     }
 
     static constrain (n, minInclusive, maxInclusive) {
@@ -1325,6 +1380,7 @@ class Util {
         Util.testPrettyDistance();
         Util.testCamelCase();
         Util.testPadSides();
+        Util.testShuffle();
         Util.testSigfigRound();
         Util.testRoll1d6();
         Util.logDebug(`Done with unit tests for Util module :)`);

@@ -31,12 +31,93 @@ class Suggestor {
     static games () {
 
         const LIST = `
-            regicide (Playing cards game)
+            i'm going to the beach
+
+            dutch blitz
             infiltraitors
+            oh hell
+            regicide (Playing cards game)
+            texas hold em poker
             wuxia cards
+
             dominion
             netrunner
             star wars unlimited cards
+            lorcana
+            magic cards
+
+            agricola creatures great & small
+            backgammon
+            chess
+            codenames duet
+            convert
+            hive
+            homeworlds
+            magic duels of the planeswalkers
+            quarto
+            six making
+
+            azul
+            azul stained glass
+            betrayal at house on the hill
+            cubitos
+            forbidden desert
+            innovation
+            pangaea
+            race for the galaxy
+            root
+            splendor
+            tiny epic tactics
+            war of whispers
+
+            clone wars pandemic
+            cosmic encounter
+            creature comforts
+            die crew
+            flamecraft
+            king of new york
+            point salad
+            risk godstorm
+            risk legacy
+            smallworlds
+            sushi go
+
+            coup rebellion
+            eclipse
+            resistance
+            sub terra
+
+            the captain is dead
+            complicity
+
+            camel up
+            insider
+
+            anomia
+            bananagrams
+            boggle
+            concept
+            drawful (Jackbox)
+            exquisite corpse
+            halo
+            jenga
+            loaded questions
+            the mind
+            quiplash (Jackbox)
+            quixx
+            perudo (Liar's dice)
+            set
+            sherlock holmes
+            skull
+            spaceteam
+            superfight
+            super smash brothers
+            telestrations
+            triple charades
+
+            werewolf
+
+            2 rooms & a boom
             `;
 
         return LIST.split(/\n+/)
@@ -61,6 +142,11 @@ class Suggestor {
 }
 
 Suggestor.run();
+
+// Util.logDebug({
+//     unshuffled: Suggestor.games(),
+//     randomed: Util.shuffle(Suggestor.games()),
+// });
 
 },{"../../../../util/util.js":5}],2:[function(require,module,exports){
 'use strict'
@@ -23336,12 +23422,67 @@ class Util {
         return winner;
     }
 
+    // Modifies the array.
     static shuffle (array) {
-        array.sort(
-            (a, b) => Math.random()
-        );
+        for (let i = 0; i <= array.length - 2; i++) {
+            const untouchedCount = array.length - 1 - i;
+
+            const swapWith = i + Math.ceil(Math.random() * untouchedCount);
+
+            const temp = array[i];
+            array[i] = array[swapWith];
+            array[swapWith] = temp;
+        }
 
         return array;
+    }
+
+    static testShuffle () {
+        for (let repeat = 0; repeat <= 999; repeat++) {
+            const len = Math.floor(Math.random() * 100);
+
+            const array = [...Array(len)]
+                .map(
+                    x => Math.random()
+                );
+
+            const backup = Array.from(array);
+
+            const shuffled = Util.shuffle(array);
+
+            let good = true;
+
+            if (backup.length !== shuffled.length) {
+                good = false;
+            }
+
+            let identical = true;
+
+            for (let i = 0; i < shuffled.length; i++) {
+                if (backup[i] !== shuffled[i]) {
+                    identical = false;
+                    break;
+                }
+            }
+
+            if (identical && backup.length >= 3) {
+                good = false;
+            }
+
+            if (! good) {
+                Util.error({
+                    repeat,
+                    array,
+                    backup,
+                    shuffled,
+                    identical,
+                    len,
+                    arrayLength: array.length,
+                    backupLength: backup.length,
+                    shuffledLength: shuffled.length,
+                });
+            }
+        }
     }
 
     static constrain (n, minInclusive, maxInclusive) {
@@ -24407,6 +24548,7 @@ class Util {
         Util.testPrettyDistance();
         Util.testCamelCase();
         Util.testPadSides();
+        Util.testShuffle();
         Util.testSigfigRound();
         Util.testRoll1d6();
         Util.logDebug(`Done with unit tests for Util module :)`);

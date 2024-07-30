@@ -30,12 +30,93 @@ class Suggestor {
     static games () {
 
         const LIST = `
-            regicide (Playing cards game)
+            i'm going to the beach
+
+            dutch blitz
             infiltraitors
+            oh hell
+            regicide (Playing cards game)
+            texas hold em poker
             wuxia cards
+
             dominion
             netrunner
             star wars unlimited cards
+            lorcana
+            magic cards
+
+            agricola creatures great & small
+            backgammon
+            chess
+            codenames duet
+            convert
+            hive
+            homeworlds
+            magic duels of the planeswalkers
+            quarto
+            six making
+
+            azul
+            azul stained glass
+            betrayal at house on the hill
+            cubitos
+            forbidden desert
+            innovation
+            pangaea
+            race for the galaxy
+            root
+            splendor
+            tiny epic tactics
+            war of whispers
+
+            clone wars pandemic
+            cosmic encounter
+            creature comforts
+            die crew
+            flamecraft
+            king of new york
+            point salad
+            risk godstorm
+            risk legacy
+            smallworlds
+            sushi go
+
+            coup rebellion
+            eclipse
+            resistance
+            sub terra
+
+            the captain is dead
+            complicity
+
+            camel up
+            insider
+
+            anomia
+            bananagrams
+            boggle
+            concept
+            drawful (Jackbox)
+            exquisite corpse
+            halo
+            jenga
+            loaded questions
+            the mind
+            quiplash (Jackbox)
+            quixx
+            perudo (Liar's dice)
+            set
+            sherlock holmes
+            skull
+            spaceteam
+            superfight
+            super smash brothers
+            telestrations
+            triple charades
+
+            werewolf
+
+            2 rooms & a boom
             `;
 
         return LIST.split(/\n+/)
@@ -60,3 +141,8 @@ class Suggestor {
 }
 
 Suggestor.run();
+
+// Util.logDebug({
+//     unshuffled: Suggestor.games(),
+//     randomed: Util.shuffle(Suggestor.games()),
+// });
