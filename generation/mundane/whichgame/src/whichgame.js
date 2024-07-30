@@ -45,16 +45,20 @@ class Suggestor {
             lorcana
             magic cards
 
+            a little wordy
             agricola: creatures great & small
             backgammon
             chess
             codenames duet
             convert
+            fortnite
             hive
             homeworlds
             magic: duels of the planeswalkers
+            mario
             quarto
             six making
+            german soccer game
 
             azul
             azul stained glass
@@ -65,15 +69,18 @@ class Suggestor {
             pangaea
             race for the galaxy
             root
+            sleeping gods
             splendor
             tiny epic tactics
             war of whispers
+            warioware
 
             clone wars pandemic
             cosmic encounter
             creature comforts
             die crew
             flamecraft
+            horrified
             king of new york
             point salad
             risk godstorm
@@ -91,12 +98,16 @@ class Suggestor {
 
             camel up
             insider
+            ladies & gentlemen
+            no thanks
+            take it easy
 
             anomia
             bananagrams
             boggle
             concept
             drawful (Jackbox)
+            dont get got
             exquisite corpse
             halo
             jenga
@@ -114,6 +125,7 @@ class Suggestor {
             telestrations
             triple charades
 
+            deception
             werewolf
 
             2 rooms & a boom
