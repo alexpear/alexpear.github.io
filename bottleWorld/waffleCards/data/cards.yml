@@ -63,3 +63,2306 @@ Twig:
     text: 'Romantic towards: Female, Male'
     # Her exosuit is a separate card.
 
+Halo:
+  -
+      name: Beam Rifle
+      cost: 11
+      tags: Item Covenant infantry Hardlight
+      range: 10
+      damage: 10
+      aoe: 2
+      copiesInDeck: 7
+  -
+      name: Brute CQC
+      cost: 0
+      tags: Item Covenant natural Impact Brute
+      range: 0
+      damage: 9
+      aoe: 1
+      copiesInDeck: 10
+  -
+      name: Brute Shot
+      cost: 9
+      tags: Item Covenant biginfantry Impact Brute
+      range: 3
+      damage: 6
+      aoe: 1
+      copiesInDeck: 7
+  -
+      name: Brute Shot CQC (from Brute)
+      cost: 0
+      tags: Item Covenant infantry Kinetic Brute
+      range: 0
+      damage: 13
+      aoe: 1
+      copiesInDeck: 7
+  -
+      name: Carbine
+      cost: 7
+      tags: Item Covenant infantry Kinetic
+      range: 10
+      damage: 2
+      aoe: 1
+      copiesInDeck: 8
+  -
+      name: Concussion Rifle
+      cost: 9
+      tags: Item Covenant infantry Impact
+      range: 10
+      damage: 4
+      aoe: 2
+      copiesInDeck: 3
+  -
+      name: Elite CQC
+      cost: 0
+      tags: Item Covenant natural Impact
+      range: 0
+      damage: 12
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Energy Sword
+      cost: 8
+      tags: Item Covenant biginfantry Fire
+      range: 0
+      damage: 13
+      aoe: 1
+      copiesInDeck: 6
+  -
+      name: Focus Rifle
+      cost: 12
+      tags: Item Covenant infantry Fire
+      range: 10
+      damage: 4
+      aoe: 1
+      copiesInDeck: 4
+  -
+      name: Fuel Rod Cannon
+      cost: 12
+      tags: Item Covenant infantry Fire
+      range: 10
+      damage: 10
+      aoe: 3
+      copiesInDeck: 7
+  -
+      name: Gravity Hammer
+      cost: 8
+      tags: Item Covenant biginfantry Impact Brute
+      range: 0
+      damage: 17
+      aoe: 2
+      copiesInDeck: 4
+  -
+      name: Grunt CQC
+      cost: 0
+      tags: Item Covenant natural Impact
+      range: 0
+      damage: 0
+      aoe: 1
+      copiesInDeck: 10
+  -
+      name: Hunter CQC
+      cost: 0
+      tags: Item Covenant natural Impact
+      range: 0
+      damage: 17
+      aoe: 3
+      copiesInDeck: 5
+  -
+      name: Hunter Cannon
+      cost: 12
+      tags: Item Covenant Fire
+      range: 10
+      damage: 8
+      aoe: 2
+      copiesInDeck: 5
+  -
+      name: Incendiary Grenade
+      cost: 0
+      tags: Item Covenant infantry Fire Brute
+      range: 5
+      damage: 5
+      aoe: 2
+      copiesInDeck: 3
+  -
+      name: Mauler
+      cost: 5
+      tags: Item Covenant infantry Kinetic Brute
+      range: 0
+      damage: 7
+      aoe: 1
+      copiesInDeck: 3
+  -
+      name: Needle Rifle
+      cost: 8
+      tags: Item Covenant infantry Kinetic
+      range: 10
+      damage: 4
+      aoe: 1
+      copiesInDeck: 4
+  -
+      name: Needler
+      cost: 5
+      tags: Item Covenant infantry Kinetic
+      range: 10
+      damage: 6
+      aoe: 2
+      copiesInDeck: 10
+  -
+      name: Plasma Caster
+      cost: 11
+      tags: Item Covenant infantry Fire
+      range: 10
+      damage: 12
+      aoe: 3
+      copiesInDeck: 1
+  -
+      name: Plasma Grenade
+      cost: 0
+      tags: Item Covenant infantry Fire
+      range: 5
+      damage: 20
+      aoe: 3
+      copiesInDeck: 10
+  -
+      name: Plasma Launcher
+      cost: 10
+      tags: Item Covenant infantry Fire
+      range: 10
+      damage: 3.5
+      aoe: 3
+      copiesInDeck: 3
+  -
+      name: Plasma Pistol
+      cost: 3
+      tags: Item Covenant infantry Fire
+      range: 10
+      damage: 2
+      aoe: 1
+      copiesInDeck: 10
+  -
+      name: Plasma Pistol Charged
+      cost: 0
+      tags: Item Covenant infantry Fire
+      range: 10
+      damage: 1
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Plasma Repeater
+      cost: 4
+      tags: Item Covenant infantry Fire
+      range: 10
+      damage: 3
+      aoe: 1
+      copiesInDeck: 3
+  -
+      name: Plasma Rifle
+      cost: 3
+      tags: Item Covenant infantry Fire
+      range: 10
+      damage: 3
+      aoe: 1
+      copiesInDeck: 8
+  -
+      name: Plasma Turret
+      cost: 10
+      tags: Item Covenant turret Fire
+      range: 10
+      damage: 6
+      aoe: 1
+      copiesInDeck: 6
+  -
+      name: Scarab Cannon
+      cost: 0
+      tags: Item Covenant Fire
+      range: 10
+      damage: 13.3
+      aoe: 10
+      copiesInDeck: 2
+  -
+      name: Shade Turret
+      cost: 10
+      tags: Item Covenant turret Fire
+      range: 10
+      damage: 1
+      aoe: 3
+      copiesInDeck: 7
+  -
+      name: Spike Grenade
+      cost: 0
+      tags: Item Covenant infantry Kinetic Brute
+      range: 5
+      damage: 13
+      aoe: 2
+      copiesInDeck: 9
+  -
+      name: Spiker
+      cost: 4
+      tags: Item Covenant infantry Kinetic Brute
+      range: 10
+      damage: 2
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Spiker CQC (from Brute)
+      cost: 0
+      tags: Item Covenant infantry Kinetic Brute
+      range: 0
+      damage: 10
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Tartarus' Gavel
+      cost: 13
+      tags: Item Covenant biginfantry Impact Brute
+      range: 10
+      damage: 27
+      aoe: 5
+      copiesInDeck: 1
+  -
+      name: Wraith Mortar
+      cost: 0
+      tags: Item Covenant Fire
+      range: 10
+      damage: 53
+      aoe: 5
+      copiesInDeck: 4
+  -
+      name: AA Wraith
+      tags: Character Covenant Ground
+      range: 8
+      durability: 4.8
+      copiesInDeck: 3
+      cost: 31
+      damage: 13
+      size: 4
+      has: FuelRodCannon
+      speed: 0
+  -
+      name: Banshee
+      tags: Character Covenant
+      range: 20
+      durability: 11.4
+      copiesInDeck: 1
+      size: 6
+      has: FuelRodCannon
+      speed: 8
+  -
+      name: Banshees
+      tags: Character Covenant Air
+      range: 3
+      durability: 4.2
+      copiesInDeck: 7
+      cost: 36
+      damage: 11
+      size: 4
+      speed: 9
+  -
+      name: Berserker Brutes
+      tags: Character Covenant Ground Brute
+      range: 0
+      durability: 4.2
+      copiesInDeck: 4
+      cost: 26
+      damage: 24
+      size: 2
+      speed: 1
+  -
+      name: Brute
+      tags: Character Covenant Brute
+      range: 20
+      durability: 5.4
+      copiesInDeck: 1
+      size: 3
+      has: Spiker
+      speed: 0
+  -
+      name: Brute Chieftain
+      tags: Character Covenant Ground Brute
+      range: 0
+      durability: 8.8
+      copiesInDeck: 7
+      cost: 26
+      damage: 27
+      size: 3
+      has: GravityHammer
+      speed: 0
+  -
+      name: Brute Division
+      tags: Character Covenant Brute
+      range: 4
+      durability: 2.8
+      copiesInDeck: 7
+      damage: 8
+      scale: Battalion
+      size: 2
+  -
+      name: Brute Stalkers Mauler
+      tags: Character Covenant Ground Brute
+      range: 3
+      durability: 5.2
+      copiesInDeck: 4
+      cost: 32
+      damage: 6
+      size: 2
+      speed: 0
+  -
+      name: Brutes Spiker
+      tags: Character Covenant Ground Brute
+      range: 3
+      durability: 4.2
+      copiesInDeck: 8
+      cost: 28
+      damage: 6
+      gear: Spiker
+      size: 2
+      speed: 0
+  -
+      name: Chopper
+      tags: Character Covenant Brute
+      range: 20
+      durability: 10
+      copiesInDeck: 1
+      size: 6
+      has: BruteShot
+      speed: 3
+  -
+      name: Command Elites heavy weapons
+      tags: Character Covenant Ground Elite
+      range: 5
+      durability: 4.6
+      copiesInDeck: 6
+      cost: 40
+      damage: 15
+      size: 2
+      speed: 1
+  -
+      name: Corvette
+      tags: Character Covenant Air
+      range: 14
+      durability: 5.4
+      copiesInDeck: 3
+      cost: 59
+      damage: 23
+      size: 6
+      transport: 'yes'
+      has: WraithMortar
+      speed: 4
+  -
+      name: Covenant Armor division
+      tags: Character Covenant Explosive
+      range: 14
+      durability: 5
+      copiesInDeck: 8
+      damage: 24
+      scale: Battalion
+      size: 6
+  -
+      name: Covenant cruiser
+      tags: Character Covenant
+      range: 10
+      durability: 14285.8
+      copiesInDeck: 1
+  -
+      name: Covenant heavy infantry division
+      tags: Character Covenant
+      range: 10
+      durability: 0
+      copiesInDeck: 6
+      scale: Battalion
+      size: 2
+  -
+      name: Covenant light vehicle division
+      tags: Character Covenant Fire
+      range: 5
+      durability: 4
+      copiesInDeck: 8
+      damage: 20
+      scale: Battalion
+  -
+      name: Covenant Spec Ops division
+      tags: Character Covenant
+      range: 3
+      durability: 3.4
+      copiesInDeck: 8
+      damage: 8
+      scale: Battalion
+      size: 2
+  -
+      name: Covenant Supercarrier
+      tags: Character Covenant
+      range: 10
+      durability: 285714.2
+      copiesInDeck: 1
+  -
+      name: Drone
+      tags: Character Covenant
+      range: 10
+      durability: 0.8
+      copiesInDeck: 1
+      size: 2
+      has: PlasmaPistol
+      speed: 3
+  -
+      name: Drones
+      tags: Character Covenant Air
+      range: 3
+      durability: 2.8
+      copiesInDeck: 4
+      cost: 21
+      damage: 4
+      size: 2
+      speed: 3
+  -
+      name: Elite
+      tags: Character Covenant
+      range: 30
+      durability: 5.4
+      copiesInDeck: 1
+      size: 3
+      has: PlasmaRifle
+      speed: 1
+  -
+      name: Elite PR
+      tags: Character Covenant Fire
+      range: 3
+      durability: 4
+      copiesInDeck: 8
+      cost: 40
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: Elite Ultra
+      tags: Character Covenant
+      range: 10
+      durability: 6
+      copiesInDeck: 1
+      speed: 1
+  -
+      name: Elites carbine
+      tags: Character Covenant Ground Elite
+      range: 5
+      durability: 4.2
+      copiesInDeck: 8
+      cost: 31
+      damage: 6
+      gear: Carbine
+      size: 2
+      speed: 1
+  -
+      name: Ghost
+      tags: Character Covenant
+      range: 20
+      durability: 10
+      copiesInDeck: 1
+      size: 5
+      has: PlasmaTurret
+      speed: 6
+  -
+      name: Grunt
+      tags: Character Covenant
+      range: 0
+      durability: 1
+      copiesInDeck: 1
+      size: 1.5
+      has: PlasmaPistol
+      speed: -0.5
+  -
+      name: Grunt division
+      tags: Character Covenant Fire
+      range: 3
+      durability: 2.2
+      copiesInDeck: 8
+      damage: 4
+      scale: Battalion
+      size: 2
+  -
+      name: Grunt Lance
+      tags: Character Covenant Ground Grunt
+      range: 3
+      durability: 2.4
+      copiesInDeck: 10
+      cost: 16
+      damage: 4
+      size: 2
+      speed: 0
+  -
+      name: Grunt PP
+      tags: Character Covenant Fire
+      range: 3
+      durability: 2.2
+      copiesInDeck: 8
+      cost: 8
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: Heavy Grunts fuel rod cannon
+      tags: Character Covenant Ground Grunt
+      range: 5
+      durability: 2.4
+      copiesInDeck: 5
+      cost: 23
+      damage: 13
+      size: 2
+      speed: 0
+  -
+      name: Hunter
+      tags: Character Covenant Ground Explosive
+      range: 5
+      durability: 13.2
+      copiesInDeck: 8
+      cost: 100
+      damage: 12
+      scale: Individual
+      size: 4
+      has: FuelRodCannon
+      speed: -1
+  -
+      name: Huragok
+      tags: Character Covenant Air
+      range: 10
+      durability: 0
+      copiesInDeck: 6
+      cost: 2
+      size: 2
+      speed: 0
+  -
+      name: Jackal division
+      tags: Character Covenant Fire
+      range: 3
+      durability: 3.8
+      copiesInDeck: 8
+      damage: 4
+      scale: Battalion
+      size: 2
+  -
+      name: Jackal focus rifle
+      tags: Character Covenant
+      range: 14
+      durability: 2.2
+      copiesInDeck: 6
+      damage: 12
+      scale: Individual
+      size: 2
+  -
+      name: Jackal no shield
+      tags: Character Covenant
+      range: 10
+      durability: 1.8
+      copiesInDeck: 1
+      speed: 0
+  -
+      name: Jackal shield
+      tags: Character Covenant
+      range: 10
+      durability: 4.2
+      copiesInDeck: 1
+      speed: 0
+  -
+      name: Jackal Shield PP
+      tags: Character Covenant Fire
+      range: 3
+      durability: 3.8
+      copiesInDeck: 8
+      cost: 15
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: Jumppack Brutes carbine
+      tags: Character Covenant Air Brute
+      range: 5
+      durability: 4.2
+      copiesInDeck: 7
+      cost: 35
+      damage: 8
+      gear: Carbine
+      size: 2
+      speed: 3
+  -
+      name: Kraken
+      tags: Character Covenant Ground
+      range: 8
+      durability: 5.2
+      copiesInDeck: 3
+      cost: 35
+      damage: 13
+      size: 6
+      transport: 'yes'
+      has: PlasmaTurret
+      speed: 1
+  -
+      name: Lich
+      tags: Character Covenant Air
+      range: 0
+      durability: 428.6
+      copiesInDeck: 1
+      size: 100
+      source: Halo 4
+      has: ShadeTurret
+      speed: 1
+  -
+      name: Phantom
+      tags: Character Covenant Explosive
+      range: 6
+      durability: 4.8
+      copiesInDeck: 7
+      damage: 4
+      scale: Individual
+      size: 6
+      has: ShadeTurret
+      speed: 2
+  -
+      name: Prowler
+      tags: Character Covenant Brute
+      range: 10
+      durability: 11.4
+      copiesInDeck: 1
+      speed: 2
+  -
+      name: Ranger Elites needle rifle
+      tags: Character Covenant Air Elite
+      range: 5
+      durability: 4.2
+      copiesInDeck: 6
+      cost: 34
+      damage: 8
+      size: 2
+      speed: 3
+  -
+      name: Ranger Lance plasma weapons
+      tags: Character Covenant Air Grunt
+      range: 3
+      durability: 2.8
+      copiesInDeck: 2
+      cost: 23
+      damage: 6
+      size: 2
+      speed: 3
+  -
+      name: Scarab + crew
+      tags: Character Covenant Explosive
+      range: 14
+      durability: 5
+      copiesInDeck: 8
+      cost: 10
+      damage: 40
+      scale: Individual
+      size: 12
+  -
+      name: Scarab division
+      tags: Character Covenant Explosive
+      range: 14
+      durability: 5
+      copiesInDeck: 9
+      damage: 40
+      scale: Battalion
+      size: 12
+  -
+      name: Shield Jackals plasma pistol
+      tags: Character Covenant Ground Jackal
+      range: 3
+      durability: 4
+      copiesInDeck: 9
+      cost: 22
+      damage: 4
+      size: 2
+      speed: 0
+  -
+      name: Skimmers shock rifle
+      tags: Character Covenant Air
+      range: 5
+      durability: 2.4
+      copiesInDeck: 5
+      cost: 22
+      damage: 6
+      size: 2
+      speed: 1
+  -
+      name: Skirmisher division
+      tags: Character Covenant
+      range: 4
+      durability: 3.2
+      copiesInDeck: 6
+      damage: 4
+      scale: Battalion
+      size: 2
+  -
+      name: Skirmisher PP
+      tags: Character Covenant Fire
+      range: 3
+      durability: 3
+      copiesInDeck: 6
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: Skirmishers needle rifle
+      tags: Character Covenant Ground Jackal
+      range: 5
+      durability: 3
+      copiesInDeck: 6
+      cost: 29
+      damage: 8
+      gear: Needle Rifle
+      size: 2
+      speed: 3
+  -
+      name: Sniper Jackals beam rifle
+      tags: Character Covenant Ground Jackal
+      range: 14
+      durability: 2.4
+      copiesInDeck: 7
+      cost: 45
+      damage: 11
+      size: 2
+      speed: 0
+  -
+      name: Spec Ops Elite
+      tags: Character Covenant
+      range: 10
+      durability: 5.8
+      copiesInDeck: 1
+      speed: 1
+  -
+      name: Spec Ops Grunt
+      tags: Character Covenant
+      range: 10
+      durability: 2.2
+      copiesInDeck: 1
+      speed: 0
+  -
+      name: Spirit
+      tags: Character Covenant Air Explosive
+      range: 5
+      durability: 4.8
+      copiesInDeck: 7
+      cost: 38
+      damage: 8
+      scale: Individual
+      size: 6
+      transport: 'yes'
+      speed: 10
+  -
+      name: Stealth Elite
+      tags: Character Covenant
+      range: 10
+      durability: 2
+      copiesInDeck: 1
+      speed: 1
+  -
+      name: Stealth Elites plasma rifle
+      tags: Character Covenant Ground Elite
+      range: 3
+      durability: 5.2
+      copiesInDeck: 8
+      cost: 29
+      damage: 6
+      gear: Plasma Rifle
+      size: 2
+      speed: 1
+  -
+      name: Wraith
+      tags: Character Covenant Ground Explosive
+      range: 8
+      durability: 60
+      copiesInDeck: 8
+      cost: 31
+      damage: 24
+      scale: Individual
+      size: 6
+      has: WraithMortar
+      speed: 1
+  -
+      name: Zealots needle rifle
+      tags: Character Covenant Ground Elite
+      range: 5
+      durability: 4.2
+      copiesInDeck: 4
+      cost: 33
+      damage: 8
+      size: 2
+      speed: 1
+  -
+      name: Flood Carrier blast
+      cost: 0
+      tags: Item Flood Impact
+      range: 10
+      damage: 16
+      aoe: 3
+      copiesInDeck: 1
+  -
+      name: Flood Combat Form CQC
+      cost: 0
+      tags: Item Flood Impact
+      range: 10
+      damage: 12
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Flood Pod CQC
+      cost: 0
+      tags: Item Flood Kinetic
+      range: 10
+      damage: 1
+      aoe: 1
+      copiesInDeck: 10
+  -
+      name: Flood spine munitions
+      cost: 0
+      tags: Item Flood Kinetic
+      range: 10
+      damage: 1
+      aoe: 1
+      copiesInDeck: 4
+  -
+      name: Carrier Form
+      tags: Character Flood Ground
+      range: 0
+      durability: 0.4
+      copiesInDeck: 5
+      cost: 10
+      size: 2
+      has: CarrierBlast
+      speed: -1
+  -
+      name: Combat Form (Human)
+      tags: Character Flood Ground
+      range: 10
+      durability: 3
+      copiesInDeck: 7
+      cost: 20
+      size: 2
+      has: CombatFormCQC
+      speed: 0
+  -
+      name: Combat horde (large bodies)
+      tags: Character Flood Blade
+      range: 0
+      durability: 2.8
+      copiesInDeck: 6
+      damage: 8
+      scale: Battalion
+      size: 2
+  -
+      name: Combat horde (small bodies)
+      tags: Character Flood Blade
+      range: 0
+      durability: 2.8
+      copiesInDeck: 9
+      damage: 8
+      scale: Battalion
+      size: 2
+  -
+      name: Flood Combat Form (Marine)
+      tags: Character Flood Blade
+      range: 0
+      durability: 2.8
+      copiesInDeck: 8
+      cost: 15
+      damage: 8
+      scale: Individual
+      size: 2
+  -
+      name: Flood Combat Form Brute
+      tags: Character Flood
+      range: 10
+      durability: 3.8
+      copiesInDeck: 1
+      speed: 0
+  -
+      name: Flood Combat Form Elite
+      tags: Character Flood
+      range: 10
+      durability: 3.4
+      copiesInDeck: 1
+      speed: 1
+  -
+      name: Flood Combat Form Human
+      tags: Character Flood
+      range: 10
+      durability: 2.8
+      copiesInDeck: 1
+      speed: 0
+  -
+      name: Flood Infection Form
+      tags: Character Flood Blade
+      range: 0
+      durability: 2
+      copiesInDeck: 8
+      cost: 1
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: Flood Spider Form
+      tags: Character Flood
+      range: 10
+      durability: 2.8
+      copiesInDeck: 1
+      source: Halo 3
+      speed: 1
+  -
+      name: Flood Spiner Form
+      tags: Character Flood
+      range: 10
+      durability: 2.8
+      copiesInDeck: 1
+      source: Halo 3
+  -
+      name: Flood Tank Form
+      tags: Character Flood
+      range: 10
+      durability: 10
+      copiesInDeck: 1
+      source: Halo 3
+      speed: -1
+  -
+      name: Infection Pods
+      tags: Character Flood Ground
+      range: 0
+      durability: 1.8
+      copiesInDeck: 7
+      cost: 14
+      damage: 12
+      size: 2
+      speed: 1
+  -
+      name: Infection swarm
+      tags: Character Flood
+      range: 0
+      durability: 2
+      copiesInDeck: 8
+      damage: 4
+      scale: Battalion
+      size: 1
+  -
+      name: Pure Forms
+      tags: Character Flood Ground
+      range: 5
+      durability: 4.2
+      copiesInDeck: 3
+      cost: 33
+      damage: 4
+      size: 2
+      speed: 3
+  -
+      name: Binary Rifle
+      cost: 12
+      tags: Item Forerunner infantry Fire
+      range: 10
+      damage: 13
+      aoe: 2
+      copiesInDeck: 4
+  -
+      name: Boltshot
+      cost: 8
+      tags: Item Forerunner infantry Fire
+      range: 10
+      damage: 2
+      aoe: 1
+      copiesInDeck: 7
+  -
+      name: Crawler CQC
+      cost: 0
+      tags: Item Forerunner natural Impact
+      range: 0
+      damage: 6
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Duelist's Boltshot
+      cost: 4
+      tags: Item Forerunner infantry Fire
+      range: 10
+      damage: 1
+      aoe: 1
+      copiesInDeck: 7
+  -
+      name: Heatwave
+      cost: 0
+      tags: Item Forerunner Hardlight
+      range: 10
+      damage: 30
+      aoe: 1
+      copiesInDeck: 1
+  -
+      name: Incineration Cannon
+      cost: 10
+      tags: Item Forerunner biginfantry Fire
+      range: 10
+      damage: 27
+      aoe: 4
+      copiesInDeck: 4
+  -
+      name: Knightblade
+      cost: 0
+      tags: Item Forerunner natural Fire
+      range: 10
+      damage: 13
+      aoe: 2
+      copiesInDeck: 5
+  -
+      name: Lightrifle
+      cost: 8
+      tags: Item Forerunner infantry Fire
+      range: 10
+      damage: 3
+      aoe: 1
+      copiesInDeck: 8
+  -
+      name: Pulse Grenade
+      cost: 0
+      tags: Item Forerunner infantry Fire
+      range: 10
+      damage: 7
+      aoe: 1
+      copiesInDeck: 8
+  -
+      name: Sentinel Beam
+      cost: 8
+      tags: Item Forerunner infantry Fire
+      range: 10
+      damage: 3
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Splinter Grenade
+      cost: 0
+      tags: Item Forerunner infantry Fire
+      range: 10
+      damage: 13
+      aoe: 2
+      copiesInDeck: 8
+  -
+      name: Splinter Turret
+      cost: 10
+      tags: Item Forerunner biginfantry Fire
+      range: 10
+      damage: 5
+      aoe: 2
+      copiesInDeck: 4
+  -
+      name: Suppressor
+      cost: 9
+      tags: Item Forerunner infantry Fire
+      range: 10
+      damage: 4
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Battlewagon incineration cannon
+      tags: Character Forerunner Ground Promethean
+      range: 5
+      durability: 4.6
+      copiesInDeck: 4
+      cost: 233
+      damage: 15
+      size: 2
+      speed: 147
+  -
+      name: Crawler
+      tags: Character Forerunner Promethean
+      range: 0
+      durability: 2
+      copiesInDeck: 1
+      size: 2
+      source: Halo 5
+      has: Suppressor
+      speed: 1
+  -
+      name: Forerunner Keyship
+      tags: Character Forerunner
+      range: 10
+      durability: 571428.6
+      copiesInDeck: 1
+      source: Halo 5
+  -
+      name: Guardian
+      tags: Character Forerunner Air
+      range: 13
+      durability: 6
+      copiesInDeck: 1
+      cost: 47
+      damage: 25
+      size: 6
+      speed: 1
+  -
+      name: Knight
+      tags: Character Forerunner
+      range: 20
+      durability: 11.4
+      copiesInDeck: 1
+      size: 3
+      source: Halo 5
+      has: Lightrifle
+      speed: 2
+  -
+      name: Knights lightrifle
+      tags: Character Forerunner Ground Promethean
+      range: 5
+      durability: 4.6
+      copiesInDeck: 5
+      cost: 228
+      damage: 8
+      gear: Lightrifle
+      size: 2
+      speed: 147
+  -
+      name: Phaeton
+      tags: Character Forerunner
+      range: 10
+      durability: 40
+      copiesInDeck: 1
+      speed: 3
+  -
+      name: Phaetons
+      tags: Character Forerunner Air Promethean
+      range: 5
+      durability: 4.2
+      copiesInDeck: 4
+      cost: 33
+      damage: 10
+      size: 4
+      speed: 6
+  -
+      name: Promethean Soldier suppressor
+      tags: Character Forerunner Kinetic
+      range: 4
+      durability: 3.4
+      copiesInDeck: 3
+      damage: 8
+      scale: Individual
+      size: 2
+  -
+      name: Sentinel
+      tags: Character Forerunner Fire
+      range: 5
+      durability: 3.4
+      copiesInDeck: 9
+      cost: 20
+      damage: 8
+      scale: Individual
+      size: 2
+      source: Reach
+      has: SentinelBeam
+      speed: 2
+  -
+      name: Sentinel division
+      tags: Character Forerunner
+      range: 5
+      durability: 4
+      copiesInDeck: 7
+      damage: 8
+      scale: Battalion
+      size: 2
+  -
+      name: Sentinel Enforcer
+      tags: Character Forerunner Explosive
+      range: 8
+      durability: 11
+      copiesInDeck: 6
+      damage: 20
+      scale: Individual
+      size: 4
+      speed: -0.5
+  -
+      name: Sentinels
+      tags: Character Forerunner Air
+      range: 3
+      durability: 3.4
+      copiesInDeck: 7
+      cost: 216
+      damage: 4
+      size: 2
+      speed: 147
+  -
+      name: Soldier
+      tags: Character Forerunner
+      range: 10
+      durability: 2.8
+      copiesInDeck: 1
+      size: 2
+      source: Halo 4
+      speed: 2
+  -
+      name: Soldier suppressor
+      tags: Character Forerunner Ground
+      range: 3
+      durability: 3.6
+      copiesInDeck: 2
+      cost: 217
+      damage: 4
+      size: 2
+      speed: 147
+  -
+      name: Warden
+      tags: Character Forerunner Ground Promethean
+      range: 13
+      durability: 4.8
+      copiesInDeck: 3
+      cost: 242
+      damage: 17
+      size: 2
+      speed: 147
+  -
+      name: Warden Eternal
+      tags: Character Forerunner
+      range: 10
+      durability: 114.2
+      copiesInDeck: 1
+      source: Halo 5
+      speed: -1
+  -
+      name: Watcher
+      tags: Character Forerunner
+      range: 10
+      durability: 2.2
+      copiesInDeck: 1
+      size: 2
+      source: Halo 5
+      speed: 3
+  -
+      name: Watchers
+      tags: Character Forerunner Air Promethean
+      range: 5
+      durability: 2.4
+      copiesInDeck: 5
+      cost: 212
+      damage: 2
+      size: 2
+      speed: 147
+  -
+      name: Assault Rifle
+      cost: 7
+      tags: Item UNSC infantry Kinetic
+      range: 2
+      damage: 5
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Battle Rifle
+      cost: 8
+      tags: Item UNSC infantry Kinetic
+      range: 5
+      damage: 2
+      aoe: 1
+      copiesInDeck: 8
+  -
+      name: Bulldog
+      cost: 0
+      tags: Item UNSC Kinetic
+      range: 10
+      damage: 24
+      aoe: 1
+      copiesInDeck: 1
+  -
+      name: Chaingun
+      cost: 10
+      tags: Item UNSC turret Kinetic
+      range: 3
+      damage: 15
+      aoe: 1
+      copiesInDeck: 8
+  -
+      name: Commando
+      cost: 0
+      tags: Item UNSC Kinetic
+      range: 10
+      damage: 12
+      aoe: 1
+      copiesInDeck: 1
+  -
+      name: DMR
+      cost: 10
+      tags: Item UNSC infantry Kinetic
+      range: 15
+      damage: 3
+      aoe: 1
+      copiesInDeck: 7
+  -
+      name: Endgame
+      cost: 13
+      tags: Item UNSC infantry Fire
+      range: 10
+      damage: 20
+      aoe: 1
+      copiesInDeck: 1
+  -
+      name: Flamethrower
+      cost: 8
+      tags: Item UNSC infantry Fire
+      range: 10
+      damage: 18
+      aoe: 2
+      copiesInDeck: 4
+  -
+      name: Frag Grenade
+      cost: 0
+      tags: Item UNSC infantry Kinetic
+      range: 5
+      damage: 10
+      aoe: 3
+      copiesInDeck: 9
+  -
+      name: Gauss Cannon
+      cost: 13
+      tags: Item UNSC turret Impact
+      range: 10
+      damage: 33
+      aoe: 1
+      copiesInDeck: 4
+  -
+      name: Grenade Launcher
+      cost: 11
+      tags: Item UNSC infantry Explosive
+      range: 10
+      damage: 13
+      aoe: 3
+      copiesInDeck: 6
+  -
+      name: Hannibal Cannon
+      cost: 0
+      tags: Item UNSC Fire
+      range: 14
+      damage: 67
+      aoe: 5
+      copiesInDeck: 1
+  -
+      name: Hannibal Ion Launcher
+      cost: 0
+      tags: Item UNSC Fire
+      range: 10
+      damage: 5
+      aoe: 4
+      copiesInDeck: 1
+  -
+      name: Hannibal Pulse Lasers
+      cost: 0
+      tags: Item UNSC Fire
+      range: 10
+      damage: 4
+      aoe: 1
+      copiesInDeck: 1
+  -
+      name: Heavy Chaingun
+      cost: 11
+      tags: Item UNSC turret Explosive
+      range: 10
+      damage: 6
+      aoe: 1
+      copiesInDeck: 2
+  -
+      name: Heavy Pistol
+      cost: 8
+      tags: Item UNSC infantry Kinetic
+      range: 5
+      damage: 4
+      aoe: 1
+      copiesInDeck: 4
+  -
+      name: Heavy SAW
+      cost: 13
+      tags: Item UNSC biginfantry Explosive
+      range: 10
+      damage: 15
+      aoe: 1
+      copiesInDeck: 1
+  -
+      name: Hydra
+      cost: 10
+      tags: Item UNSC infantry Explosive
+      range: 10
+      damage: 16
+      aoe: 1
+      copiesInDeck: 1
+  -
+      name: Light Pistol
+      cost: 4
+      tags: Item UNSC infantry Kinetic
+      range: 1
+      damage: 2
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Mammoth MAC
+      cost: 63
+      tags: Item UNSC
+      range: 14
+      damage: 23
+      aoe: 1
+      copiesInDeck: 5
+  -
+      name: Marathon MAC
+      cost: 0
+      tags: Item UNSC Impact
+      range: 10
+      damage: 66.7
+      aoe: 100
+      copiesInDeck: 1
+  -
+      name: Marine CQC
+      cost: 0
+      tags: Item UNSC natural Impact
+      range: 0
+      damage: 0
+      aoe: 1
+      copiesInDeck: 10
+  -
+      name: Missile Pod
+      cost: 13
+      tags: Item UNSC turret Impact
+      range: 10
+      damage: 7
+      aoe: 2
+      copiesInDeck: 3
+  -
+      name: Needle Chaingun
+      cost: 11
+      tags: Item UNSC turret Kinetic
+      range: 10
+      damage: 4
+      aoe: 1
+      copiesInDeck: 1
+  -
+      name: Pistol
+      cost: 5
+      tags: Item UNSC infantry Kinetic
+      range: 10
+      damage: 2
+      aoe: 1
+      copiesInDeck: 10
+  -
+      name: Railgun
+      cost: 10
+      tags: Item UNSC infantry Kinetic
+      range: 10
+      damage: 13
+      aoe: 1
+      copiesInDeck: 4
+  -
+      name: Rocket Launcher
+      cost: 10
+      tags: Item UNSC infantry Impact
+      range: 8
+      damage: 27
+      aoe: 3
+      copiesInDeck: 6
+  -
+      name: SAW
+      cost: 10
+      tags: Item UNSC biginfantry Kinetic
+      range: 3
+      damage: 9
+      aoe: 1
+      copiesInDeck: 5
+  -
+      name: SMG
+      cost: 6
+      tags: Item UNSC infantry Kinetic
+      range: 1
+      damage: 4
+      aoe: 1
+      copiesInDeck: 9
+  -
+      name: Scoped Pistol
+      cost: 6
+      tags: Item UNSC infantry Kinetic
+      range: 4
+      damage: 3
+      aoe: 1
+      copiesInDeck: 10
+  -
+      name: Scorpion Cannon
+      cost: 0
+      tags: Item UNSC Explosive
+      range: 14
+      damage: 23.5
+      aoe: 4
+      copiesInDeck: 6
+  -
+      name: Selene's Lance
+      cost: 13
+      tags: Item UNSC infantry Fire
+      range: 10
+      damage: 26.5
+      aoe: 2
+      copiesInDeck: 1
+  -
+      name: Shotgun
+      cost: 8
+      tags: Item UNSC infantry Kinetic
+      range: 0
+      damage: 6
+      aoe: 1
+      copiesInDeck: 6
+  -
+      name: Silenced Pistol
+      cost: 6
+      tags: Item UNSC infantry Kinetic
+      range: 10
+      damage: 2
+      aoe: 1
+      copiesInDeck: 2
+  -
+      name: Silenced SMG
+      cost: 6
+      tags: Item UNSC infantry Kinetic
+      range: 10
+      damage: 5
+      aoe: 1
+      copiesInDeck: 2
+  -
+      name: Sniper Rifle
+      cost: 13
+      tags: Item UNSC infantry Kinetic
+      range: 14
+      damage: 10
+      aoe: 1
+      copiesInDeck: 6
+  -
+      name: Spartan CQC
+      cost: 0
+      tags: Item UNSC natural Impact
+      range: 0
+      damage: 5
+      aoe: 1
+      copiesInDeck: 1
+  -
+      name: Spartan Laser
+      cost: 13
+      tags: Item UNSC infantry Fire
+      range: 10
+      damage: 27
+      aoe: 1
+      copiesInDeck: 2
+  -
+      name: Sticky Grenade Launcher
+      cost: 11
+      tags: Item UNSC infantry Impact
+      range: 10
+      damage: 17
+      aoe: 2
+      copiesInDeck: 3
+  -
+      name: Tactical MAC Cannon
+      cost: 0
+      tags: Item UNSC Impact
+      range: 10
+      damage: 20
+      aoe: 10
+      copiesInDeck: 2
+  -
+      name: Vespin Rocket Turret
+      cost: 12
+      tags: Item UNSC turret Impact
+      range: 10
+      damage: 13
+      aoe: 1
+      copiesInDeck: 1
+  -
+      name: AA Tower
+      tags: Character UNSC Ground
+      range: 14
+      durability: 4.8
+      copiesInDeck: 5
+      cost: 43
+      damage: 13
+      size: 6
+  -
+      name: Base
+      tags: Character UNSC Ground
+      range: 10
+      durability: 5.2
+      copiesInDeck: 2
+      cost: 18
+      size: 6
+      transport: 'yes'
+  -
+      name: Crew Sidekick
+      tags: Character UNSC Ground
+      range: 3
+      durability: 2.2
+      copiesInDeck: 5
+      cost: 13
+      damage: 2
+      gear: Sidekick
+      size: 2
+      speed: 0
+  -
+      name: Elephant
+      tags: Character UNSC Crush
+      range: 0
+      durability: 40
+      copiesInDeck: 6
+      damage: 20
+      scale: Individual
+      size: 8
+  -
+      name: Falcon
+      tags: Character UNSC Kinetic
+      range: 6
+      durability: 4.2
+      copiesInDeck: 3
+      damage: 8
+      scale: Individual
+      size: 4
+      has: Chaingun
+      speed: 5
+  -
+      name: Falcon Chaingun
+      tags: Character UNSC Air
+      range: 5
+      durability: 4.2
+      copiesInDeck: 7
+      cost: 34
+      damage: 10
+      size: 4
+      transport: 'yes'
+      speed: 6
+  -
+      name: Falcon RPG
+      tags: Character UNSC Air
+      range: 5
+      durability: 4.2
+      copiesInDeck: 1
+      cost: 29
+      size: 4
+      transport: 'yes'
+      speed: 6
+  -
+      name: Fortified Marine division
+      tags: Character UNSC
+      range: 8
+      durability: 5
+      copiesInDeck: 7
+      damage: 8
+      scale: Battalion
+  -
+      name: Gauss Hog
+      tags: Character UNSC Ground
+      range: 5
+      durability: 4.6
+      copiesInDeck: 6
+      cost: 27
+      size: 4
+      speed: 4
+  -
+      name: Gungoose
+      tags: Character UNSC Ground
+      range: 10
+      durability: 2.8
+      copiesInDeck: 4
+      cost: 20
+      size: 4
+      transport: 'yes'
+      speed: 6
+  -
+      name: Hannibal Scorpion
+      tags: Character UNSC Ground
+      range: 10
+      durability: 4.6
+      copiesInDeck: 3
+      cost: 17
+      size: 4
+      speed: 0
+  -
+      name: Hannibal Wasp
+      tags: Character UNSC Air
+      range: 5
+      durability: 4.2
+      copiesInDeck: 3
+      cost: 28
+      size: 4
+      speed: 6
+  -
+      name: Helljumpers DMR jetpack
+      tags: Character UNSC Air ODST
+      range: 8
+      durability: 2.8
+      copiesInDeck: 6
+      cost: 30
+      damage: 10
+      size: 2
+      speed: 1
+  -
+      name: Hornet
+      tags: Character UNSC Explosive
+      range: 7
+      durability: 10
+      copiesInDeck: 3
+      damage: 12
+      scale: Individual
+      size: 4
+      has: GrenadeLauncher
+      speed: 4
+  -
+      name: Hornets
+      tags: Character UNSC Air
+      range: 8
+      durability: 4.2
+      copiesInDeck: 6
+      cost: 38
+      damage: 13
+      size: 4
+      transport: 'yes'
+      speed: 6
+  -
+      name: Longsword
+      tags: Character UNSC Explosive
+      range: 8
+      durability: 4
+      copiesInDeck: 2
+      damage: 32
+      scale: Individual
+      size: 6
+  -
+      name: Mammoth
+      tags: Character UNSC Ground
+      range: 10
+      durability: 285.8
+      copiesInDeck: 5
+      cost: 100
+      source: Halo 5
+      transport: 'yes'
+      has: MammothMAC
+      speed: 0
+  -
+      name: Mantis
+      tags: Character UNSC Explosive
+      range: 6
+      durability: 5
+      copiesInDeck: 6
+      damage: 20
+      scale: Individual
+      size: 4
+      has: GrenadeLauncher
+      speed: -0.5
+  -
+      name: Marathon Class Cruiser
+      tags: Character UNSC
+      range: 10
+      durability: 2571.4
+      copiesInDeck: 1
+  -
+      name: Marine
+      tags: Character UNSC
+      range: 10
+      durability: 2
+      copiesInDeck: 1
+      size: 2
+      source: Halo 1
+      has: SMG
+      speed: -0.5
+  -
+      name: Marine AR
+      tags: Character UNSC Kinetic
+      range: 3
+      durability: 3.2
+      copiesInDeck: 10
+      cost: 10
+      damage: 8
+      scale: Individual
+      size: 2
+  -
+      name: Marine BR
+      tags: Character UNSC Kinetic
+      range: 7
+      durability: 3.2
+      copiesInDeck: 8
+      cost: 20
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: Marine DMR
+      tags: Character UNSC Kinetic
+      range: 10
+      durability: 3.2
+      copiesInDeck: 7
+      cost: 22
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: Marine Frags
+      tags: Character UNSC Explosive
+      range: 2
+      durability: 3.2
+      copiesInDeck: 3
+      damage: 12
+      scale: Individual
+      size: 2
+  -
+      name: Marine Grenade Launcher
+      tags: Character UNSC Explosive
+      range: 3
+      durability: 3.2
+      copiesInDeck: 5
+      damage: 16
+      scale: Individual
+      size: 2
+  -
+      name: Marine Gungoose
+      tags: Character UNSC Explosive
+      range: 3
+      durability: 4
+      copiesInDeck: 4
+      damage: 12
+      scale: Individual
+      size: 2
+  -
+      name: Marine Hydra
+      tags: Character UNSC Explosive
+      range: 8
+      durability: 3.2
+      copiesInDeck: 6
+      damage: 12
+      scale: Individual
+      size: 2
+  -
+      name: Marine infantry division
+      tags: Character UNSC
+      range: 4
+      durability: 3.2
+      copiesInDeck: 7
+      damage: 8
+      scale: Battalion
+      size: 2
+  -
+      name: Marine Laser
+      tags: Character UNSC Fire
+      range: 8
+      durability: 3.2
+      copiesInDeck: 6
+      damage: 12
+      scale: Individual
+      size: 2
+  -
+      name: Marine Rocket Launcher
+      tags: Character UNSC Explosive
+      range: 3
+      durability: 3.2
+      copiesInDeck: 6
+      damage: 20
+      scale: Individual
+      size: 2
+  -
+      name: Marine SMG
+      tags: Character UNSC Kinetic
+      range: 3
+      durability: 3.2
+      copiesInDeck: 6
+      cost: 9
+      damage: 8
+      scale: Individual
+      size: 2
+  -
+      name: Marine Shotgun
+      tags: Character UNSC Kinetic
+      range: 1
+      durability: 3.2
+      copiesInDeck: 8
+      damage: 8
+      scale: Individual
+      size: 2
+  -
+      name: Marine Sniper
+      tags: Character UNSC Kinetic
+      range: 14
+      durability: 3.2
+      copiesInDeck: 8
+      damage: 12
+      scale: Individual
+      size: 2
+  -
+      name: Marines AR
+      tags: Character UNSC Ground Marine
+      range: 3
+      durability: 2.8
+      copiesInDeck: 10
+      cost: 19
+      damage: 6
+      size: 2
+      speed: 0
+  -
+      name: Marines BR
+      tags: Character UNSC Ground Marine
+      range: 5
+      durability: 2.4
+      copiesInDeck: 5
+      cost: 22
+      damage: 10
+      size: 2
+      speed: 0
+  -
+      name: Marines Hydra
+      tags: Character UNSC Ground
+      range: 8
+      durability: 2.8
+      copiesInDeck: 1
+      cost: 28
+      damage: 11
+      gear: Hydra
+      size: 2
+      speed: 0
+  -
+      name: Marines Mongoose SMG
+      tags: Character UNSC Kinetic
+      range: 3
+      durability: 3.6
+      copiesInDeck: 5
+      damage: 8
+      scale: Individual
+      size: 2
+  -
+      name: Marines rocket launcher
+      tags: Character UNSC Ground Marine
+      range: 8
+      durability: 2.4
+      copiesInDeck: 5
+      cost: 26
+      damage: 11
+      size: 2
+      speed: 0
+  -
+      name: Marines SMG
+      tags: Character UNSC Ground Marine
+      range: 3
+      durability: 2.8
+      copiesInDeck: 10
+      cost: 18
+      damage: 4
+      size: 2
+      speed: 0
+  -
+      name: Marines shotgun
+      tags: Character UNSC Ground Marine
+      range: 0
+      durability: 2.4
+      copiesInDeck: 4
+      cost: 14
+      damage: 12
+      size: 2
+      speed: 0
+  -
+      name: Marines sniper rifle
+      tags: Character UNSC Ground Marine
+      range: 14
+      durability: 2.8
+      copiesInDeck: 5
+      cost: 50
+      damage: 11
+      size: 2
+      speed: 0
+  -
+      name: Missile Bunker
+      tags: Character UNSC Explosive
+      range: 14
+      durability: 6
+      copiesInDeck: 6
+      damage: 40
+      scale: Individual
+      size: 6
+  -
+      name: ODST
+      tags: Character UNSC
+      range: 30
+      durability: 2.8
+      copiesInDeck: 1
+      size: 2
+      source: Halo 3 Recon
+      has: SilencedSMG
+      speed: 0
+  -
+      name: ODST w/ DMR
+      tags: Character UNSC Ground ODST
+      range: 8
+      durability: 3.6
+      copiesInDeck: 7
+      cost: 28
+      damage: 6
+      size: 2
+      speed: 0
+  -
+      name: ODST BR
+      tags: Character UNSC Kinetic
+      range: 7
+      durability: 3.8
+      copiesInDeck: 7
+      cost: 30
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: ODST Flamethrower
+      tags: Character UNSC Fire
+      range: 1
+      durability: 3.8
+      copiesInDeck: 4
+      damage: 16
+      scale: Individual
+      size: 2
+  -
+      name: ODST Railgun
+      tags: Character UNSC Kinetic
+      range: 5
+      durability: 3.8
+      copiesInDeck: 4
+      damage: 12
+      scale: Individual
+      size: 2
+  -
+      name: ODST SAW
+      tags: Character UNSC Kinetic
+      range: 6
+      durability: 3.8
+      copiesInDeck: 6
+      damage: 12
+      scale: Individual
+      size: 2
+  -
+      name: ODST Turret
+      tags: Character UNSC Kinetic
+      range: 6
+      durability: 3.8
+      copiesInDeck: 4
+      damage: 16
+      scale: Individual
+      size: 2
+  -
+      name: Officer Heavy Pistol
+      tags: Character UNSC Kinetic
+      range: 6
+      durability: 2
+      copiesInDeck: 7
+      damage: 8
+      scale: Individual
+      size: 2
+  -
+      name: Officer Light Pistol
+      tags: Character UNSC Kinetic
+      range: 3
+      durability: 2
+      copiesInDeck: 3
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: Officer Magnum
+      tags: Character UNSC Kinetic
+      range: 5
+      durability: 2
+      copiesInDeck: 3
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: Officers sidekick
+      tags: Character UNSC Ground Marine
+      range: 3
+      durability: 2.2
+      copiesInDeck: 3
+      cost: 13
+      damage: 2
+      gear: Sidekick
+      size: 2
+      speed: 0
+  -
+      name: Officerunarmed
+      tags: Character UNSC Crush
+      range: 0
+      durability: 2
+      copiesInDeck: 3
+      damage: 4
+      scale: Individual
+      size: 2
+  -
+      name: Pelican
+      tags: Character UNSC Kinetic
+      range: 6
+      durability: 4.2
+      copiesInDeck: 6
+      damage: 8
+      scale: Individual
+      size: 6
+      has: Chaingun
+      speed: 4
+  -
+      name: Razorback
+      tags: Character UNSC Ground
+      range: 10
+      durability: 4.2
+      copiesInDeck: 4
+      cost: 23
+      size: 4
+      transport: 'yes'
+      speed: 4
+  -
+      name: Rocket Hog
+      tags: Character UNSC Ground
+      range: 5
+      durability: 4.6
+      copiesInDeck: 4
+      cost: 27
+      size: 4
+      speed: 4
+  -
+      name: Sailor
+      tags: Character UNSC
+      range: 10
+      durability: 0.4
+      copiesInDeck: 1
+      gear: Heavy Pistol
+      size: 2
+      source: Halo 1
+      speed: 0
+  -
+      name: Scorpion
+      tags: Character UNSC Explosive
+      range: 9
+      durability: 4
+      copiesInDeck: 8
+      cost: 1
+      damage: 32
+      scale: Individual
+      size: 6
+      has: ScorpionCannon
+      speed: -0.5
+  -
+      name: Scorpion division
+      tags: Character UNSC Explosive
+      range: 14
+      durability: 4
+      copiesInDeck: 8
+      damage: 32
+      scale: Battalion
+      size: 6
+  -
+      name: Spartan- III
+      tags: Character UNSC Kinetic
+      range: 3
+      durability: 4.2
+      copiesInDeck: 7
+      damage: 4
+      gear: AssaultRifle
+      scale: Individual
+      size: 2
+  -
+      name: Spartan Armored
+      tags: Character UNSC
+      range: 10
+      durability: 5.2
+      copiesInDeck: 1
+      gear: SAW
+      size: 3
+      source: Halo 1
+      speed: 0
+  -
+      name: Spartan BR
+      tags: Character UNSC Ground Spartan
+      range: 50
+      durability: 4.2
+      copiesInDeck: 10
+      cost: 55
+      size: 2.5
+      has: BattleRifle
+      speed: 1
+  -
+      name: Spartan chaingun
+      tags: Character UNSC Ground Spartan
+      range: 5
+      durability: 4.2
+      copiesInDeck: 3
+      cost: 34
+      damage: 11
+      size: 2
+      speed: 0
+  -
+      name: Spartan SPI
+      tags: Character UNSC
+      range: 10
+      durability: 2.6
+      copiesInDeck: 1
+      speed: 0
+  -
+      name: Spartan shotgun
+      tags: Character UNSC Ground Spartan
+      range: 0
+      durability: 4.2
+      copiesInDeck: 2
+      cost: 27
+      damage: 27
+      size: 2
+      speed: 1
+  -
+      name: Spartan sniper rifle
+      tags: Character UNSC Ground Spartan
+      range: 14
+      durability: 4.2
+      copiesInDeck: 4
+      cost: 62
+      damage: 11
+      size: 2
+      speed: 1
+  -
+      name: Spartan Unarmored
+      tags: Character UNSC
+      range: 10
+      durability: 2.2
+      copiesInDeck: 1
+      size: 3
+      speed: 0
+  -
+      name: Tactical MAC
+      tags: Character UNSC Ground Explosive
+      range: 14
+      durability: 4.2
+      copiesInDeck: 4
+      cost: 66
+      damage: 40
+      scale: Individual
+      size: 6
+  -
+      name: UNSC captured Scarab
+      tags: Character UNSC Explosive
+      range: 14
+      durability: 5
+      copiesInDeck: 6
+      damage: 40
+      scale: Battalion
+      size: 12
+  -
+      name: UNSC Infinity
+      tags: Character UNSC
+      range: 10
+      durability: 28571.4
+      copiesInDeck: 1
+  -
+      name: Warthog
+      tags: Character UNSC Kinetic
+      range: 6
+      durability: 4
+      copiesInDeck: 9
+      cost: 200
+      damage: 8
+      scale: Individual
+      size: 4
+      has: Chaingun
+      speed: 2
+  -
+      name: Wasp
+      tags: Character UNSC Kinetic
+      range: 7
+      durability: 4
+      copiesInDeck: 6
+      damage: 8
+      scale: Individual
+      size: 4
+      has: GrenadeLauncher
+      speed: 6
+
+

@@ -28,8 +28,10 @@ class Card {
 
         const passageArray = [];
 
+        // TODO extract some of this logic out into this.toString() if possible. Perhaps a func that returns a array of lines of text that will be displayed.
         for (let prop of Card.PROPS) {
             if (! this.props[prop] || SKIP_PROPS.includes(prop)) {
+                // NOTE - We are filtering out both zero & undefined.
                 continue;
             }
 
@@ -45,10 +47,13 @@ class Card {
                     displayStr += ` <i>${this.asTagStr(this.props.ruleTags)}</i>`;
                 }
             }
-            // TODO group Attack info together somehow - perhaps at bottom?
+            // LATER group Attack info together somehow - perhaps at bottom?
             else if ('resist' === prop) {
                 value = Object.entries(value)
                     .sort()
+                    .filter(
+                        pair => pair[1] !== 0
+                    )
                     .map(
                         pair => `${Util.capitalized(pair[0])} ${pair[1]}`
                     )
@@ -60,6 +65,7 @@ class Card {
                 displayStr = `${value}`;
             }
             else if ('context' === prop) {
+                // LATER display context at bottom
                 displayStr = `${propName}: ${Util.fromCamelCase(value)}`;
             }
             else {
@@ -83,6 +89,20 @@ class Card {
                 tag => Util.capitalized(tag)
             )
             .join(' ');
+    }
+
+    toString () {
+        return Yaml.dump(
+            this.props,
+            {
+                sortKeys: true,
+                indent: 4,
+            },
+        );
+    }
+
+    print () {
+        console.log(this.toString());
     }
 
     static random () {
@@ -223,6 +243,8 @@ class CardSet {
         set.writeHtml();
     }
 }
+
+module.exports = { Card, CardSet };
 
 Card.init();
 CardSet.demo();
