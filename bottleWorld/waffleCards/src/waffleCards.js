@@ -222,26 +222,31 @@ class CardSet {
     }
 
     deckSubset (criteria) {
-        let subset = this.deck;
+        return this.deck.filter(
+            card => {
+                for (let [prop, value] of Object.entries(criteria)) {
 
-        for (let [prop, value] of Object.entries(criteria)) {
-            if (prop.toLowerCase().startsWith('tag')) {
-                const requiredTags = value.split(/\s/+);
+                    if (prop.toLowerCase().startsWith('tag')) {
+                        const requiredTags = value.split(/\s/+);
 
-                subset = subset.filter(
-                    card => requiredTags.every(
-                        tag => card.prop.tags.includes(tag)
-                    )
-                );
+                        const hasTags = requiredTags.every(
+                            tag => card.prop.tags.includes(tag)
+                        );
+
+                        if (! hasTags) {
+                            return false;
+                        }
+                    }
+                    else {
+                        if (card.props[prop] !== value) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
             }
-            else {
-                subset = subset.filter(
-                    card => card.props[prop] === value
-                );
-            }
-        }
-
-        return subset;
+        );
     }
 
     static fromRandomContext () {
