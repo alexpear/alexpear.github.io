@@ -41,18 +41,18 @@ class Suggestor {
 
             dominion
             netrunner
-            star wars unlimited cards
+            star wars unlimited (Card game)
             lorcana
             magic cards
 
-            agricola creatures great & small
+            agricola: creatures great & small
             backgammon
             chess
             codenames duet
             convert
             hive
             homeworlds
-            magic duels of the planeswalkers
+            magic: duels of the planeswalkers
             quarto
             six making
 
