@@ -15,6 +15,26 @@ GenericHistorical:
     range: 1
     damage: 3
 
+  - name: Wagon
+    cost: 4
+    tags: item vehicle wooden horse
+    durability: 6
+    speed: 4
+    transport: yes
+
+GenericVictorian:
+  - name: Revolver
+    tags: item weapon gun
+    cost: 9
+    range: 30
+    damage: 15
+
+  - name: Bolt Action Rifle
+    tags: item weapon gun
+    cost: 15
+    range: 200
+    damage: 30
+
 GenericModern:
   - name: Pistol
     tags: item weapon gun
@@ -34,6 +54,9 @@ GenericScifi:
       poison: 100
 
 Twig:
+  - meta: Context info
+    pairWith: Generic GenericHistorical GenericVictorian
+
   - name: Sylvester
     tags: character human male child criminal biotech
     ruleTags: unique
@@ -64,6 +87,9 @@ Twig:
     # Her exosuit is a separate card.
 
 Halo:
+  -
+      meta: Context info
+      pairWith: Generic GenericScifi
   -
       name: Beam Rifle
       cost: 11
@@ -2339,7 +2365,7 @@ Halo:
       name: UNSC Infinity
       tags: Character UNSC
       range: 10
-      durability: 28571.4
+      durability: 28571
       copiesInDeck: 1
   -
       name: Warthog

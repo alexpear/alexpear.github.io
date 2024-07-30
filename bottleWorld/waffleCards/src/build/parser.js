@@ -149,7 +149,7 @@ class Parser {
 
     static run () {
         Parser.writeYmlJsFile();
-        Parser.convertWarband();
+        // Parser.convertWarband();
     }
 }
 

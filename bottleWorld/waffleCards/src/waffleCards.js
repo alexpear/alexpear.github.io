@@ -105,26 +105,20 @@ class Card {
         console.log(this.toString());
     }
 
-    static random () {
-        const validContexts = Object.keys(Card.Contexts).filter(
-            contextName => Card.Contexts[contextName][0].name !== 'TODO'
+    // TODO operate on a in-memory list of contexts so we dont have to recompute it every time.
+    // contextArray is the list of cards within a context.
+    static random (contextArray) {
+        contextArray = contextArray || Util.randomOf(
+            Object.values(Card.Contexts)
+                .filter(
+                    array => array[0].name !== 'TODO'
+                )
         );
 
-        const context = Util.randomOf(validContexts);
-
-        // const context = Util.randomOf(
-        //     Object.keys(Card.Contexts)
-        // );
-
-        // const key = Util.randomOf(
-        //     Object.keys(Card.Contexts[context])
-        // );
+        // TODO ignore meta entries in the array.
 
         return new Card(
-            // Card.Contexts[context][key]
-            Util.randomOf(
-                Card.Contexts[context]
-            )
+            Util.randomOf(contextArray)
         );
     }
 
@@ -227,6 +221,10 @@ class CardSet {
     }
 
     static fromRandomContext () {
+        const [contextName, context] = Util.randomOf(
+            Object.entries(Card.Contexts)
+        );
+
         // LATER make this from a more sophisticated distribution of possible combinations of contexts.
         const set = new CardSet();
 
