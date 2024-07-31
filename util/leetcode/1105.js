@@ -6,6 +6,7 @@ var minHeightShelves = function(books, shelfWidth) {
 
     let debugBook;
     let maxUnshelvedLength = -Infinity;
+    let maxUnshelvedLengthWasReset = false
 
     // Recursor func.
     const scenarioMinHeight = (unshelved, widthSoFar, heightSoFar) => {
@@ -16,110 +17,111 @@ var minHeightShelves = function(books, shelfWidth) {
             console.log(`--------------------------top of recursor, unshelved.length is ${unshelved.length} which is >= maxUnshelvedLength`);
         }
 
-        for (let i = 0; i < unshelved.length; i++) {
-            const book = unshelved[i];
+        if (unshelved.length === 0) {
+            return heightSoFar || 0;
+        }
 
-            // infinite loop detection for logging.
-            // if (! debugBook || Math.random() < 0.0000001 && unshelved.length <= 10) {
-            if (book[0] === 81 && book[1] === 127) {
-                debugBook = book;
-                maxUnshelvedLength = unshelved.length; // Reset this, to detect later infinite loops.
-            }
+        const book = unshelved[0];
 
-            // if (debugBook) {
-                console.log(JSON.stringify(
-                    {
-                        context: `top of for() loop.`,
-                        book,
-                        unshelved: `[${ unshelved.join('], [') }]`,
-                        unshelvedLength: unshelved.length,
-                        widthSoFar,
-                        heightSoFar,
-                        i,
-                    },
-                    undefined,
-                    '    '
-                ));
+        // infinite loop detection for logging.
+        // if (! debugBook || Math.random() < 0.0000001 && unshelved.length <= 10) {
+        if (book[0] === 81 && book[1] === 127 && !maxUnshelvedLengthWasReset) {
+            debugBook = book;
+            maxUnshelvedLength = unshelved.length; // Reset this, to detect later infinite loops.
+            maxUnshelvedLengthWasReset = true;
+        }
+
+
+        // console.log(JSON.stringify(
+        //     {
+        //         context: `near top of recursor: scenarioMinHeight().`,
+        //         book,
+        //         unshelved: `[${ unshelved.join('], [') }]`,
+        //         unshelvedLength: unshelved.length,
+        //         widthSoFar,
+        //         heightSoFar,
+        //     },
+        //     undefined,
+        //     '    '
+        // ));
+
+        if (book[0] + widthSoFar <= shelfWidth) {
+            // If it could fit on this shelf...
+
+            // if (widthSoFar === 0) {
+            //     // No disadvantage to including it on this shelf.
+            //     widthSoFar += book[0];
+            //     heightSoFar = book[1];
+            //     // LATER could move this if-case out to before all recursion starts. I suspect it can only happen at the very start.
             // }
 
-            if (book[0] + widthSoFar <= shelfWidth) {
-                // If it could fit on this shelf...
+            if (book[1] <= heightSoFar) {
+                // No disadvantage to including it on this shelf.
+                // console.log(`Book adds no height to this shelf -> include it here.`);
 
-                // if (widthSoFar === 0) {
-                //     // No disadvantage to including it on this shelf.
-                //     widthSoFar += book[0];
-                //     heightSoFar = book[1];
-                //     // LATER could move this if-case out to before all recursion starts. I suspect it can only happen at the very start.
-                // }
-
-                if (book[1] <= heightSoFar) {
-                    // No disadvantage to including it on this shelf.
-                    widthSoFar += book[0];
-
-                    console.log(`Book adds no height to this shelf -> include it here.`);
-                }
-                else {
-                    // It's taller. Recurse.
-                    console.log(`About to recurse for totalIfUp`);
-
-                    // Total if we choose to keep this book up on the current shelf.
-                    const totalIfUp = scenarioMinHeight(
-                        unshelved.slice(i + 1),
-                        widthSoFar + book[0],
-                        book[1]
-                    );
-
-                    console.log(`About to recurse for totalIfDown`);
-                    // Total if we choose to move this book down 1 shelf.
-                    const totalIfDown = heightSoFar +
-                        scenarioMinHeight(
-                            unshelved.slice(i + 1),
-                            book[0],
-                            book[1]
-                        );
-
-                    console.log(JSON.stringify(
-                        {
-                            context: `About to call Math.min()`,
-                            book,
-                            unshelved: `[${ unshelved.join('], [') }]`,
-                            unshelvedLength: unshelved.length,
-                            widthSoFar,
-                            heightSoFar,
-                            i,
-                            totalIfUp,
-                            totalIfDown,
-                        },
-                        undefined,
-                        '    '
-                    ));
-
-                    return Math.min(totalIfUp, totalIfDown);
-                }
+                return scenarioMinHeight(
+                    unshelved.slice(1),
+                    widthSoFar + book[0],
+                    heightSoFar
+                );
             }
             else {
-                console.log(`Current book is too wide to fit on this shelf, so must start the next shelf.`);
+                // It's taller. Recurse 2 ways.
+                // console.log(`About to recurse for totalIfUp`);
 
-                // Current book is too wide to fit on this shelf, so must start the next shelf.
-                return heightSoFar +
+                // Total if we choose to keep this book up on the current shelf.
+                const totalIfUp = scenarioMinHeight(
+                    unshelved.slice(1),
+                    widthSoFar + book[0],
+                    book[1]
+                );
+
+                // console.log(`About to recurse for totalIfDown`);
+                // Total if we choose to move this book down 1 shelf.
+                const totalIfDown = heightSoFar +
                     scenarioMinHeight(
-                        unshelved.slice(i + 1),
+                        unshelved.slice(1),
                         book[0],
                         book[1]
                     );
+
+                // console.log(JSON.stringify(
+                //     {
+                //         context: `About to call Math.min()`,
+                //         book,
+                //         unshelved: `[${ unshelved.join('], [') }]`,
+                //         unshelvedLength: unshelved.length,
+                //         widthSoFar,
+                //         heightSoFar,
+                //         totalIfUp,
+                //         totalIfDown,
+                //     },
+                //     undefined,
+                //     '    '
+                // ));
+
+                return Math.min(totalIfUp, totalIfDown);
             }
         }
+        else {
+            // console.log(`Current book is too wide to fit on this shelf, so must start the next shelf.`);
 
-        console.log(`The final book fits well on the current shelf. heightSoFar === ${heightSoFar}`);
+            // Current book is too wide to fit on this shelf, so must start the next shelf.
+            return heightSoFar +
+                scenarioMinHeight(
+                    unshelved.slice(1),
+                    book[0],
+                    book[1]
+                );
+        }
 
-        // The final book fits well on the current shelf.
-        return heightSoFar;
+        console.log(`Unreachable? The final book fits well on the current shelf. heightSoFar === ${heightSoFar}`);
     };
 
-
-    // if (! books || ! books.length) {
-    //     return 0;
-    // }
+    // BTW: This seems to be unnecessary in the leetcode testcase context.
+    if (! books || ! books.length) {
+        return 0;
+    }
 
     return scenarioMinHeight(
         // Start with the 1st book shelved.
