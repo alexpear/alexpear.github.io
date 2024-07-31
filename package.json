@@ -53,6 +53,7 @@
     "buildPopGrid": "browserify generation/demographics/popGrid/src/*.js -o generation/demographics/popGrid/bundle.js",
     "buildWaffleCards": "node bottleWorld/waffleCards/src/build/parser.js && node bottleWorld/waffleCards/src/waffleCards.js",
     "waffleCards": "npm run buildWaffleCards && open bottleWorld/waffleCards/cardSet.html",
+    "testwafflecards": "npm run buildWaffleCards",
     "whichgame": "browserify generation/mundane/whichgame/src/*.js -o generation/mundane/whichgame/bundle.js",
     "gridWar": "npm run buildGroupGrid && npm run server",
     "server": "http-server",
