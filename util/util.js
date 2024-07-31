@@ -189,6 +189,16 @@ class Util {
         return false;
     }
 
+    static flatten (arrayOfArrays) {
+        let flat = arrayOfArrays[0];
+
+        for (let i = 1; i < arrayOfArrays.length; i++) {
+            flat = flat.concat(arrayOfArrays[i]);
+        }
+
+        return flat;
+    }
+
     // Returns number
     // Default 0
     static sum (array) {
