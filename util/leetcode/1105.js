@@ -4,12 +4,34 @@
 
 var minHeightShelves = function(books, shelfWidth) {
 
+    let debugBook;
+
     // Recursor func.
     const scenarioMinHeight = (unshelved, widthSoFar, heightSoFar) => {
         // console.log(`recursing top, unshelved.length is ${unshelved.length}`);
 
         for (let i = 0; i < unshelved.length; i++) {
             const book = unshelved[i];
+
+            // infinite loop detection for logging.
+            // if (! debugBook || Math.random() < 0.0000001 && unshelved.length <= 10) {
+            if (book[0] === 81 && book[1] === 127) {
+                debugBook = book;
+            }
+            else if (debugBook === book) {
+                console.log(JSON.stringify(
+                    {
+                        message: `debugBook === book === ${book}`,
+                        unshelved: `${unshelved.join('], [')}`,
+                        unshelvedLength: unshelved.length,
+                        widthSoFar,
+                        heightSoFar,
+                        i,
+                    },
+                    undefined,
+                    '    '
+                ));
+            }
 
             if (book[0] + widthSoFar <= shelfWidth) {
                 // If it could fit on this shelf...
@@ -62,9 +84,9 @@ var minHeightShelves = function(books, shelfWidth) {
     };
 
 
-    if (! books || ! books.length) {
-        return 0;
-    }
+    // if (! books || ! books.length) {
+    //     return 0;
+    // }
 
     return scenarioMinHeight(
         // Start with the 1st book shelved.
@@ -73,6 +95,16 @@ var minHeightShelves = function(books, shelfWidth) {
         books[0][1]
     );
 };
+
+/*
+Notes
+[90,170], -> width 90
+[81,127], -> w 171
+[57,151], -> doesnt fit, new line
+[167,127],
+[95,89]
+
+*/
 
 
 
