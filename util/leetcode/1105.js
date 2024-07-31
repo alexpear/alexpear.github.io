@@ -5,10 +5,16 @@
 var minHeightShelves = function(books, shelfWidth) {
 
     let debugBook;
+    let maxUnshelvedLength = -Infinity;
 
     // Recursor func.
     const scenarioMinHeight = (unshelved, widthSoFar, heightSoFar) => {
-        // console.log(`recursing top, unshelved.length is ${unshelved.length}`);
+
+        // debug
+        if (unshelved.length >= maxUnshelvedLength) {
+            maxUnshelvedLength = unshelved.length;
+            console.log(`--------------------------top of recursor, unshelved.length is ${unshelved.length} which is >= maxUnshelvedLength`);
+        }
 
         for (let i = 0; i < unshelved.length; i++) {
             const book = unshelved[i];
@@ -17,12 +23,15 @@ var minHeightShelves = function(books, shelfWidth) {
             // if (! debugBook || Math.random() < 0.0000001 && unshelved.length <= 10) {
             if (book[0] === 81 && book[1] === 127) {
                 debugBook = book;
+                maxUnshelvedLength = unshelved.length; // Reset this, to detect later infinite loops.
             }
-            else if (debugBook === book) {
+
+            // if (debugBook) {
                 console.log(JSON.stringify(
                     {
-                        message: `debugBook === book === ${book}`,
-                        unshelved: `${unshelved.join('], [')}`,
+                        context: `top of for() loop.`,
+                        book,
+                        unshelved: `[${ unshelved.join('], [') }]`,
                         unshelvedLength: unshelved.length,
                         widthSoFar,
                         heightSoFar,
@@ -31,7 +40,7 @@ var minHeightShelves = function(books, shelfWidth) {
                     undefined,
                     '    '
                 ));
-            }
+            // }
 
             if (book[0] + widthSoFar <= shelfWidth) {
                 // If it could fit on this shelf...
@@ -46,9 +55,12 @@ var minHeightShelves = function(books, shelfWidth) {
                 if (book[1] <= heightSoFar) {
                     // No disadvantage to including it on this shelf.
                     widthSoFar += book[0];
+
+                    console.log(`Book adds no height to this shelf -> include it here.`);
                 }
                 else {
                     // It's taller. Recurse.
+                    console.log(`About to recurse for totalIfUp`);
 
                     // Total if we choose to keep this book up on the current shelf.
                     const totalIfUp = scenarioMinHeight(
@@ -57,6 +69,7 @@ var minHeightShelves = function(books, shelfWidth) {
                         book[1]
                     );
 
+                    console.log(`About to recurse for totalIfDown`);
                     // Total if we choose to move this book down 1 shelf.
                     const totalIfDown = heightSoFar +
                         scenarioMinHeight(
@@ -65,10 +78,28 @@ var minHeightShelves = function(books, shelfWidth) {
                             book[1]
                         );
 
+                    console.log(JSON.stringify(
+                        {
+                            context: `About to call Math.min()`,
+                            book,
+                            unshelved: `[${ unshelved.join('], [') }]`,
+                            unshelvedLength: unshelved.length,
+                            widthSoFar,
+                            heightSoFar,
+                            i,
+                            totalIfUp,
+                            totalIfDown,
+                        },
+                        undefined,
+                        '    '
+                    ));
+
                     return Math.min(totalIfUp, totalIfDown);
                 }
             }
             else {
+                console.log(`Current book is too wide to fit on this shelf, so must start the next shelf.`);
+
                 // Current book is too wide to fit on this shelf, so must start the next shelf.
                 return heightSoFar +
                     scenarioMinHeight(
@@ -78,6 +109,8 @@ var minHeightShelves = function(books, shelfWidth) {
                     );
             }
         }
+
+        console.log(`The final book fits well on the current shelf. heightSoFar === ${heightSoFar}`);
 
         // The final book fits well on the current shelf.
         return heightSoFar;
