@@ -2,134 +2,93 @@
 
 // leetcode 1105
 
+// Optimize the 2-row interval consisting of the cur row & the next
+// Then lock in the cur row
+// Then go down 1 row
+
 var minHeightShelves = function(books, shelfWidth) {
 
-    let debugBook;
-    let maxUnshelvedLength = -Infinity;
-    let maxUnshelvedLengthWasReset = false
+    const shelve = currentBooks => {
+        let topShelfHeight = currentBooks[0][1];
+        let bestTopShelfHeight = currentBooks[0][1];
+        let minHeightOfTop2Shelves = Infinity;
+        let nextShelfIndex = 1;
 
-    // Recursor func.
-    const scenarioMinHeight = (unshelved, widthSoFar, heightSoFar) => {
+        for (let i = 1; i < currentBooks.length; i++) {
+            const iHeight = currentBooks[i][1];
 
-        // debug
-        if (unshelved.length >= maxUnshelvedLength) {
-            maxUnshelvedLength = unshelved.length;
-            console.log(`--------------------------top of recursor, unshelved.length is ${unshelved.length} which is >= maxUnshelvedLength`);
-        }
-
-        if (unshelved.length === 0) {
-            return heightSoFar || 0;
-        }
-
-        const book = unshelved[0];
-
-        // infinite loop detection for logging.
-        // if (! debugBook || Math.random() < 0.0000001 && unshelved.length <= 10) {
-        if (book[0] === 81 && book[1] === 127 && !maxUnshelvedLengthWasReset) {
-            debugBook = book;
-            maxUnshelvedLength = unshelved.length; // Reset this, to detect later infinite loops.
-            maxUnshelvedLengthWasReset = true;
-        }
-
-
-        // console.log(JSON.stringify(
-        //     {
-        //         context: `near top of recursor: scenarioMinHeight().`,
-        //         book,
-        //         unshelved: `[${ unshelved.join('], [') }]`,
-        //         unshelvedLength: unshelved.length,
-        //         widthSoFar,
-        //         heightSoFar,
-        //     },
-        //     undefined,
-        //     '    '
-        // ));
-
-        if (book[0] + widthSoFar <= shelfWidth) {
-            // If it could fit on this shelf...
-
-            // if (widthSoFar === 0) {
-            //     // No disadvantage to including it on this shelf.
-            //     widthSoFar += book[0];
-            //     heightSoFar = book[1];
-            //     // LATER could move this if-case out to before all recursion starts. I suspect it can only happen at the very start.
-            // }
-
-            if (book[1] <= heightSoFar) {
-                // No disadvantage to including it on this shelf.
-                // console.log(`Book adds no height to this shelf -> include it here.`);
-
-                return scenarioMinHeight(
-                    unshelved.slice(1),
-                    widthSoFar + book[0],
-                    heightSoFar
-                );
+            if (currentBooks[i][1] > topShelfHeight) {
+                topShelfHeight = iHeight;
             }
-            else {
-                // It's taller. Recurse 2 ways.
-                // console.log(`About to recurse for totalIfUp`);
 
-                // Total if we choose to keep this book up on the current shelf.
-                const totalIfUp = scenarioMinHeight(
-                    unshelved.slice(1),
-                    widthSoFar + book[0],
-                    book[1]
-                );
+            let shelf2Width = 0;
+            let shelf2Height = 0;
 
-                // console.log(`About to recurse for totalIfDown`);
-                // Total if we choose to move this book down 1 shelf.
-                const totalIfDown = heightSoFar +
-                    scenarioMinHeight(
-                        unshelved.slice(1),
-                        book[0],
-                        book[1]
-                    );
+            for (let n = i + 1; n < currentBooks.length; n++) {
+                const nWidth = currentBooks[n][0];
+                const nHeight = currentBooks[n][1];
 
-                // console.log(JSON.stringify(
-                //     {
-                //         context: `About to call Math.min()`,
-                //         book,
-                //         unshelved: `[${ unshelved.join('], [') }]`,
-                //         unshelvedLength: unshelved.length,
-                //         widthSoFar,
-                //         heightSoFar,
-                //         totalIfUp,
-                //         totalIfDown,
-                //     },
-                //     undefined,
-                //     '    '
-                // ));
+                if (shelfWidth + nWidth <= shelfWidth) {
+                    if (shelf2Height < nHeight) {
+                        shelf2Height = nHeight;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
 
-                return Math.min(totalIfUp, totalIfDown);
+            // Now we know shelf2Height.
+            const totalHeight = topShelfHeight + shelf2Height;
+
+            if (totalHeight < minHeightOfTop2Shelves) {
+                minHeightOfTop2Shelves = totalHeight;
+                bestTopShelfHeight = topShelfHeight;
+                nextShelfIndex = i;
             }
         }
-        else {
-            // console.log(`Current book is too wide to fit on this shelf, so must start the next shelf.`);
 
-            // Current book is too wide to fit on this shelf, so must start the next shelf.
-            return heightSoFar +
-                scenarioMinHeight(
-                    unshelved.slice(1),
-                    book[0],
-                    book[1]
-                );
+        return {
+            bestTopShelfHeight,
+            nextShelfIndex,
         }
-
-        console.log(`Unreachable? The final book fits well on the current shelf. heightSoFar === ${heightSoFar}`);
     };
 
-    // BTW: This seems to be unnecessary in the leetcode testcase context.
-    if (! books || ! books.length) {
-        return 0;
+
+    if (books.length === 1) {
+        return books[0][1];
     }
 
-    return scenarioMinHeight(
-        // Start with the 1st book shelved.
-        books.slice(1),
-        books[0][0],
-        books[0][1]
-    );
+    let heightOfShelvesAbove = 0;
+    let i = 0;
+
+    while (i < books.length) {
+        // horizon is the index of the furthest book in books that we need to think about right now.
+        let horizon;
+        let widthConsidered = 0;
+
+        for (let h = i + 1; h < books.length; h++) {
+            widthConsidered += books[h][0];
+
+            if (widthConsidered >= shelfWidth * 2) {
+                horizon = h;
+                break;
+            }
+        }
+
+        horizon = horizon || books.length - 1;
+
+        // Optimize the interval [i, horizon]
+        const info = shelve(books.slice(i, horizon + 1));
+
+        heightOfShelvesAbove += info.bestTopShelfHeight;
+
+        i += info.nextShelfIndex;
+    }
+
+    return heightOfShelvesAbove;
 };
+
 
 /*
 Notes
