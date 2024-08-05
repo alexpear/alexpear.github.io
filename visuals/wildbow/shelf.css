@@ -3,8 +3,8 @@ body {
 }
 
 #bookcase {
-    width: 700px;
-/*    background-color: #79574a;*/
+    margin: 50px;
+    width: 670px;
     outline: 10px solid #79574a;
     padding: 10px;
 }
