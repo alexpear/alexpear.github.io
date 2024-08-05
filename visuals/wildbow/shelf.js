@@ -10,28 +10,30 @@ class Shelf {
         this.shelves = [ [] ];
 
         let shelfIndex = 0;
-        let shelfWords = 0;
+        let shelfPx = 0;
 
         const SHELF_INCHES = 10;
-        const MAX_WORDS = 150_000 * SHELF_INCHES;
+        const MAX_WORDS = 75 * SHELF_INCHES;
 
         for (let book of books) {
-            shelfWords += book.words;
+            const bookPx = this.words2px(book.words);
+            shelfPx += bookPx;
 
-            // console.log({
-            //     context: `in constructor, on book ${book.spine}`,
-            //     shelfIndex,
-            //     shelfWords,
-            //     MAX_WORDS,
-            // });
+            console.log({
+                context: `in constructor, on book ${book.spine}`,
+                shelfIndex,
+                shelfPx,
+                bookPx,
+                MAX_WORDS,
+            });
 
-            if (shelfWords <= MAX_WORDS) {
+            if (shelfPx <= MAX_WORDS) {
                 this.shelves[shelfIndex].push(book);
             }
             else {
                 this.shelves.push( [book] );
                 shelfIndex++;
-                shelfWords = 0;
+                shelfPx = 0;
             }
         }
 
@@ -56,7 +58,9 @@ class Shelf {
                         const px = this.words2px(book.words);
                         const text = book.spine.split(': ')[1];
 
-                        return `        <div class="book ${book.serial.toLowerCase()}" style="width: ${px}px">${text}</div>`
+                        return `        <div class="book ${book.serial.toLowerCase()}" style="width: ${px}px">
+          <p>${text}</p>
+        </div>`;
                     }
                 )
                 .join('\n');
