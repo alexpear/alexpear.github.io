@@ -1,0 +1,42 @@
+body {
+    background-color: black;
+}
+
+.shelf {
+    display: flex;
+}
+
+.book {
+    height: 150px;
+    border-color: white;
+    outline: 1px solid white;
+}
+
+.worm {
+    background-color: #444;
+    color: white;
+}
+
+.ward {
+    color: yellow;
+}
+
+.pact {
+    background-color: darkred;
+    color: white;
+}
+
+.pale {
+    background-color: lightpink;
+    color: black;
+}
+
+.twig {
+    background-color: green;
+    color: black;
+}
+
+.claw {
+    background-color: darkblue;
+    color: white;
+}
