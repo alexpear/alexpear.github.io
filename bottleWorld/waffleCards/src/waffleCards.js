@@ -14,11 +14,20 @@ class Card {
         Object.assign(this.props, template);
     }
 
+    hasTag (tag) {
+        const tags = this.props.tags.split(/\s+/)
+            .concat(
+                this.props?.ruleTags?.split(/\s+/) || []
+            );
+
+        return tags.includes(tag);
+    }
+
     asHtml () {
-        Util.logDebug({
-            context: `Card.asHtml()`,
-            name: this.props.name,
-        });
+        // Util.logDebug({
+        //     context: `Card.asHtml()`,
+        //     name: this.props.name,
+        // });
 
         const SKIP_PROPS = [
             'name',
@@ -75,7 +84,7 @@ class Card {
             passageArray.push(`<p>${displayStr}</p>`)
         }
 
-        const passagesStr = passageArray.join('\n');
+        const passagesStr = passageArray.join('\n      ');
 
         return `<div class="card">
       <p class="center">${this.props.name}</p>
@@ -131,6 +140,13 @@ class Card {
 
             for (let card of cards) {
                 card.context = contextName;
+
+                if (card.tags) {
+                    card.tags = card.tags.toLowerCase();
+                }
+                if (card.ruleTags) {
+                    card.ruleTags = card.ruleTags.toLowerCase();
+                }
             }
         }
 
@@ -168,9 +184,28 @@ class Card {
             'copiesInDeck',
         ];
 
+        // LATER
         // Card.test();
         // Test if any card has a prop not on PROPS list.
         // Test for values that are not of expected type (number, string, resist obj).
+    }
+
+    static printSorted () {
+        Util.log(
+            Yaml.dump(
+                Card.sortedBy('cost')
+            )
+        );
+    }
+
+    static sortedBy (prop) {
+        const allCards = Util.flatten(
+            Object.values(Card.Contexts)
+        );
+
+        return allCards.sort(
+            (a, b) => (a[prop] || 0) - (b[prop] || 0)
+        );
     }
 }
 
@@ -227,7 +262,7 @@ class CardSet {
                 for (let [prop, value] of Object.entries(criteria)) {
 
                     if (prop.toLowerCase().startsWith('tag')) {
-                        const requiredTags = value.split(/\s/+);
+                        const requiredTags = value.split(/\s+/);
 
                         const hasTags = requiredTags.every(
                             tag => card.prop.tags.includes(tag)
@@ -247,6 +282,10 @@ class CardSet {
                 return true;
             }
         );
+    }
+
+    dealCharacter (deck) {
+
     }
 
     static fromRandomContext () {
@@ -281,11 +320,15 @@ class CardSet {
         }
 
         for (let i = 0; i < 6; i++) {
-            set.cards.push(
-                new Card(
-                    Util.randomOf(set.deck)
-                )
+            const card = new Card(
+                Util.randomOf(set.deck)
             );
+
+            set.cards.push(card);
+
+            if (card.hasTag('character')) {
+                break;
+            }
         }
 
         // LATER deal exactly 1 Character card
@@ -297,6 +340,7 @@ class CardSet {
 
     static demo () {
         const set = CardSet.fromRandomContext();
+        // const set = CardSet.fromRandomContextWeighted();
 
         set.writeHtml();
     }
@@ -305,4 +349,5 @@ class CardSet {
 module.exports = { Card, CardSet };
 
 Card.init();
+// Card.printSorted();
 CardSet.demo();
