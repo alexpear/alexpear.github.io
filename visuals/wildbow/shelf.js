@@ -13,7 +13,7 @@ class Shelf {
         let shelfPx = 0;
 
         const SHELF_INCHES = 10;
-        const MAX_WORDS = 75 * SHELF_INCHES;
+        const MAX_WORDS = Infinity; // 75 * SHELF_INCHES;
 
         for (let book of books) {
             const bookPx = this.words2px(book.words);
