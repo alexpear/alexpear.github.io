@@ -1312,6 +1312,11 @@ class Util {
         );
     }
 
+    // alias for the above.
+    static throw (summary) {
+        return Util.error(summary);
+    }
+
     static makeEnum (array, allLower = false) {
         const dict = {};
         for (let val of array) {
