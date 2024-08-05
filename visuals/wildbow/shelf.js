@@ -12,7 +12,7 @@ class Shelf {
         let shelfIndex = 0;
         let shelfPx = 0;
 
-        const SHELF_INCHES = 10;
+        // const SHELF_INCHES = 10;
         const MAX_WORDS = Infinity; // 75 * SHELF_INCHES;
 
         for (let book of books) {
@@ -37,7 +37,7 @@ class Shelf {
             }
         }
 
-        console.log( this.toString() );
+        // console.log( this.toString() );
     }
 
     toString () {
@@ -74,7 +74,7 @@ ${booksHTML}
     }
 
     words2px (words) {
-        return Util.round(words / 2_000);
+        return Util.round(words / 2_500);
     }
 
     arcs () {
