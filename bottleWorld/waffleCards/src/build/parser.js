@@ -11,20 +11,22 @@ const path = require('path');
 const Yaml = require('js-yaml');
 
 class Parser {
-    /* Background: I like how yaml is readable for nondevs, but it'll be tricky to make it compatible with browserify. For now, i'll just have my build script copy the .yml file to a string within a .js file.
-    The user has to run the build script after editing. But that's true already because of browserify. */
-    static writeYmlJsFile () {
-        const ymlString = fs.readFileSync(
+    constructor () {
+        this.ymlString = fs.readFileSync(
             path.join(__filename, '..', '..', '..', 'data', 'cards.yml'),
             'utf8'
-        );
-
+        )
         // Strip out initial comments, so the .yml.js file looks less confusing.
-        const withoutComments = ymlString.split('contexts:').at(-1);
+        .split('ist of contexts:')
+        .at(-1);
+    }
 
+    /* Background: I like how yaml is readable for nondevs, but it'll be tricky to make it compatible with browserify. For now, i'll just have my build script copy the .yml file to a string within a .js file.
+    The user has to run the build script after editing. But that's true already because of browserify. */
+    writeYmlJsFile () {
         fs.writeFileSync(
             path.join(__filename, '..', '..', '..', 'data', 'cards.yml.js'),
-            'module.exports = `' + withoutComments + '`;\n',
+            'module.exports = `' + this.ymlString + '`;\n',
             'utf8'
         );
     }
@@ -148,8 +150,10 @@ class Parser {
     }
 
     static run () {
-        Parser.writeYmlJsFile();
-        // Parser.convertWarband();
+        const parser = new Parser();
+
+        parser.writeYmlJsFile();
+        // parser.convertWarband();
     }
 }
 
