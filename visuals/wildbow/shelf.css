@@ -10,6 +10,9 @@ body {
     height: 150px;
     border-color: white;
     outline: 1px solid white;
+    writing-mode: vertical-rl;
+/*    text-orientation: mixed;*/
+    text-align: center;
 }
 
 .worm {

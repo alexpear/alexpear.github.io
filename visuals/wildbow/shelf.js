@@ -12,7 +12,7 @@ class Shelf {
         let shelfIndex = 0;
         let shelfWords = 0;
 
-        const SHELF_INCHES = 18;
+        const SHELF_INCHES = 10;
         const MAX_WORDS = 150_000 * SHELF_INCHES;
 
         for (let book of books) {
@@ -41,7 +41,7 @@ class Shelf {
     toString () {
         return this.shelves.map(
             shelf => shelf.map(
-                book => book.spine
+                book => book.spine.split(': ')[1]
             )
             .join('\n')
         )
@@ -54,8 +54,9 @@ class Shelf {
                 const booksHTML = shelf.map(
                     book => {
                         const px = this.words2px(book.words);
+                        const text = book.spine.split(': ')[1];
 
-                        return `        <div class="book ${book.serial.toLowerCase()}" style="width: ${px}px">${book.spine}</div>`
+                        return `        <div class="book ${book.serial.toLowerCase()}" style="width: ${px}px">${text}</div>`
                     }
                 )
                 .join('\n');
