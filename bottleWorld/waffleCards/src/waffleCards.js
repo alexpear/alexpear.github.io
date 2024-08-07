@@ -199,22 +199,53 @@ class Card {
     }
 
     static sortedBy (prop) {
-        const allCards = Util.flatten(
-            Object.values(Card.Contexts)
-        );
-
-        return allCards.sort(
+        return Card.all().sort(
             (a, b) => (a[prop] || 0) - (b[prop] || 0)
+        );
+    }
+
+    static all () {
+        return Util.flatten(
+            Object.values(Card.Contexts)
+        )
+        .filter(
+            card => ! card.meta
         );
     }
 }
 
 class CardSet {
-    constructor (cards) {
-        this.cards = cards || [];
+    constructor (contextName) {
+        this.cards = [];
 
-        // The list of all cards that could have been drawn for this CardSet.
-        this.deck = [];
+        const context = Card.Contexts[contextName];
+
+        if (context[0].meta) {
+            const names = context[0]?.pairWith
+                ?.split(/\s+/)
+                || [];
+
+            // The list of all cards that could be drawn for this CardSet.
+            this.deck = context.slice(1);
+
+            for (let name of names) {
+                let otherContext = Card.Contexts[name];
+
+                if (otherContext[0].meta) {
+                    otherContext = otherContext.slice(0);
+                }
+
+                this.deck = this.deck.concat(otherContext);
+            }
+        }
+        else {
+            this.deck = context;
+        }
+
+        this.dealCharacter();
+
+        // LATER avoid 2 of the same Unique card
+        // LATER pay attention to .copiesInDeck prop
     }
 
     asHtml () {
@@ -284,13 +315,29 @@ class CardSet {
         );
     }
 
-    dealCharacter (deck) {
+    dealCharacter () {
+        if (! this.deck) {
+            Util.throw({
+                cards: this.cards
+            });
+        }
 
+        for (let i = 0; i < 6; i++) {
+            const card = new Card(
+                Util.randomOf(this.deck)
+            );
+
+            this.cards.push(card);
+
+            if (card.hasTag('character')) {
+                break;
+            }
+        }
     }
 
-    static fromRandomContext () {
-        const set = new CardSet();
+    // TODO - func that returns 1 character card & X other cards
 
+    static fromRandomContext () {
         const [contextName, context] = Util.randomOf(
             Object.entries(Card.Contexts)
                 .filter(
@@ -298,49 +345,20 @@ class CardSet {
                 )
         );
 
-        if (context[0].meta) {
-            const names = context[0]?.pairWith
-                ?.split(/\s+/)
-                || [];
+        return new CardSet(contextName);
+    }
 
-            set.deck = context.slice(1);
+    static fromRandomContextWeighted () {
+        const card = Util.randomOf(
+            Card.all()
+        );
 
-            for (let name of names) {
-                let otherContext = Card.Contexts[name];
-
-                if (otherContext[0].meta) {
-                    otherContext = otherContext.slice(0);
-                }
-
-                set.deck = set.deck.concat(otherContext);
-            }
-        }
-        else {
-            set.deck = context;
-        }
-
-        for (let i = 0; i < 6; i++) {
-            const card = new Card(
-                Util.randomOf(set.deck)
-            );
-
-            set.cards.push(card);
-
-            if (card.hasTag('character')) {
-                break;
-            }
-        }
-
-        // LATER deal exactly 1 Character card
-        // LATER avoid 2 of the same Unique card
-        // LATER pay attention to .copiesInDeck prop
-
-        return set;
+        return new CardSet(card.context);
     }
 
     static demo () {
-        const set = CardSet.fromRandomContext();
-        // const set = CardSet.fromRandomContextWeighted();
+        // const set = CardSet.fromRandomContext();
+        const set = CardSet.fromRandomContextWeighted();
 
         set.writeHtml();
     }
