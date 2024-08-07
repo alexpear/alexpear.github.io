@@ -142,6 +142,9 @@ class Card {
                 card.context = contextName;
 
                 if (card.tags) {
+                    // TODO store as array of strings
+                    // TODO i want to display acronyms like CPU as all caps
+                    // Maybe store all tags in desired display casing.
                     card.tags = card.tags.toLowerCase();
                 }
                 if (card.ruleTags) {
@@ -242,8 +245,9 @@ class CardSet {
             this.deck = context;
         }
 
-        this.dealCharacter();
+        this.dealCharacter(1);
 
+        // TODO i want to be able to specify the number of adjectives from the demo func.
         // LATER avoid 2 of the same Unique card
         // LATER pay attention to .copiesInDeck prop
     }
@@ -315,27 +319,82 @@ class CardSet {
         );
     }
 
-    dealCharacter () {
+    dealCharacter (adjectives) {
         if (! this.deck) {
             Util.throw({
                 cards: this.cards
             });
         }
 
-        for (let i = 0; i < 6; i++) {
+        // for (let i = 0; i < 6; i++) {
+        //     const card = new Card(
+        //         Util.randomOf(this.deck)
+        //     );
+
+        //     this.cards.push(card);
+
+        //     if (card.hasTag('character')) {
+        //         break;
+        //     }
+        // }
+
+        // return;
+
+        // returns 1 character card & X other cards
+
+        adjectives = Util.default(
+            adjectives,
+            Util.randomUpTo(5)
+        );
+
+        let charactersSoFar = 0;
+        let adjectivesSoFar = 0;
+
+        for (let i = 0; i < 99; i++) {
             const card = new Card(
                 Util.randomOf(this.deck)
             );
 
-            this.cards.push(card);
-
+            // LATER standardize capitalization of tags
             if (card.hasTag('character')) {
-                break;
+                if (charactersSoFar === 0) {
+                    this.cards.push(card);
+
+                    charactersSoFar++;
+                }
+                // else {
+                //     continue;
+                // }
+            }
+            else {
+                if (adjectivesSoFar < adjectives) {
+                    this.cards.push(card);
+
+                    adjectivesSoFar++;
+                }
+            }
+
+            if (this.cards.length >= adjectives + 1) {
+                return;
             }
         }
+
+        // LATER - sorting seems to be broken
+        this.cards = this.cards.sort(
+            (a, b) => {
+                if (a.hasTag('character')) {
+                    return -1;
+                }
+
+                if (b.hasTag('character')) {
+                    return 1;
+                }
+
+                return 0;
+            }
+        );
     }
 
-    // TODO - func that returns 1 character card & X other cards
 
     static fromRandomContext () {
         const [contextName, context] = Util.randomOf(
@@ -357,8 +416,8 @@ class CardSet {
     }
 
     static demo () {
-        // const set = CardSet.fromRandomContext();
-        const set = CardSet.fromRandomContextWeighted();
+        // const set = CardSet.fromRandomContextWeighted();
+        const set = new CardSet('StarWars');
 
         set.writeHtml();
     }
