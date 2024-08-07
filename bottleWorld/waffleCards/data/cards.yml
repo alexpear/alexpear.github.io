@@ -1931,17 +1931,17 @@ Halo:
       scale: Individual
       size: 6
       has: Chaingun
-      speed: 4
+      speed: 40
   -
       name: Razorback
       tags: Character UNSC Ground
-      range: 10
-      durability: 4
-      copiesInDeck: 4
+      range: 0
+      durability: 40
+      copiesInDeck: 1
       cost: 23
       size: 4
       transport: yes
-      speed: 4
+      speed: 20
   -
       name: Rocket Hog
       tags: Character UNSC Ground
