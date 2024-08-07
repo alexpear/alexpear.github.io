@@ -3,6 +3,10 @@
 # List of contexts:
 
 Generic:
+  - name: Human
+    tags: Character Human
+    cost: 3
+
   - name: Knife
     tags: item weapon blade
     cost: 1
@@ -95,7 +99,7 @@ Halo:
   -
       name: Beam Rifle
       cost: 11
-      tags: Item Weapon Gun Covenant infantry Hardlight
+      tags: Item Weapon Gun Covenant Infantry Hardlight
       range: 10
       damage: 10
       aoe: 2
@@ -103,7 +107,7 @@ Halo:
   -
       name: Brute CQC
       cost: 0
-      tags: Item Covenant natural Impact Brute
+      tags: Item Covenant Natural Impact Brute
       range: 0
       damage: 9
       aoe: 1
@@ -111,7 +115,7 @@ Halo:
   -
       name: Brute Shot
       cost: 9
-      tags: Item Weapon Gun Covenant biginfantry Impact Brute
+      tags: Item Weapon Gun Covenant BigInfantry Impact Brute
       range: 3
       damage: 6
       aoe: 1
@@ -119,7 +123,7 @@ Halo:
   -
       name: Brute Shot CQC (from Brute)
       cost: 0
-      tags: Item Covenant infantry Kinetic Brute
+      tags: Item Covenant Infantry Kinetic Brute
       range: 0
       damage: 13
       aoe: 1
@@ -127,7 +131,7 @@ Halo:
   -
       name: Carbine
       cost: 7
-      tags: Item Weapon Gun Covenant infantry Kinetic
+      tags: Item Weapon Gun Covenant Infantry Kinetic
       range: 10
       damage: 2
       aoe: 1
@@ -135,7 +139,7 @@ Halo:
   -
       name: Concussion Rifle
       cost: 9
-      tags: Item Weapon Gun Covenant infantry Impact
+      tags: Item Weapon Gun Covenant Infantry Impact
       range: 10
       damage: 4
       aoe: 2
@@ -143,7 +147,7 @@ Halo:
   -
       name: Elite CQC
       cost: 0
-      tags: Item Covenant natural Impact
+      tags: Item Covenant Natural Impact
       range: 0
       damage: 12
       aoe: 1
@@ -151,7 +155,7 @@ Halo:
   -
       name: Energy Sword
       cost: 8
-      tags: Item Weapon Covenant biginfantry Fire
+      tags: Item Weapon Covenant BigInfantry Fire
       range: 0
       damage: 13
       aoe: 1
@@ -159,7 +163,7 @@ Halo:
   -
       name: Focus Rifle
       cost: 12
-      tags: Item Weapon Gun Covenant infantry Fire
+      tags: Item Weapon Gun Covenant Infantry Fire
       range: 10
       damage: 4
       aoe: 1
@@ -167,7 +171,7 @@ Halo:
   -
       name: Fuel Rod Cannon
       cost: 12
-      tags: Item Weapon Gun Covenant infantry Fire
+      tags: Item Weapon Gun Covenant Infantry Fire
       range: 10
       damage: 10
       aoe: 3
@@ -175,7 +179,7 @@ Halo:
   -
       name: Gravity Hammer
       cost: 8
-      tags: Item Weapon Covenant biginfantry Impact Brute
+      tags: Item Weapon Covenant BigInfantry Impact Brute
       range: 0
       damage: 17
       aoe: 2
@@ -183,7 +187,7 @@ Halo:
   -
       name: Grunt CQC
       cost: 0
-      tags: Item Covenant natural Impact
+      tags: Item Covenant Natural Impact
       range: 0
       damage: 0
       aoe: 1
@@ -191,7 +195,7 @@ Halo:
   -
       name: Hunter CQC
       cost: 0
-      tags: Item Covenant natural Impact
+      tags: Item Covenant Natural Impact
       range: 0
       damage: 17
       aoe: 3
@@ -207,7 +211,7 @@ Halo:
   -
       name: Incendiary Grenade
       cost: 0
-      tags: Item Weapon Covenant infantry Fire Brute
+      tags: Item Weapon Covenant Infantry Fire Brute
       range: 5
       damage: 5
       aoe: 2
@@ -215,7 +219,7 @@ Halo:
   -
       name: Mauler
       cost: 5
-      tags: Item Weapon Gun Covenant infantry Kinetic Brute
+      tags: Item Weapon Gun Covenant Infantry Kinetic Brute
       range: 0
       damage: 7
       aoe: 1
@@ -223,7 +227,7 @@ Halo:
   -
       name: Needle Rifle
       cost: 8
-      tags: Item Weapon Gun Covenant infantry Kinetic
+      tags: Item Weapon Gun Covenant Infantry Kinetic
       range: 10
       damage: 4
       aoe: 1
@@ -231,7 +235,7 @@ Halo:
   -
       name: Needler
       cost: 5
-      tags: Item Weapon Gun Covenant infantry Kinetic
+      tags: Item Weapon Gun Covenant Infantry Kinetic
       range: 10
       damage: 6
       aoe: 2
@@ -239,7 +243,7 @@ Halo:
   -
       name: Plasma Caster
       cost: 11
-      tags: Item Weapon Gun Covenant infantry Fire
+      tags: Item Weapon Gun Covenant Infantry Fire
       range: 10
       damage: 12
       aoe: 3
@@ -247,7 +251,7 @@ Halo:
   -
       name: Plasma Grenade
       cost: 0
-      tags: Item Weapon Covenant infantry Fire
+      tags: Item Weapon Covenant Infantry Fire
       range: 5
       damage: 20
       aoe: 3
@@ -255,7 +259,7 @@ Halo:
   -
       name: Plasma Launcher
       cost: 10
-      tags: Item Weapon Gun Covenant infantry Fire
+      tags: Item Weapon Gun Covenant Infantry Fire
       range: 10
       damage: 3
       aoe: 3
@@ -263,7 +267,7 @@ Halo:
   -
       name: Plasma Pistol
       cost: 3
-      tags: Item Weapon Gun Covenant infantry Fire
+      tags: Item Weapon Gun Covenant Infantry Fire
       range: 10
       damage: 2
       aoe: 1
@@ -271,7 +275,7 @@ Halo:
   -
       name: Plasma Pistol Charged
       cost: 0
-      tags: Item Weapon Gun Covenant infantry Fire
+      tags: Item Weapon Gun Covenant Infantry Fire
       range: 10
       damage: 1
       aoe: 1
@@ -279,7 +283,7 @@ Halo:
   -
       name: Plasma Repeater
       cost: 4
-      tags: Item Weapon Gun Covenant infantry Fire
+      tags: Item Weapon Gun Covenant Infantry Fire
       range: 10
       damage: 3
       aoe: 1
@@ -287,7 +291,7 @@ Halo:
   -
       name: Plasma Rifle
       cost: 3
-      tags: Item Weapon Gun Covenant infantry Fire
+      tags: Item Weapon Gun Covenant Infantry Fire
       range: 10
       damage: 3
       aoe: 1
@@ -295,7 +299,7 @@ Halo:
   -
       name: Plasma Turret
       cost: 10
-      tags: Item Weapon Gun Covenant turret Fire
+      tags: Item Weapon Gun Covenant Turret Fire
       range: 10
       damage: 6
       aoe: 1
@@ -311,7 +315,7 @@ Halo:
   -
       name: Shade Turret
       cost: 10
-      tags: Item Weapon Gun Covenant turret Fire
+      tags: Item Weapon Gun Covenant Turret Fire
       range: 10
       damage: 1
       aoe: 3
@@ -319,7 +323,7 @@ Halo:
   -
       name: Spike Grenade
       cost: 0
-      tags: Item Weapon Covenant infantry Kinetic Brute
+      tags: Item Weapon Covenant Infantry Kinetic Brute
       range: 5
       damage: 13
       aoe: 2
@@ -327,7 +331,7 @@ Halo:
   -
       name: Spiker
       cost: 4
-      tags: Item Weapon Gun Covenant infantry Kinetic Brute
+      tags: Item Weapon Gun Covenant Infantry Kinetic Brute
       range: 10
       damage: 2
       aoe: 1
@@ -335,7 +339,7 @@ Halo:
   -
       name: Spiker CQC (from Brute)
       cost: 0
-      tags: Item Covenant infantry Kinetic Brute
+      tags: Item Covenant Infantry Kinetic Brute
       range: 0
       damage: 10
       aoe: 1
@@ -343,7 +347,7 @@ Halo:
   -
       name: Tartarus' Gavel
       cost: 13
-      tags: Item Weapon Covenant biginfantry Impact Brute
+      tags: Item Weapon Covenant BigInfantry Impact Brute
       range: 10
       damage: 27
       aoe: 5
@@ -445,7 +449,7 @@ Halo:
       has: WraithMortar
       speed: 4
   -
-      name: Covenant cruiser
+      name: Covenant Cruiser
       tags: Character Covenant
       range: 10
       durability: 14285
@@ -489,17 +493,6 @@ Halo:
       range: 10
       durability: 6
       copiesInDeck: 1
-      speed: 1
-  -
-      name: Elites carbine
-      tags: Character Covenant Ground Elite
-      range: 5
-      durability: 4
-      copiesInDeck: 8
-      cost: 31
-      damage: 6
-      gear: Carbine
-      size: 2
       speed: 1
   -
       name: Ghost
@@ -883,7 +876,7 @@ Halo:
   -
       name: Binary Rifle
       cost: 12
-      tags: Item Weapon Gun Forerunner infantry Fire
+      tags: Item Weapon Gun Forerunner Infantry Fire
       range: 10
       damage: 13
       aoe: 2
@@ -891,7 +884,7 @@ Halo:
   -
       name: Boltshot
       cost: 8
-      tags: Item Weapon Gun Forerunner infantry Fire
+      tags: Item Weapon Gun Forerunner Infantry Fire
       range: 10
       damage: 2
       aoe: 1
@@ -899,7 +892,7 @@ Halo:
   -
       name: Crawler CQC
       cost: 0
-      tags: Item Forerunner natural Impact
+      tags: Item Forerunner Natural Impact
       range: 0
       damage: 6
       aoe: 1
@@ -907,7 +900,7 @@ Halo:
   -
       name: Duelist's Boltshot
       cost: 4
-      tags: Item Weapon Gun Forerunner infantry Fire
+      tags: Item Weapon Gun Forerunner Infantry Fire
       range: 10
       damage: 1
       aoe: 1
@@ -923,7 +916,7 @@ Halo:
   -
       name: Incineration Cannon
       cost: 10
-      tags: Item Weapon Gun Forerunner biginfantry Fire
+      tags: Item Weapon Gun Forerunner BigInfantry Fire
       range: 10
       damage: 27
       aoe: 4
@@ -939,7 +932,7 @@ Halo:
   -
       name: Lightrifle
       cost: 8
-      tags: Item Weapon Gun Forerunner infantry Fire
+      tags: Item Weapon Gun Forerunner Infantry Fire
       range: 10
       damage: 3
       aoe: 1
@@ -947,7 +940,7 @@ Halo:
   -
       name: Pulse Grenade
       cost: 0
-      tags: Item Weapon Forerunner infantry Fire
+      tags: Item Weapon Forerunner Infantry Fire
       range: 10
       damage: 7
       aoe: 1
@@ -955,7 +948,7 @@ Halo:
   -
       name: Sentinel Beam
       cost: 8
-      tags: Item Weapon Gun Forerunner infantry Fire
+      tags: Item Weapon Gun Forerunner Infantry Fire
       range: 10
       damage: 3
       aoe: 1
@@ -963,7 +956,7 @@ Halo:
   -
       name: Splinter Grenade
       cost: 0
-      tags: Item Weapon Forerunner infantry Fire
+      tags: Item Weapon Forerunner Infantry Fire
       range: 10
       damage: 13
       aoe: 2
@@ -971,7 +964,7 @@ Halo:
   -
       name: Splinter Turret
       cost: 10
-      tags: Item Weapon Gun Forerunner biginfantry Fire
+      tags: Item Weapon Gun Forerunner BigInfantry Fire
       range: 10
       damage: 5
       aoe: 2
@@ -979,7 +972,7 @@ Halo:
   -
       name: Suppressor
       cost: 9
-      tags: Item Weapon Gun Forerunner infantry Fire
+      tags: Item Weapon Gun Forerunner Infantry Fire
       range: 10
       damage: 4
       aoe: 1
@@ -1130,7 +1123,7 @@ Halo:
   -
       name: Assault Rifle
       cost: 7
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 2
       damage: 5
       aoe: 1
@@ -1138,7 +1131,7 @@ Halo:
   -
       name: Battle Rifle
       cost: 8
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 5
       damage: 2
       aoe: 1
@@ -1154,7 +1147,7 @@ Halo:
   -
       name: Chaingun
       cost: 10
-      tags: Item Weapon Gun UNSC turret Kinetic
+      tags: Item Weapon Gun UNSC Turret Kinetic
       range: 3
       damage: 15
       aoe: 1
@@ -1170,7 +1163,7 @@ Halo:
   -
       name: DMR
       cost: 10
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 15
       damage: 3
       aoe: 1
@@ -1178,7 +1171,7 @@ Halo:
   -
       name: Endgame
       cost: 13
-      tags: Item Weapon Gun UNSC infantry Fire
+      tags: Item Weapon Gun UNSC Infantry Fire
       range: 10
       damage: 20
       aoe: 1
@@ -1186,7 +1179,7 @@ Halo:
   -
       name: Flamethrower
       cost: 8
-      tags: Item Weapon Gun UNSC infantry Fire
+      tags: Item Weapon Gun UNSC Infantry Fire
       range: 10
       damage: 18
       aoe: 2
@@ -1194,7 +1187,7 @@ Halo:
   -
       name: Frag Grenade
       cost: 0
-      tags: Item Weapon UNSC infantry Kinetic
+      tags: Item Weapon UNSC Infantry Kinetic
       range: 5
       damage: 10
       aoe: 3
@@ -1202,7 +1195,7 @@ Halo:
   -
       name: Gauss Cannon
       cost: 13
-      tags: Item Weapon Gun UNSC turret Impact
+      tags: Item Weapon Gun UNSC Turret Impact
       range: 10
       damage: 33
       aoe: 1
@@ -1210,7 +1203,7 @@ Halo:
   -
       name: Grenade Launcher
       cost: 11
-      tags: Item Weapon Gun UNSC infantry Explosive
+      tags: Item Weapon Gun UNSC Infantry Explosive
       range: 10
       damage: 13
       aoe: 3
@@ -1242,7 +1235,7 @@ Halo:
   -
       name: Heavy Chaingun
       cost: 11
-      tags: Item Weapon Gun UNSC turret Explosive
+      tags: Item Weapon Gun UNSC Turret Explosive
       range: 10
       damage: 6
       aoe: 1
@@ -1250,7 +1243,7 @@ Halo:
   -
       name: Heavy Pistol
       cost: 8
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 5
       damage: 4
       aoe: 1
@@ -1258,7 +1251,7 @@ Halo:
   -
       name: Heavy SAW
       cost: 13
-      tags: Item Weapon Gun UNSC biginfantry Explosive
+      tags: Item Weapon Gun UNSC BigInfantry Explosive
       range: 10
       damage: 15
       aoe: 1
@@ -1266,7 +1259,7 @@ Halo:
   -
       name: Hydra
       cost: 10
-      tags: Item Weapon Gun UNSC infantry Explosive
+      tags: Item Weapon Gun UNSC Infantry Explosive
       range: 10
       damage: 16
       aoe: 1
@@ -1274,7 +1267,7 @@ Halo:
   -
       name: Light Pistol
       cost: 4
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 1
       damage: 2
       aoe: 1
@@ -1298,7 +1291,7 @@ Halo:
   -
       name: Marine CQC
       cost: 0
-      tags: Item UNSC natural Impact
+      tags: Item UNSC Natural Impact
       range: 0
       damage: 0
       aoe: 1
@@ -1306,7 +1299,7 @@ Halo:
   -
       name: Missile Pod
       cost: 13
-      tags: Item Weapon Gun UNSC turret Impact
+      tags: Item Weapon Gun UNSC Turret Impact
       range: 10
       damage: 7
       aoe: 2
@@ -1314,7 +1307,7 @@ Halo:
   -
       name: Needle Chaingun
       cost: 11
-      tags: Item Weapon Gun UNSC turret Kinetic
+      tags: Item Weapon Gun UNSC Turret Kinetic
       range: 10
       damage: 4
       aoe: 1
@@ -1322,7 +1315,7 @@ Halo:
   -
       name: Pistol
       cost: 5
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 10
       damage: 2
       aoe: 1
@@ -1330,7 +1323,7 @@ Halo:
   -
       name: Railgun
       cost: 10
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 10
       damage: 13
       aoe: 1
@@ -1338,7 +1331,7 @@ Halo:
   -
       name: Rocket Launcher
       cost: 10
-      tags: Item Weapon Gun UNSC infantry Impact
+      tags: Item Weapon Gun UNSC Infantry Impact
       range: 8
       damage: 27
       aoe: 3
@@ -1346,7 +1339,7 @@ Halo:
   -
       name: SAW
       cost: 10
-      tags: Item Weapon Gun UNSC biginfantry Kinetic
+      tags: Item Weapon Gun UNSC BigInfantry Kinetic
       range: 3
       damage: 9
       aoe: 1
@@ -1354,7 +1347,7 @@ Halo:
   -
       name: SMG
       cost: 6
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 1
       damage: 4
       aoe: 1
@@ -1362,7 +1355,7 @@ Halo:
   -
       name: Scoped Pistol
       cost: 6
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 4
       damage: 3
       aoe: 1
@@ -1378,7 +1371,7 @@ Halo:
   -
       name: Selene's Lance
       cost: 13
-      tags: Item Weapon Gun UNSC infantry Fire
+      tags: Item Weapon Gun UNSC Infantry Fire
       range: 10
       damage: 26
       aoe: 2
@@ -1386,7 +1379,7 @@ Halo:
   -
       name: Shotgun
       cost: 8
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 0
       damage: 6
       aoe: 1
@@ -1394,7 +1387,7 @@ Halo:
   -
       name: Silenced Pistol
       cost: 6
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 10
       damage: 2
       aoe: 1
@@ -1402,7 +1395,7 @@ Halo:
   -
       name: Silenced SMG
       cost: 6
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 10
       damage: 5
       aoe: 1
@@ -1410,7 +1403,7 @@ Halo:
   -
       name: Sniper Rifle
       cost: 13
-      tags: Item Weapon Gun UNSC infantry Kinetic
+      tags: Item Weapon Gun UNSC Infantry Kinetic
       range: 14
       damage: 10
       aoe: 1
@@ -1418,7 +1411,7 @@ Halo:
   -
       name: Spartan CQC
       cost: 0
-      tags: Item UNSC natural Impact
+      tags: Item UNSC Natural Impact
       range: 0
       damage: 5
       aoe: 1
@@ -1426,7 +1419,7 @@ Halo:
   -
       name: Spartan Laser
       cost: 13
-      tags: Item Weapon Gun UNSC infantry Fire
+      tags: Item Weapon Gun UNSC Infantry Fire
       range: 10
       damage: 27
       aoe: 1
@@ -1434,7 +1427,7 @@ Halo:
   -
       name: Sticky Grenade Launcher
       cost: 11
-      tags: Item Weapon Gun UNSC infantry Impact
+      tags: Item Weapon Gun UNSC Infantry Impact
       range: 10
       damage: 17
       aoe: 2
@@ -1450,7 +1443,7 @@ Halo:
   -
       name: Vespin Rocket Turret
       cost: 12
-      tags: Item Weapon Gun UNSC turret Impact
+      tags: Item Weapon Gun UNSC Turret Impact
       range: 10
       damage: 13
       aoe: 1
@@ -2067,4 +2060,120 @@ Halo:
       size: 4
       has: GrenadeLauncher
       speed: 6
+
+StarWars:
+  - meta: Context info
+    pairWith: Generic # GenericScifi
+
+  - name: Protocol Droid
+    tags: Character Robot CPU
+    agility: -10
+    knowledge: 1
+
+  - name: Astromech Droid
+    tags: Character Robot CPU
+    agility: -5
+
+  - name: Hutt
+    tags: Character Organic
+    durability: 5
+
+  - name: Twi'lek
+    tags: Character Organic
+
+  - name: Mandalorian
+    tags: Character Human Organic
+    durability: 5
+
+  - name: Ewok
+    tags: Character Organic
+    durability: -5
+
+  - name: Wookie
+    tags: Character Organic
+    durability: 3
+
+  - name: Gungan
+    tags: Character Organic
+
+  - name: Jawa
+    tags: Character Organic
+
+  - name: Tusken Raider
+    tags: Character Organic
+
+  - name: Mon Calamari
+    tags: Character Organic
+
+  - name: Battle Droid
+    tags: Character Robot CPU
+
+  - name: Geonosian
+    tags: Character Organic
+    speed: 5
+
+  - name: Kaminoan
+    tags: Character Organic
+
+
+  - name: Pilot
+    tags: Adjective Role
+
+  - name: Meknek
+    tags: Adjective Role
+    knowledge: 5
+
+  - name: Jedi Knight
+    tags: Adjective Role
+    magic: 10
+
+  - name: Smuggler
+    tags: Adjective Role
+    social: 3
+
+  - name: Bandit
+    tags: Adjective Role
+    durability: 2
+
+  - name: Bounty Hunter
+    tags: Adjective Role
+
+  - name: Bandit Leader
+    tags: Adjective Role
+
+  - name: Navy Officer
+    tags: Adjective Role
+
+  - name: Dark Jedi
+    tags: Adjective Role
+    magic: 10
+
+  - name: Merchant
+    tags: Adjective Role
+
+  - name: Mystic
+    tags: Adjective Role
+    magic: 1
+
+  - name: Bartender
+    tags: Adjective Role
+    social: 3
+
+  - name: Rebel Agent
+    tags: Adjective Role
+
+  - name: Spy
+    tags: Adjective Role
+    social: 5
+    stealth: 5
+
+  - name: Aristocrat
+    tags: Adjective Role
+    social: 2
+    knowledge: 1
+
+
+
+
+
 
