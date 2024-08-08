@@ -46,17 +46,22 @@ class Suggestor {
             lorcana
             magic cards
 
+            a little wordy
             agricola: creatures great & small
             backgammon
             chess
             codenames duet
             convert
+            fortnite
             hive
             homeworlds
             magic: duels of the planeswalkers
+            mario
             quarto
             six making
+            german soccer game
 
+            agricola suburban edition
             azul
             azul stained glass
             betrayal at house on the hill
@@ -66,15 +71,18 @@ class Suggestor {
             pangaea
             race for the galaxy
             root
+            sleeping gods
             splendor
             tiny epic tactics
             war of whispers
+            warioware
 
             clone wars pandemic
             cosmic encounter
             creature comforts
             die crew
             flamecraft
+            horrified
             king of new york
             point salad
             risk godstorm
@@ -92,12 +100,16 @@ class Suggestor {
 
             camel up
             insider
+            ladies & gentlemen
+            no thanks
+            take it easy
 
             anomia
             bananagrams
             boggle
             concept
             drawful (Jackbox)
+            dont get got
             exquisite corpse
             halo
             jenga
@@ -115,6 +127,7 @@ class Suggestor {
             telestrations
             triple charades
 
+            deception
             werewolf
 
             2 rooms & a boom
@@ -23357,6 +23370,16 @@ class Util {
         return false;
     }
 
+    static flatten (arrayOfArrays) {
+        let flat = arrayOfArrays[0];
+
+        for (let i = 1; i < arrayOfArrays.length; i++) {
+            flat = flat.concat(arrayOfArrays[i]);
+        }
+
+        return flat;
+    }
+
     // Returns number
     // Default 0
     static sum (array) {
@@ -24468,6 +24491,11 @@ class Util {
         throw new Error(
             Util.stringify(summary)
         );
+    }
+
+    // alias for the above.
+    static throw (summary) {
+        return Util.error(summary);
     }
 
     static makeEnum (array, allLower = false) {

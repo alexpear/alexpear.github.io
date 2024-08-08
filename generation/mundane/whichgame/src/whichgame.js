@@ -60,6 +60,7 @@ class Suggestor {
             six making
             german soccer game
 
+            agricola suburban edition
             azul
             azul stained glass
             betrayal at house on the hill
