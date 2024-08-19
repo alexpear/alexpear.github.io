@@ -92,6 +92,15 @@ Twig:
     text: 'Romantic towards: Female, Male'
     # Her exosuit is a separate card.
 
+    # This is a chassis for many experiments
+  - name: Retrained Child
+    tags: character human child biotech
+    cost: 3
+    damage: -2
+    durability: -2
+    speed: -1
+    stealth: 1
+
 Halo:
   -
       meta: Context info
@@ -105,27 +114,11 @@ Halo:
       aoe: 2
       copiesInDeck: 7
   -
-      name: Brute CQC
-      cost: 0
-      tags: Item Covenant Natural Impact Brute
-      range: 0
-      damage: 9
-      aoe: 1
-      copiesInDeck: 10
-  -
       name: Brute Shot
       cost: 9
       tags: Item Weapon Gun Covenant BigInfantry Impact Brute
       range: 3
       damage: 6
-      aoe: 1
-      copiesInDeck: 7
-  -
-      name: Brute Shot CQC (from Brute)
-      cost: 0
-      tags: Item Covenant Infantry Kinetic Brute
-      range: 0
-      damage: 13
       aoe: 1
       copiesInDeck: 7
   -
@@ -144,14 +137,6 @@ Halo:
       damage: 4
       aoe: 2
       copiesInDeck: 3
-  -
-      name: Elite CQC
-      cost: 0
-      tags: Item Covenant Natural Impact
-      range: 0
-      damage: 12
-      aoe: 1
-      copiesInDeck: 9
   -
       name: Energy Sword
       cost: 8
@@ -184,22 +169,6 @@ Halo:
       damage: 17
       aoe: 2
       copiesInDeck: 4
-  -
-      name: Grunt CQC
-      cost: 0
-      tags: Item Covenant Natural Impact
-      range: 0
-      damage: 0
-      aoe: 1
-      copiesInDeck: 10
-  -
-      name: Hunter CQC
-      cost: 0
-      tags: Item Covenant Natural Impact
-      range: 0
-      damage: 17
-      aoe: 3
-      copiesInDeck: 5
   -
       name: Hunter Cannon
       cost: 12
@@ -334,14 +303,6 @@ Halo:
       tags: Item Weapon Gun Covenant Infantry Kinetic Brute
       range: 10
       damage: 2
-      aoe: 1
-      copiesInDeck: 9
-  -
-      name: Spiker CQC (from Brute)
-      cost: 0
-      tags: Item Covenant Infantry Kinetic Brute
-      range: 0
-      damage: 10
       aoe: 1
       copiesInDeck: 9
   -
@@ -765,30 +726,6 @@ Halo:
       aoe: 3
       copiesInDeck: 1
   -
-      name: Flood Combat Form CQC
-      cost: 0
-      tags: Item Flood Impact
-      range: 10
-      damage: 12
-      aoe: 1
-      copiesInDeck: 9
-  -
-      name: Flood Pod CQC
-      cost: 0
-      tags: Item Flood Kinetic
-      range: 10
-      damage: 1
-      aoe: 1
-      copiesInDeck: 10
-  -
-      name: Flood spine munitions
-      cost: 0
-      tags: Item Flood Kinetic
-      range: 10
-      damage: 1
-      aoe: 1
-      copiesInDeck: 4
-  -
       name: Carrier Form
       tags: Character Flood Ground
       range: 0
@@ -889,14 +826,6 @@ Halo:
       damage: 2
       aoe: 1
       copiesInDeck: 7
-  -
-      name: Crawler CQC
-      cost: 0
-      tags: Item Forerunner Natural Impact
-      range: 0
-      damage: 6
-      aoe: 1
-      copiesInDeck: 9
   -
       name: Duelist's Boltshot
       cost: 4
@@ -1289,14 +1218,6 @@ Halo:
       aoe: 100
       copiesInDeck: 1
   -
-      name: Marine CQC
-      cost: 0
-      tags: Item UNSC Natural Impact
-      range: 0
-      damage: 0
-      aoe: 1
-      copiesInDeck: 10
-  -
       name: Missile Pod
       cost: 13
       tags: Item Weapon Gun UNSC Turret Impact
@@ -1408,14 +1329,6 @@ Halo:
       damage: 10
       aoe: 1
       copiesInDeck: 6
-  -
-      name: Spartan CQC
-      cost: 0
-      tags: Item UNSC Natural Impact
-      range: 0
-      damage: 5
-      aoe: 1
-      copiesInDeck: 1
   -
       name: Spartan Laser
       cost: 13
