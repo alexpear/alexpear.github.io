@@ -38,6 +38,10 @@ class SoccerTime {
         return `${minutes}:${seconds} (${this.periodDisplay()})`;
     }
 
+    isOver () {
+        return this.period >= 6;
+    }
+
     static comparator (a, b) {
         if (a.period !== b.period) {
             return a.period - b.period;
@@ -85,5 +89,7 @@ class SoccerTime {
         }
     }
 }
+
+module.exports = SoccerTime;
 
 SoccerTime.test();
