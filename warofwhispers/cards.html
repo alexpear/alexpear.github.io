@@ -1,124 +1,161 @@
 <html>
-    <head>
-        <meta charset="utf-8">
-        <style type="text/css">
-            td {
-                width: 244px;
-                height: 344px;
-                border: 2px solid;
-                vertical-align: top;
-            }
+  <head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      td {
+        width: 244px;
+        height: 344px;
+        border: 2px solid;
+        vertical-align: top;
+      }
 
-            .cardBody {
-                display: grid;
-                grid-template-rows: 100px;
-            }
+      .cardBody {
+        display: grid;
+        grid-template-rows: 100px;
+      }
 
-            .cardBody > span {
-                align-items: center;
-                margin: 0 3px 20px 3px;
-            }
+      .cardBody > span {
+        align-items: center;
+        margin: 0 3px 20px 3px;
+      }
 
-            .stage {
-                display: flex;
-                justify-content: center;
-                margin: 0 0 10px 0;
-            }
+      .stage {
+        display: flex;
+        justify-content: center;
+        margin: 0 0 10px 0;
+      }
 
-            .bear {
-                background-color: #0c4ca1; /* European blue */
-                color: white;
-            }
+      .bear {
+        background-color: #0c4ca1; /* European blue */
+        color: white;
+      }
 
-            .eagle {
-                background-color: yellow; /* Humanist yellow */
-            }
+      .eagle {
+        background-color: yellow; /* Humanist yellow */
+      }
 
-            .elephant {
-                background-color: paleturquoise; /* Cousin teal */
-            }
+      .elephant {
+        background-color: paleturquoise; /* Cousin teal */
+      }
 
-            .horse {
-                background-color: #6b137a; /* Masonic purple */
-                color: white;
-            }
+      .horse {
+        background-color: #6b137a; /* Masonic purple */
+        color: white;
+      }
 
-            .lion {
-                background-color: red; /* Mitsubishi red */
-                color: white;
-            }
+      .lion {
+        background-color: red; /* Mitsubishi red */
+        color: white;
+      }
 
-            span > * {
-                display: inline;
-            }
+      span > * {
+        display: inline;
+      }
 
-            img {
-                height: 100%;
-                max-width: 100%;
-                max-height: 100%;
-            }
+      img {
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+      }
 
-            .square {
-                display: inline-block;
-                width: 20px;
-                height: 20px;
-                border: 2px solid;
-                margin: 1px;
-                color: black!important;
-            }
+      .square {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid;
+        margin: 1px;
+        color: black !important;
+      }
 
-            p {
-                padding-left: 5px;
-                font-size: 14;
-                font-size: 13;
-                font-family: Georgia;
-            }
+      p {
+        padding-left: 5px;
+        font-size: 14;
+        font-size: 13;
+        font-family: Georgia;
+      }
 
-            .houseSpacer {
-                height: 60px;
-            }
+      .houseSpacer {
+        height: 60px;
+      }
 
-            .nameDiv {
-                padding: 20px 0;
-            }
+      .nameDiv {
+        padding: 20px 0;
+      }
 
-            .textRow {
-                display: flex;
-                justify-content: center;
-            }
+      .textRow {
+        display: flex;
+        justify-content: center;
+      }
 
-            .textRow > .bigText {
-                font-size: 32;
-                margin: 0;
-            }
+      .textRow > .bigText {
+        font-size: 32;
+        margin: 0;
+      }
 
-            .striped {
-                display: flex;
-                flex-direction: column;
-            }
+      .striped {
+        display: flex;
+        flex-direction: column;
+      }
 
-            .evenStripe {
-                height: 67px;
-                display: flex;
-                justify-content: center;
-            }
-        </style>
-    </head>
+      .evenStripe {
+        height: 67px;
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+  </head>
 
-    <body>
-        <div>
-            <table id=main>
-                <tr>
-                    <td>
-                            <div class="cardBody"><div class="stage bear"><img src="media/europe.jpg"></div><span><div class="square bear"><img src="media/europe.jpg"></div><p>After your attack, you may make an additional attack with any surviving troops.</p></span><span><div class="square bear"><img src="media/europe.jpg"></div><div class="square bear"><img src="media/europe.jpg"></div><p>After your attack, kill ALL troops involved in that attack (on both sides).</p></span><span><div class="square bear"><img src="media/europe.jpg"></div><div class="square"><img src="media/cousin.jpg"></div><p><i>Red Crystal:</i> Reinforce an empty location with 3 troops of the controlling Hive.</p></span></div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </body>
+  <body>
+    <div>
+      <table id="main">
+        <tr>
+          <td>
+            <div class="cardBody">
+              <div class="stage bear">
+                <img src="media/europe.jpg" />
+              </div>
+              <span>
+                <div class="square bear">
+                  <img src="media/europe.jpg" />
+                </div>
+                <p>
+                  After your attack, you may make an additional attack with any
+                  surviving troops.
+                </p>
+              </span>
+              <span>
+                <div class="square bear">
+                  <img src="media/europe.jpg" />
+                </div>
+                <div class="square bear">
+                  <img src="media/europe.jpg" />
+                </div>
+                <p>
+                  After your attack, kill ALL troops involved in that attack (on
+                  both sides).
+                </p>
+              </span>
+              <span>
+                <div class="square bear">
+                  <img src="media/europe.jpg" />
+                </div>
+                <div class="square">
+                  <img src="media/cousin.jpg" />
+                </div>
+                <p>
+                  <i>Red Crystal:</i> Reinforce an empty location with 3 troops
+                  of the controlling Hive.
+                </p>
+              </span>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
 
-    <script>
-        window.AWOWtheme = 'terraignota';
-    </script>
-    <script src="bundle.js"></script>
+  <script>
+    window.AWOWtheme = "terraignota";
+  </script>
+  <script src="bundle.js"></script>
 </html>
