@@ -91,12 +91,28 @@
                 font-size: 32;
                 margin: 0;
             }
+
+            .striped {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .evenStripe {
+                height: 67px;
+                display: flex;
+                justify-content: center;
+            }
         </style>
     </head>
 
     <body>
         <div>
-            <table id="main">
+            <table id=main>
+                <tr>
+                    <td>
+                            <div class="cardBody"><div class="stage bear"><img src="media/europe.jpg"></div><span><div class="square bear"><img src="media/europe.jpg"></div><p>After your attack, you may make an additional attack with any surviving troops.</p></span><span><div class="square bear"><img src="media/europe.jpg"></div><div class="square bear"><img src="media/europe.jpg"></div><p>After your attack, kill ALL troops involved in that attack (on both sides).</p></span><span><div class="square bear"><img src="media/europe.jpg"></div><div class="square"><img src="media/cousin.jpg"></div><p><i>Red Crystal:</i> Reinforce an empty location with 3 troops of the controlling Hive.</p></span></div>
+                    </td>
+                </tr>
             </table>
         </div>
     </body>
