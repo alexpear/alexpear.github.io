@@ -114,31 +114,31 @@ class Card {
         stageDiv.appendChild(stageImage);
         cardDiv.appendChild(stageDiv);
 
-        const titleDiv = Util.htmlElement('div');
+        const titleSpan = Util.htmlElement('span');
         const title = Util.htmlElement('p', 'center', 'Dark Alliance');
-        titleDiv.appendChild(title);
-        cardDiv.appendChild(titleDiv);
+        titleSpan.appendChild(title);
+        cardDiv.appendChild(titleSpan);
 
-        const timingDiv = Util.htmlElement('div');
+        const timingSpan = Util.htmlElement('span');
         const timingText = Util.htmlElement(
             'p',
             'center',
             "You may play this at the start of an opponent's action."
         );
-        timingDiv.appendChild(timingText);
-        cardDiv.appendChild(timingDiv);
+        timingSpan.appendChild(timingText);
+        cardDiv.appendChild(timingSpan);
 
         const offerString = askToControl ?
             'Ask to control their action.' :
             'Offer to increase their current attack by +4 troops.';
-        const offerDiv = Util.htmlElement('div');
+        const offerSpan = Util.htmlElement('span');
         const offerText = Util.htmlElement(
             'p',
             'center',
             offerString,
         );
-        offerDiv.appendChild(offerText);
-        cardDiv.appendChild(offerDiv);
+        offerSpan.appendChild(offerText);
+        cardDiv.appendChild(offerSpan);
 
         const effectString = this.effects(
             this.animal1,
@@ -146,23 +146,23 @@ class Card {
                 'control' :
                 'plus4',
         );
-        const effectDiv = Util.htmlElement('div');
+        const effectSpan = Util.htmlElement('span');
         const effectText = Util.htmlElement(
             'p',
             'center',
             effectString,
         );
-        effectDiv.appendChild(effectText);
-        cardDiv.appendChild(effectDiv);
+        effectSpan.appendChild(effectText);
+        cardDiv.appendChild(effectSpan);
 
-        const declineDiv = Util.htmlElement('div');
+        const declineSpan = Util.htmlElement('span');
         const declineText = Util.htmlElement(
             'p',
             'center',
             "If they don't, return this card to your hand.",
         );
-        declineDiv.appendChild(declineText);
-        cardDiv.appendChild(declineDiv);
+        declineSpan.appendChild(declineText);
+        cardDiv.appendChild(declineSpan);
 
         return td;
     }
