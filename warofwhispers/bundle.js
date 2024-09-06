@@ -23169,8 +23169,28 @@ class Util {
         }
     }
 
+    // Safely dig deep into a nested obj.
+    // Example: Util.access(pageObj, 'revision.text.$text');
+    static access (obj, dotSeparatedFields) {
+        if (dotSeparatedFields[0] === '.') {
+            dotSeparatedFields = dotSeparatedFields.slice(1);
+        }
+
+        const fieldNames = dotSeparatedFields.split('.');
+
+        for (let name of fieldNames) {
+            if (! obj) {
+                return undefined;
+            }
+
+            obj = obj[name];
+        }
+
+        return obj;
+    }
+
     static contains (array, fugitive) {
-        return array.indexOf(fugitive) >= 0;
+        return array.includes(fugitive);
     }
 
     static hasOverlap (arrayA, arrayB) {
@@ -23185,6 +23205,16 @@ class Util {
         }
 
         return false;
+    }
+
+    static flatten (arrayOfArrays) {
+        let flat = arrayOfArrays[0];
+
+        for (let i = 1; i < arrayOfArrays.length; i++) {
+            flat = flat.concat(arrayOfArrays[i]);
+        }
+
+        return flat;
     }
 
     // Returns number
@@ -23252,12 +23282,67 @@ class Util {
         return winner;
     }
 
+    // Modifies the array.
     static shuffle (array) {
-        array.sort(
-            (a, b) => Math.random()
-        );
+        for (let i = 0; i <= array.length - 2; i++) {
+            const untouchedCount = array.length - 1 - i;
+
+            const swapWith = i + Math.ceil(Math.random() * untouchedCount);
+
+            const temp = array[i];
+            array[i] = array[swapWith];
+            array[swapWith] = temp;
+        }
 
         return array;
+    }
+
+    static testShuffle () {
+        for (let repeat = 0; repeat <= 999; repeat++) {
+            const len = Math.floor(Math.random() * 100);
+
+            const array = [...Array(len)]
+                .map(
+                    x => Math.random()
+                );
+
+            const backup = Array.from(array);
+
+            const shuffled = Util.shuffle(array);
+
+            let good = true;
+
+            if (backup.length !== shuffled.length) {
+                good = false;
+            }
+
+            let identical = true;
+
+            for (let i = 0; i < shuffled.length; i++) {
+                if (backup[i] !== shuffled[i]) {
+                    identical = false;
+                    break;
+                }
+            }
+
+            if (identical && backup.length >= 3) {
+                good = false;
+            }
+
+            if (! good) {
+                Util.error({
+                    repeat,
+                    array,
+                    backup,
+                    shuffled,
+                    identical,
+                    len,
+                    arrayLength: array.length,
+                    backupLength: backup.length,
+                    shuffledLength: shuffled.length,
+                });
+            }
+        }
     }
 
     static constrain (n, minInclusive, maxInclusive) {
@@ -23359,6 +23444,34 @@ class Util {
 
     static randomLetter () {
         return Util.randomOf(`ABCDEFGHIJKLMNOPQRSTUVWXYZ`);
+    }
+
+    static roll2d6 () {
+        return Util.roll1d6() + Util.roll1d6();
+    }
+
+    static roll1d6 () {
+        return Util.rollDie(6);
+    }
+
+    static rollDie (sides) {
+        return Math.ceil(Math.random() * sides);
+    }
+
+    static testRoll1d6 () {
+        const results = [];
+
+        for (let i = 0; i < 5000; i++) {
+            results.push(
+                Util.roll1d6()
+            );
+        }
+
+        console.log();
+
+        Util.logDebug(
+            Util.arraySummary(results)
+        );
     }
 
     // Returns string
@@ -23499,9 +23612,8 @@ class Util {
         return lines;
     }
 
-
     // Input string[]
-    // Returns string summarizing redundancies
+    // Returns string summarizing redundancies, like a histogram.
     static arraySummary (a) {
         const dict = {};
 
@@ -24218,10 +24330,19 @@ class Util {
         );
     }
 
-    static makeEnum (vals) {
+    // alias for the above.
+    static throw (summary) {
+        return Util.error(summary);
+    }
+
+    static makeEnum (array, allLower = false) {
         const dict = {};
-        for (let val of vals) {
-            dict[Util.capitalized(val)] = Util.uncapitalized(val);
+        for (let val of array) {
+            const key = allLower ?
+                Util.uncapitalized(val) :
+                Util.capitalized(val);
+
+            dict[key] = Util.uncapitalized(val);
         }
 
         return dict;
@@ -24292,7 +24413,9 @@ class Util {
         Util.testPrettyDistance();
         Util.testCamelCase();
         Util.testPadSides();
+        Util.testShuffle();
         Util.testSigfigRound();
+        Util.testRoll1d6();
         Util.logDebug(`Done with unit tests for Util module :)`);
     }
 }
@@ -24345,7 +24468,7 @@ class Card {
 
     html () {
         const td = Util.htmlElement('td');
-        const cardDiv = Util.htmlElement('div', 'cardBody');
+        const cardDiv = Util.htmlElement('div', 'cardBody generated');
         td.appendChild(cardDiv);
 
         const stageImage = new Image();
@@ -24404,6 +24527,97 @@ class Card {
         for (let word of words) {
             this.addBigText(textDiv, word, this.animal1);
         }
+
+        return td;
+    }
+
+    // HTML element for a wildcard.
+    wild () {
+        const td = Util.htmlElement('td');
+        const cardDiv = Util.htmlElement('div', 'cardBody');
+        cardDiv.setAttribute('class', 'striped');
+
+        td.appendChild(cardDiv);
+
+        const ANIMALS_ORDERED = ['elephant', 'bear', 'eagle', 'horse', 'lion'];
+
+        for (const animal of ANIMALS_ORDERED) {
+            const icon = new Image();
+            icon.src = this.imagePath(animal);
+
+            const iconDiv = Util.htmlElement('div', 'evenStripe');
+            this.divColor(iconDiv, animal);
+
+            iconDiv.appendChild(icon);
+            cardDiv.appendChild(iconDiv);
+        }
+
+        return td;
+    }
+
+    darkAlliance (askToControl) {
+        const td = Util.htmlElement('td');
+        const cardDiv = Util.htmlElement('div', 'cardBody');
+        td.appendChild(cardDiv);
+
+        const stageImage = new Image();
+        stageImage.src = this.imagePath();
+
+        const stageDiv = Util.htmlElement('div', 'stage');
+        this.divColor(stageDiv);
+
+        stageDiv.appendChild(stageImage);
+        cardDiv.appendChild(stageDiv);
+
+        const titleSpan = Util.htmlElement('span');
+        const title = Util.htmlElement('p', 'center', 'Dark Alliance');
+        titleSpan.appendChild(title);
+        cardDiv.appendChild(titleSpan);
+
+        const timingSpan = Util.htmlElement('span');
+        const timingText = Util.htmlElement(
+            'p',
+            'center',
+            "You may play this at the start of an opponent's action."
+        );
+        timingSpan.appendChild(timingText);
+        cardDiv.appendChild(timingSpan);
+
+        const offerString = askToControl ?
+            'Ask to control their action.' :
+            'Offer to increase their current attack by +4 troops.';
+        const offerSpan = Util.htmlElement('span');
+        const offerText = Util.htmlElement(
+            'p',
+            'center',
+            offerString,
+        );
+        offerSpan.appendChild(offerText);
+        cardDiv.appendChild(offerSpan);
+
+        const effectString = this.effects(
+            this.animal1,
+            askToControl ?
+                'control' :
+                'plus4',
+        );
+        const effectSpan = Util.htmlElement('span');
+        const effectText = Util.htmlElement(
+            'p',
+            'center',
+            effectString,
+        );
+        effectSpan.appendChild(effectText);
+        cardDiv.appendChild(effectSpan);
+
+        const declineSpan = Util.htmlElement('span');
+        const declineText = Util.htmlElement(
+            'p',
+            'center',
+            "If they don't, return this card to your hand.",
+        );
+        declineSpan.appendChild(declineText);
+        cardDiv.appendChild(declineSpan);
 
         return td;
     }
@@ -24565,29 +24779,51 @@ class Card {
             terraignota: {
                 Single: {
                     bear: 'After your attack, you may make an additional attack with any surviving troops.',
-                    eagle: 'Move the active agent to any empty hive square & immediately take that square\'s action instead. Then proceed from after where it was.',
+                    eagle: 'Move the active agent to any empty Hive square & immediately take that square\'s action instead. Then proceed from after where it was.',
                     elephant: 'Add 1 troop to your attack.',
-                    lion: 'Instead of using your current hive square action, use a hive square action controlled by one of your other agents.',
-                    horse: 'Choose 2 locations controlled by the active hive. Move any number of troops between them.',
+                    lion: 'Instead of using your current Hive square action, use a Hive square action controlled by one of your other agents.',
+                    horse: 'Choose 2 locations controlled by the active Hive. Move any number of troops between them. (Don\'t abandon a conquered region.)',
                 },
                 Double: {
                     bear: 'After your attack, kill ALL troops involved in that attack (on both sides).',
                     eagle: 'Your attack may target any empty enemy location.',
                     elephant: 'Add 3 troops to your attack.',
-                    lion: 'Reinforce a Harbinger Knowledge location with 3 more troops of the controlling hive.',
-                    horse: 'Rearrange any hive\'s troops within its controlled locations. (Do not abandon a location or exceed supply.)',
+                    lion: 'Reinforce a Harbinger Knowledge location with 3 more troops of the controlling Hive.',
+                    horse: 'Rearrange any Hive\'s troops within its controlled locations. (Do not abandon a location or exceed supply.)',
                 },
                 Combo: {
                     beareagle: 'Atë: Kill up to 3 troops in any 1 location.', // mercenaries
-                    bearelephant: 'Red Crystal: Reinforce an empty location with 3 troops of the controlling hive.', // recruit
-                    bearhorse: 'The Prince Speaks: Take all troops in any location (abandoning it) & move them to any number of adjacent locations controlled by that hive.', // disperse
-                    bearlion: 'Peacewash: After your attack, for each enemy troop killed, add 1 troop of the active hive to any location the active hive controls.', // subjugate
-                    eagleelephant: 'Missiles Launched: Choose 1 troop of the active hive. Kill up to 5 enemy troops in any adjacent locations.', // alchemist's fire // gorgons
+                    bearelephant: 'Red Crystal: Reinforce an empty location with 3 troops of the controlling Hive.', // recruit
+                    bearhorse: 'The Prince Speaks: Take all troops in any location (abandoning it) & move them to any number of adjacent locations controlled by that Hive.', // disperse
+                    bearlion: 'Peacewash: After your attack, for each enemy troop killed, add 1 troop of the active Hive to any location the active Hive controls.', // subjugate
+                    eagleelephant: 'Missiles Launched: Choose 1 troop of the active Hive. Kill up to 5 enemy troops in any adjacent locations.', // alchemist's fire // gorgons
                     eaglehorse: 'World Civil War: Your attack may target any location on the map.', // armada
-                    eaglelion: 'Servicers: Add 1 troop to each location the active hive controls.', // populate // myrmidons
-                    elephanthorse: 'Operation Baskerville: Reinforce an empty location with no Harbinger or Fortified Position by adding 4 troops of the controlling hive.', // uprising
-                    elephantlion: 'World-Ringing River: Add up to 6 troops to the current attack from any locations the active hive controls.', // reinforce
+                    eaglelion: 'Servicers: Add 1 troop to each location the active Hive controls.', // populate // myrmidons
+                    elephanthorse: 'Operation Baskerville: Reinforce an empty location with no Harbinger or Fortified Position by adding 4 troops of the controlling Hive.', // uprising
+                    elephantlion: 'World-Ringing River: Add up to 6 troops to the current attack from any locations the active Hive controls.', // reinforce
                     horselion: 'Antisleep: After performing an action with an agent, take the same action again.', // midnight oil
+                },
+                DarkAlliance: {
+                    bear: {
+                        control: 'you must remove 1 of your agents from the board',
+                        plus4: 'they must remove 1 of their agents from the board',
+                    },
+                    eagle: {
+                        control: 'they may draw 2 cards from any pile(s)',
+                        plus4: 'you may draw 2 cards from any pile(s)',
+                    },
+                    elephant: {
+                        control: 'they may reinforce any location with 4 more troops',
+                        plus4: 'you may reinforce any location with 4 more troops',
+                    },
+                    lion: {
+                        control: 'you must turn 1 of your loyalty cards face up',
+                        plus4: 'they must turn 1 of their loyalty cards face up',
+                    },
+                    horse: {
+                        control: 'they may swap 1 of their deployed agents with 1 of yours',
+                        plus4: 'you may swap 1 of your deployed agents with 1 of theirs',
+                    },
                 },
             },
 
@@ -24616,7 +24852,7 @@ class Card {
                     eaglelion: 'Synthesis: Add 1 unit to each planet the active faction controls.', // populate
                     elephanthorse: 'Secret Base: Reinforce an empty planet with no Prothean artifact & no orbital station by adding 4 units of the controlling faction.', // uprising // TODO check if this text is too long & pushes the card bottom downwards.
                     elephantlion: 'Loyalty: Add up to 6 units to the current attack from any planets the active faction controls.', // reinforce
-                    horselion: 'Operation Overdrive: After performing an action with an agent, take the same action again.', // midnight oil
+                    horselion: 'Operation Overdrive: After performing an action with an agent, take the same action again.', // midnight oil // Like a Hamster on Coffee
                 },
             },
         };
@@ -24628,8 +24864,8 @@ class Card {
         city -> Harbinger Knowledge
         farm -> city
         tower -> Fortified Position
-        empire -> hive
-        council position -> hive square
+        empire -> Hive
+        council position -> Hive square
 
         for Mass Effect
         empire -> faction
@@ -24646,6 +24882,11 @@ class Card {
         const lines = EFFECTS[this.theme];
 
         if (animal2) {
+            if (['control', 'plus4'].includes(animal2)) {
+                const effect = lines.DarkAlliance[animal1][animal2];
+                return `If they accept, ${effect}.`;
+            }
+
             if (animal1 === animal2) {
                 return lines.Double[animal1];
             }
@@ -24673,6 +24914,7 @@ class Card {
                     const card = new Card(theme, animal1, animal2);
                     const td = card.html();
 
+                    // TODO functionize this.
                     if (colNum > 3) {
                         row = Util.htmlElement('tr');
                         table.appendChild(row);
@@ -24701,10 +24943,51 @@ class Card {
                 colNum++;
             }
         }
+
+        // Also Treasure wildcards
+        for (let i = 0; i < 10; i++) {
+            const card = new Card(theme, 'wild');
+            const td = card.wild();
+
+            if (colNum > 3) {
+                row = Util.htmlElement('tr');
+                table.appendChild(row);
+                colNum = 1;
+            }
+
+            row.appendChild(td);
+            colNum++;
+        }
+
+        // Also Dark Alliance cards
+        for (let animal of Card.animals()) {
+            const card = new Card(theme, animal);
+            const tdControl = card.darkAlliance(true);
+
+            if (colNum > 3) {
+                row = Util.htmlElement('tr');
+                table.appendChild(row);
+                colNum = 1;
+            }
+
+            row.appendChild(tdControl);
+            colNum++;
+
+            const tdPlus4 = card.darkAlliance(false);
+
+            if (colNum > 3) {
+                row = Util.htmlElement('tr');
+                table.appendChild(row);
+                colNum = 1;
+            }
+
+            row.appendChild(tdPlus4);
+            colNum++;
+        }
     }
 
     static run () {
-        Card.createCards();
+        Card.createCards('terraignota');
     }
 }
 
