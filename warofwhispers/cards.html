@@ -10,16 +10,29 @@
       }
 
       .cardBody {
-        display: grid;
-        grid-template-rows: 100px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+/*        display: grid;
+        grid-template-rows: 100px;*/
+      }
+
+      .manual {
+/*        font-size: 10pt;*/
+      }
+
+      .manual > span {
+        text-align: center;
       }
 
       .cardBody > span {
         align-items: center;
-        margin: 0 3px 20px 3px;
+        margin: 0 3px 3px 3px;
       }
 
       .stage {
+        height: 90px;
         display: flex;
         justify-content: center;
         margin: 0 0 10px 0;
@@ -68,10 +81,14 @@
       }
 
       p {
-        padding-left: 5px;
-        font-size: 14;
-        font-size: 13;
+/*        padding-left: 5px;*/
+/*        font-size: 14;*/
+        font-size: 9pt;
         font-family: Georgia;
+      }
+
+      .generated p {
+        padding-left: 5px;
       }
 
       .houseSpacer {
@@ -122,12 +139,12 @@
               </div>
               <span>
                 <p class=revealText>
-                  When you draw this, IMMEDIATELY reveal it.
+                  When you draw this, <br>IMMEDIATELY reveal it.
                 </p>
               </span>
               <span>
                 <p class=center>
-                  The Wedding
+                  <b>The Wedding</b>
                 </p>
               </span>
               <span>
@@ -147,7 +164,7 @@
               </span>
               <span>
                 <p>
-                  Then discard this card. Do not shuffle it back in. TODO use display: flex & smaller font size, to make these cards less tall.
+                  Then discard this card. <br>Do not shuffle it back in.
                 </p>
               </span>
             </div>
@@ -159,12 +176,12 @@
               </div>
               <span>
                 <p class=revealText>
-                  When you draw this, IMMEDIATELY reveal it.
+                  When you draw this, <br>IMMEDIATELY reveal it.
                 </p>
               </span>
               <span>
                 <p class=center>
-                  Nationalism
+                  <b>Nationalism</b>
                 </p>
               </span>
               <span>
@@ -184,7 +201,7 @@
               </span>
               <span>
                 <p>
-                  Then discard this card. Do not shuffle it back in.
+                  Then discard this card. <br>Do not shuffle it back in.
                 </p>
               </span>
             </div>
@@ -196,12 +213,12 @@
               </div>
               <span>
                 <p class=revealText>
-                  When you draw this, IMMEDIATELY reveal it.
+                  When you draw this, <br>IMMEDIATELY reveal it.
                 </p>
               </span>
               <span>
                 <p class=center>
-                  Perry-Kraye Strikes!
+                  <b>Perry-Kraye Strikes!</b>
                 </p>
               </span>
               <span>
@@ -221,7 +238,7 @@
               </span>
               <span>
                 <p>
-                  Then discard this card. Do not shuffle it back in.
+                  Then discard this card. <br>Do not shuffle it back in.
                 </p>
               </span>
             </div>
@@ -235,12 +252,12 @@
               </div>
               <span>
                 <p class=revealText>
-                  When you draw this, IMMEDIATELY reveal it.
+                  When you draw this, <br>IMMEDIATELY reveal it.
                 </p>
               </span>
               <span>
                 <p class=center>
-                  Admin Override
+                  <b>Admin Override</b>
                 </p>
               </span>
               <span>
@@ -260,7 +277,7 @@
               </span>
               <span>
                 <p>
-                  Then discard this card. Do not shuffle it back in.
+                  Then discard this card. <br>Do not shuffle it back in.
                 </p>
               </span>
             </div>
@@ -272,12 +289,12 @@
               </div>
               <span>
                 <p class=revealText>
-                  When you draw this, IMMEDIATELY reveal it.
+                  When you draw this, <br>IMMEDIATELY reveal it.
                 </p>
               </span>
               <span>
                 <p class=center>
-                  I Will Make Peace
+                  <b>I Will Make Peace</b>
                 </p>
               </span>
               <span>
@@ -287,7 +304,7 @@
               </span>
               <span>
                 <p>
-                  Then discard this card. Do not shuffle it back in.
+                  Then discard this card. <br>Do not shuffle it back in.
                 </p>
               </span>
             </div>
@@ -299,12 +316,12 @@
               </div>
               <span>
                 <p class=revealText>
-                  When you draw this, IMMEDIATELY reveal it.
+                  When you draw this, <br>IMMEDIATELY reveal it.
                 </p>
               </span>
               <span>
                 <p class=center>
-                  The Best & Briefest War
+                  <b>The Best & Briefest War</b>
                 </p>
               </span>
               <span>
@@ -324,7 +341,7 @@
               </span>
               <span>
                 <p>
-                  Then discard this card. Do not shuffle it back in.
+                  Then discard this card. <br>Do not shuffle it back in.
                 </p>
               </span>
             </div>
@@ -338,12 +355,12 @@
               </div>
               <span>
                 <p class=revealText>
-                  When you draw this, IMMEDIATELY reveal it.
+                  When you draw this, <br>IMMEDIATELY reveal it.
                 </p>
               </span>
               <span>
                 <p class=center>
-                  Unite the Fleets
+                  <b>Unite the Fleets</b>
                 </p>
               </span>
               <span>
@@ -353,7 +370,7 @@
               </span>
               <span>
                 <p>
-                  Then discard this card. Do not shuffle it back in.
+                  Then discard this card. <br>Do not shuffle it back in.
                 </p>
               </span>
             </div>
@@ -366,12 +383,12 @@
               </div>
               <span>
                 <p class=revealText>
-                  When you draw this, IMMEDIATELY reveal it.
+                  When you draw this, <br>IMMEDIATELY reveal it.
                 </p>
               </span>
               <span>
                 <p class=center>
-                  A Thousand Wars
+                  <b>A Thousand Wars</b>
                 </p>
               </span>
               <span>
@@ -391,7 +408,7 @@
               </span>
               <span>
                 <p>
-                  Then discard this card. Do not shuffle it back in.
+                  Then discard this card. <br>Do not shuffle it back in.
                 </p>
               </span>
             </div>
@@ -404,12 +421,12 @@
               </div>
               <span>
                 <p class=revealText>
-                  When you draw this, IMMEDIATELY reveal it.
+                  When you draw this, <br>IMMEDIATELY reveal it.
                 </p>
               </span>
               <span>
                 <p class=center>
-                  Archtraitors Discovered
+                  <b>Archtraitors Discovered</b>
                 </p>
               </span>
               <span>
@@ -419,7 +436,7 @@
               </span>
               <span>
                 <p>
-                  Then discard this card. Do not shuffle it back in.
+                  Then discard this card. <br>Do not shuffle it back in.
                 </p>
               </span>
             </div>
@@ -433,12 +450,12 @@
               </div>
               <span>
                 <p class=revealText>
-                  When you draw this, IMMEDIATELY reveal it.
+                  When you draw this, <br>IMMEDIATELY reveal it.
                 </p>
               </span>
               <span>
                 <p class=center>
-                  My War is for the Stars
+                  <b>My War is for the Stars</b>
                 </p>
               </span>
               <span>
@@ -448,7 +465,7 @@
               </span>
               <span>
                 <p>
-                  Then discard this card. Do not shuffle it back in.
+                  Then discard this card. <br>Do not shuffle it back in.
                 </p>
               </span>
             </div>

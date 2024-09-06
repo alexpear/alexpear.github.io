@@ -13,7 +13,7 @@ class Card {
 
     html () {
         const td = Util.htmlElement('td');
-        const cardDiv = Util.htmlElement('div', 'cardBody');
+        const cardDiv = Util.htmlElement('div', 'cardBody generated');
         td.appendChild(cardDiv);
 
         const stageImage = new Image();
