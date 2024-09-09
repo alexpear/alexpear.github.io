@@ -49,7 +49,7 @@
     "buildVillainverse": "browserify villainverse/src/*.js -o villainverse/bundle.js",
     "buildScifiWarband": "node scifiWarband/src/build/parser.js && browserify scifiWarband/src/*.js -o scifiWarband/bundle.js",
     "buildCleoCluster": "node cleoCluster/wikiWriter.js",
-    "buildAWOW": "browserify warofwhispers/src/*.js -o warofwhispers/bundle.js",
+    "buildawow": "browserify warofwhispers/src/*.js -o warofwhispers/bundle.js",
     "buildPopGrid": "browserify generation/demographics/popGrid/src/*.js -o generation/demographics/popGrid/bundle.js",
     "buildWaffleCards": "node bottleWorld/waffleCards/src/build/parser.js && node bottleWorld/waffleCards/src/waffleCards.js",
     "waffleCards": "npm run buildWaffleCards && open bottleWorld/waffleCards/cardSet.html",
