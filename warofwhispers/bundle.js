@@ -24490,13 +24490,6 @@ class Card {
     divColor (div, animal) {
         animal = animal || this.animal1;
 
-        if (this.theme === 'terraignota') {
-            if (['elephant', 'lion', 'eagle'].includes(animal)) {
-                // These have white backgrounds.
-                return;
-            }
-        }
-
         div.classList.add(animal);
     }
 
@@ -24539,7 +24532,7 @@ class Card {
 
         td.appendChild(cardDiv);
 
-        const ANIMALS_ORDERED = ['elephant', 'bear', 'eagle', 'horse', 'lion'];
+        const ANIMALS_ORDERED = ['elephant', 'horse', 'eagle', 'bear', 'lion'];
 
         for (const animal of ANIMALS_ORDERED) {
             const icon = new Image();
@@ -24922,15 +24915,15 @@ class Card {
                         colNum = 1;
                     }
 
-                    Util.logDebug({
-                        context: `Card.createCards() menagerie`,
-                        table,
-                        tbody,
-                        colNum,
-                        row,
-                        animal1,
-                        animal2,
-                    });
+                    // Util.logDebug({
+                    //     context: `Card.createCards() menagerie`,
+                    //     table,
+                    //     tbody,
+                    //     colNum,
+                    //     row,
+                    //     animal1,
+                    //     animal2,
+                    // });
 
                     row.appendChild(td);
                     colNum++;
