@@ -448,8 +448,9 @@ class Card {
     static createCards (theme) {
         theme = theme || window.AWOWtheme || 'terraignota';
         const table = document.getElementById('main');
-        let row;
-        let colNum = 99; // Must start >= row width.
+        const tbody = table.firstElementChild;
+        let row = tbody.lastElementChild;
+        let colNum = 2; // Column that we will begin adding cards to.
 
         for (let animal1 of Card.animals()) {
             for (let animal2 of Card.animals()) {
@@ -462,9 +463,19 @@ class Card {
                     // TODO functionize this.
                     if (colNum > 3) {
                         row = Util.htmlElement('tr');
-                        table.appendChild(row);
+                        tbody.appendChild(row);
                         colNum = 1;
                     }
+
+                    // Util.logDebug({
+                    //     context: `Card.createCards() menagerie`,
+                    //     table,
+                    //     tbody,
+                    //     colNum,
+                    //     row,
+                    //     animal1,
+                    //     animal2,
+                    // });
 
                     row.appendChild(td);
                     colNum++;
@@ -480,7 +491,7 @@ class Card {
 
                 if (colNum > 3) {
                     row = Util.htmlElement('tr');
-                    table.appendChild(row);
+                    tbody.appendChild(row);
                     colNum = 1;
                 }
 
@@ -496,7 +507,7 @@ class Card {
 
             if (colNum > 3) {
                 row = Util.htmlElement('tr');
-                table.appendChild(row);
+                tbody.appendChild(row);
                 colNum = 1;
             }
 
@@ -511,7 +522,7 @@ class Card {
 
             if (colNum > 3) {
                 row = Util.htmlElement('tr');
-                table.appendChild(row);
+                tbody.appendChild(row);
                 colNum = 1;
             }
 
@@ -522,7 +533,7 @@ class Card {
 
             if (colNum > 3) {
                 row = Util.htmlElement('tr');
-                table.appendChild(row);
+                tbody.appendChild(row);
                 colNum = 1;
             }
 
