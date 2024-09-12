@@ -24562,8 +24562,15 @@ class Card {
         stageDiv.appendChild(stageImage);
         cardDiv.appendChild(stageDiv);
 
-        const titleSpan = Util.htmlElement('span');
-        const title = Util.htmlElement('p', 'center', 'Dark Alliance');
+        const condition = askToControl ?
+            'control' :
+            'plus4';
+
+        // LATER could extract a local variable for the title+text obj.
+        const titleText = this.lines()[ this.theme ].DarkAlliance[ this.animal1 ][ condition ].title;
+
+        const titleSpan = Util.htmlElement('span', 'darkBackground');
+        const title = Util.htmlElement('p', 'center', titleText);
         titleSpan.appendChild(title);
         cardDiv.appendChild(titleSpan);
 
@@ -24590,9 +24597,7 @@ class Card {
 
         const effectString = this.effects(
             this.animal1,
-            askToControl ?
-                'control' :
-                'plus4',
+            condition,
         );
         const effectSpan = Util.htmlElement('span');
         const effectText = Util.htmlElement(
@@ -24767,8 +24772,8 @@ class Card {
         return MAP[animal];
     }
 
-    effects (animal1, animal2) {
-        const EFFECTS = {
+    lines () {
+        return {
             terraignota: {
                 Single: {
                     bear: 'After your attack, you may make an additional attack with any surviving troops.',
@@ -24798,24 +24803,54 @@ class Card {
                 },
                 DarkAlliance: {
                     bear: {
-                        control: 'you must remove 1 of your agents from the board',
-                        plus4: 'they must remove 1 of their agents from the board',
+                        control: {
+                            title: "Julia's Sentence",
+                            text: 'you must remove 1 of your agents from the board',
+                        },
+                        plus4: {
+                            title: 'We Must Wear Uniforms',
+                            text: 'they must remove 1 of their agents from the board',
+                        },
                     },
                     eagle: {
-                        control: 'they may draw 2 cards from any pile(s)',
-                        plus4: 'you may draw 2 cards from any pile(s)',
+                        control: {
+                            title: 'OSA',
+                            text: 'they may draw 2 cards from any pile(s)',
+                        },
+                        plus4: {
+                            title: 'Kat or Robin Typer',
+                            text: 'you may draw 2 cards from any pile(s)',
+                        },
                     },
                     elephant: {
-                        control: 'they may reinforce any location with 4 more troops',
-                        plus4: 'you may reinforce any location with 4 more troops',
+                        control: {
+                            title: 'Weapon Exchange Program',
+                            text: 'they may reinforce any location with 4 more troops',
+                        },
+                        plus4: {
+                            title: 'Let Them Be Troy',
+                            text: 'you may reinforce any location with 4 more troops',
+                        },
                     },
                     lion: {
-                        control: 'you must turn 1 of your loyalty cards face up',
-                        plus4: 'they must turn 1 of their loyalty cards face up',
+                        control: {
+                            title: 'Set Tai-Kun Free',
+                            text: 'you must turn 1 of your loyalty cards face up',
+                        },
+                        plus4: {
+                            title: 'Mariscala Danaë',
+                            text: 'they must turn 1 of their loyalty cards face up',
+                        },
                     },
                     horse: {
-                        control: 'they may swap 1 of their deployed agents with 1 of yours',
-                        plus4: 'you may swap 1 of your deployed agents with 1 of theirs',
+                        control: {
+                            title: 'Christmas & Ramadan',
+                            text: 'they may swap 1 of their deployed agents with 1 of yours',
+                        },
+                        plus4: {
+                            title: "Circe's Gift",
+                            text: 'you may swap 1 of your deployed agents with 1 of theirs',
+                        },
                     },
                 },
             },
@@ -24871,12 +24906,16 @@ class Card {
         agent -> agent
         council position -> faction VIP
         */
+    }
+
+    effects (animal1, animal2) {
+        const EFFECTS = this.lines();
 
         const lines = EFFECTS[this.theme];
 
         if (animal2) {
             if (['control', 'plus4'].includes(animal2)) {
-                const effect = lines.DarkAlliance[animal1][animal2];
+                const effect = lines.DarkAlliance[animal1][animal2].text;
                 return `If they accept, ${effect}.`;
             }
 
