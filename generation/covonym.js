@@ -68,9 +68,7 @@ class Covonym {
 
         let name = '';
 
-        const syllables = Math.ceil( (num + 1) / PAIR_COUNT );
-
-        for (let s = 0; s < syllables; s++) {
+        while (num > 0) {
             let syll = Covonym.consonoids()[
                 num % C_COUNT
             ];
@@ -79,19 +77,17 @@ class Covonym {
                 Math.floor(num / C_COUNT) % V_COUNT
             ];
 
-            Util.logDebug({
-                context: `fromNumber() for() loop middle`,
-                num,
-                C_COUNT,
-                V_COUNT,
-                PAIR_COUNT,
-                syllables,
-                s,
-                syll,
-                consoi: num % C_COUNT,
-                voweli: Math.floor(num / C_COUNT) % V_COUNT,
-                nextNum: Math.floor(num / PAIR_COUNT),
-            });
+            // Util.logDebug({
+            //     context: `fromNumber() for() loop middle`,
+            //     num,
+            //     C_COUNT,
+            //     V_COUNT,
+            //     PAIR_COUNT,
+            //     syll,
+            //     consoi: num % C_COUNT,
+            //     voweli: Math.floor(num / C_COUNT) % V_COUNT,
+            //     nextNum: Math.floor(num / PAIR_COUNT),
+            // });
 
             name += syll;
 
@@ -102,15 +98,17 @@ class Covonym {
     }
 
     static randomDemo () {
-        const num = Util.randomUpTo(1e9);
+        for (let i = 0; i < 40; i++) {
+            const num = Util.randomUpTo(1e5);
 
-        const name = Covonym.fromNumber(num);
+            const name = Covonym.fromNumber(num);
 
-        console.log(`${name} = ${Util.commaNumber(num)}`);
+            console.log(`${name} = ${Util.commaNumber(num)}`);
+        }
     }
 
     static list () {
-        for (let n = 779; n <= 782; n++) {
+        for (let n = 0; n <= 10000; n++) {
             console.log(
                 `${Covonym.fromNumber(n)} = ${Util.commaNumber(n)}`
             );
@@ -120,8 +118,8 @@ class Covonym {
     }
 
     static run () {
-        // Covonym.randomDemo();
-        Covonym.list();
+        Covonym.randomDemo();
+        // Covonym.list();
     }
 }
 
