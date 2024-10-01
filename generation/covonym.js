@@ -113,13 +113,29 @@ class Covonym {
                 `${Covonym.fromNumber(n)} = ${Util.commaNumber(n)}`
             );
         }
+    }
 
-        // 389 781
+    static phoneDemo () {
+        for (let i = 0; i < 40; i++) {
+
+            const phoneNum = Util.randomUpTo(1e10 - 1);
+
+            const asStr = String(phoneNum).padStart(10, '0');
+
+            const areaCode = asStr.slice(0, 3);
+            const trio = asStr.slice(3, 6);
+            const quartet = asStr.slice(6);
+
+            // const phoneStr = `(${areaCode}) ${trio}-${quartet}`;
+
+            console.log(`${Covonym.fromNumber(phoneNum)} = (${areaCode}) ${trio}-${quartet}`);
+        }
     }
 
     static run () {
-        Covonym.randomDemo();
+        // Covonym.randomDemo();
         // Covonym.list();
+        Covonym.phoneDemo();
     }
 }
 
