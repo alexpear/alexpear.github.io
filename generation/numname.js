@@ -55,10 +55,12 @@ class Covonym {
     }
 
     static fromNumber (num) {
-        // if (num === 0) {
-        //     // Special case.
-        //     return Covonym.voweloids()[0];
-        // }
+        if (num === 0) {
+            // Special case.
+            const vacunym = Covonym.consonoids()[0] + Covonym.voweloids()[0];
+
+            return Util.capitalized( vacunym.toLowerCase() );
+        }
 
         const C_COUNT = Covonym.consonoids().length;
         const V_COUNT = Covonym.voweloids().length;
@@ -69,13 +71,31 @@ class Covonym {
         const syllables = Math.ceil(num / PAIR_COUNT);
 
         for (let s = 0; s < syllables; s++) {
-            name += Covonym.consonoids()[
+            let syll = Covonym.consonoids()[
                 num % C_COUNT
             ];
 
-            name += Covonym.voweloids()[
+            syll += Covonym.voweloids()[
                 Math.floor(num / C_COUNT) % V_COUNT
             ];
+
+            // Util.logDebug({
+            //     context: `fromNumber() for() loop middle`,
+            //     num,
+            //     C_COUNT,
+            //     V_COUNT,
+            //     PAIR_COUNT,
+            //     syllables,
+            //     s,
+            //     syll,
+            //     consoi: num % C_COUNT,
+            //     voweli: Math.floor(num / C_COUNT) % V_COUNT,
+            //     nextNum: Math.floor(num / PAIR_COUNT),
+            // });
+
+            name += syll;
+
+            num = Math.floor(num / PAIR_COUNT);
         }
 
         return Util.capitalized(name.toLowerCase());
@@ -90,7 +110,7 @@ class Covonym {
     }
 
     static list () {
-        for (let n = 0; n <= 1e3; n++) {
+        for (let n = 0; n <= 1000; n++) {
             console.log(
                 `${Covonym.fromNumber(n)} = ${Util.commaNumber(n)}`
             );
