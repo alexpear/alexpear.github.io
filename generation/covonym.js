@@ -68,7 +68,7 @@ class Covonym {
 
         let name = '';
 
-        const syllables = Math.ceil(num / PAIR_COUNT);
+        const syllables = Math.ceil( (num + 1) / PAIR_COUNT );
 
         for (let s = 0; s < syllables; s++) {
             let syll = Covonym.consonoids()[
@@ -79,19 +79,19 @@ class Covonym {
                 Math.floor(num / C_COUNT) % V_COUNT
             ];
 
-            // Util.logDebug({
-            //     context: `fromNumber() for() loop middle`,
-            //     num,
-            //     C_COUNT,
-            //     V_COUNT,
-            //     PAIR_COUNT,
-            //     syllables,
-            //     s,
-            //     syll,
-            //     consoi: num % C_COUNT,
-            //     voweli: Math.floor(num / C_COUNT) % V_COUNT,
-            //     nextNum: Math.floor(num / PAIR_COUNT),
-            // });
+            Util.logDebug({
+                context: `fromNumber() for() loop middle`,
+                num,
+                C_COUNT,
+                V_COUNT,
+                PAIR_COUNT,
+                syllables,
+                s,
+                syll,
+                consoi: num % C_COUNT,
+                voweli: Math.floor(num / C_COUNT) % V_COUNT,
+                nextNum: Math.floor(num / PAIR_COUNT),
+            });
 
             name += syll;
 
@@ -110,14 +110,17 @@ class Covonym {
     }
 
     static list () {
-        for (let n = 0; n <= 1000; n++) {
+        for (let n = 779; n <= 782; n++) {
             console.log(
                 `${Covonym.fromNumber(n)} = ${Util.commaNumber(n)}`
             );
         }
+
+        // 389 781
     }
 
     static run () {
+        // Covonym.randomDemo();
         Covonym.list();
     }
 }
