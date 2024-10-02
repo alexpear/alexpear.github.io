@@ -77,39 +77,23 @@ function run () {
         CP.execSync(`magick page${i}-1.jpg -crop ${dimensions} cropped${i}.jpg`);
     }
 
-    const allPageNums = Array.from(
-        { length: lastPageNum },
-        (_unused, i) => i + 1,
-    );
-
-    const hiveJpgNames = allPageNums.filter(
-        num => firstCardPage <= num && num < firstRolePage
-    )
-    .map(
-        num => `cropped${num}.jpg`
-    )
-    .join(' ');
-
-    // Stitch hive pages into big JPG
-    CP.execSync(`magick ${hiveJpgNames} +append complicity-tts/hive-cards.jpg`);
-
-    // TODO jpg needs to be 10x7 at most
+    // Each jpg needs to be 10x7 at most
     // Hives: 2x2 pages = 6x6 cards
+    CP.execSync(`magick cropped${ firstCardPage }.jpg cropped${ firstCardPage + 1 }.jpg +append temp/hives-row1.jpg`);
+    CP.execSync(`magick cropped${ firstCardPage + 2 }.jpg cropped${ firstCardPage + 3 }.jpg +append temp/hives-row2.jpg`);
+    CP.execSync(`magick temp/hives-row1.jpg temp/hives-row2.jpg -append complicity-tts/hive-cards.jpg`);
 
-    const roleJpgNames = allPageNums.filter(
-        num => firstRolePage <= num && num < firstLandscapePage
-    )
-    .map(
-        num => `cropped${num}.jpg`
-    )
-    .join(' ');
-
-    // Stitch role pages into big JPGs
-    CP.execSync(`magick ${roleJpgNames} +append complicity-tts/role-cards.jpg`);
 
     // 9 pages of Roles - 81 > 70 - needs multiple jpgs
     // 1st jpg: 3x2 pages = 9x6 cards
     // 2nd jpg: 3x1 pages = 9x3 cards
+
+    CP.execSync(`magick cropped${ firstRolePage }.jpg cropped${ firstRolePage + 1 }.jpg cropped${ firstRolePage + 2 }.jpg +append temp/roles1-row1.jpg`);
+    CP.execSync(`magick cropped${ firstRolePage + 3 }.jpg cropped${ firstRolePage + 4 }.jpg cropped${ firstRolePage + 5 }.jpg +append temp/roles1-row2.jpg`);
+
+    CP.execSync(`magick temp/roles1-row1.jpg temp/roles1-row2.jpg -append complicity-tts/role-cards1.jpg`);
+    CP.execSync(`magick cropped${ firstRolePage + 6 }.jpg cropped${ firstRolePage + 7 }.jpg cropped${ firstRolePage + 8 }.jpg +append complicity-tts/role-cards2.jpg`);
+
 
     if (lastPageNum > firstLandscapePage) {
         Util.logError({
