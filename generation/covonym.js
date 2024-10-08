@@ -132,10 +132,17 @@ class Covonym {
         }
     }
 
+    static timestampDemo () {
+        const stamp = Date.now();
+
+        console.log(`\n${Covonym.fromNumber(stamp)} = ${stamp} = now, in Unix time.`);
+    }
+
     static run () {
         // Covonym.randomDemo();
         // Covonym.list();
         Covonym.phoneDemo();
+        Covonym.timestampDemo();
     }
 }
 
