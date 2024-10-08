@@ -55,6 +55,8 @@ class Covonym {
     }
 
     static fromNumber (num) {
+        num = Math.floor(num);
+
         if (num === 0) {
             // Special case.
             const vacunym = Covonym.consonoids()[0] + Covonym.voweloids()[0];
@@ -95,6 +97,19 @@ class Covonym {
         }
 
         return Util.capitalized(name.toLowerCase());
+    }
+
+    // -31.995524679343852, 115.51790132997857
+    static fromCoord (northness, eastness) {
+        const SCALE = 10_000;
+
+        northness = (Number(northness) + 90) * SCALE;
+        eastness = (Number(eastness) + 180) * SCALE;
+
+        const processedNorth = (Math.floor(northness) / SCALE - 90).toFixed(Math.log10(SCALE));
+        const processedEast = (Math.floor(eastness) / SCALE - 180).toFixed(Math.log10(SCALE));
+
+        return `${processedNorth}, ${processedEast} is named ${Covonym.fromNumber(northness)} ${Covonym.fromNumber(eastness)}`;
     }
 
     static randomDemo () {
@@ -139,10 +154,26 @@ class Covonym {
     }
 
     static run () {
-        // Covonym.randomDemo();
         // Covonym.list();
-        Covonym.phoneDemo();
-        Covonym.timestampDemo();
+        // Covonym.phoneDemo();
+        // Covonym.timestampDemo();
+
+        // node covonym.js -31.995524679343852, 115.51790132997857
+        if (
+            process.argv &&
+            process.argv[0].endsWith('node') &&
+            process.argv[1].endsWith('covonym.js') &&
+            process.argv[2]
+        ) {
+            console.log(
+                `\n` +
+                // `Location ${process.argv[2]} ${process.argv[3]} is named ` +
+                Covonym.fromCoord(
+                    process.argv[2].replace(',', '').trim(),
+                    process.argv[3].trim(),
+                )
+            );
+        }
     }
 }
 
