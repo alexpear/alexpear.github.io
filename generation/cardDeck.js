@@ -10,7 +10,7 @@ class Card {
     }
 
     toString () {
-        return this.name;
+        return Util.capitalizedAllWords(this.name);
     }
 }
 
@@ -23,17 +23,31 @@ class CardGame {
 
     cardNames () {
         return `
-Win
-Lose
-Banana
+princess of circuitry
+princess admiral
+hangar princess
+prince of radio
+electrosword
+titanium breastplate
+fine horse
+abandoned castle
+hoverbike
+cybergibbon
+helpful spirit
+space trireme
+robotic dragon
+scholar of machines
         `.split('\n')
-        .filter(line => ! /\s*/.test(line))
-        .map(line => line.trim());
+        .map(line => line.trim())
+        .filter(line => line);
     }
 
     // returns object keyed by location
     cardsByLocation () {
-        const summary = {};
+        const summary = {
+            deck: [],
+            discard:[],
+        };
 
         for (let card of this.cards) {
             if (! summary[card.location]) {
@@ -55,7 +69,7 @@ Banana
             outString += loc + ':\n';
 
             for (let card of summary[loc]) {
-                outString += card.name + '\n';
+                outString += card.toString() + '\n';
             }
 
             outString += '\n\n';
@@ -93,6 +107,7 @@ Banana
 
     static run () {
         const game = new CardGame();
+        game.dealTo();
         game.dealTo();
         console.log(game.summaryString());
     }
