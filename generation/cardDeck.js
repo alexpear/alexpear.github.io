@@ -22,11 +22,13 @@ class CardGame {
     }
 
     cardNames () {
-        return [
-            'Win',
-            'Lose',
-            'Banana'
-        ];
+        return `
+Win
+Lose
+Banana
+        `.split('\n')
+        .filter(line => ! /\s*/.test(line))
+        .map(line => line.trim());
     }
 
     // returns object keyed by location
