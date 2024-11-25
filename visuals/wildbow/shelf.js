@@ -202,8 +202,11 @@ ${booksHTML}
             { spine: 'II: Retraction', words: 42000, serial: 'Claw' },
             { spine: 'III: Scrape', words: 42000, serial: 'Claw' },
             { spine: 'IV: Tip', words: 42000, serial: 'Claw' },
-            { spine: 'V: The Quick', words: 42000, serial: 'Claw' },
-            { spine: 'VI: ?', words: 42000, serial: 'Claw' },
+            { spine: 'V: The Quick', words: 49000, serial: 'Claw' },
+
+            { spine: '0: HACK', words: 4 * 6000, serial: 'Seek' },
+            { spine: '1: CONTROL', words: 8 * 6000, serial: 'Seek' },
+            { spine: '2: ?', words: 8 * 6000, serial: 'Seek' },
         ];
     }
 
