@@ -2,3 +2,6 @@
 node_modules
 ppp_2020_1km_Aggregated.tif
 squareList.txt
+bottleWorld/waffleCards/cardSet.html
+bottleWorld/waffleCards/data/cards.yml.js
+util/fandomscraper/*/
