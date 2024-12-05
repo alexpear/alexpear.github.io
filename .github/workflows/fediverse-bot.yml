@@ -1,0 +1,17 @@
+# 
+name: Run Fediverse bots
+
+on:
+  schedule:
+  - cron: '36 18 * * *'
+
+jobs:
+  fediverse:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Post titleGen note to Mastodon
+      run: node titleGen/src/titleGen.js -api
+      # with:
+      #   foo: bar
