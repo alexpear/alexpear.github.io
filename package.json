@@ -29,6 +29,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "file-loader": "^6.2.0",
     "native-addon-loader": "^2.0.1",
+    "prettier": "3.3.3",
     "ts-loader": "^8.0.17",
     "typescript": "^4.2.2",
     "webpack": "^5.24.2",
@@ -39,7 +40,6 @@
     "firstTimeSetup": "npm install && npm install -g browserify && npm install -g http-server && npm start",
     "refresh": "npm run buildAll && npm run server",
     "buildAll": "npm run buildTreeBrowser && npm run buildFishTank && npm run buildGroupGrid && npm run buildTitleGen && npm run buildTextGen && npm run buildVillainverse && npm run buildWaffleCards && npm run whichgame",
-
     "buildAllUnstable": "npm run buildTreeBrowser && npm run buildFishTank && npm run buildGroupGrid && npm run buildTitleGen && npm run buildTextGen",
     "buildTreeBrowser": "browserify treebrowser/treeBrowser.js -o treebrowser/bundle.js",
     "buildFishTank": "browserify fishTank/src/*.js -o fishTank/bundle.js",
@@ -55,6 +55,7 @@
     "waffleCards": "npm run buildWaffleCards && open bottleWorld/waffleCards/cardSet.html",
     "testwafflecards": "npm run buildWaffleCards",
     "whichgame": "browserify generation/mundane/whichgame/src/*.js -o generation/mundane/whichgame/bundle.js",
+    "whattowatch": "browserify generation/mundane/whattowatch/src/*.js -o generation/mundane/whattowatch/bundle.js",
     "gridWar": "npm run buildGroupGrid && npm run server",
     "server": "http-server",
     "cape": "node wnode/cape.js",

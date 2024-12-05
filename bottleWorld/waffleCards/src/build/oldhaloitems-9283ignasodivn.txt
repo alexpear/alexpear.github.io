@@ -1,0 +1,755 @@
+  DEBUG (2024 Jul 29 10:17:01.7) 
+{
+    "context": "Card.asHtml()",
+    "name": "Sylvester"
+}
+
+  DEBUG (2024 Jul 29 10:17:01.7) 
+{
+    "context": "Card.asHtml()",
+    "name": "Sylvester"
+}
+
+  DEBUG (2024 Jul 29 10:17:01.7) 
+{
+    "context": "Card.asHtml()",
+    "name": "Sylvester"
+}
+
+  DEBUG (2024 Jul 29 10:17:01.7) 
+{
+    "context": "Card.asHtml()",
+    "name": "Pistol"
+}
+
+  EVENT (2024 Jul 29 10:17:01.7) 
+-
+    name: Beam Rifle
+    tags: Item Covenant infantry Hardlight
+    cost: 11
+    range: 10
+    damage: 10
+    aoe: 2
+    copiesInDeck: 7
+-
+    name: Brute CQC
+    tags: Item Covenant natural Impact Brute
+    cost: 0
+    range: 0
+    damage: 9
+    aoe: 1
+    copiesInDeck: 10
+-
+    name: Brute Shot
+    tags: Item Covenant biginfantry Impact Brute
+    cost: 9
+    range: 3
+    damage: 6
+    aoe: 1
+    copiesInDeck: 7
+-
+    name: Brute Shot CQC (from Brute)
+    tags: Item Covenant infantry Kinetic Brute
+    cost: 0
+    range: 0
+    damage: 13
+    aoe: 1
+    copiesInDeck: 7
+-
+    name: Carbine
+    tags: Item Covenant infantry Kinetic
+    cost: 7
+    range: 10
+    damage: 2
+    aoe: 1
+    copiesInDeck: 8
+-
+    name: Concussion Rifle
+    tags: Item Covenant infantry Impact
+    cost: 9
+    range: 10
+    damage: 4
+    aoe: 2
+    copiesInDeck: 3
+-
+    name: Elite CQC
+    tags: Item Covenant natural Impact
+    cost: 0
+    range: 0
+    damage: 12
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Energy Sword
+    tags: Item Covenant biginfantry Fire
+    cost: 8
+    range: 0
+    damage: 13
+    aoe: 1
+    copiesInDeck: 6
+-
+    name: Focus Rifle
+    tags: Item Covenant infantry Fire
+    cost: 12
+    range: 10
+    damage: 4
+    aoe: 1
+    copiesInDeck: 4
+-
+    name: Fuel Rod Cannon
+    tags: Item Covenant infantry Fire
+    cost: 12
+    range: 10
+    damage: 10
+    aoe: 3
+    copiesInDeck: 7
+-
+    name: Gravity Hammer
+    tags: Item Covenant biginfantry Impact Brute
+    cost: 8
+    range: 0
+    damage: 17
+    aoe: 2
+    copiesInDeck: 4
+-
+    name: Grunt CQC
+    tags: Item Covenant natural Impact
+    cost: 0
+    range: 0
+    damage: 0
+    aoe: 1
+    copiesInDeck: 10
+-
+    name: Hunter CQC
+    tags: Item Covenant natural Impact
+    cost: 0
+    range: 0
+    damage: 17
+    aoe: 3
+    copiesInDeck: 5
+-
+    name: Hunter Cannon
+    tags: Item Covenant Fire
+    cost: 12
+    range: 10
+    damage: 8
+    aoe: 2
+    copiesInDeck: 5
+-
+    name: Incendiary Grenade
+    tags: Item Covenant infantry Fire Brute
+    cost: 0
+    range: 5
+    damage: 5
+    aoe: 2
+    copiesInDeck: 3
+-
+    name: Mauler
+    tags: Item Covenant infantry Kinetic Brute
+    cost: 5
+    range: 0
+    damage: 7
+    aoe: 1
+    copiesInDeck: 3
+-
+    name: Needle Rifle
+    tags: Item Covenant infantry Kinetic
+    cost: 8
+    range: 10
+    damage: 4
+    aoe: 1
+    copiesInDeck: 4
+-
+    name: Needler
+    tags: Item Covenant infantry Kinetic
+    cost: 5
+    range: 10
+    damage: 6
+    aoe: 2
+    copiesInDeck: 10
+-
+    name: Plasma Caster
+    tags: Item Covenant infantry Fire
+    cost: 11
+    range: 10
+    damage: 12
+    aoe: 3
+    copiesInDeck: 1
+-
+    name: Plasma Grenade
+    tags: Item Covenant infantry Fire
+    cost: 0
+    range: 5
+    damage: 20
+    aoe: 3
+    copiesInDeck: 10
+-
+    name: Plasma Launcher
+    tags: Item Covenant infantry Fire
+    cost: 10
+    range: 10
+    damage: 3.5
+    aoe: 3
+    copiesInDeck: 3
+-
+    name: Plasma Pistol
+    tags: Item Covenant infantry Fire
+    cost: 3
+    range: 10
+    damage: 2
+    aoe: 1
+    copiesInDeck: 10
+-
+    name: Plasma Pistol Charged
+    tags: Item Covenant infantry Fire
+    cost: 0
+    range: 10
+    damage: 1
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Plasma Repeater
+    tags: Item Covenant infantry Fire
+    cost: 4
+    range: 10
+    damage: 3
+    aoe: 1
+    copiesInDeck: 3
+-
+    name: Plasma Rifle
+    tags: Item Covenant infantry Fire
+    cost: 3
+    range: 10
+    damage: 3
+    aoe: 1
+    copiesInDeck: 8
+-
+    name: Plasma Turret
+    tags: Item Covenant turret Fire
+    cost: 10
+    range: 10
+    damage: 6
+    aoe: 1
+    copiesInDeck: 6
+-
+    name: Scarab Cannon
+    tags: Item Covenant Fire
+    cost: 0
+    range: 10
+    damage: 13.3
+    aoe: 10
+    copiesInDeck: 2
+-
+    name: Shade Turret
+    tags: Item Covenant turret Fire
+    cost: 10
+    range: 10
+    damage: 1
+    aoe: 3
+    copiesInDeck: 7
+-
+    name: Spike Grenade
+    tags: Item Covenant infantry Kinetic Brute
+    cost: 0
+    range: 5
+    damage: 13
+    aoe: 2
+    copiesInDeck: 9
+-
+    name: Spiker
+    tags: Item Covenant infantry Kinetic Brute
+    cost: 4
+    range: 10
+    damage: 2
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Spiker CQC (from Brute)
+    tags: Item Covenant infantry Kinetic Brute
+    cost: 0
+    range: 0
+    damage: 10
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Tartarus' Gavel
+    tags: Item Covenant biginfantry Impact Brute
+    cost: 13
+    range: 10
+    damage: 27
+    aoe: 5
+    copiesInDeck: 1
+-
+    name: Wraith Mortar
+    tags: Item Covenant Fire
+    cost: 0
+    range: 10
+    damage: 53
+    aoe: 5
+    copiesInDeck: 4
+-
+    name: Flood Carrier blast
+    tags: Item Flood Impact
+    cost: 0
+    range: 10
+    damage: 16
+    aoe: 3
+    copiesInDeck: 1
+-
+    name: Flood Combat Form CQC
+    tags: Item Flood Impact
+    cost: 0
+    range: 10
+    damage: 12
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Flood Pod CQC
+    tags: Item Flood Kinetic
+    cost: 0
+    range: 10
+    damage: 1
+    aoe: 1
+    copiesInDeck: 10
+-
+    name: Flood spine munitions
+    tags: Item Flood Kinetic
+    cost: 0
+    range: 10
+    damage: 1
+    aoe: 1
+    copiesInDeck: 4
+-
+    name: Binary Rifle
+    tags: Item Forerunner infantry Fire
+    cost: 12
+    range: 10
+    damage: 13
+    aoe: 2
+    copiesInDeck: 4
+-
+    name: Boltshot
+    tags: Item Forerunner infantry Fire
+    cost: 8
+    range: 10
+    damage: 2
+    aoe: 1
+    copiesInDeck: 7
+-
+    name: Crawler CQC
+    tags: Item Forerunner natural Impact
+    cost: 0
+    range: 0
+    damage: 6
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Duelist's Boltshot
+    tags: Item Forerunner infantry Fire
+    cost: 4
+    range: 10
+    damage: 1
+    aoe: 1
+    copiesInDeck: 7
+-
+    name: Heatwave
+    tags: Item Forerunner Hardlight
+    cost: 0
+    range: 10
+    damage: 30
+    aoe: 1
+    copiesInDeck: 1
+-
+    name: Incineration Cannon
+    tags: Item Forerunner biginfantry Fire
+    cost: 10
+    range: 10
+    damage: 27
+    aoe: 4
+    copiesInDeck: 4
+-
+    name: Knightblade
+    tags: Item Forerunner natural Fire
+    cost: 0
+    range: 10
+    damage: 13
+    aoe: 2
+    copiesInDeck: 5
+-
+    name: Lightrifle
+    tags: Item Forerunner infantry Fire
+    cost: 8
+    range: 10
+    damage: 3
+    aoe: 1
+    copiesInDeck: 8
+-
+    name: Pulse Grenade
+    tags: Item Forerunner infantry Fire
+    cost: 0
+    range: 10
+    damage: 7
+    aoe: 1
+    copiesInDeck: 8
+-
+    name: Sentinel Beam
+    tags: Item Forerunner infantry Fire
+    cost: 8
+    range: 10
+    damage: 3
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Splinter Grenade
+    tags: Item Forerunner infantry Fire
+    cost: 0
+    range: 10
+    damage: 13
+    aoe: 2
+    copiesInDeck: 8
+-
+    name: Splinter Turret
+    tags: Item Forerunner biginfantry Fire
+    cost: 10
+    range: 10
+    damage: 5
+    aoe: 2
+    copiesInDeck: 4
+-
+    name: Suppressor
+    tags: Item Forerunner infantry Fire
+    cost: 9
+    range: 10
+    damage: 4
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Assault Rifle
+    tags: Item UNSC infantry Kinetic
+    cost: 7
+    range: 2
+    damage: 5
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Battle Rifle
+    tags: Item UNSC infantry Kinetic
+    cost: 8
+    range: 5
+    damage: 2
+    aoe: 1
+    copiesInDeck: 8
+-
+    name: Bulldog
+    tags: Item UNSC Kinetic
+    cost: 0
+    range: 10
+    damage: 24
+    aoe: 1
+    copiesInDeck: 1
+-
+    name: Chaingun
+    tags: Item UNSC turret Kinetic
+    cost: 10
+    range: 3
+    damage: 15
+    aoe: 1
+    copiesInDeck: 8
+-
+    name: Commando
+    tags: Item UNSC Kinetic
+    cost: 0
+    range: 10
+    damage: 12
+    aoe: 1
+    copiesInDeck: 1
+-
+    name: DMR
+    tags: Item UNSC infantry Kinetic
+    cost: 10
+    range: 15
+    damage: 3
+    aoe: 1
+    copiesInDeck: 7
+-
+    name: Endgame
+    tags: Item UNSC infantry Fire
+    cost: 13
+    range: 10
+    damage: 20
+    aoe: 1
+    copiesInDeck: 1
+-
+    name: Flamethrower
+    tags: Item UNSC infantry Fire
+    cost: 8
+    range: 10
+    damage: 18
+    aoe: 2
+    copiesInDeck: 4
+-
+    name: Frag Grenade
+    tags: Item UNSC infantry Kinetic
+    cost: 0
+    range: 5
+    damage: 10
+    aoe: 3
+    copiesInDeck: 9
+-
+    name: Gauss Cannon
+    tags: Item UNSC turret Impact
+    cost: 13
+    range: 10
+    damage: 33
+    aoe: 1
+    copiesInDeck: 4
+-
+    name: Grenade Launcher
+    tags: Item UNSC infantry Explosive
+    cost: 11
+    range: 10
+    damage: 13
+    aoe: 3
+    copiesInDeck: 6
+-
+    name: Hannibal Cannon
+    tags: Item UNSC Fire
+    cost: 0
+    range: 14
+    damage: 67
+    aoe: 5
+    copiesInDeck: 1
+-
+    name: Hannibal Ion Launcher
+    tags: Item UNSC Fire
+    cost: 0
+    range: 10
+    damage: 5
+    aoe: 4
+    copiesInDeck: 1
+-
+    name: Hannibal Pulse Lasers
+    tags: Item UNSC Fire
+    cost: 0
+    range: 10
+    damage: 4
+    aoe: 1
+    copiesInDeck: 1
+-
+    name: Heavy Chaingun
+    tags: Item UNSC turret Explosive
+    cost: 11
+    range: 10
+    damage: 6
+    aoe: 1
+    copiesInDeck: 2
+-
+    name: Heavy Pistol
+    tags: Item UNSC infantry Kinetic
+    cost: 8
+    range: 5
+    damage: 4
+    aoe: 1
+    copiesInDeck: 4
+-
+    name: Heavy SAW
+    tags: Item UNSC biginfantry Explosive
+    cost: 13
+    range: 10
+    damage: 15
+    aoe: 1
+    copiesInDeck: 1
+-
+    name: Hydra
+    tags: Item UNSC infantry Explosive
+    cost: 10
+    range: 10
+    damage: 16
+    aoe: 1
+    copiesInDeck: 1
+-
+    name: Light Pistol
+    tags: Item UNSC infantry Kinetic
+    cost: 4
+    range: 1
+    damage: 2
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Mammoth MAC
+    tags: Item UNSC
+    cost: 63
+    range: 14
+    damage: 23
+    aoe: 1
+    copiesInDeck: 5
+-
+    name: Marathon MAC
+    tags: Item UNSC Impact
+    cost: 0
+    range: 10
+    damage: 66.7
+    aoe: 100
+    copiesInDeck: 1
+-
+    name: Marine CQC
+    tags: Item UNSC natural Impact
+    cost: 0
+    range: 0
+    damage: 0
+    aoe: 1
+    copiesInDeck: 10
+-
+    name: Missile Pod
+    tags: Item UNSC turret Impact
+    cost: 13
+    range: 10
+    damage: 7
+    aoe: 2
+    copiesInDeck: 3
+-
+    name: Needle Chaingun
+    tags: Item UNSC turret Kinetic
+    cost: 11
+    range: 10
+    damage: 4
+    aoe: 1
+    copiesInDeck: 1
+-
+    name: Pistol
+    tags: Item UNSC infantry Kinetic
+    cost: 5
+    range: 10
+    damage: 2
+    aoe: 1
+    copiesInDeck: 10
+-
+    name: Railgun
+    tags: Item UNSC infantry Kinetic
+    cost: 10
+    range: 10
+    damage: 13
+    aoe: 1
+    copiesInDeck: 4
+-
+    name: Rocket Launcher
+    tags: Item UNSC infantry Impact
+    cost: 10
+    range: 8
+    damage: 27
+    aoe: 3
+    copiesInDeck: 6
+-
+    name: SAW
+    tags: Item UNSC biginfantry Kinetic
+    cost: 10
+    range: 3
+    damage: 9
+    aoe: 1
+    copiesInDeck: 5
+-
+    name: SMG
+    tags: Item UNSC infantry Kinetic
+    cost: 6
+    range: 1
+    damage: 4
+    aoe: 1
+    copiesInDeck: 9
+-
+    name: Scoped Pistol
+    tags: Item UNSC infantry Kinetic
+    cost: 6
+    range: 4
+    damage: 3
+    aoe: 1
+    copiesInDeck: 10
+-
+    name: Scorpion Cannon
+    tags: Item UNSC Explosive
+    cost: 0
+    range: 14
+    damage: 23.5
+    aoe: 4
+    copiesInDeck: 6
+-
+    name: Selene's Lance
+    tags: Item UNSC infantry Fire
+    cost: 13
+    range: 10
+    damage: 26.5
+    aoe: 2
+    copiesInDeck: 1
+-
+    name: Shotgun
+    tags: Item UNSC infantry Kinetic
+    cost: 8
+    range: 0
+    damage: 6
+    aoe: 1
+    copiesInDeck: 6
+-
+    name: Silenced Pistol
+    tags: Item UNSC infantry Kinetic
+    cost: 6
+    range: 10
+    damage: 2
+    aoe: 1
+    copiesInDeck: 2
+-
+    name: Silenced SMG
+    tags: Item UNSC infantry Kinetic
+    cost: 6
+    range: 10
+    damage: 5
+    aoe: 1
+    copiesInDeck: 2
+-
+    name: Sniper Rifle
+    tags: Item UNSC infantry Kinetic
+    cost: 13
+    range: 14
+    damage: 10
+    aoe: 1
+    copiesInDeck: 6
+-
+    name: Spartan CQC
+    tags: Item UNSC natural Impact
+    cost: 0
+    range: 0
+    damage: 5
+    aoe: 1
+    copiesInDeck: 1
+-
+    name: Spartan Laser
+    tags: Item UNSC infantry Fire
+    cost: 13
+    range: 10
+    damage: 27
+    aoe: 1
+    copiesInDeck: 2
+-
+    name: Sticky Grenade Launcher
+    tags: Item UNSC infantry Impact
+    cost: 11
+    range: 10
+    damage: 17
+    aoe: 2
+    copiesInDeck: 3
+-
+    name: Tactical MAC Cannon
+    tags: Item UNSC Impact
+    cost: 0
+    range: 10
+    damage: 20
+    aoe: 10
+    copiesInDeck: 2
+-
+    name: Vespin Rocket Turret
+    tags: Item UNSC turret Impact
+    cost: 12
+    range: 10
+    damage: 13
+    aoe: 1
+    copiesInDeck: 1
+
+

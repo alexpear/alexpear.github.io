@@ -130,10 +130,10 @@ class Covonym {
         }
     }
 
-    static phoneDemo () {
-        for (let i = 0; i < 40; i++) {
+    static phoneDemo (phoneNum) {
+        for (let i = 0; i < 1; i++) {
 
-            const phoneNum = Util.randomUpTo(1e10 - 1);
+            phoneNum = phoneNum || Util.randomUpTo(1e10 - 1);
 
             const asStr = String(phoneNum).padStart(10, '0');
 
@@ -166,13 +166,17 @@ class Covonym {
             process.argv[2]
         ) {
             console.log(
-                `\n` +
-                // `Location ${process.argv[2]} ${process.argv[3]} is named ` +
-                Covonym.fromCoord(
-                    process.argv[2].replace(',', '').trim(),
-                    process.argv[3].trim(),
-                )
+                Covonym.phoneDemo(process.argv[2])
             );
+
+            // console.log(
+            //     `\n` +
+            //     // `Location ${process.argv[2]} ${process.argv[3]} is named ` +
+            //     Covonym.fromCoord(
+            //         process.argv[2].replace(',', '').trim(),
+            //         process.argv[3].trim(),
+            //     )
+            // );
         }
     }
 }
