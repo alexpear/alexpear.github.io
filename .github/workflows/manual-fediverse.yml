@@ -1,0 +1,18 @@
+# Makes title bot post to Mastodon network.
+name: Manually Run Fediverse bots
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Bot Name' # to be shown in the UI
+        default: 'titleGen'
+        required: false
+        type: string
+
+jobs:
+  fediverse:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Post titleGen note to Mastodon
+      run: TITLE_BOT_TOKEN=${{ secrets.TITLE_BOT_TOKEN }} node titleGen/src/api/post.js
