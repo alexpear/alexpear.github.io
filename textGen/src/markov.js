@@ -22,7 +22,7 @@ class Markov extends TextGen {
         //     words: chain.words,
         // });
 
-        console.log(JSON.stringify(chain.words));
+        // console.log(JSON.stringify(chain.words));
 
         return chain;
     }
@@ -35,6 +35,17 @@ class Markov extends TextGen {
             bar: 5,
             baz: 1
         }                       */
+
+/*      trigram model would be
+        foo: {
+            bar: {
+                baz: 6,
+                qux: 1,
+            },
+            baz: {
+                foo: 2,
+            },
+        }                       */
     }
 
     async train (filePath) {
@@ -46,10 +57,10 @@ class Markov extends TextGen {
 
         // TODO no lines being read
         for await (let line of readInterface) {
-            Util.logDebug({
-                context: `.train()`,
-                line,
-            });
+            // Util.logDebug({
+            //     context: `.train()`,
+            //     line,
+            // });
 
             line = line.trim();
 
@@ -92,11 +103,11 @@ class Markov extends TextGen {
     }
 
     hear (nextWord) {
-        Util.logDebug({
-            context: `hear()`,
-            nextWord,
-            prevWord: this.prevWord,
-        });
+        // Util.logDebug({
+        //     context: `hear()`,
+        //     nextWord,
+        //     prevWord: this.prevWord,
+        // });
 
         if (this.words[this.prevWord][nextWord]) {
             this.words[this.prevWord][nextWord] += 1;
@@ -133,10 +144,10 @@ class Markov extends TextGen {
     }
 
     wordAfter (prevWord) {
-        Util.logDebug({
-            prevWord,
-            situation: this.words[prevWord],
-        });
+        // Util.logDebug({
+        //     prevWord,
+        //     situation: this.words[prevWord],
+        // });
 
         const situation = this.words[prevWord];
         const candidates = Object.keys(situation);
@@ -170,7 +181,9 @@ class Markov extends TextGen {
     static async run () {
         const chain = await Markov.new();
 
-        console.log(chain.output());
+        for (let i = 0; i < 30; i++) {
+            console.log(chain.output());
+        }
     }
 }
 
