@@ -21,4 +21,7 @@ jobs:
           node-version: '20'
     
       - name: Post titleGen note to Mastodon
-        run: TITLE_BOT_TOKEN=${{ secrets.TITLE_BOT_TOKEN }} node titleGen/src/api/post.js
+        run: |
+          npm i
+          TITLE_BOT_TOKEN=${{ secrets.TITLE_BOT_TOKEN }}
+          node titleGen/src/api/post.js
