@@ -12,6 +12,4 @@ jobs:
 
     steps:
     - name: Post titleGen note to Mastodon
-      run: node titleGen/src/titleGen.js -api
-      # with:
-      #   foo: bar
+      run: node titleGen/src/api/post.js
