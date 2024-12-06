@@ -1,4 +1,4 @@
-# 
+# Makes title bot post daily to Mastodon network.
 name: Run Fediverse bots
 
 on:
@@ -12,4 +12,4 @@ jobs:
 
     steps:
     - name: Post titleGen note to Mastodon
-      run: node titleGen/src/api/post.js
+      run: TITLE_BOT_TOKEN=${{ secrets.titlebottoken }} node titleGen/src/api/post.js
