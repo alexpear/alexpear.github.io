@@ -4,7 +4,7 @@ const TitleGen = require('../titleGen.js');
 
 const Masto = require('masto');
 
-// Posts titles online via a Mastodon bot account.
+// Posts titles online via a specific Mastodon bot account.
 
 // Usage: node post.js
 
@@ -20,7 +20,7 @@ class Poster {
 
         gen.client = Masto.createRestAPIClient({
             url: 'https://mastodon.bot',
-            accessToken: process.env.TOKEN,
+            accessToken: process.env.TITLE_BOT_TOKEN,
             // TODO connect github repo secrets to env.TOKEN
         });
 
