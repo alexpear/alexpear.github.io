@@ -6,7 +6,7 @@ const TextGen = require('./textGen.js');
 const Util = require('../../util/util.js');
 
 const FS = require('fs');
-// const Readline = require('node:readline');
+const Readline = require('node:readline');
 
 const CORPUS1 = '../../data/leviathan.txt';
 const CORPUS2 = '../../data/eclipsephasecore.txt';
@@ -16,23 +16,27 @@ class Markov extends TextGen {
         super();
 
         this.words = {};
-
-/*      word1: [
-            [ 'word2', 5 ]
-        ]                       */
+/*      foo: {
+            bar: 5,
+            baz: 1
+        }                       */
 
         this.train(CORPUS1);
         this.train(CORPUS2);
+
+        Util.logDebug({
+            words: this.words,
+        });
     }
 
     train (filePath) {
-        const readStream = fs.createReadStream(filePath);
-        const interface = Readline.createInterface({ input: readStream });
+        const readStream = FS.createReadStream(filePath);
+        const readInterface = Readline.createInterface({ input: readStream });
 
         // Pretend the document starts after the end of a hypothetical pre-document sentence.
-        let lastWord = '.';
+        this.prevWord = '.';
 
-        interface.on('line', line => {
+        readInterface.on('line', line => {
             line = line.trim();
 
             // Remove commas, ()s, '" quotes
@@ -43,25 +47,9 @@ class Markov extends TextGen {
                 return;
             }
 
-            // Everything whitespace isolated is a word
-            // Preserve case.
-            const wordsRaw = line.split('\s');
-
-            const wordlikes = []; // Array(wordsRaw.length);
-
-            for (let word of wordsRaw) {
-                const lastChar = word.slice(-1);
-
-                if (word.length >= 2 && Markov.WORDLIKE_SYMBOLS.includes(lastChar)) {
-                    wordlikes.push(word.slice(0, -1)); // All of the word except the last character
-                    wordlikes.push(lastChar);
-                }
-                else {
-                    wordlikes.push(word);
-                }
-            }
-
-            // TODO might need to take a first pass splitting all WORDLIKE_SYMBOL-including words in 2, then do another for loop. Because 1st word could be splittable & only its 1st part should connect to prevWord of last line.
+            // Everything whitespace-isolated is a word
+            // Preserve case. Yes this will treat 'and' differently from 'And' (middle vs beginning of sentences).
+            const words = line.split('\s');
 
             for (let i = 0; i < words.length; i++) {
                 let word = words[i];
@@ -69,36 +57,81 @@ class Markov extends TextGen {
                 // Treat these symbols as words even if not space-isolated: .:;?!- emdash
                 const lastChar = word.slice(-1);
 
-                if (word.length >= 2 && Markov.WORDLIKE_SYMBOLS.includes(lastChar) {
-                    this.link(
-                        word.slice(0, -1), // All of the word except the last character
-                        lastChar
-                    );
+                if (word.length >= 2 && Markov.WORDLIKE_SYMBOLS.includes(lastChar)) {
 
-                    word = lastChar;
-                    // Then link this symbol to the next word.
+                    const leftPart = word.slice(0, -1); // All of the word except the last symbol.
+
+                    this.hear(leftPart);
+                    this.hear(lastChar);
+                }
+                else {
+                    this.hear(word);
                 }
 
-                // this.link()
-                // Okay maybe all link()s should be between something like prevWord & word?
+                // LATER Reconnect line-spanning dashed words somehow
+                // Okay to reconnect them with the dash still there
+                // if (i === words.length - 1 && Markov.DASHES.includes(lastChar)) {
+
+                // }
             }
-
-            // Reconnect line-spanning dashed words somehow
-            // Okay to reconnect them with the dash still there
-
         });
     }
 
-    link (word1, word2) {
+    hear (nextWord) {
+        if (this.words[this.prevWord][nextWord]) {
+            this.words[this.prevWord][nextWord] += 1;
+        }
+        else {
+            this.words[this.prevWord][nextWord] = 1;
+        }
 
+        this.prevWord = nextWord;
     }
 
     output () {
+        let words = ['.'];
 
+        while (words.length <= 1000) {
+            const nextWord = this.wordAfter(words.slice(-1));
+
+            words.push(nextWord);
+
+            if (nextWord === '.') { break; }
+        }
+
+        // LATER adjust spacing before wordlike symbols.
+        // slice(1) removes the starting '.'
+        return words.slice(1).join(' ');
     }
 
     wordAfter (prevWord) {
-        
+        const situation = this.words[prevWord];
+        const candidates = Object.keys(situation);
+
+        const totalWeight = Util.sum(Object.values(situation));
+        let roll = Math.random() * totalWeight;
+
+        let start = Util.randomUpTo(candidates.length - 1);
+
+        for (let i = 0; i < candidates.length; i++) {
+            // Start on random candidate, loop around
+            const candidate = candidates[(start + i) % candidates.length];
+
+            roll -= situation[candidate];
+
+            if (roll <= 0) {
+                return candidate;
+            }
+        }
+
+        Util.error({
+            message: `Should be impossible to be here after this for() loop.`,
+            prevWord,
+            situation,
+            roll,
+            start,
+            candidates,
+        });
     }
 
     static run () {
