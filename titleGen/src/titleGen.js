@@ -548,11 +548,9 @@ class TitleGen {
         /* Known issues
         * The words 'Universe' & 'University' are prefaced with 'an' not 'a'.
         */
+    }
 
-        if (process.argv[2] === '-api') {
-            return TitleGen.postTitle();
-        }
-
+    static initWindow () {
         window.titleGen = new TitleGen();
 
         // console.log(`window.titleGen is ${window.titleGen}`);
@@ -693,7 +691,7 @@ class TitleGen {
     }
 
     // Send a random title into the web.
-    static postTitle () {
+    static async postTitle () {
         const gen = new TitleGen();
 
         const title = gen.next();
@@ -701,6 +699,9 @@ class TitleGen {
         console.log(title);
 
         return; // TEMP
+
+        // TODO incompatibility between browserify & Masto.
+        // Could move postTitle() to another file.
 
         gen.client = Masto.createRestAPIClient({
             url: 'https://mastodon.bot',
@@ -728,13 +729,19 @@ class TitleGen {
         }
     }
 
-    static run () {
+    static async run () {
         // console.log('TitleGen.run() top')
+
         TitleGen.init();
+
+        if (process.argv[2] === '-api') {
+            return await TitleGen.postTitle();
+        }
+
+        TitleGen.initWindow();
     }
 }
 
 module.exports = TitleGen;
 
 TitleGen.run();
-
