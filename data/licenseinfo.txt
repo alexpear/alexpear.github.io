@@ -1,0 +1,3 @@
+All Eclipse Phase books are licensed by Posthuman Studios under a Creative Commons Attribution-Noncommercial-Share Alike 4.0 License.
+
+Remixes of Eclipse Phase books in this git repo are also licensed under a CC BY-NC-SA 4.0 license.
