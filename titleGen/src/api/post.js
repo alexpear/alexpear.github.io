@@ -21,7 +21,6 @@ class Poster {
         gen.client = Masto.createRestAPIClient({
             url: 'https://mastodon.bot',
             accessToken: process.env.TITLE_BOT_TOKEN,
-            // TODO connect github repo secrets to env.TOKEN
         });
 
         const response = await gen.client.v1.statuses.create({
