@@ -867,6 +867,12 @@ class Util {
         });
     }
 
+    // Returns true if we are executing this in a browser.
+    static inBrowser () {
+        return typeof window !== 'undefined' &&
+            typeof window.document !== 'undefined';
+    }
+
     // Returns string with '<'s in it.
     static htmlPassage (content) {
         return Util.asElement(content, 'p');

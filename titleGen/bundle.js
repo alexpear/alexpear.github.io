@@ -23024,6 +23024,9 @@ const _ = require('lodash');
 
 // Generates titles for hypothetical books
 // Format like: 'A Court of Thorns & Roses' by Sarah J Maas
+
+// Usage: node titleGen.js -api
+
 class TitleGen {
     constructor () {
         TitleGen.init();
@@ -23562,6 +23565,10 @@ class TitleGen {
         /* Known issues
         * The words 'Universe' & 'University' are prefaced with 'an' not 'a'.
         */
+    }
+
+    static initWindow () {
+        if (! Util.inBrowser()) { return; }
 
         window.titleGen = new TitleGen();
 
@@ -23713,16 +23720,20 @@ class TitleGen {
         }
     }
 
-    static run () {
-        console.log('TitleGen.run() top')
+    static async run () {
         TitleGen.init();
+
+        // if (process.argv[1] === 'post.js') {
+        //     return;
+        // }
+
+        TitleGen.initWindow();
     }
 }
 
 module.exports = TitleGen;
 
 TitleGen.run();
-
 
 },{"../../util/util.js":5,"lodash":2}],5:[function(require,module,exports){
 'use strict';
@@ -23878,8 +23889,28 @@ class Util {
         }
     }
 
+    // Safely dig deep into a nested obj.
+    // Example: Util.access(pageObj, 'revision.text.$text');
+    static access (obj, dotSeparatedFields) {
+        if (dotSeparatedFields[0] === '.') {
+            dotSeparatedFields = dotSeparatedFields.slice(1);
+        }
+
+        const fieldNames = dotSeparatedFields.split('.');
+
+        for (let name of fieldNames) {
+            if (! obj) {
+                return undefined;
+            }
+
+            obj = obj[name];
+        }
+
+        return obj;
+    }
+
     static contains (array, fugitive) {
-        return array.indexOf(fugitive) >= 0;
+        return array.includes(fugitive);
     }
 
     static hasOverlap (arrayA, arrayB) {
@@ -23894,6 +23925,16 @@ class Util {
         }
 
         return false;
+    }
+
+    static flatten (arrayOfArrays) {
+        let flat = arrayOfArrays[0];
+
+        for (let i = 1; i < arrayOfArrays.length; i++) {
+            flat = flat.concat(arrayOfArrays[i]);
+        }
+
+        return flat;
     }
 
     // Returns number
@@ -23961,12 +24002,67 @@ class Util {
         return winner;
     }
 
+    // Modifies the array.
     static shuffle (array) {
-        array.sort(
-            (a, b) => Math.random()
-        );
+        for (let i = 0; i <= array.length - 2; i++) {
+            const untouchedCount = array.length - 1 - i;
+
+            const swapWith = i + Math.ceil(Math.random() * untouchedCount);
+
+            const temp = array[i];
+            array[i] = array[swapWith];
+            array[swapWith] = temp;
+        }
 
         return array;
+    }
+
+    static testShuffle () {
+        for (let repeat = 0; repeat <= 999; repeat++) {
+            const len = Math.floor(Math.random() * 100);
+
+            const array = [...Array(len)]
+                .map(
+                    x => Math.random()
+                );
+
+            const backup = Array.from(array);
+
+            const shuffled = Util.shuffle(array);
+
+            let good = true;
+
+            if (backup.length !== shuffled.length) {
+                good = false;
+            }
+
+            let identical = true;
+
+            for (let i = 0; i < shuffled.length; i++) {
+                if (backup[i] !== shuffled[i]) {
+                    identical = false;
+                    break;
+                }
+            }
+
+            if (identical && backup.length >= 3) {
+                good = false;
+            }
+
+            if (! good) {
+                Util.error({
+                    repeat,
+                    array,
+                    backup,
+                    shuffled,
+                    identical,
+                    len,
+                    arrayLength: array.length,
+                    backupLength: backup.length,
+                    shuffledLength: shuffled.length,
+                });
+            }
+        }
     }
 
     static constrain (n, minInclusive, maxInclusive) {
@@ -24509,6 +24605,12 @@ class Util {
         });
     }
 
+    // Returns true if we are executing this in a browser.
+    static inBrowser () {
+        return typeof window !== 'undefined' &&
+            typeof window.document !== 'undefined';
+    }
+
     // Returns string with '<'s in it.
     static htmlPassage (content) {
         return Util.asElement(content, 'p');
@@ -24954,6 +25056,11 @@ class Util {
         );
     }
 
+    // alias for the above.
+    static throw (summary) {
+        return Util.error(summary);
+    }
+
     static makeEnum (array, allLower = false) {
         const dict = {};
         for (let val of array) {
@@ -25032,6 +25139,7 @@ class Util {
         Util.testPrettyDistance();
         Util.testCamelCase();
         Util.testPadSides();
+        Util.testShuffle();
         Util.testSigfigRound();
         Util.testRoll1d6();
         Util.logDebug(`Done with unit tests for Util module :)`);
