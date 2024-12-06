@@ -7,9 +7,7 @@ on:
 
 jobs:
   fediverse:
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Post titleGen note to Mastodon
-      run: TITLE_BOT_TOKEN=${{ secrets.titlebottoken }} node titleGen/src/api/post.js
+      run: TITLE_BOT_TOKEN=${{ secrets.TITLE_BOT_TOKEN }} node titleGen/src/api/post.js
