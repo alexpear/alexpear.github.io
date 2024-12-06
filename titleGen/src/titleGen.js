@@ -3,9 +3,13 @@
 const Util = require('../../util/util.js');
 
 const _ = require('lodash');
+const Masto = require('masto');
 
 // Generates titles for hypothetical books
 // Format like: 'A Court of Thorns & Roses' by Sarah J Maas
+
+// Usage: node titleGen.js -api
+
 class TitleGen {
     constructor () {
         TitleGen.init();
@@ -545,6 +549,10 @@ class TitleGen {
         * The words 'Universe' & 'University' are prefaced with 'an' not 'a'.
         */
 
+        if (process.argv[2] === '-api') {
+            return TitleGen.postTitle();
+        }
+
         window.titleGen = new TitleGen();
 
         // console.log(`window.titleGen is ${window.titleGen}`);
@@ -684,6 +692,31 @@ class TitleGen {
         console.log(this.verticalText() + '\n');
     }
 
+    // Send a random title into the web.
+    static postTitle () {
+        const gen = new TitleGen();
+
+        const title = gen.next();
+
+        console.log(title);
+
+        return; // TEMP
+
+        gen.client = Masto.createRestAPIClient({
+            url: 'https://mastodon.bot',
+            accessToken: process.env.TOKEN,
+            // TODO connect github repo secrets to env.TOKEN
+        });
+
+        const response = await gen.client.v1.statuses.create({
+            status: title,
+        });
+
+        console.log(response.url);
+
+        // LATER will need to make sure Util funcs are available to the server running this.
+    }
+
     static test () {
         console.log();
 
@@ -696,7 +729,7 @@ class TitleGen {
     }
 
     static run () {
-        console.log('TitleGen.run() top')
+        // console.log('TitleGen.run() top')
         TitleGen.init();
     }
 }
