@@ -8,7 +8,8 @@ const Util = require('../../util/util.js');
 const FS = require('fs');
 const Readline = require('node:readline');
 
-const CORPUS1 = '../../data/leviathan.txt';
+const CORPUS1 = '../../data/littlewomen.txt';
+// const CORPUS1 = '../../data/leviathan.txt';
 const CORPUS2 = '../../data/eclipsephasecore.txt';
 
 class Markov extends TextGen {
@@ -65,7 +66,7 @@ class Markov extends TextGen {
             line = line.trim();
 
             // Remove commas, ()s, '" quotes
-            line = line.replaceAll(/[,()'"]/g, '');
+            line = line.replaceAll(/[,()'’"“”]/g, '');
 
             // If whole line is whitespace or empty, skip ahead.
             if (line.match(/^\s*$/)) {
@@ -181,7 +182,7 @@ class Markov extends TextGen {
     static async run () {
         const chain = await Markov.new();
 
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 25; i++) {
             console.log(chain.output());
         }
     }
