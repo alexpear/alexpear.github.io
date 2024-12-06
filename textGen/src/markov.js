@@ -12,6 +12,21 @@ const CORPUS1 = '../../data/leviathan.txt';
 const CORPUS2 = '../../data/eclipsephasecore.txt';
 
 class Markov extends TextGen {
+    static async new () {
+        const chain = new Markov();
+
+        await chain.train(CORPUS1);
+        await chain.train(CORPUS2);
+
+        // Util.logDebug({
+        //     words: chain.words,
+        // });
+
+        console.log(JSON.stringify(chain.words));
+
+        return chain;
+    }
+
     constructor () {
         super();
 
@@ -20,23 +35,22 @@ class Markov extends TextGen {
             bar: 5,
             baz: 1
         }                       */
-
-        this.train(CORPUS1);
-        this.train(CORPUS2);
-
-        Util.logDebug({
-            words: this.words,
-        });
     }
 
-    train (filePath) {
+    async train (filePath) {
         const readStream = FS.createReadStream(filePath);
         const readInterface = Readline.createInterface({ input: readStream });
 
         // Pretend the document starts after the end of a hypothetical pre-document sentence.
-        this.prevWord = '.';
+        this.setPrevWord('.');
 
-        readInterface.on('line', line => {
+        // TODO no lines being read
+        for await (let line of readInterface) {
+            Util.logDebug({
+                context: `.train()`,
+                line,
+            });
+
             line = line.trim();
 
             // Remove commas, ()s, '" quotes
@@ -44,12 +58,12 @@ class Markov extends TextGen {
 
             // If whole line is whitespace or empty, skip ahead.
             if (line.match(/^\s*$/)) {
-                return;
+                continue;
             }
 
             // Everything whitespace-isolated is a word
             // Preserve case. Yes this will treat 'and' differently from 'And' (middle vs beginning of sentences).
-            const words = line.split('\s');
+            const words = line.split(/\s+/);
 
             for (let i = 0; i < words.length; i++) {
                 let word = words[i];
@@ -74,10 +88,16 @@ class Markov extends TextGen {
 
                 // }
             }
-        });
+        }
     }
 
     hear (nextWord) {
+        Util.logDebug({
+            context: `hear()`,
+            nextWord,
+            prevWord: this.prevWord,
+        });
+
         if (this.words[this.prevWord][nextWord]) {
             this.words[this.prevWord][nextWord] += 1;
         }
@@ -85,7 +105,15 @@ class Markov extends TextGen {
             this.words[this.prevWord][nextWord] = 1;
         }
 
-        this.prevWord = nextWord;
+        this.setPrevWord(nextWord);
+    }
+
+    setPrevWord (word) {
+        this.prevWord = word;
+
+        if (! this.words[word]) {
+            this.words[word] = {};
+        }
     }
 
     output () {
@@ -105,6 +133,11 @@ class Markov extends TextGen {
     }
 
     wordAfter (prevWord) {
+        Util.logDebug({
+            prevWord,
+            situation: this.words[prevWord],
+        });
+
         const situation = this.words[prevWord];
         const candidates = Object.keys(situation);
 
@@ -134,8 +167,10 @@ class Markov extends TextGen {
         });
     }
 
-    static run () {
-        console.log(new Markov().output());
+    static async run () {
+        const chain = await Markov.new();
+
+        console.log(chain.output());
     }
 }
 
