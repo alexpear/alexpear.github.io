@@ -16,11 +16,10 @@ class Markov extends TextGen {
         super();
 
         this.words = {};
-        /*
-        word1: [
+
+/*      word1: [
             [ 'word2', 5 ]
-        ]
-        */
+        ]                       */
 
         this.train(CORPUS1);
         this.train(CORPUS2);
@@ -46,7 +45,21 @@ class Markov extends TextGen {
 
             // Everything whitespace isolated is a word
             // Preserve case.
-            const words = line.split('\s');
+            const wordsRaw = line.split('\s');
+
+            const wordlikes = []; // Array(wordsRaw.length);
+
+            for (let word of wordsRaw) {
+                const lastChar = word.slice(-1);
+
+                if (word.length >= 2 && Markov.WORDLIKE_SYMBOLS.includes(lastChar)) {
+                    wordlikes.push(word.slice(0, -1)); // All of the word except the last character
+                    wordlikes.push(lastChar);
+                }
+                else {
+                    wordlikes.push(word);
+                }
+            }
 
             // TODO might need to take a first pass splitting all WORDLIKE_SYMBOL-including words in 2, then do another for loop. Because 1st word could be splittable & only its 1st part should connect to prevWord of last line.
 
