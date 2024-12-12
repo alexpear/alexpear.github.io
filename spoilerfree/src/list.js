@@ -1,12 +1,13 @@
 // Class for the list of matches displayed on the html page.
 
+const Match = require('./match.js');
 const Util = require('../../util/util.js');
 
 class MatchList {
 
-
     load () {
         const headers = new Headers();
+        // headers.append('x-rapidapi-key', process.env.API_FOOTBALL_KEY);
         headers.append('x-rapidapi-key', 'c6509d543cfb780c5add10527ba958eb');
         // NOTE - this api key should be considered exposed & only useful for free testing.
 
@@ -112,12 +113,17 @@ class MatchList {
     }
 
     static demo () {
-        // return new MatchList().load();
+        // return await new MatchList().load();
 
-        Util.logDebug(
-            JSON.parse(
-                MatchList.exampleResponse()
-            )
+        const response = JSON.parse(
+            MatchList.exampleResponse()
+        );
+
+        Util.logDebug(response);
+
+        const fixtures = response.response;
+        const matches = fixtures.map(
+            fix => new Match(fix)
         );
     }
 }

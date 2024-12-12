@@ -4,8 +4,10 @@ const Event = require('./soccerEvent.js');
 const SoccerTime = require('./soccerTime.js');
 
 class Match {
-    // input: (string, string)
-    constructor (home, visitor, date) {
+    // input: data obj from API
+    constructor (obj) {
+        Object.assign(this, obj);
+
         this.home = home;
         this.visitor = visitor;
         this.date = date;
