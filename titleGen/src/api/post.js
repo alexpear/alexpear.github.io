@@ -16,8 +16,6 @@ class Poster {
 
         console.log(title);
 
-        return; // TEMP
-
         gen.client = Masto.createRestAPIClient({
             url: 'https://mastodon.bot',
             accessToken: process.env.TITLE_BOT_TOKEN,
