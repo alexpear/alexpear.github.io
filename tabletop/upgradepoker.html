@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Treasure Poker</title>
+  <style>
+    html * {
+      color: #fff;
+    }
+
+    .linkbutton {
+      text-align: center;
+      text-decoration: none;
+      background-color: #fff;
+      margin: 20px 20px 20px 20px;
+      border-radius: 6px;
+      padding: 8px 0;
+      outline: none;
+      border: 2px solid transparent;
+    }
+
+    .linkbutton > span {
+      color: #000;
+      font-family: serif;
+    }
+
+    body {
+      background: #2a2a2e;
+    }
+
+    .center {
+      display: block;
+      margin: 10px auto 10px auto;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 50px;
+      font-family: sans-serif;
+    }
+
+    #main {
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+      max-width: 60rem;
+    }
+
+    p {
+      font-size: 18px;
+      text-align: justify;
+      margin: auto auto 20px 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header">
+    <a class="linkbutton" href="..">
+      <span>Home</span>
+    </a>
+  </div>
+
+  <h1 class="center">Treasure Poker</h1>
+
+  <div id="main">
+      <p><i>Poker but players accumulate special abilities.</i></p>
+
+      <p><u>Overview:</u> This card game is similar to Texas Hold Em, except each player has a Treasure Zone of faceup cards that stay on the table.</p>
+
+      <p><u>End of game:</u> If a card would be drawn but the deck is empty, the game ends. Also, like normal poker, stop when all players choose to stop. Whoever earned the most money wins.
+
+      <p><u>You will need:</u> a 54-card deck of playing cards (including Jokers, YOLO) & poker chips.</p>
+
+      <p>
+        <u>Game Summary:</u> <br/>
+        1: Everyone pays $1 ante <br/>
+        2: Deal everyone 2 cards <br/>
+        3: Deal the New Treasure card faceup <br/>
+        4: Betting <br/>
+        5: Deal 2 Shared cards <br/>
+        6: Betting <br/>
+        7: Deal 2 more Shared cards <br/>
+        8: Betting <br/>
+        9: Deal a 5th Shared card <br/>
+        10: Betting <br/>
+        11: May move Spanner Treasures to hand <br/>
+        12: May draw cards from Lover Treasures <br/>
+        13: Choose quintets <br/>
+        14: Winner takes pot. Last folder takes the New Treasure. <br/>
+        15: If New Treasure is Joker, instead choose from hand & Shared. <br/>
+        16: May play Stealer Treasures <br/>
+        17: Shuffle & repeat
+      </p>
+
+      <p>
+        Spades = Can move this to your hand <br/>
+        Clubs = Xs are Jokers for you <br/>
+        Hearts = Xs draw you +1 card <br/>
+        Diamonds = Steal a Treasure up to value X <br/>
+      </p>
+
+      <p>Spades are Spanners, useful tools you can grab. In step 11, after all betting is complete, players who have not folded may move any Spades cards from their Treasure Zone to your hand. They become normal hand cards & will be shuffled into the deck with the others.</p>
+
+      <p>Clubs are Wilders, which make matching cards wild for you. Having the X of Clubs in your Treasure Zone means that all Xs in your hand or in the Shared 5 count as wild for you (like if they were Jokers).</p>
+
+      <p>Hearts are Lovers, which can draw more cards into your hand. In step 12 before choosing your quintet, draw 1 card for each card in your hand or in the Shared 5 that has the same number as 1 of your Hearts Treasure cards. These drawn cards go into your hand. And yes, this can cause a chain reaction if you draw a card that also matches your Hearts Treasure cards.</p>
+
+      <p>Diamonds are Stealers, which can steal Treasure cards. In step 16, before the reshuffle, you may steal by moving a X of Diamonds from your Treasure Zone to the bottom of the deck. If you do this, you may move any card of value X or lower from anyone's Treasure Zone to your Treasure Zone. Similar to the order of betting, the player to the left of the dealer gets the first chance to steal during this step.</p>
+
+      <p>Jokers are wild, in value & in suit.</p>
+
+      <p>The New Treasure card - This card is not in the pot nor in the 5 Shared cards. In step 14, after comparing quintets, the player <u>that folded last</u> puts the New Treasure card into their Treasure Zone faceup. (If no one folded during this hand, shuffle the New Treasure card back into the deck.) (Note that Treasure cards go to the player who folds strategically, not to the pot winner.)</p>
+
+      <p>Special Case: If the New Treasure card is a Joker, it won't go into anyone's Treasure Zone. (That would be like having 52 Treasures at once, totally unbeatable.) Instead, whoever receives the Joker Treasure chooses 1 card from their hand or the Shared zone & puts it in their Treasure zone.</p>
+  </div>
+</body>
+</html>
