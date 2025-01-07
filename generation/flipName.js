@@ -15,28 +15,31 @@ class FlipName {
             'K',
             'L',
             'M',
-            'MN',
+            // 'MN',
             'N',
             'P',
             'PH',
             'R',
             'S',
             'ST',
-            'TS',
+            // 'TS',
             'T',
             'V',
             'W',
             'Z',
-        ];
-    }
-
-    static complexConsonoids () {
-        return [
             'TH',
             'SH',
             'CH',
         ];
     }
+
+    // static complexConsonoids () {
+    //     return [
+    //         'TH',
+    //         'SH',
+    //         'CH',
+    //     ];
+    // }
 
     static voweloids () {
         return [
@@ -52,18 +55,23 @@ class FlipName {
     static consoSet () {
         const set = [];
 
-        if (Math.random() < 0.1) {
-            return [
-                Util.randomOf(
-                    FlipName.complexConsonoids()
-                )
-            ];
-        }
+        // if (Math.random() < 0.1) {
+        //     return [
+        //         Util.randomOf(
+        //             FlipName.complexConsonoids()
+        //         )
+        //     ];
+        // }
 
-        const len = 1; // Util.randomOf([1, 2]);
+        const len = Util.randomOf([1, 2]);
+
+        const consoList = len > 1 ?
+            FlipName.consonoids().filter(c => c.length === 1) :
+            FlipName.consonoids();
+
         for (let i = 0; i < len; i++) {
             set.push(
-                Util.randomOf(FlipName.consonoids())
+                Util.randomOf(consoList)
             );
         }
 
@@ -85,25 +93,43 @@ class FlipName {
 
     static wordArray () {
         let array = [];
-        let consoNext = true;
+        let consoNext = false;
 
         if (Math.random() < 0.5) {
             array = [Util.randomOf(
                 FlipName.consonoids()
             )];
-            consoNext = false;
         }
 
         const len = Util.randomRange(6, 10);
 
         while (array.length < len) {
-            const newChars = consoNext ?
-                FlipName.consoSet() :
-                FlipName.vowelSet();
+            let newChars;
+
+            if (array.length >= len - 2) {
+                // Last/first sound.
+                newChars = consoNext ?
+                    [Util.randomOf(FlipName.consonoids())] :
+                    FlipName.vowelSet();
+            }
+            else {
+                newChars = consoNext ?
+                    FlipName.consoSet() :
+                    FlipName.vowelSet();
+            }
 
             array = array.concat(newChars);
 
-            // TODO ending on 2 consos leads to weird flipped start.
+            // debug
+            if (FlipName.consonoids().includes(array[0]) &&
+                FlipName.consonoids().includes(array[1])) {
+                Util.logDebug({
+                    array,
+                    newChars,
+                    consoNext,
+                    len,
+                });
+            }
 
             consoNext = !consoNext;
         }
