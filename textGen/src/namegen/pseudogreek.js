@@ -6,60 +6,79 @@ const Util = require('../../../util/util.js');
 class Pseudogreek extends NameGen {
     voweloids () {
         return {
-            'A': 2,
-            'E': 2,
-            'I': 2,
-            'O': 2,
-            'U': 2,
-            'Y': 1,
-            'AE': 1,
+            'A': 9,
+            'E': 9,
+            'I': 9,
+            'O': 9,
+            'U': 9,
+            'Y': 5,
+            'AE': 2,
             'AO': 1,
+            'AU': 1,
             'EA': 1,
-            'EI': 1,
+            'EI': 2,
             'EO': 1,
             'EU': 1,
-            'IA': 1,
-            'IO': 1,
+            'IA': 2,
+            'IO': 2,
+            'OE': 2,
+        };
+    }
+
+    finalVoweloids () {
+        return {
+            'A': 9,
+            'E': 9,
+            'I': 9,
+            'O': 9,
+            'Y': 1,
+            'AE': 5,
+            'EA': 4,
+            'EI': 4,
+            'IA': 5,
+            'IO': 3,
+            'OE': 2,
         };
     }
 
     consonoids () {
         return {
-            'B': 2,
-            // 'C': 2,
-            'D': 2,
-            'G': 1,
+            'B': 9,
+            // 'C': 9,
+            'D': 9,
+            'G': 3,
             'H': 1,
-            'K': 2,
-            'L': 2,
-            'M': 2,
-            'N': 2,
-            'P': 2,
-            'R': 2,
-            'S': 2,
-            'T': 2,
-            'X': 2,
-            'Z': 1,
-            'CH': 2,
-            'CL': 1,
+            'K': 9,
+            'L': 9,
+            'M': 9,
+            'N': 9,
+            'P': 9,
+            'R': 9,
+            'S': 9,
+            'T': 9,
+            'X': 9,
+            'Z': 2,
+            'CH': 9,
+            'CL': 2,
             'DR': 1,
-            'PH': 2,
-            'PL': 1,
-            'TH': 2,
+            'MN': 2,
+            'PH': 9,
+            'PL': 2,
+            'TH': 9,
             'TR': 1,
         };
     }
 
     finalConsonoids () {
         return {
-            'D': 1,
-            'M': 1,
-            'N': 1,
+            'D': 2,
+            'M': 2,
+            'N': 2,
             'R': 1,
-            'S': 3,
+            'S': 9,
             'T': 1,
-            'X': 2,
-            'CH': 1,
+            'X': 4,
+            'CH': 2,
             'PH': 2,
         };
     }
@@ -89,11 +108,11 @@ class Pseudogreek extends NameGen {
 
                 // Last
                 array.push(
-                    vowelNext ?
-                        this.getVoweloid() :
-                        this.dict2phoneme(
+                    this.dict2phoneme(
+                        vowelNext ?
+                            this.finalVoweloids() :
                             this.finalConsonoids()
-                        )
+                    )
                 );
             }
         }
