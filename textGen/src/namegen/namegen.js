@@ -114,7 +114,9 @@ class NameGen extends TextGen {
     }
 
     demo () {
+        console.log();
         console.log(this.output());
+        console.log();
     }
 
     static run () {
@@ -126,4 +128,4 @@ class NameGen extends TextGen {
 
 module.exports = NameGen;
 
-NameGen.run();
+// NameGen.run();
