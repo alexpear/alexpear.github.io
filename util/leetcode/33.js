@@ -5,23 +5,40 @@
  * @return {number}
  */
 var search = function(nums, target) {
-    let mini = 0;
-    let maxi = nums.length - 1;
-    let mink = 0;
-    let maxk = nums.length - 1;
-    let spotlight = Math.floor(nums.length / 2);  // 0;
-    let prevspotlight;
+    let mini = nums[0] < target ?
+        -1 * nums.length :
+        -1 * nums.length + 1;
+
+    let maxi = nums.length;
+    // let mink = 0;
+    // let maxk = nums.length - 1;
+    let spotlight = 0; //Math.floor(nums.length / 2);
+    let prevSpotlight;
+    let prevValue;
 
     // Or can we do 2 passes in log n? Find pivot, find target?
     // Maybe we dont need to find the pivot, & can do spotlight % nums.length to handle wrap.
 
-    while (prevspotlight !== spotlight) {
-        prevspotlight = spotlight;
+    while ( (maxi - mini) >= 2 ) {
 
-        const currentValue = nums[spotlight % nums.length];
+        let normalized = spotlight;
+        while (normalized < 0) {
+            normalized += nums.length;
+        }
+        normalized = normalized % nums.length;
+
+        const currentValue = nums[normalized];
 
         if (currentValue === target) {
-            return spotlight;
+            return normalized;
+        }
+        else if (prevSpotlight < spotlight && currentValue < prevValue) {
+            // We went right but values decreased. We passed the pivot.
+            maxi = spotlight;
+        }
+        else if (spotlight < prevSpotlight && prevValue < currentValue) {
+            // We went left but values increased. We passed the pivot.
+            mini = spotlight;
         }
         else if (currentValue < target) {
             // Obstacle: If you overshoot right & pass the pivot, when should you go left, & when right?
@@ -39,8 +56,8 @@ var search = function(nums, target) {
             // Can that extend our runtime infinitely? TODO
 
 
-            // if prevspotlight was left or right of spotlight, whichever is weirder, then set one of the mink maxk fields.
-            // if (spotlight < prevspotlight) {
+            // if prevSpotlight was left or right of spotlight, whichever is weirder, then set one of the mink maxk fields.
+            // if (spotlight < prevSpotlight) {
             //     // TODO is this enough info, or does it conflate overshooting up a slope with crossing the pivot?
 
             // }
@@ -53,13 +70,27 @@ var search = function(nums, target) {
         if (maxi < mini) {
             // Expressed in terms of spotlight's number line, before the % operator.
             maxi += nums.length;
+
+            // TODO might be able to handle this pivot overshooting case better. Worried about infinite runtime.
         }
 
+        console.log(JSON.stringify({
+            mini,
+            maxi,
+            spotlight,
+            currentValue,
+            normalized,
+            // modulo: normalized % nums.length,
+        }, undefined, '    '));
+
+        prevValue = currentValue;
+        prevSpotlight = spotlight;
         spotlight = Math.floor( (mini + maxi) / 2 );
     }
 
     return -1;
 };
+
 
 const TESTS = [
     {
@@ -89,6 +120,9 @@ const TESTS = [
 
 function runTests () {
     for (let test of TESTS) {
+        console.log();
+        console.log(test.inputs[0].join(' '));
+
         const myOutput = search.apply(undefined, test.inputs);
 
         let passed = myOutput === test.output;
