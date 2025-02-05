@@ -37,26 +37,40 @@ var search = function(nums, target) {
         }
         normalized = normalized % nums.length;
 
-        const currentValue = nums[normalized];
+        const currentValue = valAt(spotlight);
 
         if (currentValue === target) {
             return normalized;
         }
         // TODO replace these 2 ifs. Instead, detect if you're in a Bad Interval. Defined as, if you would gradient descent in it, you would move towards either mini or maxi, & you know the value there is not good enough. So instead you have to jump towards the other one (mini or maxi) to get out of the Bad Interval.
         // If not in a bad interval, do normal gradient descent.
-        else if (prevSpotlight < spotlight && currentValue < prevValue) {
-            // We went right but values decreased. We passed the pivot.
-            maxi = spotlight;
-        }
-        else if (spotlight < prevSpotlight && prevValue < currentValue) {
-            // We went left but values increased. We passed the pivot.
-            mini = spotlight;
-        }
+        // else if (prevSpotlight < spotlight && currentValue < prevValue) {
+        //     // We went right but values decreased. We passed the pivot.
+        //     maxi = spotlight;
+        // }
+        // else if (spotlight < prevSpotlight && prevValue < currentValue) {
+        //     // We went left but values increased. We passed the pivot.
+        //     mini = spotlight;
+        // }
         else if (currentValue < target) {
-            mini = spotlight;
+            // const maxiVal = valAt(maxi);
+
+            if (valAt(maxi) < target) {
+                // Going right will not save us.
+                maxi = spotlight;
+            }
+            else {
+                mini = spotlight;
+            }
         }
         else {
-            maxi = spotlight;
+            if (valAt(mini) > target) {
+                // Going left will not save us.
+                mini = spotlight;
+            }
+            else {
+                maxi = spotlight;
+            }
         }
 
         if (maxi < mini) {
@@ -83,6 +97,17 @@ var search = function(nums, target) {
     }
 
     return -1;
+
+    function valAt (i) {
+        // let normalized = spotlight;
+        while (i < 0) {
+            i += nums.length;
+        }
+
+        // i = i % nums.length;
+
+        return nums[i % nums.length];
+    }
 };
 
 
