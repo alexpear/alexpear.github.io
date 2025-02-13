@@ -18,17 +18,29 @@ var rotate = function(matrix) {
 
         let temp = matrix[x][y];
 
-        console.log(`copying ${matrix[y][matrix.length - x - 1]}`);
-        matrix[x][y] = matrix[y][matrix.length - x - 1];
+        console.log(`copying ${matrix[matrix.length - y - 1][x]}`);
+                matrix[x][y] = matrix[matrix.length - y - 1][x];
 
                     console.log(`copying ${matrix[matrix.length - x - 1][matrix.length - y - 1]}`);
-        matrix[y][matrix.length - x - 1] = matrix[matrix.length - x - 1][matrix.length - y - 1];
+        matrix[matrix.length - y - 1][x] = matrix[matrix.length - x - 1][matrix.length - y - 1];
 
-                console.log(`copying ${matrix[matrix.length - y - 1][x]}`);
-        matrix[matrix.length - x - 1][matrix.length - y - 1] = matrix[matrix.length - y - 1][x];
+                                        console.log(`copying ${matrix[y][matrix.length - x - 1]}`);
+        matrix[matrix.length - x - 1][matrix.length - y - 1] = matrix[y][matrix.length - x - 1];
 
                     console.log(`copying ${temp}`);
-        matrix[matrix.length - y - 1][x] = temp;
+        matrix[y][matrix.length - x - 1] = temp;
+
+        // console.log(`copying ${matrix[y][matrix.length - x - 1]}`);
+        // matrix[x][y] = matrix[y][matrix.length - x - 1];
+
+        //             console.log(`copying ${matrix[matrix.length - x - 1][matrix.length - y - 1]}`);
+        // matrix[y][matrix.length - x - 1] = matrix[matrix.length - x - 1][matrix.length - y - 1];
+
+        //         console.log(`copying ${matrix[matrix.length - y - 1][x]}`);
+        // matrix[matrix.length - x - 1][matrix.length - y - 1] = matrix[matrix.length - y - 1][x];
+
+        //             console.log(`copying ${temp}`);
+        // matrix[matrix.length - y - 1][x] = temp;
     }
 };
 

@@ -42,21 +42,11 @@ var search = function(nums, target) {
         if (currentValue === target) {
             return normalized;
         }
-        // TODO replace these 2 ifs. Instead, detect if you're in a Bad Interval. Defined as, if you would gradient descent in it, you would move towards either mini or maxi, & you know the value there is not good enough. So instead you have to jump towards the other one (mini or maxi) to get out of the Bad Interval.
-        // If not in a bad interval, do normal gradient descent.
-        // else if (prevSpotlight < spotlight && currentValue < prevValue) {
-        //     // We went right but values decreased. We passed the pivot.
-        //     maxi = spotlight;
-        // }
-        // else if (spotlight < prevSpotlight && prevValue < currentValue) {
-        //     // We went left but values increased. We passed the pivot.
-        //     mini = spotlight;
-        // }
         else if (currentValue < target) {
-            // const maxiVal = valAt(maxi);
+            const maxiVal = valAt(maxi);
 
-            if (valAt(maxi) < target) {
-                // Going right will not save us.
+            if (currentValue < maxiVal && maxiVal < target) {
+                // Going right is not enough. Look elsewhere for a better gradient.
                 maxi = spotlight;
             }
             else {
@@ -64,8 +54,10 @@ var search = function(nums, target) {
             }
         }
         else {
-            if (valAt(mini) > target) {
-                // Going left will not save us.
+            const miniVal = valAt(mini);
+
+            if (target < miniVal && miniVal < currentValue) {
+                // Going left is not enough. Look elsewhere for a better gradient.
                 mini = spotlight;
             }
             else {
@@ -98,13 +90,11 @@ var search = function(nums, target) {
 
     return -1;
 
+    // Later could functionize the index normalization
     function valAt (i) {
-        // let normalized = spotlight;
         while (i < 0) {
             i += nums.length;
         }
-
-        // i = i % nums.length;
 
         return nums[i % nums.length];
     }
