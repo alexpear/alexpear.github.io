@@ -11,8 +11,13 @@ class Navatar {
         );
 
         this.width = width || Navatar.DEFAULT_WIDTH;
+
         // this.colors = []; // LATER support base-3, base-4.
+
         this.halfGrid = this.rawHalfGrid();
+
+        // TODO debug log at this time.
+
         this.polish();
     }
 
@@ -52,7 +57,8 @@ class Navatar {
     }
 
     polish () {
-        // Define ugly based on number of ortho & diag neighbors
+        // Define ugly based on number of ortho & diag neighbors.
+        // Pixels with 2+ exclusively-diagonal neighbors are ugly. They are less visually clean.
         // See Roam 2025 Feb 13
         const UGLY_ORTHOS = [true, false, false, false, false];
         const UGLY_DIAGS = [false, false, true, true, true];
@@ -66,15 +72,15 @@ class Navatar {
 
                 const neighborGrid = this.neighborGrid(x, y);
 
-                const orthoNeighbors = neighborGrid[0, 1] +
-                    neighborGrid[1, 0] +
-                    neighborGrid[1, 2] +
-                    neighborGrid[2, 1];
+                const orthoNeighbors = neighborGrid[0][1] +
+                    neighborGrid[1][0] +
+                    neighborGrid[1][2] +
+                    neighborGrid[2][1];
 
-                const diagNeighbors = neighborGrid[0, 0] +
-                    neighborGrid[0, 2] +
-                    neighborGrid[2, 0] +
-                    neighborGrid[2, 2];
+                const diagNeighbors = neighborGrid[0][0] +
+                    neighborGrid[0][2] +
+                    neighborGrid[2][0] +
+                    neighborGrid[2][2];
 
                 if (UGLY_ORTHOS[orthoNeighbors] && UGLY_DIAGS[diagNeighbors]) {
                     // Visually ugly situation, turn this pixel off.
@@ -93,26 +99,25 @@ class Navatar {
 
         for (let nx = -1; nx <= 1; nx++) {
             for (let ny = -1; ny <= 1; ny++) {
-                let neighbors = 0;
+                // if (
+                //     x + nx < 0 ||
+                //     x + nx >= this.width ||
+                //     y + ny < 0 ||
+                //     y + ny >= this.width
+                // ) {
+                //     neighbors = 0;
+                // }
+                // else {
 
-                // TODO deal with reflections
-                if (
-                    x + nx < 0 ||
-                    x + nx >= this.width ||
-                    y + ny < 0 ||
-                    y + ny >= this.width
-                ) {
-                    neighbors = 0;
-                }
-                else {
-                    neighbors = this.colorAt(x + nx, y + ny) ?
-                        1 : // This grid is colorblind.
-                        0;
-                }
 
-                nGrid[ny + 1][nx + 1] = neighbors;
+                // This grid is colorblind.
+                nGrid[ny + 1][nx + 1] = this.colorAt(x + nx, y + ny) ?
+                    1 :
+                    0;
             }
         }
+
+        return nGrid;
     }
 
     toString (indent) {
@@ -138,11 +143,19 @@ class Navatar {
     }
 
     colorAt (x, y) {
+        // Handle surpassing edges of grid.
+        if (
+            x < 0 ||
+            x >= this.width ||
+            y < 0 ||
+            y >= this.width
+        ) {
+            return 0;
+        }
+
         if (x >= this.columns()) {
             x = this.width - 1 - x;
         }
-
-        // TODO handle surpassing edges of grid.
 
         return this.halfGrid[y][x];
     }
@@ -151,7 +164,7 @@ class Navatar {
     }
 
     static run () {
-        const navatar = new Navatar();
+        const navatar = new Navatar(undefined, 9);
 
         console.log(`\n${navatar.toString()}\n`);
     }
