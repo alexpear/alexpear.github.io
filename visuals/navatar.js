@@ -10,21 +10,17 @@ class Navatar {
         this.width = width || Navatar.DEFAULT_WIDTH;
 
         if (! Util.exists(id) || ! id.length >= 0) {
-            // BigInt literal.
-            // id = 1n;
-            // nvm
-
             // String representation of id number
             // 2.77... is log(16)
             const hexLength = Math.ceil(
                 Math.log(this.gridMax()) / 2.772588722239781
             );
 
-            console.log(JSON.stringify({
-                gridMax: this.gridMax(),
-                logGridMax: Math.log(this.gridMax()),
-                hexLength,
-            }));
+            // console.log(JSON.stringify({
+            //     gridMax: this.gridMax(),
+            //     logGridMax: Math.log(this.gridMax()),
+            //     hexLength,
+            // }));
 
             id = Array(hexLength)
                 .fill()
@@ -37,31 +33,9 @@ class Navatar {
                 // hexLength,
                 id,
             }));
-
-            // let step = 1e16;
-
-            // while (id * 2 <= this.gridMax() && id * step < Number.MAX_VALUE) {
-            //     Util.logDebug({
-            //         context: 'idgen while loop',
-            //         id,
-            //         idMod: id % step,
-            //     });
-
-            //     id += Math.random();
-            //     id *= step;
-            // }
         }
 
         this.id = id;
-
-        // Util.logDebug({
-        //     context: 'near top of Navatar() constructor',
-        //     width,
-        //     thisWidth: this.width,
-        //     id,
-        //     thisId: this.id,
-        //     gridMax: this.gridMax(),
-        // });
 
         // this.colors = []; // LATER support base-3, base-4.
 
@@ -73,9 +47,7 @@ class Navatar {
         this.generateAccessGrid();
 
         // debug
-        this.printGrid(this.accessGrid);
-
-        Util.logDebug(this.accessGrid);
+        // this.printGrid(this.accessGrid);
 
         this.halfGrid = this.rawHalfGrid();
 
@@ -96,19 +68,13 @@ class Navatar {
                     .map(pixel => 0)
             );
 
-        Util.logDebug(this.accessGrid);
-
         for (let x = 0; x < accessGridWidth; x++) {
             for (let y = 0; y < accessGridHeight; y++) {
                 this.accessGrid[y][x] = this.nextBit();
-
-                console.log(`accessGrid (${x},${y}) is ${this.accessGrid[y][x]}`);
             }
-
-            Util.logDebug(this.accessGrid);
         }
 
-        // TODO case where there are very many zeros in here
+        // LATER case where there are very many zeros in here
     }
 
     nextBit () {
@@ -137,19 +103,6 @@ class Navatar {
     rawHalfGrid () {
         const halfGrid = [...Array(this.width)];
 
-        // this.seed = Math.ceil(this.id) % this.gridMax();
-        // let pixelNumber = 0;
-        // let shrinkingSeed = this.seed;
-
-        // let idIndex = this.id.length - 1;
-
-        Util.logDebug({
-            context: 'near top of rawHalfGrid()',
-            halfGridLength: halfGrid.length,
-            // seed: this.seed,
-            // modSmall: this.seed % 1e16,
-        });
-
         for (let x = 0; x < this.columns(); x++) {
             for (let y = 0; y < halfGrid.length; y++) {
 
@@ -157,31 +110,10 @@ class Navatar {
                     halfGrid[y] = [];
                 }
 
-                // console.log(`halfGrid (${x},${y})`);
-
                 // Note that y describes which row, x describes which column.
                 halfGrid[y][x] = this.canAccess(x, y) ?
                     this.nextBit() :
                     0;
-
-                const summary = {
-                    x,
-                    y,
-                    // currentDigit,
-                    idIndex: this.idIndex,
-                    digitStr: this.id[this.idIndex],
-                    // pixelNumber,
-                    color: halfGrid[y][x],
-                    // power: Math.pow(2, pixelNumber),
-                    // shrunk: Math.floor(
-                    //     this.seed / Math.pow(2, pixelNumber)
-                    // ),
-                    // shrinkingSeed,
-                };
-                console.log(`rawHalfGrid(): ${JSON.stringify(summary)}`);
-
-                // pixelNumber++;
-                // shrinkingSeed >>= 1;
             }
         }
 
@@ -306,8 +238,6 @@ class Navatar {
                     this.colorAt(x, y)
                 ];
 
-                // console.log(`the symbol at (${x}, ${y}) is '${pixelString}'.`);
-
                 out += pixelString || '??';
             }
 
@@ -349,6 +279,14 @@ class Navatar {
         return this.halfGrid[y][this.normalize(x)];
     }
 
+    demoMany () {
+        // const metaGrid = Array(TODO)
+
+        this.printMetaGrid(metaGrid);
+    }
+
+    // LATER Also print the phonemic form of the id from covonym.js
+
     static test () {
     }
 
@@ -360,6 +298,7 @@ class Navatar {
 }
 
 Navatar.DEFAULT_WIDTH = 9;
+// Favorite widths: 19 25
 // NOTE widths over 43 are breaking the gridMax() calc because they exceed Number.MAX_VALUE
 // Navatar.BLANKGRID_RES = 3;
 Navatar.SYMBOLS = ['  ', '██'];
