@@ -4,23 +4,44 @@
 const Util = require('../util/util.js');
 
 class Navatar {
+    // id is a hexadecimal string
+    // width is a number
     constructor (id, width) {
         this.width = width || Navatar.DEFAULT_WIDTH;
 
-        if (! Util.exists(id)) {
-            id = 1;
-            let step = 1e16;
+        if (! Util.exists(id) || ! id.length >= 0) {
+            // BigInt literal.
+            // id = 1n;
+            // nvm
 
-            while (id * 2 <= this.gridMax() && id * step < Number.MAX_VALUE) {
-                Util.logDebug({
-                    context: 'idgen while loop',
-                    id,
-                    idMod: id % step,
-                });
+            // String representation of id number
+            // 2.77... is log(16)
+            const hexLength = Math.ceil(
+                Math.log(this.gridMax()) / 2.772588722239781
+            );
+            id = Array(hexLength)
+                .fill()
+                .map(
+                    entry => Util.randomOf('01234567890abcdef')
+                )
+                .join('');
 
-                id += Math.random();
-                id *= step;
-            }
+            Util.logDebug({
+                hexLength,
+            })
+
+            // let step = 1e16;
+
+            // while (id * 2 <= this.gridMax() && id * step < Number.MAX_VALUE) {
+            //     Util.logDebug({
+            //         context: 'idgen while loop',
+            //         id,
+            //         idMod: id % step,
+            //     });
+
+            //     id += Math.random();
+            //     id *= step;
+            // }
         }
 
         this.id = id;
@@ -47,16 +68,19 @@ class Navatar {
     rawHalfGrid () {
         const halfGrid = [...Array(this.width)];
 
-        this.seed = Math.ceil(this.id) % this.gridMax();
-        let pixelNumber = 0;
-        let shrinkingSeed = this.seed;
+        // this.seed = Math.ceil(this.id) % this.gridMax();
+        // let pixelNumber = 0;
+        // let shrinkingSeed = this.seed;
 
-        Util.logDebug({
-            context: 'near top of rawHalfGrid()',
-            halfGridLength: halfGrid.length,
-            seed: this.seed,
-            modSmall: this.seed % 1e16,
-        });
+        let idIndex = this.id.length - 1;
+        let currentDigit = Number('0x' + this.id[idIndex]);
+
+        // Util.logDebug({
+            // context: 'near top of rawHalfGrid()',
+            // halfGridLength: halfGrid.length,
+            // seed: this.seed,
+            // modSmall: this.seed % 1e16,
+        // });
 
         for (let x = 0; x < this.columns(); x++) {
             for (let y = 0; y < halfGrid.length; y++) {
@@ -65,23 +89,39 @@ class Navatar {
                 }
 
                 // Note that y describes which row, x describes which column.
-                halfGrid[y][x] = shrinkingSeed % 2;
+                halfGrid[y][x] = currentDigit % 2;
 
                 const summary = {
                     x,
                     y,
-                    pixelNumber,
+                    currentDigit,
+                    idIndex,
+                    digitStr: this.id[idIndex],
+                    // pixelNumber,
                     color: halfGrid[y][x],
                     // power: Math.pow(2, pixelNumber),
                     // shrunk: Math.floor(
                     //     this.seed / Math.pow(2, pixelNumber)
                     // ),
-                    shrinkingSeed,
+                    // shrinkingSeed,
                 };
                 console.log(`rawHalfGrid(): ${JSON.stringify(summary)}`);
 
-                pixelNumber++;
-                shrinkingSeed >>= 1;
+                // pixelNumber++;
+                // shrinkingSeed >>= 1;
+
+                if (currentDigit <= 1) {
+                    idIndex -= 1;
+
+                    if (idIndex < 0) {
+                        idIndex = this.id.length - 1;
+                    }
+
+                    currentDigit = Number('0x' + this.id[idIndex]);
+                }
+                else {
+                    currentDigit >>= 1;
+                }
             }
         }
 
