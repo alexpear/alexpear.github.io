@@ -7,7 +7,7 @@ class Navatar {
     constructor (id, width) {
         this.id = Util.default(
             id,
-            Math.random() * 1e27
+            Math.random() * 1e16
         );
 
         this.width = width || Navatar.DEFAULT_WIDTH;
