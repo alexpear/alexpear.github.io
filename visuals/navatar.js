@@ -7,11 +7,27 @@ class Navatar {
     constructor (id, width) {
         this.width = width || Navatar.DEFAULT_WIDTH;
 
-        this.id = Util.default(
-            id,
-            // Math.random() * 1e16
-            Math.random() * this.gridMax()
-        );
+        if (! Util.exists(id)) {
+            id = 1;
+            let multiplier = 1;
+            let step = 1e16;
+
+            while (id * 10 < this.gridMax() && id * step < Number.MAX_VALUE) {
+                id += multiplier * Math.random();
+
+                multiplier *= step;
+
+                // TODO rather, *= step, then += random
+            }
+        }
+
+        this.id = id;
+
+        // this.id = Util.default(
+        //     id,
+        //     // Math.random() * 1e16
+        //     Math.random() * this.gridMax()
+        // );
 
         // TODO i wish random ids were more evenly spread across the range [0, gridMax]
         // Perhaps 'concatenate' multiple calls to .random() in a loop?
@@ -21,7 +37,9 @@ class Navatar {
 
         Util.logDebug({
             context: 'near top of Navatar() constructor',
+            width,
             thisWidth: this.width,
+            id,
             thisId: this.id,
             gridMax: this.gridMax(),
         });
