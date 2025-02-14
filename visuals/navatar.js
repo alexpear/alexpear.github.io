@@ -49,6 +49,7 @@ class Navatar {
 
         this.seed = Math.ceil(this.id) % this.gridMax();
         let pixelNumber = 0;
+        let shrinkingSeed = this.seed;
 
         Util.logDebug({
             context: 'near top of rawHalfGrid()',
@@ -64,21 +65,23 @@ class Navatar {
                 }
 
                 // Note that y describes which row, x describes which column.
-                halfGrid[y][x] = this.color(pixelNumber);
+                halfGrid[y][x] = shrinkingSeed % 2;
 
                 const summary = {
                     x,
                     y,
                     pixelNumber,
                     color: halfGrid[y][x],
-                    power: Math.pow(2, pixelNumber),
-                    shrunk: Math.floor(
-                        this.seed / Math.pow(2, pixelNumber)
-                    ),
+                    // power: Math.pow(2, pixelNumber),
+                    // shrunk: Math.floor(
+                    //     this.seed / Math.pow(2, pixelNumber)
+                    // ),
+                    shrinkingSeed,
                 };
                 console.log(`rawHalfGrid(): ${JSON.stringify(summary)}`);
 
                 pixelNumber++;
+                shrinkingSeed >>= 1;
             }
         }
 
