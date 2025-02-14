@@ -65,11 +65,72 @@ class Navatar {
 
         // this.colors = []; // LATER support base-3, base-4.
 
+        // Init fields for nextBit()
+        this.idIndex = this.id.length - 1;
+        this.currentDigit = Number('0x' + this.id[this.idIndex]);
+        this.bitsProcessed = 0;
+
+        this.generateAccessGrid();
+
+        // debug
+        this.printGrid(this.accessGrid);
+
+        Util.logDebug(this.accessGrid);
+
         this.halfGrid = this.rawHalfGrid();
 
         // LATER debug log at this time.
 
         this.polish();
+    }
+
+    generateAccessGrid () {
+        const accessGridWidth = 3;
+        const accessGridHeight = 5;
+
+        this.accessGrid = Array(accessGridHeight)
+            .fill()
+            .map(
+                row => Array(accessGridWidth)
+                    .fill()
+                    .map(pixel => 0)
+            );
+
+        Util.logDebug(this.accessGrid);
+
+        for (let x = 0; x < accessGridWidth; x++) {
+            for (let y = 0; y < accessGridHeight; y++) {
+                this.accessGrid[y][x] = this.nextBit();
+
+                console.log(`accessGrid (${x},${y}) is ${this.accessGrid[y][x]}`);
+            }
+
+            Util.logDebug(this.accessGrid);
+        }
+
+        // TODO case where there are very many zeros in here
+    }
+
+    nextBit () {
+        const output = this.currentDigit % 2;
+
+        if (this.bitsProcessed >= 3) {
+            this.idIndex -= 1;
+
+            if (this.idIndex < 0) {
+                this.idIndex = this.id.length - 1;
+            }
+
+            this.currentDigit = Number('0x' + this.id[this.idIndex]);
+
+            this.bitsProcessed = 0;
+        }
+        else {
+            this.bitsProcessed++;
+            this.currentDigit >>= 1;
+        }
+
+        return output;
     }
 
     // Returns the left half, including the middle column.
@@ -80,32 +141,35 @@ class Navatar {
         // let pixelNumber = 0;
         // let shrinkingSeed = this.seed;
 
-        let idIndex = this.id.length - 1;
-        let currentDigit = Number('0x' + this.id[idIndex]);
-        let bitsProcessed = 0;
+        // let idIndex = this.id.length - 1;
 
-        // Util.logDebug({
-            // context: 'near top of rawHalfGrid()',
-            // halfGridLength: halfGrid.length,
+        Util.logDebug({
+            context: 'near top of rawHalfGrid()',
+            halfGridLength: halfGrid.length,
             // seed: this.seed,
             // modSmall: this.seed % 1e16,
-        // });
+        });
 
         for (let x = 0; x < this.columns(); x++) {
             for (let y = 0; y < halfGrid.length; y++) {
+
                 if (x === 0 && ! halfGrid[y]) {
                     halfGrid[y] = [];
                 }
 
+                // console.log(`halfGrid (${x},${y})`);
+
                 // Note that y describes which row, x describes which column.
-                halfGrid[y][x] = currentDigit % 2;
+                halfGrid[y][x] = this.canAccess(x, y) ?
+                    this.nextBit() :
+                    0;
 
                 const summary = {
                     x,
                     y,
-                    currentDigit,
-                    idIndex,
-                    digitStr: this.id[idIndex],
+                    // currentDigit,
+                    idIndex: this.idIndex,
+                    digitStr: this.id[this.idIndex],
                     // pixelNumber,
                     color: halfGrid[y][x],
                     // power: Math.pow(2, pixelNumber),
@@ -114,26 +178,10 @@ class Navatar {
                     // ),
                     // shrinkingSeed,
                 };
-                // console.log(`rawHalfGrid(): ${JSON.stringify(summary)}`);
+                console.log(`rawHalfGrid(): ${JSON.stringify(summary)}`);
 
                 // pixelNumber++;
                 // shrinkingSeed >>= 1;
-
-                if (bitsProcessed >= 3) {
-                    idIndex -= 1;
-
-                    if (idIndex < 0) {
-                        idIndex = this.id.length - 1;
-                    }
-
-                    currentDigit = Number('0x' + this.id[idIndex]);
-
-                    bitsProcessed = 0;
-                }
-                else {
-                    bitsProcessed++;
-                    currentDigit >>= 1;
-                }
             }
         }
 
@@ -148,6 +196,27 @@ class Navatar {
     // Number of columns in the halfGrid internal representation.
     columns () {
         return Math.ceil(this.width / 2);
+    }
+
+    canAccess (x, y) {
+        x = this.normalize(x);
+
+        const accessSquareWidth = Math.ceil(this.width / this.accessGrid.length);
+
+        const accessX = Math.floor(x / accessSquareWidth);
+        const accessY = Math.floor(y / accessSquareWidth);
+
+        return this.accessGrid[accessY][accessX] > 0;
+
+        // TODO this is interpreting all accessgrids as vertically homogenous.
+    }
+
+    normalize (x) {
+        if (x >= this.columns()) {
+            return this.width - 1 - x;
+        }
+
+        return x;
     }
 
     // Returns a binary digit of this.id.
@@ -227,14 +296,13 @@ class Navatar {
         indent = Util.default(indent, 2);
         const indentStr = ' '.repeat(indent);
 
-        const SYMBOLS = ['  ', '██'];
         let out = '';
 
         for (let y = 0; y < this.halfGrid.length; y++) {
             out += indentStr;
 
             for (let x = 0; x < this.halfGrid.length; x++) {
-                const pixelString = SYMBOLS[
+                const pixelString = Navatar.SYMBOLS[
                     this.colorAt(x, y)
                 ];
 
@@ -249,6 +317,24 @@ class Navatar {
         return out;
     }
 
+    printGrid (grid) {
+        let out = '\n';
+
+        for (let y = 0; y < grid.length; y++) {
+            for (let x = 0; x < grid[0].length; x++) {
+                out += Navatar.SYMBOLS[
+                    grid[y][x]
+                ] || '??';
+
+                console.log(`grid[${y}][${x}] is ${grid[y][x]}`);
+            }
+
+            out += `${y} \n`;
+        }
+
+        console.log(out);
+    }
+
     colorAt (x, y) {
         // Handle surpassing edges of grid.
         if (
@@ -260,12 +346,7 @@ class Navatar {
             return 0;
         }
 
-        // Symmetry
-        if (x >= this.columns()) {
-            x = this.width - 1 - x;
-        }
-
-        return this.halfGrid[y][x];
+        return this.halfGrid[y][this.normalize(x)];
     }
 
     static test () {
@@ -280,6 +361,8 @@ class Navatar {
 
 Navatar.DEFAULT_WIDTH = 9;
 // NOTE widths over 43 are breaking the gridMax() calc because they exceed Number.MAX_VALUE
+// Navatar.BLANKGRID_RES = 3;
+Navatar.SYMBOLS = ['  ', '██'];
 
 // Run
 Navatar.run();
