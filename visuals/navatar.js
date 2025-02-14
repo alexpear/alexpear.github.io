@@ -8,7 +8,7 @@ class Navatar {
             Math.random() * 1e27;
 
         this.width = width || Navatar.DEFAULT_WIDTH;
-        // this.color = // LATER
+        // this.colors = []; // LATER
         this.halfGrid = this.rawHalfGrid();
         this.polish();
     }
@@ -16,7 +16,6 @@ class Navatar {
     // Returns the left half, including the middle column.
     rawHalfGrid () {
         const halfGrid = [...Array(this.width)];
-        const middleColumn = this.middleColumn();
         const columns = Math.ceil(this.width / 2);
 
         // Maximum number that could be encoded by this grid.
@@ -24,14 +23,16 @@ class Navatar {
         const seed = Math.ceil(this.id) % gridMax;
 
         for (let y = 0; y < halfGrid.length; y++) {
-            for (let x = 0; x <= middleColumn; x++) {
-
+            for (let x = 0; x < columns; x++) {
+                halfGrid[y][x] = this.color(pixelNumber);
             }
         }
+
+        return halfGrid;
     }
 
-    middleColumn () {
-        return Math.floor(this.width / 2);
+    color (pixelNumber) {
+
     }
 
     polish () {
