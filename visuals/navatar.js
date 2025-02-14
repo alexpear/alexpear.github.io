@@ -19,6 +19,13 @@ class Navatar {
             const hexLength = Math.ceil(
                 Math.log(this.gridMax()) / 2.772588722239781
             );
+
+            console.log(JSON.stringify({
+                gridMax: this.gridMax(),
+                logGridMax: Math.log(this.gridMax()),
+                hexLength,
+            }));
+
             id = Array(hexLength)
                 .fill()
                 .map(
@@ -26,9 +33,10 @@ class Navatar {
                 )
                 .join('');
 
-            Util.logDebug({
-                hexLength,
-            })
+            console.log(JSON.stringify({
+                // hexLength,
+                id,
+            }));
 
             // let step = 1e16;
 
@@ -46,14 +54,14 @@ class Navatar {
 
         this.id = id;
 
-        Util.logDebug({
-            context: 'near top of Navatar() constructor',
-            width,
-            thisWidth: this.width,
-            id,
-            thisId: this.id,
-            gridMax: this.gridMax(),
-        });
+        // Util.logDebug({
+        //     context: 'near top of Navatar() constructor',
+        //     width,
+        //     thisWidth: this.width,
+        //     id,
+        //     thisId: this.id,
+        //     gridMax: this.gridMax(),
+        // });
 
         // this.colors = []; // LATER support base-3, base-4.
 
@@ -74,6 +82,7 @@ class Navatar {
 
         let idIndex = this.id.length - 1;
         let currentDigit = Number('0x' + this.id[idIndex]);
+        let bitsProcessed = 0;
 
         // Util.logDebug({
             // context: 'near top of rawHalfGrid()',
@@ -105,12 +114,12 @@ class Navatar {
                     // ),
                     // shrinkingSeed,
                 };
-                console.log(`rawHalfGrid(): ${JSON.stringify(summary)}`);
+                // console.log(`rawHalfGrid(): ${JSON.stringify(summary)}`);
 
                 // pixelNumber++;
                 // shrinkingSeed >>= 1;
 
-                if (currentDigit <= 1) {
+                if (bitsProcessed >= 3) {
                     idIndex -= 1;
 
                     if (idIndex < 0) {
@@ -118,8 +127,11 @@ class Navatar {
                     }
 
                     currentDigit = Number('0x' + this.id[idIndex]);
+
+                    bitsProcessed = 0;
                 }
                 else {
+                    bitsProcessed++;
                     currentDigit >>= 1;
                 }
             }
@@ -260,13 +272,14 @@ class Navatar {
     }
 
     static run () {
-        const navatar = new Navatar(undefined, 11);
+        const navatar = new Navatar(undefined, 17);
 
         console.log(`\n${navatar.toString()}\n`);
     }
 }
 
 Navatar.DEFAULT_WIDTH = 9;
+// NOTE widths over 43 are breaking the gridMax() calc because they exceed Number.MAX_VALUE
 
 // Run
 Navatar.run();
