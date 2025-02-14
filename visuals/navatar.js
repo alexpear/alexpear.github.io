@@ -9,31 +9,21 @@ class Navatar {
 
         if (! Util.exists(id)) {
             id = 1;
-            let multiplier = 1;
             let step = 1e16;
 
-            while (id * 10 < this.gridMax() && id * step < Number.MAX_VALUE) {
-                id += multiplier * Math.random();
+            while (id * 2 <= this.gridMax() && id * step < Number.MAX_VALUE) {
+                Util.logDebug({
+                    context: 'idgen while loop',
+                    id,
+                    idMod: id % step,
+                });
 
-                multiplier *= step;
-
-                // TODO rather, *= step, then += random
+                id += Math.random();
+                id *= step;
             }
         }
 
         this.id = id;
-
-        // this.id = Util.default(
-        //     id,
-        //     // Math.random() * 1e16
-        //     Math.random() * this.gridMax()
-        // );
-
-        // TODO i wish random ids were more evenly spread across the range [0, gridMax]
-        // Perhaps 'concatenate' multiple calls to .random() in a loop?
-        // while id is far below gridMax() and Number.MAX_VALUE:
-        // multiplier *= 1e16
-        // id += multiplier * Math.random()
 
         Util.logDebug({
             context: 'near top of Navatar() constructor',
@@ -48,7 +38,7 @@ class Navatar {
 
         this.halfGrid = this.rawHalfGrid();
 
-        // TODO debug log at this time.
+        // LATER debug log at this time.
 
         this.polish();
     }
@@ -57,8 +47,15 @@ class Navatar {
     rawHalfGrid () {
         const halfGrid = [...Array(this.width)];
 
-        const seed = Math.ceil(this.id) % this.gridMax();
+        this.seed = Math.ceil(this.id) % this.gridMax();
         let pixelNumber = 0;
+
+        Util.logDebug({
+            context: 'near top of rawHalfGrid()',
+            halfGridLength: halfGrid.length,
+            seed: this.seed,
+            modSmall: this.seed % 1e16,
+        });
 
         for (let x = 0; x < this.columns(); x++) {
             for (let y = 0; y < halfGrid.length; y++) {
@@ -68,6 +65,19 @@ class Navatar {
 
                 // Note that y describes which row, x describes which column.
                 halfGrid[y][x] = this.color(pixelNumber);
+
+                const summary = {
+                    x,
+                    y,
+                    pixelNumber,
+                    color: halfGrid[y][x],
+                    power: Math.pow(2, pixelNumber),
+                    shrunk: Math.floor(
+                        this.seed / Math.pow(2, pixelNumber)
+                    ),
+                };
+                console.log(`rawHalfGrid(): ${JSON.stringify(summary)}`);
+
                 pixelNumber++;
             }
         }
@@ -88,8 +98,10 @@ class Navatar {
     // Returns a binary digit of this.id.
     color (pixelNumber) {
         return Math.floor(
-            this.id / Math.pow(2, pixelNumber)
+            this.seed / Math.pow(2, pixelNumber)
         ) % 2;
+
+        // TODO bug, mantissa issue? This division expression ends in several zeroes sometimes. Oddly, more severe at width 11 & 15 than at width 13. Fine at 9.
     }
 
     polish () {
@@ -171,6 +183,8 @@ class Navatar {
                     this.colorAt(x, y)
                 ];
 
+                // console.log(`the symbol at (${x}, ${y}) is '${pixelString}'.`);
+
                 out += pixelString || '??';
             }
 
@@ -203,7 +217,7 @@ class Navatar {
     }
 
     static run () {
-        const navatar = new Navatar(undefined, 19);
+        const navatar = new Navatar(undefined, 11);
 
         console.log(`\n${navatar.toString()}\n`);
     }
