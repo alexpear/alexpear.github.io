@@ -29,10 +29,10 @@ class Navatar {
                 )
                 .join('');
 
-            console.log(JSON.stringify({
-                // hexLength,
-                id,
-            }));
+            // console.log(JSON.stringify({
+            //     // hexLength,
+            //     id,
+            // }));
         }
 
         this.id = id;
@@ -74,7 +74,8 @@ class Navatar {
             }
         }
 
-        // LATER case where there are very many zeros in here
+        // TODO if this.width is low, fill accessGrid with 1s (ie turn off this feature).
+        // LATER case where there are very many zeros in here - altho doesnt seem to happen much in testing.
     }
 
     nextBit () {
@@ -280,9 +281,48 @@ class Navatar {
     }
 
     demoMany () {
-        // const metaGrid = Array(TODO)
+        const metaGrid = Array(Math.floor(
+                process.stdout.rows / (this.width + 1)
+            ))
+            .fill()
+            .map(
+                row => Array(Math.floor(
+                        process.stdout.columns / (this.width * 2 + 1)
+                    ))
+                    .fill()
+                    .map(cell => new Navatar(undefined, this.width))
+            );
 
         this.printMetaGrid(metaGrid);
+    }
+
+    printMetaGrid (metaGrid) {
+        let horizLine = '+';
+
+        for (let metax = 0; metax < metaGrid[0].length; metax++) {
+            horizLine += '-'.repeat(metaGrid[0][0].width * 2) + '+';
+        }
+
+        console.log(horizLine);
+
+        for (let metay = 0; metay < metaGrid.length; metay++) {
+
+            for (let lineInRow = 0; lineInRow < metaGrid[0][0].width; lineInRow++) {
+                let strip = '|';
+
+                for (let metax = 0; metax < metaGrid[0].length; metax++) {
+                    for (let x = 0; x < metaGrid[0][0].width; x++) {
+                        strip += Navatar.SYMBOLS[metaGrid[metay][metax].colorAt(x, lineInRow)];
+                    }
+
+                    strip += '|';
+                }
+
+                console.log(strip);
+            }
+
+            console.log(horizLine);
+        }
     }
 
     // LATER Also print the phonemic form of the id from covonym.js
@@ -291,14 +331,16 @@ class Navatar {
     }
 
     static run () {
-        const navatar = new Navatar(undefined, 17);
+        const navatar = new Navatar(undefined, 15);
 
         console.log(`\n${navatar.toString()}\n`);
+
+        // navatar.demoMany();
     }
 }
 
 Navatar.DEFAULT_WIDTH = 9;
-// Favorite widths: 19 25
+// Favorite widths: 5 7 15 17 19 25
 // NOTE widths over 43 are breaking the gridMax() calc because they exceed Number.MAX_VALUE
 // Navatar.BLANKGRID_RES = 3;
 Navatar.SYMBOLS = ['  ', '██'];
