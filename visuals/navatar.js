@@ -5,12 +5,26 @@ const Util = require('../util/util.js');
 
 class Navatar {
     constructor (id, width) {
+        this.width = width || Navatar.DEFAULT_WIDTH;
+
         this.id = Util.default(
             id,
-            Math.random() * 1e16
+            // Math.random() * 1e16
+            Math.random() * this.gridMax()
         );
 
-        this.width = width || Navatar.DEFAULT_WIDTH;
+        // TODO i wish random ids were more evenly spread across the range [0, gridMax]
+        // Perhaps 'concatenate' multiple calls to .random() in a loop?
+        // while id is far below gridMax() and Number.MAX_VALUE:
+        // multiplier *= 1e16
+        // id += multiplier * Math.random()
+
+        Util.logDebug({
+            context: 'near top of Navatar() constructor',
+            thisWidth: this.width,
+            thisId: this.id,
+            gridMax: this.gridMax(),
+        });
 
         // this.colors = []; // LATER support base-3, base-4.
 
@@ -25,9 +39,7 @@ class Navatar {
     rawHalfGrid () {
         const halfGrid = [...Array(this.width)];
 
-        // Maximum number that could be encoded by this grid.
-        const gridMax = Math.pow(2, this.width * this.columns());
-        const seed = Math.ceil(this.id) % gridMax;
+        const seed = Math.ceil(this.id) % this.gridMax();
         let pixelNumber = 0;
 
         for (let x = 0; x < this.columns(); x++) {
@@ -45,6 +57,12 @@ class Navatar {
         return halfGrid;
     }
 
+    // Maximum number that could be encoded by this grid.
+    gridMax () {
+        return Math.pow(2, this.width * this.columns());
+    }
+
+    // Number of columns in the halfGrid internal representation.
     columns () {
         return Math.ceil(this.width / 2);
     }
@@ -124,16 +142,18 @@ class Navatar {
         indent = Util.default(indent, 2);
         const indentStr = ' '.repeat(indent);
 
-        const SYMBOLS = ['  ', '██', '??'];
+        const SYMBOLS = ['  ', '██'];
         let out = '';
 
         for (let y = 0; y < this.halfGrid.length; y++) {
             out += indentStr;
 
             for (let x = 0; x < this.halfGrid.length; x++) {
-                out += SYMBOLS[
+                const pixelString = SYMBOLS[
                     this.colorAt(x, y)
                 ];
+
+                out += pixelString || '??';
             }
 
             out += '\n';
@@ -153,6 +173,7 @@ class Navatar {
             return 0;
         }
 
+        // Symmetry
         if (x >= this.columns()) {
             x = this.width - 1 - x;
         }
@@ -164,7 +185,7 @@ class Navatar {
     }
 
     static run () {
-        const navatar = new Navatar(undefined, 9);
+        const navatar = new Navatar(undefined, 19);
 
         console.log(`\n${navatar.toString()}\n`);
     }
