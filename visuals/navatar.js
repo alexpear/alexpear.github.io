@@ -9,18 +9,18 @@ class Navatar {
     constructor (id, width) {
         this.width = width || Navatar.DEFAULT_WIDTH;
 
-        if (! Util.exists(id) || ! id.length >= 0) {
+        // console.log(JSON.stringify({
+        //     id,
+        //     exists: Util.exists(id),
+        //     longerThanZero: id.length >= 0,
+        // }));
+
+        if (! Util.exists(id) || ! (id.length >= 0)) {
             // String representation of id number
             // 2.77... is log(16)
             const hexLength = Math.ceil(
                 Math.log(this.gridMax()) / 2.772588722239781
             );
-
-            // console.log(JSON.stringify({
-            //     gridMax: this.gridMax(),
-            //     logGridMax: Math.log(this.gridMax()),
-            //     hexLength,
-            // }));
 
             id = Array(hexLength)
                 .fill()
@@ -30,8 +30,9 @@ class Navatar {
                 .join('');
 
             // console.log(JSON.stringify({
-            //     // hexLength,
-            //     id,
+                // id,
+                // exists: Util.exists(id),
+                // longerThanZero: id.length >= 0,
             // }));
         }
 
@@ -325,13 +326,21 @@ class Navatar {
         }
     }
 
+    static unixTime2Hex () {
+        return Math.floor(Date.now() / 1000)
+            .toString(16);
+    }
+
     // LATER Also print the phonemic form of the id from covonym.js
 
     static test () {
     }
 
     static run () {
-        const navatar = new Navatar(undefined, 15);
+        const unixTime = Navatar.unixTime2Hex();
+        // console.log(unixTime);
+
+        const navatar = new Navatar(unixTime, 15);
 
         console.log(`\n${navatar.toString()}\n`);
 
