@@ -9,6 +9,8 @@ class Navatar {
     constructor (id, width) {
         this.width = width || Navatar.DEFAULT_WIDTH;
 
+        // LATER could adapt the width to suit the length of id.
+
         // console.log(JSON.stringify({
         //     id,
         //     exists: Util.exists(id),
