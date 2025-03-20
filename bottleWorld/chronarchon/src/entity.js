@@ -12,6 +12,7 @@ class Entity {
 
         this.type = type;
         this.name = Covonym.random();
+        this.id = Util.uuid();
     }
 
     toString () {

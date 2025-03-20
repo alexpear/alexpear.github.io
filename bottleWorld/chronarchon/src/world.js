@@ -4,12 +4,13 @@ class World {
     constructor () {
         this.events = [];
         this.t = 0;
+        this.id = Util.uuid();
     }
 
     static toYml () {
         return Yaml.dump(
             this,
-            // LATER, rather than 'this', maybe just a subset of relevant fields.
+            // LATER, rather than 'this', maybe just a subset of relevant fields. Also write objs as ids.
             {
                 sortKeys: true,
                 indent: 4,
