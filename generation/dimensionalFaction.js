@@ -114,6 +114,11 @@ class Faction {
     }
 }
 
+// LATER - or maybe what i want is 2 factions, both decent at Armies, but each superior in 1 dimension.
+// That dimension can also be Armies - means their armies are extra big/good.
+// So i'm essentially just selecting 2 dimensions & printing it differently.
+// Exact ties are fine, but the word superior gets more wonky.
+
 
 module.exports = Scenario;
 
