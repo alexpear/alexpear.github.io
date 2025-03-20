@@ -2,7 +2,8 @@
 
 class World {
     constructor () {
-
+        this.events = [];
+        this.t = 0;
     }
 
     static toYml () {
@@ -19,9 +20,18 @@ class World {
     static fromFile (path) {
         const worldObj = Yaml.load(
             require(path),
-            { json: true } // json: true means duplicate keys in a mapping will override values rather than throwing an error.
+            { json: true } 
+            // BTW: json: true means duplicate keys in a mapping will override values rather than throwing an error.
         );
 
         return Object.assign(new World(), worldObj);
+    }
+
+    static example () {
+        const world = new World();
+
+        
+
+        return world;
     }
 }
