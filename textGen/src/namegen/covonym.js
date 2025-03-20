@@ -1,6 +1,6 @@
 // Hashing func that maps numbers to info-dense names 1:1, using alternating consonoid & voweloid phonemes.
 
-const Util = require('../util/util.js');
+const Util = require('../../../util/util.js');
 
 class Covonym {
     static consonoids () {
@@ -97,6 +97,12 @@ class Covonym {
         }
 
         return Util.capitalized(name.toLowerCase());
+    }
+
+    static random (maxNum = 1_000_000) {
+        return Covonym.fromNumber(
+            Util.randomUpTo(maxNum)
+        );
     }
 
     // -31.995524679343852, 115.51790132997857

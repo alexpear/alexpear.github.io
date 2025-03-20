@@ -1,6 +1,8 @@
 // Represent a number as a cool symmetrical grid image.
 // Many to 1 mapping, because visually noisy features are polished out.
+// In unixtime mode, this deterministically represents each second of history with a recognizable image & unique name.
 
+const Covonym = require('../textGen/src/namegen/covonym.js');
 const Util = require('../util/util.js');
 
 class Navatar {
@@ -328,30 +330,41 @@ class Navatar {
         }
     }
 
-    static unixTime2Hex () {
-        return Math.floor(Date.now() / 1000)
-            .toString(16);
+    static unixTime () {
+        return Math.floor(Date.now() / 1000);
     }
 
-    // LATER Also print the phonemic form of the id from covonym.js
+    // static unixTime2Hex () {
+    //     return Navatar.unixTime()
+    //         .toString(16);
+    // }
 
-    static test () {
-    }
+    // static test () {
+    // }
 
     static run () {
-        const unixTime = Navatar.unixTime2Hex();
+        const unixTime = Navatar.unixTime();
         // console.log(unixTime);
 
-        const navatar = new Navatar(unixTime, 15);
+        const navatar = new Navatar(
+            unixTime.toString(16),
+            // 15,
+        );
 
         console.log(`\n${navatar.toString()}\n`);
+        // console.log();
+
+        const spacer = ' '.repeat(Navatar.DEFAULT_WIDTH - 4);
+
+        console.log(spacer + Covonym.fromNumber(unixTime));
+        console.log();
 
         // navatar.demoMany();
     }
 }
 
-Navatar.DEFAULT_WIDTH = 9;
-// Favorite widths: 5 7 15 17 19 25
+Navatar.DEFAULT_WIDTH = 15;
+// Favorite widths: 5 7 9 15 17 19 25
 // NOTE widths over 43 are breaking the gridMax() calc because they exceed Number.MAX_VALUE
 // Navatar.BLANKGRID_RES = 3;
 Navatar.SYMBOLS = ['  ', '██'];
