@@ -22,10 +22,9 @@ class Face {
         this.canvas.fillRect(0, 0, this.canvas.canvas.width, this.canvas.canvas.height);
 
         this.canvas.fillStyle = 'black';
-        // this.canvas.beginPath();
-        this.canvas.fillRect(50, 50, 50, 50);   //100, 300, 200, 200);
-        // this.canvas.fill();
-        // alert('rect drawn');
+        
+        this.canvas.fillRect(50, 50, 50, 50);
+        // TODO this test square is vertically stretched for some reason.
     }
 
     renderEyes () {
