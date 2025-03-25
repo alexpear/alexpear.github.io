@@ -11,12 +11,16 @@ class Entity {
         }
 
         this.type = type;
+        // this.template
+        this.level = 1;
         this.name = Covonym.random();
         this.id = Util.uuid();
     }
 
     toString () {
+        const typeString = Util.capitalize(this.type);
 
+        return `${this.name} (Level ${this.level} ${typeString})`;
     }
 
     draw () {
@@ -24,7 +28,7 @@ class Entity {
     }
 
     static example () {
-        const entity = new Entity();
+        const entity = new Entity(EntityType.CREATURE);
 
 
 
