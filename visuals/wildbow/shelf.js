@@ -206,7 +206,9 @@ ${booksHTML}
 
             { spine: '0: HACK', words: 4 * 6000, serial: 'Seek' },
             { spine: '1: CONTROL', words: 8 * 6000, serial: 'Seek' },
-            { spine: '2: ?', words: 8 * 6000, serial: 'Seek' },
+            { spine: '2: SEND', words: 7 * 6000, serial: 'Seek' },
+            { spine: '3: MUTE', words: 8 * 6000, serial: 'Seek' },
+            { spine: '4: ?', words: 8 * 6000, serial: 'Seek' },
         ];
     }
 
