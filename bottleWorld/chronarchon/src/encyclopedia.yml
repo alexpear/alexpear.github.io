@@ -1,0 +1,23 @@
+fantasy:
+  alignments:
+    radiant: radiant
+    shadow: shadow
+
+  creatures:
+    farmer:
+      tags: animal
+      alignment: radiant
+      combat: 0
+      durability: 10
+      weight: 10
+
+  items:
+    sword:
+      tags: weapon blade
+      combat: 2
+      weight: 2
+      value: 10
+
+  # places:
+
+  # traits:
