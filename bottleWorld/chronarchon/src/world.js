@@ -1,8 +1,25 @@
 // Game state of a bottle world.
 
+const Template = require('./template.js');
+const Util = require('../../../util/util.js');
+
+const Yaml = require('js-yaml');
+
 class World {
-    constructor () {
+    constructor (context = 'fantasy') {
+        this.context = context;
+        Template.CONTEXT = context;
+
         this.events = [];
+
+        // BTW, each Place has its own grid coordinate.
+        this.places = [];
+
+        this.entities = [];
+
+        // For traits that apply to this whole world.
+        this.traits = [];
+
         this.t = 0;
         this.id = Util.uuid();
     }
@@ -36,3 +53,5 @@ class World {
         return world;
     }
 }
+
+World.example();

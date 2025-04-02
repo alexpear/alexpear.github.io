@@ -1,5 +1,6 @@
 
 const EventType = require('./eventType.js');
+const Group = require('./group.js');
 
 class Event {
     constructor () {
@@ -26,7 +27,7 @@ class Event {
 
         event.type = EventType.INTRODUCE;
         event.entities = [
-            Entity.example()
+            Group.example()
         ];
 
         return event;
