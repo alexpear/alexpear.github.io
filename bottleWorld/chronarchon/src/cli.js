@@ -1,6 +1,8 @@
 // Command-line utility for testing the Chronarchon bottle world game backend.
 // Execute this node script to interact with the game state.
 
+// LATER require World
+
 const Yaml = require('js-yaml');
 const FS = require('fs');
 

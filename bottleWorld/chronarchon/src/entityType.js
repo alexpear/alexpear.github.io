@@ -1,5 +1,5 @@
 module.exports = {
-    CREATURE: 'CREATURE',
+    // CREATURE: 'CREATURE', // Model individuals as Groups of .quantity 1
     GROUP: 'GROUP',
     ITEM: 'ITEM',
     PLACE: 'PLACE',
