@@ -264,6 +264,25 @@ class Util {
         return winner;
     }
 
+    static median (array) {
+        array = Util.array(array);
+        if (array.length === 0) { return 0; }
+        array = Util.arrayCopy(array);
+        array.sort();
+
+        const midpoint = Math.floor(array.length / 2);
+
+        if (array.length % 2 === 0) {
+            return Util.mean([
+                array[midpoint],
+                array[midpoint + 1],
+            ]);
+        }
+        else {
+            return array[midpoint];
+        }
+    }
+
     // Modifies the array.
     static shuffle (array) {
         for (let i = 0; i <= array.length - 2; i++) {
