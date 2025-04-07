@@ -45,10 +45,15 @@ class World {
         return Object.assign(new World(), worldObj);
     }
 
+    // TODO move this func to cli.js or game.js etc. Motive: Want to call Group.example() without requiring Group in World.js.
     static example () {
         const world = new World();
 
-        
+        for (let i = 0; i < 3; i++) {
+            // world.entities.push(Group.example());
+        }
+
+        // TODO Print these entities somehow
 
         return world;
     }
