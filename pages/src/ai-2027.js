@@ -12,7 +12,7 @@ class Event {
         const year = this.date.toLocaleDateString('en-US', { year: 'numeric' });
         const month = this.date.toLocaleDateString('en-US', { month: 'long' });
         
-        return `${year} ${month} (${this.timerString()}) - ${this.description}`;
+        return `${year} ${month} - ${this.timerString()} - ${this.description}`;
     }
 
     timerString () {

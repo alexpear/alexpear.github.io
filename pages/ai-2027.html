@@ -8,7 +8,11 @@
     body {
       background: #222; 
       color: #FFFFFF; 
-      font-size: 20px;
+      font-size: 18px;
+
+      @media (max-width: 768px) {
+        font-size: 24px;
+      }
     }
 
     body > * {
@@ -54,10 +58,8 @@
 
     a {
       margin: auto;
-      /* padding: 4px 9px 2px 9px; */
-      /* background-color: orange; */
       color: skyblue;
-      /* font-weight: bold; */
+
       text-decoration: none;
     }
   </style>
@@ -73,6 +75,4 @@
   <p>These are the dates of specific events in the speculative story <i><a href="https://ai-2027.com/">AI 2027</a></i>.</p>
 
   <div id="events"></div>
-  <!-- <p>2025 August 15 () - Personal assistant agents released. Not very effective.</p> -->
-
 </body>
