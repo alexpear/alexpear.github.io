@@ -23018,6 +23018,48 @@ module.exports.bindWith = bindWith
 })));
 
 },{}],5:[function(require,module,exports){
+// Pseudobinary numbering system mentioned in Unsong
+
+const TextGen = require('./textGen.js');
+const Util = require('../../util/util.js');
+
+class AngelNumber extends TextGen { 
+    constructor (number) { 
+        super();
+
+        this.number = number;
+    }
+
+    toString () {
+        let output = '';
+        let shrinkingNumber = this.number;
+
+        for(let shifts = 0; shrinkingNumber > 0 && shifts < 26; shifts++) {
+            if (shrinkingNumber % 2 === 1) {
+                output = String.fromCharCode(65 + shifts) + output;
+            }
+        
+            shrinkingNumber >>= 1; // Discard lowest bit by shifting right.
+        }
+
+        return output;
+    }
+
+    static demo () {
+        for (let i = 0; i < 40; i++) {
+            const num = new AngelNumber(i);
+            console.log(`${num.toString()} is ${i}`);
+        }
+    }
+
+    static run () {
+        AngelNumber.demo();
+    }
+}
+
+AngelNumber.run();
+
+},{"../../util/util.js":22,"./textGen.js":19}],6:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -23170,7 +23212,7 @@ module.exports = BionicleName;
 
 BionicleName.run();
 
-},{"../../util/util.js":20,"./textGen.js":17}],6:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19}],7:[function(require,module,exports){
 'use strict';
 
 // Outputs a prompt about the A-Z Agency fictional universe.
@@ -23261,7 +23303,7 @@ module.exports = DivisionPrompt;
 
 DivisionPrompt.run();
 
-},{"../../util/util.js":20,"./textGen.js":17}],7:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19}],8:[function(require,module,exports){
 'use strict';
 
 // Random card similar to the Dominion card game.
@@ -23561,7 +23603,7 @@ module.exports = DominionCard;
 
 DominionCard.run();
 
-},{"./textGen.js":17}],8:[function(require,module,exports){
+},{"./textGen.js":19}],9:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -24228,7 +24270,7 @@ module.exports = ScienceFantasy;
 
 // ScienceFantasy.run();
 
-},{"../../util/util.js":20,"./textGen.js":17}],9:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19}],10:[function(require,module,exports){
 'use strict';
 
 // Colors as RGB hexadecimal codes like #00FF00
@@ -24343,7 +24385,7 @@ module.exports = HexCode;
 
 // HexCode.run();
 
-},{"../../util/util.js":20}],10:[function(require,module,exports){
+},{"../../util/util.js":22}],11:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -24552,7 +24594,7 @@ module.exports = Humanistas;
 
 Humanistas.test();
 
-},{"../../util/util.js":20,"./textGen.js":17}],11:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19}],12:[function(require,module,exports){
 'use strict';
 
 // Returns the equipment of a scifi warrior
@@ -24785,7 +24827,7 @@ module.exports = Loadout;
 
 Loadout.run();
 
-},{"../../util/util.js":20,"./textGen.js":17}],12:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19}],13:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -25017,7 +25059,7 @@ module.exports = ComplicityMassEffect;
 
 ComplicityMassEffect.run();
 
-},{"../../util/util.js":20,"./textGen.js":17}],13:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19}],14:[function(require,module,exports){
 'use strict';
 
 // Misheard words
@@ -25058,7 +25100,7 @@ class Mispronounce extends TextGen {
 
 module.exports = Mispronounce;
 
-},{"../../util/util.js":20,"./textGen.js":17}],14:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19}],15:[function(require,module,exports){
 'use strict';
 
 // Etha is a nickname for Bethany.
@@ -25118,7 +25160,98 @@ demo('personification');
 
 module.exports = Nicknames;
 
-},{"../../util/util.js":20,"./textGen.js":17}],15:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19}],16:[function(require,module,exports){
+'use strict';
+
+// Which letter combinations are rarest in English?
+
+const fs = require('fs');
+const WORDS_PATH = '/usr/share/dict/words';
+const TextGen = require('./textGen.js');
+const Util = require('../../util/util.js');
+
+class Phonemes extends TextGen {
+    constructor () {
+        super();
+
+        this.WORDS = fs.readFileSync(
+            WORDS_PATH,
+            { encoding: 'utf8' }
+        )
+        .split('\n')
+        .filter(
+            // Exclude capitalized words.
+            word => ! /[A-Z]/.test(word[0])
+        );
+
+        // NOTE - Edit these parameters:
+        this.MAX_EXAMPLES = 4;
+
+        this.rareSubstrings(2);
+    }
+
+    rareSubstrings (len) {
+        this.dict = {};
+
+        for (let word of this.WORDS) {
+            for (let i = 0; i <= word.length - len; i++) {
+                const piece = word.slice(i, i + len)
+                    .toUpperCase();
+
+                const examples = this.dict[piece];
+
+                if (examples) {
+                    if (examples.length >= this.MAX_EXAMPLES) {
+                        continue;
+                    }
+                    else {
+                        examples.push(word);
+                    }
+                }
+                else {
+                    this.dict[piece] = [word];
+                }
+            }
+        }
+    }
+
+    output () {
+        const entries = Object.entries(
+            this.dict
+        )
+        .filter(
+            pair => pair[1].length >= 2 &&
+                pair[1].length < this.MAX_EXAMPLES
+        )
+        .sort(
+            (a, b) => {
+                if (a[1].length !== b[1].length) {
+                    return a[1].length - b[1].length
+                }
+
+                return a[0].localeCompare(b[0]);
+            }
+        );
+
+        const summaries = entries.map(
+            pair => `${pair[0]} appears in ${pair[1].join(', ')}`
+        );
+
+        // console.log(this.dict.GRY);
+
+        return summaries.join('\n');
+    }
+
+    static run () {
+        console.log(new Phonemes().output());
+    }
+}
+
+module.exports = Phonemes;
+
+Phonemes.run();
+
+},{"../../util/util.js":22,"./textGen.js":19,"fs":1}],17:[function(require,module,exports){
 'use strict';
 
 const Bionicle = require('./bionicle.js');
@@ -25204,7 +25337,7 @@ module.exports = Presenter;
 
 Presenter.run();
 
-},{"../../util/util.js":20,"./bionicle.js":5,"./dominionCard.js":7,"./dracolich.js":8,"./humanistas.js":10,"./loadout.js":11,"./massEffect.js":12,"./mispronounce.js":13,"./nicknames.js":14,"./wildbowTitles.js":18,"./wizardingName.js":19}],16:[function(require,module,exports){
+},{"../../util/util.js":22,"./bionicle.js":6,"./dominionCard.js":8,"./dracolich.js":9,"./humanistas.js":11,"./loadout.js":12,"./massEffect.js":13,"./mispronounce.js":14,"./nicknames.js":15,"./wildbowTitles.js":20,"./wizardingName.js":21}],18:[function(require,module,exports){
 'use strict';
 
 // Randomly generate students from the Sunlight scifi series.
@@ -25409,7 +25542,7 @@ module.exports = Student;
 
 Student.run();
 
-},{"../../util/util.js":20,"./textGen.js":17}],17:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19}],19:[function(require,module,exports){
 'use strict';
 
 const Util = require('../../util/util.js');
@@ -25475,7 +25608,7 @@ module.exports = TextGen;
 // const gen = new BionicleNameGen();
 // const str = gen.output();
 
-},{"../../util/util.js":20}],18:[function(require,module,exports){
+},{"../../util/util.js":22}],20:[function(require,module,exports){
 'use strict';
 
 // Titles of projects of Wildbow or Leder Games
@@ -25576,7 +25709,7 @@ module.exports = Titles;
 
 Titles.run();
 
-},{"../../util/util.js":20,"./textGen.js":17,"fs":1}],19:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19,"fs":1}],21:[function(require,module,exports){
 'use strict';
 
 const TextGen = require('./textGen.js');
@@ -26065,7 +26198,7 @@ module.exports = WizardingName;
 
 // WizardingName.test();
 
-},{"../../util/util.js":20,"./textGen.js":17}],20:[function(require,module,exports){
+},{"../../util/util.js":22,"./textGen.js":19}],22:[function(require,module,exports){
 'use strict';
 
 const _ = require('lodash');
@@ -26219,8 +26352,28 @@ class Util {
         }
     }
 
+    // Safely dig deep into a nested obj.
+    // Example: Util.access(pageObj, 'revision.text.$text');
+    static access (obj, dotSeparatedFields) {
+        if (dotSeparatedFields[0] === '.') {
+            dotSeparatedFields = dotSeparatedFields.slice(1);
+        }
+
+        const fieldNames = dotSeparatedFields.split('.');
+
+        for (let name of fieldNames) {
+            if (! obj) {
+                return undefined;
+            }
+
+            obj = obj[name];
+        }
+
+        return obj;
+    }
+
     static contains (array, fugitive) {
-        return array.indexOf(fugitive) >= 0;
+        return array.includes(fugitive);
     }
 
     static hasOverlap (arrayA, arrayB) {
@@ -26235,6 +26388,16 @@ class Util {
         }
 
         return false;
+    }
+
+    static flatten (arrayOfArrays) {
+        let flat = arrayOfArrays[0];
+
+        for (let i = 1; i < arrayOfArrays.length; i++) {
+            flat = flat.concat(arrayOfArrays[i]);
+        }
+
+        return flat;
     }
 
     // Returns number
@@ -26302,12 +26465,86 @@ class Util {
         return winner;
     }
 
+    static median (array) {
+        array = Util.array(array);
+        if (array.length === 0) { return 0; }
+        array = Util.arrayCopy(array);
+        array.sort();
+
+        const midpoint = Math.floor(array.length / 2);
+
+        if (array.length % 2 === 0) {
+            return Util.mean([
+                array[midpoint],
+                array[midpoint + 1],
+            ]);
+        }
+        else {
+            return array[midpoint];
+        }
+    }
+
+    // Modifies the array.
     static shuffle (array) {
-        array.sort(
-            (a, b) => Math.random()
-        );
+        for (let i = 0; i <= array.length - 2; i++) {
+            const untouchedCount = array.length - 1 - i;
+
+            const swapWith = i + Math.ceil(Math.random() * untouchedCount);
+
+            const temp = array[i];
+            array[i] = array[swapWith];
+            array[swapWith] = temp;
+        }
 
         return array;
+    }
+
+    static testShuffle () {
+        for (let repeat = 0; repeat <= 999; repeat++) {
+            const len = Math.floor(Math.random() * 100);
+
+            const array = [...Array(len)]
+                .map(
+                    x => Math.random()
+                );
+
+            const backup = Array.from(array);
+
+            const shuffled = Util.shuffle(array);
+
+            let good = true;
+
+            if (backup.length !== shuffled.length) {
+                good = false;
+            }
+
+            let identical = true;
+
+            for (let i = 0; i < shuffled.length; i++) {
+                if (backup[i] !== shuffled[i]) {
+                    identical = false;
+                    break;
+                }
+            }
+
+            if (identical && backup.length >= 3) {
+                good = false;
+            }
+
+            if (! good) {
+                Util.error({
+                    repeat,
+                    array,
+                    backup,
+                    shuffled,
+                    identical,
+                    len,
+                    arrayLength: array.length,
+                    backupLength: backup.length,
+                    shuffledLength: shuffled.length,
+                });
+            }
+        }
     }
 
     static constrain (n, minInclusive, maxInclusive) {
@@ -26850,6 +27087,12 @@ class Util {
         });
     }
 
+    // Returns true if we are executing this in a browser.
+    static inBrowser () {
+        return typeof window !== 'undefined' &&
+            typeof window.document !== 'undefined';
+    }
+
     // Returns string with '<'s in it.
     static htmlPassage (content) {
         return Util.asElement(content, 'p');
@@ -27295,6 +27538,11 @@ class Util {
         );
     }
 
+    // alias for the above.
+    static throw (summary) {
+        return Util.error(summary);
+    }
+
     static makeEnum (array, allLower = false) {
         const dict = {};
         for (let val of array) {
@@ -27373,6 +27621,7 @@ class Util {
         Util.testPrettyDistance();
         Util.testCamelCase();
         Util.testPadSides();
+        Util.testShuffle();
         Util.testSigfigRound();
         Util.testRoll1d6();
         Util.logDebug(`Done with unit tests for Util module :)`);
@@ -27411,4 +27660,4 @@ module.exports = Util;
 
 // Util.testAll();
 
-},{"comma-number":2,"lodash":3,"moment":4}]},{},[5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]);
+},{"comma-number":2,"lodash":3,"moment":4}]},{},[5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]);
