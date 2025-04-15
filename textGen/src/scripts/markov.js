@@ -2,15 +2,15 @@
 
 // Markov chain that imitates 2 corpuses.
 
-const TextGen = require('./textGen.js');
-const Util = require('../../util/util.js');
+const TextGen = require('../textGen.js');
+const Util = require('../../../util/util.js');
 
 const FS = require('fs');
 const Readline = require('node:readline');
 
-const CORPUS1 = '../../data/littlewomen.txt';
+const CORPUS1 = '../../../data/littlewomen.txt';
 // const CORPUS1 = '../../data/leviathan.txt';
-const CORPUS2 = '../../data/eclipsephasecore.txt';
+const CORPUS2 = '../../../data/eclipsephasecore.txt';
 
 class Markov extends TextGen {
     static async new () {
