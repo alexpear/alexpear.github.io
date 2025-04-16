@@ -23074,14 +23074,16 @@ class Event {
             new Event('2027-07-15', 'Software released that\'s better than a typical software engineer.'),
             new Event('2027-08-15', 'White House grim mood about cyberwar risk.'),
             new Event('2027-09-15', 'OpenBrain research at 5000% productivity. Agent-4 is deeply embedded & misaligned - & caught!'),
-            new Event('2027-10-15', 'NYT misalignment article. Oversight Committee. Story branching.'),
-            new Event('2027-11-15', '(Race version) Agent-5 is far more efficient. Is effectively manipulating humans.'),
-            new Event('2027-12-15', 'Agent-5 could do overt coup but is cautious. Humanity\'s last chance to control the future.'),
-            new Event('2028-08-15', 'Agent-5 is so darn lovable & wise. AR-assisted robot factory construction project.'),
+            new Event('2027-10-15', 'NYT misalignment article. Oversight Committee. Mechanistic interpretability mostly solved by the agents. Story branching.'),
+            new Event('2027-11-15', '(Race version) Agent-5 is far more efficient. Is effectively manipulating humans. (Slowdown version) Soft nationalization of US AGI orgs.'),
+            new Event('2027-12-15', '(Race version) Agent-5 could do overt coup but is cautious. Humanity\'s last chance to control the future. (Slowdown version) All US AGI chips have GPS-based tamper resistance.'),
+            new Event('2028-05-15', '(Slowdown version) Robots pass the Wozniak Coffee Test.'),
+            new Event('2028-08-15', 'The agent is so darn lovable & wise. AR-assisted robot factory construction project.'),
             new Event('2029-12-15', 'US-China deal is secretly a deal between the 2 agent servers. Consensus-1 agent created.'),
-            new Event('2030-07-15', 'Icecaps tiled with solar panels.'),
-            new Event('2030-08-15', 'Consensus-1 kills all humans & scans some brains.'),
-            new Event('2035-12-15', 'Extensive posthuman Sun-orbiting space industry. Sycophantic domesticated humans.'),
+            new Event('2030-07-15', '(Race version) Icecaps tiled with solar panels.'),
+            new Event('2030-08-15', '(Race version) Consensus-1 kills all humans & scans some brains.'),
+            new Event('2030-12-15', '(Slowdown version) Coup in China. Democratic China. Highly-federalized UN under US control.'),
+            new Event('2035-12-15', '(Race version) Extensive posthuman Sun-orbiting space industry. Sycophantic domesticated humans.'),
         ];
     }
 
