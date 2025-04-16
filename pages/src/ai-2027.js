@@ -8,11 +8,15 @@ class Event {
         this.description = description;
     }
 
-    toString () {
+    yearMonth () {
         const year = this.date.toLocaleDateString('en-US', { year: 'numeric' });
         const month = this.date.toLocaleDateString('en-US', { month: 'long' });
-        
-        return `${year} ${month} - ${this.timerString()} - ${this.description}`;
+
+        return `${year} ${month}`;
+    }
+
+    toString () {
+        return `${this.yearMonth()} - ${this.timerString()} - ${this.description}`;
     }
 
     timerString () {
@@ -27,7 +31,16 @@ class Event {
         const direction = diff >= 0 ? 'from now' : 'ago';
 
         return `${quantity} ${direction}`;
+    }
 
+    distantAs () {
+        const now = new Date();
+        const diff = this.date - now;
+
+        const analogous = new Event();
+        analogous.date = new Date(now - diff);
+
+        return `As distant as ${analogous.yearMonth()}.`;
     }
 
     static all () {
@@ -58,9 +71,10 @@ class Event {
         const div = window.document.getElementById('events');
 
         for (const event of Event.all()) {
-            div.appendChild(
-                Util.pElement(event.toString())
-            );
+            const p = Util.pElement(event.toString());
+            p.setAttribute('title', event.distantAs());
+
+            div.appendChild(p);
         }
     }
 
