@@ -1,6 +1,6 @@
 // Randomly generate names that
 
-const Util = require('../util/util.js');
+const Util = require('../../../util/util.js');
 
 class FlipName {
     static consonoids () {
