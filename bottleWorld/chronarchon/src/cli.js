@@ -3,6 +3,9 @@
 
 // LATER require World
 
+const Group = require('./group.js');
+const World = require('./world.js');
+
 const Yaml = require('js-yaml');
 const FS = require('fs');
 
@@ -23,7 +26,7 @@ class CLI {
         this.world = World.fromFile(CLI.SAVEFILE);
     }
 
-    parseCommand (parametersSpaced) {
+    parseCommand (parameters = []) {
         const COMMANDS = {
             look: this.look,
             explore: this.explore,
@@ -34,19 +37,34 @@ class CLI {
             command: this.command,
             come: this.come,
             stay: this.stay,
+            help: this.help,
         };
 
-        const params = parametersSpaced.split('\s');
-
-        const command = COMMANDS[params[0]];
+        const command = COMMANDS[parameters[0]];
 
         if (! command) {
-            return console.log(`Usage: node cli.js <command> \n  Possible commands include: TODO`);
+            // LATER check if there is already a world in the save file.
+            return this.newWorld();
         }
 
-        command.call(this, params.slice(1));
+        command.call(this, parameters.slice(1));
+    }
 
-        // TODO look (optional subparam) help explore confront take (item) hide (item) give (item person) command (person command) come (person) stay (person)
+    newWorld () {
+        this.world = new World();
+
+        const pop = 3;
+        console.log(`New world created with ${pop} entities.`);
+
+        for (let i = 0; i < pop; i++) {
+            const g = Group.example();
+
+            this.world.entities.push(g);
+
+            console.log(g.toString());
+        }
+
+        this.save();
     }
 
     look (params) {
@@ -83,6 +101,20 @@ class CLI {
 
     stay (params) {
 
+    }
+
+    help () {
+        console.log(`Usage: node cli.js <command> \n  Possible commands include: 
+    look ([subparam]) 
+    explore 
+    confront (person)
+    take (item) 
+    hide (item) 
+    give (item person) 
+    command (person command) 
+    come (person) 
+    stay (person)
+    help`);
     }
 
     static run () {

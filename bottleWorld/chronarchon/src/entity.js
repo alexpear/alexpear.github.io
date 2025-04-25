@@ -18,7 +18,9 @@ class Entity {
     }
 
     toString () {
-        const templateString = Util.capitalize(this.template);
+        // Util.logDebug(this);
+
+        const templateString = Util.capitalized(this.template.name);
 
         return `${this.name} (Level ${this.level()} ${templateString})`;
     }
