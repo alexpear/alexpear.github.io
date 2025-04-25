@@ -475,6 +475,13 @@ class Util {
         );
     }
 
+    // seed: nonnegative integer
+    simpleHash (seed) {
+        // seed + 1 because 0 => 0 would be too regular.
+        const divided = (seed + 1) / Math.PI;
+        return divided - Math.floor(divided);
+    }
+
     // Returns string
     static newId (idLength) {
         // Later research the most performant way to run this.

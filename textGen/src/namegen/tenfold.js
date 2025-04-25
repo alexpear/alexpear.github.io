@@ -1,6 +1,6 @@
 'use strict';
 
-const Util = require('../util/util.js');
+const Util = require('../../../util/util.js');
 
 class Tenfold {
     static syllables () {
@@ -16,6 +16,10 @@ class Tenfold {
             'nor',
             'ko',
         ];
+    }
+
+    static syllable (numeral) {
+        return Tenfold.syllables()[ numeral - 1 ];
     }
 
     static allPairs () {
@@ -43,13 +47,229 @@ class Tenfold {
     }
 
     static run () {
-        Tenfold.allPairs();
+        // Tenfold.allPairs();
 
-        for (let i = 0; i < 40; i++) {
-            const output = Tenfold.randomPerson();
+        for (let i = 0; i < 1; i++) {
+            const p = Person.random();
+            const output = p.bio();
 
             console.log(output);
         }
+    }
+}
+
+class Person {
+    constructor (numerals) {
+        this.numerals = numerals;
+    }
+
+    titledName () {
+        if (this.rankNumber() === 0) {
+            return `The ${this.title()}`;
+        }
+
+        return `${this.title()} ${this.name()}`;
+    }
+
+    name (numerals = this.numerals) {   
+        // TODO add spaces after each 4th numeral.
+        return Util.capitalized(
+            numerals.map(
+                n => Tenfold.syllable(n)
+            )
+            .join('')
+        );
+    }
+
+    localName () {
+        return this.name(
+            this.numerals.slice(4)
+        );
+    }
+
+    title () {
+        const TITLES = [
+            'Imperator',
+            'Rex',
+            'Dux',
+            'Princeps',
+            'Lady',
+            'Admiral',
+            'Lieutenant',
+            'Captain',
+            'Centurion',
+            'Officer',
+            'Member',
+        ];
+
+        const rankNumber = this.rankNumber();
+
+        if (this.rankNumber === 4 && this.gender() === 'male') {
+            return 'Lord';
+        }
+
+        return TITLES[rankNumber];
+    }
+
+    rankNumber () {
+        return this.numerals.length;
+    }
+
+    gender () {
+        const seed = Number(
+            this.numerals.join('')
+        );
+
+        const integer = Math.floor(
+            Util.simpleHash(seed) * 10
+        );
+
+        return integer % 2 === 0 ?
+            'female' :
+            'male';
+    }
+
+    residence () {
+        const PLACETYPE = [
+            'The Solar Palace',
+            'Planet',
+            'Continent',
+            'Land',
+            'City',
+            'Campus',
+            'Department',
+            'Compound',
+            'Wing',
+            'Office',
+            'Desk',
+        ];
+
+        if (this.rankNumber() === 0) {
+            return PLACETYPE[0];
+        }
+
+        const noble = new Person(
+            this.numerals.slice(0, 4)
+        );
+
+        const nobleResidence =  `the ${PLACETYPE[noble.rankNumber()]} of ${noble.name()}lia`;
+
+        if (this.rankNumber() <= 4) {
+            return nobleResidence;
+        }
+
+        return `the ${this.localName()} ${PLACETYPE[this.rankNumber()]} of ${nobleResidence}`;
+    }
+
+    boss () {
+        return new Person(
+            // Omit last numeral. Note: Will return [] for [].
+            this.numerals.slice(0, -1)
+        );
+    }
+
+    directSubordinates () {
+        if (this.rankNumber() === 10) {
+            return [];
+        }
+
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
+            digit => new Person(
+                this.numerals.concat(digit)
+            )
+        );
+    }
+
+    // Number of roles there are at this rank, including own role.
+    peerQuantity () {
+        return Math.pow(10, this.rankNumber());
+    }
+
+    subordinateQuantity () {
+        const subordinates = 0;
+        const ranksBelow = 10 - this.rankNumber();
+
+        for (let scale = 1; scale <= ranksBelow; scale++) {
+            subordinates += Math.pow(10, scale);
+        }
+
+        return subordinates;
+    }
+
+    planetTopic () {
+        const TOPICS = [
+            undefined,
+            'Military',
+            'Ecology',
+            'Transportation',
+            'Construction',
+            'Research',
+            'Medicine',
+            'Supply',
+            'Resources',
+            'Art',
+            'Communication',
+        ];
+
+        return TOPICS[
+            this.numerals[0]
+        ];
+    }
+
+    planetSentence () {
+        if (this.rankNumber() === 0) {
+            return `${Util.capitalized(this.sheHe())} rules all ten planets of the Stellarium`;
+        }
+
+        const planetSyllable = Tenfold.syllable(this.numerals[1]);
+
+        return `${planetSyllable}lia is the ${this.planetTopic()} planet`;
+    }
+
+    sheHe () {
+        return this.gender() === 'female' ?
+        'she' :
+        'he';
+    }
+
+    herHis () {
+        return this.gender() === 'female' ?
+            'her' :
+            'his';
+    }
+
+    bio () {
+        const sheHe = Util.capitalized(this.sheHe());
+
+        const subQuantity = this.subordinateQuantity();
+
+        const directSubs = this.directSubordinates().map(
+            sub => sub.name()
+        )
+        .join(', ');
+
+        const directsString = subQuantity >= 1 ?
+            `, most directly the following: ${directSubs}` :
+            '';
+
+        return `${this.titledName()} is in charge of ${this.residence()}. ${this.planetSentence()}. ${sheHe} is 1 of ${Util.commaNumber(this.peerQuantity())} of ${this.herHis()} rank. ${this.boss().name()} is ${this.herHis()} boss. ${sheHe} has ${Util.commaNumber(subQuantity)} subordinates${directsString}.`;
+    }
+
+    // Distribution where leadership is more common.
+    static random () {
+        const numerals = [];
+
+        while (numerals.length < 10) {
+            const next = Util.randomUpTo(10) + 1;
+
+            if (next === 11) {
+                break;
+            }
+
+            numerals.push(next);
+        }
+
+        return new Person(numerals);
     }
 }
 
