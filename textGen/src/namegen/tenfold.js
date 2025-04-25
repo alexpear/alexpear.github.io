@@ -72,13 +72,19 @@ class Person {
     }
 
     name (numerals = this.numerals) {   
-        // TODO add spaces after each 4th numeral.
-        return Util.capitalized(
-            numerals.map(
-                n => Tenfold.syllable(n)
-            )
-            .join('')
+        const tetranym = Util.capitalized(
+            numerals.slice(0, 4)
+                .map(
+                    n => Tenfold.syllable(n)
+                )
+                .join('')
         );
+
+        if (numerals.length <= 4) {
+            return tetranym;
+        }
+
+        return tetranym + ' ' + this.name(numerals.slice(4));
     }
 
     localName () {
@@ -104,7 +110,7 @@ class Person {
 
         const rankNumber = this.rankNumber();
 
-        if (this.rankNumber === 4 && this.gender() === 'male') {
+        if (this.rankNumber() === 4 && this.gender() === 'male') {
             return 'Lord';
         }
 
@@ -116,7 +122,7 @@ class Person {
     }
 
     gender () {
-        const seed = Number(
+        const seed = 1 + Number(
             this.numerals.join('')
         );
 
@@ -186,7 +192,7 @@ class Person {
     }
 
     subordinateQuantity () {
-        const subordinates = 0;
+        let subordinates = 0;
         const ranksBelow = 10 - this.rankNumber();
 
         for (let scale = 1; scale <= ranksBelow; scale++) {
@@ -199,16 +205,16 @@ class Person {
     planetTopic () {
         const TOPICS = [
             undefined,
-            'Military',
-            'Ecology',
-            'Transportation',
-            'Construction',
-            'Research',
-            'Medicine',
-            'Supply',
-            'Resources',
-            'Art',
-            'Communication',
+            'military',
+            'ecology',
+            'transportation',
+            'construction',
+            'research',
+            'medicine',
+            'supply',
+            'resources',
+            'art',
+            'communication',
         ];
 
         return TOPICS[
@@ -221,15 +227,17 @@ class Person {
             return `${Util.capitalized(this.sheHe())} rules all ten planets of the Stellarium`;
         }
 
-        const planetSyllable = Tenfold.syllable(this.numerals[1]);
+        const planetSyllable = Util.capitalized(
+            Tenfold.syllable(this.numerals[0])
+        );
 
         return `${planetSyllable}lia is the ${this.planetTopic()} planet`;
     }
 
     sheHe () {
         return this.gender() === 'female' ?
-        'she' :
-        'he';
+            'she' :
+            'he';
     }
 
     herHis () {
@@ -244,15 +252,15 @@ class Person {
         const subQuantity = this.subordinateQuantity();
 
         const directSubs = this.directSubordinates().map(
-            sub => sub.name()
+            sub => sub.titledName()
         )
-        .join(', ');
+        .join('\n');
 
         const directsString = subQuantity >= 1 ?
-            `, most directly the following: ${directSubs}` :
+            `, most directly the following:\n${directSubs}` :
             '';
 
-        return `${this.titledName()} is in charge of ${this.residence()}. ${this.planetSentence()}. ${sheHe} is 1 of ${Util.commaNumber(this.peerQuantity())} of ${this.herHis()} rank. ${this.boss().name()} is ${this.herHis()} boss. ${sheHe} has ${Util.commaNumber(subQuantity)} subordinates${directsString}.`;
+        return `${this.titledName()} is in charge of ${this.residence()}. ${this.planetSentence()}. ${sheHe} is 1 of ${Util.commaNumber(this.peerQuantity())} of ${this.herHis()} rank. ${this.boss().titledName()} is ${this.herHis()} boss. \n${sheHe} has ${Util.commaNumber(subQuantity)} subordinates${directsString}.`;
     }
 
     // Distribution where leadership is more common.
