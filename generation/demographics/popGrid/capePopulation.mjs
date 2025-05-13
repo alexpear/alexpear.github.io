@@ -1,5 +1,6 @@
 'use strict';
 
+import exp from 'constants';
 // Tools for estimating number of superpowered people per location.
 // About the Parahumans fictional universe created by Wildbow.
 // See src/capeMap.js for leaner funcs that deal with the front end rather than with the data file.
@@ -44,6 +45,7 @@ class CapePopulation {
         //     window.ctx = canvas.getContext('2d');
         // }
 
+        // Separate attempt: Read from .txt file instead
         await cp.load();
         Util.logDebug(`Done with load()`);
 
@@ -71,7 +73,7 @@ class CapePopulation {
     }
     */
     async load () {
-        fs.createReadStream(this.__dirname + '/squareList.txt')
+        FS.createReadStream(this.__dirname + '/squareList.txt')
             .pipe(Split())
             .on('data', (line) => {
                 // later
@@ -279,6 +281,7 @@ class CapePopulation {
     }
 
     printSimple () {
+        // BUG: rasterData never initialized.
         for (let pop of this.rasterData[0]) {
             console.log(
                 pop >= 0 ?
@@ -288,11 +291,55 @@ class CapePopulation {
         }
     }
 
+    // NOTE: Currently takes 5 minutes ish to run.
+    async randomOddities (rate, name) {
+        const noun = name ? 
+            ` ${name}` : 
+            ``;
+
+        const width = this.tiff.getWidth();
+        const height = this.tiff.getHeight();
+        console.log(`width: ${width}, height: ${height}`);
+        // width: 43200, height: 18720
+
+        const raster = await this.tiff.readRasters();
+
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const index = y * width + x; // generated logic - converts y into a further portion of the flattened array, all in raster[0].
+                const value = raster[0][index];
+
+                if (! (value > 0)) {
+                    continue;
+                }
+
+                const expectedQuantity = value / rate;
+                const remainder = expectedQuantity % 1;
+                const randomized = Math.random() < remainder ? 
+                    1 : 
+                    0;
+                const quantity = Math.floor(expectedQuantity) + randomized;
+
+                if (quantity <= 0) {
+                    continue;
+                }
+
+                const lat = y / height * -180 + 90;
+                const lon = x / width * 360 - 180;
+                // LATER check whether x=0 is London or International Date Line.
+
+                console.log(`${quantity}${noun} at ${lat}, ${lon}`);
+            }
+        }
+    }
+
     static async run () {
         const cp = await CapePopulation.new();
         Util.logDebug(`Done with new().`);
 
-        cp.printSimple();
+        await cp.randomOddities(71_012_000, 'wizard schools');
+
+        // cp.printSimple();
 
         Util.logDebug(`Done with run()`);
     }
