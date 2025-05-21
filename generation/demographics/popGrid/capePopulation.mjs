@@ -49,17 +49,20 @@ class CapePopulation {
         await cp.load();
         Util.logDebug(`Done with load()`);
 
+        cp.oddities = [];
+        SquareNode.cp = cp;
+
         return cp;
     }
 
     // Returns array
-    async dataAt(xPixel, yPixel) {
+    async dataAt (xPixel, yPixel, squareWidth = 1) {
         return await this.tiff.readRasters(
             [
                 xPixel,
                 yPixel,
-                xPixel + 1,
-                yPixel + 1,
+                xPixel + squareWidth,
+                yPixel + squareWidth,
             ]
         );
     }
@@ -291,20 +294,39 @@ class CapePopulation {
         }
     }
 
-    // NOTE: Currently takes 5 minutes ish to run.
-    async randomOddities (rate, name) {
+    async odditiesTreeMap (rate, name) {
+        // 2^16 > width
+        this.root = new SquareNode(0, 0, Math.pow(2, 16));
+        this.root.visit();
+
+        Util.log({
+            oddities: this.oddities,
+            name,
+        });
+    }
+
+    // NOTE: Currently takes 5 minutes ish to run. Each square has a chance of a oddity; neighbors not considered.
+    async randomOdditiesVegas (rate, name) {
         const noun = name ? 
             ` ${name}` : 
             ``;
 
         const width = this.tiff.getWidth();
         const height = this.tiff.getHeight();
-        console.log(`width: ${width}, height: ${height}`);
         // width: 43200, height: 18720
 
-        const raster = await this.tiff.readRasters();
+        const raster = await this.tiff.readRasters(); // TODO store in class variable. Slow step.
+
+        Util.logDebug({
+            context: `randomOdditiesVegas() after readRasters()`,
+        });
 
         for (let y = 0; y < height; y++) {
+            // Util.logDebug({
+            //     context: `randomOdditiesVegas() in y loop`,
+            //     y,
+            // });
+
             for (let x = 0; x < width; x++) {
                 const index = y * width + x; // generated logic - converts y into a further portion of the flattened array, all in raster[0].
                 const value = raster[0][index];
@@ -326,7 +348,6 @@ class CapePopulation {
 
                 const lat = y / height * -180 + 90;
                 const lon = x / width * 360 - 180;
-                // LATER check whether x=0 is London or International Date Line.
 
                 console.log(`${quantity}${noun} at ${lat}, ${lon}`);
             }
@@ -337,7 +358,7 @@ class CapePopulation {
         const cp = await CapePopulation.new();
         Util.logDebug(`Done with new().`);
 
-        await cp.randomOddities(71_012_000, 'wizard schools');
+        await cp.randomOdditiesVegas(71_012_000, 'wizard schools');
 
         // cp.printSimple();
 
@@ -345,6 +366,79 @@ class CapePopulation {
     }
 };
 
+class SquareNode {
+    // X & Y refer to tiff pixels.
+    constructor (leftX, topY, width) {
+        this.leftX = leftX;
+        this.topY = topY;
+        this.width = width;
+        // this.population = undefined;
+        this.children = [];
+    }
+
+    // Returns a random subsquare with unknown population, or undefined if there are no unknown subsquares.
+    getRandomMysteriousSubsquare () {
+        if (this.width === 1) {
+            return; // Can't zoom in more.
+        }
+
+        if (this.children.length === 0) {
+            const childWidth = this.width / 2;
+
+            this.children = [
+                new SquareNode(this.leftX, this.topY, childWidth),
+                new SquareNode(this.leftX + childWidth, this.topY, childWidth),
+                new SquareNode(this.leftX, this.topY + childWidth, childWidth),
+                new SquareNode(this.leftX + childWidth, this.topY + childWidth, childWidth),
+            ];
+        }
+
+        const indices = Util.shuffle([0, 1, 2, 3]);
+
+        for (const i of indices) {
+            const subsquare = this.children[i];
+
+            if (subsquare.population === undefined) {
+                return subsquare;
+            }
+        }
+
+        return;
+    }
+
+    // Try to convert population to oddities
+    // Tempted to have this be a nonrecursive alg - singlethreaded etc
+    // Possible outcomes: Need to examine a specific mysterious subsquare first, or found N oddities. 
+    // Rename func to getOddities()? I suppose that sounds recursive... perhaps that is the way to go? TODO
+    // Let's avoid recursive. Singlethreaded. Output oddities to a global .oddities field. Static? SquareNode.cp.oddities
+    visit () {
+        if (this.width === 1) {
+            if (this.population === undefined) {
+                const rasters = SquareNode.cp.dataAt(
+                    this.leftX,
+                    this.topY,
+                    1,
+                );
+
+                Util.logDebug({ rasters, });
+                // TODO
+            }
+
+            // TODO check if population is big enough to place oddities. Maybe functionize that. Then return.
+        }
+
+        const mysteriousSubsquare = this.getRandomMysteriousSubsquare();
+
+        if (mysteriousSubsquare) {
+            mysteriousSubsquare.visit();
+        }
+        else {
+
+        }
+
+    }
+}
+
 // module.exports = CapePopulation;
 
-CapePopulation.run();
+await CapePopulation.run();
