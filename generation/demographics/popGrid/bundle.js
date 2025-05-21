@@ -167,6 +167,16 @@ class CapeMap {
         });
     }
 
+    static printCSV (coords) {
+        let csv = 'lat long';
+
+        for (let row of coords) {
+            csv += `${row[0]},${row[1]}\n`;
+        }
+
+        console.log(csv);
+    }
+
     // Stochastically generated while looking at only 1 square at a time. Lat long.
     static wizardSchools () {
         return [
@@ -1942,7 +1952,9 @@ class CapeMap {
     static async run () {
         const map = new CapeMap();
 
-        Util.logDebug(`Done with test.`);
+        CapeMap.printCSV(CapeMap.wizardSchools());
+
+        Util.logDebug(`Done with run().`);
     }
 };
 
