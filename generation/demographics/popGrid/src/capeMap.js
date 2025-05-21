@@ -23,7 +23,7 @@ class CapeMap {
     }
 
     init () {
-        if (window) {
+        if (typeof window !== 'undefined') {
             window.canvas = document.getElementById('canvas');
 
             window.ctx = window.canvas.getContext('2d');
@@ -164,6 +164,16 @@ class CapeMap {
         Util.logDebug({
             max,
         });
+    }
+
+    static printCSV (coords) {
+        let csv = 'lat long\n';
+
+        for (let row of coords) {
+            csv += `${row[0]},${row[1]}\n`;
+        }
+
+        console.log(csv);
     }
 
     // Stochastically generated while looking at only 1 square at a time. Lat long.
@@ -1941,7 +1951,9 @@ class CapeMap {
     static async run () {
         const map = new CapeMap();
 
-        Util.logDebug(`Done with test.`);
+        CapeMap.printCSV(CapeMap.wizardSchools());
+
+        Util.logDebug(`Done with run().`);
     }
 };
 
