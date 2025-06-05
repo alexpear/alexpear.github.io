@@ -32,9 +32,18 @@ class Markov extends TextGen {
         super();
 
         this.currentTrainingCorpus = 0;
+
+        // Pretend the document starts after the end of a hypothetical pre-document sentence.
         this.prevWords = [ '.', '.', ];
-        this.ngrams = {};
-        
+        this.ngrams = {
+            '. .': {
+                // '.': {
+                //     occurrences: 1,
+                //     corpus: -1,
+                // },
+            },
+        };
+
 /*      bigram model
         foo: {
             bar: 5,
@@ -50,9 +59,6 @@ class Markov extends TextGen {
 
         const readStream = FS.createReadStream(filePath);
         const readInterface = Readline.createInterface({ input: readStream });
-
-        // Pretend the document starts after the end of a hypothetical pre-document sentence.
-        this.setPrevWord('.');
 
         await this.train3gram(readInterface);
     }
@@ -160,23 +166,43 @@ class Markov extends TextGen {
     hear3gram (nextWord) {
         const lastPhrase = this.prevWords.join(' ');
 
-        if (this.ngrams[lastPhrase][nextWord]) {
-            const situation = this.ngrams[lastPhrase][nextWord];
-            situation.occurrences += 1;
+        // Util.logDebug({
+        //     context: `.hear3gram()`,
+        //     nextWord,
+        //     lastPhrase,
+        //     prevWords: this.prevWords,
+        //     thisNgramsLastPhrase: this.ngrams[lastPhrase],
+        //     ngrams: this.ngrams,
+        // });
 
-            // -1 is for words that appear in multiple corpuses.
-            if (! [this.currentTrainingCorpus, -1].includes(situation.corpus)) {
-                situation.corpus = -1;
+        if (this.ngrams[lastPhrase]) {
+            if (this.ngrams[lastPhrase][nextWord]) {
+                // A familiar situation.
+                const situation = this.ngrams[lastPhrase][nextWord];
+                situation.occurrences += 1;
+    
+                // -1 is for words that appear in multiple corpuses.
+                if (! [this.currentTrainingCorpus, -1].includes(situation.corpus)) {
+                    situation.corpus = -1;
+                }
+            }
+            else {
+                this.ngrams[lastPhrase][nextWord] = {
+                    occurrences: 1,
+                    corpus: this.currentTrainingCorpus,
+                };
             }
         }
         else {
-            this.ngrams[lastPhrase][nextWord] = {
-                occurrences: 1,
-                corpus: this.currentTrainingCorpus,
+            this.ngrams[lastPhrase] = {
+                [nextWord]: {
+                    occurrences: 1,
+                    corpus: this.currentTrainingCorpus,
+                },
             };
         }
 
-        this.prevWords = [ this.prevWords[-1], nextWord ];
+        this.prevWords = [ this.prevWords.at(-1), nextWord ];
     }
 
     hear2gram (nextWord) {
@@ -205,7 +231,7 @@ class Markov extends TextGen {
     }
 
     output () {
-        let words = ['.'];
+        let words = ['.', '.',];
 
         this.lastOutputCorpus = 0;
 
@@ -221,8 +247,14 @@ class Markov extends TextGen {
 
         // LATER adjust spacing before wordlike symbols.
 
-        // slice(1) removes the starting '.'
-        return words.slice(1).join(' ');
+        // slice() removes the starting '.'s
+        let text = words.slice(2).join(' ');
+
+        if (text.endsWith(' .')) {
+            text = text.slice(0, -2) + '.';
+        }
+
+        return text;
     }
 
     output2gram () {
@@ -243,6 +275,14 @@ class Markov extends TextGen {
 
     wordAfter (prevWords) {
         const completionObj = this.ngrams[prevWords.join(' ')];
+
+        // Util.logDebug({
+        //     context: `.wordAfter()`,
+        //     prevWords,
+        //     completionObj,
+        //     // ngrams: this.ngrams,
+        // });
+
         const candidates = Object.keys(completionObj);
 
         if (! completionObj) {
@@ -280,8 +320,11 @@ class Markov extends TextGen {
             roll -= weights[candidate];
 
             if (roll <= 0) {
-                // If new word has corpus 0, do not change lastOutputCorpus
-                this.lastOutputCorpus = completionObj[candidate].corpus || this.lastOutputCorpus;
+                // -1 means the word appears in multiple corpuses.
+                const newCorpus = completionObj[candidate].corpus;
+                if (newCorpus > 0) {
+                    this.lastOutputCorpus = newCorpus;
+                }
 
                 return candidate;
             }
@@ -335,8 +378,8 @@ class Markov extends TextGen {
     static async run () {
         const chain = await Markov.new();
 
-        for (let i = 0; i < 25; i++) {
-            console.log(chain.output());
+        for (let i = 0; i < 20; i++) {
+            console.log(chain.output() + '\n');
         }
     }
 }
