@@ -157,8 +157,6 @@ class Markov extends TextGen {
         }
     }
 
-    // TODO Standardize output length. If it is long currently, % chance to try looking for '.' as next token before the normal try.
-
     hear3gram (nextWord) {
         const lastPhrase = this.prevWords.join(' ');
 
@@ -212,6 +210,8 @@ class Markov extends TextGen {
         this.lastOutputCorpus = 0;
 
         while (words.length <= 1000) {
+            // TODO Standardize output length. If it is long currently, make '.' more likely based on the length, as a param to wordAfter().
+
             const nextWord = this.wordAfter( words.slice(-2) ); // 3grams
 
             words.push(nextWord);
@@ -253,17 +253,20 @@ class Markov extends TextGen {
             });
         }
 
+        // candidate: weight
+        const weights = {};
         let totalWeight = 0;
-        // TODO create a in-memory obj from candidate to weight. In addition to totalWeight number.
+
         for (let candidate in completionObj) {
+            weights[candidate] = completionObj[candidate].occurrences;
+
             if ( ! [this.lastOutputCorpus, -1].includes(completionObj[candidate].corpus) ) {
                 // If this word is unique to a corpus distinct from the last output corpus,
-                // Encourage output to switch corpuses often.
-                totalWeight += completionObj[candidate].occurrences * 2;
+                // Encourages output to switch corpuses often.
+                weights[candidate] *= 2;
             }
-            else {
-                totalWeight += completionObj[candidate].occurrences;
-            }   
+
+            totalWeight += weights[candidate];
         }
 
         let roll = Math.random() * totalWeight;
@@ -274,10 +277,11 @@ class Markov extends TextGen {
             // Start on random candidate, loop around
             const candidate = candidates[(start + i) % candidates.length];
 
-            roll -= situation[candidate]; // TODO care about corpus
+            roll -= weights[candidate];
 
             if (roll <= 0) {
-                this.lastOutputCorpus
+                // If new word has corpus 0, do not change lastOutputCorpus
+                this.lastOutputCorpus = completionObj[candidate].corpus || this.lastOutputCorpus;
 
                 return candidate;
             }
