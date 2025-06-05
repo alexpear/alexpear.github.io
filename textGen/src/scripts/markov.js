@@ -8,9 +8,9 @@ const Util = require('../../../util/util.js');
 const FS = require('fs');
 const Readline = require('node:readline');
 
-const CORPUS1 = '../../../data/littlewomen.txt';
-// const CORPUS1 = '../../data/leviathan.txt';
-const CORPUS2 = '../../../data/eclipsephasecore.txt';
+const CORPUS1 = '../../../data/janeausten.txt';
+const CORPUS2 = '../../../data/leviathan.txt';
+// const CORPUS2 = '../../../data/eclipsephasecore.txt';
 
 class Markov extends TextGen {
     static async new () {
@@ -31,32 +31,86 @@ class Markov extends TextGen {
     constructor () {
         super();
 
-        this.words = {};
-/*      foo: {
+        this.currentTrainingCorpus = 0;
+        this.prevWords = [ '.', '.', ];
+        this.ngrams = {};
+        
+/*      bigram model
+        foo: {
             bar: 5,
             baz: 1
         }                       */
 
 /*      trigram model would be
-        foo: {
-            bar: {
-                baz: 6,
-                qux: 1,
-            },
-            baz: {
-                foo: 2,
-            },
-        }                       */
+        { 'The best': { 'among': { occurrences: 2, corpus: 1, }, }, }                    */
     }
 
     async train (filePath) {
+        this.currentTrainingCorpus++;
+
         const readStream = FS.createReadStream(filePath);
         const readInterface = Readline.createInterface({ input: readStream });
 
         // Pretend the document starts after the end of a hypothetical pre-document sentence.
         this.setPrevWord('.');
 
-        // TODO no lines being read
+        await this.train3gram(readInterface);
+    }
+
+    async train3gram (readInterface) {
+        for await (let line of readInterface) {
+            // Util.logDebug({
+            //     context: `.train()`,
+            //     line,
+            // });
+
+            line = line.trim();
+
+            // Remove commas, ()s, '" quotes
+            line = line.replaceAll(/[,()'’"“”]/g, '');
+
+            // If whole line is whitespace or empty, skip ahead.
+            if (line.match(/^\s*$/)) {
+                continue;
+            }
+
+            // Everything whitespace-isolated is a word
+            // Preserve case. Yes this will treat 'and' differently from 'And' (middle vs beginning of sentences).
+            const words = line.split(/\s+/);
+
+            for (let i = 0; i < words.length; i++) {
+                let word = words[i];
+
+                // Treat these symbols as words even if not space-isolated: .:;?!- emdash
+                const lastChar = word.slice(-1);
+
+                if (word.length >= 2 && Markov.WORDLIKE_SYMBOLS.includes(lastChar)) {
+
+                    const leftPart = word.slice(0, -1); // All of the word except the last symbol.
+
+                    this.hear3gram(leftPart);
+                    this.hear3gram(lastChar);
+                }
+                else {
+                    this.hear3gram(word);
+                }
+
+                // LATER Reconnect line-spanning dashed words somehow
+                // Okay to reconnect them with the dash still there
+                // if (i === words.length - 1 && Markov.DASHES.includes(lastChar)) {
+
+                // }
+            }
+        }
+    }
+
+    async train2gram (filePath) {
+        const readStream = FS.createReadStream(filePath);
+        const readInterface = Readline.createInterface({ input: readStream });
+
+        // Pretend the document starts after the end of a hypothetical pre-document sentence.
+        this.setPrevWord('.');
+
         for await (let line of readInterface) {
             // Util.logDebug({
             //     context: `.train()`,
@@ -103,7 +157,36 @@ class Markov extends TextGen {
         }
     }
 
-    hear (nextWord) {
+    // TODO 3-gram data model
+    // perhaps key-value like 'The best': { 'among': { occurrences: 2, corpus: 1, }, }
+    // Altho how to know which corpus a word is from if it's in multiple? just 1st come 1st served? 
+    // Perhaps 0 means multiple corpuses.
+
+    // TODO Standardize output length. If it is long currently, % chance to try looking for '.' as next token before the normal try.
+
+    hear3gram (nextWord) {
+        const lastPhrase = this.prevWords.join(' ');
+
+        if (this.ngrams[lastPhrase][nextWord]) {
+            const situation = this.ngrams[lastPhrase][nextWord];
+            situation.occurrences += 1;
+
+            // -1 is for words that appear in multiple corpuses.
+            if (! [this.currentTrainingCorpus, -1].includes(situation.corpus)) {
+                situation.corpus = -1;
+            }
+        }
+        else {
+            this.ngrams[lastPhrase][nextWord] = {
+                occurrences: 1,
+                corpus: this.currentTrainingCorpus,
+            };
+        }
+
+        this.prevWords = [ this.prevWords[-1], nextWord ];
+    }
+
+    hear2gram (nextWord) {
         // Util.logDebug({
         //     context: `hear()`,
         //     nextWord,
@@ -120,7 +203,7 @@ class Markov extends TextGen {
         this.setPrevWord(nextWord);
     }
 
-    setPrevWord (word) {
+    setPrevWord2Gram (word) {
         this.prevWord = word;
 
         if (! this.words[word]) {
@@ -129,6 +212,25 @@ class Markov extends TextGen {
     }
 
     output () {
+        let words = ['.'];
+
+        this.lastOutputCorpus = 0;
+
+        while (words.length <= 1000) {
+            const nextWord = this.wordAfter( words.slice(-2) ); // 3grams
+
+            words.push(nextWord);
+
+            if (nextWord === '.') { break; }
+        }
+
+        // LATER adjust spacing before wordlike symbols.
+
+        // slice(1) removes the starting '.'
+        return words.slice(1).join(' ');
+    }
+
+    output2gram () {
         let words = ['.'];
 
         while (words.length <= 1000) {
@@ -144,7 +246,22 @@ class Markov extends TextGen {
         return words.slice(1).join(' ');
     }
 
-    wordAfter (prevWord) {
+    wordAfter (prevWords) {
+        const completionObj = this.ngrams[prevWords.join(' ')];
+        const candidates = Object.keys(completionObj);
+
+        // TODO encourage output to touch upon each corpus that it has not yet touched upon. Or at least to switch corpuses often.
+        // TODO for loop instead of map, mult by 1.5 etc if corpus is distinct from last.
+        const totalWeight = Util.sum(
+            candidates.map(
+                candidate => completionObj[candidate].occurrences
+            )
+        );
+
+
+    }
+
+    wordAfter2gram (prevWord) {
         // Util.logDebug({
         //     prevWord,
         //     situation: this.words[prevWord],
