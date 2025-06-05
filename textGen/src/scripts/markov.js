@@ -157,11 +157,6 @@ class Markov extends TextGen {
         }
     }
 
-    // TODO 3-gram data model
-    // perhaps key-value like 'The best': { 'among': { occurrences: 2, corpus: 1, }, }
-    // Altho how to know which corpus a word is from if it's in multiple? just 1st come 1st served? 
-    // Perhaps 0 means multiple corpuses.
-
     // TODO Standardize output length. If it is long currently, % chance to try looking for '.' as next token before the normal try.
 
     hear3gram (nextWord) {
@@ -234,7 +229,7 @@ class Markov extends TextGen {
         let words = ['.'];
 
         while (words.length <= 1000) {
-            const nextWord = this.wordAfter(words.slice(-1));
+            const nextWord = this.wordAfter2gram(words.slice(-1));
 
             words.push(nextWord);
 
@@ -250,15 +245,52 @@ class Markov extends TextGen {
         const completionObj = this.ngrams[prevWords.join(' ')];
         const candidates = Object.keys(completionObj);
 
-        // TODO encourage output to touch upon each corpus that it has not yet touched upon. Or at least to switch corpuses often.
-        // TODO for loop instead of map, mult by 1.5 etc if corpus is distinct from last.
-        const totalWeight = Util.sum(
-            candidates.map(
-                candidate => completionObj[candidate].occurrences
-            )
-        );
+        if (! completionObj) {
+            Util.error({
+                message: `No completion found for words: ${prevWords.join(' ')}`,
+                prevWords,
+                ngrams: this.ngrams,
+            });
+        }
 
+        let totalWeight = 0;
+        // TODO create a in-memory obj from candidate to weight. In addition to totalWeight number.
+        for (let candidate in completionObj) {
+            if ( ! [this.lastOutputCorpus, -1].includes(completionObj[candidate].corpus) ) {
+                // If this word is unique to a corpus distinct from the last output corpus,
+                // Encourage output to switch corpuses often.
+                totalWeight += completionObj[candidate].occurrences * 2;
+            }
+            else {
+                totalWeight += completionObj[candidate].occurrences;
+            }   
+        }
 
+        let roll = Math.random() * totalWeight;
+
+        let start = Util.randomUpTo( candidates.length - 1 );
+
+        for (let i = 0; i < candidates.length; i++) {
+            // Start on random candidate, loop around
+            const candidate = candidates[(start + i) % candidates.length];
+
+            roll -= situation[candidate]; // TODO care about corpus
+
+            if (roll <= 0) {
+                this.lastOutputCorpus
+
+                return candidate;
+            }
+        }
+
+        Util.error({
+            message: `Should be impossible to be here after this for() loop.`,
+            prevWord,
+            situation,
+            roll,
+            start,
+            candidates,
+        });
     }
 
     wordAfter2gram (prevWord) {
