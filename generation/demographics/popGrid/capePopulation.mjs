@@ -57,14 +57,14 @@ class CapePopulation {
 
     // Returns array
     async dataAt (xPixel, yPixel, squareWidth = 1) {
-        return await this.tiff.readRasters(
-            [
+        return await this.tiff.readRasters({
+            window: [
                 xPixel,
                 yPixel,
                 xPixel + squareWidth,
                 yPixel + squareWidth,
             ]
-        );
+        });
     }
 
     /* Returns obj:
@@ -295,9 +295,12 @@ class CapePopulation {
     }
 
     async odditiesTreeMap (rate, name) {
+        this.rate = rate;
+
         // 2^16 > width
-        this.root = new SquareNode(0, 0, Math.pow(2, 16));
-        this.root.visit();
+        SquareNode.MAX_RES = Math.pow(2, 16);
+        this.root = new SquareNode(0, 0, SquareNode.MAX_RES);
+        await this.root.visit();
 
         Util.log({
             oddities: this.oddities,
@@ -315,7 +318,7 @@ class CapePopulation {
         const height = this.tiff.getHeight();
         // width: 43200, height: 18720
 
-        const raster = await this.tiff.readRasters(); // TODO store in class variable. Slow step.
+        const raster = await this.tiff.readRasters(); // LATER store in class variable. Slow step.
 
         Util.logDebug({
             context: `randomOdditiesVegas() after readRasters()`,
@@ -358,7 +361,8 @@ class CapePopulation {
         const cp = await CapePopulation.new();
         Util.logDebug(`Done with new().`);
 
-        await cp.randomOdditiesVegas(71_012_000, 'wizard schools');
+        // await cp.randomOdditiesVegas(71_012_000, 'wizard schools');
+        await cp.odditiesTreeMap(71_012_000, 'wizard schools');
 
         // cp.printSimple();
 
@@ -409,33 +413,112 @@ class SquareNode {
     // Try to convert population to oddities
     // Tempted to have this be a nonrecursive alg - singlethreaded etc
     // Possible outcomes: Need to examine a specific mysterious subsquare first, or found N oddities. 
-    // Rename func to getOddities()? I suppose that sounds recursive... perhaps that is the way to go? TODO
+    // Rename func to getOddities()? I suppose that sounds recursive... perhaps that is the way to go?
     // Let's avoid recursive. Singlethreaded. Output oddities to a global .oddities field. Static? SquareNode.cp.oddities
-    visit () {
+    async visit () {
+        Util.logDebug({
+            leftX: this.leftX,
+            topY: this.topY,
+            width: this.width,
+            population: this.population,
+            childrenLength: this.children.length,
+        });
+
         if (this.width === 1) {
             if (this.population === undefined) {
-                const rasters = SquareNode.cp.dataAt(
+                const rasters = await SquareNode.cp.dataAt(
                     this.leftX,
                     this.topY,
                     1,
                 );
 
                 Util.logDebug({ rasters, });
-                // TODO
+
+                this.population = rasters[0][0];
             }
 
-            // TODO check if population is big enough to place oddities. Maybe functionize that. Then return.
+            if (this.population >= this.cp.rate) {
+                this.placeOddities(
+                    this.leftX,
+                    this.topY,
+                    Math.floor(this.population / this.cp.rate),
+                );
+            }
+
+            return;
         }
 
-        const mysteriousSubsquare = this.getRandomMysteriousSubsquare();
+        let mysteriousSubsquare = this.getRandomMysteriousSubsquare();
 
-        if (mysteriousSubsquare) {
-            mysteriousSubsquare.visit();
+        while (mysteriousSubsquare) {
+            await mysteriousSubsquare.visit();
+
+            mysteriousSubsquare = this.getRandomMysteriousSubsquare();
         }
-        else {
+
+        // TODO NEXT cut recount - we will keep this.population up to date as we go.
+        this.population = 0; // Recount, because child visits may have partially converted child populations to oddities.
+
+        for (const child of this.children) {
+            if (child.population === undefined) {
+                Util.error({
+                    message: `Child population is undefined`,
+                    child,
+                });
+            }
+
+            this.population += child.population; // well, if we dont trust .population fields, we might need to look deeper than 1 level down during the recount, right?
+        }
+
+        if (this.population < this.cp.rate) {
+            if (this.width < SquareNode.MAX_RES) {
+                return; // Not enough population in this square; deal with it at lower res.
+            }
+
+            // TODO add the final oddity at global res. Reuse part or all of placeOddities - note that we have to force it to round up to 1 oddity.
+            // Or could move that to the top-level func, after the root.visit() call.
+            return;
+        }
+
+        // add oddities
+        // start weighted across all 4 children, but decrement pop of whichever child we land in. 
+        // Do we need to decrement pop at all lower resolutions?
+        // Tempting not to; would rather forget about low res squarenodes forever after they have defined populations.
+        // but OBSTACLE - the lower res data could usefully guide us in placing oddities.
+        
+        // If we decrement, is it easier to decrement all descendants upon each new oddity, or to always check your children rather than trusting your .population value?
+        // Well, the 2nd option kindof obviates caching in general. So only leaves would need .population values.
+        // And when you place oddities, it's kindof like decrementing the 1-width square and its _ancestors_, not descendants.
+        // So cache population on nonleaves or not?
+        // I think do cache it & keep it up to date. At least with magic schools, there will be far fewer oddities than pop-reads.
+        this.placeOddities();
+    }
+
+    placeOddities () {
+        const quantity = Math.floor(this.population / this.cp.rate) || 1;
+
+        for (let i = 0; i < quantity; i++) {
 
         }
 
+        // TODO place oddities in random coords within this square. Decrement this.population.
+        
+        // Hmm: Will need a parent pointer etc to decrement .population of ancestors.
+        // Well, could instead call SquareNode.root.updatePop(-1_000_000, 51, 33), which will traverse down & update all nodes that encompass pixel (51, 33). Or .decreasePop(1_000_000, ...) etc, which is simpler than a negative parameter.
+
+        // Maybe start with visual diagram... 
+
+        // LATER might reuse part or all of this func for squares of width > 1 too. 
+        // TODO In that case it will recurse, sometimes into squares that have population less than .rate. In these cases, will need to decrement the overflow into sibling squares, to add up to 1. Probably divide this overflow half & half into the 2 orthoganal siblings, then if there is more, the rest into the diagonal sibling.
+
+        // GENERATED unproofread:
+        // const lat = y / this.cp.tiff.getHeight() * -180 + 90;
+        // const lon = x / this.cp.tiff.getWidth() * 360 - 180;
+        // this.cp.oddities.push({
+        //     quantity,
+        //     lat,
+        //     lon,
+        // });
     }
 }
 
