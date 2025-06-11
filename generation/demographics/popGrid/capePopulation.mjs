@@ -55,16 +55,25 @@ class CapePopulation {
         return cp;
     }
 
-    // Returns array
-    async dataAt (xPixel, yPixel, squareWidth = 1) {
-        return await this.tiff.readRasters({
-            window: [
-                xPixel,
-                yPixel,
-                xPixel + squareWidth,
-                yPixel + squareWidth,
-            ]
-        });
+    // Returns number
+    async dataAt (xPixel, yPixel) {
+        // Converts y into a further portion of the flattened array, all in rasters[0].
+        const value = this.rasters[ yPixel * SquareNode.EARTH_WIDTH + xPixel ];
+
+        if (! (value > 0)) {
+            return 0;
+        }
+
+        return value;
+
+        // return await this.tiff.readRasters({
+        //     window: [
+        //         xPixel,
+        //         yPixel,
+        //         xPixel + squareWidth,
+        //         yPixel + squareWidth,
+        //     ]
+        // });
     }
 
     /* Returns obj:
@@ -304,21 +313,31 @@ class CapePopulation {
     // Would it be faster to abandon the tree data structure? And instead rely on 2d-grid-shaped data structures? We could still zoom in & out according to the same gridtree patterns.
     // Exactly what params should i be inputting? Could write a func to convert between the units. 
     // Should we speed up by not checking every last pixel, & assuming similarity to neighbors?
+    // FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+    //   Can i load only a portion of the tiff file at a time? Streaming etc...
 
     async odditiesTreeMap (rate, name) {
         this.rate = rate;
 
+        // this.rasters = await this.tiff.readRasters();
+        const raw = await this.tiff.readRasters({
+            window: [ 0, 0, Math.pow(2, 12), Math.pow(2, 12) ] // small test
+        });
+            
+        this.rasters = raw[0];
+
         SquareNode.EARTH_HEIGHT = 18_720;
         SquareNode.EARTH_WIDTH = 43_200;
         SquareNode.MAX_RES = Math.pow(2, 16);
+        SquareNode.pixelsPopulated = 0;
 
         // 2^16 > EARTH_WIDTH
-        this.root = new SquareNode(
-            30_200, // leftX
-            7_000, // topY
-            Math.pow(2, 4), // temp small scale for testing
-        );
-        // this.root = new SquareNode(0, 0, SquareNode.MAX_RES);
+        // this.root = new SquareNode(
+        //     30_200, // leftX
+        //     7_000, // topY
+        //     Math.pow(2, 4), // temp small scale for testing
+        // );
+        this.root = new SquareNode(0, 0, SquareNode.MAX_RES);
         await this.root.visit();
 
         // Add one final oddity at global res. Force it to round up to 1 oddity.
@@ -439,30 +458,26 @@ class SquareNode {
     // Rename func to getOddities()? I suppose that sounds recursive... perhaps that is the way to go?
     // Let's avoid recursive. Singlethreaded. Output oddities to a global .oddities field. Static? SquareNode.cp.oddities
     async visit () {
-        if (this.width >= 4) {
+        if (this.width >= Math.pow(2, 9)) {
             Util.logDebug({
                 leftX: this.leftX,
                 topY: this.topY,
                 width: this.width,
                 population: this.population,
                 childrenLength: this.children.length,
+                rasterLength: SquareNode.cp.rasters.length,
+                populatedRatio: SquareNode.pixelsPopulated / (SquareNode.EARTH_WIDTH * SquareNode.EARTH_HEIGHT),
             });
         }
 
         if (this.width === 1) {
             if (this.population === undefined) {
-                const rasters = await SquareNode.cp.dataAt(
+                this.population = await SquareNode.cp.dataAt(
                     this.leftX,
                     this.topY,
-                    1,
                 );
 
-                // Util.logDebug({ rasters, });
-
-                this.population = Math.max(
-                    rasters[0][0],
-                    0,
-                );
+                SquareNode.pixelsPopulated++;
             }
 
             if (this.population >= SquareNode.cp.rate) {
