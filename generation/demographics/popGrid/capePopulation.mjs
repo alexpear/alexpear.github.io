@@ -294,6 +294,17 @@ class CapePopulation {
         }
     }
 
+    // TODO questions: 
+    // Is the main call to visit() failing to call placeOddities? Is it not finding enough population under test parameters?
+    // How exactly to make a progress % log call?
+    // Is it walking both up & down as intended?
+    // What specifically is slow?
+    // Could check dataAt() slowdown by mocking it with 'return 10'.
+    // Would it be faster to call dataAt() for a larger square instead of for each pixel?
+    // Would it be faster to abandon the tree data structure? And instead rely on 2d-grid-shaped data structures? We could still zoom in & out according to the same gridtree patterns.
+    // Exactly what params should i be inputting? Could write a func to convert between the units. 
+    // Should we speed up by not checking every last pixel, & assuming similarity to neighbors?
+
     async odditiesTreeMap (rate, name) {
         this.rate = rate;
 
@@ -303,9 +314,9 @@ class CapePopulation {
 
         // 2^16 > EARTH_WIDTH
         this.root = new SquareNode(
-            30_000, // leftX
+            30_200, // leftX
             7_000, // topY
-            Math.pow(2, 5), // temp small scale for testing
+            Math.pow(2, 4), // temp small scale for testing
         );
         // this.root = new SquareNode(0, 0, SquareNode.MAX_RES);
         await this.root.visit();
@@ -428,7 +439,7 @@ class SquareNode {
     // Rename func to getOddities()? I suppose that sounds recursive... perhaps that is the way to go?
     // Let's avoid recursive. Singlethreaded. Output oddities to a global .oddities field. Static? SquareNode.cp.oddities
     async visit () {
-        if (this.width >= 16) {
+        if (this.width >= 4) {
             Util.logDebug({
                 leftX: this.leftX,
                 topY: this.topY,
