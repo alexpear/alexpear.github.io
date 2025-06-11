@@ -297,10 +297,21 @@ class CapePopulation {
     async odditiesTreeMap (rate, name) {
         this.rate = rate;
 
-        // 2^16 > width
+        SquareNode.EARTH_HEIGHT = 18_720;
+        SquareNode.EARTH_WIDTH = 43_200;
         SquareNode.MAX_RES = Math.pow(2, 16);
-        this.root = new SquareNode(0, 0, SquareNode.MAX_RES);
+
+        // 2^16 > EARTH_WIDTH
+        this.root = new SquareNode(
+            30_000, // leftX
+            7_000, // topY
+            Math.pow(2, 5), // temp small scale for testing
+        );
+        // this.root = new SquareNode(0, 0, SquareNode.MAX_RES);
         await this.root.visit();
+
+        // Add one final oddity at global res. Force it to round up to 1 oddity.
+        this.root.placeOddities();
 
         Util.log({
             oddities: this.oddities,
@@ -372,12 +383,13 @@ class CapePopulation {
 
 class SquareNode {
     // X & Y refer to tiff pixels.
-    constructor (leftX, topY, width) {
+    constructor (leftX, topY, width, parent) {
         this.leftX = leftX;
         this.topY = topY;
         this.width = width;
         // this.population = undefined;
         this.children = [];
+        this.parent = parent;
     }
 
     // Returns a random subsquare with unknown population, or undefined if there are no unknown subsquares.
@@ -390,10 +402,10 @@ class SquareNode {
             const childWidth = this.width / 2;
 
             this.children = [
-                new SquareNode(this.leftX, this.topY, childWidth),
-                new SquareNode(this.leftX + childWidth, this.topY, childWidth),
-                new SquareNode(this.leftX, this.topY + childWidth, childWidth),
-                new SquareNode(this.leftX + childWidth, this.topY + childWidth, childWidth),
+                new SquareNode(this.leftX, this.topY, childWidth, this),
+                new SquareNode(this.leftX + childWidth, this.topY, childWidth, this),
+                new SquareNode(this.leftX, this.topY + childWidth, childWidth, this),
+                new SquareNode(this.leftX + childWidth, this.topY + childWidth, childWidth, this),
             ];
         }
 
@@ -416,13 +428,15 @@ class SquareNode {
     // Rename func to getOddities()? I suppose that sounds recursive... perhaps that is the way to go?
     // Let's avoid recursive. Singlethreaded. Output oddities to a global .oddities field. Static? SquareNode.cp.oddities
     async visit () {
-        Util.logDebug({
-            leftX: this.leftX,
-            topY: this.topY,
-            width: this.width,
-            population: this.population,
-            childrenLength: this.children.length,
-        });
+        if (this.width >= 16) {
+            Util.logDebug({
+                leftX: this.leftX,
+                topY: this.topY,
+                width: this.width,
+                population: this.population,
+                childrenLength: this.children.length,
+            });
+        }
 
         if (this.width === 1) {
             if (this.population === undefined) {
@@ -432,16 +446,19 @@ class SquareNode {
                     1,
                 );
 
-                Util.logDebug({ rasters, });
+                // Util.logDebug({ rasters, });
 
-                this.population = rasters[0][0];
+                this.population = Math.max(
+                    rasters[0][0],
+                    0,
+                );
             }
 
-            if (this.population >= this.cp.rate) {
+            if (this.population >= SquareNode.cp.rate) {
                 this.placeOddities(
                     this.leftX,
                     this.topY,
-                    Math.floor(this.population / this.cp.rate),
+                    Math.floor(this.population / SquareNode.cp.rate),
                 );
             }
 
@@ -456,28 +473,23 @@ class SquareNode {
             mysteriousSubsquare = this.getRandomMysteriousSubsquare();
         }
 
-        // TODO NEXT cut recount - we will keep this.population up to date as we go.
-        this.population = 0; // Recount, because child visits may have partially converted child populations to oddities.
+        if (this.population === undefined) {
+            this.population = 0;
 
-        for (const child of this.children) {
-            if (child.population === undefined) {
-                Util.error({
-                    message: `Child population is undefined`,
-                    child,
-                });
+            for (const child of this.children) {
+                if (child.population === undefined) {
+                    Util.error({
+                        message: `Child population is undefined`,
+                        child,
+                    });
+                }
+
+                this.population += child.population;
             }
-
-            this.population += child.population; // well, if we dont trust .population fields, we might need to look deeper than 1 level down during the recount, right?
         }
 
-        if (this.population < this.cp.rate) {
-            if (this.width < SquareNode.MAX_RES) {
-                return; // Not enough population in this square; deal with it at lower res.
-            }
-
-            // TODO add the final oddity at global res. Reuse part or all of placeOddities - note that we have to force it to round up to 1 oddity.
-            // Or could move that to the top-level func, after the root.visit() call.
-            return;
+        if (this.population < SquareNode.cp.rate) {
+            return; // Not enough population in this square; deal with it at lower res.
         }
 
         // add oddities
@@ -495,30 +507,66 @@ class SquareNode {
     }
 
     placeOddities () {
-        const quantity = Math.floor(this.population / this.cp.rate) || 1;
+        const quantity = Math.floor(this.population / SquareNode.cp.rate) || 1;
 
-        for (let i = 0; i < quantity; i++) {
+        Util.logDebug({
+            context: `SquareNode.placeOddities()`,
+            leftX: this.leftX,
+            topY: this.topY,
+            width: this.width,
+            population: this.population,
+            quantity,
+        });
 
+        if (this.width === 1) {
+            for (let i = 0; i < quantity; i++) {
+                SquareNode.cp.oddities.push({
+                    // We multiply by a negative number because we need to invert. 0 maps to 90 N.
+                    lat: (this.topY + Math.random()) / SquareNode.EARTH_HEIGHT * -180 + 90,
+                    lon: (this.leftX + Math.random()) / SquareNode.EARTH_WIDTH * 360 - 180,
+                });
+
+                // LATER distribute the oddities more evenly around the square, like with a vector field.
+            }
+
+            this.decreasePopulation(quantity * SquareNode.cp.rate);
+            // LATER balance negative & positive populations after this.
         }
-
-        // TODO place oddities in random coords within this square. Decrement this.population.
+        else {
+            // Or instead of weighting across all children, perhaps instead select the most populous leaf in this square. Better for Hawaii etc. LATER could add some randomness to this. And could randomize within that square. And could look at the adjacent squares to weight that randomization.
+            for (let i = 0; i < quantity; i++) {
+                this.densestPixel().placeOddities();
+            }
+            // The case of 4 squares of value 0.9 ... will need 3 calls to densestPixel().
+        }
         
-        // Hmm: Will need a parent pointer etc to decrement .population of ancestors.
-        // Well, could instead call SquareNode.root.updatePop(-1_000_000, 51, 33), which will traverse down & update all nodes that encompass pixel (51, 33). Or .decreasePop(1_000_000, ...) etc, which is simpler than a negative parameter.
-
-        // Maybe start with visual diagram... 
+        // Hmm: Will need to decrement .population of ancestors.
+        // Parent pointers are perhaps best for runtime.
+        // OR could leave .population unmodified but also reference the number of oddities in the square (somehow). Could be a convenient alternative to storing a negative .population in some leaves.
 
         // LATER might reuse part or all of this func for squares of width > 1 too. 
-        // TODO In that case it will recurse, sometimes into squares that have population less than .rate. In these cases, will need to decrement the overflow into sibling squares, to add up to 1. Probably divide this overflow half & half into the 2 orthoganal siblings, then if there is more, the rest into the diagonal sibling.
+        // In that case it will recurse, sometimes into squares that have population less than .rate. In these cases, will need to decrement the overflow into sibling squares, to add up to 1. Probably divide this overflow half & half into the 2 orthoganal siblings, then if there is more, the rest into the diagonal sibling.
+        // Or rather ... but could just leave it negative. Those depths probably wont get visited again ... unless the positive siblings have very high values ... 
+    }
 
-        // GENERATED unproofread:
-        // const lat = y / this.cp.tiff.getHeight() * -180 + 90;
-        // const lon = x / this.cp.tiff.getWidth() * 360 - 180;
-        // this.cp.oddities.push({
-        //     quantity,
-        //     lat,
-        //     lon,
-        // });
+    densestPixel () {
+        if (this.width === 1) {
+            return this;
+        }
+
+        let densest = 0;
+        for (let i = 1; i < this.children.length; i++) {
+            if (this.children[i].population > this.children[densest].population) {
+                densest = i;
+            }
+        }
+
+        return this.children[densest].densestPixel();
+    }
+
+    decreasePopulation (n) {
+        this.population -= n;
+        this.parent?.decreasePopulation(n);
     }
 }
 
