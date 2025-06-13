@@ -56,7 +56,9 @@ class CapePopulation {
     }
 
     // Returns number
-    async dataAt (xPixel, yPixel) {
+    dataAt (xPixel, yPixel) {
+        // return 10; // test
+
         // Converts y into a further portion of the flattened array, all in rasters[0].
         const value = this.rasters[ yPixel * SquareNode.EARTH_WIDTH + xPixel ];
 
@@ -303,17 +305,17 @@ class CapePopulation {
         }
     }
 
-    // TODO questions: 
+    // questions: 
     // Is the main call to visit() failing to call placeOddities? Is it not finding enough population under test parameters?
     // How exactly to make a progress % log call?
     // Is it walking both up & down as intended?
     // What specifically is slow?
-    // Could check dataAt() slowdown by mocking it with 'return 10'.
     // Would it be faster to call dataAt() for a larger square instead of for each pixel?
     // Would it be faster to abandon the tree data structure? And instead rely on 2d-grid-shaped data structures? We could still zoom in & out according to the same gridtree patterns.
     // Exactly what params should i be inputting? Could write a func to convert between the units. 
     // Should we speed up by not checking every last pixel, & assuming similarity to neighbors?
     // FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+    // Note that this happens even when i mock dataAt(). The tree is too big i think.
     //   Can i load only a portion of the tiff file at a time? Streaming etc...
 
     async odditiesTreeMap (rate, name) {
@@ -338,7 +340,14 @@ class CapePopulation {
         //     Math.pow(2, 4), // temp small scale for testing
         // );
         this.root = new SquareNode(0, 0, SquareNode.MAX_RES);
-        await this.root.visit();
+        const randomLeaf = this.root.unexploredLeaf();
+
+        Util.logDebug({
+            context: 'odditiesTreeMap after readRasters()',
+            randomLeaf: randomLeaf?.toString(),
+        });
+
+        await randomLeaf.visit();
 
         // Add one final oddity at global res. Force it to round up to 1 oddity.
         this.root.placeOddities();
@@ -417,25 +426,79 @@ class SquareNode {
         this.leftX = leftX;
         this.topY = topY;
         this.width = width;
-        // this.population = undefined;
+        this.population = undefined;
         this.children = [];
         this.parent = parent;
     }
 
-    // Returns a random subsquare with unknown population, or undefined if there are no unknown subsquares.
-    getRandomMysteriousSubsquare () {
+    toString () {
+        const pop = this.population === undefined ?
+            '?' :
+            this.population;
+
+        return `SquareNode at (${this.leftX}, ${this.topY}), width ${this.width}, population ${pop}, ${this.children.length} child nodes.`;
+    }
+
+    // If all 4 children have .population numbers, returns undefined.
+    // Otherwise, explores a path down past 1 of those unexplored children until it reaches the leaf depth. Returns that leaf. 
+    unexploredLeaf () {
+        /* Algorithm:
+        * if this is already a leaf, return undefined if it has population.
+          * if it doesn't, look up its population & return it
+        * if this has no children, make them.
+        * select a random unexplored child.
+        * if no such child was found, return undefined.
+        * return await selected.unexploredLeaf()
+         */
+    
+        // Util.logDebug({
+        //     context: 'unexploredLeaf() top',
+        //     width: this.width,
+        //     leftX: this.leftX,
+        //     topY: this.topY,
+        //     childrenLength: this.children.length,
+        //     pixelsPopulated: SquareNode.pixelsPopulated,
+        // });
+
         if (this.width === 1) {
-            return; // Can't zoom in more.
+            if (this.population === undefined) {
+                this.population = SquareNode.cp.dataAt(this.leftX, this.topY);
+                SquareNode.pixelsPopulated++;
+
+                return this;
+            }
+
+            return;
         }
 
         if (this.children.length === 0) {
             const childWidth = this.width / 2;
 
             this.children = [
-                new SquareNode(this.leftX, this.topY, childWidth, this),
-                new SquareNode(this.leftX + childWidth, this.topY, childWidth, this),
-                new SquareNode(this.leftX, this.topY + childWidth, childWidth, this),
-                new SquareNode(this.leftX + childWidth, this.topY + childWidth, childWidth, this),
+                new SquareNode(
+                    this.leftX,
+                    this.topY,
+                    childWidth,
+                    this
+                ),
+                new SquareNode(
+                    this.leftX + childWidth,
+                    this.topY,
+                    childWidth,
+                    this
+                ),
+                new SquareNode(
+                    this.leftX,
+                    this.topY + childWidth,
+                    childWidth,
+                    this
+                ),
+                new SquareNode(
+                    this.leftX + childWidth,
+                    this.topY + childWidth,
+                    childWidth,
+                    this
+                ),
             ];
         }
 
@@ -445,12 +508,36 @@ class SquareNode {
             const subsquare = this.children[i];
 
             if (subsquare.population === undefined) {
-                return subsquare;
+                return subsquare.unexploredLeaf();
             }
         }
 
-        return;
+        return; // All children are explored.
     }
+
+    /* Variant alg idea: Each node has a .oddityCount field. Root starts with all the oddities. We gradually populate the other nodes' .oddityCount fields. Presumably we divide the count proportionally among the 4 subsquares, with randomness as necessary.
+     * We don't decrease .population fields, rather, we look at both .population & .oddityCount & .cp.rate
+     * Obstacle: Keeping the whole tree in-memory is expensive. Could estimate exactly how expensive.
+     * I think this will be a general problem with top-down strategies.
+     * 
+     * V2: Start at random leaf. Grow up until we can place a oddity. Then blank out .children so the garbage collection can free up space.
+     * Obstacle: If we want to re-use data in this square for position weighting, we'll have to query it again using readRasters().
+     * That is okay.
+     * visit() can do most of this i think. When we visit a node with known population, we either place oddities or return.
+     * Obstacle: Summing the 3-4 mysterious child populations. ... Well, no, visit() can write to .population & return nothing. Then the sum can read from the 4 .population fields.
+     * 
+     * Sketch of V2 alg:
+     * randomLeaf() makes & returns a leaf. It also reads the population for that leaf.
+     * We begin our visit() process at this leaf.
+     * 1, If there are mysterious subsquares, use randomLeaf() to explore them. Name it this.randomUnknownLeaf() maybe.
+     * 2, if population is known in this subtree, try to place oddities. If we do, note this in this node. Overwrite .children once we can.
+     * 3, visit() parent.
+     *   Do we do this recursively or via a top level imperative func? During the mysterious subsquare visits, will this cause 3 visits back to here?
+     *   I guess the trouble is that, midway thru a mysterious subtree search, parent.visit() is unnecessary. BUT since we start at a leaf, going up that parent chain is indeed necessary.
+     *   Okay so we get rid of recursive DFS for mysterious subtrees, & use randomLeaf() for everything. Comment edited to reflect this above. We never have multiple things happening at once.
+     * 
+     * And if there are still memory problems, we can delete subtrees during visit() after we establish all 4 subsquares are mapped. Delete grandchildren etc.
+     */
 
     // Try to convert population to oddities
     // Tempted to have this be a nonrecursive alg - singlethreaded etc
@@ -458,7 +545,7 @@ class SquareNode {
     // Rename func to getOddities()? I suppose that sounds recursive... perhaps that is the way to go?
     // Let's avoid recursive. Singlethreaded. Output oddities to a global .oddities field. Static? SquareNode.cp.oddities
     async visit () {
-        if (this.width >= Math.pow(2, 9)) {
+        if (this.width >= Math.pow(2, 0)) {
             Util.logDebug({
                 leftX: this.leftX,
                 topY: this.topY,
@@ -470,33 +557,9 @@ class SquareNode {
             });
         }
 
-        if (this.width === 1) {
-            if (this.population === undefined) {
-                this.population = await SquareNode.cp.dataAt(
-                    this.leftX,
-                    this.topY,
-                );
-
-                SquareNode.pixelsPopulated++;
-            }
-
-            if (this.population >= SquareNode.cp.rate) {
-                this.placeOddities(
-                    this.leftX,
-                    this.topY,
-                    Math.floor(this.population / SquareNode.cp.rate),
-                );
-            }
-
-            return;
-        }
-
-        let mysteriousSubsquare = this.getRandomMysteriousSubsquare();
-
-        while (mysteriousSubsquare) {
-            await mysteriousSubsquare.visit();
-
-            mysteriousSubsquare = this.getRandomMysteriousSubsquare();
+        let unexplored = this.unexploredLeaf();
+        if (unexplored) {
+            return await unexplored.visit();
         }
 
         if (this.population === undefined) {
@@ -514,22 +577,25 @@ class SquareNode {
             }
         }
 
-        if (this.population < SquareNode.cp.rate) {
-            return; // Not enough population in this square; deal with it at lower res.
+        if (this.population >= SquareNode.cp.rate) {
+            // add oddities
+            // start weighted across all 4 children, but decrement pop of whichever child we land in. 
+            // Do we need to decrement pop at all lower resolutions?
+            // Tempting not to; would rather forget about low res squarenodes forever after they have defined populations.
+            // but OBSTACLE - the lower res data could usefully guide us in placing oddities.
+            
+            // If we decrement, is it easier to decrement all descendants upon each new oddity, or to always check your children rather than trusting your .population value?
+            // Well, the 2nd option kindof obviates caching in general. So only leaves would need .population values.
+            // And when you place oddities, it's kindof like decrementing the 1-width square and its _ancestors_, not descendants.
+            // So cache population on nonleaves or not?
+            // I think do cache it & keep it up to date. At least with magic schools, there will be far fewer oddities than pop-reads.
+            this.placeOddities();
         }
 
-        // add oddities
-        // start weighted across all 4 children, but decrement pop of whichever child we land in. 
-        // Do we need to decrement pop at all lower resolutions?
-        // Tempting not to; would rather forget about low res squarenodes forever after they have defined populations.
-        // but OBSTACLE - the lower res data could usefully guide us in placing oddities.
-        
-        // If we decrement, is it easier to decrement all descendants upon each new oddity, or to always check your children rather than trusting your .population value?
-        // Well, the 2nd option kindof obviates caching in general. So only leaves would need .population values.
-        // And when you place oddities, it's kindof like decrementing the 1-width square and its _ancestors_, not descendants.
-        // So cache population on nonleaves or not?
-        // I think do cache it & keep it up to date. At least with magic schools, there will be far fewer oddities than pop-reads.
-        this.placeOddities();
+        return await this.parent.visit(); // Not enough population in this square; deal with it later.
+        // TODO (partially) supplant visit() with a top-level iterative func. Motive: I'm building up too big a call stack from this line.
+
+        // LATER could also delete grand/children here if necessary to save memory.
     }
 
     placeOddities () {
@@ -557,11 +623,13 @@ class SquareNode {
 
             this.decreasePopulation(quantity * SquareNode.cp.rate);
             // LATER balance negative & positive populations after this.
+
+            this.tidyChildren();
         }
         else {
             // Or instead of weighting across all children, perhaps instead select the most populous leaf in this square. Better for Hawaii etc. LATER could add some randomness to this. And could randomize within that square. And could look at the adjacent squares to weight that randomization.
             for (let i = 0; i < quantity; i++) {
-                this.densestPixel().placeOddities();
+                this.densestPixel().placeOddities(); // LATER make sure densestPixel() doesnt have a bias towards the top left corner in areas of homogenous data.
             }
             // The case of 4 squares of value 0.9 ... will need 3 calls to densestPixel().
         }
@@ -593,6 +661,11 @@ class SquareNode {
     decreasePopulation (n) {
         this.population -= n;
         this.parent?.decreasePopulation(n);
+    }
+
+    tidyChildren () {
+        // Aggressive for now.
+        this.children = [];
     }
 }
 
