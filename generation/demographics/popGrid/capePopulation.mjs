@@ -320,18 +320,30 @@ class CapePopulation {
 
     async odditiesTreeMap (rate, name) {
         this.rate = rate;
-
-        // this.rasters = await this.tiff.readRasters();
-        const raw = await this.tiff.readRasters({
-            window: [ 0, 0, Math.pow(2, 12), Math.pow(2, 12) ] // small test
-        });
-            
-        this.rasters = raw[0];
-
         SquareNode.EARTH_HEIGHT = 18_720;
         SquareNode.EARTH_WIDTH = 43_200;
         SquareNode.MAX_RES = Math.pow(2, 16);
         SquareNode.pixelsPopulated = 0;
+
+        // this.rasters = await this.tiff.readRasters();
+        const raw = await this.tiff.readRasters(
+            // {
+            //     // small test
+            //     window: [ 
+            //         30_200, 
+            //         7_000, 
+            //         30_200 + Math.pow(2, 12), 
+            //         7_000 + Math.pow(2, 12) 
+            //     ] 
+            // }
+        );
+
+        /** Runtime notes
+         * 2025 June 13 1629 - 20 minutes. readRasters() was set to 2^12 width, rest was full scale. readRasters() was only 10 seconds.
+         * 2025 June 13 1705 - Ran readRasters() with no params: 3m 30s for that step. Total alg was 20 minutes. Still saw bug with NaN & null populations.
+         */
+
+        this.rasters = raw[0];
 
         // 2^16 > EARTH_WIDTH
         // this.root = new SquareNode(
@@ -340,22 +352,79 @@ class CapePopulation {
         //     Math.pow(2, 4), // temp small scale for testing
         // );
         this.root = new SquareNode(0, 0, SquareNode.MAX_RES);
-        const randomLeaf = this.root.unexploredLeaf();
 
-        Util.logDebug({
-            context: 'odditiesTreeMap after readRasters()',
-            randomLeaf: randomLeaf?.toString(),
-        });
+        let currentNode = this.root;
 
-        await randomLeaf.visit();
+        while (currentNode) {
+            let unexplored = currentNode.unexploredLeaf();
+            if (unexplored) {
+                currentNode = unexplored;
+                continue;
+            }
+
+            if (currentNode.population === undefined) {
+                currentNode.population = 0;
+
+                for (const child of currentNode.children) {
+                    if (child.population === undefined) {
+                        Util.error({
+                            message: `Child population is undefined`,
+                            child,
+                        });
+                    }
+
+                    // TODO Bug - .population sometimes logs as null or NaN.
+                    currentNode.population += child.population;
+                }
+            }
+
+            if (currentNode.width >= Math.pow(2, 12) && currentNode.population !== undefined) {
+                Util.logDebug({
+                    context: 'odditiesTreeMap() while loop',
+                    currentNode: currentNode.toString(),
+                    // rasterLength: SquareNode.cp.rasters.length,
+                    pixelsPopulated: SquareNode.pixelsPopulated,
+                    pixelTotalCount: 4_294_967_296, // 2^16^2
+                    // populatedRatio: SquareNode.pixelsPopulated / (SquareNode.EARTH_WIDTH * SquareNode.EARTH_WIDTH),
+                    // heapUsed: process.memoryUsage().heapUsed / 1_048_576, // MB
+                });
+
+                if (! (currentNode.population >= 0) ){
+                    Util.error({
+                        message: `currentNode.population is screwy`,
+                        currentNode: currentNode.toString(),
+                    });
+                }
+            }
+
+            if (currentNode.population >= SquareNode.cp.rate) {
+                currentNode.placeOddities();
+            }
+
+            // if (process.memoryUsage().heapUsed > 100_000_000) {
+                currentNode.tidyChildren();
+            // }
+            currentNode = currentNode.parent;
+        }
+
+        // const randomLeaf = this.root.unexploredLeaf();
+
+        // Util.logDebug({
+        //     context: 'odditiesTreeMap after readRasters()',
+        //     randomLeaf: randomLeaf?.toString(),
+        // });
+
+        // await randomLeaf.visit();
 
         // Add one final oddity at global res. Force it to round up to 1 oddity.
         this.root.placeOddities();
 
-        Util.log({
-            oddities: this.oddities,
-            name,
-        });
+        console.log(
+            `${name}: ` + 
+            this.oddities.map(
+                oddity => `${oddity.lat}, ${oddity.lon}`
+            ).join('\n')
+        );
     }
 
     // NOTE: Currently takes 5 minutes ish to run. Each square has a chance of a oddity; neighbors not considered.
@@ -544,78 +613,90 @@ class SquareNode {
     // Possible outcomes: Need to examine a specific mysterious subsquare first, or found N oddities. 
     // Rename func to getOddities()? I suppose that sounds recursive... perhaps that is the way to go?
     // Let's avoid recursive. Singlethreaded. Output oddities to a global .oddities field. Static? SquareNode.cp.oddities
-    async visit () {
-        if (this.width >= Math.pow(2, 0)) {
-            Util.logDebug({
-                leftX: this.leftX,
-                topY: this.topY,
-                width: this.width,
-                population: this.population,
-                childrenLength: this.children.length,
-                rasterLength: SquareNode.cp.rasters.length,
-                populatedRatio: SquareNode.pixelsPopulated / (SquareNode.EARTH_WIDTH * SquareNode.EARTH_HEIGHT),
-            });
-        }
+    // async visit () {
+    //     if (this.width >= Math.pow(2, 0)) {
+    //         Util.logDebug({
+    //             leftX: this.leftX,
+    //             topY: this.topY,
+    //             width: this.width,
+    //             population: this.population,
+    //             childrenLength: this.children.length,
+    //             rasterLength: SquareNode.cp.rasters.length,
+    //             populatedRatio: SquareNode.pixelsPopulated / (SquareNode.EARTH_WIDTH * SquareNode.EARTH_HEIGHT),
+    //         });
+    //     }
 
-        let unexplored = this.unexploredLeaf();
-        if (unexplored) {
-            return await unexplored.visit();
-        }
+    //     let unexplored = this.unexploredLeaf();
+    //     if (unexplored) {
+    //         return await unexplored.visit();
+    //     }
 
-        if (this.population === undefined) {
-            this.population = 0;
+    //     if (this.population === undefined) {
+    //         this.population = 0;
 
-            for (const child of this.children) {
-                if (child.population === undefined) {
-                    Util.error({
-                        message: `Child population is undefined`,
-                        child,
-                    });
-                }
+    //         for (const child of this.children) {
+    //             if (child.population === undefined) {
+    //                 Util.error({
+    //                     message: `Child population is undefined`,
+    //                     child,
+    //                 });
+    //             }
 
-                this.population += child.population;
-            }
-        }
+    //             this.population += child.population;
+    //         }
+    //     }
 
-        if (this.population >= SquareNode.cp.rate) {
-            // add oddities
-            // start weighted across all 4 children, but decrement pop of whichever child we land in. 
-            // Do we need to decrement pop at all lower resolutions?
-            // Tempting not to; would rather forget about low res squarenodes forever after they have defined populations.
-            // but OBSTACLE - the lower res data could usefully guide us in placing oddities.
+    //     if (this.population >= SquareNode.cp.rate) {
+    //         // add oddities
+    //         // start weighted across all 4 children, but decrement pop of whichever child we land in. 
+    //         // Do we need to decrement pop at all lower resolutions?
+    //         // Tempting not to; would rather forget about low res squarenodes forever after they have defined populations.
+    //         // but OBSTACLE - the lower res data could usefully guide us in placing oddities.
             
-            // If we decrement, is it easier to decrement all descendants upon each new oddity, or to always check your children rather than trusting your .population value?
-            // Well, the 2nd option kindof obviates caching in general. So only leaves would need .population values.
-            // And when you place oddities, it's kindof like decrementing the 1-width square and its _ancestors_, not descendants.
-            // So cache population on nonleaves or not?
-            // I think do cache it & keep it up to date. At least with magic schools, there will be far fewer oddities than pop-reads.
-            this.placeOddities();
-        }
+    //         // If we decrement, is it easier to decrement all descendants upon each new oddity, or to always check your children rather than trusting your .population value?
+    //         // Well, the 2nd option kindof obviates caching in general. So only leaves would need .population values.
+    //         // And when you place oddities, it's kindof like decrementing the 1-width square and its _ancestors_, not descendants.
+    //         // So cache population on nonleaves or not?
+    //         // I think do cache it & keep it up to date. At least with magic schools, there will be far fewer oddities than pop-reads.
+    //         this.placeOddities();
+    //     }
 
-        return await this.parent.visit(); // Not enough population in this square; deal with it later.
-        // TODO (partially) supplant visit() with a top-level iterative func. Motive: I'm building up too big a call stack from this line.
+    //     return await this.parent.visit(); // Not enough population in this square; deal with it later.
+    
 
-        // LATER could also delete grand/children here if necessary to save memory.
-    }
+    //     // LATER could also delete grand/children here if necessary to save memory.
+    // }
 
     placeOddities () {
-        const quantity = Math.floor(this.population / SquareNode.cp.rate) || 1;
-
         Util.logDebug({
             context: `SquareNode.placeOddities()`,
             leftX: this.leftX,
             topY: this.topY,
             width: this.width,
             population: this.population,
-            quantity,
         });
 
-        if (this.width === 1) {
+        if (this.width >= 2 && this.children.length === 4) {
+            while (this.population >= SquareNode.cp.rate) {
+                this.densestPixel().placeOddities();
+            }
+        }
+        else {
+            if (this.topY > SquareNode.EARTH_HEIGHT || this.leftX > SquareNode.EARTH_WIDTH) {
+                Util.error({
+                    message: `SquareNode.placeOddities() called on square outside of Earth bounds`,
+                    squareNode: this.toString(),
+                });
+            }
+
+            const quantity = Math.floor(this.population / SquareNode.cp.rate) || 1;
+
             for (let i = 0; i < quantity; i++) {
                 SquareNode.cp.oddities.push({
-                    // We multiply by a negative number because we need to invert. 0 maps to 90 N.
-                    lat: (this.topY + Math.random()) / SquareNode.EARTH_HEIGHT * -180 + 90,
-                    lon: (this.leftX + Math.random()) / SquareNode.EARTH_WIDTH * 360 - 180,
+                    // We multiply Y by a negative number because we need to invert. 0 maps to 90 N.
+                    lat: (this.topY + Math.random() * this.width) / SquareNode.EARTH_HEIGHT * -180 + 90,
+                    lon: (this.leftX + Math.random() * this.width) / SquareNode.EARTH_WIDTH * 360 - 180,
+                    // TODO bug - i see outputs with lon in range [-180, 360], which goes too high. Also, all outputs have lat > 70 except the last, which was lat -306.
                 });
 
                 // LATER distribute the oddities more evenly around the square, like with a vector field.
@@ -624,15 +705,12 @@ class SquareNode {
             this.decreasePopulation(quantity * SquareNode.cp.rate);
             // LATER balance negative & positive populations after this.
 
-            this.tidyChildren();
+            // this.tidyChildren();
         }
-        else {
-            // Or instead of weighting across all children, perhaps instead select the most populous leaf in this square. Better for Hawaii etc. LATER could add some randomness to this. And could randomize within that square. And could look at the adjacent squares to weight that randomization.
-            for (let i = 0; i < quantity; i++) {
-                this.densestPixel().placeOddities(); // LATER make sure densestPixel() doesnt have a bias towards the top left corner in areas of homogenous data.
-            }
-            // The case of 4 squares of value 0.9 ... will need 3 calls to densestPixel().
-        }
+        
+        // LATER make sure densestPixel() doesnt have a bias towards the top left corner in areas of homogenous data.
+
+        // The case of 4 squares of value 0.9 ... will need 3 calls to densestPixel().
         
         // Hmm: Will need to decrement .population of ancestors.
         // Parent pointers are perhaps best for runtime.
@@ -644,7 +722,13 @@ class SquareNode {
     }
 
     densestPixel () {
-        if (this.width === 1) {
+        Util.logDebug({
+            context: 'densestPixel()',
+            toString: this.toString(),
+        });
+
+        // By this point we might well have deleted the children. LATER rename old misnomer Pixel in function name to Child etc.
+        if (this.children.length === 0 || this.width === 1) {
             return this;
         }
 
@@ -665,9 +749,20 @@ class SquareNode {
 
     tidyChildren () {
         // Aggressive for now.
+        // this.children.forEach( child => { child.parent = undefined; }); // LATER delete this line - no impact on garbage collection.
         this.children = [];
     }
 }
+
+/* Performance testing ideas
+
+clinic doctor -- node capePopulation.mjs
+
+0x capePopulation.mjs
+
+node --inspect-brk capePopulation.mjs
+chrome://inspect
+ */
 
 // module.exports = CapePopulation;
 
