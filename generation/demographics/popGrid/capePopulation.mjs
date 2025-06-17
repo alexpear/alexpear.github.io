@@ -57,16 +57,19 @@ class CapePopulation {
 
     // Returns number
     dataAt (xPixel, yPixel) {
-        // return 10; // test
+        if (xPixel > SquareNode.EARTH_WIDTH || yPixel > SquareNode.EARTH_HEIGHT) {
+            return 0;
+        }
 
         // Converts y into a further portion of the flattened array, all in rasters[0].
         const value = this.rasters[ yPixel * SquareNode.EARTH_WIDTH + xPixel ];
 
-        if (! (value > 0)) {
+        if (value > 0) {
+            return value;
+        }
+        else {
             return 0;
         }
-
-        return value;
 
         // return await this.tiff.readRasters({
         //     window: [
@@ -389,7 +392,7 @@ class CapePopulation {
                     // heapUsed: process.memoryUsage().heapUsed / 1_048_576, // MB
                 });
 
-                if (! (currentNode.population >= 0) ){
+                if (! Util.exists(currentNode.population)){
                     Util.error({
                         message: `currentNode.population is screwy`,
                         currentNode: currentNode.toString(),
@@ -676,6 +679,8 @@ class SquareNode {
             population: this.population,
         });
 
+        // TODO population becomes NaN somewhere in this func.
+
         if (this.width >= 2 && this.children.length === 4) {
             while (this.population >= SquareNode.cp.rate) {
                 this.densestPixel().placeOddities();
@@ -687,20 +692,41 @@ class SquareNode {
                     message: `SquareNode.placeOddities() called on square outside of Earth bounds`,
                     squareNode: this.toString(),
                 });
+
+                // TODO error seen twice 2025 June 16 
+                // SquareNode at (55296, 9216), width 1024, population 51383402.52174434
             }
 
             const quantity = Math.floor(this.population / SquareNode.cp.rate) || 1;
 
             for (let i = 0; i < quantity; i++) {
-                SquareNode.cp.oddities.push({
-                    // We multiply Y by a negative number because we need to invert. 0 maps to 90 N.
-                    lat: (this.topY + Math.random() * this.width) / SquareNode.EARTH_HEIGHT * -180 + 90,
-                    lon: (this.leftX + Math.random() * this.width) / SquareNode.EARTH_WIDTH * 360 - 180,
-                    // TODO bug - i see outputs with lon in range [-180, 360], which goes too high. Also, all outputs have lat > 70 except the last, which was lat -306.
-                });
+                // We multiply Y by a negative number because we need to invert. 0 maps to 90 N.
+                const lat = (this.topY + Math.random() * this.width) / SquareNode.EARTH_HEIGHT * -180 + 90;
+                const lon = (this.leftX + Math.random() * this.width) / SquareNode.EARTH_WIDTH * 360 - 180;
+                
+                // TODO bug - i see outputs with lon in range [-180, 360], which goes too high. Also, all outputs have lat > 70 except the last, which was lat -306.
+                if (lat < -90 || lon > 180) {
+                    Util.error({
+                        message: `CapePopulation.placeOddities() oddity lat/lon out of bounds`,
+                        lat,
+                        lon,
+                        quantity,
+                        squareNode: this.toString(),
+                    });
+                }
+
+                SquareNode.cp.oddities.push({ lat, lon });
 
                 // LATER distribute the oddities more evenly around the square, like with a vector field.
             }
+
+            Util.logDebug({
+                context: `SquareNode.placeOddities(), near bottom of else {}`,
+                squareNode: this.toString(),
+                quantity,
+                rate: SquareNode.cp.rate,
+                odditiesCount: SquareNode.cp.oddities.length,
+            });
 
             this.decreasePopulation(quantity * SquareNode.cp.rate);
             // LATER balance negative & positive populations after this.
@@ -743,7 +769,31 @@ class SquareNode {
     }
 
     decreasePopulation (n) {
+        Util.logDebug({
+            context: 'SquareNode.decreasePopulation() top',
+            squareNode: this.toString(),
+            n,
+        });
+
+        if (this.population === undefined) {
+            return;
+        }
+
         this.population -= n;
+
+        Util.logDebug({
+            context: 'SquareNode.decreasePopulation() after subtraction',
+            squareNode: this.toString(),
+        });
+
+        if (! Util.exists(this.population)) {
+            Util.error({
+                message: `SquareNode.decreasePopulation() population is screwy`,
+                squareNode: this.toString(),
+                population: this.population,
+            });
+        }
+
         this.parent?.decreasePopulation(n);
     }
 
