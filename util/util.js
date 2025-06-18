@@ -357,6 +357,29 @@ class Util {
         return n;
     }
 
+    // Less permissive than constrain()
+    static constrainOrError (n, min = 0, max = 1, leeway = 0.01) {
+        if (n >= min && n <= max) {
+            return n;
+        }
+
+        if (n >= min - leeway && n < min) {
+            return min;
+        }
+
+        if (n <= max + leeway) {
+            return max;
+        }
+
+        Util.error({
+            n,
+            min,
+            max,
+            leeway,
+            message: `Util.constrainOrError() - n is too far out of bounds`,
+        });
+    }
+
     static randomIntBetween (minInclusive, maxExclusive) {
         if (! Util.exists(minInclusive) || ! Util.exists(maxExclusive)) {
             console.log('error: Util.randomIntBetween() called with missing parameters.');

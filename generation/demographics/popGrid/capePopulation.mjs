@@ -328,6 +328,9 @@ class CapePopulation {
         SquareNode.MAX_RES = Math.pow(2, 16);
         SquareNode.pixelsPopulated = 0;
 
+        // Debug. Mapping from width to the max population of a node of that width.
+        SquareNode.maxPopAtWidth = {};
+
         // this.rasters = await this.tiff.readRasters();
         const raw = await this.tiff.readRasters(
             // {
@@ -379,6 +382,8 @@ class CapePopulation {
                     // TODO Bug - .population sometimes logs as null or NaN.
                     currentNode.population += child.population;
                 }
+
+                currentNode.updateMaxPopAtWidth();
             }
 
             if (currentNode.width >= Math.pow(2, 12) && currentNode.population !== undefined) {
@@ -428,6 +433,9 @@ class CapePopulation {
                 oddity => `${oddity.lat}, ${oddity.lon}`
             ).join('\n')
         );
+
+        console.log(`SquareNode.maxPopAtWidth:`);
+        Util.log(SquareNode.maxPopAtWidth);
     }
 
     // NOTE: Currently takes 5 minutes ish to run. Each square has a chance of a oddity; neighbors not considered.
@@ -480,6 +488,11 @@ class CapePopulation {
     }
 
     static async run () {
+        if (! process.argv[2]) {
+            console.log(`Usage - To search for oddities, run: node capePopulation.mjs search`);
+            return;
+        }
+
         const cp = await CapePopulation.new();
         Util.logDebug(`Done with new().`);
 
@@ -494,7 +507,7 @@ class CapePopulation {
 
 class SquareNode {
     // X & Y refer to tiff pixels.
-    constructor (leftX, topY, width, parent) {
+    constructor (leftX = 0, topY = 0, width = 1, parent) {
         this.leftX = leftX;
         this.topY = topY;
         this.width = width;
@@ -536,6 +549,7 @@ class SquareNode {
             if (this.population === undefined) {
                 this.population = SquareNode.cp.dataAt(this.leftX, this.topY);
                 SquareNode.pixelsPopulated++;
+                currentNode.updateMaxPopAtWidth();
 
                 return this;
             }
@@ -585,6 +599,24 @@ class SquareNode {
         }
 
         return; // All children are explored.
+    }
+
+    updateMaxPopAtWidth () {
+        if (SquareNode.maxPopAtWidth[this.width] === undefined) {
+            SquareNode.maxPopAtWidth[this.width] = this.population;
+        }
+        else if (this.population > SquareNode.maxPopAtWidth[this.width]) {
+            SquareNode.maxPopAtWidth[this.width] = this.population;
+        }
+        else {
+            return;
+        }
+
+        Util.logDebug({
+            context: 'SquareNode.updateMaxPopAtWidth()',
+            squareNode: this.toString(),
+            maxPopAtThisWidth: SquareNode.maxPopAtWidth[this.width],
+        });
     }
 
     /* Variant alg idea: Each node has a .oddityCount field. Root starts with all the oddities. We gradually populate the other nodes' .oddityCount fields. Presumably we divide the count proportionally among the 4 subsquares, with randomness as necessary.
@@ -700,22 +732,7 @@ class SquareNode {
             const quantity = Math.floor(this.population / SquareNode.cp.rate) || 1;
 
             for (let i = 0; i < quantity; i++) {
-                // We multiply Y by a negative number because we need to invert. 0 maps to 90 N.
-                const lat = (this.topY + Math.random() * this.width) / SquareNode.EARTH_HEIGHT * -180 + 90;
-                const lon = (this.leftX + Math.random() * this.width) / SquareNode.EARTH_WIDTH * 360 - 180;
-                
-                // TODO bug - i see outputs with lon in range [-180, 360], which goes too high. Also, all outputs have lat > 70 except the last, which was lat -306.
-                if (lat < -90 || lon > 180) {
-                    Util.error({
-                        message: `CapePopulation.placeOddities() oddity lat/lon out of bounds`,
-                        lat,
-                        lon,
-                        quantity,
-                        squareNode: this.toString(),
-                    });
-                }
-
-                SquareNode.cp.oddities.push({ lat, lon });
+                SquareNode.cp.oddities.push(this.latLon());
 
                 // LATER distribute the oddities more evenly around the square, like with a vector field.
             }
@@ -745,6 +762,28 @@ class SquareNode {
         // LATER might reuse part or all of this func for squares of width > 1 too. 
         // In that case it will recurse, sometimes into squares that have population less than .rate. In these cases, will need to decrement the overflow into sibling squares, to add up to 1. Probably divide this overflow half & half into the 2 orthoganal siblings, then if there is more, the rest into the diagonal sibling.
         // Or rather ... but could just leave it negative. Those depths probably wont get visited again ... unless the positive siblings have very high values ... 
+    }
+
+    latLon () {
+        // We multiply Y by a negative number because we need to invert. 0 maps to 90 N.
+        const lat = (this.topY + Math.random() * this.width) / SquareNode.EARTH_HEIGHT * -180 + 90;
+        const lon = (this.leftX + Math.random() * this.width) / SquareNode.EARTH_WIDTH * 360 - 180;
+        
+        // Util.logDebug({
+        //     context: 'SquareNode.latLon()',
+        //     squareNode: this.toString(),
+        //     lat,
+        //     lon,
+        //     SquareNodeEarthHeight: SquareNode.EARTH_HEIGHT,
+        //     SquareNodeEarthWidth: SquareNode.EARTH_WIDTH,
+        // });
+
+        // TODO bug - i see outputs with lon in range [-180, 360], which goes too high. Also, all outputs have lat > 70 except the last, which was lat -306.
+
+        return { 
+            lat: Util.constrainOrError(lat, -90, 90), 
+            lon: Util.constrainOrError(lon, -180, 180),
+        };
     }
 
     densestPixel () {
@@ -814,6 +853,6 @@ node --inspect-brk capePopulation.mjs
 chrome://inspect
  */
 
-// module.exports = CapePopulation;
+export default SquareNode;
 
 await CapePopulation.run();
