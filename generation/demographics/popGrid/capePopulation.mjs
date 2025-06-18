@@ -309,31 +309,30 @@ class CapePopulation {
     }
 
     printLowRes (width) {
-        const lines = [];
+        console.log(`Resolution = ${width} squares`);
+        // const lines = [];
 
         for (let x = 0; x < SquareNode.EARTH_WIDTH; x += width) {
-            let line = '';
+            const row = [];
 
             for (let y = 0; y < SquareNode.EARTH_HEIGHT; y += width) {
-                let squarePop = 0;
+                let newResPop = 0;
 
                 for (let xInSquare = 0; xInSquare < width; xInSquare++) {
                     for (let yInSquare = 0; yInSquare < width; yInSquare++) {
                         const pixelPop = this.dataAt(x + xInSquare, y + yInSquare);
 
                         if (pixelPop > 0) {
-                            squarePop += pixelPop;
+                            newResPop += pixelPop;
                         }
                     }
                 }
 
-                line += `${squarePop} `; // TODO bug squarePop is not declared at this point.
+                row.push(newResPop);
             }
 
-            lines.push(line);
+            console.log(`${row.join(' ')}`);
         }
-
-        console.log(`Resolution = ${width} squares \n${lines.join('\n')}`);
     }
 
     // questions: 
@@ -349,7 +348,7 @@ class CapePopulation {
     // Note that this happens even when i mock dataAt(). The tree is too big i think.
     //   Can i load only a portion of the tiff file at a time? Streaming etc...
 
-    async odditiesTreeMap (rate, name) {
+    async odditiesTreeMap (rate, name, dryRun) {
         this.rate = rate;
         SquareNode.EARTH_HEIGHT = 18_720;
         SquareNode.EARTH_WIDTH = 43_200;
@@ -361,6 +360,8 @@ class CapePopulation {
 
         // this.rasters = await this.tiff.readRasters();
         const raw = await this.tiff.readRasters();
+
+        // TODO read from worldpop low res txt file instead for speedup. Will need to modify dataAt() too. See capes sheet for which rates are supported by which resolutions.
 
         // {
         //     // small test
@@ -389,7 +390,7 @@ class CapePopulation {
 
         let currentNode = this.root;
 
-        return; // temp
+        // return; // temp
 
         while (currentNode) {
             let unexplored = currentNode.unexploredLeaf();
@@ -409,7 +410,6 @@ class CapePopulation {
                         });
                     }
 
-                    // TODO Bug - .population sometimes logs as null or NaN.
                     currentNode.population += child.population;
                 }
 
@@ -435,7 +435,7 @@ class CapePopulation {
                 }
             }
 
-            if (currentNode.population >= SquareNode.cp.rate) {
+            if (currentNode.population >= SquareNode.cp.rate && ! dryRun) {
                 currentNode.placeOddities();
             }
 
@@ -454,18 +454,21 @@ class CapePopulation {
 
         // await randomLeaf.visit();
 
-        // Add one final oddity at global res. Force it to round up to 1 oddity.
-        this.root.placeOddities();
+        if (dryRun) {
+            console.log(`SquareNode.maxPopAtWidth is complete:`);
+            Util.log(SquareNode.maxPopAtWidth);
+        }
+        else {
+            // Add one final oddity at global res. Force it to round up to 1 oddity.
+            this.root.placeOddities();
 
-        console.log(
-            `${name}: ` + 
-            this.oddities.map(
-                oddity => `${oddity.lat}, ${oddity.lon}`
-            ).join('\n')
-        );
-
-        console.log(`SquareNode.maxPopAtWidth:`);
-        Util.log(SquareNode.maxPopAtWidth);
+            console.log(
+                `${name}: ` + 
+                this.oddities.map(
+                    oddity => `${oddity.lat} ${oddity.lon}`
+                ).join('\n')
+            );
+        }
     }
 
     // NOTE: Currently takes 5 minutes ish to run. Each square has a chance of a oddity; neighbors not considered.
@@ -527,9 +530,12 @@ class CapePopulation {
         Util.logDebug(`Done with new().`);
 
         // await cp.randomOdditiesVegas(71_012_000, 'wizard schools');
-        await cp.odditiesTreeMap(71_012_000, 'wizard schools');
 
-        cp.printLowRes(4);
+        await cp.odditiesTreeMap(71_012_000, 'wizard schools');
+        // await cp.odditiesTreeMap(71_012_000, 'wizard schools', 'dryRun');
+
+        // cp.printLowRes(32);
+        // cp.printLowRes(256);
 
         Util.logDebug(`Done with run()`);
     }
@@ -631,7 +637,6 @@ class SquareNode {
         return; // All children are explored.
     }
 
-    // TODO bug - will need to call this on a separate traversal that doesnt involve decreasePopulation().
     updateMaxPopAtWidth () {
         if (SquareNode.maxPopAtWidth[this.width] === undefined) {
             SquareNode.maxPopAtWidth[this.width] = this.population;
@@ -643,11 +648,11 @@ class SquareNode {
             return;
         }
 
-        Util.logDebug({
-            context: 'SquareNode.updateMaxPopAtWidth()',
-            squareNode: this.toString(),
-            maxPopAtThisWidth: SquareNode.maxPopAtWidth[this.width],
-        });
+        // Util.logDebug({
+        //     context: 'SquareNode.updateMaxPopAtWidth()',
+        //     squareNode: this.toString(),
+        //     maxPopAtThisWidth: SquareNode.maxPopAtWidth[this.width],
+        // });
     }
 
     /* Variant alg idea: Each node has a .oddityCount field. Root starts with all the oddities. We gradually populate the other nodes' .oddityCount fields. Presumably we divide the count proportionally among the 4 subsquares, with randomness as necessary.
@@ -742,8 +747,6 @@ class SquareNode {
             population: this.population,
         });
 
-        // TODO population becomes NaN somewhere in this func.
-
         if (this.width >= 2 && this.children.length === 4) {
             while (this.population >= SquareNode.cp.rate) {
                 this.densestPixel().placeOddities();
@@ -755,9 +758,6 @@ class SquareNode {
                     message: `SquareNode.placeOddities() called on square outside of Earth bounds`,
                     squareNode: this.toString(),
                 });
-
-                // TODO error seen twice 2025 June 16 
-                // SquareNode at (55296, 9216), width 1024, population 51383402.52174434
             }
 
             const quantity = Math.floor(this.population / SquareNode.cp.rate) || 1;
@@ -812,14 +812,14 @@ class SquareNode {
         //     SquareNodeEarthWidth: SquareNode.EARTH_WIDTH,
         // });
 
-        // TODO bug - in final placeOddities call, most leaves have been deleted. So this func often selects a random point within a large square that goes beyond the edge of the Earth. The expressions that call random() above should be constrained to the earth's dimensions.
-
         return { 
             lat: Util.constrainOrError(lat, -90, 90), 
             lon: Util.constrainOrError(lon, -180, 180),
         };
     }
 
+    // TODO getting some results offshore of where they should be. Probably replace decreasePopulation() with a squareNode.oddityCount number prop. Then perhaps re-explore deleted subsquares when densestPixel() descends to a deleted subtree. 
+    // Or alternately do not delete subtrees so aggressively - only after placeOddities, not in the while() loop.
     densestPixel () {
         Util.logDebug({
             context: 'densestPixel()',
