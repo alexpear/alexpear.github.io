@@ -308,6 +308,34 @@ class CapePopulation {
         }
     }
 
+    printLowRes (width) {
+        const lines = [];
+
+        for (let x = 0; x < SquareNode.EARTH_WIDTH; x += width) {
+            let line = '';
+
+            for (let y = 0; y < SquareNode.EARTH_HEIGHT; y += width) {
+                let squarePop = 0;
+
+                for (let xInSquare = 0; xInSquare < width; xInSquare++) {
+                    for (let yInSquare = 0; yInSquare < width; yInSquare++) {
+                        const pixelPop = this.dataAt(x + xInSquare, y + yInSquare);
+
+                        if (pixelPop > 0) {
+                            squarePop += pixelPop;
+                        }
+                    }
+                }
+
+                line += `${squarePop} `; // TODO bug squarePop is not declared at this point.
+            }
+
+            lines.push(line);
+        }
+
+        console.log(`Resolution = ${width} squares \n${lines.join('\n')}`);
+    }
+
     // questions: 
     // Is the main call to visit() failing to call placeOddities? Is it not finding enough population under test parameters?
     // How exactly to make a progress % log call?
@@ -332,17 +360,17 @@ class CapePopulation {
         SquareNode.maxPopAtWidth = {};
 
         // this.rasters = await this.tiff.readRasters();
-        const raw = await this.tiff.readRasters(
-            // {
-            //     // small test
-            //     window: [ 
-            //         30_200, 
-            //         7_000, 
-            //         30_200 + Math.pow(2, 12), 
-            //         7_000 + Math.pow(2, 12) 
-            //     ] 
-            // }
-        );
+        const raw = await this.tiff.readRasters();
+
+        // {
+        //     // small test
+        //     window: [ 
+        //         30_200, 
+        //         7_000, 
+        //         30_200 + Math.pow(2, 12), 
+        //         7_000 + Math.pow(2, 12) 
+        //     ] 
+        // }
 
         /** Runtime notes
          * 2025 June 13 1629 - 20 minutes. readRasters() was set to 2^12 width, rest was full scale. readRasters() was only 10 seconds.
@@ -360,6 +388,8 @@ class CapePopulation {
         this.root = new SquareNode(0, 0, SquareNode.MAX_RES);
 
         let currentNode = this.root;
+
+        return; // temp
 
         while (currentNode) {
             let unexplored = currentNode.unexploredLeaf();
@@ -499,7 +529,7 @@ class CapePopulation {
         // await cp.randomOdditiesVegas(71_012_000, 'wizard schools');
         await cp.odditiesTreeMap(71_012_000, 'wizard schools');
 
-        // cp.printSimple();
+        cp.printLowRes(4);
 
         Util.logDebug(`Done with run()`);
     }
@@ -549,7 +579,7 @@ class SquareNode {
             if (this.population === undefined) {
                 this.population = SquareNode.cp.dataAt(this.leftX, this.topY);
                 SquareNode.pixelsPopulated++;
-                currentNode.updateMaxPopAtWidth();
+                this.updateMaxPopAtWidth();
 
                 return this;
             }
@@ -601,6 +631,7 @@ class SquareNode {
         return; // All children are explored.
     }
 
+    // TODO bug - will need to call this on a separate traversal that doesnt involve decreasePopulation().
     updateMaxPopAtWidth () {
         if (SquareNode.maxPopAtWidth[this.width] === undefined) {
             SquareNode.maxPopAtWidth[this.width] = this.population;
@@ -765,9 +796,12 @@ class SquareNode {
     }
 
     latLon () {
+        const latRange = Math.min(this.width, SquareNode.EARTH_HEIGHT - this.topY);
+        const lonRange = Math.min(this.width, SquareNode.EARTH_WIDTH - this.leftX);
+
         // We multiply Y by a negative number because we need to invert. 0 maps to 90 N.
-        const lat = (this.topY + Math.random() * this.width) / SquareNode.EARTH_HEIGHT * -180 + 90;
-        const lon = (this.leftX + Math.random() * this.width) / SquareNode.EARTH_WIDTH * 360 - 180;
+        const lat = (this.topY + Math.random() * latRange) / SquareNode.EARTH_HEIGHT * -180 + 90;
+        const lon = (this.leftX + Math.random() * lonRange) / SquareNode.EARTH_WIDTH * 360 - 180;
         
         // Util.logDebug({
         //     context: 'SquareNode.latLon()',
@@ -778,7 +812,7 @@ class SquareNode {
         //     SquareNodeEarthWidth: SquareNode.EARTH_WIDTH,
         // });
 
-        // TODO bug - i see outputs with lon in range [-180, 360], which goes too high. Also, all outputs have lat > 70 except the last, which was lat -306.
+        // TODO bug - in final placeOddities call, most leaves have been deleted. So this func often selects a random point within a large square that goes beyond the edge of the Earth. The expressions that call random() above should be constrained to the earth's dimensions.
 
         return { 
             lat: Util.constrainOrError(lat, -90, 90), 
