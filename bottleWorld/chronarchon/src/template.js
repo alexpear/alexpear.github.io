@@ -93,11 +93,11 @@ class Template {
             }
         }
 
-        Util.logDebug({
-            TemplateDotENCYCLOPEDIA: Template.ENCYCLOPEDIA,
-            TemplateDotCONTEXT: Template.CONTEXT,
-            TemplateDotALIGNMENT: Template.ALIGNMENT,
-        });
+        // Util.logDebug({
+        //     TemplateDotENCYCLOPEDIA: Template.ENCYCLOPEDIA,
+        //     TemplateDotCONTEXT: Template.CONTEXT,
+        //     TemplateDotALIGNMENT: Template.ALIGNMENT,
+        // });
 
         // LATER could do a system of auto-adding implied tags.
         // eg weapon => gear

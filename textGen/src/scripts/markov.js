@@ -9,7 +9,7 @@ const FS = require('fs');
 const Readline = require('node:readline');
 
 const CORPUS1 = '../../../data/janeausten.txt';
-const CORPUS2 = '../../../data/leviathan.txt';
+const CORPUS2 = '../../../data/blindsight.txt';
 // const CORPUS2 = '../../../data/eclipsephasecore.txt';
 
 class Markov extends TextGen {
@@ -185,6 +185,8 @@ class Markov extends TextGen {
                 if (! [this.currentTrainingCorpus, -1].includes(situation.corpus)) {
                     situation.corpus = -1;
                 }
+
+                // TODO A longer corpus automatically gets more weight.
             }
             else {
                 this.ngrams[lastPhrase][nextWord] = {
@@ -303,7 +305,7 @@ class Markov extends TextGen {
             if ( ! [this.lastOutputCorpus, -1].includes(completionObj[candidate].corpus) ) {
                 // If this word is unique to a corpus distinct from the last output corpus,
                 // Encourages output to switch corpuses often.
-                weights[candidate] *= 2;
+                weights[candidate] *= 4;
             }
 
             totalWeight += weights[candidate];

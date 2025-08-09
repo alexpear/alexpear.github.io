@@ -1,0 +1,35 @@
+context: fantasy
+entities:
+    -
+        attitude: worldly
+        has: []
+        id: 2fbe1e22-eb1d-4302-892b-0a5c2f063840
+        name: Wida
+        quantity: 1
+        template: &ref_0
+            alignment: radiant
+            combat: 0
+            durability: 10
+            id: a0147417-41e1-4c0a-8757-125e4a3fc26b
+            name: farmer
+            tags: animal
+            weight: 10
+    -
+        attitude: selfish
+        has: []
+        id: 7642a9b4-58c8-46f5-86f7-3e30438aed3d
+        name: Sing
+        quantity: 1
+        template: *ref_0
+    -
+        attitude: interventionist
+        has: []
+        id: e3819e6b-a227-4d68-afb4-9f93566ecef3
+        name: Dongda
+        quantity: 1
+        template: *ref_0
+events: []
+id: 3ace7850-3bab-443c-9326-cb38fc341b04
+places: []
+t: 0
+traits: []

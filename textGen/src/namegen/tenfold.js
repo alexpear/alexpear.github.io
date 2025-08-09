@@ -32,6 +32,28 @@ class Tenfold {
         }
     }
 
+    static allOfRank (rank) {
+        for (let i = 0; i < Math.pow(10, rank); i++) {
+            const name = Tenfold.numberAsRank(i, rank);
+
+            console.log(name);
+        }
+    }
+
+    static numberAsRank (number, rank) {
+        return Util.capitalized(
+            String(number)
+                .padStart(rank, '0')
+                .split('')
+                .map(
+                    n => n === '0' ?
+                        Tenfold.syllables()[9] :
+                        Tenfold.syllables()[Number(n) - 1]
+                )
+                .join('')
+        );
+    }
+
     static randomWord (syllables) {
         let word = '';
 
@@ -47,7 +69,7 @@ class Tenfold {
     }
 
     static run () {
-        // Tenfold.allPairs();
+        Tenfold.allOfRank(2);
 
         for (let i = 0; i < 1; i++) {
             const p = Person.random();

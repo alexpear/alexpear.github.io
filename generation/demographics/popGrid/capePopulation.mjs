@@ -354,6 +354,7 @@ class CapePopulation {
         SquareNode.EARTH_WIDTH = 43_200;
         SquareNode.MAX_RES = Math.pow(2, 16);
         SquareNode.pixelsPopulated = 0;
+        SquareNode.childCount = 1;
 
         // Debug. Mapping from width to the max population of a node of that width.
         SquareNode.maxPopAtWidth = {};
@@ -439,9 +440,10 @@ class CapePopulation {
                 currentNode.placeOddities();
             }
 
-            // if (process.memoryUsage().heapUsed > 100_000_000) {
+            // NOTE - memoryUsage() is slow - instead, manually track tree size in a prop analogous to pixelsPopulated.
+            if (SquareNode.childCount > 10_000_000) {
                 currentNode.tidyChildren();
-            // }
+            }
             currentNode = currentNode.parent;
         }
 
@@ -622,6 +624,8 @@ class SquareNode {
                     this
                 ),
             ];
+
+            SquareNode.childCount += 4;
         }
 
         const indices = Util.shuffle([0, 1, 2, 3]);
@@ -747,6 +751,8 @@ class SquareNode {
             population: this.population,
         });
 
+        // TODO if children have been deleted, recreate them. 
+        // OBSTACLE - top down or bottom up? Random or densest first?
         if (this.width >= 2 && this.children.length === 4) {
             while (this.population >= SquareNode.cp.rate) {
                 this.densestPixel().placeOddities();
@@ -777,12 +783,12 @@ class SquareNode {
             });
 
             this.decreasePopulation(quantity * SquareNode.cp.rate);
-            // LATER balance negative & positive populations after this.
+            // LATER could balance negative & positive populations after this.
 
-            // this.tidyChildren();
+            this.tidyChildren();
         }
         
-        // LATER make sure densestPixel() doesnt have a bias towards the top left corner in areas of homogenous data.
+        // LATER make sure densestPixel() doesnt have a bias towards the top left corner in areas of homogenous data. Like a random tiebreak or something.
 
         // The case of 4 squares of value 0.9 ... will need 3 calls to densestPixel().
         
@@ -831,12 +837,25 @@ class SquareNode {
             return this;
         }
 
-        let densest = 0;
-        for (let i = 1; i < this.children.length; i++) {
+        const indices = Util.shuffle([0, 1, 2, 3]);
+
+        let densest = indices[0];
+
+        // Sanity check. Note that densestPixel() is not a performance bottleneck.
+        if (! Util.exists(this.children[densest].population)) {
+            Util.error({
+                message: `SquareNode.densestPixel() child population is screwy`,
+                squareNode: this.toString(),
+                childIndex: densest,
+                childPopulation: this.children[densest].population,
+            });
+        }
+
+        indices.slice(1).forEach(i => {
             if (this.children[i].population > this.children[densest].population) {
                 densest = i;
             }
-        }
+        });
 
         return this.children[densest].densestPixel();
     }
@@ -873,7 +892,10 @@ class SquareNode {
     tidyChildren () {
         // Aggressive for now.
         // this.children.forEach( child => { child.parent = undefined; }); // LATER delete this line - no impact on garbage collection.
+        const childCount = this.children.length;
         this.children = [];
+        SquareNode.nodeCount -= childCount;
+        // TODO but this might delete more than 4 nodes.
     }
 }
 

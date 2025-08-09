@@ -8,11 +8,14 @@ const Covonym = require('../../../textGen/src/namegen/covonym.js');
 const Util = require('../../../util/util.js');
 
 class Group extends Entity {
-    constructor(template, quantity = 1) {
+    constructor(template, quantity) {
         super(EntityType.GROUP);
 
         this.template = template;
-        this.quantity = quantity;
+        this.quantity = quantity ?? template?.quantity ?? 1;
+        this.stamina = template?.stamina ?? 10;
+        this.attack = template?.attack ?? 2;
+        this.actionsLeft = 1;
 
         this.attitude = Group.randomAttitude();
     }
@@ -35,6 +38,29 @@ class Group extends Entity {
             Template.example(),
             1,
         );
+    }
+
+    // toString () {
+
+    // }
+
+    static testDuel () {
+        const a = Group.example();
+        const b = Group.example();
+        let t = 0;
+        const turnOrder = [a, b];
+
+        while (a.stamina > 0 && b.stamina > 0) {
+
+
+            t++;
+        }
+
+        Util.log({
+            aStamina: a.stamina,
+            bStamina: b.stamina,
+            t,
+        });
     }
 }
 

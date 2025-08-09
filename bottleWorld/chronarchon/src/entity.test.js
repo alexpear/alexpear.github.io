@@ -13,7 +13,7 @@ test('coherency of level() & _impactRating()', () => {
         const level = entity.level();
         const impactRating = entity._impactRating();
 
-        console.log(`test i: ${i}, level: ${level}, impactRating: ${impactRating}`);
+        // console.log(`test i: ${i}, level: ${level}, impactRating: ${impactRating}`);
 
         expect(entity.level()).toBe(i);
     }
