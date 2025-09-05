@@ -26,7 +26,7 @@ class Mispronounce extends TextGen {
     }
 
     output () {
-        return this.name;
+        return Util.capitalized(this.name.toLowerCase());
     }
 }
 
