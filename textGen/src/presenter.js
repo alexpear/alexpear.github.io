@@ -42,6 +42,7 @@ class Presenter {
         window.presenter = new Presenter();
     }
 
+    // URL syntax: alexpear.github.io/textGen/textGen.html?gen=dracolich
     setDropdownFromURL () {
         const params = new URLSearchParams(window.location.search);
         // TODO test no-param case, use ?. if needed
