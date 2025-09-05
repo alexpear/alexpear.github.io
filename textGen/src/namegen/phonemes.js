@@ -4,12 +4,12 @@
 
 const fs = require('fs');
 const WORDS_PATH = '/usr/share/dict/words';
-const TextGen = require('./textGen.js');
+// const TextGen = require('./textGen.js'); // Can't extend TextGen because fs is incompatible with browserify.
 const Util = require('../../util/util.js');
 
-class Phonemes extends TextGen {
+class Phonemes { // extends TextGen {
     constructor () {
-        super();
+        // super();
 
         this.WORDS = fs.readFileSync(
             WORDS_PATH,
