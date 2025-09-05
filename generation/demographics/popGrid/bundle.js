@@ -24,7 +24,7 @@ class CapeMap {
     }
 
     init () {
-        if (window) {
+        if (typeof window !== 'undefined') {
             window.canvas = document.getElementById('canvas');
 
             window.ctx = window.canvas.getContext('2d');
@@ -168,7 +168,7 @@ class CapeMap {
     }
 
     static printCSV (coords) {
-        let csv = 'lat long';
+        let csv = 'lat long\n';
 
         for (let row of coords) {
             csv += `${row[0]},${row[1]}\n`;
@@ -25337,6 +25337,29 @@ class Util {
         }
 
         return n;
+    }
+
+    // Less permissive than constrain()
+    static constrainOrError (n, min = 0, max = 1, leeway = 0.01) {
+        if (n >= min && n <= max) {
+            return n;
+        }
+
+        if (n >= min - leeway && n < min) {
+            return min;
+        }
+
+        if (n <= max + leeway) {
+            return max;
+        }
+
+        Util.error({
+            n,
+            min,
+            max,
+            leeway,
+            message: `Util.constrainOrError() - n is too far out of bounds`,
+        });
     }
 
     static randomIntBetween (minInclusive, maxExclusive) {

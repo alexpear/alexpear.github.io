@@ -25088,7 +25088,7 @@ class Mispronounce extends TextGen {
     }
 
     output () {
-        return this.name;
+        return Util.capitalized(this.name.toLowerCase());
     }
 }
 
@@ -25163,97 +25163,6 @@ module.exports = Nicknames;
 },{"../../util/util.js":22,"./textGen.js":19}],16:[function(require,module,exports){
 'use strict';
 
-// Which letter combinations are rarest in English?
-
-const fs = require('fs');
-const WORDS_PATH = '/usr/share/dict/words';
-const TextGen = require('./textGen.js');
-const Util = require('../../util/util.js');
-
-class Phonemes extends TextGen {
-    constructor () {
-        super();
-
-        this.WORDS = fs.readFileSync(
-            WORDS_PATH,
-            { encoding: 'utf8' }
-        )
-        .split('\n')
-        .filter(
-            // Exclude capitalized words.
-            word => ! /[A-Z]/.test(word[0])
-        );
-
-        // NOTE - Edit these parameters:
-        this.MAX_EXAMPLES = 4;
-
-        this.rareSubstrings(2);
-    }
-
-    rareSubstrings (len) {
-        this.dict = {};
-
-        for (let word of this.WORDS) {
-            for (let i = 0; i <= word.length - len; i++) {
-                const piece = word.slice(i, i + len)
-                    .toUpperCase();
-
-                const examples = this.dict[piece];
-
-                if (examples) {
-                    if (examples.length >= this.MAX_EXAMPLES) {
-                        continue;
-                    }
-                    else {
-                        examples.push(word);
-                    }
-                }
-                else {
-                    this.dict[piece] = [word];
-                }
-            }
-        }
-    }
-
-    output () {
-        const entries = Object.entries(
-            this.dict
-        )
-        .filter(
-            pair => pair[1].length >= 2 &&
-                pair[1].length < this.MAX_EXAMPLES
-        )
-        .sort(
-            (a, b) => {
-                if (a[1].length !== b[1].length) {
-                    return a[1].length - b[1].length
-                }
-
-                return a[0].localeCompare(b[0]);
-            }
-        );
-
-        const summaries = entries.map(
-            pair => `${pair[0]} appears in ${pair[1].join(', ')}`
-        );
-
-        // console.log(this.dict.GRY);
-
-        return summaries.join('\n');
-    }
-
-    static run () {
-        console.log(new Phonemes().output());
-    }
-}
-
-module.exports = Phonemes;
-
-Phonemes.run();
-
-},{"../../util/util.js":22,"./textGen.js":19,"fs":1}],17:[function(require,module,exports){
-'use strict';
-
 const Bionicle = require('./bionicle.js');
 const DominionCard = require('./dominionCard.js');
 const Humanistas = require('./humanistas.js');
@@ -25261,6 +25170,7 @@ const Loadout = require('./loadout.js');
 const MassEffect = require('./massEffect.js');
 const Mispronounce = require('./mispronounce.js');
 const Nicknames = require('./nicknames.js');
+const RandomPairing = require('./randomPairing.js');
 const ScienceFantasy = require('./dracolich.js');
 const Titles = require('./wildbowTitles.js');
 const WizardingName = require('./wizardingName.js');
@@ -25285,6 +25195,7 @@ class Presenter {
             massEffect: MassEffect,
             mispronounce: Mispronounce,
             nicknames: Nicknames,
+            randomPairing: RandomPairing,
             wildbowTitles: Titles,
             wizardingName: WizardingName,
         };
@@ -25337,7 +25248,160 @@ module.exports = Presenter;
 
 Presenter.run();
 
-},{"../../util/util.js":22,"./bionicle.js":6,"./dominionCard.js":8,"./dracolich.js":9,"./humanistas.js":11,"./loadout.js":12,"./massEffect.js":13,"./mispronounce.js":14,"./nicknames.js":15,"./wildbowTitles.js":20,"./wizardingName.js":21}],18:[function(require,module,exports){
+},{"../../util/util.js":22,"./bionicle.js":6,"./dominionCard.js":8,"./dracolich.js":9,"./humanistas.js":11,"./loadout.js":12,"./massEffect.js":13,"./mispronounce.js":14,"./nicknames.js":15,"./randomPairing.js":17,"./wildbowTitles.js":20,"./wizardingName.js":21}],17:[function(require,module,exports){
+'use strict';
+
+const TextGen = require('./textGen.js');
+const Util = require('../../util/util.js');
+
+// By rough centrality to the story.
+const LIST = [
+    'Mycroft Canner',
+    'Carlyle Foster',
+    'JEDD Mason',
+    'Sniper',
+    'Cornel MASON',
+    'Bryar Kosala',
+    'Vivien Ancelet',
+    'Bridger',
+    'Hotaka Ando Mitsubishi',
+    'Danaë de la Tremouïlle',
+    'Achilles Mojave',
+    'Ockham Saneer',
+    'Thisbe Saneer',
+    'Cato Weeksbooth',
+    'King Isabel Carlos of Spain',
+    'Duke Ganymede de la Tremouïlle',
+    'Dominic Seneschal',
+    'Madame',
+    'Martin Guildbreaker',
+    'Felix Faust',
+    'Casimir Perry',
+    'Julia Doria-Pamphili',
+    'Ektor Papadelias',
+    'Saladin',
+    '9A',
+    'Apollo Mojave',
+    
+    'Jin Im-Jin',
+    'Charlemagne Guildbreaker',
+    'Lieutenant Aimer (Patroclus)',
+    'Croucher',
+    'Boo',
+    'Mommadoll',
+    'Lorelai "Cookie" Cook',
+    'Gibraltar Chagatai',
+    'Su-Hyeon Ancelet-Kosala',
+    'Heloïse',
+    'Eureka Weeksbooth',
+    'Sidney Koons',
+    'Robin Typer',
+    'Kat Typer',
+    'Lesley Juniper Saneer',
+    'Blacklaw Tribune Natekari',
+    'Aesop Quarriman',
+    'Xiaoliu Guildbreaker',
+    'Huxley Mojave',
+    'Mushi Mojave',
+    'Tully Mardi',
+
+    'Darcy Sok',
+    'Brody DeLupa',
+    'Leonor Valentin',
+    'Tsuneo Sugiyama',
+    'Hiroaki Mitsubishi',
+    'Masami Mitsubishi',
+    'Toshi Mitsubishi',
+    'Mycroft MASON',
+    'Agrippa MASON',
+    'Thomas Carlyle',
+    'Aldrin Bester',
+    'Voltaire Seldon',
+    'Halley the Pillarcat',
+    'Aeneus Mardi',
+    'Chiasa Mardi',
+    'Kohaku Mardi',
+    'Luther Mardigras',
+    'Mercer Mardi',
+    'Seine Mardi',
+    'the Reader',
+    'Thomas Hobbes',
+];
+
+class Pairing extends TextGen {
+    constructor () {
+        super();
+
+        this.a = this.randomEntry();
+        this.b = this.randomEntry();
+    }
+
+    randomEntry () {
+        // Weight of each entry in LIST is:
+        // 1st entry: length
+        // 2nd entry: length - 1
+        // ...
+        // last entry: 1
+
+        // The last expression here is the sum of the 1st n terms in the sequence 1 + 2 + 3 + ...
+        let roll = Math.random() * LIST.length * (LIST.length + 1) / 2;
+
+        for (let i = 0; i < LIST.length; i++) {
+            roll -= (LIST.length - i);
+
+            if (roll <= 0) {
+                return LIST[i];
+            }
+        }
+    }
+
+    static testRandomEntryMath () {
+        for (let length = 2; length <= 10; length++) {
+            let rollRange = length * (length + 1) / 2;
+
+            for (let i = 0; i < length; i++) {
+                rollRange -= (length - i);
+            }
+
+            if (rollRange !== 0) {
+                Util.error({
+                    rollRange,
+                    length,
+                });
+            }
+        }
+    }
+
+    toString () {
+        return `A steamy encounter between ${this.a} & ${this.b}.`;
+    }
+
+    // Called by TextGen.outputHTML()
+    output () {
+        return this.toString();
+    }
+
+    static demo () {
+
+    }
+
+    static run () {
+        const TIMES = 1;
+        
+        for (let i = 0; i < TIMES; i++) {
+            const pair = new Pairing();
+            console.log(pair.output());            
+        }
+
+        // Pairing.testRandomEntryMath();
+    }
+}
+
+module.exports = Pairing;
+
+Pairing.run();
+
+},{"../../util/util.js":22,"./textGen.js":19}],18:[function(require,module,exports){
 'use strict';
 
 // Randomly generate students from the Sunlight scifi series.
@@ -26558,6 +26622,29 @@ class Util {
         return n;
     }
 
+    // Less permissive than constrain()
+    static constrainOrError (n, min = 0, max = 1, leeway = 0.01) {
+        if (n >= min && n <= max) {
+            return n;
+        }
+
+        if (n >= min - leeway && n < min) {
+            return min;
+        }
+
+        if (n <= max + leeway) {
+            return max;
+        }
+
+        Util.error({
+            n,
+            min,
+            max,
+            leeway,
+            message: `Util.constrainOrError() - n is too far out of bounds`,
+        });
+    }
+
     static randomIntBetween (minInclusive, maxExclusive) {
         if (! Util.exists(minInclusive) || ! Util.exists(maxExclusive)) {
             console.log('error: Util.randomIntBetween() called with missing parameters.');
@@ -26674,6 +26761,13 @@ class Util {
         Util.logDebug(
             Util.arraySummary(results)
         );
+    }
+
+    // seed: nonnegative integer
+    static simpleHash (seed) {
+        // seed + 1 because 0 => 0 would be too regular.
+        const divided = (seed + 1) / Math.PI;
+        return divided - Math.floor(divided);
     }
 
     // Returns string
