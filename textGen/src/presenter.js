@@ -7,6 +7,7 @@ const Loadout = require('./loadout.js');
 const MassEffect = require('./massEffect.js');
 const Mispronounce = require('./mispronounce.js');
 const Nicknames = require('./nicknames.js');
+const RandomPairing = require('./randomPairing.js');
 const ScienceFantasy = require('./dracolich.js');
 const Titles = require('./wildbowTitles.js');
 const WizardingName = require('./wizardingName.js');
@@ -31,6 +32,7 @@ class Presenter {
             massEffect: MassEffect,
             mispronounce: Mispronounce,
             nicknames: Nicknames,
+            randomPairing: RandomPairing,
             wildbowTitles: Titles,
             wizardingName: WizardingName,
         };
