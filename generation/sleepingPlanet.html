@@ -18,6 +18,7 @@
         border: solid;
         color: white;
         display: inline-block;
+        border-radius: 50%;
       }
 
       .clearfix::after {
@@ -148,12 +149,12 @@
         }
 
         const arrows = [
-          '--------------^^^',
-          '^^^--------------',
-          '------------------>',
-          '<------------------',
-          '--------------vvv',
-          'vvv--------------'
+          '---------^^^',
+          '^^^---------',
+          '------------->',
+          '<-------------',
+          '---------vvv',
+          'vvv---------'
         ];
 
         const i = Math.floor(Math.random() * 6);
@@ -195,7 +196,7 @@
 
         for (let r = 0; r < GRIDWIDTH; r++) {
           const rowDiv = document.createElement('div');
-          rowDiv.style.height = BOX_PIXELS;
+          rowDiv.style.height = `${SPACEWIDTH * 0.85}px`;
           gridDiv.appendChild(rowDiv);
 
           // Little invisible div to the left of rows to indent them.
