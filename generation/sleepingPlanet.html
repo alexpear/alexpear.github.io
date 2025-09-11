@@ -15,7 +15,7 @@
       button {
         vertical-align: middle;
         padding: 0;
-        border: solid;
+        border: none;
         color: white;
         display: inline-block;
         border-radius: 50%;
@@ -196,7 +196,7 @@
 
         for (let r = 0; r < GRIDWIDTH; r++) {
           const rowDiv = document.createElement('div');
-          rowDiv.style.height = `${SPACEWIDTH * 0.85}px`;
+          rowDiv.style.height = `${SPACEWIDTH * 0.87}px`;
           gridDiv.appendChild(rowDiv);
 
           // Little invisible div to the left of rows to indent them.
