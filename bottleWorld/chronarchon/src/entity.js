@@ -20,11 +20,21 @@ class Entity {
         // this.home = // groups & items have places of origin // LATER
     }
 
-    toString (indent = 4) {
-        const templateString = Util.capitalized(this.template.name);
+    displayName () {
+        return this.name;
+    }
 
-        // TODO omit name if item.
-        let output = `${this.name} (Level ${this.level()} ${templateString})`;
+    toString (indent = 4) {
+        const templateString = this.template.name; // Util.capitalized(this.template.name);
+
+        let displayName = this.displayName(); 
+        const nameString = displayName
+            ? `${displayName} • `
+            : '';
+
+        let output = `${nameString}${templateString} • level ${this.level()}`;
+
+        // LATER rename modded items. Sword with ElectroPack = electrosword
 
         for (let subnode of this.has) {
             output += `\n${ ' '.repeat(indent) }${ subnode.toString(indent + 4) }`;

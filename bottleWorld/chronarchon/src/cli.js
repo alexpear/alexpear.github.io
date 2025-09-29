@@ -54,7 +54,7 @@ class CLI {
         this.world = new World();
 
         const pop = 3;
-        console.log(`New world created with ${pop} entities.`);
+        console.log(`New world created with ${pop} entities. \n`);
 
         for (let i = 0; i < pop; i++) {
             const g = Group.random();
@@ -63,6 +63,8 @@ class CLI {
 
             console.log(g.toString());
         }
+
+        console.log();
 
         this.save();
     }

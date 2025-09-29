@@ -19,6 +19,11 @@ class Item extends Entity {
     //     return `${templateString}`;
     // }
 
+    // Omit name if item.
+    displayName () {
+        return;
+    }
+
     static random () {
         return new Item(
             Template.randomItem()
