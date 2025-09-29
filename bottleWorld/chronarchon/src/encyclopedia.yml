@@ -1,69 +1,84 @@
 scifi:
-  alignments:
-    radiant: radiant
-    shadow: shadow
+    alignments:
+        radiant: radiant
+        shadow: shadow
 
-  creatures:
-    farmer:
-      tags: animal human
-      alignment: radiant
-      combat: 0
-      durability: 10
-      weight: 10
+    creatures:
+        farmer:
+            tags: animal human
+            alignment: radiant
+            combat: 0
+            durability: 10
+            weight: 10
 
-    soldier:
-      tags: animal human
-      alignment: radiant
-      combat: 5
-      durability: 10
-      weight: 10
+        soldier:
+            tags: animal human
+            alignment: radiant
+            combat: 5
+            durability: 10
+            weight: 10
 
-  items:
-    sword:
-      tags: weapon blade
-      combat: 2
-      weight: 2
-      price: 10
+    items:
+        sword:
+            tags: weapon blade
+            combat: 2
+            weight: 2
+            price: 10
+            hands: 1
 
-    electroPack:
-      tags: upgrade
-      price: 5
-      weight: 1
-      damage: 1
-      damageType: electric
+        armShield:
+            tags: armor
+            durability: 5
+            weight: 5
+            price: 2
+            hands: 0
+            description: "Iron shield strapped to the forearm"
 
+        helmet:
+            tags: armor
+            durability: 3
+            weight: 1
+            price: 2
+            hands: 0
 
-  # places:
+        electroPack:
+            tags: upgrade
+            price: 5
+            weight: 1
+            damage: 1
+            damageType: electric
 
-  # traits:
+    # places:
+
+    # traits:
 
 fantasy:
-  alignments:
-    radiant: radiant
-    shadow: shadow
+    alignments:
+        radiant: radiant
+        shadow: shadow
 
-  creatures:
-    farmer:
-      tags: animal human
-      alignment: radiant
-      combat: 0
-      durability: 10
-      weight: 10
+    creatures:
+        farmer:
+            tags: animal human
+            alignment: radiant
+            combat: 0
+            durability: 10
+            weight: 10
 
-    soldier:
-      tags: animal human
-      alignment: radiant
-      combat: 5
-      durability: 10
-      weight: 10
+        soldier:
+            tags: animal human
+            alignment: radiant
+            combat: 5
+            durability: 10
+            weight: 10
 
-  items:
-    sword:
-      tags: weapon blade
-      combat: 2
-      weight: 2
-      price: 10
+    items:
+        sword:
+            tags: weapon blade
+            combat: 2
+            weight: 2
+            price: 10
 
-  # places:
+    # places:
 
-  # traits:
+    # traits:
