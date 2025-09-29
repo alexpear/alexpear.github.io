@@ -62,9 +62,8 @@ class CLI {
             this.world.entities.push(g);
 
             console.log(g.toString());
+            console.log();
         }
-
-        console.log();
 
         this.save();
     }

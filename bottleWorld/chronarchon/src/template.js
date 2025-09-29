@@ -24,7 +24,7 @@ class Template {
         this.id = Util.uuid();
 
         if (this.tags) {
-            this.tags = this.tags.split('\s');
+            this.tags = this.tags.split(/\s/);
         }
     }
 
@@ -92,10 +92,10 @@ class Template {
         );
     }
 
-    static randomWeapon () {
+    static randomPrimary () {
         return Util.randomOf(
             Template.allItems()
-                .filter(item => item.tags && item.tags.includes('weapon'))
+                .filter(item => item.tags && item.tags.includes('primary'))
         );
     }
 

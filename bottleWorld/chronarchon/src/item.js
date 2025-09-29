@@ -32,7 +32,7 @@ class Item extends Entity {
 
     static randomWeapon () {
         const item = new Item(
-            Template.randomItem()
+            Template.randomPrimary()
         );
 
         const modCount = Util.randomUpTo(1);
