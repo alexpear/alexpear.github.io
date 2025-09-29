@@ -57,7 +57,7 @@ class CLI {
         console.log(`New world created with ${pop} entities.`);
 
         for (let i = 0; i < pop; i++) {
-            const g = Group.example();
+            const g = Group.random();
 
             this.world.entities.push(g);
 

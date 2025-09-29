@@ -22,6 +22,10 @@ class Template {
 
         this.name = name;        
         this.id = Util.uuid();
+
+        if (this.tags) {
+            this.tags = this.tags.split('\s');
+        }
     }
 
     // static named (name) {
@@ -53,19 +57,60 @@ class Template {
     }
 
     static example () {
-        return Template.ENCYCLOPEDIA.fantasy.creatures.farmer;
+        return Template.ENCYCLOPEDIA.scifi.creatures.soldier;
     }
 
-    static creatureTemplates () {
+    static allCreatures () {
+        return Template.inCategory('creatures');
+    }
+
+    static allItems () {
+        return Template.inCategory('items');
+    }
+
+    static allPlaces () {
+        return Template.inCategory('places');
+    }
+
+    static inCategory (category) {
         return Object.values(
-            Template.ENCYCLOPEDIA[ Template.CONTEXT ].creatures
+            Template.ENCYCLOPEDIA[ Template.CONTEXT ][ category ]
         );
     }
 
     static randomGroup () {
-        return Util.randomOf(Template.creatureTemplates());
+        return Util.randomOf(Template.allCreatures());
 
         // LATER filter out incomplete or blank templates.
+    }
+
+    static randomItem () {
+        return Util.randomOf(
+            Template.allItems()
+                // Exclude upgrades
+                .filter(item => item.tags && ! item.tags.includes('upgrade'))
+        );
+    }
+
+    static randomWeapon () {
+        return Util.randomOf(
+            Template.allItems()
+                .filter(item => item.tags && item.tags.includes('weapon'))
+        );
+    }
+
+    static randomUpgrade () {
+        const template = Util.randomOf(
+            Template.allItems()
+                .filter(item => item.tags && item.tags.includes('upgrade'))
+        );
+
+        // Util.logDebug({
+        //     template,
+            // allItems: Template.allItems(),
+        // });
+
+        return template;
     }
 
     static init () {
@@ -73,7 +118,7 @@ class Template {
         Template.ENCYCLOPEDIA = Encyclopedia;
 
         if (! Template.CONTEXT) {
-            Template.CONTEXT = 'fantasy';
+            Template.CONTEXT = 'scifi';
             // LATER i dont really like this variable, at least with the current name. Maybe move it to a member field of World?
         }
 

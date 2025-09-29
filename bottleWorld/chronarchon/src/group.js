@@ -1,7 +1,9 @@
 // An individual or homogenous group of creatures. 
+// For futureproofing & to permit users to make islands with different rules, representing individuals as Groups of quantity 1 is recommended.
 
 const Entity = require('./entity.js');
 const EntityType = require('./entityType.js');
+const Item = require('./item.js');
 const Template = require('./template.js');
 
 const Covonym = require('../../../textGen/src/namegen/covonym.js');
@@ -21,12 +23,20 @@ class Group extends Entity {
     }
 
     static random () {
-        return new Group(
+        const g = new Group(
             Template.randomGroup(),
-            Util.randomUpTo(3),
         );
 
-        // LATER also generate traits & items
+        // 1 weapon & 0-1 extra items.
+        g.has.push(Item.randomWeapon());
+
+        const extraItemCount = Util.randomUpTo(1);
+
+        for (let i = 0; i < extraItemCount; i++) {
+            g.has.push(Item.random());
+        }
+
+        return g;
     }
 
     static randomAttitude () {

@@ -1,13 +1,20 @@
-fantasy:
+scifi:
   alignments:
     radiant: radiant
     shadow: shadow
 
   creatures:
     farmer:
-      tags: animal
+      tags: animal human
       alignment: radiant
       combat: 0
+      durability: 10
+      weight: 10
+
+    soldier:
+      tags: animal human
+      alignment: radiant
+      combat: 5
       durability: 10
       weight: 10
 
@@ -16,7 +23,46 @@ fantasy:
       tags: weapon blade
       combat: 2
       weight: 2
-      value: 10
+      price: 10
+
+    electroPack:
+      tags: upgrade
+      price: 5
+      weight: 1
+      damage: 1
+      damageType: electric
+
+
+  # places:
+
+  # traits:
+
+fantasy:
+  alignments:
+    radiant: radiant
+    shadow: shadow
+
+  creatures:
+    farmer:
+      tags: animal human
+      alignment: radiant
+      combat: 0
+      durability: 10
+      weight: 10
+
+    soldier:
+      tags: animal human
+      alignment: radiant
+      combat: 5
+      durability: 10
+      weight: 10
+
+  items:
+    sword:
+      tags: weapon blade
+      combat: 2
+      weight: 2
+      price: 10
 
   # places:
 

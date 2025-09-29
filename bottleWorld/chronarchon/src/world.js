@@ -6,7 +6,7 @@ const Util = require('../../../util/util.js');
 const Yaml = require('js-yaml');
 
 class World {
-    constructor (context = 'fantasy') {
+    constructor (context = 'scifi') {
         this.context = context;
         Template.CONTEXT = context;
 
