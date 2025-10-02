@@ -416,6 +416,13 @@ scifi:
             weight: 0
             rangeBonus: 1
             
+        rapidFire:
+            tags: upgrade
+            price: 5
+            weight: 1
+            shots: 2
+            requiredTags: gun # todo
+
         incendiary:
             tags: upgrade
             price: 4
@@ -489,7 +496,7 @@ fantasy:
             weight: 10
 
     items:
-        sword:
+        shortsword:
             tags: weapon blade
             combat: 2
             weight: 2

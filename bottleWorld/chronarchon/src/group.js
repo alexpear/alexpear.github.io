@@ -28,12 +28,21 @@ class Group extends Entity {
         );
 
         // 1 weapon & 0-1 extra items.
-        g.has.push(Item.randomWeapon());
+        const primary = Item.randomWeapon();
+        g.has.push(primary);
 
-        const extraItemCount = Util.randomUpTo(1);
+        if (primary.template.hands === 1) {
+            g.has.push(
+                new Item (
+                    Template.randomXHanded(1)
+                )
+            );
+        }
+
+        const extraItemCount = 1 + Util.randomUpTo(1);
 
         for (let i = 0; i < extraItemCount; i++) {
-            g.has.push(Item.random());
+            g.has.push(Item.randomExcept('weapon upgrade'));
         }
 
         return g;
@@ -53,6 +62,14 @@ class Group extends Entity {
     // toString () {
 
     // }
+
+    nameReadout () {
+        return `${this.displayName()} • `;
+    }
+
+    levelReadout () {
+        return ` • level ${this.level()}`;
+    }
 
     static testDuel () {
         const a = Group.example();

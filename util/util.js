@@ -436,6 +436,8 @@ class Util {
         const unrounded = (Math.random() * (maxExclusive - minInclusive))
             + minInclusive;
 
+        // TODO Bug? If random() gives 0.99, can it round up to maxExclusive?
+
         return _.round(unrounded, decimalPlaces);
     }
 

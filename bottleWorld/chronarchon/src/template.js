@@ -113,6 +113,15 @@ class Template {
         return template;
     }
 
+    static randomXHanded (hands = 2) {
+        return Util.randomOf(
+            Template.allItems()
+                .filter(
+                    item => item.tags && item.hands === hands
+                )
+        );
+    }
+
     static init () {
         // Template.ENCYCLOPEDIA = Yaml.load(Encyclopedia);
         Template.ENCYCLOPEDIA = Encyclopedia;

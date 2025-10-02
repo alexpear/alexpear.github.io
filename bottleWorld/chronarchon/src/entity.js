@@ -25,14 +25,7 @@ class Entity {
     }
 
     toString (indent = 4) {
-        const templateString = this.template.name; // Util.capitalized(this.template.name);
-
-        let displayName = this.displayName(); 
-        const nameString = displayName
-            ? `${displayName} • `
-            : '';
-
-        let output = `${nameString}${templateString} • level ${this.level()}`;
+        let output = `${ this.nameReadout() }${ this.templateString() }${ this.levelReadout() }`;
 
         // LATER rename modded items. Sword with ElectroPack = electrosword
 
@@ -41,6 +34,18 @@ class Entity {
         }
 
         return output;
+    }
+
+    nameReadout () {
+        return '';
+    }
+
+    templateString () {
+        return Util.fromCamelCase(this.template.name).toLowerCase();
+    }
+
+    levelReadout () {
+        return ``;
     }
 
     // Can return undefined, for example many items will.

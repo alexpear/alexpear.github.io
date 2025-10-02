@@ -30,6 +30,29 @@ class Item extends Entity {
         );
     }
 
+    static randomExcept (tagString) {
+        tagString = tagString.toLowerCase()
+            .split(/\s+/);
+
+        // Util.logDebug({
+        //     tagString,
+        //     includes: tagString.includes('weapon'),
+        //     filtered: Template.allItems()
+        //         .filter(item => ! item.tags?.some(
+        //             tag => tagString.includes(tag)
+        //         )),
+        // });
+
+        return new Item(
+            Util.randomOf(
+                Template.allItems()
+                    .filter(item => ! item.tags?.some(
+                        tag => tagString.includes(tag)
+                    ))
+            )
+        );
+    }
+
     static randomWeapon () {
         const item = new Item(
             Template.randomPrimary()

@@ -53,7 +53,7 @@ class CLI {
     newWorld () {
         this.world = new World();
 
-        const pop = 3;
+        const pop = 2;
         console.log(`New world created with ${pop} entities. \n`);
 
         for (let i = 0; i < pop; i++) {
