@@ -462,7 +462,8 @@ scifi:
             price: 1
             weight: 0
             description: Targets hit by tracker weapons will can be tracked by the shooter for days afterwards.
-            # todo: only compatible with range 1+ weapons and range 0 guns.
+            # todo: only compatible with range 1+ weapons
+            minRange: 1
             # Laser tracker guns don't make much sense but are kindof thematically like target designators.
 
         laser:
@@ -470,6 +471,13 @@ scifi:
             price: 3
             weight: 1
             damage: 1
+            damageType: thermal
+
+        plasma:
+            tags: upgrade
+            price: 4
+            weight: 2
+            damage: 2
             damageType: thermal
 
         timeslow:
@@ -494,11 +502,53 @@ scifi:
             accuracy: 2
             description: Magnets pull each attack toward the target.
 
-        
+        # TODO mark infantry upgrades as for-infantry somehow.
 
-        
+        # Vehicle Upgrades
+        missileLauncher:
+            tags: weapon
+            attachTo: vehicle
 
-    # places:
+        laserTurret:
+            tags: weapon
+            attachTo: vehicle
+
+        # Warship Upgrades
+        heavyArmor:
+            tags: upgrade
+            attachTo: warship
+
+        defenseLasers:
+            tags: weapon
+            attachTo: warship
+
+        railgun:
+            tags: weapon
+            attachTo: warship
+
+        missileBattery:
+            tags: weapon
+            attachTo: warship
+
+        warpDrive:
+            tags: upgrade
+            attachTo: warship
+
+        warpBeacon:
+            tags: upgrade
+            attachTo: vehicle warship
+        
+        cloakProjector:
+            tags: upgrade
+            attachTo: warship
+
+        transportBay:
+            tags: upgrade
+            attachTo: warship
+
+    places:
+        flat:
+            displayName: meadow
 
     # traits:
 
