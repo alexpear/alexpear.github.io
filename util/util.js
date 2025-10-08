@@ -935,11 +935,17 @@ class Util {
         return `<${elementName}>${content}</${elementName}>`;
     }
 
-    static htmlElement (tag, className, text) {
+    static htmlElement (tag, attributes, text) {
         const el = document.createElement(tag);
 
-        if (className) {
-            el.setAttribute('class', className);
+        if (Util.isString(attributes)) {
+            el.setAttribute('class', attributes);
+        }
+        else if (attributes) {
+            // Interpret as an options dict.
+            for (let key in attributes) {
+                el.setAttribute(key, attributes[key]);
+            }
         }
 
         if (text) {
