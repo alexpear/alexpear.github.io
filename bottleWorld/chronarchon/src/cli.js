@@ -44,22 +44,29 @@ class CLI {
 
         if (! command) {
             // LATER check if there is already a world in the save file.
-            return this.newWorld();
+            return this.demo();
         }
 
         command.call(this, parameters.slice(1));
     }
 
+    demo () {
+        this.newWorld();
+
+        // TODO put 3 entities into player's warband somehow 
+    }
+
     newWorld () {
         this.world = new World();
 
-        const pop = 2;
+        const pop = 3;
         console.log(`New world created with ${pop} entities. \n`);
 
         for (let i = 0; i < pop; i++) {
             const g = Group.random();
-
+            g.place = this.world.places[0];
             this.world.entities.push(g);
+            // LATER functionize in World to combine Group.random() and entities.push()
 
             console.log(g.toString());
             console.log();

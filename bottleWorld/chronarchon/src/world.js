@@ -13,7 +13,7 @@ class World {
         this.events = [];
 
         // BTW, each Place has its own grid coordinate.
-        this.places = [];
+        this.places = [ new Place() ];
 
         this.entities = [];
 
@@ -22,6 +22,16 @@ class World {
 
         this.t = 0;
         this.id = Util.uuid();
+    }
+
+    // Move the world 1 turn forward in time.
+    next () {
+        // New character shows up.
+        this.entities.push(
+            Group.random()
+        );
+
+        this.t += 1;
     }
 
     toYml () {

@@ -3,6 +3,12 @@ scifi:
         radiant: radiant
         shadow: shadow
 
+    impliedTags:
+        human: animal infantry
+        animal: organic
+        spaceship: vehicle
+        vehicle: synthetic crewed
+
     creatures:
         # farmer:
         #    tags: animal human
@@ -13,11 +19,32 @@ scifi:
         # exclude from chargen for now.
 
         soldier:
-            tags: animal human
-            alignment: radiant
+            tags: human
+            alignment: law
             combat: 5
             durability: 10
             weight: 10
+
+        starfighter:
+            tags: spaceship
+            slots:
+                vehicle: 1
+            durability: 50
+            has: machineGun
+
+        frigate:
+            tags: spaceship
+            slots:
+                warship: 1
+            durability: 100
+            has: machineGun
+
+        dreadnought:
+            tags: spaceship
+            slots:
+                warship: 2
+            durability: 1000
+
 
     items:
         # Primary Weapons

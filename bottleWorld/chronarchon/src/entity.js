@@ -72,7 +72,16 @@ class Entity {
 
         return quantity * (impactOfSelf + impactOfChildren);
     }
-    
+
+    obeyPlayer () {
+        this.obeys = 'player';
+        // LATER enum.
+    }
+
+    obeySelf () {
+        this.obeys = undefined;
+    }
+
     draw () {
 
     }
