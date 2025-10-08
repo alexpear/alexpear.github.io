@@ -1,5 +1,6 @@
 // Game state of a bottle world.
 
+const Place = require('./place.js');
 const Template = require('./template.js');
 const Util = require('../../../util/util.js');
 
@@ -22,6 +23,12 @@ class World {
 
         this.t = 0;
         this.id = Util.uuid();
+
+        if (typeof window !== 'undefined') {
+            window.world = this;
+            // LATER might instead focus on a window.player or window.session    
+            this.replaceCandidate();
+        }
     }
 
     // Move the world 1 turn forward in time.
@@ -32,6 +39,13 @@ class World {
         );
 
         this.t += 1;
+    }
+
+    replaceCandidate () {
+        this.candidate = Group.random();
+        this.candidate.draw(
+            window.document.getElementById('outsiderPane')
+        );
     }
 
     toYml () {

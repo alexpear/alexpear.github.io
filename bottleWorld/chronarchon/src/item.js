@@ -24,6 +24,16 @@ class Item extends Entity {
         return;
     }
 
+    draw (div, cssClass) {
+        return Util.htmlElement(
+            'img',
+            {
+                src: `images/${ this.template.name }.png`,
+                class: cssClass,
+            }
+        );
+    }
+
     static random () {
         return new Item(
             Template.randomItem()

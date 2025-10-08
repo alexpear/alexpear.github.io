@@ -54,7 +54,7 @@ class CLI {
         this.newWorld();
 
         // LATER put 3 entities into player's warband somehow 
-        
+
         // TODO on load, generate the candidate & display their toString() in the #candidateTextBox.
     }
 
@@ -68,7 +68,7 @@ class CLI {
             const g = Group.random();
             g.place = this.world.places[0];
             this.world.entities.push(g);
-            // LATER functionize in World to combine Group.random() and entities.push()
+            // LATER function in World that combines Group.random() and entities.push()
 
             console.log(g.toString());
             console.log();

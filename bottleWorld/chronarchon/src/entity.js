@@ -14,7 +14,7 @@ class Entity {
         this.weight = template?.weight || 0;
         this.EntityType = undefined;
         this.has = []; // Array of items and/or traits
-        this.name = Covonym.random(1000);
+        this.name = Covonym.random(10_000);
         this.id = Util.uuid();
 
         // this.home = // groups & items have places of origin // LATER

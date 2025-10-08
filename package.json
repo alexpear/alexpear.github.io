@@ -77,7 +77,8 @@
     "testRingWorld": "node bottleWorld/ringWorldState.js test",
     "buildImageSorter": "webpack -p",
     "startImageSorter": "tsc ./util/imageSorter/imageSorter.ts && webpack && qode ./util/imageSorter.ts",
-    "debugImageSorter": "webpack && qode --inspect ./dist/imageSorter.js"
+    "debugImageSorter": "webpack && qode --inspect ./dist/imageSorter.js",
+    "buildlimitless": "browserify bottleWorld/chronarchon/src/*.js -o bottleWorld/chronarchon/bundle.js"
   },
   "repository": {
     "type": "git",

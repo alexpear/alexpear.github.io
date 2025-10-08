@@ -27,6 +27,8 @@ class Group extends Entity {
             Template.randomGroup(),
         );
 
+        // TODO constrain to drawable items.
+
         // 1 weapon & 0-1 extra items.
         const primary = Item.randomWeapon();
         g.has.push(primary);
@@ -69,6 +71,53 @@ class Group extends Entity {
 
     levelReadout () {
         return ` • level ${this.level()}`;
+    }
+
+    draw (div) {
+        Util.clearHtmlChildren(div);
+
+        div.appendChild(
+            Util.htmlElement(
+                'img',
+                {
+                    src: `images/${ this.template.name }.png`,  
+                },
+            )
+        );
+
+        this.primaryHeld()?.draw(div);
+        this.secondaryHeld()?.draw(div, 'leftie');
+
+        div.appendChild(
+            Util.htmlElement(
+                'img',
+                {
+                    src: 'images/handright.png',
+                },
+            )
+        );
+    }
+
+    // The ordering of this.has defines which items are held in the primary & secondary hands.
+    primaryHeld () {
+        return this.findXthItem(1);
+    }
+
+    secondaryHeld () {
+        return this.findXthItem(2);
+    }
+
+    findXthItem (xth) {
+        let seen = 0;
+        for (const item of this.has) {
+            if (item.template.tags?.includes('primary')) {
+                seen++;
+
+                if (seen >= xth) {
+                    return item;
+                }
+            }
+        }
     }
 
     static testDuel () {

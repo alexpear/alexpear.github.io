@@ -36,7 +36,10 @@
                 margin: 0 35% 20px 0;
             }
 
-
+            .leftie {
+                left: 43px; 
+                top: 7px;
+            }
         </style>
 
         <script src="bundle.js" defer></script>
@@ -63,11 +66,11 @@
                 <p id="candidateTextBox">Rifle</p>
                 <div class="unitSlot">
                     <img src="images/vynnbase.png">
-                    <img src="images/swordleft.png">
-                    <img src="images/swordright.png">
+                    <img src="images/sword.png">
+                    <img src="images/sword.png" class="leftie">
                     <img src="images/armright.png">
                 </div>
-                <button>Dismiss</button>
+                <button onclick="window.world.replaceCandidate()">Dismiss</button>
             </div>
         </div>
     </body>
