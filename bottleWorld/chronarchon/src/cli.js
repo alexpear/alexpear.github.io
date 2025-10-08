@@ -53,7 +53,9 @@ class CLI {
     demo () {
         this.newWorld();
 
-        // TODO put 3 entities into player's warband somehow 
+        // LATER put 3 entities into player's warband somehow 
+        
+        // TODO on load, generate the candidate & display their toString() in the #candidateTextBox.
     }
 
     newWorld () {

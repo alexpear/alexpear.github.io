@@ -10,7 +10,7 @@
             }
 
             #companyPane {
-                margin: 50px;
+                margin: 20px;
             }
 
             #outsiderPane {
@@ -19,18 +19,21 @@
 
             .unitSlot {
                 display: inline-block;
+                margin: 10px 0 10px 20px;
+                position: relative;
                 width: 200px;
                 height: 200px;
                 background-color: white;
             }
 
             .unitSlot > img {
+                position: absolute;
                 /* width: 100px; */
                 height: 200px;
             }
 
             .unitSlot > button {
-                margin: 0 35%;
+                margin: 0 35% 20px 0;
             }
 
 
@@ -44,24 +47,27 @@
             <div id="companyPane">
                 <div class="unitSlot">
                     <img src="images/vynnbase.png">
-                    <button>Dismiss</button>
                 </div>
+                <button>Dismiss</button>
                 <div class="unitSlot">
                     <img src="images/vynnbase.png">
-                    <button>Dismiss</button>
                 </div>
+                <button>Dismiss</button>
                 <div class="unitSlot">
                     <img src="images/vynnbase.png">
-                    <button>Dismiss</button>
                 </div>
+                <button>Dismiss</button>
             </div>
             <div id="outsiderPane">
                 <p>New Candidate</p>
                 <p id="candidateTextBox">Rifle</p>
                 <div class="unitSlot">
                     <img src="images/vynnbase.png">
-                    <button>Dismiss</button>
+                    <img src="images/swordleft.png">
+                    <img src="images/swordright.png">
+                    <img src="images/armright.png">
                 </div>
+                <button>Dismiss</button>
             </div>
         </div>
     </body>
