@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                width: 100vw;
+                height: 100vh;
+                background-color: black;
+                color: white;
+            }
+
+            #companyPane {
+                margin: 50px;
+            }
+
+            #outsiderPane {
+                margin: 100px;
+            }
+
+            .unitSlot {
+                display: inline-block;
+                width: 200px;
+                height: 200px;
+                background-color: white;
+            }
+
+            .unitSlot > img {
+                /* width: 100px; */
+                height: 200px;
+            }
+
+            .unitSlot > button {
+                margin: 0 35%;
+            }
+
+
+        </style>
+
+        <script src="bundle.js" defer></script>
+    </head>
+
+    <body>
+        <div id="main">
+            <div id="companyPane">
+                <div class="unitSlot">
+                    <img src="images/vynnbase.png">
+                    <button>Dismiss</button>
+                </div>
+                <div class="unitSlot">
+                    <img src="images/vynnbase.png">
+                    <button>Dismiss</button>
+                </div>
+                <div class="unitSlot">
+                    <img src="images/vynnbase.png">
+                    <button>Dismiss</button>
+                </div>
+            </div>
+            <div id="outsiderPane">
+                <p>New Candidate</p>
+                <p id="candidateTextBox">Rifle</p>
+                <div class="unitSlot">
+                    <img src="images/vynnbase.png">
+                    <button>Dismiss</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
