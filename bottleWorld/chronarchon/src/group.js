@@ -22,9 +22,9 @@ class Group extends Entity {
         this.attitude = Group.randomAttitude();
     }
 
-    static random () {
+    static async random () {
         const g = new Group(
-            Template.randomGroup(),
+            await Template.randomGroup(),
         );
 
         // TODO constrain to drawable items.
@@ -77,6 +77,7 @@ class Group extends Entity {
         Util.clearHtmlChildren(div);
 
         div.appendChild(
+            // TODO draws too big.
             Util.htmlElement(
                 'img',
                 {

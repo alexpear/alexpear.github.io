@@ -56,13 +56,16 @@ class Template {
     }
 
     static async drawableCreatures () {
-        return await Template.inCategory('creatures')
-            .filter(
-                // creature => creature.hasImage()
-                async (creature) => await creature.hasImage()
-            );
-
-            // LATER parallelize these promise calls if we see any slowdown.
+        const promisedTemplates = await Promise.all(
+            Template.inCategory('creatures')
+                .map(
+                    async (template) => await template.hasImage() ?
+                        template :
+                        false
+                )
+        );
+        
+        return promisedTemplates.filter(response => response);
     }
 
     // LATER this & similar image filepath funcs will need to escape special characters from user input filenames.
@@ -93,10 +96,14 @@ class Template {
         );
     }
 
-    static randomGroup () {
-        return Util.randomOf(Template.allCreatures());
+    static async randomGroup () {
+        return Util.randomOf(await Template.drawableCreatures());
 
         // LATER filter out incomplete or blank templates.
+    }
+
+    static randomGroupCLI () {
+        return Util.randomOf(Template.allCreatures());
     }
 
     static randomItem () {

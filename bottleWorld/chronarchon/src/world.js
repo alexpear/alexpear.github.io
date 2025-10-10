@@ -24,11 +24,13 @@ class World {
 
         this.t = 0;
         this.id = Util.uuid();
+    }
 
+    async demo () {
         if (typeof window !== 'undefined') {
             window.world = this;
             // LATER might instead focus on a window.player or window.session    
-            this.replaceCandidate();
+            await this.replaceCandidate();
         }
     }
 
@@ -42,8 +44,8 @@ class World {
         this.t += 1;
     }
 
-    replaceCandidate () {
-        this.candidate = Group.random();
+    async replaceCandidate () {
+        this.candidate = await Group.random();
         this.candidate.draw(
             window.document.getElementById('outsiderPane')
         );

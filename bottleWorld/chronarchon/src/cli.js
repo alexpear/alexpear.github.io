@@ -26,7 +26,7 @@ class CLI {
         this.world = World.fromFile(CLI.SAVEFILE);
     }
 
-    parseCommand (parameters = []) {
+    async parseCommand (parameters = []) {
         const COMMANDS = {
             look: this.look,
             explore: this.explore,
@@ -44,28 +44,29 @@ class CLI {
 
         if (! command) {
             // LATER check if there is already a world in the save file.
-            return this.demo();
+            return await this.demo();
         }
 
         command.call(this, parameters.slice(1));
     }
 
-    demo () {
-        this.newWorld();
+    async demo () {
+        await this.newWorld();
 
         // LATER put 3 entities into player's warband somehow 
 
         // TODO on load, generate the candidate & display their toString() in the #candidateTextBox.
+        await this.world.demo();
     }
 
-    newWorld () {
+    async newWorld () {
         this.world = new World();
 
         const pop = 3;
         console.log(`New world created with ${pop} entities. \n`);
 
         for (let i = 0; i < pop; i++) {
-            const g = Group.random();
+            const g = await Group.random();
             g.place = this.world.places[0];
             this.world.entities.push(g);
             // LATER function in World that combines Group.random() and entities.push()
@@ -127,10 +128,10 @@ class CLI {
     help`);
     }
 
-    static run () {
+    static async run () {
         const cli = new CLI();
 
-        cli.parseCommand(
+        await cli.parseCommand(
             process.argv.slice(2)
         );
 
