@@ -1,16 +1,7 @@
 // Each type of species or archetype in this world is represented by 1 Template instance.
 
-// require('yamlify/register');
 const Encyclopedia = require('./encyclopedia.yml.js');
-// LATER may need to store encyclopedia.yml as a .js or .json if browserify etc can't handle .yml files. But i like .yml for human readability.
-// TODO require -> fs
 // LATER decide whether & how to import & store templates from other users.
-
-/* Opts
-- .yml.js 
-- yamlify
-- .json 
-*/
 
 const Util = require('../../../util/util.js');
 const Yaml = require('js-yaml');
@@ -127,7 +118,6 @@ class Template {
             Encyclopedia.yamlString,
             { json: true }, // json: true means duplicate keys in a mapping will override values rather than throwing an error.
         );
-        // Template.ENCYCLOPEDIA = Encyclopedia;
 
         if (! Template.CONTEXT) {
             Template.CONTEXT = 'scifi';
