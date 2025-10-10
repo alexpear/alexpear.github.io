@@ -55,6 +55,30 @@ class Template {
         return Template.inCategory('creatures');
     }
 
+    static async drawableCreatures () {
+        return await Template.inCategory('creatures')
+            .filter(
+                // creature => creature.hasImage()
+                async (creature) => await creature.hasImage()
+            );
+
+            // LATER parallelize these promise calls if we see any slowdown.
+    }
+
+    // LATER this & similar image filepath funcs will need to escape special characters from user input filenames.
+    async hasImage () {
+        try {
+            const response = await fetch(
+                `images/${ this.name }.png`,
+                { method: 'HEAD' } // header only, quicker.
+            );
+
+            return response.ok;
+        } catch (error) {
+            return false;
+        }
+    }
+
     static allItems () {
         return Template.inCategory('items');
     }
