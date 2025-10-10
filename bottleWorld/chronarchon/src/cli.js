@@ -11,7 +11,7 @@ const FS = require('fs');
 
 class CLI {
     constructor () {
-        this.load();
+        // this.load();
     }
 
     save () {
@@ -74,7 +74,7 @@ class CLI {
             console.log();
         }
 
-        this.save();
+        // this.save();
     }
 
     look (params) {
@@ -134,7 +134,7 @@ class CLI {
             process.argv.slice(2)
         );
 
-        cli.save();
+        // cli.save();
     }
 }
 
