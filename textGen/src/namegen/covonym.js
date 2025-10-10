@@ -167,6 +167,7 @@ class Covonym {
         // node covonym.js -31.995524679343852, 115.51790132997857
         if (
             process.argv &&
+            process.argv[0] &&
             process.argv[0].endsWith('node') &&
             process.argv[1].endsWith('covonym.js') &&
             process.argv[2]
