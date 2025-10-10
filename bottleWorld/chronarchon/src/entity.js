@@ -54,8 +54,9 @@ class Entity {
     }
 
     level () {
-        return Math.log2(this._impactRating())
-            .toFixed(0);
+        return Util.round(
+            Math.log2(this._impactRating())
+        );
     }
 
     // Internal representation of the entity's capacity to impact the story.

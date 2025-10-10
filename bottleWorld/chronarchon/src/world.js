@@ -1,5 +1,6 @@
 // Game state of a bottle world.
 
+const Group = require('./group.js');
 const Place = require('./place.js');
 const Template = require('./template.js');
 const Util = require('../../../util/util.js');
