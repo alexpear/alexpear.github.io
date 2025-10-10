@@ -1,3 +1,5 @@
+module.exports = { yamlString: `
+
 scifi:
     alignments:
         radiant: radiant
@@ -582,3 +584,5 @@ fantasy:
     # places:
 
     # traits:
+
+` };
