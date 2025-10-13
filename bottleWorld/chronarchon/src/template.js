@@ -56,15 +56,20 @@ class Template {
     }
 
     static async drawableCreatures () {
-        const promisedTemplates = await Promise.all(
+        return await Template.drawablesAmong(
             Template.inCategory('creatures')
-                .map(
-                    async (template) => await template.hasImage() ?
-                        template :
-                        false
-                )
+        );  
+    }
+
+    static async drawablesAmong (templates) {
+        const promisedTemplates = await Promise.all(
+            templates.map(
+                async (template) => await template.hasImage() ?
+                    template :
+                    false
+            )
         );
-        
+
         return promisedTemplates.filter(response => response);
     }
 
@@ -96,6 +101,7 @@ class Template {
         );
     }
 
+    // LATER standardize whether random*() funcs should be in Template or in a Entity subclass.
     static async randomGroup () {
         return Util.randomOf(await Template.drawableCreatures());
 
@@ -114,10 +120,12 @@ class Template {
         );
     }
 
-    static randomPrimary () {
+    static async randomPrimary () {
         return Util.randomOf(
-            Template.allItems()
-                .filter(item => item.tags && item.tags.includes('primary'))
+            await Template.drawablesAmong(
+                Template.allItems()
+                    .filter(item => item.tags && item.tags.includes('primary'))
+            )
         );
     }
 
@@ -135,12 +143,14 @@ class Template {
         return template;
     }
 
-    static randomXHanded (hands = 2) {
+    static async randomXHanded (hands = 2) {
         return Util.randomOf(
-            Template.allItems()
-                .filter(
-                    item => item.tags && item.hands === hands
-                )
+            await Template.drawablesAmong(
+                Template.allItems()
+                    .filter(
+                        item => item.tags && item.hands === hands
+                    )
+            )
         );
     }
 

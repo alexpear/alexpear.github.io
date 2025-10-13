@@ -27,16 +27,14 @@ class Group extends Entity {
             await Template.randomGroup(),
         );
 
-        // TODO constrain to drawable items.
-
         // 1 weapon & 0-1 extra items.
-        const primary = Item.randomWeapon();
+        const primary = await Item.randomWeapon();
         g.has.push(primary);
 
         if (primary.template.hands === 1) {
             g.has.push(
                 new Item (
-                    Template.randomXHanded(1)
+                    await Template.randomXHanded(1)
                 )
             );
         }
@@ -86,14 +84,14 @@ class Group extends Entity {
             )
         );
 
-        this.primaryHeld()?.draw(div);
         this.secondaryHeld()?.draw(div, 'leftie');
+        this.primaryHeld()?.draw(div);
 
         div.appendChild(
             Util.htmlElement(
                 'img',
                 {
-                    src: 'images/handright.png',
+                    src: 'images/armright.png',
                 },
             )
         );

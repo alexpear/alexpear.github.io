@@ -46,8 +46,14 @@ class World {
 
     async replaceCandidate () {
         this.candidate = await Group.random();
+
+        console.log(`Candidate generated.`);
+        console.log(
+            this.candidate.toString()
+        );
+
         this.candidate.draw(
-            window.document.getElementById('outsiderPane')
+            window.document.getElementById('outsiderSlot')
         );
     }
 

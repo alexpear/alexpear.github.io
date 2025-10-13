@@ -25,12 +25,14 @@ class Item extends Entity {
     }
 
     draw (div, cssClass) {
-        return Util.htmlElement(
-            'img',
-            {
-                src: `images/${ this.template.name }.png`,
-                class: cssClass,
-            }
+        div.appendChild(
+            Util.htmlElement(
+                'img',
+                {
+                    src: `images/${ this.template.name }.png`,
+                    class: cssClass,
+                }
+            )
         );
     }
 
@@ -63,9 +65,9 @@ class Item extends Entity {
         );
     }
 
-    static randomWeapon () {
+    static async randomWeapon () {
         const item = new Item(
-            Template.randomPrimary()
+            await Template.randomPrimary()
         );
 
         const modCount = Util.randomUpTo(1);
