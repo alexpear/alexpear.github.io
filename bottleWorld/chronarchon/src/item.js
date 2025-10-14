@@ -70,13 +70,38 @@ class Item extends Entity {
             await Template.randomPrimary()
         );
 
+        if (item.template.upgradeable === false) return item;
+
         const modCount = Util.randomUpTo(1);
 
         for (let i = 0; i < modCount; i++) {
-            item.has.push(Item.randomUpgrade());
+            item.addRandomUpgrade();
         }
 
         return item;
+    }
+
+    addRandomUpgrade () {
+        this.has.push(
+            new Item(
+                Util.randomOf(
+                    Template.allItems()
+                        .filter(
+                            template => {
+                                if (! template.tags || ! template.tags.includes('upgrade')) return false;
+                                
+                                if (template.attachTo) {
+                                    return Util.hasOverlap(this.tags, template.attachTo);
+                                }
+
+                                return true;
+
+                                // TODO bug - i think this is filtering out all upgrades.
+                            }
+                        )
+                )
+            )
+        )
     }
 
     static randomUpgrade () {

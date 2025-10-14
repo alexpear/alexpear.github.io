@@ -11,17 +11,22 @@ class Template {
         // const entry = this.find(name);
         Object.assign(this, entry);
 
+        this.splitWords('tags');
+        this.splitWords('attachTo');
+
         this.name = name;        
         this.id = Util.uuid();
+    }
 
-        if (this.tags) {
-            this.tags = this.tags.split(/\s/);
+    splitWords (field) {
+        if (this[field]) {
+            this[field] = this[field].split(/\s+/);
         }
     }
 
-    // static named (name) {
-    //     return Template.find(name);
-    // }
+    tagOverlap (array1, array2) {
+        
+    }
 
     static find (name) {
         const CONTEXT = Template.ENCYCLOPEDIA[ Template.CONTEXT ];
@@ -29,11 +34,7 @@ class Template {
         for (const type of Template.TYPES) {
             const entries = CONTEXT[type];
 
-            // Util.logDebug({
-            //     name,
-            //     type,
-            //     entries,
-            // });
+            // Util.logDebug({ name, type, entries, });
 
             if (entries && entries[name]) {
                 const entry = entries[name];

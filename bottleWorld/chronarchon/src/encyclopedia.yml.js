@@ -347,6 +347,7 @@ scifi:
             weight: 7
             price: 3
             hands: 1
+            # TODO make image
 
         helmet:
             tags: armor
@@ -512,8 +513,6 @@ scifi:
             weight: 1
             accuracy: 2
             description: Magnets pull each attack toward the target.
-
-        # TODO mark infantry upgrades as for-infantry somehow. Dont give vehicle upgrades to nonvehicles.
 
         # Vehicle Upgrades
         missileLauncher:
