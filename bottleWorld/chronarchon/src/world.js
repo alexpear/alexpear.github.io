@@ -59,8 +59,18 @@ class World {
         );
     }
 
-    swapUnit (button) {
-        // TODO 
+    async swapUnit (button) {
+        const unitNumber = Number(button.parentElement.id.charAt(-1));
+
+        this.entities[unitNumber] = this.candidate;
+
+        this.candidate.draw(
+            button.parentElement.querySelector('.unitImageStack')
+        );
+
+        button.parentElement.querySelector('.unitTextBox').innerText = this.candidate.toString();
+
+        await this.replaceCandidate();
     }
 
     toYml () {
