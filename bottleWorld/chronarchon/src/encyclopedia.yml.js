@@ -358,12 +358,14 @@ scifi:
         # Mobility
         wings:
             tags: mobility worn
+            slot: back
             price: 10
             weight: 2
             speed: 30
 
         jetPack:
             tags: mobility worn
+            slot: back
             price: 8
             weight: 3
             speed: 20
@@ -376,28 +378,33 @@ scifi:
         # Other Worn Items
         intelEyepiece:
             tags: worn
+            slot: head
             price: 4
             weight: 0
 
         quickdrawHolster:
             tags: worn
+            slot: waist
             price: 4
             weight: 0
 
         trenchCoat:
             tags: worn
+            slot: back
             price: 2
             weight: 2
             durability: 1
 
         featheredCap:
             tags: worn
+            slot: head
             price: 4
             weight: 0
             accuracy: 3
  
         sunglasses:
             tags: worn
+            slot: head
             price: 4
             weight: 0
             accuracy: 1
@@ -405,12 +412,14 @@ scifi:
 
         bandana:
             tags: worn
+            slot: head
             price: 4
             weight: 0
             zeal: 5
  
         longHair:
             tags: worn
+            slot: head
             price: 4
             weight: 0
             accuracy: 3
@@ -418,6 +427,7 @@ scifi:
 
         shadowcloak:
             tags: worn
+            slot: back
             price: 9
             weight: 1
             stealth: 5
@@ -449,7 +459,7 @@ scifi:
             price: 5
             weight: 1
             shots: 2
-            requiredTags: gun # todo
+            requiredTags: gun # LATER
 
         incendiary:
             tags: upgrade
@@ -463,7 +473,7 @@ scifi:
             price: 1
             weight: 0
             description: Targets hit by tracker weapons will can be tracked by the shooter for days afterwards.
-            # todo: only compatible with range 1+ weapons
+            # LATER: only compatible with range 1+ weapons
             minRange: 1
             # Laser tracker guns don't make much sense but are kindof thematically like target designators.
 
@@ -494,7 +504,7 @@ scifi:
             price: -1
             damage: -1
             description: This weapon is not sturdy, but it is cheap.
-            # todo: don't allow negative prices when buying/selling.
+            # LATER: don't allow negative prices when buying/selling.
 
         magnet:
             tags: upgrade
