@@ -59,7 +59,6 @@ scifi:
             range: 0
             reach: 1
             damageType: blade
-            # todo: edit Group.random() etc to filter on primary tag.
 
         armBlade:
             tags: weapon primary
@@ -148,7 +147,7 @@ scifi:
             hands: 1
             ammo: 1
             damageType: blade
-            # todo: unlimited melee or 1 use thrown 
+            # LATER: unlimited melee or 1 use thrown 
 
         baton:
             tags: weapon primary

@@ -57,7 +57,6 @@ class CLI {
 
         // LATER put 3 entities into player's warband somehow 
 
-        // TODO on load, generate the candidate & display their toString() in the #candidateTextBox.
         await this.world.demo();
     }
 
@@ -75,6 +74,15 @@ class CLI {
 
             console.log(g.toString());
             console.log();
+
+            // TODO draw each group in its .unitImageStack in the #companyPane
+            const unitPane = window.document.getElementById(`companyUnit${i + 1}`);
+            g.draw(
+                unitPane.querySelector('.unitImageStack')
+            );
+
+            // TODO add a textbox next to each .unitImageStack
+            unitPane.querySelector('.unitTextBox').innerText = g.toString();
         }
 
         // this.save();
@@ -208,7 +216,6 @@ scifi:
             range: 0
             reach: 1
             damageType: blade
-            # todo: edit Group.random() etc to filter on primary tag.
 
         armBlade:
             tags: weapon primary
@@ -297,7 +304,7 @@ scifi:
             hands: 1
             ammo: 1
             damageType: blade
-            # todo: unlimited melee or 1 use thrown 
+            # LATER: unlimited melee or 1 use thrown 
 
         baton:
             tags: weapon primary
@@ -508,12 +515,14 @@ scifi:
         # Mobility
         wings:
             tags: mobility worn
+            slot: back
             price: 10
             weight: 2
             speed: 30
 
         jetPack:
             tags: mobility worn
+            slot: back
             price: 8
             weight: 3
             speed: 20
@@ -526,28 +535,33 @@ scifi:
         # Other Worn Items
         intelEyepiece:
             tags: worn
+            slot: head
             price: 4
             weight: 0
 
         quickdrawHolster:
             tags: worn
+            slot: waist
             price: 4
             weight: 0
 
         trenchCoat:
             tags: worn
+            slot: back
             price: 2
             weight: 2
             durability: 1
 
         featheredCap:
             tags: worn
+            slot: head
             price: 4
             weight: 0
             accuracy: 3
  
         sunglasses:
             tags: worn
+            slot: head
             price: 4
             weight: 0
             accuracy: 1
@@ -555,12 +569,14 @@ scifi:
 
         bandana:
             tags: worn
+            slot: head
             price: 4
             weight: 0
             zeal: 5
  
         longHair:
             tags: worn
+            slot: head
             price: 4
             weight: 0
             accuracy: 3
@@ -568,6 +584,7 @@ scifi:
 
         shadowcloak:
             tags: worn
+            slot: back
             price: 9
             weight: 1
             stealth: 5
@@ -599,7 +616,7 @@ scifi:
             price: 5
             weight: 1
             shots: 2
-            requiredTags: gun # todo
+            requiredTags: gun # LATER
 
         incendiary:
             tags: upgrade
@@ -613,7 +630,7 @@ scifi:
             price: 1
             weight: 0
             description: Targets hit by tracker weapons will can be tracked by the shooter for days afterwards.
-            # todo: only compatible with range 1+ weapons
+            # LATER: only compatible with range 1+ weapons
             minRange: 1
             # Laser tracker guns don't make much sense but are kindof thematically like target designators.
 
@@ -644,7 +661,7 @@ scifi:
             price: -1
             damage: -1
             description: This weapon is not sturdy, but it is cheap.
-            # todo: don't allow negative prices when buying/selling.
+            # LATER: don't allow negative prices when buying/selling.
 
         magnet:
             tags: upgrade
@@ -921,7 +938,8 @@ class Group extends Entity {
         const primary = await Item.randomWeapon();
         g.has.push(primary);
 
-        if (primary.template.hands === 1) {
+        const OFFHAND_ITEM_CHANCE = 0.5;
+        if (primary.template.hands === 1 && Math.random() < OFFHAND_ITEM_CHANCE) {
             g.has.push(
                 new Item (
                     await Template.randomXHanded(1)
@@ -965,7 +983,6 @@ class Group extends Entity {
         Util.clearHtmlChildren(div);
 
         div.appendChild(
-            // TODO draws too big.
             Util.htmlElement(
                 'img',
                 {
@@ -1435,6 +1452,8 @@ class World {
         console.log(
             this.candidate.toString()
         );
+
+        window.document.getElementById('candidateTextBox').innerText = this.candidate.toString();
 
         this.candidate.draw(
             window.document.getElementById('outsiderSlot')

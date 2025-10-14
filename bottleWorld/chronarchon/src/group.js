@@ -76,7 +76,6 @@ class Group extends Entity {
         Util.clearHtmlChildren(div);
 
         div.appendChild(
-            // TODO draws too big.
             Util.htmlElement(
                 'img',
                 {

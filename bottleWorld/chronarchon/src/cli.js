@@ -55,7 +55,6 @@ class CLI {
 
         // LATER put 3 entities into player's warband somehow 
 
-        // TODO on load, generate the candidate & display their toString() in the #candidateTextBox.
         await this.world.demo();
     }
 
@@ -73,6 +72,13 @@ class CLI {
 
             console.log(g.toString());
             console.log();
+
+            const unitPane = window.document.getElementById(`companyUnit${i + 1}`);
+            g.draw(
+                unitPane.querySelector('.unitImageStack')
+            );
+
+            unitPane.querySelector('.unitTextBox').innerText = g.toString();
         }
 
         // this.save();

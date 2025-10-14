@@ -52,9 +52,15 @@ class World {
             this.candidate.toString()
         );
 
+        window.document.getElementById('candidateTextBox').innerText = this.candidate.toString();
+
         this.candidate.draw(
             window.document.getElementById('outsiderSlot')
         );
+    }
+
+    swapUnit (button) {
+        // TODO 
     }
 
     toYml () {

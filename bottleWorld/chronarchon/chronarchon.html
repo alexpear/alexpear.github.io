@@ -13,12 +13,23 @@
                 margin: 20px;
             }
 
+            #companyPane > div {
+                display: inline-block;
+                vertical-align: top;
+                /* margin: 10px; */
+            }
+
             #outsiderPane {
                 margin: 100px;
             }
 
-            .unitSlot {
-                display: inline-block;
+            pre {
+                width: 300px;
+                /* height: 100px; */
+            }
+
+            .unitImageStack {
+                /* display: inline-block; */
                 margin: 10px 0 10px 20px;
                 position: relative;
                 width: 200px;
@@ -26,19 +37,23 @@
                 background-color: white;
             }
 
-            .unitSlot > img {
+            .unitImageStack > img {
                 position: absolute;
                 /* width: 100px; */
                 height: 200px;
             }
 
-            .unitSlot > button {
+            .unitImageStack > button {
                 margin: 0 35% 20px 0;
             }
 
             .leftie {
                 left: 43px; 
                 top: 7px;
+            }
+
+            #candidateTextBox {
+                padding: 0 0 50px 0;
             }
         </style>
 
@@ -48,29 +63,34 @@
     <body>
         <div id="main">
             <div id="companyPane">
-                <div class="unitSlot">
-                    <img src="images/soldier.png">
+                <div id="companyUnit1">
+                    <div class="unitImageStack"></div>
+                    <button onclick="window.world.swapUnit(this)">Dismiss</button>
+                    <pre class="unitTextBox">This is a very nice warrior.</pre>
                 </div>
-                <button>Dismiss</button>
-                <div class="unitSlot">
-                    <img src="images/soldier.png">
+
+                <div id="companyUnit2">
+                    <div class="unitImageStack"></div>
+                    <button onclick="window.world.swapUnit(this)">Dismiss</button>
+                    <pre class="unitTextBox">This is a very nice warrior.</pre>
                 </div>
-                <button>Dismiss</button>
-                <div class="unitSlot">
-                    <img src="images/soldier.png">
+
+                <div id="companyUnit3">
+                    <div class="unitImageStack"></div>
+                    <button onclick="window.world.swapUnit(this)">Dismiss</button>
+                    <pre class="unitTextBox">This is a very nice warrior.</pre>
                 </div>
-                <button>Dismiss</button>
             </div>
             <div id="outsiderPane">
                 <p>New Candidate</p>
-                <p id="candidateTextBox">This is a very nice warrior.</p>
-                <div id="outsiderSlot" class="unitSlot">
+                <div id="outsiderSlot" class="unitImageStack">
                     <img src="images/soldier.png">
                     <!-- <img src="images/sword.png">
                     <img src="images/sword.png" class="leftie"> -->
                     <img src="images/armright.png">
                 </div>
                 <button onclick="window.world.replaceCandidate()">Dismiss</button>
+                <pre id="candidateTextBox" class="unitTextBox">This is a very nice warrior.</pre>
             </div>
         </div>
     </body>
