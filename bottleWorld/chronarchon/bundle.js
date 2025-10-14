@@ -75,13 +75,11 @@ class CLI {
             console.log(g.toString());
             console.log();
 
-            // TODO draw each group in its .unitImageStack in the #companyPane
             const unitPane = window.document.getElementById(`companyUnit${i + 1}`);
             g.draw(
                 unitPane.querySelector('.unitImageStack')
             );
 
-            // TODO add a textbox next to each .unitImageStack
             unitPane.querySelector('.unitTextBox').innerText = g.toString();
         }
 
@@ -670,7 +668,7 @@ scifi:
             accuracy: 2
             description: Magnets pull each attack toward the target.
 
-        # TODO mark infantry upgrades as for-infantry somehow. Dont give vehicle upgrades to nonvehicles.
+        # TODO In JS, dont give vehicle upgrades to nonvehicles.
 
         # Vehicle Upgrades
         missileLauncher:
@@ -1128,13 +1126,38 @@ class Item extends Entity {
             await Template.randomPrimary()
         );
 
+        if (item.template.upgradeable === false) return item;
+
         const modCount = Util.randomUpTo(1);
 
         for (let i = 0; i < modCount; i++) {
-            item.has.push(Item.randomUpgrade());
+            item.addRandomUpgrade();
         }
 
         return item;
+    }
+
+    addRandomUpgrade () {
+        this.has.push(
+            new Item(
+                Util.randomOf(
+                    Template.allItems()
+                        .filter(
+                            template => {
+                                if (! template.tags || ! template.tags.includes('upgrade')) return false;
+                                
+                                if (template.attachTo) {
+                                    return Util.hasOverlap(this.tags, template.attachTo);
+                                }
+
+                                return true;
+
+                                // TODO bug - i think this is filtering out all upgrades.
+                            }
+                        )
+                )
+            )
+        )
     }
 
     static randomUpgrade () {
@@ -1205,17 +1228,22 @@ class Template {
         // const entry = this.find(name);
         Object.assign(this, entry);
 
+        this.splitWords('tags');
+        this.splitWords('attachTo');
+
         this.name = name;        
         this.id = Util.uuid();
+    }
 
-        if (this.tags) {
-            this.tags = this.tags.split(/\s/);
+    splitWords (field) {
+        if (this[field]) {
+            this[field] = this[field].split(/\s+/);
         }
     }
 
-    // static named (name) {
-    //     return Template.find(name);
-    // }
+    tagOverlap (array1, array2) {
+        
+    }
 
     static find (name) {
         const CONTEXT = Template.ENCYCLOPEDIA[ Template.CONTEXT ];
@@ -1223,11 +1251,7 @@ class Template {
         for (const type of Template.TYPES) {
             const entries = CONTEXT[type];
 
-            // Util.logDebug({
-            //     name,
-            //     type,
-            //     entries,
-            // });
+            // Util.logDebug({ name, type, entries, });
 
             if (entries && entries[name]) {
                 const entry = entries[name];
@@ -1458,6 +1482,20 @@ class World {
         this.candidate.draw(
             window.document.getElementById('outsiderSlot')
         );
+    }
+
+    async swapUnit (button) {
+        const unitNumber = Number(button.parentElement.id.charAt(-1));
+
+        this.entities[unitNumber] = this.candidate;
+        // draw this.entities[n] & overwrite text box
+        this.candidate.draw(
+            button.parentElement.querySelector('.unitImageStack')
+        );
+
+        button.parentElement.querySelector('.unitTextBox').innerText = this.candidate.toString();
+
+        await this.replaceCandidate();
     }
 
     toYml () {
