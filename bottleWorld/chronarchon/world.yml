@@ -1,35 +1,213 @@
-context: fantasy
+context: scifi
 entities:
     -
+        actionsLeft: 1
+        attack: 2
         attitude: worldly
-        has: []
-        id: 2fbe1e22-eb1d-4302-892b-0a5c2f063840
-        name: Wida
+        has:
+            -
+                entityType: ITEM
+                has:
+                    -
+                        entityType: ITEM
+                        has: []
+                        id: fcdb4804-36a8-441f-a355-398651429976
+                        name: Dingma
+                        template: &ref_3
+                            attachTo: warship
+                            id: 117239fb-8923-4f72-b834-82cccccf8b05
+                            name: transportBay
+                            tags:
+                                - upgrade
+                        weight: 0
+                id: 07707b44-93f3-480b-b569-58586004ce4c
+                name: Vingva
+                template:
+                    damage: 0
+                    hands: 2
+                    hitEffect:
+                        duration: 10
+                        status: immobilized
+                    id: 0f3ed08a-122c-452e-99f1-41bfa54bc74c
+                    name: netgun
+                    price: 15
+                    range: 2
+                    tags:
+                        - weapon
+                        - primary
+                        - gun
+                    weight: 5
+                weight: 5
+            -
+                entityType: ITEM
+                has: []
+                id: a04295a2-5370-4279-b7d5-ce8dfb8de6fd
+                name: Rongza
+                template:
+                    id: 59024f06-a999-459a-bf5f-8e4fcffebedd
+                    name: jetPack
+                    price: 8
+                    speed: 20
+                    tags:
+                        - mobility
+                        - worn
+                    weight: 3
+                weight: 3
+            -
+                entityType: ITEM
+                has: []
+                id: 16e6c86f-cb84-4cec-97c6-51d9d3ef2153
+                name: Ningga
+                template:
+                    id: 7c90d304-9e51-40a4-b209-78e179ec1bce
+                    name: wings
+                    price: 10
+                    speed: 30
+                    tags:
+                        - mobility
+                        - worn
+                    weight: 2
+                weight: 2
+        id: 05383957-e471-4625-92a0-b1d3235583ae
+        name: Rawa
+        place: &ref_0
+            id: b6071c2f-7ed5-43b6-a4b4-dd467cc41e86
+            name: Thaifa
         quantity: 1
-        template: &ref_0
-            alignment: radiant
-            combat: 0
+        stamina: 10
+        template:
+            alignment: law
+            combat: 5
             durability: 10
-            id: a0147417-41e1-4c0a-8757-125e4a3fc26b
-            name: farmer
-            tags: animal
+            id: 19bc17bb-4542-47fd-b2e2-b1a1bb833be8
+            name: soldier
+            tags:
+                - human
             weight: 10
+        weight: 0
     -
+        actionsLeft: 1
+        attack: 2
         attitude: selfish
-        has: []
-        id: 7642a9b4-58c8-46f5-86f7-3e30438aed3d
-        name: Sing
+        has:
+            -
+                entityType: ITEM
+                has: []
+                id: 58111541-90f7-43e0-95ad-c7402a9a11f1
+                name: Painya
+                template: &ref_1
+                    combat: 2
+                    damageType: blade
+                    hands: 1
+                    id: 2e138409-f7fb-4fd7-ae1f-c32a5503f096
+                    name: sword
+                    price: 10
+                    range: 0
+                    reach: 1
+                    tags:
+                        - weapon
+                        - primary
+                    weight: 2
+                weight: 2
+            -
+                entityType: ITEM
+                has: []
+                id: 4e38d096-e331-415a-a75c-56624a0c0a96
+                name: Sama
+                template: *ref_1
+                weight: 2
+            -
+                entityType: ITEM
+                has: []
+                id: dbf10c23-6151-4173-bdb6-586a0a3ef534
+                name: Tota
+                template:
+                    description: Iron shield strapped to the forearm
+                    durability: 5
+                    hands: 0
+                    id: acfced50-c68e-4374-a73b-9a7137aa1f29
+                    name: armShield
+                    price: 2
+                    tags:
+                        - armor
+                    weight: 4
+                weight: 4
+        id: 2baea705-8ec7-43e3-9f64-cf6ef223fe05
+        name: Weja
+        place: *ref_0
         quantity: 1
-        template: *ref_0
+        stamina: 10
+        template: &ref_2
+            durability: 100
+            has: machineGun
+            id: 46215817-fc74-4e56-9f30-a4a74fada650
+            name: frigate
+            slots:
+                warship: 1
+            tags:
+                - spaceship
+        weight: 0
     -
-        attitude: interventionist
-        has: []
-        id: e3819e6b-a227-4d68-afb4-9f93566ecef3
-        name: Dongda
+        actionsLeft: 1
+        attack: 2
+        attitude: worldly
+        has:
+            -
+                entityType: ITEM
+                has:
+                    -
+                        entityType: ITEM
+                        has: []
+                        id: 59f00082-669e-41e3-9806-29c8f5f68264
+                        name: Gerja
+                        template: *ref_3
+                        weight: 0
+                id: b62b022f-0ffd-4e72-a4bc-c10eb8113827
+                name: Gingkya
+                template: &ref_4
+                    damage: 3
+                    damageType: blunt
+                    hands: 1
+                    id: b9d62961-6d8c-45f6-b15a-19d94f5c892f
+                    name: baton
+                    price: 3
+                    range: 0
+                    reach: 1
+                    tags:
+                        - weapon
+                        - primary
+                    weight: 1
+                weight: 1
+            -
+                entityType: ITEM
+                has: []
+                id: 125b269a-6a55-4acd-93d2-92b778911c5e
+                name: Potha
+                template: *ref_4
+                weight: 1
+            -
+                entityType: ITEM
+                has: []
+                id: 7200ff48-9d0e-44b5-bf86-7a41fc96b88b
+                name: Zeerma
+                template:
+                    id: 11c9b9d1-80c6-47e4-bca4-05205ddfba07
+                    name: quickdrawHolster
+                    price: 4
+                    tags:
+                        - worn
+                    weight: 0
+                weight: 0
+        id: a611690a-f87b-4f71-81b6-4ba1a2959606
+        name: Veersa
+        place: *ref_0
         quantity: 1
-        template: *ref_0
+        stamina: 10
+        template: *ref_2
+        weight: 0
 events: []
-id: 3ace7850-3bab-443c-9326-cb38fc341b04
-places: []
+id: 4cac9e6a-ea39-4572-86b3-817919abeb4c
+places:
+    - *ref_0
 t: 0
 traits: []
