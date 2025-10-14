@@ -31,7 +31,8 @@ class Group extends Entity {
         const primary = await Item.randomWeapon();
         g.has.push(primary);
 
-        if (primary.template.hands === 1) {
+        const OFFHAND_ITEM_CHANCE = 0.5;
+        if (primary.template.hands === 1 && Math.random() < OFFHAND_ITEM_CHANCE) {
             g.has.push(
                 new Item (
                     await Template.randomXHanded(1)
