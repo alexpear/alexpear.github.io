@@ -95,8 +95,6 @@ class Item extends Entity {
                                 }
 
                                 return true;
-
-                                // TODO bug - i think this is filtering out all upgrades.
                             }
                         )
                 )

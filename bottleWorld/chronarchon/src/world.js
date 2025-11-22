@@ -71,6 +71,8 @@ class World {
         button.parentElement.querySelector('.unitTextBox').innerText = this.candidate.toString();
 
         await this.replaceCandidate();
+
+        // LATER remember that this player likes this candidate.
     }
 
     toYml () {
