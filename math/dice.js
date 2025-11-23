@@ -10,15 +10,22 @@ We are interested in how many steps it takes to reach max level.
 const Util = require('../util/util.js');
 
 class Scenario {
-    constructor (diceCount = 1, startNumber) {
+    constructor (diceCount = 1, stopNumber) {
         this.dice = Number(diceCount);
-        this.level = Number(
-            Util.default(startNumber, this.dice)
-        );
+        this.level = this.dice;
+        this.stopNumber = stopNumber ?
+            Number(stopNumber) :
+            undefined;
     }
 
     simulate () {
-        const maxLevel = 6 * this.dice;
+    // }
+
+    // simulateDecay () {
+    // }
+
+    // simulateGrowth () {
+        const maxLevel = this.stopNumber || (6 * this.dice);
         let steps = 0;
 
         while (this.level < maxLevel) {
@@ -46,23 +53,24 @@ class Scenario {
     }
 
     static run () {
-        // node math/dice.js 3 10
-        // 3d6, starting at 10 going up
+        // usage
+        // node math/dice.js 3 14
+        // 3d6, stop at level 14
         let diceCount = process.argv[2] || 1;
-        let startNumber = process.argv[3] || undefined;
+        let stopNumber = process.argv[3] || undefined;
 
         const stepsDict = {};
 
         Util.log({
             diceCount,
-            startNumber,
+            stopNumber,
         });
 
         const startTime = Date.now();
         const duration = 10000; // 10 seconds
 
         while (Date.now() - startTime < duration) {
-            const scenario = new Scenario(diceCount, startNumber);
+            const scenario = new Scenario(diceCount, stopNumber);
             const steps = scenario.simulate();
 
             if (stepsDict[steps]) {
