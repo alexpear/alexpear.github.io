@@ -84,6 +84,9 @@ class Interplanetary {
             for (let mission of player.missionCards) {
                 const existingSummary = summaries.find(s => s.locationName === mission.locationName);
 
+                // TODO bug - missing space in log:
+                //   Player 2: 11 fuel, astronaut x14, robot x15, station x4, telescope x2robot (HQ 1, Tech Level 4)
+
                 if (existingSummary) {
                     const existingPresence = existingSummary.presences.find(
                         pres => pres.playerNumber === player.number
@@ -299,7 +302,10 @@ class Interplanetary {
         this.printGamestate();
 
         for (let t = 0; t < 99; t++) {
-            Util.log({ t });
+            const stripe = '='.repeat(80);
+            Util.log({
+                banner: `${stripe} Round ${t} ${stripe}`,
+            });
 
             for (let player of this.players) {
                 player.doAction();
@@ -538,7 +544,7 @@ class Player {
         });
 
         if (Math.random() < burnFromEarthChance) {
-            burnAction.fromLocationName = Interplanetary.LOCATIONS.Earth;
+            burnAction.fromLocationName = Interplanetary.LOCATIONS.Earth.name;
         }
         else {
             burnAction.mission = Util.randomOf(burnableMissions);
