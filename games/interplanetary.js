@@ -520,12 +520,12 @@ class Player {
             type: Interplanetary.ACTION.work
         })];
 
-        // Util.logDebug({
-            // actions,
-        //     launchpadFuel: this.launchpadFuel,
-        //     robotCost: Interplanetary.SHOP.robot,
-        //     context: 'planAction()',
-        // });
+        Util.logDebug({
+            actions,
+            launchpadFuel: this.launchpadFuel,
+            robotCost: Interplanetary.SHOP.robot,
+            context: 'planAction()',
+        });
 
         if (this.launchpadFuel >= Interplanetary.SHOP.robot) {
             actions.push(new Action({
@@ -557,6 +557,11 @@ class Player {
         while (burnAction.targetLocation === burnAction.fromLocationName) {
             burnAction.targetLocation = Interplanetary.randomLocation().name;
         }
+
+        Util.logDebug({
+            from: burnAction.fromLocationName,
+            target: burnAction.targetLocation,
+        });
 
         const costs = Interplanetary.routeCosts(burnAction.fromLocationName, burnAction.targetLocation);
 
