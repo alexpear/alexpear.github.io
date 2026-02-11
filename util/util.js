@@ -484,6 +484,17 @@ class Util {
         return Math.ceil(Math.random() * sides);
     }
 
+    // x dice with y sides each
+    static rollXdY (x, y) {
+        let total = 0;
+
+        for (let i = 0; i < x; i++) {
+            total += Util.rollDie(y);
+        }
+
+        return total;
+    }
+
     static testRoll1d6 () {
         const results = [];
 
