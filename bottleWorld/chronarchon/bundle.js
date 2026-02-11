@@ -502,6 +502,7 @@ scifi:
             weight: 7
             price: 3
             hands: 1
+            # TODO make image
 
         helmet:
             tags: armor
@@ -668,8 +669,6 @@ scifi:
             accuracy: 2
             description: Magnets pull each attack toward the target.
 
-        # TODO In JS, dont give vehicle upgrades to nonvehicles.
-
         # Vehicle Upgrades
         missileLauncher:
             tags: weapon
@@ -768,7 +767,7 @@ class Entity {
         this.weight = template?.weight || 0;
         this.EntityType = undefined;
         this.has = []; // Array of items and/or traits
-        this.name = Covonym.random(10_000);
+        this.name = Covonym.random(1_000_000);
         this.id = Util.uuid();
 
         // this.home = // groups & items have places of origin // LATER
@@ -826,6 +825,8 @@ class Entity {
         const quantity = this.quantity || 1;
 
         return quantity * (impactOfSelf + impactOfChildren);
+
+        // LATER consider weight penalty.
     }
 
     obeyPlayer () {
@@ -1151,8 +1152,6 @@ class Item extends Entity {
                                 }
 
                                 return true;
-
-                                // TODO bug - i think this is filtering out all upgrades.
                             }
                         )
                 )
@@ -1488,7 +1487,7 @@ class World {
         const unitNumber = Number(button.parentElement.id.charAt(-1));
 
         this.entities[unitNumber] = this.candidate;
-        // draw this.entities[n] & overwrite text box
+
         this.candidate.draw(
             button.parentElement.querySelector('.unitImageStack')
         );
@@ -1496,6 +1495,8 @@ class World {
         button.parentElement.querySelector('.unitTextBox').innerText = this.candidate.toString();
 
         await this.replaceCandidate();
+
+        // LATER remember that this player likes this candidate.
     }
 
     toYml () {
@@ -29367,6 +29368,17 @@ class Util {
 
     static rollDie (sides) {
         return Math.ceil(Math.random() * sides);
+    }
+
+    // x dice with y sides each
+    static rollXdY (x, y) {
+        let total = 0;
+
+        for (let i = 0; i < x; i++) {
+            total += Util.rollDie(y);
+        }
+
+        return total;
     }
 
     static testRoll1d6 () {
