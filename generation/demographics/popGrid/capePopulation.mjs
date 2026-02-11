@@ -524,7 +524,10 @@ class CapePopulation {
 
     static async run () {
         if (! process.argv[2]) {
-            console.log(`Usage - To search for oddities, run: node capePopulation.mjs search`);
+            if (process.argv[1]) {
+                console.log(`Usage - To search for oddities, run: node capePopulation.mjs search`);
+            }
+
             return;
         }
 
