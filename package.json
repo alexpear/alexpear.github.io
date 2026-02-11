@@ -78,7 +78,7 @@
     "buildImageSorter": "webpack -p",
     "startImageSorter": "tsc ./util/imageSorter/imageSorter.ts && webpack && qode ./util/imageSorter.ts",
     "debugImageSorter": "webpack && qode --inspect ./dist/imageSorter.js",
-    "buildlimitless": "browserify bottleWorld/chronarchon/src/*.js --exclude bottleWorld/chronarchon/src/*.test.js -o bottleWorld/chronarchon/bundle.js && npm run server"
+    "buildlimitless": "browserify bottleWorld/chronarchon/src/*.js --exclude bottleWorld/chronarchon/src/*.test.js -o bottleWorld/chronarchon/bundle.js && npm run server && open bottleWorld/chronarchon/chronarchon.html"
   },
   "repository": {
     "type": "git",
