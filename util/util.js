@@ -97,8 +97,10 @@ class Util {
 
     static legit (x) {
         return Util.exists(x) &&
-            x !== [] &&
-            x !== {};
+            // it's not []
+            ! (Util.isArray(x) && x.length === 0) &&
+            // it's not {}
+            ! (typeof x === 'object' && Object.keys(x).length === 0);
     }
 
     // Logs information about unknown values.
