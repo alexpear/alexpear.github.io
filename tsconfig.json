@@ -13,5 +13,5 @@
         "moduleResolution": "node",
         "esModuleInterop": true
     },
-    "include": ["**/*"]
+    "include": ["util/imageSorter/*.ts"]
 }
