@@ -39,7 +39,7 @@ function exampleWorldState () {
 
 
 
-"
+```
 Paste of various notes:
 
 MRB Waffle
@@ -165,5 +165,5 @@ Some form of history tracking
 Last-cached-worldstate + Event list = current worldstate
 or a Series of worldstates
 Each Creature or entity that can cause events has something (pointer to behavior-class function?) that indicates how it chooses what action to output. 
-";
+```
 
