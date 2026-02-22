@@ -1,28 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facegen</title>
-    <script src="src/faceGen.js"></script>
-    <style>
-        body, html {
-            margin: 20px;
-            padding: 0;
-            /* height: 100%; */
-            /* display: flex; */
-            justify-content: center;
-            align-items: center;
-            /* background-color: black; */
-        }
-        canvas {
-            border: 1px solid black;
-            width: 600px;
-            height: 600px;
-        }
-    </style>
-</head>
-<body>
-    <canvas id="faceCanvas"></canvas>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Facegen</title>
+        <script src="dist/util.js"></script>
+        <script src="dist/faceGen.js"></script>
+        <style>
+            body,
+            html {
+                margin: 20px;
+                padding: 0;
+                /* height: 100%; */
+                /* display: flex; */
+                justify-content: center;
+                align-items: center;
+                /* background-color: black; */
+            }
+            canvas {
+                border: 1px solid black;
+                width: 600px;
+                height: 600px;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="faceCanvas" width="600" height="600"></canvas>
+    </body>
 </html>
