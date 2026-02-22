@@ -3,7 +3,9 @@ node_modules
 ppp_2020_1km_Aggregated.tif
 worldpop-4x4res.txt
 squareList.txt
+dist
 bottleWorld/chronarchon/world.yml
 bottleWorld/waffleCards/cardSet.html
 bottleWorld/waffleCards/data/cards.yml.js
 util/fandomscraper/*/
+visuals/chargen/dist
