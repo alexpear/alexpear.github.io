@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
+        <title>GPS Objectives</title>
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9/dist/leaflet.css"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #map {
+                width: 100vw;
+                height: 100vh;
+            }
+            .goal-label {
+                background: none !important;
+                border: none !important;
+                font-weight: bold;
+                color: #000;
+                text-align: center;
+                text-shadow:
+                    -1px -1px 0 #fff,
+                    1px -1px 0 #fff,
+                    -1px 1px 0 #fff,
+                    1px 1px 0 #fff;
+            }
+            #score {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                z-index: 1000;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 6px 12px;
+                border-radius: 6px;
+                font: bold 18px sans-serif;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="score">Score: 0</div>
+        <div id="map"></div>
+        <script src="https://unpkg.com/leaflet@1.9/dist/leaflet.js"></script>
+        <script src="dist/main.js"></script>
+    </body>
+</html>
