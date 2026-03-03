@@ -1,6 +1,8 @@
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 const GRID_STEP = 0.01;
-const GOALS_MIN_ZOOM = 11;
+const FONT_FRACTION = 0.15;
+const MIN_FONT_PX = 4;
+const MAX_FONT_PX = 30;
 class MapGame {
     constructor() {
         // eslint-disable-next-line @typescript-eslint/typedef
@@ -89,22 +91,28 @@ class MapGame {
         const dateStr = this.coords2dates[coordKey];
         return new Goal(dateStr ? new Date(dateStr) : undefined);
     }
-    goalFontSize() {
-        const zoom = this.map.getZoom();
-        // Scale from 10px at zoom 10 to 18px at zoom 18+
-        return Math.min(18, Math.max(10, zoom + 0));
+    gridSpacingPx() {
+        const center = this.map.getCenter();
+        const p1 = this.map.latLngToContainerPoint([center.lat, center.lng]);
+        const p2 = this.map.latLngToContainerPoint([
+            center.lat,
+            center.lng + GRID_STEP,
+        ]);
+        return p2.x - p1.x;
     }
     updateGoalVisuals() {
-        const zoom = this.map.getZoom();
+        const spacing = this.gridSpacingPx();
+        const fontSize = Math.min(MAX_FONT_PX, Math.round(spacing * FONT_FRACTION));
         // Too zoomed out — remove all goals and bail
-        if (zoom <= GOALS_MIN_ZOOM) {
+        if (fontSize < MIN_FONT_PX) {
             for (const [key, marker] of this.renderedGoals) {
                 this.map.removeLayer(marker);
                 this.renderedGoals.delete(key);
             }
             return;
         }
-        const fontSize = this.goalFontSize();
+        const iconW = Math.round(fontSize * 2.5);
+        const iconH = Math.round(fontSize * 1.4);
         const bounds = this.map.getBounds();
         const south = bounds.getSouth();
         const north = bounds.getNorth();
@@ -133,8 +141,8 @@ class MapGame {
                             'px">' +
                             text +
                             '</span>',
-                        iconSize: [40, 20],
-                        iconAnchor: [20, 10],
+                        iconSize: [iconW, iconH],
+                        iconAnchor: [iconW / 2, iconH / 2],
                     });
                     const marker = L.marker([this.snapToGrid(lat), this.snapToGrid(long)], { icon, interactive: false }).addTo(this.map);
                     this.renderedGoals.set(key, marker);
@@ -147,8 +155,8 @@ class MapGame {
                             'px">' +
                             text +
                             '</span>',
-                        iconSize: [40, 20],
-                        iconAnchor: [20, 10],
+                        iconSize: [iconW, iconH],
+                        iconAnchor: [iconW / 2, iconH / 2],
                     });
                     existingLabel.setIcon(icon);
                 }

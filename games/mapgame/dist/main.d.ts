@@ -1,6 +1,8 @@
 declare const L: any;
 declare const GRID_STEP: number;
-declare const GOALS_MIN_ZOOM: number;
+declare const FONT_FRACTION: number;
+declare const MIN_FONT_PX: number;
+declare const MAX_FONT_PX: number;
 declare class MapGame {
     map: any;
     playerMarker: Record<string, any> | undefined;
@@ -18,7 +20,7 @@ declare class MapGame {
     static keyFormat(lat: number, long: number): string;
     updateScoreDisplay(): void;
     goalAt(lat: number, long: number): Goal;
-    goalFontSize(): number;
+    gridSpacingPx(): number;
     updateGoalVisuals(): void;
     stateString(): string;
     save(): void;
