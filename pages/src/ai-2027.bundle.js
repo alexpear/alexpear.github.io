@@ -23208,8 +23208,10 @@ class Util {
 
     static legit (x) {
         return Util.exists(x) &&
-            x !== [] &&
-            x !== {};
+            // it's not []
+            ! (Util.isArray(x) && x.length === 0) &&
+            // it's not {}
+            ! (typeof x === 'object' && Object.keys(x).length === 0);
     }
 
     // Logs information about unknown values.
@@ -23547,6 +23549,8 @@ class Util {
         const unrounded = (Math.random() * (maxExclusive - minInclusive))
             + minInclusive;
 
+        // TODO Bug? If random() gives 0.99, can it round up to maxExclusive?
+
         return _.round(unrounded, decimalPlaces);
     }
 
@@ -23591,6 +23595,17 @@ class Util {
 
     static rollDie (sides) {
         return Math.ceil(Math.random() * sides);
+    }
+
+    // x dice with y sides each
+    static rollXdY (x, y) {
+        let total = 0;
+
+        for (let i = 0; i < x; i++) {
+            total += Util.rollDie(y);
+        }
+
+        return total;
     }
 
     static testRoll1d6 () {
@@ -24044,11 +24059,17 @@ class Util {
         return `<${elementName}>${content}</${elementName}>`;
     }
 
-    static htmlElement (tag, className, text) {
+    static htmlElement (tag, attributes, text) {
         const el = document.createElement(tag);
 
-        if (className) {
-            el.setAttribute('class', className);
+        if (Util.isString(attributes)) {
+            el.setAttribute('class', attributes);
+        }
+        else if (attributes) {
+            // Interpret as an options dict.
+            for (let key in attributes) {
+                el.setAttribute(key, attributes[key]);
+            }
         }
 
         if (text) {
