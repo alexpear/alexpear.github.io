@@ -285,7 +285,7 @@ class Goal {
 
     // LATER check for rounding exploits. Can i visit every 13 hours? How to structure a unit test for that?
     pointsAvailable(): number {
-        return Math.min(999, Math.round(this.daysSinceVisited()));
+        return Math.min(1000, Math.round(this.daysSinceVisited()));
     }
 
     text(): string {
