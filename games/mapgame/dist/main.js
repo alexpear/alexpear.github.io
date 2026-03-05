@@ -1,11 +1,11 @@
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 const GRID_STEP = 0.01;
 const GOAL_FONT_PX = 16;
-const MIN_ZOOM = 11; // Below this, skip rendering to avoid too many objects
+const MIN_ZOOM = 12; // User can't zoom out too much.
 class MapGame {
     constructor() {
         // eslint-disable-next-line @typescript-eslint/typedef
-        this.map = L.map('map').setView([37.77, -122.42], 15); // Default: San Francisco
+        this.map = L.map('map', { minZoom: MIN_ZOOM }).setView([37.77, -122.42], 15); // Default: San Francisco
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.playerMarker = undefined;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
