@@ -163,10 +163,10 @@ class MapGame {
         const west = bounds.getWest();
         const east = bounds.getEast();
 
-        const latMin = this.snapToGrid(south);
-        const latMax = this.snapToGrid(north);
-        const longMin = this.snapToGrid(west);
-        const longMax = this.snapToGrid(east);
+        const latMin = this.snapToGrid(south - GRID_STEP / 2);
+        const latMax = this.snapToGrid(north + GRID_STEP / 2);
+        const longMin = this.snapToGrid(west - GRID_STEP / 2);
+        const longMax = this.snapToGrid(east + GRID_STEP / 2);
 
         // Track which keys are in the current viewport
         const visibleKeys = new Set<string>();
@@ -194,10 +194,13 @@ class MapGame {
                         const snappedLong = this.snapToGrid(long);
                         const rect = L.rectangle(
                             [
-                                [snappedLat, snappedLong],
                                 [
-                                    snappedLat + GRID_STEP,
-                                    snappedLong + GRID_STEP,
+                                    snappedLat - GRID_STEP / 2,
+                                    snappedLong - GRID_STEP / 2,
+                                ],
+                                [
+                                    snappedLat + GRID_STEP / 2,
+                                    snappedLong + GRID_STEP / 2,
                                 ],
                             ],
                             {

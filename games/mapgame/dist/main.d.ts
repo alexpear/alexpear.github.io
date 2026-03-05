@@ -7,6 +7,7 @@ declare class MapGame {
     map: any;
     playerMarker: Record<string, any> | undefined;
     renderedGoals: Map<string, Record<string, any>>;
+    fogRectangles: Map<string, Record<string, any>>;
     locationKnown: boolean;
     playerScore: number;
     scoreEl: HTMLElement;

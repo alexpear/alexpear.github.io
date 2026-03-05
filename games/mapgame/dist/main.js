@@ -11,6 +11,8 @@ class MapGame {
         this.playerMarker = undefined;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.renderedGoals = new Map();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.fogRectangles = new Map();
         this.locationKnown = false;
         // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
         this.playerScore = 0;
@@ -22,6 +24,8 @@ class MapGame {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         }).addTo(this.map);
+        this.map.createPane('fogPane');
+        this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
         this.load();
         this.updateScoreDisplay();
         if (navigator.geolocation) {
@@ -103,11 +107,15 @@ class MapGame {
     updateGoalVisuals() {
         const spacing = this.gridSpacingPx();
         const fontSize = Math.min(MAX_FONT_PX, Math.round(spacing * FONT_FRACTION));
-        // Too zoomed out — remove all goals and bail
+        // Too zoomed out — remove all goals and fog, bail
         if (fontSize < MIN_FONT_PX) {
             for (const [key, marker] of this.renderedGoals) {
                 this.map.removeLayer(marker);
                 this.renderedGoals.delete(key);
+            }
+            for (const [key, rect] of this.fogRectangles) {
+                this.map.removeLayer(rect);
+                this.fogRectangles.delete(key);
             }
             return;
         }
@@ -118,10 +126,10 @@ class MapGame {
         const north = bounds.getNorth();
         const west = bounds.getWest();
         const east = bounds.getEast();
-        const latMin = this.snapToGrid(south);
-        const latMax = this.snapToGrid(north);
-        const longMin = this.snapToGrid(west);
-        const longMax = this.snapToGrid(east);
+        const latMin = this.snapToGrid(south - GRID_STEP / 2);
+        const latMax = this.snapToGrid(north + GRID_STEP / 2);
+        const longMin = this.snapToGrid(west - GRID_STEP / 2);
+        const longMax = this.snapToGrid(east + GRID_STEP / 2);
         // Track which keys are in the current viewport
         const visibleKeys = new Set();
         for (let lat = latMin; lat <= latMax + GRID_STEP / 2; lat += GRID_STEP) {
@@ -129,44 +137,91 @@ class MapGame {
                 const key = MapGame.keyFormat(lat, long);
                 visibleKeys.add(key);
                 const goal = this.goalAt(lat, long);
-                const text = goal.text();
-                const existingLabel = this.renderedGoals.get(key);
-                if (!existingLabel) {
-                    const icon = L.divIcon({
-                        className: 'goal-label',
-                        html: 
-                        // TODO claude's +s are ugly, replace with ``s
-                        '<span style="font-size:' +
-                            fontSize +
-                            'px">' +
-                            text +
-                            '</span>',
-                        iconSize: [iconW, iconH],
-                        iconAnchor: [iconW / 2, iconH / 2],
-                    });
-                    const marker = L.marker([this.snapToGrid(lat), this.snapToGrid(long)], { icon, interactive: false }).addTo(this.map);
-                    this.renderedGoals.set(key, marker);
+                const fogged = goal.pointsAvailable() >= 1000;
+                if (fogged) {
+                    // Cover cell with black fog
+                    if (!this.fogRectangles.has(key)) {
+                        const snappedLat = this.snapToGrid(lat);
+                        const snappedLong = this.snapToGrid(long);
+                        const rect = L.rectangle([
+                            [
+                                snappedLat - GRID_STEP / 2,
+                                snappedLong - GRID_STEP / 2,
+                            ],
+                            [
+                                snappedLat + GRID_STEP / 2,
+                                snappedLong + GRID_STEP / 2,
+                            ],
+                        ], {
+                            pane: 'fogPane',
+                            color: 'black',
+                            fillColor: 'black',
+                            fillOpacity: 1,
+                            weight: 0,
+                            interactive: false,
+                        }).addTo(this.map);
+                        this.fogRectangles.set(key, rect);
+                    }
+                    // Hide goal label for this cell
+                    const existingLabel = this.renderedGoals.get(key);
+                    if (existingLabel) {
+                        this.map.removeLayer(existingLabel);
+                        this.renderedGoals.delete(key);
+                    }
                 }
                 else {
-                    const icon = L.divIcon({
-                        className: 'goal-label',
-                        html: '<span style="font-size:' +
-                            fontSize +
-                            'px">' +
-                            text +
-                            '</span>',
-                        iconSize: [iconW, iconH],
-                        iconAnchor: [iconW / 2, iconH / 2],
-                    });
-                    existingLabel.setIcon(icon);
+                    // Remove fog if cell was recently visited
+                    const existingFog = this.fogRectangles.get(key);
+                    if (existingFog) {
+                        this.map.removeLayer(existingFog);
+                        this.fogRectangles.delete(key);
+                    }
+                    // Show goal label
+                    const text = goal.text();
+                    const existingLabel = this.renderedGoals.get(key);
+                    if (!existingLabel) {
+                        const icon = L.divIcon({
+                            className: 'goal-label',
+                            html: 
+                            // TODO claude's +s are ugly, replace with ``s
+                            '<span style="font-size:' +
+                                fontSize +
+                                'px">' +
+                                text +
+                                '</span>',
+                            iconSize: [iconW, iconH],
+                            iconAnchor: [iconW / 2, iconH / 2],
+                        });
+                        const marker = L.marker([this.snapToGrid(lat), this.snapToGrid(long)], { icon, interactive: false }).addTo(this.map);
+                        this.renderedGoals.set(key, marker);
+                    }
+                    else {
+                        const icon = L.divIcon({
+                            className: 'goal-label',
+                            html: '<span style="font-size:' +
+                                fontSize +
+                                'px">' +
+                                text +
+                                '</span>',
+                            iconSize: [iconW, iconH],
+                            iconAnchor: [iconW / 2, iconH / 2],
+                        });
+                        existingLabel.setIcon(icon);
+                    }
                 }
             }
         }
-        // Remove markers that are now outside the viewport
+        // Remove markers and fog that are now outside the viewport
         for (const [key, marker] of this.renderedGoals) {
             if (!visibleKeys.has(key)) {
                 this.map.removeLayer(marker);
                 this.renderedGoals.delete(key);
+            }
+        }
+        for (const [key, rect] of this.fogRectangles) {
+            if (!visibleKeys.has(key)) {
+                this.map.removeLayer(rect);
+                this.fogRectangles.delete(key);
             }
         }
     }
@@ -217,7 +272,7 @@ class Goal {
     }
     // LATER check for rounding exploits. Can i visit every 13 hours? How to structure a unit test for that?
     pointsAvailable() {
-        return Math.min(999, Math.round(this.daysSinceVisited()));
+        return Math.min(1000, Math.round(this.daysSinceVisited()));
     }
     text() {
         return String(this.pointsAvailable());
