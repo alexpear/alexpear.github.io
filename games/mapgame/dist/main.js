@@ -80,6 +80,20 @@ class MapGame {
             });
         }
         this.map.on('moveend', () => this.updateGoalVisuals());
+        document
+            .getElementById('recenter-btn')
+            .addEventListener('click', () => this.panToPlayer());
+        const helpModal = document.getElementById('help-modal');
+        document
+            .getElementById('help-btn')
+            .addEventListener('click', () => helpModal.classList.add('open'));
+        document
+            .getElementById('help-close')
+            .addEventListener('click', () => helpModal.classList.remove('open'));
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal)
+                helpModal.classList.remove('open');
+        });
         this.updateScreen();
     }
     updateAfterGPS(pos) {
@@ -224,7 +238,11 @@ class MapGame {
             }
         }
     }
-    // LATER button to scroll & zoom to player location.
+    panToPlayer() {
+        if (this.locationKnown && this.playerMarker) {
+            this.map.panTo(this.playerMarker.getLatLng());
+        }
+    }
     // LATER How To Play '?' button
     stateString() {
         const state = {

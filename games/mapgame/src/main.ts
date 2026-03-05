@@ -310,8 +310,6 @@ class MapGame {
         }
     }
 
-    // LATER How To Play '?' button
-
     stateString(): string {
         const state = {
             coords2dates: this.coords2dates,

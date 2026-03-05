@@ -25,6 +25,7 @@ declare class MapGame {
     clearHoles(): any[];
     buildFogLayer(): void;
     updateGoalVisuals(): void;
+    panToPlayer(): void;
     stateString(): string;
     save(): void;
     load(): void;
