@@ -6,6 +6,46 @@ const GRID_STEP: number = 0.01;
 const GOAL_FONT_PX: number = 16;
 const MIN_ZOOM: number = 12; // User can't zoom out too much.
 
+// GridLayer that renders black fog tiles with transparent holes for visited cells.
+// Tiles are created on demand by Leaflet as the map pans/zooms, so no gaps are possible.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const FogLayer = (L as any).GridLayer.extend({
+    // getClearHoles: () => L.LatLngBounds[]  — called fresh on each tile draw
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    initialize(getClearHoles: () => any[], options: any) {
+        this._getClearHoles = getClearHoles;
+        L.GridLayer.prototype.initialize.call(this, options);
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    createTile(coords: any) {
+        const tile = document.createElement('canvas');
+        tile.width = tile.height = 256;
+        const ctx = tile.getContext('2d')!;
+        const tileBounds = this._tileCoordsToBounds(coords);
+
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, 256, 256);
+        ctx.globalCompositeOperation = 'destination-out';
+
+        for (const hole of this._getClearHoles()) {
+            if (!tileBounds.intersects(hole)) continue;
+            const nw = tileBounds.getNorthWest();
+            const se = tileBounds.getSouthEast();
+            const latRange = nw.lat - se.lat;
+            const lngRange = se.lng - nw.lng;
+            const x1 = ((hole.getWest() - nw.lng) / lngRange) * 256;
+            const x2 = ((hole.getEast() - nw.lng) / lngRange) * 256;
+            const y1 = ((nw.lat - hole.getNorth()) / latRange) * 256;
+            const y2 = ((nw.lat - hole.getSouth()) / latRange) * 256;
+            ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
+        }
+
+        ctx.globalCompositeOperation = 'source-over';
+        return tile;
+    },
+});
+
 class MapGame {
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
@@ -18,7 +58,7 @@ class MapGame {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     renderedGoals: Map<string, Record<string, any>> = new Map();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fogPolygon: any = null;
+    fogLayer: any = null;
     locationKnown: boolean = false;
 
     // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
@@ -40,7 +80,7 @@ class MapGame {
         this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
 
         this.load();
-        this.buildFogPolygon();
+        this.buildFogLayer();
         this.updateScoreDisplay();
 
         if (navigator.geolocation) {
@@ -96,7 +136,7 @@ class MapGame {
 
             // LATER could call this less often, or on a cooldown timer, or check GPS position less often. Could research performance bottlenecks more.
             this.save();
-            this.buildFogPolygon();
+            this.fogLayer?.redraw();
             this.updateScreen();
         }
     }
@@ -128,41 +168,30 @@ class MapGame {
         return new Goal(dateStr ? new Date(dateStr) : undefined);
     }
 
-    // Rebuilds the single world-covering fog polygon with holes for visited cells.
-    // A single polygon is always in sync with the map during pan/zoom — no gaps possible.
-    buildFogPolygon(): void {
-        const worldRing: [number, number][] = [
-            [-90, -180],
-            [-90, 180],
-            [90, 180],
-            [90, -180],
-        ];
-        const holes: [number, number][][] = [];
-        for (const [key, dateStr] of Object.entries(this.coords2dates)) {
-            const [lat, lng] = key.split(',').map(Number);
-            if (new Goal(new Date(dateStr)).pointsAvailable() < 1000) {
-                holes.push([
+    // Returns LatLngBounds for each visited cell that still has partial points.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    clearHoles(): any[] {
+        return Object.entries(this.coords2dates)
+            .filter(
+                ([, dateStr]) =>
+                    new Goal(new Date(dateStr)).pointsAvailable() < 1000,
+            )
+            .map(([key]) => {
+                const [lat, lng] = key.split(',').map(Number);
+                return L.latLngBounds(
                     [lat - GRID_STEP / 2, lng - GRID_STEP / 2],
-                    [lat + GRID_STEP / 2, lng - GRID_STEP / 2],
                     [lat + GRID_STEP / 2, lng + GRID_STEP / 2],
-                    [lat - GRID_STEP / 2, lng + GRID_STEP / 2],
-                ]);
-            }
-        }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const rings: any = [worldRing, ...holes];
-        if (this.fogPolygon) {
-            this.fogPolygon.setLatLngs(rings);
-        } else {
-            this.fogPolygon = L.polygon(rings, {
-                pane: 'fogPane',
-                fillColor: 'black',
-                fillOpacity: 1,
-                color: 'black',
-                weight: 0,
-                interactive: false,
-            }).addTo(this.map);
-        }
+                );
+            });
+    }
+
+    // Creates the fog GridLayer on first call; call fogLayer.redraw() to refresh holes.
+    buildFogLayer(): void {
+        this.fogLayer = new FogLayer(() => this.clearHoles(), {
+            pane: 'fogPane',
+            opacity: 1,
+        });
+        this.fogLayer.addTo(this.map);
     }
 
     updateGoalVisuals(): void {
