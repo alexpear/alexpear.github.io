@@ -139,15 +139,20 @@ class MapGame {
         const iconW = Math.round(GOAL_FONT_PX * 2.5);
         const iconH = Math.round(GOAL_FONT_PX * 1.4);
         const bounds = this.map.getBounds();
-        const south = bounds.getSouth();
-        const north = bounds.getNorth();
-        const west = bounds.getWest();
-        const east = bounds.getEast();
+        const center = this.map.getCenter();
 
-        const latMin = this.snapToGrid(south - GRID_STEP / 2);
-        const latMax = this.snapToGrid(north + GRID_STEP / 2);
-        const longMin = this.snapToGrid(west - GRID_STEP / 2);
-        const longMax = this.snapToGrid(east + GRID_STEP / 2);
+        // Expand render area to what would be visible at MIN_ZOOM, so zooming
+        // out never exposes unrendered content.
+        const zoomOutFactor = Math.pow(2, this.map.getZoom() - MIN_ZOOM);
+        const halfLat =
+            ((bounds.getNorth() - bounds.getSouth()) * zoomOutFactor) / 2;
+        const halfLong =
+            ((bounds.getEast() - bounds.getWest()) * zoomOutFactor) / 2;
+
+        const latMin = this.snapToGrid(center.lat - halfLat - GRID_STEP / 2);
+        const latMax = this.snapToGrid(center.lat + halfLat + GRID_STEP / 2);
+        const longMin = this.snapToGrid(center.lng - halfLong - GRID_STEP / 2);
+        const longMax = this.snapToGrid(center.lng + halfLong + GRID_STEP / 2);
 
         // Track which keys are in the current viewport
         const visibleKeys = new Set<string>();
