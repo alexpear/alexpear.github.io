@@ -8,7 +8,10 @@ const MIN_ZOOM: number = 12; // User can't zoom out too much.
 
 class MapGame {
     // eslint-disable-next-line @typescript-eslint/typedef
-    map = L.map('map', { minZoom: MIN_ZOOM }).setView([37.77, -122.42], 15); // Default: San Francisco
+    map = L.map('map', {
+        minZoom: MIN_ZOOM,
+        renderer: L.canvas({ padding: 5 }),
+    }).setView([37.77, -122.42], 15); // Default: San Francisco
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     playerMarker: Record<string, any> | undefined = undefined;
