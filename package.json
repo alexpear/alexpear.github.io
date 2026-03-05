@@ -71,7 +71,7 @@
     "testOld": "jest",
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "testAll": "npm run test && npm run testRingWorld && npm run testDeathPlanet",
-    "lint": "eslint **/*.ts",
+    "lint": "eslint --cache games/**/*.ts",
     "prettier": "prettier --check games/",
     "prettierwrite": "prettier --write games/",
     "wgenerator": "node generation/wgenerator.js",
