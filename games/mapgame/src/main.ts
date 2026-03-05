@@ -14,7 +14,7 @@ const FogLayer = (L as any).GridLayer.extend({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     initialize(getClearHoles: () => any[], options: any) {
         this._getClearHoles = getClearHoles;
-        L.GridLayer.prototype.initialize.call(this, options);
+        L.GridLayer.prototype.initialize.call(this, options); // The Leaflet equivalent of super(). This is the standard pattern for Leaflet's extend() system, which predates ES6 classes and uses manual prototype-based inheritance.
     },
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
