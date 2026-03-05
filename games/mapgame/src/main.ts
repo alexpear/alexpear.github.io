@@ -90,7 +90,7 @@ class MapGame {
             this.coords2dates[MapGame.keyFormat(lat, long)] =
                 new Date().toISOString();
 
-            // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
+            // LATER could call this less often, or on a cooldown timer, or check GPS position less often. Could research performance bottlenecks more.
             this.save();
 
             this.updateScreen();
