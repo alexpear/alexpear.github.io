@@ -1,6 +1,7 @@
 declare const L: any;
 declare const GRID_STEP: number;
 declare const GOAL_FONT_PX: number;
+declare const LEAFLET_TILE_SIZE: number;
 declare const MIN_ZOOM: number;
 declare const FogLayer: any;
 declare class MapGame {
