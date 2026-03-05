@@ -218,13 +218,7 @@ class MapGame {
                     const existingLabel = this.renderedGoals.get(key);
                     const icon = L.divIcon({
                         className: 'goal-label',
-                        html:
-                            // LATER these +s are ugly, replace with ``s
-                            '<span style="font-size:' +
-                            GOAL_FONT_PX +
-                            'px">' +
-                            text +
-                            '</span>',
+                        html: `<span style="font-size:${GOAL_FONT_PX}px">${text}</span>`,
                         iconSize: [iconW, iconH],
                         iconAnchor: [iconW / 2, iconH / 2],
                     });
