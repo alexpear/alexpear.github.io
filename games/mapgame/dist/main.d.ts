@@ -2,11 +2,12 @@ declare const L: any;
 declare const GRID_STEP: number;
 declare const GOAL_FONT_PX: number;
 declare const MIN_ZOOM: number;
+declare const FogLayer: any;
 declare class MapGame {
     map: any;
     playerMarker: Record<string, any> | undefined;
     renderedGoals: Map<string, Record<string, any>>;
-    fogRectangles: Map<string, Record<string, unknown>>;
+    fogLayer: any;
     locationKnown: boolean;
     playerScore: number;
     scoreEl: HTMLElement;
@@ -20,6 +21,8 @@ declare class MapGame {
     static keyFormat(lat: number, long: number): string;
     updateScoreDisplay(): void;
     goalAt(lat: number, long: number): Goal;
+    clearHoles(): any[];
+    buildFogLayer(): void;
     updateGoalVisuals(): void;
     stateString(): string;
     save(): void;
