@@ -15,6 +15,8 @@ class MapGame {
     playerMarker: Record<string, any> | undefined = undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     renderedGoals: Map<string, Record<string, any>> = new Map();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    fogRectangles: Map<string, Record<string, any>> = new Map();
     locationKnown: boolean = false;
 
     // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
@@ -31,6 +33,9 @@ class MapGame {
             attribution:
                 '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         }).addTo(this.map);
+
+        this.map.createPane('fogPane');
+        this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
 
         this.load();
         this.updateScoreDisplay();
@@ -137,11 +142,15 @@ class MapGame {
             Math.round(spacing * FONT_FRACTION),
         );
 
-        // Too zoomed out — remove all goals and bail
+        // Too zoomed out — remove all goals and fog, bail
         if (fontSize < MIN_FONT_PX) {
             for (const [key, marker] of this.renderedGoals) {
                 this.map.removeLayer(marker);
                 this.renderedGoals.delete(key);
+            }
+            for (const [key, rect] of this.fogRectangles) {
+                this.map.removeLayer(rect);
+                this.fogRectangles.delete(key);
             }
             return;
         }
@@ -176,50 +185,95 @@ class MapGame {
                 visibleKeys.add(key);
 
                 const goal = this.goalAt(lat, long);
-                const text = goal.text();
-                const existingLabel = this.renderedGoals.get(key);
+                const fogged = goal.pointsAvailable() >= 1000;
 
-                if (!existingLabel) {
-                    const icon = L.divIcon({
-                        className: 'goal-label',
-                        html:
-                            // TODO claude's +s are ugly, replace with ``s
-                            '<span style="font-size:' +
-                            fontSize +
-                            'px">' +
-                            text +
-                            '</span>',
-                        iconSize: [iconW, iconH],
-                        iconAnchor: [iconW / 2, iconH / 2],
-                    });
-                    const marker = L.marker(
-                        [this.snapToGrid(lat), this.snapToGrid(long)],
-                        { icon, interactive: false },
-                    ).addTo(this.map);
-
-                    this.renderedGoals.set(key, marker);
+                if (fogged) {
+                    // Cover cell with black fog
+                    if (!this.fogRectangles.has(key)) {
+                        const snappedLat = this.snapToGrid(lat);
+                        const snappedLong = this.snapToGrid(long);
+                        const rect = L.rectangle(
+                            [
+                                [snappedLat, snappedLong],
+                                [
+                                    snappedLat + GRID_STEP,
+                                    snappedLong + GRID_STEP,
+                                ],
+                            ],
+                            {
+                                pane: 'fogPane',
+                                color: 'black',
+                                fillColor: 'black',
+                                fillOpacity: 1,
+                                weight: 0,
+                                interactive: false,
+                            },
+                        ).addTo(this.map);
+                        this.fogRectangles.set(key, rect);
+                    }
+                    // Hide goal label for this cell
+                    const existingLabel = this.renderedGoals.get(key);
+                    if (existingLabel) {
+                        this.map.removeLayer(existingLabel);
+                        this.renderedGoals.delete(key);
+                    }
                 } else {
-                    const icon = L.divIcon({
-                        className: 'goal-label',
-                        html:
-                            '<span style="font-size:' +
-                            fontSize +
-                            'px">' +
-                            text +
-                            '</span>',
-                        iconSize: [iconW, iconH],
-                        iconAnchor: [iconW / 2, iconH / 2],
-                    });
-                    existingLabel.setIcon(icon);
+                    // Remove fog if cell was recently visited
+                    const existingFog = this.fogRectangles.get(key);
+                    if (existingFog) {
+                        this.map.removeLayer(existingFog);
+                        this.fogRectangles.delete(key);
+                    }
+                    // Show goal label
+                    const text = goal.text();
+                    const existingLabel = this.renderedGoals.get(key);
+                    if (!existingLabel) {
+                        const icon = L.divIcon({
+                            className: 'goal-label',
+                            html:
+                                // TODO claude's +s are ugly, replace with ``s
+                                '<span style="font-size:' +
+                                fontSize +
+                                'px">' +
+                                text +
+                                '</span>',
+                            iconSize: [iconW, iconH],
+                            iconAnchor: [iconW / 2, iconH / 2],
+                        });
+                        const marker = L.marker(
+                            [this.snapToGrid(lat), this.snapToGrid(long)],
+                            { icon, interactive: false },
+                        ).addTo(this.map);
+                        this.renderedGoals.set(key, marker);
+                    } else {
+                        const icon = L.divIcon({
+                            className: 'goal-label',
+                            html:
+                                '<span style="font-size:' +
+                                fontSize +
+                                'px">' +
+                                text +
+                                '</span>',
+                            iconSize: [iconW, iconH],
+                            iconAnchor: [iconW / 2, iconH / 2],
+                        });
+                        existingLabel.setIcon(icon);
+                    }
                 }
             }
         }
 
-        // Remove markers that are now outside the viewport
+        // Remove markers and fog that are now outside the viewport
         for (const [key, marker] of this.renderedGoals) {
             if (!visibleKeys.has(key)) {
                 this.map.removeLayer(marker);
                 this.renderedGoals.delete(key);
+            }
+        }
+        for (const [key, rect] of this.fogRectangles) {
+            if (!visibleKeys.has(key)) {
+                this.map.removeLayer(rect);
+                this.fogRectangles.delete(key);
             }
         }
     }
