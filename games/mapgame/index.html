@@ -45,11 +45,25 @@
                 font: bold 18px sans-serif;
                 box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
             }
+            #recenter-btn {
+                position: fixed;
+                bottom: 24px;
+                left: 10px;
+                z-index: 1000;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 8px 14px;
+                border-radius: 6px;
+                font: bold 18px sans-serif;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+                border: none;
+                cursor: pointer;
+            }
         </style>
     </head>
     <body>
         <div id="score">Score: 0</div>
         <div id="map"></div>
+        <button id="recenter-btn">📍</button>
         <script src="https://unpkg.com/leaflet@1.9/dist/leaflet.js"></script>
         <script src="dist/main.js"></script>
     </body>

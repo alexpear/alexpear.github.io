@@ -106,6 +106,9 @@ class MapGame {
         }
 
         this.map.on('moveend', () => this.updateGoalVisuals());
+        document
+            .getElementById('recenter-btn')!
+            .addEventListener('click', () => this.panToPlayer());
 
         this.updateScreen();
     }
@@ -289,7 +292,12 @@ class MapGame {
         }
     }
 
-    // LATER button to scroll & zoom to player location.
+    panToPlayer(): void {
+        if (this.locationKnown && this.playerMarker) {
+            this.map.panTo(this.playerMarker.getLatLng());
+        }
+    }
+
     // LATER How To Play '?' button
 
     stateString(): string {
