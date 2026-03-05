@@ -1,50 +1,8 @@
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 const GRID_STEP = 0.01;
 const GOAL_FONT_PX = 16;
-const LEAFLET_TILE_SIZE = 512;
 const MIN_ZOOM = 12; // User can't zoom out too much.
-// GridLayer that renders black fog tiles with transparent holes for visited cells.
-// Tiles are created on demand by Leaflet as the map pans/zooms, so no gaps are possible.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const FogLayer = L.GridLayer.extend({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    initialize(getClearHoles, options) {
-        this._getClearHoles = getClearHoles;
-        this._cachedHoles = getClearHoles(); // populate before first tile draw
-        L.GridLayer.prototype.initialize.call(this, options); // Leaflet equivalent of super()
-    },
-    // Recomputes holes from game state then redraws all tiles.
-    // Call this instead of redraw() whenever coords2dates changes.
-    refreshAndRedraw() {
-        this._cachedHoles = this._getClearHoles();
-        this.redraw();
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    createTile(coords) {
-        const tile = document.createElement('canvas');
-        tile.width = tile.height = LEAFLET_TILE_SIZE;
-        const ctx = tile.getContext('2d');
-        const tileBounds = this._tileCoordsToBounds(coords);
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, LEAFLET_TILE_SIZE, LEAFLET_TILE_SIZE);
-        ctx.globalCompositeOperation = 'destination-out';
-        for (const hole of this._cachedHoles) {
-            if (!tileBounds.intersects(hole))
-                continue;
-            const nw = tileBounds.getNorthWest();
-            const se = tileBounds.getSouthEast();
-            const latRange = nw.lat - se.lat;
-            const lngRange = se.lng - nw.lng;
-            const x1 = ((hole.getWest() - nw.lng) / lngRange) * LEAFLET_TILE_SIZE;
-            const x2 = ((hole.getEast() - nw.lng) / lngRange) * LEAFLET_TILE_SIZE;
-            const y1 = ((nw.lat - hole.getNorth()) / latRange) * LEAFLET_TILE_SIZE;
-            const y2 = ((nw.lat - hole.getSouth()) / latRange) * LEAFLET_TILE_SIZE;
-            ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
-        }
-        ctx.globalCompositeOperation = 'source-over';
-        return tile;
-    },
-});
+const FOG_BUFFER = 5; // Extra cells of fog rendered beyond the viewport edge
 class MapGame {
     constructor() {
         // eslint-disable-next-line @typescript-eslint/typedef
@@ -57,7 +15,7 @@ class MapGame {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.renderedGoals = new Map();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.fogLayer = null;
+        this.fogRectangles = new Map();
         this.locationKnown = false;
         // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
         this.playerScore = 0;
@@ -72,7 +30,6 @@ class MapGame {
         this.map.createPane('fogPane');
         this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
         this.load();
-        this.buildFogLayer();
         this.updateScoreDisplay();
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition((pos) => this.updateAfterGPS(pos), (err) => this.gpsError(err), {
@@ -128,9 +85,8 @@ class MapGame {
             goal.visit();
             this.coords2dates[MapGame.keyFormat(lat, long)] =
                 new Date().toISOString();
-            // LATER could call this less often, or on a cooldown timer, or check GPS position less often. Could research performance bottlenecks more.
+            // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
             this.save();
-            this.fogLayer?.refreshAndRedraw();
             this.updateScreen();
         }
     }
@@ -156,54 +112,41 @@ class MapGame {
         const dateStr = this.coords2dates[coordKey];
         return new Goal(dateStr ? new Date(dateStr) : undefined);
     }
-    // Returns LatLngBounds for each visited cell that still has partial points.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    clearHoles() {
-        return Object.entries(this.coords2dates)
-            .filter(([, dateStr]) => new Goal(new Date(dateStr)).pointsAvailable() < 1000)
-            .map(([key]) => {
-            const [lat, lng] = key.split(',').map(Number);
-            return L.latLngBounds([lat - GRID_STEP / 2, lng - GRID_STEP / 2], [lat + GRID_STEP / 2, lng + GRID_STEP / 2]);
-        });
-    }
-    // Creates the fog GridLayer on first call; call fogLayer.redraw() to refresh holes.
-    buildFogLayer() {
-        this.fogLayer = new FogLayer(() => this.clearHoles(), {
-            pane: 'fogPane',
-            opacity: 1,
-            tileSize: LEAFLET_TILE_SIZE,
-        });
-        this.fogLayer.addTo(this.map);
-    }
     updateGoalVisuals() {
-        if (this.map.getZoom() < MIN_ZOOM) {
-            for (const [key, marker] of this.renderedGoals) {
-                this.map.removeLayer(marker);
-                this.renderedGoals.delete(key);
-            }
-            return;
-        }
         const iconW = Math.round(GOAL_FONT_PX * 2.5);
         const iconH = Math.round(GOAL_FONT_PX * 1.4);
         const bounds = this.map.getBounds();
-        const center = this.map.getCenter();
-        // Expand render area to what would be visible at MIN_ZOOM, so goal
-        // labels are ready before the user pans or zooms out to them.
-        const zoomOutFactor = Math.pow(2, this.map.getZoom() - MIN_ZOOM);
-        const halfLat = ((bounds.getNorth() - bounds.getSouth()) * zoomOutFactor) / 2;
-        const halfLong = ((bounds.getEast() - bounds.getWest()) * zoomOutFactor) / 2;
-        const latMin = this.snapToGrid(center.lat - halfLat - GRID_STEP / 2);
-        const latMax = this.snapToGrid(center.lat + halfLat + GRID_STEP / 2);
-        const longMin = this.snapToGrid(center.lng - halfLong - GRID_STEP / 2);
-        const longMax = this.snapToGrid(center.lng + halfLong + GRID_STEP / 2);
-        const visibleKeys = new Set();
+        const buf = GRID_STEP * FOG_BUFFER;
+        const latMin = this.snapToGrid(bounds.getSouth() - buf);
+        const latMax = this.snapToGrid(bounds.getNorth() + buf);
+        const longMin = this.snapToGrid(bounds.getWest() - buf);
+        const longMax = this.snapToGrid(bounds.getEast() + buf);
+        const activeKeys = new Set();
         for (let lat = latMin; lat <= latMax + GRID_STEP / 2; lat += GRID_STEP) {
             for (let long = longMin; long <= longMax + GRID_STEP / 2; long += GRID_STEP) {
                 const key = MapGame.keyFormat(lat, long);
-                visibleKeys.add(key);
+                activeKeys.add(key);
                 const goal = this.goalAt(lat, long);
-                if (goal.pointsAvailable() >= 1000) {
-                    // Fogged: hide goal label if present
+                const fogged = goal.pointsAvailable() >= 1000;
+                if (fogged) {
+                    // Add fog rectangle if not already present
+                    if (!this.fogRectangles.has(key)) {
+                        const s = this.snapToGrid(lat);
+                        const w = this.snapToGrid(long);
+                        const rect = L.rectangle([
+                            [s - GRID_STEP / 2, w - GRID_STEP / 2],
+                            [s + GRID_STEP / 2, w + GRID_STEP / 2],
+                        ], {
+                            pane: 'fogPane',
+                            color: 'black',
+                            fillColor: 'black',
+                            fillOpacity: 1,
+                            weight: 0,
+                            interactive: false,
+                        }).addTo(this.map);
+                        this.fogRectangles.set(key, rect);
+                    }
+                    // Hide goal label for fogged cell
                     const existingLabel = this.renderedGoals.get(key);
                     if (existingLabel) {
                         this.map.removeLayer(existingLabel);
@@ -211,15 +154,21 @@ class MapGame {
                     }
                 }
                 else {
-                    // Clear: show goal label
+                    // Remove fog rectangle for visited cell
+                    const existingFog = this.fogRectangles.get(key);
+                    if (existingFog) {
+                        this.map.removeLayer(existingFog);
+                        this.fogRectangles.delete(key);
+                    }
+                    // Show goal label
                     const text = goal.text();
-                    const existingLabel = this.renderedGoals.get(key);
                     const icon = L.divIcon({
                         className: 'goal-label',
                         html: `<span style="font-size:${GOAL_FONT_PX}px">${text}</span>`,
                         iconSize: [iconW, iconH],
                         iconAnchor: [iconW / 2, iconH / 2],
                     });
+                    const existingLabel = this.renderedGoals.get(key);
                     if (!existingLabel) {
                         const marker = L.marker([this.snapToGrid(lat), this.snapToGrid(long)], { icon, interactive: false }).addTo(this.map);
                         this.renderedGoals.set(key, marker);
@@ -230,11 +179,17 @@ class MapGame {
                 }
             }
         }
-        // Remove goal labels now outside the expanded viewport
+        // Remove markers and fog outside the buffered viewport
         for (const [key, marker] of this.renderedGoals) {
-            if (!visibleKeys.has(key)) {
+            if (!activeKeys.has(key)) {
                 this.map.removeLayer(marker);
                 this.renderedGoals.delete(key);
+            }
+        }
+        for (const [key, rect] of this.fogRectangles) {
+            if (!activeKeys.has(key)) {
+                this.map.removeLayer(rect);
+                this.fogRectangles.delete(key);
             }
         }
     }
@@ -243,7 +198,6 @@ class MapGame {
             this.map.panTo(this.playerMarker.getLatLng());
         }
     }
-    // LATER How To Play '?' button
     stateString() {
         const state = {
             coords2dates: this.coords2dates,
