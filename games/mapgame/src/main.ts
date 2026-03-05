@@ -3,9 +3,8 @@
 // L (Leaflet) is loaded as a global by leaflet.js, a script that index.html loads from the unpkg.com CDN.
 declare const L;
 const GRID_STEP: number = 0.01;
-const FONT_FRACTION: number = 0.15;
-const MIN_FONT_PX: number = 4;
-const MAX_FONT_PX: number = 30;
+const GOAL_FONT_PX: number = 16;
+const MIN_ZOOM: number = 11; // Below this, skip rendering to avoid too many objects
 
 class MapGame {
     // eslint-disable-next-line @typescript-eslint/typedef
@@ -124,25 +123,8 @@ class MapGame {
         return new Goal(dateStr ? new Date(dateStr) : undefined);
     }
 
-    gridSpacingPx(): number {
-        const center = this.map.getCenter();
-        const p1 = this.map.latLngToContainerPoint([center.lat, center.lng]);
-        const p2 = this.map.latLngToContainerPoint([
-            center.lat,
-            center.lng + GRID_STEP,
-        ]);
-        return p2.x - p1.x;
-    }
-
     updateGoalVisuals(): void {
-        const spacing = this.gridSpacingPx();
-        const fontSize = Math.min(
-            MAX_FONT_PX,
-            Math.round(spacing * FONT_FRACTION),
-        );
-
-        // Too zoomed out — remove all goals and fog, bail
-        if (fontSize < MIN_FONT_PX) {
+        if (this.map.getZoom() < MIN_ZOOM) {
             for (const [key, marker] of this.renderedGoals) {
                 this.map.removeLayer(marker);
                 this.renderedGoals.delete(key);
@@ -154,8 +136,8 @@ class MapGame {
             return;
         }
 
-        const iconW = Math.round(fontSize * 2.5);
-        const iconH = Math.round(fontSize * 1.4);
+        const iconW = Math.round(GOAL_FONT_PX * 2.5);
+        const iconH = Math.round(GOAL_FONT_PX * 1.4);
         const bounds = this.map.getBounds();
         const south = bounds.getSouth();
         const north = bounds.getNorth();
@@ -235,7 +217,7 @@ class MapGame {
                             html:
                                 // LATER these +s are ugly, replace with ``s
                                 '<span style="font-size:' +
-                                fontSize +
+                                GOAL_FONT_PX +
                                 'px">' +
                                 text +
                                 '</span>',
@@ -252,7 +234,7 @@ class MapGame {
                             className: 'goal-label',
                             html:
                                 '<span style="font-size:' +
-                                fontSize +
+                                GOAL_FONT_PX +
                                 'px">' +
                                 text +
                                 '</span>',
