@@ -4,6 +4,7 @@
 declare const L;
 const GRID_STEP: number = 0.01;
 const GOAL_FONT_PX: number = 16;
+const LEAFLET_TILE_SIZE: number = 512;
 const MIN_ZOOM: number = 12; // User can't zoom out too much.
 
 // GridLayer that renders black fog tiles with transparent holes for visited cells.
@@ -27,12 +28,12 @@ const FogLayer = (L as any).GridLayer.extend({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createTile(coords: any) {
         const tile = document.createElement('canvas');
-        tile.width = tile.height = 256;
+        tile.width = tile.height = LEAFLET_TILE_SIZE;
         const ctx = tile.getContext('2d')!;
         const tileBounds = this._tileCoordsToBounds(coords);
 
         ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, 256, 256);
+        ctx.fillRect(0, 0, LEAFLET_TILE_SIZE, LEAFLET_TILE_SIZE);
         ctx.globalCompositeOperation = 'destination-out';
 
         for (const hole of this._cachedHoles) {
@@ -41,10 +42,14 @@ const FogLayer = (L as any).GridLayer.extend({
             const se = tileBounds.getSouthEast();
             const latRange = nw.lat - se.lat;
             const lngRange = se.lng - nw.lng;
-            const x1 = ((hole.getWest() - nw.lng) / lngRange) * 256;
-            const x2 = ((hole.getEast() - nw.lng) / lngRange) * 256;
-            const y1 = ((nw.lat - hole.getNorth()) / latRange) * 256;
-            const y2 = ((nw.lat - hole.getSouth()) / latRange) * 256;
+            const x1 =
+                ((hole.getWest() - nw.lng) / lngRange) * LEAFLET_TILE_SIZE;
+            const x2 =
+                ((hole.getEast() - nw.lng) / lngRange) * LEAFLET_TILE_SIZE;
+            const y1 =
+                ((nw.lat - hole.getNorth()) / latRange) * LEAFLET_TILE_SIZE;
+            const y2 =
+                ((nw.lat - hole.getSouth()) / latRange) * LEAFLET_TILE_SIZE;
             ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
         }
 
@@ -197,6 +202,7 @@ class MapGame {
         this.fogLayer = new FogLayer(() => this.clearHoles(), {
             pane: 'fogPane',
             opacity: 1,
+            tileSize: LEAFLET_TILE_SIZE,
         });
         this.fogLayer.addTo(this.map);
     }
