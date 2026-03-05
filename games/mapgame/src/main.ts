@@ -10,11 +10,18 @@ const MIN_ZOOM: number = 12; // User can't zoom out too much.
 // Tiles are created on demand by Leaflet as the map pans/zooms, so no gaps are possible.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const FogLayer = (L as any).GridLayer.extend({
-    // getClearHoles: () => L.LatLngBounds[]  — called fresh on each tile draw
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     initialize(getClearHoles: () => any[], options: any) {
         this._getClearHoles = getClearHoles;
-        L.GridLayer.prototype.initialize.call(this, options); // The Leaflet equivalent of super(). This is the standard pattern for Leaflet's extend() system, which predates ES6 classes and uses manual prototype-based inheritance.
+        this._cachedHoles = getClearHoles(); // populate before first tile draw
+        L.GridLayer.prototype.initialize.call(this, options); // Leaflet equivalent of super()
+    },
+
+    // Recomputes holes from game state then redraws all tiles.
+    // Call this instead of redraw() whenever coords2dates changes.
+    refreshAndRedraw() {
+        this._cachedHoles = this._getClearHoles();
+        this.redraw();
     },
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,7 +35,7 @@ const FogLayer = (L as any).GridLayer.extend({
         ctx.fillRect(0, 0, 256, 256);
         ctx.globalCompositeOperation = 'destination-out';
 
-        for (const hole of this._getClearHoles()) {
+        for (const hole of this._cachedHoles) {
             if (!tileBounds.intersects(hole)) continue;
             const nw = tileBounds.getNorthWest();
             const se = tileBounds.getSouthEast();
@@ -136,7 +143,7 @@ class MapGame {
 
             // LATER could call this less often, or on a cooldown timer, or check GPS position less often. Could research performance bottlenecks more.
             this.save();
-            this.fogLayer?.redraw();
+            this.fogLayer?.refreshAndRedraw();
             this.updateScreen();
         }
     }
