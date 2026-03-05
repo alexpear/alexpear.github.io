@@ -1,8 +1,7 @@
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 const GRID_STEP = 0.01;
-const FONT_FRACTION = 0.15;
-const MIN_FONT_PX = 4;
-const MAX_FONT_PX = 30;
+const GOAL_FONT_PX = 16;
+const MIN_ZOOM = 11; // Below this, skip rendering to avoid too many objects
 class MapGame {
     constructor() {
         // eslint-disable-next-line @typescript-eslint/typedef
@@ -11,7 +10,6 @@ class MapGame {
         this.playerMarker = undefined;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.renderedGoals = new Map();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.fogRectangles = new Map();
         this.locationKnown = false;
         // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
@@ -68,7 +66,7 @@ class MapGame {
             goal.visit();
             this.coords2dates[MapGame.keyFormat(lat, long)] =
                 new Date().toISOString();
-            // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
+            // LATER could call this less often, or on a cooldown timer, or check GPS position less often. Could research performance bottlenecks more.
             this.save();
             this.updateScreen();
         }
@@ -95,20 +93,8 @@ class MapGame {
         const dateStr = this.coords2dates[coordKey];
         return new Goal(dateStr ? new Date(dateStr) : undefined);
     }
-    gridSpacingPx() {
-        const center = this.map.getCenter();
-        const p1 = this.map.latLngToContainerPoint([center.lat, center.lng]);
-        const p2 = this.map.latLngToContainerPoint([
-            center.lat,
-            center.lng + GRID_STEP,
-        ]);
-        return p2.x - p1.x;
-    }
     updateGoalVisuals() {
-        const spacing = this.gridSpacingPx();
-        const fontSize = Math.min(MAX_FONT_PX, Math.round(spacing * FONT_FRACTION));
-        // Too zoomed out — remove all goals and fog, bail
-        if (fontSize < MIN_FONT_PX) {
+        if (this.map.getZoom() < MIN_ZOOM) {
             for (const [key, marker] of this.renderedGoals) {
                 this.map.removeLayer(marker);
                 this.renderedGoals.delete(key);
@@ -119,8 +105,8 @@ class MapGame {
             }
             return;
         }
-        const iconW = Math.round(fontSize * 2.5);
-        const iconH = Math.round(fontSize * 1.4);
+        const iconW = Math.round(GOAL_FONT_PX * 2.5);
+        const iconH = Math.round(GOAL_FONT_PX * 1.4);
         const bounds = this.map.getBounds();
         const south = bounds.getSouth();
         const north = bounds.getNorth();
@@ -183,9 +169,9 @@ class MapGame {
                         const icon = L.divIcon({
                             className: 'goal-label',
                             html: 
-                            // TODO claude's +s are ugly, replace with ``s
+                            // LATER these +s are ugly, replace with ``s
                             '<span style="font-size:' +
-                                fontSize +
+                                GOAL_FONT_PX +
                                 'px">' +
                                 text +
                                 '</span>',
@@ -199,7 +185,7 @@ class MapGame {
                         const icon = L.divIcon({
                             className: 'goal-label',
                             html: '<span style="font-size:' +
-                                fontSize +
+                                GOAL_FONT_PX +
                                 'px">' +
                                 text +
                                 '</span>',
@@ -283,4 +269,5 @@ class Goal {
     }
 }
 // TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day.
+// LATER improve VSCode integration with CC & with git.
 MapGame.run();
