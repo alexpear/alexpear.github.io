@@ -48,6 +48,7 @@ class MapGame {
             );
         }
 
+        this.map.on('move', () => this.addFogForCurrentViewport());
         this.map.on('moveend', () => this.updateGoalVisuals());
 
         this.updateScreen();
@@ -263,6 +264,56 @@ class MapGame {
             if (!visibleKeys.has(key)) {
                 this.map.removeLayer(rect);
                 this.fogRectangles.delete(key);
+            }
+        }
+    }
+
+    // Adds fog rectangles for any unvisited cells currently in the viewport.
+    // Called on every 'move' event to fill gaps as the user pans in real time.
+    // Only adds fog — no cleanup, no goal markers. Cheap: mostly has() checks.
+    addFogForCurrentViewport(): void {
+        if (this.map.getZoom() < MIN_ZOOM) return;
+        const bounds = this.map.getBounds();
+        const latMin = this.snapToGrid(bounds.getSouth() - GRID_STEP / 2);
+        const latMax = this.snapToGrid(bounds.getNorth() + GRID_STEP / 2);
+        const longMin = this.snapToGrid(bounds.getWest() - GRID_STEP / 2);
+        const longMax = this.snapToGrid(bounds.getEast() + GRID_STEP / 2);
+        for (
+            let lat = latMin;
+            lat <= latMax + GRID_STEP / 2;
+            lat += GRID_STEP
+        ) {
+            for (
+                let long = longMin;
+                long <= longMax + GRID_STEP / 2;
+                long += GRID_STEP
+            ) {
+                const key = MapGame.keyFormat(lat, long);
+                if (this.fogRectangles.has(key)) continue;
+                if (this.goalAt(lat, long).pointsAvailable() < 1000) continue;
+                const snappedLat = this.snapToGrid(lat);
+                const snappedLong = this.snapToGrid(long);
+                const rect = L.rectangle(
+                    [
+                        [
+                            snappedLat - GRID_STEP / 2,
+                            snappedLong - GRID_STEP / 2,
+                        ],
+                        [
+                            snappedLat + GRID_STEP / 2,
+                            snappedLong + GRID_STEP / 2,
+                        ],
+                    ],
+                    {
+                        pane: 'fogPane',
+                        color: 'black',
+                        fillColor: 'black',
+                        fillOpacity: 1,
+                        weight: 0,
+                        interactive: false,
+                    },
+                ).addTo(this.map);
+                this.fogRectangles.set(key, rect);
             }
         }
     }
