@@ -15,8 +15,7 @@ class MapGame {
     playerMarker: Record<string, any> | undefined = undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     renderedGoals: Map<string, Record<string, any>> = new Map();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fogRectangles: Map<string, Record<string, any>> = new Map();
+    fogRectangles: Map<string, Record<string, unknown>> = new Map();
     locationKnown: boolean = false;
 
     // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
@@ -234,7 +233,7 @@ class MapGame {
                         const icon = L.divIcon({
                             className: 'goal-label',
                             html:
-                                // TODO claude's +s are ugly, replace with ``s
+                                // LATER these +s are ugly, replace with ``s
                                 '<span style="font-size:' +
                                 fontSize +
                                 'px">' +
@@ -356,5 +355,6 @@ class Goal {
 }
 
 // TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day.
+// LATER improve VSCode integration with CC & with git.
 
 MapGame.run();
