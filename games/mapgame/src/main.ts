@@ -143,18 +143,6 @@ class MapGame {
     }
 
     updateGoalVisuals(): void {
-        if (this.map.getZoom() < MIN_ZOOM) {
-            for (const [key, marker] of this.renderedGoals) {
-                this.map.removeLayer(marker);
-                this.renderedGoals.delete(key);
-            }
-            for (const [key, rect] of this.fogRectangles) {
-                this.map.removeLayer(rect);
-                this.fogRectangles.delete(key);
-            }
-            return;
-        }
-
         const iconW = Math.round(GOAL_FONT_PX * 2.5);
         const iconH = Math.round(GOAL_FONT_PX * 1.4);
         const bounds = this.map.getBounds();
