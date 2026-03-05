@@ -109,6 +109,18 @@ class MapGame {
         document
             .getElementById('recenter-btn')!
             .addEventListener('click', () => this.panToPlayer());
+        const helpModal = document.getElementById('help-modal')!;
+        document
+            .getElementById('help-btn')!
+            .addEventListener('click', () => helpModal.classList.add('open'));
+        document
+            .getElementById('help-close')!
+            .addEventListener('click', () =>
+                helpModal.classList.remove('open'),
+            );
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal) helpModal.classList.remove('open');
+        });
 
         this.updateScreen();
     }

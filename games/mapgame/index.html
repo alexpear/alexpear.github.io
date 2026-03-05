@@ -45,6 +45,57 @@
                 font: bold 18px sans-serif;
                 box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
             }
+            #help-btn {
+                position: fixed;
+                top: 52px;
+                right: 10px;
+                z-index: 1000;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 4px 12px;
+                border-radius: 6px;
+                font: bold 18px sans-serif;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+                border: none;
+                cursor: pointer;
+            }
+            #help-modal {
+                display: none;
+                position: fixed;
+                inset: 0;
+                z-index: 2000;
+                background: rgba(0, 0, 0, 0.6);
+                align-items: center;
+                justify-content: center;
+            }
+            #help-modal.open {
+                display: flex;
+            }
+            #help-modal-box {
+                background: #fff;
+                border-radius: 10px;
+                padding: 24px;
+                max-width: 340px;
+                width: 90%;
+                font: 16px sans-serif;
+                line-height: 1.5;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            }
+            #help-modal-box h2 {
+                margin-bottom: 12px;
+                font-size: 20px;
+            }
+            #help-close {
+                margin-top: 16px;
+                display: block;
+                width: 100%;
+                padding: 8px;
+                font: bold 16px sans-serif;
+                border: none;
+                border-radius: 6px;
+                background: #2563eb;
+                color: #fff;
+                cursor: pointer;
+            }
             #recenter-btn {
                 position: fixed;
                 bottom: 24px;
@@ -62,6 +113,19 @@
     </head>
     <body>
         <div id="score">Score: 0</div>
+        <button id="help-btn">?</button>
+        <div id="help-modal">
+            <div id="help-modal-box">
+                <h2>How to Play</h2>
+                <p>
+                    This is a exercise game about exploring your neighborhood.
+                    Play when you're walking, running, or biking. Each square
+                    gains 1 point per day. Go to a square to claim its points.
+                    Have fun exploring!
+                </p>
+                <button id="help-close">Close</button>
+            </div>
+        </div>
         <div id="map"></div>
         <button id="recenter-btn">📍</button>
         <script src="https://unpkg.com/leaflet@1.9/dist/leaflet.js"></script>
