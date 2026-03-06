@@ -5,7 +5,7 @@ declare const L;
 const GRID_STEP: number = 0.01;
 const GOAL_FONT_PX: number = 16;
 const MIN_ZOOM: number = 12; // User can't zoom out too much.
-const FOG_BUFFER: number = 5; // Extra cells of fog rendered beyond the viewport edge
+const FOG_BUFFER: number = 10; // Extra cells of fog rendered beyond the viewport edge
 
 class MapGame {
     // eslint-disable-next-line @typescript-eslint/typedef
