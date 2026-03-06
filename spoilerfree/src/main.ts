@@ -20,8 +20,7 @@ interface Fixture {
     };
     league: { name: string };
     teams: { home: Team; away: Team };
-    goals: { home: number | null; away: number | null };
-    // todo null -> undefined
+    goals: { home?: number; away?: number };
 }
 
 class SpoilerFreeApp {
@@ -61,7 +60,7 @@ class SpoilerFreeApp {
         }
     }
 
-    async selectLeague(league: { name: string; id: number }) {
+    async selectLeague(league: { name: string; id: number }): Promise<void> {
         this.selectedLeague = league;
         document.getElementById('match-detail')!.style.display = 'none';
         document.getElementById('match-list')!.innerHTML = '<p>Loading...</p>';
@@ -96,7 +95,7 @@ class SpoilerFreeApp {
         return data.response as Fixture[];
     }
 
-    renderMatchList(fixtures: Fixture[]) {
+    renderMatchList(fixtures: Fixture[]): void {
         const list = document.getElementById('match-list')!;
         list.innerHTML = '';
 
@@ -128,12 +127,12 @@ class SpoilerFreeApp {
         }
     }
 
-    selectMatch(fixture: Fixture) {
+    selectMatch(fixture: Fixture): void {
         this.selectedFixture = fixture;
         this.renderMatchDetail(fixture);
     }
 
-    renderMatchDetail(fixture: Fixture) {
+    renderMatchDetail(fixture: Fixture): void {
         const detail = document.getElementById('match-detail')!;
         detail.style.display = 'block';
 
