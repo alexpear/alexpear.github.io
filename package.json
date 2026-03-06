@@ -73,7 +73,7 @@
     "testAll": "npm run test && npm run testRingWorld && npm run testDeathPlanet",
     "lint": "eslint --cache games/**/*.ts",
     "prettier": "prettier --check games/",
-    "prettierwrite": "prettier --write games/",
+    "prettierwrite": "prettier --write games/ spoilerfree/",
     "wgenerator": "node generation/wgenerator.js",
     "wkrieg": "node generation/wkriegArmy.js",
     "40k": "node generation/grimDarkArmy.js",
@@ -86,7 +86,7 @@
     "buildlimitless": "browserify bottleWorld/chronarchon/src/*.js --exclude bottleWorld/chronarchon/src/*.test.js -o bottleWorld/chronarchon/bundle.js && npm run server && open bottleWorld/chronarchon/chronarchon.html",
     "buildmapgame": "npm run lint && npm run prettier && tsc -p games/mapgame/",
     "openmapgame": "npm run open games/mapgame/index.html",
-    "buildspoilerfree": "eslint --cache spoilerfree/**/*.ts && prettier --check spoilerfree/ && tsc -p spoilerfree/tsconfig.json"
+    "buildspoilerfree": "eslint --no-warn-ignored spoilerfree/**/*.ts && prettier --check spoilerfree/ && tsc -p spoilerfree/tsconfig.json"
   },
   "repository": {
     "type": "git",
