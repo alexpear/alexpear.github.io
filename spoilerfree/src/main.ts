@@ -66,7 +66,9 @@ class SpoilerFreeApp {
         document.getElementById('match-detail')!.style.display = 'none';
         document.getElementById('match-list')!.innerHTML = '<p>Loading...</p>';
 
-        for (const btn of document.querySelectorAll<HTMLButtonElement>('.league-btn')) {
+        for (const btn of document.querySelectorAll<HTMLButtonElement>(
+            '.league-btn',
+        )) {
             btn.classList.toggle('active', btn.textContent === league.name);
         }
 
@@ -74,7 +76,8 @@ class SpoilerFreeApp {
             const fixtures = await this.fetchFixtures(league.id);
             this.renderMatchList(fixtures);
         } catch (e) {
-            document.getElementById('match-list')!.innerHTML = `<p class="error">Error loading matches: ${e}</p>`;
+            document.getElementById('match-list')!.innerHTML =
+                `<p class="error">Error loading matches: ${e}</p>`;
         }
     }
 
@@ -147,7 +150,9 @@ class SpoilerFreeApp {
         });
 
         const venue = fixture.fixture.venue;
-        const venueStr = venue?.name ? `${venue.name}, ${venue.city}` : 'Venue unknown';
+        const venueStr = venue?.name
+            ? `${venue.name}, ${venue.city}`
+            : 'Venue unknown';
 
         detail.innerHTML = `
             <div class="detail-header">
@@ -173,14 +178,22 @@ class SpoilerFreeApp {
             </div>
         `;
 
-        detail.querySelector<HTMLButtonElement>('#close-detail')!.addEventListener('click', () => {
-            detail.style.display = 'none';
-        });
+        detail
+            .querySelector<HTMLButtonElement>('#close-detail')!
+            .addEventListener('click', () => {
+                detail.style.display = 'none';
+            });
 
-        detail.querySelector<HTMLDivElement>('.score-hidden')!.addEventListener('click', () => {
-            detail.querySelector<HTMLDivElement>('.score-hidden')!.style.display = 'none';
-            detail.querySelector<HTMLDivElement>('.score-revealed')!.style.display = 'block';
-        });
+        detail
+            .querySelector<HTMLDivElement>('.score-hidden')!
+            .addEventListener('click', () => {
+                detail.querySelector<HTMLDivElement>(
+                    '.score-hidden',
+                )!.style.display = 'none';
+                detail.querySelector<HTMLDivElement>(
+                    '.score-revealed',
+                )!.style.display = 'block';
+            });
 
         detail.scrollIntoView({ behavior: 'smooth' });
     }

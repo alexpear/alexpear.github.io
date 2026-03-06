@@ -1,240 +1,276 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Spoiler-Free Soccer</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Spoiler-Free Soccer</title>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-        body {
-            font-family: system-ui, sans-serif;
-            background: #111;
-            color: #eee;
-            padding: 16px;
-            max-width: 640px;
-            margin: 0 auto;
-        }
+            body {
+                font-family: system-ui, sans-serif;
+                background: #111;
+                color: #eee;
+                padding: 16px;
+                max-width: 640px;
+                margin: 0 auto;
+            }
 
-        h1 {
-            font-size: 1.4rem;
-            margin-bottom: 16px;
-            color: #fff;
-        }
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 16px;
+                color: #fff;
+            }
 
-        /* API Key Section */
-        #api-key-section {
-            background: #222;
-            border: 1px solid #444;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
-        }
+            /* API Key Section */
+            #api-key-section {
+                display: block;
+                background: #222;
+                border: 1px solid #444;
+                border-radius: 8px;
+                padding: 16px;
+                margin-bottom: 20px;
+            }
 
-        #api-key-section label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            color: #aaa;
-        }
+            #api-key-section label {
+                display: block;
+                margin-bottom: 8px;
+                font-size: 0.9rem;
+                color: #aaa;
+            }
 
-        #api-key-input {
-            width: 100%;
-            padding: 8px 12px;
-            background: #333;
-            border: 1px solid #555;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 0.95rem;
-            margin-bottom: 10px;
-        }
+            #api-key-input {
+                width: 100%;
+                padding: 8px 12px;
+                background: #333;
+                border: 1px solid #555;
+                border-radius: 6px;
+                color: #fff;
+                font-size: 0.95rem;
+                margin-bottom: 10px;
+            }
 
-        #save-key-btn {
-            padding: 8px 20px;
-            background: #2a6;
-            border: none;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 0.95rem;
-            cursor: pointer;
-        }
+            #save-key-btn {
+                padding: 8px 20px;
+                background: #2a6;
+                border: none;
+                border-radius: 6px;
+                color: #fff;
+                font-size: 0.95rem;
+                cursor: pointer;
+            }
 
-        #save-key-btn:hover { background: #3b7; }
+            #save-key-btn:hover {
+                background: #3b7;
+            }
 
-        /* League Picker */
-        #league-picker {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
+            /* League Picker */
+            #league-picker {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
 
-        .league-btn {
-            padding: 8px 14px;
-            background: #333;
-            border: 1px solid #555;
-            border-radius: 20px;
-            color: #ddd;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
+            .league-btn {
+                padding: 8px 14px;
+                background: #333;
+                border: 1px solid #555;
+                border-radius: 20px;
+                color: #ddd;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: background 0.15s;
+            }
 
-        .league-btn:hover { background: #444; }
-        .league-btn.active { background: #2a6; border-color: #2a6; color: #fff; }
+            .league-btn:hover {
+                background: #444;
+            }
+            .league-btn.active {
+                background: #2a6;
+                border-color: #2a6;
+                color: #fff;
+            }
 
-        /* Match List */
-        #match-list {
-            margin-bottom: 20px;
-        }
+            /* Match List */
+            #match-list {
+                margin-bottom: 20px;
+            }
 
-        #match-list p {
-            color: #888;
-            padding: 12px 0;
-        }
+            #match-list p {
+                color: #888;
+                padding: 12px 0;
+            }
 
-        .match-card {
-            background: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.15s;
-        }
+            .match-card {
+                background: #1e1e1e;
+                border: 1px solid #333;
+                border-radius: 8px;
+                padding: 14px 16px;
+                margin-bottom: 10px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background 0.15s;
+            }
 
-        .match-card:hover { background: #2a2a2a; }
+            .match-card:hover {
+                background: #2a2a2a;
+            }
 
-        .team { font-size: 0.95rem; font-weight: 500; }
-        .home-team { flex: 1; text-align: right; }
-        .away-team { flex: 1; }
+            .team {
+                font-size: 0.95rem;
+                font-weight: 500;
+            }
+            .home-team {
+                flex: 1;
+                text-align: right;
+            }
+            .away-team {
+                flex: 1;
+            }
 
-        .vs {
-            font-size: 0.75rem;
-            color: #888;
-            padding: 0 4px;
-        }
+            .vs {
+                font-size: 0.75rem;
+                color: #888;
+                padding: 0 4px;
+            }
 
-        .match-date {
-            font-size: 0.75rem;
-            color: #777;
-            white-space: nowrap;
-            margin-left: auto;
-        }
+            .match-date {
+                font-size: 0.75rem;
+                color: #777;
+                white-space: nowrap;
+                margin-left: auto;
+            }
 
-        /* Match Detail */
-        #match-detail {
-            display: none;
-            background: #1a1a2e;
-            border: 1px solid #334;
-            border-radius: 10px;
-            padding: 20px;
-        }
+            /* Match Detail */
+            #match-detail {
+                display: none;
+                background: #1a1a2e;
+                border: 1px solid #334;
+                border-radius: 10px;
+                padding: 20px;
+            }
 
-        .detail-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 16px;
-        }
+            .detail-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 16px;
+            }
 
-        #close-detail {
-            background: none;
-            border: none;
-            color: #888;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin-right: 12px;
-            padding: 0;
-        }
+            #close-detail {
+                background: none;
+                border: none;
+                color: #888;
+                font-size: 1.1rem;
+                cursor: pointer;
+                margin-right: 12px;
+                padding: 0;
+            }
 
-        #close-detail:hover { color: #fff; }
+            #close-detail:hover {
+                color: #fff;
+            }
 
-        .detail-league {
-            font-size: 0.8rem;
-            color: #aaa;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+            .detail-league {
+                font-size: 0.8rem;
+                color: #aaa;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
 
-        .detail-teams {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
+            .detail-teams {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
 
-        .detail-team {
-            flex: 1;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-align: center;
-        }
+            .detail-team {
+                flex: 1;
+                font-size: 1.1rem;
+                font-weight: 600;
+                text-align: center;
+            }
 
-        .detail-separator {
-            font-size: 0.9rem;
-            color: #666;
-        }
+            .detail-separator {
+                font-size: 0.9rem;
+                color: #666;
+            }
 
-        .detail-meta {
-            font-size: 0.85rem;
-            color: #999;
-            line-height: 1.7;
-            margin-bottom: 20px;
-        }
+            .detail-meta {
+                font-size: 0.85rem;
+                color: #999;
+                line-height: 1.7;
+                margin-bottom: 20px;
+            }
 
-        .status {
-            color: #5af;
-            font-style: italic;
-        }
+            .status {
+                color: #5af;
+                font-style: italic;
+            }
 
-        .score-hidden {
-            background: #222;
-            border: 1px dashed #555;
-            border-radius: 6px;
-            padding: 12px;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #888;
-            cursor: pointer;
-            margin-bottom: 16px;
-            transition: background 0.15s;
-        }
+            .score-hidden {
+                background: #222;
+                border: 1px dashed #555;
+                border-radius: 6px;
+                padding: 12px;
+                text-align: center;
+                font-size: 0.9rem;
+                color: #888;
+                cursor: pointer;
+                margin-bottom: 16px;
+                transition: background 0.15s;
+            }
 
-        .score-hidden:hover { background: #2a2a2a; color: #bbb; }
+            .score-hidden:hover {
+                background: #2a2a2a;
+                color: #bbb;
+            }
 
-        .score-revealed {
-            background: #222;
-            border: 1px solid #4a6;
-            border-radius: 6px;
-            padding: 12px;
-            text-align: center;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #eee;
-            margin-bottom: 16px;
-        }
+            .score-revealed {
+                background: #222;
+                border: 1px solid #4a6;
+                border-radius: 6px;
+                padding: 12px;
+                text-align: center;
+                font-size: 1rem;
+                font-weight: 600;
+                color: #eee;
+                margin-bottom: 16px;
+            }
 
-        .error { color: #f66; }
-    </style>
-</head>
-<body>
-    <h1>Spoiler-Free Soccer</h1>
+            .error {
+                color: #f66;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Spoiler-Free Soccer</h1>
 
-    <div id="api-key-section">
-        <label for="api-key-input">API-Sports key (stored in session only)</label>
-        <input type="password" id="api-key-input" placeholder="Enter your API key..." />
-        <button id="save-key-btn">Save</button>
-    </div>
+        <div id="api-key-section">
+            <label for="api-key-input"
+                >API-Sports key (stored in session only)</label
+            >
+            <input
+                type="password"
+                id="api-key-input"
+                placeholder="Enter your API key..."
+            />
+            <button id="save-key-btn">Save</button>
+        </div>
 
-    <div id="league-picker"></div>
+        <div id="league-picker"></div>
 
-    <div id="match-list"></div>
+        <div id="match-list"></div>
 
-    <div id="match-detail"></div>
+        <div id="match-detail"></div>
 
-    <script src="dist/main.js"></script>
-</body>
+        <script src="dist/main.js"></script>
+    </body>
 </html>
