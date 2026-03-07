@@ -90,7 +90,7 @@ class SpoilerFreeApp {
         }
         const url = `https://v3.football.api-sports.io/fixtures?league=${leagueId}&season=2024`;
         const res = await fetch(url, {
-            headers: { 'x-rapidapi-key': this.apiKey },
+            headers: { 'x-apisports-key': this.apiKey },
         });
         if (!res.ok) {
             // Could debug here to research better error support.
