@@ -1,4 +1,5 @@
 // TODO rename main.ts files more specifically.
+// TODO Obstacle: api-football has a undocumented paywall where free accounts can't access games from the last 2-3 years. Cheapest account is $20/month.
 
 const Util = require('../../util/util');
 
