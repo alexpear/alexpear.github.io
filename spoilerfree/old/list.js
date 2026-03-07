@@ -8,8 +8,7 @@ class MatchList {
     load () {
         const headers = new Headers();
         // headers.append('x-rapidapi-key', process.env.API_FOOTBALL_KEY);
-        headers.append('x-rapidapi-key', 'c6509d543cfb780c5add10527ba958eb');
-        // NOTE - this api key should be considered exposed & only useful for free testing.
+        headers.append('x-rapidapi-key', 'foo');
 
         // https://www.api-football.com/documentation-v3#tag/Fixtures/operation/get-fixtures
         return fetch(
