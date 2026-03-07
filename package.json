@@ -28,7 +28,7 @@
   "devDependencies": {
     "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
-    "@types/node": "^14.14.31",
+    "@types/node": "^14.18.63",
     "babel-jest": "^30.0.0",
     "clean-webpack-plugin": "^3.0.0",
     "eslint": "^9.39.2",
@@ -86,7 +86,7 @@
     "buildlimitless": "browserify bottleWorld/chronarchon/src/*.js --exclude bottleWorld/chronarchon/src/*.test.js -o bottleWorld/chronarchon/bundle.js && npm run server && open bottleWorld/chronarchon/chronarchon.html",
     "buildmapgame": "npm run lint && npm run prettier && tsc -p games/mapgame/",
     "openmapgame": "npm run open games/mapgame/index.html",
-    "buildspoilerfree": "eslint --no-warn-ignored spoilerfree/**/*.ts && prettier --check spoilerfree/ && tsc -p spoilerfree/tsconfig.json"
+    "buildspoilerfree": "eslint --no-warn-ignored spoilerfree/**/*.ts && npm run prettierwrite && tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js"
   },
   "repository": {
     "type": "git",

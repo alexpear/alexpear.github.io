@@ -19,7 +19,6 @@ export default tseslint.config(
             eslintConfigPrettier,
         ],
         rules: {
-            // '@typescript-eslint/no-unused-vars': 'off',
             '@typescript-eslint/explicit-function-return-type': 'warn',
             '@typescript-eslint/typedef': [
                 'warn',
@@ -29,6 +28,7 @@ export default tseslint.config(
                     memberVariableDeclaration: true,
                 },
             ],
+            '@typescript-eslint/no-require-imports': 'off',
         },
     },
 );
