@@ -15,6 +15,7 @@ interface Team {
     logo: string;
 }
 
+// TODO rename types.
 interface Fixture {
     fixture: {
         id: number;
@@ -87,11 +88,12 @@ class SpoilerFreeApp {
         if (!this.apiKey) {
             throw new Error('No API key set. Please enter your API key above.');
         }
-        const url = `https://v3.football.api-sports.io/fixtures?league=${leagueId}&last=10`;
+        const url = `https://v3.football.api-sports.io/fixtures?league=${leagueId}&season=2024`;
         const res = await fetch(url, {
             headers: { 'x-rapidapi-key': this.apiKey },
         });
         if (!res.ok) {
+            // Could debug here to research better error support.
             throw new Error(`HTTP ${res.status}`);
         }
         const data = await res.json();
