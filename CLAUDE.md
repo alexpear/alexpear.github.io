@@ -79,3 +79,5 @@ A mobile web game showing the player's GPS position on a Leaflet/OSM map. Object
 - 4-space indentation, single quotes, trailing commas (`.prettierrc`)
 - TODO/LATER comments used extensively for deferred work
 - ESLint configured for TypeScript (`**/*.ts`)
+- Never use null when you could use undefined
+- Avoid using 'any' because it turns off typechecking
