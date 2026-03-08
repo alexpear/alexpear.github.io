@@ -1,51 +1,37 @@
-declare const Util: any;
 declare const LEAGUES: {
     name: string;
     id: number;
 }[];
-interface Team {
-    name: string;
-    logo: string;
-}
-interface Fixture {
-    fixture: {
-        id: number;
-        date: string;
-        venue: {
-            name: string;
-            city: string;
-        };
-        status: {
-            short: string;
-            long: string;
-        };
-    };
-    league: {
-        name: string;
-    };
-    teams: {
-        home: Team;
-        away: Team;
-    };
-    goals: {
-        home?: number;
-        away?: number;
-    };
+declare const SEASON: number;
+declare const SPORTSDB_BASE = "https://www.thesportsdb.com/api/v1/json/123";
+interface SdbEvent {
+    idEvent: string;
+    strEvent: string;
+    strHomeTeam: string;
+    strAwayTeam: string;
+    dateEvent: string;
+    strTime: string;
+    strVenue: string;
+    strCity: string;
+    intHomeScore?: string;
+    intAwayScore?: string;
+    strStatus: string;
+    strLeague: string;
 }
 declare class SpoilerFreeApp {
-    apiKey: string;
-    selectedLeague:
-        | {
-              name: string;
-              id: number;
-          }
-        | undefined;
-    selectedFixture: Fixture | undefined;
+    selectedLeague: {
+        name: string;
+        id: number;
+    } | undefined;
+    selectedEvent: SdbEvent | undefined;
     constructor();
     render(): void;
-    selectLeague(league: { name: string; id: number }): Promise<void>;
-    fetchFixtures(leagueId: number): Promise<Fixture[]>;
-    renderMatchList(fixtures: Fixture[]): void;
-    selectMatch(fixture: Fixture): void;
-    renderMatchDetail(fixture: Fixture): void;
+    selectLeague(league: {
+        name: string;
+        id: number;
+    }): Promise<void>;
+    fetchEvents(leagueId: number): Promise<SdbEvent[]>;
+    renderMatchList(events: SdbEvent[]): void;
+    selectMatch(event: SdbEvent): void;
+    renderMatchDetail(event: SdbEvent): void;
 }
