@@ -8,6 +8,7 @@ const LEAGUES = [
 const SEASON = new Date().getFullYear();
 
 const SPORTSDB_BASE = 'https://www.thesportsdb.com/api/v1/json/123';
+/** A limitation of thesportsdb.com is that it only tells us the 2 scores & the winner. It doesn't tell us when each goal was. */
 
 interface SdbEvent {
     idEvent: string;
@@ -18,8 +19,8 @@ interface SdbEvent {
     strTime: string;
     strVenue: string;
     strCity: string;
-    intHomeScore: string | null;
-    intAwayScore: string | null;
+    intHomeScore?: string;
+    intAwayScore?: string;
     strStatus: string;
     strLeague: string;
 }
@@ -40,6 +41,8 @@ class SpoilerFreeApp {
             btn.addEventListener('click', () => this.selectLeague(league));
             document.getElementById('league-picker')!.appendChild(btn);
         }
+
+        this.selectLeague(LEAGUES[0]); // Default to NWSL
     }
 
     async selectLeague(league: { name: string; id: number }): Promise<void> {
