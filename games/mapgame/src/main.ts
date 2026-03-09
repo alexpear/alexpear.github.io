@@ -3,9 +3,12 @@
 // L (Leaflet) is loaded as a global by leaflet.js, a script that index.html loads from the unpkg.com CDN.
 declare const L;
 const GRID_STEP: number = 0.01;
+// TODO mock/test 2 grid cells with wide scores like 200 next to each other.
 const GOAL_FONT_PX: number = 16;
 const MIN_ZOOM: number = 12; // User can't zoom out too much.
-const FOG_BUFFER: number = 10; // Extra cells of fog rendered beyond the viewport edge
+const FOG_BUFFER: number = 1; // Extra cells of fog rendered beyond the viewport edge
+
+// TODO Measure mobile performance in more detail. Bug: Caused spotify to crash in the background.
 
 class MapGame {
     // eslint-disable-next-line @typescript-eslint/typedef
@@ -304,7 +307,6 @@ class Goal {
         return ms / (1000 * 60 * 60 * 24);
     }
 
-    // LATER check for rounding exploits. Can i visit every 13 hours? How to structure a unit test for that?
     pointsAvailable(): number {
         return Math.min(1000, Math.round(this.daysSinceVisited()));
     }
@@ -315,7 +317,7 @@ class Goal {
 
     visit(): void {
         this.lastVisited = new Date();
-        // LATER could check if storing timestamps with less precision (eg just '20260226') is faster.
+        // LATER could store timestamps with less precision (eg just '20260226'), to avoid 13-hour rounding exploits. Also add a unit test for that?
     }
 }
 
