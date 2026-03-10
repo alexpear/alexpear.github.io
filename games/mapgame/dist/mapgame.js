@@ -22,13 +22,13 @@ class MapGame {
         this.locationKnown = false;
         // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
         this.playerScore = 0;
-        this.scoreEl = document.getElementById('score'); // as HTMLElement;
+        this.scoreEl = document.getElementById('score');
         // Dict storing Dates in string format.
         this.coords2dates = {};
         // --- Map setup ---
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             maxZoom: 19,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
         }).addTo(this.map);
         L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
         this.map.createPane('fogPane');
