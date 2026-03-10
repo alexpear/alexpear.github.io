@@ -214,7 +214,16 @@ class MapGame {
                         this.map.removeLayer(existingFog);
                         this.fogRectangles.delete(key);
                     }
-                    // TODO If we're zoomed out below 13, we shouldn't draw any goal labels.
+
+                    // When very zoomed out, don't show labels. They overlap each other.
+                    if (this.map.getZoom() < 13) {
+                        const existingLabel = this.renderedGoals.get(key);
+                        if (existingLabel) {
+                            this.map.removeLayer(existingLabel);
+                            this.renderedGoals.delete(key);
+                        }
+                        continue;
+                    }
 
                     // Show goal label
                     const text = goal.text();
