@@ -1,9 +1,9 @@
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 const GRID_STEP = 0.01;
-// TODO mock/test 2 grid cells with wide scores like 200 next to each other.
-const GOAL_FONT_PX = 16;
+const GOAL_FONT_PX = 32;
 const MIN_ZOOM = 12; // User can't zoom out too much.
 const FOG_BUFFER = 1; // Extra cells of fog rendered beyond the viewport edge
+const TEST_MODE = undefined; // 'font';
 // TODO Measure mobile performance in more detail. Bug: Caused spotify to crash in the background.
 class MapGame {
     constructor() {
@@ -11,6 +11,7 @@ class MapGame {
         this.map = L.map('map', {
             minZoom: MIN_ZOOM,
             renderer: L.canvas({ padding: 5 }),
+            zoomControl: false,
         }).setView([37.77, -122.42], 15); // Default: San Francisco
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.playerMarker = undefined;
@@ -29,6 +30,7 @@ class MapGame {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         }).addTo(this.map);
+        L.control.zoom({ position: 'bottomright' }).addTo(this.map);
         this.map.createPane('fogPane');
         this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
         this.load();
@@ -38,6 +40,14 @@ class MapGame {
                 enableHighAccuracy: true,
             });
         }
+        /** TODO duplicate work cases in these update algorithms - drawing something that is already there, or adding it then removing it, etc:
+        *   1. setIcon called every frame on all visible labels (line 244). When a label is already rendered and nothing has changed, the else branch still recomputes
+        goal.text(), constructs a new L.divIcon, and calls setIcon. This happens on every moveend for every in-viewport unfogged goal. It could be skipped if the text
+        hasn't changed — though in practice goal text is stable unless the player just scored.
+        2. updateGoalVisuals can fire twice per GPS visit. When visit() scores a point it calls updateScreen() → updateGoalVisuals(). That call changes a cell from
+        fogged to unfogged. Then map.setView (line 95, first GPS fix) fires moveend, triggering updateGoalVisuals() a second time immediately after. On subsequent GPS
+        updates setLatLng doesn't fire moveend, so this is only an issue on the very first fix.
+         */
         this.map.on('moveend', () => this.updateGoalVisuals());
         document
             .getElementById('recenter-btn')
@@ -72,6 +82,9 @@ class MapGame {
         if (!this.locationKnown) {
             this.map.setView([latitude, longitude], 16);
             this.locationKnown = true;
+        }
+        if (TEST_MODE === 'font') {
+            this._mockWideFont(latitude, longitude);
         }
         this.visit(latitude, longitude);
     }
@@ -162,6 +175,15 @@ class MapGame {
                         this.map.removeLayer(existingFog);
                         this.fogRectangles.delete(key);
                     }
+                    // When very zoomed out, don't show labels. They overlap each other.
+                    if (this.map.getZoom() < 13) {
+                        const existingLabel = this.renderedGoals.get(key);
+                        if (existingLabel) {
+                            this.map.removeLayer(existingLabel);
+                            this.renderedGoals.delete(key);
+                        }
+                        continue;
+                    }
                     // Show goal label
                     const text = goal.text();
                     const icon = L.divIcon({
@@ -228,6 +250,18 @@ class MapGame {
         }
     }
     // NOTE Players that visit a vast quantity of places will have large gamestates. Hopefully this only affects performance at inhuman levels.
+    // For testing. We should call save() & updateScreen() after this func.
+    _mockWideFont(lat, long) {
+        const aWhileAgo = new Date(Date.now() - 200 * 24 * 60 * 60 * 1000);
+        this._setLastVisit(lat, long + 0.01, aWhileAgo);
+        this._setLastVisit(lat, long + 0.02, aWhileAgo);
+    }
+    // For testing.
+    _setLastVisit(lat, long, date) {
+        const goal = this.goalAt(lat, long);
+        goal.lastVisited = date;
+        this.coords2dates[MapGame.keyFormat(lat, long)] = date.toISOString();
+    }
     static run() {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const game = new MapGame();

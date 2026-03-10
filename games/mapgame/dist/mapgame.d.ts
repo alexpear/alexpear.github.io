@@ -3,6 +3,7 @@ declare const GRID_STEP: number;
 declare const GOAL_FONT_PX: number;
 declare const MIN_ZOOM: number;
 declare const FOG_BUFFER: number;
+declare const TEST_MODE: string;
 declare class MapGame {
     map: any;
     playerMarker: Record<string, any> | undefined;
@@ -26,6 +27,8 @@ declare class MapGame {
     stateString(): string;
     save(): void;
     load(): void;
+    private _mockWideFont;
+    private _setLastVisit;
     static run(): void;
 }
 declare class Goal {
