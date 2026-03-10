@@ -29,7 +29,7 @@ class MapGame {
 
     // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
     playerScore: number = 0;
-    scoreEl: HTMLElement = document.getElementById('score'); // as HTMLElement;
+    scoreEl: HTMLElement = document.getElementById('score');
 
     // Dict storing Dates in string format.
     coords2dates: Record<string, string> = {};
