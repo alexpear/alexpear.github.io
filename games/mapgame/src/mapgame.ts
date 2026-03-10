@@ -9,7 +9,7 @@ const FOG_BUFFER: number = 1; // Extra cells of fog rendered beyond the viewport
 
 const TEST_MODE: string = undefined; // 'font';
 
-// TODO Measure mobile performance in more detail. Bug: Caused spotify to crash in the background.
+// TODO Measure mobile performance in more detail. Bug: Caused spotify to crash in the background. Can measure much of this from the emulator.
 
 class MapGame {
     // eslint-disable-next-line @typescript-eslint/typedef
@@ -40,6 +40,7 @@ class MapGame {
             'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
             {
                 maxZoom: 19,
+                // NOTE: This attribution string displays as hyperlinks in the bottom right of the screen.
                 attribution:
                     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
             },
@@ -62,15 +63,6 @@ class MapGame {
                 },
             );
         }
-
-        /** TODO duplicate work cases in these update algorithms - drawing something that is already there, or adding it then removing it, etc:
-        *   1. setIcon called every frame on all visible labels (line 244). When a label is already rendered and nothing has changed, the else branch still recomputes
-        goal.text(), constructs a new L.divIcon, and calls setIcon. This happens on every moveend for every in-viewport unfogged goal. It could be skipped if the text
-        hasn't changed — though in practice goal text is stable unless the player just scored.
-        2. updateGoalVisuals can fire twice per GPS visit. When visit() scores a point it calls updateScreen() → updateGoalVisuals(). That call changes a cell from
-        fogged to unfogged. Then map.setView (line 95, first GPS fix) fires moveend, triggering updateGoalVisuals() a second time immediately after. On subsequent GPS
-        updates setLatLng doesn't fire moveend, so this is only an issue on the very first fix.
-         */
 
         this.map.on('moveend', () => this.updateGoalVisuals());
 
@@ -241,23 +233,21 @@ class MapGame {
                         continue;
                     }
 
-                    // Show goal label
-                    const text = goal.text();
-                    const icon = L.divIcon({
-                        className: 'goal-label',
-                        html: `<span style="font-size:${GOAL_FONT_PX}px">${text}</span>`,
-                        iconSize: [iconW, iconH],
-                        iconAnchor: [iconW / 2, iconH / 2],
-                    });
                     const existingLabel = this.renderedGoals.get(key);
                     if (!existingLabel) {
+                        const text = goal.text();
+                        const icon = L.divIcon({
+                            className: 'goal-label',
+                            html: `<span style="font-size:${GOAL_FONT_PX}px">${text}</span>`,
+                            iconSize: [iconW, iconH],
+                            iconAnchor: [iconW / 2, iconH / 2],
+                        });
+
                         const marker = L.marker(
                             [this.snapToGrid(lat), this.snapToGrid(long)],
                             { icon, interactive: false },
                         ).addTo(this.map);
                         this.renderedGoals.set(key, marker);
-                    } else {
-                        existingLabel.setIcon(icon);
                     }
                 }
             }
