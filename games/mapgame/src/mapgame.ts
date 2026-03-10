@@ -15,7 +15,7 @@ class MapGame {
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
         minZoom: MIN_ZOOM,
-        renderer: L.canvas({ padding: 5 }),
+        renderer: L.canvas({ padding: 0.1 }),
         zoomControl: false,
     }).setView([37.77, -122.42], 15); // Default: San Francisco
 
