@@ -4,13 +4,13 @@ const GOAL_FONT_PX = 32;
 const MIN_ZOOM = 12; // User can't zoom out too much.
 const FOG_BUFFER = 1; // Extra cells of fog rendered beyond the viewport edge
 const TEST_MODE = undefined; // 'font';
-// TODO Measure mobile performance in more detail. Bug: Caused spotify to crash in the background.
+// TODO Measure mobile performance in more detail. Bug: Caused spotify to crash in the background. Can measure much of this from the emulator.
 class MapGame {
     constructor() {
         // eslint-disable-next-line @typescript-eslint/typedef
         this.map = L.map('map', {
             minZoom: MIN_ZOOM,
-            renderer: L.canvas({ padding: 5 }),
+            renderer: L.canvas({ padding: 0.1 }),
             zoomControl: false,
         }).setView([37.77, -122.42], 15); // Default: San Francisco
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,13 +26,18 @@ class MapGame {
         // Dict storing Dates in string format.
         this.coords2dates = {};
         // --- Map setup ---
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             maxZoom: 19,
+            // NOTE: This attribution string displays as hyperlinks in the bottom right of the screen.
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
         }).addTo(this.map);
         L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
         this.map.createPane('fogPane');
         this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
+        // Hide tiles during pan/zoom so unfogged street tiles don't show before fog is drawn.
+        this.map.on('movestart', () => tileLayer.setOpacity(0));
+        // tileLayer.on('load', () => tileLayer.setOpacity(1));
+        this.map.on('moveend', () => tileLayer.setOpacity(1));
         this.load();
         this.updateScoreDisplay();
         if (navigator.geolocation) {
@@ -40,14 +45,6 @@ class MapGame {
                 enableHighAccuracy: true,
             });
         }
-        /** TODO duplicate work cases in these update algorithms - drawing something that is already there, or adding it then removing it, etc:
-        *   1. setIcon called every frame on all visible labels (line 244). When a label is already rendered and nothing has changed, the else branch still recomputes
-        goal.text(), constructs a new L.divIcon, and calls setIcon. This happens on every moveend for every in-viewport unfogged goal. It could be skipped if the text
-        hasn't changed — though in practice goal text is stable unless the player just scored.
-        2. updateGoalVisuals can fire twice per GPS visit. When visit() scores a point it calls updateScreen() → updateGoalVisuals(). That call changes a cell from
-        fogged to unfogged. Then map.setView (line 95, first GPS fix) fires moveend, triggering updateGoalVisuals() a second time immediately after. On subsequent GPS
-        updates setLatLng doesn't fire moveend, so this is only an issue on the very first fix.
-         */
         this.map.on('moveend', () => this.updateGoalVisuals());
         document
             .getElementById('recenter-btn')
@@ -184,21 +181,17 @@ class MapGame {
                         }
                         continue;
                     }
-                    // Show goal label
-                    const text = goal.text();
-                    const icon = L.divIcon({
-                        className: 'goal-label',
-                        html: `<span style="font-size:${GOAL_FONT_PX}px">${text}</span>`,
-                        iconSize: [iconW, iconH],
-                        iconAnchor: [iconW / 2, iconH / 2],
-                    });
                     const existingLabel = this.renderedGoals.get(key);
                     if (!existingLabel) {
+                        const text = goal.text();
+                        const icon = L.divIcon({
+                            className: 'goal-label',
+                            html: `<span style="font-size:${GOAL_FONT_PX}px">${text}</span>`,
+                            iconSize: [iconW, iconH],
+                            iconAnchor: [iconW / 2, iconH / 2],
+                        });
                         const marker = L.marker([this.snapToGrid(lat), this.snapToGrid(long)], { icon, interactive: false }).addTo(this.map);
                         this.renderedGoals.set(key, marker);
-                    }
-                    else {
-                        existingLabel.setIcon(icon);
                     }
                 }
             }
