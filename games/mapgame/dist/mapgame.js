@@ -36,7 +36,6 @@ class MapGame {
         this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
         // Hide tiles during pan/zoom so unfogged street tiles don't show before fog is drawn.
         this.map.on('movestart', () => tileLayer.setOpacity(0));
-        // tileLayer.on('load', () => tileLayer.setOpacity(1));
         this.map.on('moveend', () => tileLayer.setOpacity(1));
         this.load();
         this.updateScoreDisplay();
