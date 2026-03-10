@@ -30,7 +30,7 @@ class MapGame {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         }).addTo(this.map);
-        L.control.zoom({ position: 'bottomright' }).addTo(this.map);
+        L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
         this.map.createPane('fogPane');
         this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
         this.load();
