@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-    <!-- TODO move zoom buttons to lower right -->
     <head>
         <meta charset="UTF-8" />
         <meta
@@ -37,7 +36,7 @@
             }
             #score {
                 position: fixed;
-                top: 10px;
+                top: 30px;
                 right: 10px;
                 z-index: 1000;
                 background: rgba(255, 255, 255, 0.9);
@@ -48,7 +47,7 @@
             }
             #help-btn {
                 position: fixed;
-                top: 52px;
+                top: 70px;
                 right: 10px;
                 z-index: 1000;
                 background: rgba(255, 255, 255, 0.9);
@@ -97,10 +96,13 @@
                 color: #fff;
                 cursor: pointer;
             }
+            .leaflet-bottom.leaflet-left{
+                bottom: 30px;
+            }
             #recenter-btn {
                 position: fixed;
-                bottom: 24px;
-                left: 10px;
+                bottom: 30px;
+                right: 10px;
                 z-index: 1000;
                 background: rgba(255, 255, 255, 0.9);
                 padding: 8px 14px;
@@ -119,7 +121,7 @@
             <div id="help-modal-box">
                 <h2>How to Play</h2>
                 <p>
-                    This is a exercise game about exploring your neighborhood.
+                    This is an exercise game about exploring your neighborhood.
                     Play when you're walking, running, or biking. Each square
                     gains 1 point per day. Go to a square to claim its points.
                     Have fun exploring!
