@@ -36,7 +36,7 @@ class MapGame {
 
     constructor() {
         // --- Map setup ---
-        L.tileLayer(
+        const tileLayer = L.tileLayer(
             'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
             {
                 maxZoom: 19,
@@ -50,6 +50,10 @@ class MapGame {
 
         this.map.createPane('fogPane');
         this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
+
+        // Hide tiles during pan/zoom so unfogged street tiles don't show before fog is drawn.
+        this.map.on('movestart', () => tileLayer.setOpacity(0));
+        this.map.on('moveend', () => tileLayer.setOpacity(1));
 
         this.load();
         this.updateScoreDisplay();
