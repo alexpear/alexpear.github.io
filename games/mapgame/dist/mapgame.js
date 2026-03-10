@@ -1,8 +1,10 @@
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 const GRID_STEP = 0.01;
+// TODO mock/test 2 grid cells with wide scores like 200 next to each other.
 const GOAL_FONT_PX = 16;
 const MIN_ZOOM = 12; // User can't zoom out too much.
-const FOG_BUFFER = 10; // Extra cells of fog rendered beyond the viewport edge
+const FOG_BUFFER = 1; // Extra cells of fog rendered beyond the viewport edge
+// TODO Measure mobile performance in more detail. Bug: Caused spotify to crash in the background.
 class MapGame {
     constructor() {
         // eslint-disable-next-line @typescript-eslint/typedef
@@ -241,7 +243,6 @@ class Goal {
         const ms = Date.now() - this.lastVisited.getTime();
         return ms / (1000 * 60 * 60 * 24);
     }
-    // LATER check for rounding exploits. Can i visit every 13 hours? How to structure a unit test for that?
     pointsAvailable() {
         return Math.min(1000, Math.round(this.daysSinceVisited()));
     }
@@ -250,7 +251,7 @@ class Goal {
     }
     visit() {
         this.lastVisited = new Date();
-        // LATER could check if storing timestamps with less precision (eg just '20260226') is faster.
+        // LATER could store timestamps with less precision (eg just '20260226'), to avoid 13-hour rounding exploits. Also add a unit test for that?
     }
 }
 // TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day.

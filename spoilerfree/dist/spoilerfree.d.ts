@@ -4,6 +4,7 @@ declare const LEAGUES: {
 }[];
 declare const SEASON: number;
 declare const SPORTSDB_BASE = "https://www.thesportsdb.com/api/v1/json/123";
+/** A limitation of thesportsdb.com is that it only tells us the 2 scores & the winner. It doesn't tell us when each goal was. */
 interface SdbEvent {
     idEvent: string;
     strEvent: string;
