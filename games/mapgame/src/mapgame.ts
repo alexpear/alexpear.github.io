@@ -16,6 +16,7 @@ class MapGame {
     map = L.map('map', {
         minZoom: MIN_ZOOM,
         renderer: L.canvas({ padding: 5 }),
+        zoomControl: false,
     }).setView([37.77, -122.42], 15); // Default: San Francisco
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,6 +41,8 @@ class MapGame {
             attribution:
                 '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         }).addTo(this.map);
+
+        L.control.zoom({ position: 'bottomright' }).addTo(this.map);
 
         this.map.createPane('fogPane');
         this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
