@@ -3,10 +3,11 @@
 // L (Leaflet) is loaded as a global by leaflet.js, a script that index.html loads from the unpkg.com CDN.
 declare const L;
 const GRID_STEP: number = 0.01;
-// TODO mock/test 2 grid cells with wide scores like 200 next to each other.
-const GOAL_FONT_PX: number = 16;
+const GOAL_FONT_PX: number = 32;
 const MIN_ZOOM: number = 12; // User can't zoom out too much.
 const FOG_BUFFER: number = 1; // Extra cells of fog rendered beyond the viewport edge
+
+const TEST_MODE: string = undefined; // 'font';
 
 // TODO Measure mobile performance in more detail. Bug: Caused spotify to crash in the background.
 
@@ -56,6 +57,7 @@ class MapGame {
             );
         }
 
+        // LATER check for duplicate work in these update algorithms - drawing something that is already there, or adding it then removing it, etc.
         this.map.on('moveend', () => this.updateGoalVisuals());
         document
             .getElementById('recenter-btn')!
@@ -92,6 +94,10 @@ class MapGame {
         if (!this.locationKnown) {
             this.map.setView([latitude, longitude], 16);
             this.locationKnown = true;
+        }
+
+        if (TEST_MODE === 'font') {
+            this._mockWideFont(latitude, longitude);
         }
 
         this.visit(latitude, longitude);
@@ -208,6 +214,8 @@ class MapGame {
                         this.map.removeLayer(existingFog);
                         this.fogRectangles.delete(key);
                     }
+                    // TODO If we're zoomed out below 13, we shouldn't draw any goal labels.
+
                     // Show goal label
                     const text = goal.text();
                     const icon = L.divIcon({
@@ -286,6 +294,20 @@ class MapGame {
     }
 
     // NOTE Players that visit a vast quantity of places will have large gamestates. Hopefully this only affects performance at inhuman levels.
+
+    // For testing. We should call save() & updateScreen() after this func.
+    private _mockWideFont(lat: number, long: number): void {
+        const aWhileAgo = new Date(Date.now() - 200 * 24 * 60 * 60 * 1000);
+        this._setLastVisit(lat, long + 0.01, aWhileAgo);
+        this._setLastVisit(lat, long + 0.02, aWhileAgo);
+    }
+
+    // For testing.
+    private _setLastVisit(lat: number, long: number, date: Date): void {
+        const goal: Goal = this.goalAt(lat, long);
+        goal.lastVisited = date;
+        this.coords2dates[MapGame.keyFormat(lat, long)] = date.toISOString();
+    }
 
     static run(): void {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
