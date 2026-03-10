@@ -84,7 +84,7 @@
     "startImageSorter": "tsc ./util/imageSorter/imageSorter.ts && webpack && qode ./util/imageSorter.ts",
     "debugImageSorter": "webpack && qode --inspect ./dist/imageSorter.js",
     "buildlimitless": "browserify bottleWorld/chronarchon/src/*.js --exclude bottleWorld/chronarchon/src/*.test.js -o bottleWorld/chronarchon/bundle.js && npm run server && open bottleWorld/chronarchon/chronarchon.html",
-    "buildmapgame": "npm run lint && npm run prettier && tsc -p games/mapgame/",
+    "buildmapgame": "npm run lint && npm run prettierwrite && tsc -p games/mapgame/",
     "openmapgame": "npm run open games/mapgame/mapgame.html",
     "buildspoilerfree": "eslint --no-warn-ignored spoilerfree/**/*.ts && npm run prettierwrite && tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js"
   },
