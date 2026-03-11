@@ -22,7 +22,8 @@ declare class MapGame {
     static keyFormat(lat: number, long: number): string;
     updateScoreDisplay(): void;
     goalAt(lat: number, long: number): Goal;
-    updateGoalVisuals(): void;
+    quickUpdateScreen(): void;
+    icon(goal: Goal): object;
     panToPlayer(): void;
     stateString(): string;
     save(): void;

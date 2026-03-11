@@ -4,7 +4,7 @@ const GOAL_FONT_PX = 32;
 const MIN_ZOOM = 12; // User can't zoom out too much.
 const FOG_BUFFER = 1; // Extra cells of fog rendered beyond the viewport edge
 const TEST_MODE = undefined; // 'font';
-// TODO Measure mobile performance in more detail. Bug: Caused spotify to crash in the background. Can measure much of this from the emulator.
+// TODO Measure mobile performance in more detail. Can measure much of this from the emulator.
 class MapGame {
     constructor() {
         // eslint-disable-next-line @typescript-eslint/typedef
@@ -44,7 +44,7 @@ class MapGame {
                 enableHighAccuracy: true,
             });
         }
-        this.map.on('moveend', () => this.updateGoalVisuals());
+        this.map.on('moveend', () => this.quickUpdateScreen());
         document
             .getElementById('recenter-btn')
             .addEventListener('click', () => this.panToPlayer());
@@ -92,17 +92,21 @@ class MapGame {
         const goal = this.goalAt(lat, long);
         const points = goal.pointsAvailable();
         if (points > 0) {
+            const key = MapGame.keyFormat(lat, long);
             this.playerScore += points;
             goal.visit();
-            this.coords2dates[MapGame.keyFormat(lat, long)] =
-                new Date().toISOString();
+            this.coords2dates[key] = new Date().toISOString();
             // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
             this.save();
+            const existingMarker = this.renderedGoals.get(key);
+            if (existingMarker) {
+                existingMarker.setIcon(this.icon(goal));
+            }
             this.updateScreen();
         }
     }
     updateScreen() {
-        this.updateGoalVisuals();
+        this.quickUpdateScreen();
         this.updateScoreDisplay();
     }
     snapToGrid(val) {
@@ -123,9 +127,7 @@ class MapGame {
         const dateStr = this.coords2dates[coordKey];
         return new Goal(dateStr ? new Date(dateStr) : undefined);
     }
-    updateGoalVisuals() {
-        const iconW = Math.round(GOAL_FONT_PX * 2.5);
-        const iconH = Math.round(GOAL_FONT_PX * 1.4);
+    quickUpdateScreen() {
         const bounds = this.map.getBounds();
         const buf = GRID_STEP * FOG_BUFFER;
         const latMin = this.snapToGrid(bounds.getSouth() - buf);
@@ -180,15 +182,8 @@ class MapGame {
                         }
                         continue;
                     }
-                    const existingLabel = this.renderedGoals.get(key);
-                    if (!existingLabel) {
-                        const text = goal.text();
-                        const icon = L.divIcon({
-                            className: 'goal-label',
-                            html: `<span style="font-size:${GOAL_FONT_PX}px">${text}</span>`,
-                            iconSize: [iconW, iconH],
-                            iconAnchor: [iconW / 2, iconH / 2],
-                        });
+                    if (!this.renderedGoals.get(key)) {
+                        const icon = this.icon(goal);
                         const marker = L.marker([this.snapToGrid(lat), this.snapToGrid(long)], { icon, interactive: false }).addTo(this.map);
                         this.renderedGoals.set(key, marker);
                     }
@@ -208,6 +203,16 @@ class MapGame {
                 this.fogRectangles.delete(key);
             }
         }
+    }
+    icon(goal) {
+        const iconW = Math.round(GOAL_FONT_PX * 2.5);
+        const iconH = Math.round(GOAL_FONT_PX * 1.4);
+        return L.divIcon({
+            className: 'goal-label',
+            html: `<span style="font-size:${GOAL_FONT_PX}px">${goal.text()}</span>`,
+            iconSize: [iconW, iconH],
+            iconAnchor: [iconW / 2, iconH / 2],
+        });
     }
     panToPlayer() {
         if (this.locationKnown && this.playerMarker) {
@@ -277,7 +282,7 @@ class Goal {
     }
     visit() {
         this.lastVisited = new Date();
-        // LATER could store timestamps with less precision (eg just '20260226'), to avoid 13-hour rounding exploits. Also add a unit test for that?
+        // TODO could store timestamps with less precision (eg just '20260226'), to avoid 13-hour rounding exploits. Also add a unit test for that?
     }
 }
 // TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day.
