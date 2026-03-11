@@ -9,7 +9,7 @@ const FOG_BUFFER: number = 1; // Extra cells of fog rendered beyond the viewport
 
 const TEST_MODE: string = undefined; // 'font';
 
-// TODO Measure mobile performance in more detail. Bug: Caused spotify to crash in the background. Can measure much of this from the emulator.
+// TODO Measure mobile performance in more detail. Can measure much of this from the emulator.
 
 class MapGame {
     // eslint-disable-next-line @typescript-eslint/typedef
