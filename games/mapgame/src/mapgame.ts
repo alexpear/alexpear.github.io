@@ -68,7 +68,7 @@ class MapGame {
             );
         }
 
-        this.map.on('moveend', () => this.updateGoalVisuals());
+        this.map.on('moveend', () => this.quickUpdateScreen());
 
         document
             .getElementById('recenter-btn')!
@@ -137,7 +137,7 @@ class MapGame {
     }
 
     updateScreen(): void {
-        this.updateGoalVisuals();
+        this.quickUpdateScreen();
         this.updateScoreDisplay();
     }
 
@@ -163,9 +163,7 @@ class MapGame {
         return new Goal(dateStr ? new Date(dateStr) : undefined);
     }
 
-    updateGoalVisuals(): void {
-        const iconW = Math.round(GOAL_FONT_PX * 2.5);
-        const iconH = Math.round(GOAL_FONT_PX * 1.4);
+    quickUpdateScreen(): void {
         const bounds = this.map.getBounds();
         const buf = GRID_STEP * FOG_BUFFER;
 
