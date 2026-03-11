@@ -125,13 +125,20 @@ class MapGame {
         const points = goal.pointsAvailable();
 
         if (points > 0) {
+            const key = MapGame.keyFormat(lat, long);
+
             this.playerScore += points;
             goal.visit();
-            this.coords2dates[MapGame.keyFormat(lat, long)] =
-                new Date().toISOString();
+            this.coords2dates[key] = new Date().toISOString();
 
             // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
             this.save();
+
+            const existingMarker = this.renderedGoals.get(key);
+            if (existingMarker) {
+                existingMarker.setIcon(this.icon(goal));
+            }
+
             this.updateScreen();
         }
     }
@@ -235,20 +242,14 @@ class MapGame {
                         continue;
                     }
 
-                    const existingLabel = this.renderedGoals.get(key);
-                    if (!existingLabel) {
-                        const text = goal.text();
-                        const icon = L.divIcon({
-                            className: 'goal-label',
-                            html: `<span style="font-size:${GOAL_FONT_PX}px">${text}</span>`,
-                            iconSize: [iconW, iconH],
-                            iconAnchor: [iconW / 2, iconH / 2],
-                        });
+                    if (!this.renderedGoals.get(key)) {
+                        const icon = this.icon(goal);
 
                         const marker = L.marker(
                             [this.snapToGrid(lat), this.snapToGrid(long)],
                             { icon, interactive: false },
                         ).addTo(this.map);
+
                         this.renderedGoals.set(key, marker);
                     }
                 }
@@ -268,6 +269,18 @@ class MapGame {
                 this.fogRectangles.delete(key);
             }
         }
+    }
+
+    icon(goal: Goal): object {
+        const iconW = Math.round(GOAL_FONT_PX * 2.5);
+        const iconH = Math.round(GOAL_FONT_PX * 1.4);
+
+        return L.divIcon({
+            className: 'goal-label',
+            html: `<span style="font-size:${GOAL_FONT_PX}px">${goal.text()}</span>`,
+            iconSize: [iconW, iconH],
+            iconAnchor: [iconW / 2, iconH / 2],
+        });
     }
 
     panToPlayer(): void {
@@ -356,11 +369,11 @@ class Goal {
 
     visit(): void {
         this.lastVisited = new Date();
-        // LATER could store timestamps with less precision (eg just '20260226'), to avoid 13-hour rounding exploits. Also add a unit test for that?
+        // TODO could store timestamps with less precision (eg just '20260226'), to avoid 13-hour rounding exploits. Also add a unit test for that?
     }
 }
 
-// TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day.
+// TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day, basic player behaviors like visiting a few nearby locations, check if gamestate reacts correctly.
 // LATER improve VSCode integration with CC & with git.
 
 MapGame.run();
