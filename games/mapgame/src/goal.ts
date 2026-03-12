@@ -8,8 +8,10 @@ export class Goal {
     }
 
     daysSinceVisited(): number {
-        const ms = Date.now() - this.lastVisited.getTime();
-        return ms / (1000 * 60 * 60 * 24);
+        return Math.floor(
+            (this.today().getTime() - this.lastVisited.getTime()) /
+                (1000 * 60 * 60 * 24),
+        );
     }
 
     pointsAvailable(): number {
@@ -21,8 +23,13 @@ export class Goal {
         return String(this.pointsAvailable() || '');
     }
 
+    today(): Date {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // midnight local time is the threshold between days.
+        return today;
+    }
+
     visit(): void {
-        this.lastVisited = new Date();
-        this.lastVisited.setHours(0, 0, 0, 0); // midnight local time is the threshold between days.
+        this.lastVisited = this.today();
     }
 }
