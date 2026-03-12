@@ -124,14 +124,10 @@ class MapGame {
         if (points > 0) {
             this.playerScore += points;
 
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            // midnight local time is the threshold between days.
-
-            goal.lastVisited = today;
+            goal.visit();
 
             const key = MapGame.keyFormat(lat, long);
-            this.coords2dates[key] = today.toISOString();
+            this.coords2dates[key] = goal.lastVisited.toISOString();
 
             // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
             this.save();
@@ -368,6 +364,11 @@ class Goal {
     text(): string {
         // Zero points => empty string => do not display a number.
         return String(this.pointsAvailable() || '');
+    }
+
+    visit(): void {
+        this.lastVisited = new Date();
+        this.lastVisited.setHours(0, 0, 0, 0); // midnight local time is the threshold between days.
     }
 }
 
