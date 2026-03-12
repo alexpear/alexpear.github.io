@@ -4,5 +4,6 @@ export declare class Goal {
     daysSinceVisited(): number;
     pointsAvailable(): number;
     text(): string;
+    today(): Date;
     visit(): void;
 }
