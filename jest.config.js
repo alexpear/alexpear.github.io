@@ -3,6 +3,7 @@ module.exports = {
         '**/*.test.js',
         '**/*.test.mjs',
         '**/*.test.ts',
+        '!**/dist/*',
     ],
     transform: {
         '\\.mjs$': 'babel-jest', // Use Babel to transpile .mjs files
