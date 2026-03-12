@@ -23,8 +23,7 @@ class MapGame {
     playerMarker: Record<string, any> | undefined = undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     renderedGoals: Map<string, Record<string, any>> = new Map();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fogRectangles: Map<string, Record<string, any>> = new Map();
+    fogRectangles: Map<string, Record<string, object>> = new Map();
     locationKnown: boolean = false;
 
     // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
