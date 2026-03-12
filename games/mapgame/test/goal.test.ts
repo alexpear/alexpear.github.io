@@ -14,8 +14,10 @@ afterEach(() => {
     jest.useRealTimers();
 });
 
-function daysAgo(n: number): Date {
-    return new Date(Date.now() - n * DAY_MS);
+function goalDaysAgo(n: number): Goal {
+    const goal = new Goal();
+    goal.lastVisited = new Date(goal.today().getTime() - n * DAY_MS);
+    return goal;
 }
 
 describe('Goal', () => {
@@ -47,17 +49,17 @@ describe('Goal', () => {
 
     describe('points accumulate over days', () => {
         test('1 point after 1 day', () => {
-            const goal = new Goal(daysAgo(1));
+            const goal = goalDaysAgo(1);
             expect(goal.pointsAvailable()).toBe(1);
         });
 
         test('5 points after 5 days', () => {
-            const goal = new Goal(daysAgo(5));
+            const goal = goalDaysAgo(5);
             expect(goal.pointsAvailable()).toBe(5);
         });
 
         test('capped at 1000 after 1000+ days', () => {
-            const goal = new Goal(daysAgo(1500));
+            const goal = goalDaysAgo(1500);
             expect(goal.pointsAvailable()).toBe(1000);
         });
 
@@ -69,7 +71,7 @@ describe('Goal', () => {
 
     describe('visit()', () => {
         test('resets points to 0', () => {
-            const goal = new Goal(daysAgo(10));
+            const goal = goalDaysAgo(10);
             expect(goal.pointsAvailable()).toBe(10);
             goal.visit();
             expect(goal.pointsAvailable()).toBe(0);
