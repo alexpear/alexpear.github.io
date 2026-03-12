@@ -71,7 +71,7 @@
     "server": "http-server",
     "cape": "node wnode/cape.js",
     "testOld": "jest",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test": "NODE_NO_WARNINGS=1 node --experimental-vm-modules node_modules/.bin/jest",
     "testAll": "npm run test && npm run testRingWorld && npm run testDeathPlanet",
     "lint": "eslint --cache games/**/*.ts",
     "prettier": "prettier --check games/",
