@@ -305,8 +305,6 @@ class MapGame {
         localStorage.setItem('mapGame', this.stateString());
     }
 
-    // LATER menu option to download a save file. Also option to import a save file (merging it into current state).
-
     // Load the saved gamestate from local storage.
     load(): void {
         const raw = localStorage.getItem('mapGame');
@@ -345,8 +343,9 @@ class MapGame {
     }
 }
 
-// TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day, basic player behaviors like visiting a few nearby locations, check if gamestate reacts correctly. Also a unit test for 13-hour rounding exploits.
-// TODO Measure mobile performance in more detail. Can measure much of this from the emulator.
+// LATER unit tests about gamestate, saving & loading to storage format, player actions, basic player behaviors like visiting a few nearby locations, check if gamestate reacts correctly.
+// LATER debug URL or param. Debug tools like copy paste local storage. Also option to import a save file (merging it into current state).
+// LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 
 MapGame.run();
