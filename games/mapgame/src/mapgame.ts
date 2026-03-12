@@ -344,8 +344,8 @@ class MapGame {
     }
 
     static run(): void {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const game = new MapGame();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).mapgame = new MapGame();
     }
 }
 
