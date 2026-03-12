@@ -1,3 +1,32 @@
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Goal = void 0;
+// One of many places that you get points for visiting.
+class Goal {
+    constructor(lastVisited) {
+        // Default to 1970 for never-visited places.
+        this.lastVisited = lastVisited || new Date(0);
+    }
+    daysSinceVisited() {
+        const ms = Date.now() - this.lastVisited.getTime();
+        return ms / (1000 * 60 * 60 * 24);
+    }
+    pointsAvailable() {
+        return Math.min(1000, Math.round(this.daysSinceVisited()));
+    }
+    text() {
+        // Zero points => empty string => do not display a number.
+        return String(this.pointsAvailable() || '');
+    }
+    visit() {
+        this.lastVisited = new Date();
+        this.lastVisited.setHours(0, 0, 0, 0); // midnight local time is the threshold between days.
+    }
+}
+exports.Goal = Goal;
+
+},{}],2:[function(require,module,exports){
 "use strict";
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -269,3 +298,5 @@ class MapGame {
 // TODO Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 MapGame.run();
+
+},{"./goal":1}]},{},[2]);
