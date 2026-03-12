@@ -369,10 +369,6 @@ class Goal {
         // Zero points => empty string => do not display a number.
         return String(this.pointsAvailable() || '');
     }
-
-    visit(): void {
-        this.lastVisited = new Date();
-    }
 }
 
 // TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day, basic player behaviors like visiting a few nearby locations, check if gamestate reacts correctly. Also a unit test for 13-hour rounding exploits.
