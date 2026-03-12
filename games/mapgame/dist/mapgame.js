@@ -17,7 +17,6 @@ class MapGame {
         this.playerMarker = undefined;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.renderedGoals = new Map();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.fogRectangles = new Map();
         this.locationKnown = false;
         // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
@@ -92,10 +91,13 @@ class MapGame {
         const goal = this.goalAt(lat, long);
         const points = goal.pointsAvailable();
         if (points > 0) {
-            const key = MapGame.keyFormat(lat, long);
             this.playerScore += points;
-            goal.visit();
-            this.coords2dates[key] = new Date().toISOString();
+            const today = new Date();
+            today.setHours(3, 0, 0, 0);
+            // 0300 local time is the threshold between days.
+            goal.lastVisited = today;
+            const key = MapGame.keyFormat(lat, long);
+            this.coords2dates[key] = today.toISOString();
             // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
             this.save();
             const existingMarker = this.renderedGoals.get(key);
@@ -260,8 +262,8 @@ class MapGame {
         this.coords2dates[MapGame.keyFormat(lat, long)] = date.toISOString();
     }
     static run() {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const game = new MapGame();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        window.mapgame = new MapGame();
     }
 }
 // One of many places that you get points for visiting.
@@ -278,13 +280,13 @@ class Goal {
         return Math.min(1000, Math.round(this.daysSinceVisited()));
     }
     text() {
-        return String(this.pointsAvailable());
+        // Zero points => empty string => do not display a number.
+        return String(this.pointsAvailable() || '');
     }
     visit() {
         this.lastVisited = new Date();
-        // TODO could store timestamps with less precision (eg just '20260226'), to avoid 13-hour rounding exploits. Also add a unit test for that?
     }
 }
-// TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day.
+// TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day, basic player behaviors like visiting a few nearby locations, check if gamestate reacts correctly. Also a unit test for 13-hour rounding exploits.
 // LATER improve VSCode integration with CC & with git.
 MapGame.run();
