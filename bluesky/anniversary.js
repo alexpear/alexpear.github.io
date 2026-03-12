@@ -425,7 +425,7 @@ class Anniversary {
     static run () {
         const info = new Anniversary().info();
 
-        Util.log(info);
+        // Util.log(info);
     }
 }
 
