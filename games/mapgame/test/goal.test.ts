@@ -45,11 +45,37 @@ describe('Goal', () => {
             goal.visit();
             expect(goal.text()).toBe('');
         });
+
+        test('has 0 points if we visit after midnight then check at 2300 that day', () => {
+            const goal = new Goal();
+            goal.visit();
+
+            jest.setSystemTime(
+                new Date(MIDNIGHT.getTime() + 23 * 60 * 60 * 1000),
+            );
+
+            expect(goal.pointsAvailable()).toBe(0);
+        });
     });
 
     describe('points accumulate over days', () => {
         test('1 point after 1 day', () => {
             const goal = goalDaysAgo(1);
+            expect(goal.pointsAvailable()).toBe(1);
+        });
+
+        test('1 point if we visit before midnight then check right after', () => {
+            jest.setSystemTime(
+                new Date(MIDNIGHT.getTime() + 23 * 60 * 60 * 1000),
+            );
+
+            const goal = new Goal();
+            goal.visit();
+
+            jest.setSystemTime(
+                new Date(MIDNIGHT.getTime() + 25 * 60 * 60 * 1000),
+            ); // 0100 the next day
+
             expect(goal.pointsAvailable()).toBe(1);
         });
 
