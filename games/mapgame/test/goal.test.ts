@@ -62,6 +62,7 @@ describe('Goal', () => {
         test('1 point after 1 day', () => {
             const goal = goalDaysAgo(1);
             expect(goal.pointsAvailable()).toBe(1);
+            expect(goal.text()).toBe('1');
         });
 
         test('1 point if we visit before midnight then check right after', () => {
@@ -75,6 +76,22 @@ describe('Goal', () => {
             jest.setSystemTime(
                 new Date(MIDNIGHT.getTime() + 25 * 60 * 60 * 1000),
             ); // 0100 the next day
+
+            expect(goal.pointsAvailable()).toBe(1);
+        });
+
+        test('1 point if we visit at in morning then check in the afternoon of the next day', () => {
+            jest.setSystemTime(
+                new Date(MIDNIGHT.getTime() + 11 * 60 * 60 * 1000),
+            );
+
+            const goal = new Goal();
+            goal.visit();
+
+            jest.setSystemTime(
+                // 1600 the next day
+                new Date(MIDNIGHT.getTime() + (24 + 16) * 60 * 60 * 1000),
+            );
 
             expect(goal.pointsAvailable()).toBe(1);
         });
