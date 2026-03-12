@@ -28,6 +28,7 @@
   "devDependencies": {
     "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
+    "@types/jest": "^30.0.0",
     "@types/node": "^14.18.63",
     "babel-jest": "^30.0.0",
     "clean-webpack-plugin": "^3.0.0",
@@ -37,6 +38,7 @@
     "jest": "^29.7.0",
     "native-addon-loader": "^2.0.1",
     "prettier": "3.3.3",
+    "ts-jest": "^29.4.6",
     "ts-loader": "^8.0.17",
     "typescript": "^4.9.5",
     "typescript-eslint": "^8.55.0",
@@ -84,7 +86,7 @@
     "startImageSorter": "tsc ./util/imageSorter/imageSorter.ts && webpack && qode ./util/imageSorter.ts",
     "debugImageSorter": "webpack && qode --inspect ./dist/imageSorter.js",
     "buildlimitless": "browserify bottleWorld/chronarchon/src/*.js --exclude bottleWorld/chronarchon/src/*.test.js -o bottleWorld/chronarchon/bundle.js && npm run server && open bottleWorld/chronarchon/chronarchon.html",
-    "buildmapgame": "npm run lint && npm run prettierwrite && tsc -p games/mapgame/",
+    "buildmapgame": "npm run lint && npm run prettierwrite && tsc -p games/mapgame && npm test && browserify games/mapgame/dist/mapgame.js -o games/mapgame/dist/bundle.js",
     "openmapgame": "npm run open games/mapgame/mapgame.html",
     "buildspoilerfree": "eslint --no-warn-ignored spoilerfree/**/*.ts && npm run prettierwrite && tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js"
   },

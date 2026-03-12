@@ -1,5 +1,7 @@
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 
+import { Goal } from './goal';
+
 // L (Leaflet) is loaded as a global by leaflet.js, a script that index.html loads from the unpkg.com CDN.
 declare const L;
 const GRID_STEP: number = 0.01;
@@ -340,35 +342,6 @@ class MapGame {
     static run(): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).mapgame = new MapGame();
-    }
-}
-
-// One of many places that you get points for visiting.
-class Goal {
-    lastVisited: Date;
-
-    constructor(lastVisited?: Date) {
-        // Default to 1970 for never-visited places.
-        this.lastVisited = lastVisited || new Date(0);
-    }
-
-    daysSinceVisited(): number {
-        const ms = Date.now() - this.lastVisited.getTime();
-        return ms / (1000 * 60 * 60 * 24);
-    }
-
-    pointsAvailable(): number {
-        return Math.min(1000, Math.round(this.daysSinceVisited()));
-    }
-
-    text(): string {
-        // Zero points => empty string => do not display a number.
-        return String(this.pointsAvailable() || '');
-    }
-
-    visit(): void {
-        this.lastVisited = new Date();
-        this.lastVisited.setHours(0, 0, 0, 0); // midnight local time is the threshold between days.
     }
 }
 
