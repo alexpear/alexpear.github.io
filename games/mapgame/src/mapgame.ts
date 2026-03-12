@@ -124,11 +124,16 @@ class MapGame {
         const points = goal.pointsAvailable();
 
         if (points > 0) {
-            const key = MapGame.keyFormat(lat, long);
-
             this.playerScore += points;
-            goal.visit();
-            this.coords2dates[key] = new Date().toISOString();
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            // midnight local time is the threshold between days.
+
+            goal.lastVisited = today;
+
+            const key = MapGame.keyFormat(lat, long);
+            this.coords2dates[key] = today.toISOString();
 
             // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
             this.save();
