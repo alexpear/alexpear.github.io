@@ -364,7 +364,8 @@ class Goal {
     }
 
     text(): string {
-        return String(this.pointsAvailable());
+        // Zero points => empty string => do not display a number.
+        return String(this.pointsAvailable() || '');
     }
 
     visit(): void {
