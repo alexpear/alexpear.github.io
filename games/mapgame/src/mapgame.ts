@@ -9,8 +9,6 @@ const FOG_BUFFER: number = 1; // Extra cells of fog rendered beyond the viewport
 
 const TEST_MODE: string = undefined; // 'font';
 
-// TODO Measure mobile performance in more detail. Can measure much of this from the emulator.
-
 class MapGame {
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
@@ -378,6 +376,7 @@ class Goal {
 }
 
 // TODO unit tests about gamestate, saving & loading to storage format, player actions, visiting a place twice in same day, basic player behaviors like visiting a few nearby locations, check if gamestate reacts correctly. Also a unit test for 13-hour rounding exploits.
-// LATER improve VSCode integration with CC & with git.
+// TODO Measure mobile performance in more detail. Can measure much of this from the emulator.
+// LATER improve VSCode integration with CC.
 
 MapGame.run();
