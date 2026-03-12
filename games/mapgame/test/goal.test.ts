@@ -3,7 +3,7 @@ import { Goal } from '../src/goal';
 const DAY_MS = 1000 * 60 * 60 * 24;
 
 // Pin time to just after midnight so visit() → lastVisited=midnight → ~0 days elapsed.
-const MIDNIGHT = new Date('2026-03-11T00:00:01');
+const MIDNIGHT = new Date('2000-01-01T00:00:01');
 
 beforeEach(() => {
     jest.useFakeTimers();
