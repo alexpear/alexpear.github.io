@@ -11,7 +11,7 @@ const FOG_BUFFER: number = 1; // Extra cells of fog rendered beyond the viewport
 
 const TEST_MODE: string = undefined; // 'font';
 
-class MapGame {
+export class MapGame {
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
         minZoom: MIN_ZOOM,
@@ -297,8 +297,6 @@ class MapGame {
 
         return JSON.stringify(state);
     }
-
-    // --- localStorage stubs (for future game mechanics) ---
 
     // Save & load are both the whole gamestate, ie playerScore AND coords2dates.
     save(): void {
