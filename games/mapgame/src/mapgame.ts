@@ -346,4 +346,7 @@ export class MapGame {
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 
-MapGame.run();
+// Run in browser, not during unit tests (DOM is empty at import time).
+if (typeof document !== 'undefined' && document.getElementById('map')) {
+    MapGame.run();
+}
