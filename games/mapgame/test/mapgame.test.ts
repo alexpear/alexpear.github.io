@@ -1,5 +1,3 @@
-// @jest-environment jsdom
-
 import { MapGame } from '../src/mapgame';
 
 const DAY_MS = 1000 * 60 * 60 * 24;
@@ -24,7 +22,7 @@ function makeMockMap() {
         }),
         getZoom: jest.fn().mockReturnValue(15),
         removeLayer: jest.fn(),
-        getContainer: jest.fn().mockReturnValue(document.createElement('div')),
+        getContainer: jest.fn().mockReturnValue({}),
         panTo: jest.fn(),
     };
 }
@@ -65,25 +63,45 @@ function makeGame(): MapGame {
 
 // --- Test lifecycle ---
 
-beforeAll(() => {
-    document.body.innerHTML = `
-        <div id="map"></div>
-        <div id="score"></div>
-        <button id="recenter-btn"></button>
-        <button id="help-btn"></button>
-        <button id="help-close"></button>
-        <div id="help-modal"></div>
-    `;
-    Object.defineProperty(navigator, 'geolocation', {
-        value: { watchPosition: jest.fn() },
-        configurable: true,
-    });
-});
+function makeMockEl() {
+    return {
+        textContent: '',
+        addEventListener: jest.fn(),
+        classList: { add: jest.fn(), remove: jest.fn() },
+    };
+}
+
+// Minimal globals — no jsdom needed since these tests don't exercise DOM visuals.
+let mockStorage: Record<string, string> = {};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).localStorage = {
+    getItem: (k: string) => mockStorage[k] ?? undefined,
+    setItem: (k: string, v: string) => {
+        mockStorage[k] = v;
+    },
+    clear: () => {
+        mockStorage = {};
+    },
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).navigator = { geolocation: { watchPosition: jest.fn() } };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).document = {
+    // Return undefined for 'map' so the module-level guard doesn't call MapGame.run().
+    getElementById: jest
+        .fn()
+        .mockImplementation((id: string) =>
+            id === 'map' ? undefined : makeMockEl(),
+        ),
+};
 
 beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(MIDNIGHT);
-    localStorage.clear();
+    mockStorage = {};
 });
 
 afterEach(() => {
