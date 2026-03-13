@@ -1,6 +1,7 @@
 "use strict";
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MapGame = void 0;
 const goal_1 = require("./goal");
 const GRID_STEP = 0.01;
 const GOAL_FONT_PX = 32;
@@ -227,7 +228,6 @@ class MapGame {
         };
         return JSON.stringify(state);
     }
-    // --- localStorage stubs (for future game mechanics) ---
     // Save & load are both the whole gamestate, ie playerScore AND coords2dates.
     save() {
         localStorage.setItem('mapGame', this.stateString());
@@ -264,8 +264,12 @@ class MapGame {
         window.mapgame = new MapGame();
     }
 }
+exports.MapGame = MapGame;
 // LATER unit tests about gamestate, saving & loading to storage format, player actions, basic player behaviors like visiting a few nearby locations, check if gamestate reacts correctly.
 // LATER debug URL or param. Debug tools like copy paste local storage. Also option to import a save file (merging it into current state).
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
-MapGame.run();
+// Run in browser, not during unit tests (DOM is empty at import time).
+if (typeof document !== 'undefined' && document.getElementById('map')) {
+    MapGame.run();
+}
