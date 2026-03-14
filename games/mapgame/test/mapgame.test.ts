@@ -8,7 +8,7 @@ const SOUTH = { lat: 37.76, long: -122.42 }; // 0.01 degrees south of HOME
 
 // --- Mock setup ---
 
-function makeMockMap() {
+function makeMockMap(): object {
     return {
         setView: jest.fn().mockReturnThis(),
         on: jest.fn(),
@@ -27,7 +27,7 @@ function makeMockMap() {
     };
 }
 
-function setupLeafletMock() {
+function setupLeafletMock(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (global as any).L = {
         map: jest.fn().mockReturnValue(makeMockMap()),
@@ -63,7 +63,7 @@ function makeGame(): MapGame {
 
 // --- Test lifecycle ---
 
-function makeMockEl() {
+function makeMockEl(): object {
     return {
         textContent: '',
         addEventListener: jest.fn(),
@@ -76,11 +76,11 @@ let mockStorage: Record<string, string> = {};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).localStorage = {
-    getItem: (k: string) => mockStorage[k] ?? undefined,
-    setItem: (k: string, v: string) => {
+    getItem: (k: string): string|undefined => mockStorage[k] ?? undefined,
+    setItem: (k: string, v: string): void => {
         mockStorage[k] = v;
     },
-    clear: () => {
+    clear: (): void => {
         mockStorage = {};
     },
 };
