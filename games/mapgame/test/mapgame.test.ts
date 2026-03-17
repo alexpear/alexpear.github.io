@@ -76,7 +76,7 @@ let mockStorage: Record<string, string> = {};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).localStorage = {
-    getItem: (k: string): string|undefined => mockStorage[k] ?? undefined,
+    getItem: (k: string): string | undefined => mockStorage[k] ?? undefined,
     setItem: (k: string, v: string): void => {
         mockStorage[k] = v;
     },
