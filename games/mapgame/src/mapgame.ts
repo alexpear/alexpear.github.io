@@ -89,6 +89,7 @@ export class MapGame {
         this.updateScreen();
     }
 
+    // TODO bug 2026 march 18. Sometimes blue dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
     updateAfterGPS(pos: GeolocationPosition): void {
         const { latitude, longitude } = pos.coords;
         if (this.playerMarker) {
@@ -341,7 +342,8 @@ export class MapGame {
     }
 }
 
-// LATER unit tests about gamestate, saving & loading to storage format, player actions, basic player behaviors like visiting a few nearby locations, check if gamestate reacts correctly.
+// TODO Needs a more distinct name than Mapgame
+// LATER call buildmapgame from Github CI. Stop having to commit dist/*.js.
 // LATER debug URL or param. Debug tools like copy paste local storage. Also option to import a save file (merging it into current state).
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
