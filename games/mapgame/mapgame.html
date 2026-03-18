@@ -32,12 +32,22 @@
                 color: purple;
                 text-align: center;
                 text-shadow:
-                    -2px -2px 0 white,
-                    2px -2px 0 white,
-                    -2px 2px 0 white,
-                    2px 2px 0 white;
+                    /* orthagonal directions */
+                    -2px 0 0 white,
+                    2px 0 0 white,
+                    0 -2px 0 white,
+                    0 2px 0 white,
+
+                    /* knight moves */
+                    -1px -2px 0 white,
+                    1px -2px 0 white,
+                    -1px 2px 0 white,
+                    1px 2px 0 white,
+                    -2px -1px 0 white,
+                    2px -1px 0 white,
+                    -2px 1px 0 white,
+                    2px 1px 0 white;
             }
-            /* LATER give all UI elements a fun color scheme*/
             #score {
                 position: fixed;
                 top: 30px;
