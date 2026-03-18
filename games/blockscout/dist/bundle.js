@@ -1,52 +1,15 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Goal = void 0;
-// One of many places that you get points for visiting.
-class Goal {
-    constructor(lastVisited) {
-        // Default to 1970 for never-visited places.
-        this.lastVisited = lastVisited || new Date(0);
-    }
-    daysSinceVisited() {
-        return Math.floor((this.today().getTime() - this.lastVisited.getTime()) /
-            (1000 * 60 * 60 * 24));
-    }
-    pointsAvailable() {
-        const daysSince = Math.round(this.daysSinceVisited());
-        if (daysSince <= 0) {
-            return 0;
-        }
-        // Rewards jump from 0 to 2. Thus, visiting every day is more lucrative than visiting once every 1000 days.
-        return Math.min(1000, daysSince + 1);
-    }
-    text() {
-        // Zero points => empty string => do not display a number.
-        return String(this.pointsAvailable() || '');
-    }
-    today() {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // midnight local time is the threshold between days.
-        return today;
-    }
-    visit() {
-        this.lastVisited = this.today();
-    }
-}
-exports.Goal = Goal;
-
-},{}],2:[function(require,module,exports){
-"use strict";
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MapGame = void 0;
+exports.BlockScout = void 0;
 const goal_1 = require("./goal");
 const GRID_STEP = 0.01;
 const GOAL_FONT_PX = 32;
 const MIN_ZOOM = 12; // User can't zoom out too much.
 const FOG_BUFFER = 1; // Extra cells of fog rendered beyond the viewport edge
 const TEST_MODE = undefined; // 'font';
-class MapGame {
+class BlockScout {
     constructor() {
         // eslint-disable-next-line @typescript-eslint/typedef
         this.map = L.map('map', {
@@ -135,7 +98,7 @@ class MapGame {
         if (points > 0) {
             this.playerScore += points;
             goal.visit();
-            const key = MapGame.keyFormat(lat, long);
+            const key = BlockScout.keyFormat(lat, long);
             this.coords2dates[key] = goal.lastVisited.toISOString();
             // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
             this.save();
@@ -164,7 +127,7 @@ class MapGame {
             'Score: ' + this.playerScore.toLocaleString();
     }
     goalAt(lat, long) {
-        const coordKey = MapGame.keyFormat(lat, long);
+        const coordKey = BlockScout.keyFormat(lat, long);
         const dateStr = this.coords2dates[coordKey];
         return new goal_1.Goal(dateStr ? new Date(dateStr) : undefined);
     }
@@ -178,7 +141,7 @@ class MapGame {
         const activeKeys = new Set();
         for (let lat = latMin; lat <= latMax + GRID_STEP / 2; lat += GRID_STEP) {
             for (let long = longMin; long <= longMax + GRID_STEP / 2; long += GRID_STEP) {
-                const key = MapGame.keyFormat(lat, long);
+                const key = BlockScout.keyFormat(lat, long);
                 activeKeys.add(key);
                 const goal = this.goalAt(lat, long);
                 const fogged = goal.pointsAvailable() >= 1000;
@@ -296,22 +259,58 @@ class MapGame {
     _setLastVisit(lat, long, date) {
         const goal = this.goalAt(lat, long);
         goal.lastVisited = date;
-        this.coords2dates[MapGame.keyFormat(lat, long)] = date.toISOString();
+        this.coords2dates[BlockScout.keyFormat(lat, long)] = date.toISOString();
     }
     static run() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        window.mapgame = new MapGame();
+        window.blockscout = new BlockScout();
     }
 }
-exports.MapGame = MapGame;
-// TODO Needs a more distinct name than Mapgame
-// LATER call buildmapgame from Github CI. Stop having to commit dist/*.js.
+exports.BlockScout = BlockScout;
+// LATER call buildblockscout from Github CI. Stop having to commit dist/*.js.
 // LATER debug URL or param. Debug tools like copy paste local storage. Also option to import a save file (merging it into current state).
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 // Run in browser, not during unit tests (DOM is empty at import time).
 if (typeof document !== 'undefined' && document.getElementById('map')) {
-    MapGame.run();
+    BlockScout.run();
 }
 
-},{"./goal":1}]},{},[2]);
+},{"./goal":2}],2:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Goal = void 0;
+// One of many places that you get points for visiting.
+class Goal {
+    constructor(lastVisited) {
+        // Default to 1970 for never-visited places.
+        this.lastVisited = lastVisited || new Date(0);
+    }
+    daysSinceVisited() {
+        return Math.floor((this.today().getTime() - this.lastVisited.getTime()) /
+            (1000 * 60 * 60 * 24));
+    }
+    pointsAvailable() {
+        const daysSince = Math.round(this.daysSinceVisited());
+        if (daysSince <= 0) {
+            return 0;
+        }
+        // Rewards jump from 0 to 2. Thus, visiting every day is more lucrative than visiting once every 1000 days.
+        return Math.min(1000, daysSince + 1);
+    }
+    text() {
+        // Zero points => empty string => do not display a number.
+        return String(this.pointsAvailable() || '');
+    }
+    today() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // midnight local time is the threshold between days.
+        return today;
+    }
+    visit() {
+        this.lastVisited = this.today();
+    }
+}
+exports.Goal = Goal;
+
+},{}]},{},[1]);

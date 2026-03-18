@@ -1,4 +1,4 @@
-import { MapGame } from '../src/mapgame';
+import { BlockScout } from '../src/blockscout';
 
 const DAY_MS = 1000 * 60 * 60 * 24;
 const MIDNIGHT = new Date('2000-01-01T00:00:01');
@@ -53,12 +53,12 @@ function setupLeafletMock(): void {
     };
 }
 
-function makeGame(): MapGame {
-    jest.spyOn(MapGame.prototype, 'quickUpdateScreen').mockImplementation(
+function makeGame(): BlockScout {
+    jest.spyOn(BlockScout.prototype, 'quickUpdateScreen').mockImplementation(
         () => {},
     );
     setupLeafletMock();
-    return new MapGame();
+    return new BlockScout();
 }
 
 // --- Test lifecycle ---
@@ -90,7 +90,7 @@ let mockStorage: Record<string, string> = {};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).document = {
-    // Return undefined for 'map' so the module-level guard doesn't call MapGame.run().
+    // Return undefined for 'map' so the module-level guard doesn't call BlockScout.run().
     getElementById: jest
         .fn()
         .mockImplementation((id: string) =>
@@ -111,7 +111,7 @@ afterEach(() => {
 
 // --- Tests ---
 
-describe('MapGame', () => {
+describe('BlockScout', () => {
     describe('visit()', () => {
         test('visited location has 0 points immediately', () => {
             const game = makeGame();

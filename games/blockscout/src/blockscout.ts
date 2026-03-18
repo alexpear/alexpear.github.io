@@ -11,7 +11,7 @@ const FOG_BUFFER: number = 1; // Extra cells of fog rendered beyond the viewport
 
 const TEST_MODE: string = undefined; // 'font';
 
-export class MapGame {
+export class BlockScout {
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
         minZoom: MIN_ZOOM,
@@ -129,7 +129,7 @@ export class MapGame {
 
             goal.visit();
 
-            const key = MapGame.keyFormat(lat, long);
+            const key = BlockScout.keyFormat(lat, long);
             this.coords2dates[key] = goal.lastVisited.toISOString();
 
             // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
@@ -166,7 +166,7 @@ export class MapGame {
     }
 
     goalAt(lat: number, long: number): Goal {
-        const coordKey = MapGame.keyFormat(lat, long);
+        const coordKey = BlockScout.keyFormat(lat, long);
         const dateStr = this.coords2dates[coordKey];
         return new Goal(dateStr ? new Date(dateStr) : undefined);
     }
@@ -192,7 +192,7 @@ export class MapGame {
                 long <= longMax + GRID_STEP / 2;
                 long += GRID_STEP
             ) {
-                const key = MapGame.keyFormat(lat, long);
+                const key = BlockScout.keyFormat(lat, long);
                 activeKeys.add(key);
 
                 const goal = this.goalAt(lat, long);
@@ -333,22 +333,21 @@ export class MapGame {
     private _setLastVisit(lat: number, long: number, date: Date): void {
         const goal: Goal = this.goalAt(lat, long);
         goal.lastVisited = date;
-        this.coords2dates[MapGame.keyFormat(lat, long)] = date.toISOString();
+        this.coords2dates[BlockScout.keyFormat(lat, long)] = date.toISOString();
     }
 
     static run(): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (window as any).mapgame = new MapGame();
+        (window as any).blockscout = new BlockScout();
     }
 }
 
-// TODO Needs a more distinct name than Mapgame
-// LATER call buildmapgame from Github CI. Stop having to commit dist/*.js.
+// LATER call buildblockscout from Github CI. Stop having to commit dist/*.js.
 // LATER debug URL or param. Debug tools like copy paste local storage. Also option to import a save file (merging it into current state).
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 
 // Run in browser, not during unit tests (DOM is empty at import time).
 if (typeof document !== 'undefined' && document.getElementById('map')) {
-    MapGame.run();
+    BlockScout.run();
 }

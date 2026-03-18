@@ -40,7 +40,7 @@
     "start": "npm i && npm run buildAll",
     "firstTimeSetup": "npm install && npm install -g browserify && npm install -g http-server && npm start",
     "refresh": "npm run buildAll && npm run server",
-    "buildAll": "npm run buildTreeBrowser && npm run buildFishTank && npm run buildGroupGrid && npm run buildTitleGen && npm run buildTextGen && npm run buildVillainverse && npm run buildWaffleCards && npm run whichgame && npm run whattowatch && npm run buildAI2027 && npm run buildawow && npm run buildPopGrid && npm run buildmapgame",
+    "buildAll": "npm run buildTreeBrowser && npm run buildFishTank && npm run buildGroupGrid && npm run buildTitleGen && npm run buildTextGen && npm run buildVillainverse && npm run buildWaffleCards && npm run whichgame && npm run whattowatch && npm run buildAI2027 && npm run buildawow && npm run buildPopGrid && npm run buildblockscout",
     "buildAllUnstable": "npm run buildTreeBrowser && npm run buildFishTank && npm run buildGroupGrid && npm run buildTitleGen && npm run buildTextGen",
     "buildTreeBrowser": "browserify treebrowser/treeBrowser.js -o treebrowser/bundle.js",
     "buildFishTank": "browserify fishTank/src/*.js -o fishTank/bundle.js",
@@ -74,8 +74,8 @@
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
     "testRingWorld": "node bottleWorld/ringWorldState.js test",
     "buildlimitless": "browserify bottleWorld/chronarchon/src/*.js --exclude bottleWorld/chronarchon/src/*.test.js -o bottleWorld/chronarchon/bundle.js && npm run server && open bottleWorld/chronarchon/chronarchon.html",
-    "buildmapgame": "npm run lint && npm run prettierwrite && tsc -p games/mapgame && browserify games/mapgame/dist/mapgame.js -o games/mapgame/dist/bundle.js && npm test",
-    "openmapgame": "npm run open games/mapgame/mapgame.html",
+    "buildblockscout": "npm run lint && npm run prettierwrite && tsc -p games/blockscout && browserify games/blockscout/dist/blockscout.js -o games/blockscout/dist/bundle.js && npm test",
+    "openblockscout": "npm run open games/blockscout/blockscout.html",
     "buildspoilerfree": "eslint --no-warn-ignored spoilerfree/**/*.ts && npm run prettierwrite && tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js"
   },
   "repository": {

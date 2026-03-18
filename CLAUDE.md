@@ -27,7 +27,7 @@ npm run buildGroupGrid
 npm run buildTitleGen
 npm run buildTextGen
 npm run buildVillainverse
-npm run buildmapgame   # TypeScript compile
+npm run buildblockscout   # TypeScript compile
 ```
 
 ## Architecture
@@ -50,9 +50,9 @@ This is a multi-project monorepo centered on **procedural generation** and **int
 ### Module/Build System
 
 - Legacy projects: CommonJS source in `src/`, bundled via **Browserify** to `bundle.js`
-- MapGame (`/games/mapgame/`): TypeScript compiled with `tsc`, webpack not used for this project
+- BlockScout (`/games/blockscout/`): TypeScript compiled with `tsc`, webpack not used for this project
 - Each project has an `.html` entry point loading its bundle
-- TypeScript config: ES2016 target, strict mode (root `tsconfig.json`); MapGame uses ES2020, non-strict
+- TypeScript config: ES2016 target, strict mode (root `tsconfig.json`); BlockScout uses ES2020, non-strict
 
 ### Key Directories
 
@@ -63,16 +63,16 @@ This is a multi-project monorepo centered on **procedural generation** and **int
 | `/wnode` | Core data structures (WNode, Creature, Group, Thing) |
 | `/battle20` | Combat system (BattleGroup, CreatureTemplate, ActionTemplate) |
 | `/codices` | Content templates by universe |
-| `/games/mapgame` | TypeScript + Leaflet map-based mobile game (see below) |
+| `/games/blockscout` | TypeScript + Leaflet map-based mobile game (see below) |
 | `/util` | Shared utilities (coord system, color, timer, box geometry) |
 
-### MapGame
+### BlockScout
 
-A mobile web game showing the player's GPS position on a Leaflet/OSM map. Objectives are placed at every 0.01° grid intersection. Open `games/mapgame/index.html` in a browser to play.
+A mobile web game showing the player's GPS position on a Leaflet/OSM map. Objectives are placed at every 0.01° grid intersection. Open `games/blockscout/blockscout.html` in a browser to play.
 
 - Vanilla TypeScript compiled with `tsc` to `dist/`, no bundler
 - Leaflet is loaded via CDN and accessed as a global (`declare const L: any`), not imported
-- Uses ES2020, non-strict TypeScript (`games/mapgame/tsconfig.json`)
+- Uses ES2020, non-strict TypeScript (`games/blockscout/tsconfig.json`)
 
 ### Code Style
 
