@@ -127,7 +127,7 @@ describe('MapGame', () => {
             expect(game.playerScore).toBe(scoreAfterFirst);
         });
 
-        test('visit 2, then go home & sleep: home has 0 points, south has 1', () => {
+        test('visit 2 places, then go home & sleep: home has 0 points, south has 2', () => {
             const game = makeGame();
 
             game.visit(HOME.lat, HOME.long);
@@ -139,7 +139,7 @@ describe('MapGame', () => {
 
             expect(game.goalAt(HOME.lat, HOME.long).pointsAvailable()).toBe(0);
             expect(game.goalAt(SOUTH.lat, SOUTH.long).pointsAvailable()).toBe(
-                1,
+                2,
             );
         });
 

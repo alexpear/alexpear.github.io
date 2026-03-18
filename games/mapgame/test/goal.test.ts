@@ -59,13 +59,14 @@ describe('Goal', () => {
     });
 
     describe('points accumulate over days', () => {
-        test('1 point after 1 day', () => {
+        // Rewards jump from 0 to 2. Thus, visiting every day is more lucrative than visiting once every 1000 days.
+        test('after 1 day', () => {
             const goal = goalDaysAgo(1);
-            expect(goal.pointsAvailable()).toBe(1);
-            expect(goal.text()).toBe('1');
+            expect(goal.pointsAvailable()).toBe(2);
+            expect(goal.text()).toBe('2');
         });
 
-        test('1 point if we visit before midnight then check right after', () => {
+        test('we visit before midnight then check right after', () => {
             jest.setSystemTime(
                 new Date(MIDNIGHT.getTime() + 23 * 60 * 60 * 1000),
             );
@@ -77,10 +78,10 @@ describe('Goal', () => {
                 new Date(MIDNIGHT.getTime() + 25 * 60 * 60 * 1000),
             ); // 0100 the next day
 
-            expect(goal.pointsAvailable()).toBe(1);
+            expect(goal.pointsAvailable()).toBe(2);
         });
 
-        test('1 point if we visit at in morning then check in the afternoon of the next day', () => {
+        test('we visit in morning then check in the afternoon of the next day', () => {
             jest.setSystemTime(
                 new Date(MIDNIGHT.getTime() + 11 * 60 * 60 * 1000),
             );
@@ -93,12 +94,12 @@ describe('Goal', () => {
                 new Date(MIDNIGHT.getTime() + (24 + 16) * 60 * 60 * 1000),
             );
 
-            expect(goal.pointsAvailable()).toBe(1);
+            expect(goal.pointsAvailable()).toBe(2);
         });
 
-        test('5 points after 5 days', () => {
+        test('after 5 days', () => {
             const goal = goalDaysAgo(5);
-            expect(goal.pointsAvailable()).toBe(5);
+            expect(goal.pointsAvailable()).toBe(6);
         });
 
         test('capped at 1000 after 1000+ days', () => {
@@ -115,7 +116,7 @@ describe('Goal', () => {
     describe('visit()', () => {
         test('resets points to 0', () => {
             const goal = goalDaysAgo(10);
-            expect(goal.pointsAvailable()).toBe(10);
+            expect(goal.pointsAvailable()).toBe(11);
             goal.visit();
             expect(goal.pointsAvailable()).toBe(0);
         });
