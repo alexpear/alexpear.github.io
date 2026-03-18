@@ -29,13 +29,13 @@
                 background: none !important;
                 border: none !important;
                 font-weight: bold;
-                color: #000;
+                color: purple;
                 text-align: center;
                 text-shadow:
-                    -1px -1px 0 #fff,
-                    1px -1px 0 #fff,
-                    -1px 1px 0 #fff,
-                    1px 1px 0 #fff;
+                    -2px -2px 0 white,
+                    2px -2px 0 white,
+                    -2px 2px 0 white,
+                    2px 2px 0 white;
             }
             /* LATER give all UI elements a fun color scheme*/
             #score {
@@ -43,7 +43,8 @@
                 top: 30px;
                 right: 10px;
                 z-index: 1000;
-                background: violet;
+                background: purple;
+                color: white;
                 padding: 6px 12px;
                 border-radius: 6px;
                 font: bold 18px sans-serif;
@@ -54,7 +55,8 @@
                 top: 70px;
                 right: 10px;
                 z-index: 1000;
-                background: violet;
+                background: purple;
+                color: white;
                 padding: 4px 12px;
                 border-radius: 6px;
                 font: bold 18px sans-serif;
@@ -75,7 +77,7 @@
                 display: flex;
             }
             #help-modal-box {
-                background: #fff;
+                background: white;
                 border-radius: 10px;
                 padding: 24px;
                 max-width: 340px;
@@ -96,8 +98,8 @@
                 font: bold 16px sans-serif;
                 border: none;
                 border-radius: 6px;
-                background: violet;
-                color: #fff;
+                background: purple;
+                color: white;
                 cursor: pointer;
             }
             .leaflet-bottom.leaflet-left {
@@ -109,14 +111,16 @@
                 height: 48px !important;
                 line-height: 48px !important;
                 font-size: 25px !important;
-                background: violet;
+                background: purple !important;
+                color: white !important;
             }
             #recenter-btn {
                 position: fixed;
                 bottom: 30px;
                 right: 10px;
                 z-index: 1000;
-                background: violet;
+                background: purple;
+                color: white;
                 padding: 8px 14px;
                 border-radius: 6px;
                 font: bold 18px sans-serif;
@@ -143,7 +147,7 @@
             </div>
         </div>
         <div id="map"></div>
-        <button id="recenter-btn">📍</button>
+        <button id="recenter-btn">Me</button>
         <script src="https://unpkg.com/leaflet@1.9/dist/leaflet.js"></script>
         <script src="dist/bundle.js"></script>
     </body>

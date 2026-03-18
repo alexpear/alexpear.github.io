@@ -96,9 +96,9 @@ export class MapGame {
             this.playerMarker.setLatLng([latitude, longitude]);
         } else {
             this.playerMarker = L.circleMarker([latitude, longitude], {
-                radius: 8,
-                color: '#2563eb',
-                fillColor: '#3b82f6',
+                radius: 15,
+                color: '#ffffff',
+                fillColor: '#800080',
                 fillOpacity: 0.9,
                 weight: 2,
             }).addTo(this.map);
