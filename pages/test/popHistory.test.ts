@@ -83,20 +83,20 @@ describe('PopHistory', () => {
             }
         });
         test('2 contradicting censuses in same year', () => {
-            expect().toBe();
+            // todo
         });
         test('a list with a very different growth curve from existing data', () => {
-            expect().toBe();
+            // todo
         });
     });
     describe('latestCensus()', () => {
         test('no previous census', () => {
-            expect().toBe();
+            // todo
         });
     });
     describe('nextCensus()', () => {
         test('no later census', () => {
-            expect().toBe();
+            // todo
         });
     });
     describe('townCoordsInBox()', () => {
@@ -105,27 +105,45 @@ describe('PopHistory', () => {
                 {
                     lat: 9,
                     long: 9,
+                    population: 100000,
+                    year: 1,
+                    confidence: 0.5,
                 },
                 {
                     lat: 9,
                     long: 70,
+                    population: 100000,
+                    year: 1,
+                    confidence: 0.5,
                 },
                 {
                     lat: 70,
                     long: 9,
+                    population: 100000,
+                    year: 1,
+                    confidence: 0.5,
                 },
                 {
                     lat: 70,
                     long: 70,
+                    population: 100000,
+                    year: 1,
+                    confidence: 0.5,
                 },
                 {
                     lat: 44,
                     long: 44,
+                    population: 100000,
+                    year: 1,
+                    confidence: 0.5,
                 },
                 // out of box:
                 {
                     lat: 70,
                     long: 71,
+                    population: 100000,
+                    year: 1,
+                    confidence: 0.5,
                 },
             ]);
 
