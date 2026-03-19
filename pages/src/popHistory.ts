@@ -125,6 +125,9 @@ export class PopHistory {
 
             return census;
         }
+
+        // assume that the latest census for that coord is still correct.
+        return censuses[censuses.length - 1];
     }
 
     popAt(lat: number, long: number, year: number): number {
