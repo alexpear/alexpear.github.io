@@ -122,33 +122,35 @@ export class PopHistory {
         let previous = this.previousCensus(lat, long, year);
         const next = this.nextCensus(lat, long, year);
 
-        if (!previous && !next) {
-            return 0;
-        }
         if (previous && !next) {
             return previous.population;
         }
-        if (!previous && next) {
-            // Invent an Ice Age town matriarch.
-            previous = {
-                population: 1,
-                lat,
-                long,
-                year: -20_000,
-                confidence: 0.01,
-            };
+        if (!previous) {
+            if (!next) {
+                return 0;
+            } else {
+                // Invent an Ice Age town matriarch.
+                previous = {
+                    population: 1,
+                    lat,
+                    long,
+                    year: -20_000,
+                    confidence: 0.01,
+                };
+            }
         }
 
-        // the percent thru the uncertain interval we are.
+        // the ratio thru the uncertain interval we are.
         const intervalCompleteness =
-            (year - previous.year) / (next.year - previous.year);
+            (year - previous.year) /
+            ((next as TownCensus).year - previous.year);
 
         return Math.round(
             Math.exp(
                 // e^param
                 Math.log(previous.population) +
                     intervalCompleteness *
-                        (Math.log(next.population) -
+                        (Math.log((next as TownCensus).population) -
                             Math.log(previous.population)),
             ),
         );
