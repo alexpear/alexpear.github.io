@@ -89,17 +89,17 @@ export class PopHistory {
             });
         }
 
-        let previous: TownCensus | undefined = undefined;
+        let lastSeen: TownCensus | undefined = undefined;
 
         for (const census of censuses) {
             if (census.year > year) {
-                return previous;
+                return lastSeen;
             }
 
-            previous = census;
+            lastSeen = census;
         }
 
-        return previous;
+        return lastSeen;
     }
 
     nextCensus(
