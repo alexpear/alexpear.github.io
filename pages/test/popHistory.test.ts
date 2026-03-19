@@ -223,7 +223,7 @@ describe('PopHistory', () => {
                     confidence: 0.5,
                 },
             ]);
-            expect(popHistory.popAt(30, 30, 555)).toBe(6666);
+            expect(popHistory.popAt(30, 30, 155)).toBe(3707);
         });
 
         test('unchanging pop', () => {
@@ -243,7 +243,7 @@ describe('PopHistory', () => {
                     confidence: 0.5,
                 },
             ]);
-            expect(popHistory.popAt(30, 30, 555)).toBe(50000);
+            expect(popHistory.popAt(30, 30, 155)).toBe(50000);
         });
 
         test('declining pop', () => {
@@ -263,7 +263,7 @@ describe('PopHistory', () => {
                     confidence: 0.5,
                 },
             ]);
-            expect(popHistory.popAt(30, 30, 555)).toBe(6666);
+            expect(popHistory.popAt(30, 30, 155)).toBe(31024);
         });
     });
 });
