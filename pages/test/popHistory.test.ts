@@ -26,6 +26,13 @@ const LIST1 = [
         confidence: 0.5,
     },
     {
+        population: 100000,
+        lat: 30,
+        long: 30,
+        year: 1492,
+        confidence: 0.5,
+    },
+    {
         population: 300000,
         lat: 30,
         long: 30,
@@ -82,11 +89,26 @@ describe('PopHistory', () => {
                 previous = census;
             }
         });
-        test('2 contradicting censuses in same year', () => {
-            // todo
+        test('2 contradicting censuses in same year -> save highest confidence one', () => {
+            const FREAKYLIST = [
+                {
+                    population: 45000,
+                    lat: 30,
+                    long: 30,
+                    year: 1492,
+                    confidence: 0.9,
+                },
+            ];
+
+            popHistory.importCensusList(LIST1);
+            popHistory.importCensusList(FREAKYLIST);
+            expect(
+                popHistory.coord2census['30,30'].find((c) => c.year === 1492)
+                    ?.population,
+            ).toBe(45000);
         });
         test('a list with a very different growth curve from existing data', () => {
-            // todo
+            // LATER
         });
     });
     describe('previousCensus()', () => {
@@ -102,8 +124,16 @@ describe('PopHistory', () => {
         });
     });
     describe('nextCensus()', () => {
+        test('exact year', () => {
+            popHistory.importCensusList(LIST1);
+            expect(popHistory.nextCensus(30, 30, -1000)?.population).toBe(100);
+        });
         test('no later census', () => {
-            // todo
+            popHistory.importCensusList(LIST1);
+            const latestYear = Math.max(...LIST1.map((c) => c.year));
+            expect(popHistory.nextCensus(30, 30, 999999)?.population).toBe(
+                popHistory.nextCensus(30, 30, latestYear)?.population,
+            );
         });
     });
     describe('townCoordsInBox()', () => {
