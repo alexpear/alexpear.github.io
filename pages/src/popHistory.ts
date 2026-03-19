@@ -6,7 +6,7 @@ import Util from '../../util/util';
 class PopHistory {
     coord2census: Record<string, TownCensus[]> = {}; // maps "lat,long" to a list of censuses for that location, sorted by year
 
-    importCensuses(censuses: TownCensus[]): void {}
+    importCensusList(censuses: TownCensus[]): void {}
 
     townCoordsInBox(
         lat1: number,
