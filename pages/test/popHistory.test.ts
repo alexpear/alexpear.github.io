@@ -89,6 +89,7 @@ describe('PopHistory', () => {
                 previous = census;
             }
         });
+
         test('2 contradicting censuses in same year -> save highest confidence one', () => {
             const FREAKYLIST = [
                 {
@@ -107,27 +108,39 @@ describe('PopHistory', () => {
                     ?.population,
             ).toBe(45000);
         });
+
         test('a list with a very different growth curve from existing data', () => {
             // LATER
         });
     });
+
     describe('previousCensus()', () => {
+        test('no data', () => {
+            popHistory.importCensusList(LIST1);
+            expect(popHistory.previousCensus(0, 0, -1000)).toBe(
+                undefined // todo
+            );
+        });
+
         test('exact year', () => {
             popHistory.importCensusList(LIST1);
             expect(popHistory.previousCensus(30, 30, -1000)?.population).toBe(
                 100,
             );
         });
+
         test('no previous census', () => {
             popHistory.importCensusList(LIST1);
             expect(popHistory.previousCensus(30, 30, -999999)).toBe(0);
         });
     });
+
     describe('nextCensus()', () => {
         test('exact year', () => {
             popHistory.importCensusList(LIST1);
             expect(popHistory.nextCensus(30, 30, -1000)?.population).toBe(100);
         });
+
         test('no later census', () => {
             popHistory.importCensusList(LIST1);
             const latestYear = Math.max(...LIST1.map((c) => c.year));
@@ -138,6 +151,7 @@ describe('PopHistory', () => {
             );
         });
     });
+
     describe('townCoordsInBox()', () => {
         test('corner cases', () => {
             popHistory.importCensusList([
@@ -190,6 +204,7 @@ describe('PopHistory', () => {
             expect(towns.length).toBe(5);
         });
     });
+
     describe('popAt()', () => {
         test('growing pop', () => {
             popHistory.importCensusList([
@@ -210,6 +225,7 @@ describe('PopHistory', () => {
             ]);
             expect(popHistory.popAt(30, 30, 555)).toBe(6666);
         });
+
         test('unchanging pop', () => {
             popHistory.importCensusList([
                 {
@@ -229,6 +245,7 @@ describe('PopHistory', () => {
             ]);
             expect(popHistory.popAt(30, 30, 555)).toBe(50000);
         });
+
         test('declining pop', () => {
             popHistory.importCensusList([
                 {
