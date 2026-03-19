@@ -120,20 +120,37 @@ export class PopHistory {
     }
 
     popAt(lat: number, long: number, year: number): number {
-        const latest: TownCensus = this.previousCensus(lat, long, year);
-        const next: TownCensus = this.nextCensus(lat, long, year);
+        let previous = this.previousCensus(lat, long, year);
+        const next = this.nextCensus(lat, long, year);
+
+        if (!previous && !next) {
+            return 0;
+        }
+        if (previous && !next) {
+            return previous.population;
+        }
+        if (!previous && next) {
+            // Invent an Ice Age town matriarch.
+            previous = {
+                population: 1,
+                lat,
+                long,
+                year: -20_000,
+                confidence: 0.01,
+            };
+        }
 
         // the percent thru the uncertain interval we are.
         const intervalCompleteness =
-            (year - latest.year) / (next.year - latest.year);
+            (year - previous.year) / (next.year - previous.year);
 
         return Math.round(
             Math.exp(
                 // e^param
-                Math.log(latest.population) +
+                Math.log(previous.population) +
                     intervalCompleteness *
                         (Math.log(next.population) -
-                            Math.log(latest.population)),
+                            Math.log(previous.population)),
             ),
         );
     }

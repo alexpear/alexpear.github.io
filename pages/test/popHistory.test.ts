@@ -129,9 +129,7 @@ describe('PopHistory', () => {
 
         test('no previous census', () => {
             popHistory.importCensusList(LIST1);
-            expect(popHistory.previousCensus(30, 30, -999999)?.population).toBe(
-                0,
-            );
+            expect(popHistory.previousCensus(30, 30, -999999)).toBe(undefined);
         });
     });
 
