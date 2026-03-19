@@ -117,9 +117,7 @@ describe('PopHistory', () => {
     describe('previousCensus()', () => {
         test('no data', () => {
             popHistory.importCensusList(LIST1);
-            expect(popHistory.previousCensus(0, 0, -1000)).toBe(
-                undefined // todo
-            );
+            expect(popHistory.previousCensus(0, 0, -1000)).toBe(undefined);
         });
 
         test('exact year', () => {
@@ -131,7 +129,9 @@ describe('PopHistory', () => {
 
         test('no previous census', () => {
             popHistory.importCensusList(LIST1);
-            expect(popHistory.previousCensus(30, 30, -999999)).toBe(0);
+            expect(popHistory.previousCensus(30, 30, -999999)?.population).toBe(
+                0,
+            );
         });
     });
 
@@ -143,12 +143,8 @@ describe('PopHistory', () => {
 
         test('no later census', () => {
             popHistory.importCensusList(LIST1);
-            const latestYear = Math.max(...LIST1.map((c) => c.year));
 
-            // assume that the latest census for that coord is still correct.
-            expect(popHistory.nextCensus(30, 30, 999999)?.population).toBe(
-                popHistory.nextCensus(30, 30, latestYear)?.population,
-            );
+            expect(popHistory.nextCensus(30, 30, 999999)).toBe(undefined);
         });
     });
 

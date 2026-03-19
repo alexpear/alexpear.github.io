@@ -80,13 +80,8 @@ export class PopHistory {
     ): TownCensus | undefined {
         const censuses: TownCensus[] = this.coord2census[`${lat},${long}`];
 
-        if (!censuses) {
-            // TODO think about missing data cases.
-            Util.error({
-                lat,
-                long,
-                year,
-            });
+        if (!censuses || censuses.length === 0) {
+            return;
         }
 
         let lastSeen: TownCensus | undefined = undefined;
@@ -110,12 +105,7 @@ export class PopHistory {
         const censuses: TownCensus[] = this.coord2census[`${lat},${long}`];
 
         if (!censuses) {
-            // TODO think about missing data cases.
-            Util.error({
-                lat,
-                long,
-                year,
-            });
+            return;
         }
 
         for (const census of censuses) {
@@ -126,8 +116,7 @@ export class PopHistory {
             return census;
         }
 
-        // assume that the latest census for that coord is still correct.
-        return censuses[censuses.length - 1];
+        return;
     }
 
     popAt(lat: number, long: number, year: number): number {
