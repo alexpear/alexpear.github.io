@@ -1,4 +1,4 @@
-export declare class TownCensus {
+export interface TownCensus {
     population: number;
     lat: number;
     long: number;
