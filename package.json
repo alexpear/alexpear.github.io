@@ -62,7 +62,7 @@
     "server": "http-server",
     "cape": "node wnode/cape.js",
     "testOld": "jest",
-    "test": "NODE_NO_WARNINGS=1 node --experimental-vm-modules node_modules/.bin/jest",
+    "test": "npm run lint && npm run prettierwrite && npm run buildblockscout && npm run buildspoilerfree && npm run history && NODE_NO_WARNINGS=1 node --experimental-vm-modules node_modules/.bin/jest",
     "testAll": "npm run test && npm run testRingWorld && npm run testDeathPlanet",
     "lint": "eslint --cache games/**/*.ts",
     "prettier": "prettier --check games/",
@@ -74,9 +74,10 @@
     "testDeathPlanet": "node bottleWorld/deathPlanetWorldState.js test",
     "testRingWorld": "node bottleWorld/ringWorldState.js test",
     "buildlimitless": "browserify bottleWorld/chronarchon/src/*.js --exclude bottleWorld/chronarchon/src/*.test.js -o bottleWorld/chronarchon/bundle.js && npm run server && open bottleWorld/chronarchon/chronarchon.html",
-    "buildblockscout": "npm run lint && npm run prettierwrite && tsc -p games/blockscout && browserify games/blockscout/dist/blockscout.js -o games/blockscout/dist/bundle.js && npm test",
+    "buildblockscout": "tsc -p games/blockscout && browserify games/blockscout/dist/blockscout.js -o games/blockscout/dist/bundle.js",
     "openblockscout": "npm run open games/blockscout/blockscout.html",
-    "buildspoilerfree": "eslint --no-warn-ignored spoilerfree/**/*.ts && npm run prettierwrite && tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js"
+    "buildspoilerfree": "tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js",
+    "history": "tsc -p pages/pophistory/tsconfig.json && browserify pages/pophistory/dist/popHistory.js -o pages/pophistory/dist/bundle.js"
   },
   "repository": {
     "type": "git",

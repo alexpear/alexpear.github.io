@@ -4,6 +4,10 @@ export class TownCensus {
     population: number;
     lat: number;
     long: number; // longitude
-    year: number; // 1 = 1 CE, 0 = 1 BCE, -1 = 2 BCE, etc.
+    
+    // -1 = 2 BCE
+    //  0 = 1 BCE
+    //  1 = 1 CE
+    year: number;
     confidence: number; // 0 to 1
 }
