@@ -3,7 +3,7 @@
 import { TownCensus } from './townCensus';
 import Util from '../../util/util';
 
-class PopHistory {
+export class PopHistory {
     coord2census: Record<string, TownCensus[]> = {}; // maps "lat,long" to a list of censuses for that location, sorted by year
 
     importCensusList(censuses: TownCensus[]): void {}

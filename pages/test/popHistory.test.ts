@@ -1,6 +1,8 @@
 import { TownCensus } from '../src/townCensus';
 import { PopHistory } from '../src/popHistory';
 
+let popHistory: PopHistory;
+
 const LIST1 = [
     {
         population: 100,
@@ -56,15 +58,29 @@ const UNORDERED_LIST = [
     },
 ];
 
-beforeEach(() => {});
+beforeEach(() => {
+    popHistory = new PopHistory();
+});
 
 afterEach(() => {});
 
-// TODO
 describe('PopHistory', () => {
     describe('importCensusList()', () => {
         test('sort unsorted lists', () => {
-            expect().toBe();
+            popHistory.importCensusList(LIST1);
+            popHistory.importCensusList(UNORDERED_LIST);
+            const censuses = popHistory.coord2census['30,30'];
+            let previous: TownCensus | undefined = undefined;
+
+            for (const census of censuses) {
+                if (!previous) {
+                    continue;
+                }
+
+                expect(previous.year).toBeLessThan(census.year);
+
+                previous = census;
+            }
         });
         test('2 contradicting censuses in same year', () => {
             expect().toBe();
@@ -85,18 +101,95 @@ describe('PopHistory', () => {
     });
     describe('townCoordsInBox()', () => {
         test('corner cases', () => {
-            expect().toBe();
+            popHistory.importCensusList([
+                {
+                    lat: 9,
+                    long: 9,
+                },
+                {
+                    lat: 9,
+                    long: 70,
+                },
+                {
+                    lat: 70,
+                    long: 9,
+                },
+                {
+                    lat: 70,
+                    long: 70,
+                },
+                {
+                    lat: 44,
+                    long: 44,
+                },
+                // out of box:
+                {
+                    lat: 70,
+                    long: 71,
+                },
+            ]);
+
+            const towns = popHistory.townCoordsInBox(9, 9, 70, 70);
+            expect(towns.length).toBe(5);
         });
     });
     describe('popAt()', () => {
         test('growing pop', () => {
-            expect().toBe();
+            popHistory.importCensusList([
+                {
+                    population: 2300,
+                    lat: 30,
+                    long: 30,
+                    year: 0,
+                    confidence: 0.5,
+                },
+                {
+                    population: 50000,
+                    lat: 30,
+                    long: 30,
+                    year: 1000,
+                    confidence: 0.5,
+                },
+            ]);
+            expect(popHistory.popAt(30, 30, 555)).toBe(6666);
         });
         test('unchanging pop', () => {
-            expect().toBe();
+            popHistory.importCensusList([
+                {
+                    population: 50000,
+                    lat: 30,
+                    long: 30,
+                    year: 0,
+                    confidence: 0.5,
+                },
+                {
+                    population: 50000,
+                    lat: 30,
+                    long: 30,
+                    year: 1000,
+                    confidence: 0.5,
+                },
+            ]);
+            expect(popHistory.popAt(30, 30, 555)).toBe(50000);
         });
         test('declining pop', () => {
-            expect().toBe();
+            popHistory.importCensusList([
+                {
+                    population: 50000,
+                    lat: 30,
+                    long: 30,
+                    year: 0,
+                    confidence: 0.5,
+                },
+                {
+                    population: 2300,
+                    lat: 30,
+                    long: 30,
+                    year: 1000,
+                    confidence: 0.5,
+                },
+            ]);
+            expect(popHistory.popAt(30, 30, 555)).toBe(6666);
         });
     });
 });
