@@ -19,7 +19,7 @@ export class PopHistory {
     }
 
     // The most recent census before the given year.
-    latestCensus(
+    previousCensus(
         lat: number,
         long: number,
         year: number,
@@ -74,7 +74,7 @@ export class PopHistory {
     }
 
     popAt(lat: number, long: number, year: number): number {
-        const latest: TownCensus = this.latestCensus(lat, long, year);
+        const latest: TownCensus = this.previousCensus(lat, long, year);
         const next: TownCensus = this.nextCensus(lat, long, year);
 
         // the percent thru the uncertain interval we are.

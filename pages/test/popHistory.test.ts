@@ -89,9 +89,16 @@ describe('PopHistory', () => {
             // todo
         });
     });
-    describe('latestCensus()', () => {
+    describe('previousCensus()', () => {
+        test('exact year', () => {
+            popHistory.importCensusList(LIST1);
+            expect(popHistory.previousCensus(30, 30, -1000)?.population).toBe(
+                100,
+            );
+        });
         test('no previous census', () => {
-            // todo
+            popHistory.importCensusList(LIST1);
+            expect(popHistory.previousCensus(30, 30, -999999)).toBe(0);
         });
     });
     describe('nextCensus()', () => {
