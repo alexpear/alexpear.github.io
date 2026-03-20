@@ -149,6 +149,47 @@ describe('BlockScout', () => {
         });
     });
 
+    describe('goalAt()', () => {
+        test('never-visited location has 1000 points', () => {
+            expect(game.goalAt(0, 0).pointsAvailable()).toBe(1000);
+        });
+
+        test('visited location has 0 points immediately, then 2 points the next day', () => {
+            game.visit(0, 0);
+            expect(game.goalAt(0, 0).pointsAvailable()).toBe(0);
+
+            jest.setSystemTime(new Date(MIDNIGHT.getTime() + DAY_MS));
+
+            expect(game.goalAt(0, 0).pointsAvailable()).toBe(2);
+        });
+    });
+
+    describe('scoring', () => {
+        test('visiting a location awards its accumulated points, not always 1000', () => {
+            const threeDaysAgo = new Goal().today().getTime() - 3 * DAY_MS;
+            game.coords2dates['0,0'] = new Date(threeDaysAgo).toISOString(); // worth 4 pts
+
+            game.visit(0, 0);
+
+            expect(game.playerScore).toBe(4);
+        });
+
+        test('score equals sum of individual point values across visited locations', () => {
+            const today = new Goal().today().getTime();
+            game.coords2dates['0,0'] = new Date(
+                today - 3 * DAY_MS,
+            ).toISOString(); // 4 pts
+            game.coords2dates['0,0.01'] = new Date(
+                today - 5 * DAY_MS,
+            ).toISOString(); // 6 pts
+
+            game.visit(0, 0);
+            game.visit(0, 0.01);
+
+            expect(game.playerScore).toBe(10);
+        });
+    });
+
     describe('updateAfterGPS()', () => {
         test('traveling from 0,0 to 0.02,0.03 after 1.8h visits 4 intermediate points', () => {
             const visitSpy = jest.spyOn(game, 'visit');
@@ -189,6 +230,76 @@ describe('BlockScout', () => {
             expect(game.coords2dates['0.02,0.02']).toEqual(today);
             expect(game.coords2dates['0.02,0.03']).toEqual(today);
         });
+
+        test('gap > 2h between pings: no intermediate visits', () => {
+            const visitSpy = jest.spyOn(game, 'visit');
+
+            game.updateAfterGPS(0, 0);
+            jest.setSystemTime(
+                new Date(MIDNIGHT.getTime() + 2 * 60 * 60 * 1000 + 1),
+            );
+            game.updateAfterGPS(0.02, 0.03);
+
+            expect(visitSpy.mock.calls).toHaveLength(2);
+            expect(visitSpy.mock.calls[0]).toEqual([0, 0]);
+            expect(visitSpy.mock.calls[1]).toEqual([0.02, 0.03]);
+        });
+
+        test('speed too fast (motor vehicle): no intermediate visits', () => {
+            const visitSpy = jest.spyOn(game, 'visit');
+
+            game.updateAfterGPS(0, 0);
+            jest.setSystemTime(new Date(MIDNIGHT.getTime() + 30 * 60 * 1000)); // 30 min later
+            game.updateAfterGPS(0.06, 0); // 0.06 degrees in 30min exceeds speed limit
+
+            expect(visitSpy.mock.calls).toHaveLength(2);
+            expect(visitSpy.mock.calls[0]).toEqual([0, 0]);
+            expect(visitSpy.mock.calls[1]).toEqual([0.06, 0]);
+        });
+
+        test('traveling due north visits correct intermediates', () => {
+            const visitSpy = jest.spyOn(game, 'visit');
+
+            game.updateAfterGPS(0, 0);
+            jest.setSystemTime(
+                new Date(MIDNIGHT.getTime() + 1.8 * 60 * 60 * 1000),
+            );
+            game.updateAfterGPS(0.03, 0);
+
+            const calls = visitSpy.mock.calls;
+            expect(calls).toHaveLength(4);
+            expect(calls[0]).toEqual([0, 0]);
+
+            expect(calls[1][0]).toBeCloseTo(0.01);
+            expect(calls[1][1]).toBeCloseTo(0);
+
+            expect(calls[2][0]).toBeCloseTo(0.02);
+            expect(calls[2][1]).toBeCloseTo(0);
+
+            expect(calls[3]).toEqual([0.03, 0]);
+        });
+
+        test('traveling due east visits correct intermediates', () => {
+            const visitSpy = jest.spyOn(game, 'visit');
+
+            game.updateAfterGPS(0, 0);
+            jest.setSystemTime(
+                new Date(MIDNIGHT.getTime() + 1.8 * 60 * 60 * 1000),
+            );
+            game.updateAfterGPS(0, 0.03);
+
+            const calls = visitSpy.mock.calls;
+            expect(calls).toHaveLength(4);
+            expect(calls[0]).toEqual([0, 0]);
+
+            expect(calls[1][0]).toBeCloseTo(0);
+            expect(calls[1][1]).toBeCloseTo(0.01);
+
+            expect(calls[2][0]).toBeCloseTo(0);
+            expect(calls[2][1]).toBeCloseTo(0.02);
+
+            expect(calls[3]).toEqual([0, 0.03]);
+        });
     });
 
     describe('save() and load()', () => {
@@ -200,6 +311,16 @@ describe('BlockScout', () => {
             const game2 = makeGame();
             expect(game2.playerScore).toBe(game1.playerScore);
             expect(game2.goalAt(HOME.lat, HOME.long).pointsAvailable()).toBe(0);
+        });
+
+        test('no saved data: score is 0 and coords2dates is empty', () => {
+            expect(game.playerScore).toBe(0);
+            expect(Object.keys(game.coords2dates)).toHaveLength(0);
+        });
+
+        test('saved data with missing coords2dates field: does not crash', () => {
+            mockStorage['mapGame'] = '{"playerScore": 42}';
+            expect(() => makeGame()).not.toThrow();
         });
     });
 });
