@@ -9,6 +9,7 @@ const GOAL_FONT_PX: number = 32;
 const MIN_ZOOM: number = 12; // User can't zoom out too much.
 const FOG_BUFFER: number = 1; // Extra cells of fog rendered beyond the viewport edge
 const HOUR = 60 * 60 * 1000; // in ms
+const SAN_FRANCISCO = [37.77, -122.42];
 
 const TEST_MODE: string = undefined; // 'font';
 
@@ -18,7 +19,7 @@ export class BlockScout {
         minZoom: MIN_ZOOM,
         renderer: L.canvas({ padding: 0.1 }),
         zoomControl: false,
-    }).setView([37.77, -122.42], 15); // Default: San Francisco
+    }).setView(SAN_FRANCISCO, 15);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     playerMarker: Record<string, any> | undefined = undefined;
@@ -35,8 +36,8 @@ export class BlockScout {
     coords2dates: Record<string, string> = {};
 
     lastSeenTime: Date = new Date(0); // 1970
-    lastSeenLat: number;
-    lastSeenLong: number;
+    lastSeenLat: number = SAN_FRANCISCO[0];
+    lastSeenLong: number = SAN_FRANCISCO[1];
 
     constructor() {
         // --- Map setup ---
