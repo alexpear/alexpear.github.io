@@ -7,6 +7,8 @@ const GRID_STEP = 0.01;
 const GOAL_FONT_PX = 32;
 const MIN_ZOOM = 12; // User can't zoom out too much.
 const FOG_BUFFER = 1; // Extra cells of fog rendered beyond the viewport edge
+const HOUR = 60 * 60 * 1000; // in ms
+const SAN_FRANCISCO = [37.77, -122.42];
 const TEST_MODE = undefined; // 'font';
 class BlockScout {
     constructor() {
@@ -15,7 +17,7 @@ class BlockScout {
             minZoom: MIN_ZOOM,
             renderer: L.canvas({ padding: 0.1 }),
             zoomControl: false,
-        }).setView([37.77, -122.42], 15); // Default: San Francisco
+        }).setView(SAN_FRANCISCO, 15);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.playerMarker = undefined;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,6 +29,9 @@ class BlockScout {
         this.scoreEl = document.getElementById('score');
         // Dict storing Dates in string format.
         this.coords2dates = {};
+        this.lastSeenTime = new Date(0); // 1970
+        this.lastSeenLat = SAN_FRANCISCO[0];
+        this.lastSeenLong = SAN_FRANCISCO[1];
         // --- Map setup ---
         const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             maxZoom: 19,
@@ -42,11 +47,12 @@ class BlockScout {
         this.load();
         this.updateScoreDisplay();
         if (navigator.geolocation) {
-            navigator.geolocation.watchPosition((pos) => this.updateAfterGPS(pos), (err) => this.gpsError(err), {
+            navigator.geolocation.watchPosition((pos) => this.updateAfterGPS(pos.coords.latitude, pos.coords.longitude), (err) => this.gpsError(err), {
                 enableHighAccuracy: true,
             });
         }
-        this.map.on('moveend', () => this.quickUpdateScreen());
+        // TODO Bug - infinite loop. Something besides the player's finger is triggering moveend i think.
+        this.map.on('moveend', () => this.updateAfterPan());
         document
             .getElementById('recenter-btn')
             .addEventListener('click', () => this.panToPlayer());
@@ -63,9 +69,13 @@ class BlockScout {
         });
         this.updateScreen();
     }
-    // TODO bug 2026 march 18. Sometimes blue dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
-    updateAfterGPS(pos) {
-        const { latitude, longitude } = pos.coords;
+    updateAfterPan() {
+        this.updateAfterGPS(this.lastSeenLat, this.lastSeenLong);
+    }
+    // TODO bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
+    // Perhaps moveend should trigger a wrapper of updateAfterGPS(), using cached coords.
+    updateAfterGPS(latitude, longitude) {
+        // Bug TODO - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing.
         if (this.playerMarker) {
             this.playerMarker.setLatLng([latitude, longitude]);
         }
@@ -79,13 +89,47 @@ class BlockScout {
             }).addTo(this.map);
         }
         if (!this.locationKnown) {
-            this.map.setView([latitude, longitude], 16);
             this.locationKnown = true;
+            this.map.setView([latitude, longitude], 16);
         }
+        else {
+            // Infer a line of recent travel
+            // If the last checkin was too long ago, no credit is inferred.
+            const sinceLastSeen = Date.now() - this.lastSeenTime.getTime();
+            if (sinceLastSeen < 2 * HOUR) {
+                const latDelta = Math.abs(this.lastSeenLat - latitude);
+                const longDelta = Math.abs(this.lastSeenLong - longitude);
+                const dist = Math.sqrt(latDelta ** 2 + longDelta ** 2);
+                // Players that exceeded this speed limit were probably in a motor vehicle and not exercising.
+                if (dist / sinceLastSeen < (10 * GRID_STEP) / HOUR) {
+                    // Good to visit more intermediate points when traveling diagonally.
+                    const visits = Math.ceil((latDelta + longDelta) / GRID_STEP);
+                    let lastVisitedLat = this.lastSeenLat;
+                    let lastVisitedLong = this.lastSeenLong;
+                    for (let v = 1; v < visits; v++) {
+                        const lat = this.lastSeenLat +
+                            (latitude - this.lastSeenLat) * (v / visits);
+                        const long = this.lastSeenLong +
+                            (longitude - this.lastSeenLong) * (v / visits);
+                        if (lat === lastVisitedLat &&
+                            long === lastVisitedLong) {
+                            continue; // skip repeats
+                        }
+                        this.visit(lat, long);
+                        lastVisitedLat = lat;
+                        lastVisitedLong = long;
+                    }
+                }
+            }
+        }
+        this.visit(latitude, longitude);
+        this.lastSeenTime = new Date();
+        this.lastSeenLat = latitude;
+        this.lastSeenLong = longitude;
         if (TEST_MODE === 'font') {
             this._mockWideFont(latitude, longitude);
         }
-        this.visit(latitude, longitude);
+        this.updateScreen();
     }
     gpsError(err) {
         console.error('Geolocation error:', err.message);
@@ -105,7 +149,6 @@ class BlockScout {
             if (existingMarker) {
                 existingMarker.setIcon(this.icon(goal));
             }
-            this.updateScreen();
         }
     }
     updateScreen() {
@@ -250,7 +293,7 @@ class BlockScout {
     // NOTE Players that visit a vast quantity of places will have large gamestates. Hopefully this only affects performance at inhuman levels.
     // For testing. We should call save() & updateScreen() after this func.
     _mockWideFont(lat, long) {
-        const aWhileAgo = new Date(Date.now() - 200 * 24 * 60 * 60 * 1000);
+        const aWhileAgo = new Date(Date.now() - 200 * 24 * HOUR);
         this._setLastVisit(lat, long + 0.01, aWhileAgo);
         this._setLastVisit(lat, long + 0.02, aWhileAgo);
     }

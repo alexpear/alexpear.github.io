@@ -8,8 +8,12 @@ export declare class BlockScout {
     playerScore: number;
     scoreEl: HTMLElement;
     coords2dates: Record<string, string>;
+    lastSeenTime: Date;
+    lastSeenLat: number;
+    lastSeenLong: number;
     constructor();
-    updateAfterGPS(pos: GeolocationPosition): void;
+    updateAfterPan(): void;
+    updateAfterGPS(latitude: number, longitude: number): void;
     gpsError(err: GeolocationPositionError): void;
     visit(lat: number, long: number): void;
     updateScreen(): void;
