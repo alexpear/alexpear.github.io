@@ -133,13 +133,17 @@ export class BlockScout {
                 const dist = Math.sqrt(latDelta ** 2 + longDelta ** 2);
 
                 // Players that exceeded this speed limit were probably in a motor vehicle and not exercising.
-                if (dist / sinceLastSeen < 10 * GRID_STEP / HOUR) {
+                if (dist / sinceLastSeen < (10 * GRID_STEP) / HOUR) {
                     // Good to visit more intermediate points when traveling diagonally.
-                    const visits = Math.ceil((latDelta + longDelta) / GRID_STEP);
+                    const visits = Math.ceil(
+                        (latDelta + longDelta) / GRID_STEP,
+                    );
                     for (let v = 1; v < visits; v++) {
                         this.visit(
-                            this.lastSeenLat + (latitude - this.lastSeenLat) * (v / visits),
-                            this.lastSeenLong + (longitude - this.lastSeenLong) * (v / visits)
+                            this.lastSeenLat +
+                                (latitude - this.lastSeenLat) * (v / visits),
+                            this.lastSeenLong +
+                                (longitude - this.lastSeenLong) * (v / visits),
                         );
                     }
                 }
