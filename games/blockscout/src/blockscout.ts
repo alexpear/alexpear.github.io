@@ -65,7 +65,11 @@ export class BlockScout {
 
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(
-                (pos) => this.updateAfterGPS(pos),
+                (pos) =>
+                    this.updateAfterGPS(
+                        pos.coords.latitude,
+                        pos.coords.longitude,
+                    ),
                 (err) => this.gpsError(err),
                 {
                     enableHighAccuracy: true,
@@ -73,7 +77,8 @@ export class BlockScout {
             );
         }
 
-        this.map.on('moveend', () => this.quickUpdateScreen());
+        // TODO Bug - infinite loop. Something besides the player's finger is triggering moveend i think.
+        this.map.on('moveend', () => this.updateAfterPan());
 
         document
             .getElementById('recenter-btn')!
@@ -95,9 +100,14 @@ export class BlockScout {
         this.updateScreen();
     }
 
+    updateAfterPan(): void {
+        this.updateAfterGPS(this.lastSeenLat, this.lastSeenLong);
+    }
+
     // TODO bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
-    updateAfterGPS(pos: GeolocationPosition): void {
-        const { latitude, longitude } = pos.coords;
+    // Perhaps moveend should trigger a wrapper of updateAfterGPS(), using cached coords.
+    updateAfterGPS(latitude: number, longitude: number): void {
+        // Bug TODO - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing.
         if (this.playerMarker) {
             this.playerMarker.setLatLng([latitude, longitude]);
         } else {
@@ -111,12 +121,10 @@ export class BlockScout {
         }
 
         if (!this.locationKnown) {
-            this.map.setView([latitude, longitude], 16);
             this.locationKnown = true;
-        }
-        else {
+            this.map.setView([latitude, longitude], 16);
+        } else {
             // Infer a line of recent travel
-            // TODO unit tests
             // If the last checkin was too long ago, no credit is inferred.
             const sinceLastSeen = Date.now() - this.lastSeenTime.getTime();
             if (sinceLastSeen < 2 * HOUR) {
