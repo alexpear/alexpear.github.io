@@ -77,7 +77,7 @@ export class BlockScout {
             );
         }
 
-        // TODO Bug - infinite loop. Something besides the player's finger is triggering moveend i think.
+        // BUG SEEN - infinite loop. Something besides the player's finger was triggering moveend i think.
         this.map.on('moveend', () => this.updateAfterPan());
 
         document
@@ -293,6 +293,8 @@ export class BlockScout {
                         this.map.removeLayer(existingFog);
                         this.fogRectangles.delete(key);
                     }
+
+                    // LATER Allow zooming out all the way, but render map tiles as black (opacity), and render visited blocks as white rectangles. If they get too small, consider rendering at grid_step 1 at this zoom.
 
                     // When very zoomed out, don't show labels. They overlap each other.
                     if (this.map.getZoom() < 13) {
