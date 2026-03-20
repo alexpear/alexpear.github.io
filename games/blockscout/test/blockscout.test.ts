@@ -101,10 +101,10 @@ let game: BlockScout;
 };
 
 beforeEach(() => {
+    mockStorage = {};
     game = makeGame();
     jest.useFakeTimers();
     jest.setSystemTime(MIDNIGHT);
-    mockStorage = {};
 });
 
 afterEach(() => {
