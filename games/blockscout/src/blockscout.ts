@@ -138,13 +138,28 @@ export class BlockScout {
                     const visits = Math.ceil(
                         (latDelta + longDelta) / GRID_STEP,
                     );
+
+                    let lastVisitedLat = this.lastSeenLat;
+                    let lastVisitedLong = this.lastSeenLong;
+
                     for (let v = 1; v < visits; v++) {
-                        this.visit(
+                        const lat =
                             this.lastSeenLat +
-                                (latitude - this.lastSeenLat) * (v / visits),
+                            (latitude - this.lastSeenLat) * (v / visits);
+                        const long =
                             this.lastSeenLong +
-                                (longitude - this.lastSeenLong) * (v / visits),
-                        );
+                            (longitude - this.lastSeenLong) * (v / visits);
+
+                        if (
+                            lat === lastVisitedLat &&
+                            long === lastVisitedLong
+                        ) {
+                            continue; // skip repeats
+                        }
+
+                        this.visit(lat, long);
+                        lastVisitedLat = lat;
+                        lastVisitedLong = long;
                     }
                 }
             }
