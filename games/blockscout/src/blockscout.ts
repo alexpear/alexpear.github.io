@@ -8,6 +8,7 @@ const GRID_STEP: number = 0.01;
 const GOAL_FONT_PX: number = 32;
 const MIN_ZOOM: number = 12; // User can't zoom out too much.
 const FOG_BUFFER: number = 1; // Extra cells of fog rendered beyond the viewport edge
+const HOUR = 60 * 60 * 1000; // in ms
 
 const TEST_MODE: string = undefined; // 'font';
 
@@ -32,6 +33,10 @@ export class BlockScout {
 
     // Dict storing Dates in string format.
     coords2dates: Record<string, string> = {};
+
+    lastSeenTime: Date = new Date(0); // 1970
+    lastSeenLat: number;
+    lastSeenLong: number;
 
     constructor() {
         // --- Map setup ---
@@ -89,7 +94,7 @@ export class BlockScout {
         this.updateScreen();
     }
 
-    // TODO bug 2026 march 18. Sometimes blue dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
+    // TODO bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
     updateAfterGPS(pos: GeolocationPosition): void {
         const { latitude, longitude } = pos.coords;
         if (this.playerMarker) {
@@ -103,16 +108,46 @@ export class BlockScout {
                 weight: 2,
             }).addTo(this.map);
         }
+
         if (!this.locationKnown) {
             this.map.setView([latitude, longitude], 16);
             this.locationKnown = true;
         }
+        else {
+            // Infer a line of recent travel
+            // TODO unit tests
+            // If the last checkin was too long ago, no credit is inferred.
+            const sinceLastSeen = Date.now() - this.lastSeenTime.getTime();
+            if (sinceLastSeen < 2 * HOUR) {
+                const latDelta = Math.abs(this.lastSeenLat - latitude);
+                const longDelta = Math.abs(this.lastSeenLong - longitude);
+                const dist = Math.sqrt(latDelta ** 2 + longDelta ** 2);
+
+                // Players that exceeded this speed limit were probably in a motor vehicle and not exercising.
+                if (dist / sinceLastSeen < 10 * GRID_STEP / HOUR) {
+                    // Good to visit more intermediate points when traveling diagonally.
+                    const visits = Math.ceil((latDelta + longDelta) / GRID_STEP);
+                    for (let v = 1; v < visits; v++) {
+                        this.visit(
+                            this.lastSeenLat + (latitude - this.lastSeenLat) * (v / visits),
+                            this.lastSeenLong + (longitude - this.lastSeenLong) * (v / visits)
+                        );
+                    }
+                }
+            }
+        }
+
+        this.visit(latitude, longitude);
+
+        this.lastSeenTime = new Date();
+        this.lastSeenLat = latitude;
+        this.lastSeenLong = longitude;
 
         if (TEST_MODE === 'font') {
             this._mockWideFont(latitude, longitude);
         }
 
-        this.visit(latitude, longitude);
+        this.updateScreen();
     }
 
     gpsError(err: GeolocationPositionError): void {
@@ -139,8 +174,6 @@ export class BlockScout {
             if (existingMarker) {
                 existingMarker.setIcon(this.icon(goal));
             }
-
-            this.updateScreen();
         }
     }
 
@@ -324,7 +357,7 @@ export class BlockScout {
 
     // For testing. We should call save() & updateScreen() after this func.
     private _mockWideFont(lat: number, long: number): void {
-        const aWhileAgo = new Date(Date.now() - 200 * 24 * 60 * 60 * 1000);
+        const aWhileAgo = new Date(Date.now() - 200 * 24 * HOUR);
         this._setLastVisit(lat, long + 0.01, aWhileAgo);
         this._setLastVisit(lat, long + 0.02, aWhileAgo);
     }
