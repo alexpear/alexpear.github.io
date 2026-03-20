@@ -74,6 +74,7 @@ function makeMockEl(): object {
 
 // Minimal globals — no jsdom needed since these tests don't exercise DOM visuals.
 let mockStorage: Record<string, string> = {};
+let game: BlockScout;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).localStorage = {
@@ -100,6 +101,7 @@ let mockStorage: Record<string, string> = {};
 };
 
 beforeEach(() => {
+    game = makeGame();
     jest.useFakeTimers();
     jest.setSystemTime(MIDNIGHT);
     mockStorage = {};
@@ -115,13 +117,11 @@ afterEach(() => {
 describe('BlockScout', () => {
     describe('visit()', () => {
         test('visited location has 0 points immediately', () => {
-            const game = makeGame();
             game.visit(HOME.lat, HOME.long);
             expect(game.goalAt(HOME.lat, HOME.long).pointsAvailable()).toBe(0);
         });
 
         test('visiting same location twice in one day does not award points twice', () => {
-            const game = makeGame();
             game.visit(HOME.lat, HOME.long);
             const scoreAfterFirst = game.playerScore;
             game.visit(HOME.lat, HOME.long);
@@ -129,8 +129,6 @@ describe('BlockScout', () => {
         });
 
         test('visit 2 places, then go home & sleep: home has 0 points, south has 2', () => {
-            const game = makeGame();
-
             game.visit(HOME.lat, HOME.long);
             game.visit(SOUTH.lat, SOUTH.long);
 
@@ -145,7 +143,6 @@ describe('BlockScout', () => {
         });
 
         test('on fresh save, claim home score', () => {
-            const game = makeGame();
             expect(game.playerScore).toBe(0);
             game.visit(HOME.lat, HOME.long);
             expect(game.playerScore).toBe(1000);
@@ -154,7 +151,6 @@ describe('BlockScout', () => {
 
     describe('updateAfterGPS()', () => {
         test('traveling from 0,0 to 0.02,0.03 after 1.8h visits 4 intermediate points', () => {
-            const game = makeGame();
             const visitSpy = jest.spyOn(game, 'visit');
 
             game.updateAfterGPS(0, 0);
