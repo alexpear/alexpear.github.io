@@ -8,7 +8,7 @@ const LEAGUES = [
 const SEASON = new Date().getFullYear();
 
 const SPORTSDB_BASE = 'https://www.thesportsdb.com/api/v1/json/123';
-/** A limitation of thesportsdb.com is that it only tells us the 2 scores & the winner. It doesn't tell us when each goal was. */
+/** A limitation of thesportsdb.com is that it only tells us the 2 scores & the winner. It doesn't tell us when each goal was. It's possible this info is on NWSL's official site via scraping... */
 
 interface SdbEvent {
     idEvent: string;
@@ -188,6 +188,8 @@ class SpoilerFreeApp {
                     )!.style.display = 'block';
                 });
         }
+
+        // TODO Ability for user to mark games as seen. Persist this in localStorage.
 
         detail.scrollIntoView({ behavior: 'smooth' });
     }
