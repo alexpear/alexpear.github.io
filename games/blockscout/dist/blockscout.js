@@ -51,7 +51,6 @@ class BlockScout {
                 enableHighAccuracy: true,
             });
         }
-        // TODO Bug - infinite loop. Something besides the player's finger is triggering moveend i think.
         this.map.on('moveend', () => this.updateAfterPan());
         document
             .getElementById('recenter-btn')
@@ -67,6 +66,7 @@ class BlockScout {
             if (e.target === helpModal)
                 helpModal.classList.remove('open');
         });
+        // TODO brag screen for sharing with friends. Points earned in the last 7 days (including today).
         this.updateScreen();
     }
     updateAfterPan() {
@@ -96,10 +96,11 @@ class BlockScout {
             // Infer a line of recent travel
             // If the last checkin was too long ago, no credit is inferred.
             const sinceLastSeen = Date.now() - this.lastSeenTime.getTime();
-            if (sinceLastSeen < 2 * HOUR) {
-                const latDelta = Math.abs(this.lastSeenLat - latitude);
-                const longDelta = Math.abs(this.lastSeenLong - longitude);
-                const dist = Math.sqrt(latDelta ** 2 + longDelta ** 2);
+            const latDelta = Math.abs(this.lastSeenLat - latitude);
+            const longDelta = Math.abs(this.lastSeenLong - longitude);
+            const dist = Math.sqrt(latDelta ** 2 + longDelta ** 2);
+            // Waiting then driving can be misread as biking. We want to be lenient with distracted hikers but strict with bikers who can more easily check in often.
+            if (sinceLastSeen <= 2 * HOUR && dist <= 3 * GRID_STEP) {
                 // Players that exceeded this speed limit were probably in a motor vehicle and not exercising.
                 if (dist / sinceLastSeen < (10 * GRID_STEP) / HOUR) {
                     // Good to visit more intermediate points when traveling diagonally.
@@ -219,6 +220,7 @@ class BlockScout {
                         this.map.removeLayer(existingFog);
                         this.fogRectangles.delete(key);
                     }
+                    // LATER Allow zooming out all the way, but render map tiles as black (opacity), and render visited blocks as white rectangles. If they get too small, consider rendering at grid_step 1 at this zoom.
                     // When very zoomed out, don't show labels. They overlap each other.
                     if (this.map.getZoom() < 13) {
                         const existingLabel = this.renderedGoals.get(key);

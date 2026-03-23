@@ -131,6 +131,7 @@ class SpoilerFreeApp {
                 detail.querySelector('.score-revealed').style.display = 'block';
             });
         }
+        // TODO Ability for user to mark games as seen. Persist this in localStorage.
         detail.scrollIntoView({ behavior: 'smooth' });
     }
 }
