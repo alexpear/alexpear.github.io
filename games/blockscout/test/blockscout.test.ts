@@ -191,7 +191,7 @@ describe('BlockScout', () => {
     });
 
     describe('updateAfterGPS()', () => {
-        test('traveling from 0,0 to 0.02,0.03 after 1.8h visits 4 intermediate points', () => {
+        test('traveling from 0,0 to 0.01,0.02 after 1.8h', () => {
             const visitSpy = jest.spyOn(game, 'visit');
 
             game.updateAfterGPS(0, 0);
@@ -200,35 +200,27 @@ describe('BlockScout', () => {
                 new Date(MIDNIGHT.getTime() + 1.8 * 60 * 60 * 1000), // TODO functionize HOUR
             );
 
-            game.updateAfterGPS(0.02, 0.03);
+            game.updateAfterGPS(0.01, 0.02);
 
             const calls = visitSpy.mock.calls;
-            expect(calls).toHaveLength(6);
+            expect(calls).toHaveLength(4);
             expect(calls[0]).toEqual([0, 0]);
 
-            expect(calls[1][0]).toBeCloseTo(0.004);
-            expect(calls[1][1]).toBeCloseTo(0.006);
+            expect(calls[1][0]).toBeCloseTo(0.01 / 3);
+            expect(calls[1][1]).toBeCloseTo(0.02 / 3);
 
-            expect(calls[2][0]).toBeCloseTo(0.008);
-            expect(calls[2][1]).toBeCloseTo(0.012);
+            expect(calls[2][0]).toBeCloseTo(0.02 / 3);
+            expect(calls[2][1]).toBeCloseTo(0.04 / 3);
 
-            expect(calls[3][0]).toBeCloseTo(0.012);
-            expect(calls[3][1]).toBeCloseTo(0.018);
-
-            expect(calls[4][0]).toBeCloseTo(0.016);
-            expect(calls[4][1]).toBeCloseTo(0.024);
-
-            expect(calls[5]).toEqual([0.02, 0.03]);
+            expect(calls[3]).toEqual([0.01, 0.02]);
 
             // make sure we visited a good set of blocks
-            expect(Object.keys(game.coords2dates)).toHaveLength(6);
+            expect(Object.keys(game.coords2dates)).toHaveLength(4);
             const today = new Goal().today().toISOString();
             expect(game.coords2dates['0,0']).toEqual(today);
             expect(game.coords2dates['0,0.01']).toEqual(today);
             expect(game.coords2dates['0.01,0.01']).toEqual(today);
             expect(game.coords2dates['0.01,0.02']).toEqual(today);
-            expect(game.coords2dates['0.02,0.02']).toEqual(today);
-            expect(game.coords2dates['0.02,0.03']).toEqual(today);
         });
 
         test('gap > 2h between pings: no intermediate visits', () => {
