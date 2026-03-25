@@ -87,11 +87,13 @@ export class BlockScout {
         document
             .getElementById('help-btn')!
             .addEventListener('click', () => helpModal.classList.add('open'));
+
         document
             .getElementById('help-close')!
             .addEventListener('click', () =>
                 helpModal.classList.remove('open'),
             );
+
         helpModal.addEventListener('click', (e) => {
             if (e.target === helpModal) helpModal.classList.remove('open');
         });
