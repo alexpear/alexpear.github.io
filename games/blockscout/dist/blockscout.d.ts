@@ -22,6 +22,7 @@ export declare class BlockScout {
     updateScoreDisplay(): void;
     goalAt(lat: number, long: number): Goal;
     quickUpdateScreen(): void;
+    refreshNumbers(): void;
     icon(goal: Goal): object;
     panToPlayer(): void;
     stateString(): string;
