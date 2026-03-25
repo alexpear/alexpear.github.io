@@ -9,6 +9,7 @@ const SPORTSDB_BASE = 'https://www.thesportsdb.com/api/v1/json/123';
 class SpoilerFreeApp {
     constructor() {
         this.render();
+        this.eventStatuses = JSON.parse(localStorage.getItem('spoilerfree') || '{}');
     }
     render() {
         for (const league of LEAGUES) {
@@ -54,7 +55,9 @@ class SpoilerFreeApp {
         }
         for (const event of events) {
             const card = document.createElement('div');
-            card.className = 'match-card';
+            const seen = this.eventStatuses[event.idEvent] === 'seen';
+            card.className = 'match-card' + (seen ? ' seen' : '');
+            card.dataset.eventId = event.idEvent;
             const dateStr = new Date(event.dateEvent + 'T12:00:00').toLocaleDateString(undefined, {
                 month: 'short',
                 day: 'numeric',
@@ -65,6 +68,7 @@ class SpoilerFreeApp {
                 <span class="vs">vs</span>
                 <span class="team away-team">${event.strAwayTeam}</span>
                 <span class="match-date">${dateStr}</span>
+                ${seen ? '<span class="seen-badge">seen</span>' : ''}
             `;
             card.addEventListener('click', () => this.selectMatch(event));
             list.appendChild(card);
@@ -73,6 +77,20 @@ class SpoilerFreeApp {
     selectMatch(event) {
         this.selectedEvent = event;
         this.renderMatchDetail(event);
+    }
+    markAsSeen(idEvent) {
+        this.eventStatuses[idEvent] = 'seen';
+        localStorage.setItem('spoilerfree', JSON.stringify(this.eventStatuses));
+        const card = document.querySelector(`[data-event-id="${idEvent}"]`);
+        if (card) {
+            card.classList.add('seen');
+            if (!card.querySelector('.seen-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'seen-badge';
+                badge.textContent = 'seen';
+                card.appendChild(badge);
+            }
+        }
     }
     renderMatchDetail(event) {
         const detail = document.getElementById('match-detail');
@@ -115,7 +133,9 @@ class SpoilerFreeApp {
                        </div>`
             : `<div class="no-score">No score yet</div>`}
             <div class="action-buttons">
-                <!-- Future action buttons placeholder -->
+                <button id="mark-seen-btn"${this.eventStatuses[event.idEvent] === 'seen' ? ' disabled' : ''}>
+                    ${this.eventStatuses[event.idEvent] === 'seen' ? 'Already seen' : 'Mark as seen'}
+                </button>
             </div>
         `;
         detail
@@ -131,7 +151,13 @@ class SpoilerFreeApp {
                 detail.querySelector('.score-revealed').style.display = 'block';
             });
         }
-        // TODO Ability for user to mark games as seen. Persist this in localStorage.
+        detail
+            .querySelector('#mark-seen-btn')
+            .addEventListener('click', () => {
+            this.markAsSeen(event.idEvent);
+            detail.querySelector('#mark-seen-btn').textContent = 'Already seen';
+            detail.querySelector('#mark-seen-btn').disabled = true;
+        });
         detail.scrollIntoView({ behavior: 'smooth' });
     }
 }

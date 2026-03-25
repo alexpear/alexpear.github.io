@@ -27,11 +27,13 @@ declare class SpoilerFreeApp {
           }
         | undefined;
     selectedEvent: SdbEvent | undefined;
+    eventStatuses: Record<string, 'seen'>;
     constructor();
     render(): void;
     selectLeague(league: { name: string; id: number }): Promise<void>;
     fetchEvents(leagueId: number): Promise<SdbEvent[]>;
     renderMatchList(events: SdbEvent[]): void;
     selectMatch(event: SdbEvent): void;
+    markAsSeen(idEvent: string): void;
     renderMatchDetail(event: SdbEvent): void;
 }
