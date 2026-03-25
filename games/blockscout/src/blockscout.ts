@@ -405,7 +405,7 @@ export class BlockScout {
 
     // NOTE Players that visit a vast quantity of places will have large gamestates. Hopefully this only affects performance at inhuman levels.
 
-    // For testing. We should call save() & updateScreen() after this func.
+    // For testing.
     private _mockWideFont(lat: number, long: number): void {
         const aWhileAgo = new Date(Date.now() - 200 * 24 * HOUR);
         this._setLastVisit(lat, long + 0.01, aWhileAgo);
