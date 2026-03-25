@@ -28,9 +28,14 @@ interface SdbEvent {
 class SpoilerFreeApp {
     selectedLeague: { name: string; id: number } | undefined;
     selectedEvent: SdbEvent | undefined;
+    eventStatuses: Record<string, 'seen'>;
 
     constructor() {
         this.render();
+
+        this.eventStatuses = JSON.parse(
+            localStorage.getItem('spoilerfree') || '{}',
+        );
     }
 
     render(): void {
@@ -111,6 +116,11 @@ class SpoilerFreeApp {
     selectMatch(event: SdbEvent): void {
         this.selectedEvent = event;
         this.renderMatchDetail(event);
+    }
+
+    markAsSeen(idEvent: string): void {
+        this.eventStatuses[idEvent] = 'seen';
+        localStorage.setItem('spoilerfree', JSON.stringify(this.eventStatuses));
     }
 
     renderMatchDetail(event: SdbEvent): void {
