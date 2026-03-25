@@ -98,6 +98,12 @@ export class BlockScout {
             if (e.target === helpModal) helpModal.classList.remove('open');
         });
 
+        setInterval(() => this.refreshNumbers(), 5000);
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) this.refreshNumbers();
+        });
+
         // TODO brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends.
 
         this.updateScreen();
@@ -337,6 +343,16 @@ export class BlockScout {
                 this.fogRectangles.delete(key);
             }
         }
+    }
+
+    // Refresh the label text on already-rendered goal markers without rebuilding the full viewport.
+    // Used by the periodic timer and visibility-change handler so stale point counts update overnight.
+    refreshNumbers(): void {
+        for (const [key, marker] of this.renderedGoals) {
+            const [lat, long] = key.split(',').map(Number);
+            marker.setIcon(this.icon(this.goalAt(lat, long)));
+        }
+        this.updateScoreDisplay();
     }
 
     icon(goal: Goal): object {
