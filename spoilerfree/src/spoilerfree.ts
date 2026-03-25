@@ -91,7 +91,9 @@ class SpoilerFreeApp {
 
         for (const event of events) {
             const card = document.createElement('div');
-            card.className = 'match-card';
+            const seen = this.eventStatuses[event.idEvent] === 'seen';
+            card.className = 'match-card' + (seen ? ' seen' : '');
+            card.dataset.eventId = event.idEvent;
 
             const dateStr = new Date(
                 event.dateEvent + 'T12:00:00',
@@ -106,6 +108,7 @@ class SpoilerFreeApp {
                 <span class="vs">vs</span>
                 <span class="team away-team">${event.strAwayTeam}</span>
                 <span class="match-date">${dateStr}</span>
+                ${seen ? '<span class="seen-badge">seen</span>' : ''}
             `;
 
             card.addEventListener('click', () => this.selectMatch(event));
@@ -121,6 +124,19 @@ class SpoilerFreeApp {
     markAsSeen(idEvent: string): void {
         this.eventStatuses[idEvent] = 'seen';
         localStorage.setItem('spoilerfree', JSON.stringify(this.eventStatuses));
+
+        const card = document.querySelector<HTMLElement>(
+            `[data-event-id="${idEvent}"]`,
+        );
+        if (card) {
+            card.classList.add('seen');
+            if (!card.querySelector('.seen-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'seen-badge';
+                badge.textContent = 'seen';
+                card.appendChild(badge);
+            }
+        }
     }
 
     renderMatchDetail(event: SdbEvent): void {
@@ -176,7 +192,9 @@ class SpoilerFreeApp {
                     : `<div class="no-score">No score yet</div>`
             }
             <div class="action-buttons">
-                <!-- Future action buttons placeholder -->
+                <button id="mark-seen-btn"${this.eventStatuses[event.idEvent] === 'seen' ? ' disabled' : ''}>
+                    ${this.eventStatuses[event.idEvent] === 'seen' ? 'Already seen' : 'Mark as seen'}
+                </button>
             </div>
         `;
 
@@ -199,7 +217,17 @@ class SpoilerFreeApp {
                 });
         }
 
-        // TODO Ability for user to mark games as seen. Persist this in localStorage.
+        detail
+            .querySelector<HTMLButtonElement>('#mark-seen-btn')!
+            .addEventListener('click', () => {
+                this.markAsSeen(event.idEvent);
+                detail.querySelector<HTMLButtonElement>(
+                    '#mark-seen-btn',
+                )!.textContent = 'Already seen';
+                detail.querySelector<HTMLButtonElement>(
+                    '#mark-seen-btn',
+                )!.disabled = true;
+            });
 
         detail.scrollIntoView({ behavior: 'smooth' });
     }
