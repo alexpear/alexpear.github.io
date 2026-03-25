@@ -98,13 +98,15 @@ let game: BlockScout;
         .mockImplementation((id: string) =>
             id === 'map' ? undefined : makeMockEl(),
         ),
+    addEventListener: jest.fn(),
+    hidden: false,
 };
 
 beforeEach(() => {
     mockStorage = {};
-    game = makeGame();
     jest.useFakeTimers();
     jest.setSystemTime(MIDNIGHT);
+    game = makeGame();
 });
 
 afterEach(() => {
