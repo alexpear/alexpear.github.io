@@ -96,7 +96,7 @@ export class BlockScout {
             if (e.target === helpModal) helpModal.classList.remove('open');
         });
 
-        // TODO brag screen for sharing with friends. Points earned in the last 7 days (including today).
+        // TODO brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends.
 
         this.updateScreen();
     }
