@@ -19,13 +19,13 @@ class Shelf {
             const bookPx = this.words2px(book.words);
             shelfPx += bookPx;
 
-            console.log({
-                context: `in constructor, on book ${book.spine}`,
-                shelfIndex,
-                shelfPx,
-                bookPx,
-                MAX_WORDS,
-            });
+            // console.log({
+            //     context: `in constructor, on book ${book.spine}`,
+            //     shelfIndex,
+            //     shelfPx,
+            //     bookPx,
+            //     MAX_WORDS,
+            // });
 
             if (shelfPx <= MAX_WORDS) {
                 this.shelves[shelfIndex].push(book);
@@ -51,7 +51,7 @@ class Shelf {
     }
 
     asHTML () {
-        return this.shelves.map(
+        const content = this.shelves.map(
             shelf => {
                 const booksHTML = shelf.map(
                     book => {
@@ -71,6 +71,27 @@ ${booksHTML}
             }
         )
         .join('\n');
+
+        return `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Dream Bookshelf</title>
+    <link href="shelf.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div id="header">
+      <a class="linkbutton" href="../../..">
+        <span>Home</span>
+      </a>
+    </div>
+
+    <div id="bookcase">
+      ${content}
+    </div>
+  </body>
+</html>`;
     }
 
     words2px (words) {
