@@ -304,7 +304,7 @@ export class BlockScout {
                         this.fogRectangles.delete(key);
                     }
 
-                    // LATER Allow zooming out all the way, but render map tiles as black (opacity), and render visited blocks as white rectangles. If they get too small, consider rendering at grid_step 1 at this zoom.
+                    // TODO Allow zooming out all the way, but render map tiles as black (opacity), and render visited blocks as white rectangles. If they get too small, consider rendering at grid_step 1 at this zoom.
 
                     // When very zoomed out, don't show labels. They overlap each other.
                     if (this.map.getZoom() < 13) {
@@ -425,8 +425,8 @@ export class BlockScout {
     }
 }
 
-// LATER call buildblockscout from Github CI. Stop having to commit dist/*.js.
-// LATER debug URL or param. Debug tools like copy paste local storage. Also option to import a save file (merging it into current state).
+// TODO call buildblockscout from Github CI. Stop having to commit dist/*.js.
+// TODO Ability to export your save file. Ability to import a save file (merging it into current state).
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 
