@@ -1,0 +1,54 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master, uat]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# If two deployments are triggered close together, cancel the older one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: master-src
+
+      - name: Checkout uat
+        uses: actions/checkout@v4
+        with:
+          ref: uat
+          path: uat-src
+
+      - name: Assemble site
+        run: |
+          cp -r master-src site
+          mkdir -p site/uat
+          cp -r uat-src/. site/uat/
+          rm -rf site/.git site/uat/.git site/node_modules site/uat/node_modules
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
