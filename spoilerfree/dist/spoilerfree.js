@@ -77,6 +77,7 @@ class SpoilerFreeApp {
         this.selectedEvent = event;
         this.renderMatchDetail(event);
     }
+    // TODO overhaul match card interactivity. Match cards should expand in-place, not at a panel below. Reveal/hide score toggle button. Seen/unseen toggle button. Going to Seen -> reveals score. Visual polish, color coding of match cards.
     markAsSeen(idEvent) {
         this.eventStatuses[idEvent] = 'seen';
         localStorage.setItem('spoilerfree', JSON.stringify(this.eventStatuses));
