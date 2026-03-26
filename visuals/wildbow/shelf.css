@@ -10,7 +10,7 @@ body {
 }
 
 .shelf {
-/*    margin: 1px;*/
+    /*    margin: 1px;*/
     display: flex;
     flex-wrap: wrap;
 }
@@ -21,8 +21,8 @@ body {
     border-color: white;
     outline: 1px solid white;
     writing-mode: vertical-rl;
-/*    text-orientation: mixed;*/
-/*    text-align: center;*/
+    /*    text-orientation: mixed;*/
+    /*    text-align: center;*/
 
     display: flex;
     justify-content: center;
