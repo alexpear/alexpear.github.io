@@ -59,11 +59,11 @@ describe('Goal', () => {
     });
 
     describe('points accumulate over days', () => {
-        // Rewards jump from 0 to 2. Thus, visiting every day is more lucrative than visiting once every 1000 days.
+        // Rewards jump from 0 to 10. Thus, visiting every day is more lucrative than visiting once every 1000 days.
         test('after 1 day', () => {
             const goal = goalDaysAgo(1);
-            expect(goal.pointsAvailable()).toBe(2);
-            expect(goal.text()).toBe('2');
+            expect(goal.pointsAvailable()).toBe(10);
+            expect(goal.text()).toBe('10');
         });
 
         test('we visit before midnight then check right after', () => {
@@ -78,7 +78,7 @@ describe('Goal', () => {
                 new Date(MIDNIGHT.getTime() + 25 * 60 * 60 * 1000),
             ); // 0100 the next day
 
-            expect(goal.pointsAvailable()).toBe(2);
+            expect(goal.pointsAvailable()).toBe(10);
         });
 
         test('we visit in morning then check in the afternoon of the next day', () => {
@@ -94,12 +94,12 @@ describe('Goal', () => {
                 new Date(MIDNIGHT.getTime() + (24 + 16) * 60 * 60 * 1000),
             );
 
-            expect(goal.pointsAvailable()).toBe(2);
+            expect(goal.pointsAvailable()).toBe(10);
         });
 
         test('after 5 days', () => {
             const goal = goalDaysAgo(5);
-            expect(goal.pointsAvailable()).toBe(6);
+            expect(goal.pointsAvailable()).toBe(14);
         });
 
         test('capped at 1000 after 1000+ days', () => {
@@ -116,7 +116,7 @@ describe('Goal', () => {
     describe('visit()', () => {
         test('resets points to 0', () => {
             const goal = goalDaysAgo(10);
-            expect(goal.pointsAvailable()).toBe(11);
+            expect(goal.pointsAvailable()).toBe(19);
             goal.visit();
             expect(goal.pointsAvailable()).toBe(0);
         });

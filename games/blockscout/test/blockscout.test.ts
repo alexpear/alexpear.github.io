@@ -130,17 +130,17 @@ describe('BlockScout', () => {
             expect(game.playerScore).toBe(scoreAfterFirst);
         });
 
-        test('visit 2 places, then go home & sleep: home has 0 points, south has 2', () => {
+        test('visit 2 places, then go home & sleep: home has 0 points, south is reset', () => {
             game.visit(HOME.lat, HOME.long);
             game.visit(SOUTH.lat, SOUTH.long);
 
             jest.setSystemTime(new Date(MIDNIGHT.getTime() + DAY_MS + 1000));
 
-            game.visit(HOME.lat, HOME.long);
+            game.visit(HOME.lat, HOME.long); // in morning
 
             expect(game.goalAt(HOME.lat, HOME.long).pointsAvailable()).toBe(0);
             expect(game.goalAt(SOUTH.lat, SOUTH.long).pointsAvailable()).toBe(
-                2,
+                10,
             );
         });
 
@@ -156,13 +156,13 @@ describe('BlockScout', () => {
             expect(game.goalAt(0, 0).pointsAvailable()).toBe(1000);
         });
 
-        test('visited location has 0 points immediately, then 2 points the next day', () => {
+        test('visited location has 0 points immediately, then points are reset the next day', () => {
             game.visit(0, 0);
             expect(game.goalAt(0, 0).pointsAvailable()).toBe(0);
 
             jest.setSystemTime(new Date(MIDNIGHT.getTime() + DAY_MS));
 
-            expect(game.goalAt(0, 0).pointsAvailable()).toBe(2);
+            expect(game.goalAt(0, 0).pointsAvailable()).toBe(10);
         });
     });
 
@@ -173,22 +173,22 @@ describe('BlockScout', () => {
 
             game.visit(0, 0);
 
-            expect(game.playerScore).toBe(4);
+            expect(game.playerScore).toBe(12);
         });
 
         test('score equals sum of individual point values across visited locations', () => {
             const today = new Goal().today().getTime();
             game.coords2dates['0,0'] = new Date(
                 today - 3 * DAY_MS,
-            ).toISOString(); // 4 pts
+            ).toISOString(); // 12 pts
             game.coords2dates['0,0.01'] = new Date(
                 today - 5 * DAY_MS,
-            ).toISOString(); // 6 pts
+            ).toISOString(); // 14 pts
 
             game.visit(0, 0);
             game.visit(0, 0.01);
 
-            expect(game.playerScore).toBe(10);
+            expect(game.playerScore).toBe(3 + 9 + 5 + 9);
         });
     });
 

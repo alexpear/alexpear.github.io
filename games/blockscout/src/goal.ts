@@ -21,8 +21,8 @@ export class Goal {
             return 0;
         }
 
-        // Rewards jump from 0 to 2. Thus, visiting every day is more lucrative than visiting once every 1000 days.
-        return Math.min(1000, daysSince + 1);
+        // Rewards jump from 0 to 10. Thus, visiting every day is more lucrative than visiting once every 1000 days.
+        return Math.min(1000, daysSince + 9);
     }
 
     text(): string {
