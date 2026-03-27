@@ -81,7 +81,7 @@ class BlockScout {
     // TODO bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
     // Perhaps moveend should trigger a wrapper of updateAfterGPS(), using cached coords.
     updateAfterGPS(latitude, longitude) {
-        // Bug TODO - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing.
+        // Bug TODO - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing. Seen again 2026 mar 26 (even after waiting 5 for autoupdate).
         if (this.playerMarker) {
             this.playerMarker.setLatLng([latitude, longitude]);
         }
@@ -226,7 +226,7 @@ class BlockScout {
                         this.map.removeLayer(existingFog);
                         this.fogRectangles.delete(key);
                     }
-                    // LATER Allow zooming out all the way, but render map tiles as black (opacity), and render visited blocks as white rectangles. If they get too small, consider rendering at grid_step 1 at this zoom.
+                    // TODO Allow zooming out all the way, but render map tiles as black (opacity), and render visited blocks as white rectangles. If they get too small, consider rendering at grid_step 1 at this zoom.
                     // When very zoomed out, don't show labels. They overlap each other.
                     if (this.map.getZoom() < 13) {
                         const existingLabel = this.renderedGoals.get(key);
@@ -326,8 +326,8 @@ class BlockScout {
     }
 }
 exports.BlockScout = BlockScout;
-// LATER call buildblockscout from Github CI. Stop having to commit dist/*.js.
-// LATER debug URL or param. Debug tools like copy paste local storage. Also option to import a save file (merging it into current state).
+// TODO call buildblockscout from Github CI. Stop having to commit dist/*.js.
+// TODO Ability to export your save file. Ability to import a save file (merging it into current state).
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 // Run in browser, not during unit tests (DOM is empty at import time).
@@ -354,8 +354,8 @@ class Goal {
         if (daysSince <= 0) {
             return 0;
         }
-        // Rewards jump from 0 to 2. Thus, visiting every day is more lucrative than visiting once every 1000 days.
-        return Math.min(1000, daysSince + 1);
+        // Rewards jump from 0 to 10. Thus, visiting every day is more lucrative than visiting once every 1000 days.
+        return Math.min(1000, daysSince + 9);
     }
     text() {
         // Zero points => empty string => do not display a number.
