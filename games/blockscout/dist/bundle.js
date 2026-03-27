@@ -350,12 +350,12 @@ class Goal {
             (1000 * 60 * 60 * 24));
     }
     pointsAvailable() {
-        const daysSince = Math.round(this.daysSinceVisited());
+        const daysSince = this.daysSinceVisited();
         if (daysSince <= 0) {
             return 0;
         }
-        // Rewards jump from 0 to 10. Thus, visiting every day is more lucrative than visiting once every 1000 days.
-        return Math.min(1000, daysSince + 9);
+        // Rewards jump from 0 to START_POINTS. Thus, visiting every day is more lucrative than visiting once every 1000 days.
+        return Math.min(1000, Goal.START_POINTS + (daysSince - 1));
     }
     text() {
         // Zero points => empty string => do not display a number.
@@ -371,5 +371,7 @@ class Goal {
     }
 }
 exports.Goal = Goal;
+// After you visit a Goal, its points start at START_POINTS the next midnight, & grow from there.
+Goal.START_POINTS = 4;
 
 },{}]},{},[1]);
