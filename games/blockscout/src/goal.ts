@@ -18,7 +18,7 @@ export class Goal {
     }
 
     pointsAvailable(): number {
-        const daysSince = Math.round(this.daysSinceVisited());
+        const daysSince = this.daysSinceVisited();
 
         if (daysSince <= 0) {
             return 0;
