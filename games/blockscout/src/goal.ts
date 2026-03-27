@@ -2,6 +2,9 @@
 export class Goal {
     lastVisited: Date;
 
+    // After you visit a Goal, its points start at START_POINTS the next midnight, & grow from there.
+    static readonly START_POINTS: number = 4;
+
     constructor(lastVisited?: Date) {
         // Default to 1970 for never-visited places.
         this.lastVisited = lastVisited || new Date(0);
@@ -21,8 +24,8 @@ export class Goal {
             return 0;
         }
 
-        // Rewards jump from 0 to 10. Thus, visiting every day is more lucrative than visiting once every 1000 days.
-        return Math.min(1000, daysSince + 9);
+        // Rewards jump from 0 to START_POINTS. Thus, visiting every day is more lucrative than visiting once every 1000 days.
+        return Math.min(1000, Goal.START_POINTS + (daysSince - 1));
     }
 
     text(): string {

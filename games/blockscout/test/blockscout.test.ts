@@ -140,7 +140,7 @@ describe('BlockScout', () => {
 
             expect(game.goalAt(HOME.lat, HOME.long).pointsAvailable()).toBe(0);
             expect(game.goalAt(SOUTH.lat, SOUTH.long).pointsAvailable()).toBe(
-                10,
+                Goal.START_POINTS,
             );
         });
 
@@ -162,33 +162,42 @@ describe('BlockScout', () => {
 
             jest.setSystemTime(new Date(MIDNIGHT.getTime() + DAY_MS));
 
-            expect(game.goalAt(0, 0).pointsAvailable()).toBe(10);
+            expect(game.goalAt(0, 0).pointsAvailable()).toBe(Goal.START_POINTS);
         });
     });
 
     describe('scoring', () => {
         test('visiting a location awards its accumulated points, not always 1000', () => {
             const threeDaysAgo = new Goal().today().getTime() - 3 * DAY_MS;
-            game.coords2dates['0,0'] = new Date(threeDaysAgo).toISOString(); // worth 4 pts
+            game.coords2dates['0,0'] = new Date(threeDaysAgo).toISOString();
 
             game.visit(0, 0);
 
-            expect(game.playerScore).toBe(12);
+            expect(game.playerScore).toBe(Goal.START_POINTS + (3 - 1));
         });
 
         test('score equals sum of individual point values across visited locations', () => {
             const today = new Goal().today().getTime();
+
+            const INTERVAL_A = 3; // in days
+            const INTERVAL_B = 5;
+
             game.coords2dates['0,0'] = new Date(
-                today - 3 * DAY_MS,
-            ).toISOString(); // 12 pts
+                today - INTERVAL_A * DAY_MS,
+            ).toISOString();
             game.coords2dates['0,0.01'] = new Date(
-                today - 5 * DAY_MS,
-            ).toISOString(); // 14 pts
+                today - INTERVAL_B * DAY_MS,
+            ).toISOString();
 
             game.visit(0, 0);
             game.visit(0, 0.01);
 
-            expect(game.playerScore).toBe(3 + 9 + 5 + 9);
+            expect(game.playerScore).toBe(
+                Goal.START_POINTS +
+                    (INTERVAL_A - 1) +
+                    Goal.START_POINTS +
+                    (INTERVAL_B - 1),
+            );
         });
     });
 
