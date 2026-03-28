@@ -1,36 +1,54 @@
 // A game or story context, for mapping to or from the Intergame format.
 
 import Concept from './concept';
+import Creature from './creature';
 
 import FS from 'fs';
 
-export default class Context {
+export default abstract class Context {
     readonly id: string;
 
     comparisonCSV(): string {
         const concepts = this.familiar2concepts(this.creaturesPath());
 
-        for (const name in concepts) {
-            const salientProps = this.salientProps(concepts[name]);
-        }
+        const abridgeds = concepts.map((concept) => this.summary(concept));
 
-        return ''; // TODO
+        // let csv = Object.keys(abridgeds[0]).join(',') + '\n';
+        const headers = Object.keys(abridgeds[0]);
+
+        return abridgeds
+            .map((abridged) =>
+                headers.map((header) => abridged[header]).join(','),
+            )
+            .join('\n');
     }
 
-    familiar2concepts(path: string): Record<string, Concept> {
-        const concepts = {};
+    summary(creature: Creature): Record<string, number | string> {
+        const familiarVersion = creature.versions[this.id];
+        const summary = {
+            contextID: this.id,
+        };
 
+        for (const prop of this.salientProps()) {
+            summary[prop] = familiarVersion[prop];
+        }
+
+        return summary;
+    }
+
+    abstract creaturesPath(): string;
+    abstract salientProps(): string[];
+
+    familiar2concepts(path: string): Concept[] {
         const raw = JSON.parse(FS.readFileSync(path, 'utf-8'));
         const array = raw?.data || raw?.results || [];
 
-        for (const entry of array) {
+        return array.map((entry) => {
             const concept = new Concept();
+
             concept.versions[this.id] = entry;
-
-            concepts[entry.name] = concept;
-        }
-
-        return concepts;
+            return concept;
+        });
     }
 
     // static run (): void {
