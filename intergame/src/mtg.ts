@@ -29,3 +29,5 @@ export default class MtG extends Context {
 }
 
 MtG.run();
+
+// TODO tsc -p tsconfig.json

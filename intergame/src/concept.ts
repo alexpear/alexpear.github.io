@@ -5,7 +5,7 @@ export default class Concept {
     contextID: string; // lowercase, spaces as hyphens. Motive: can append to filenames.
 
     // keyed by context id, value is the original data from that context
-    versions: Record<string, Record<string, unknown>> = {};
+    versions: Record<string, Record<string, boolean | number | string>> = {};
 
     type(): string {
         return 'concept';

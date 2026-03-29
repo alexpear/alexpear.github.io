@@ -23,9 +23,9 @@ export default abstract class Context {
             .join('\n');
     }
 
-    summary(creature: Creature): Record<string, number | string> {
+    summary(creature: Creature): Record<string, boolean | number | string> {
         const familiarVersion = creature.versions[this.id];
-        const summary = {
+        const summary: Record<string, boolean | number | string> = {
             contextID: this.id,
         };
 
@@ -43,7 +43,7 @@ export default abstract class Context {
         const raw = JSON.parse(FS.readFileSync(path, 'utf-8'));
         const array = raw?.data || raw?.results || [];
 
-        return array.map((entry) => {
+        return array.map((entry: unknown) => {
             const concept = new Concept();
 
             concept.versions[this.id] = entry;
