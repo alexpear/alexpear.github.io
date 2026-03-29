@@ -6,7 +6,7 @@ import Creature from './creature';
 import * as FS from 'fs';
 
 export default abstract class Context {
-    readonly id: string;
+    abstract readonly id: string;
 
     comparisonCSV(): string {
         const concepts = this.familiar2concepts(this.creaturesPath());
