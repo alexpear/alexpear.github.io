@@ -1,0 +1,289 @@
+contextID,name,type_line,cmc,power,toughness,color_identity,keywords,set_name,oracle_text
+mtg,Dungeon Crawler,Creature — Zombie,1,2,1,B,,Adventures in the Forgotten Realms,"This creature enters tapped.
+Whenever you complete a dungeon, you may return this card from your graveyard to your hand."
+mtg,Forsworn Paladin,Creature — Human Knight,1,1,1,B,"Treasure,Menace",Adventures in the Forgotten Realms,"Menace
+{1}{B}, {T}, Pay 1 life: Create a Treasure token.
+{2}{B}: Target creature gets +2/+0 until end of turn. If mana from a Treasure was spent to activate this ability, that creature also gains deathtouch until end of turn."
+mtg,Goblin Javelineer,Creature — Goblin Warrior,1,1,1,R,Haste,Adventures in the Forgotten Realms,"Haste
+Whenever this creature becomes blocked, it deals 1 damage to target creature blocking it."
+mtg,Minion of the Mighty,Creature — Kobold,1,0,1,R,"Pack tactics,Menace",Adventures in the Forgotten Realms,"Menace
+Pack tactics — Whenever this creature attacks, if you attacked with creatures with total power 6 or greater this combat, you may put a Dragon creature card from your hand onto the battlefield tapped and attacking."
+mtg,Monk of the Open Hand,Creature — Elf Monk,1,1,1,W,,Adventures in the Forgotten Realms,"Flurry of Blows — Whenever you cast your second spell each turn, put a +1/+1 counter on this creature."
+mtg,Neverwinter Dryad,Creature — Dryad,1,1,1,G,,Adventures in the Forgotten Realms,"{2}, Sacrifice this creature: Search your library for a basic Forest card, put it onto the battlefield tapped, then shuffle."
+mtg,Ochre Jelly,Creature — Ooze,1,0,0,G,Trample,Adventures in the Forgotten Realms,"Trample
+This creature enters with X +1/+1 counters on it.
+Split — When this creature dies, if it had two or more +1/+1 counters on it, create a token that's a copy of it at the beginning of the next end step. The token enters with half that many +1/+1 counters on it, rounded down."
+mtg,Ranger's Hawk,Creature — Bird,1,1,1,W,"Flying,Venture into the dungeon",Adventures in the Forgotten Realms,"Flying
+{3}, {T}, Tap another untapped creature you control: Venture into the dungeon. Activate only as a sorcery. (Enter the first room or advance to the next room.)"
+mtg,Secret Door,Artifact Creature — Wall,1,0,4,U,"Defender,Venture into the dungeon",Adventures in the Forgotten Realms,"Defender
+{4}{U}: Venture into the dungeon. Activate only as a sorcery. (Enter the first room or advance to the next room.)"
+mtg,Shambling Ghast,Creature — Zombie,1,1,1,B,Treasure,Adventures in the Forgotten Realms,"When this creature dies, choose one —
+• Target creature an opponent controls gets -1/-1 until end of turn.
+• Create a Treasure token. (It's an artifact with ""{T}, Sacrifice this token: Add one mana of any color."")"
+mtg,Silver Raven,Artifact Creature — Bird,1,1,1,U,"Scry,Flying",Adventures in the Forgotten Realms,"Flying
+When this creature enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+mtg,Arcane Investigator,Creature — Elf Wizard,2,2,1,U,,Adventures in the Forgotten Realms,"Search the Room — {5}{U}: Roll a d20.
+1—9 | Draw a card.
+10—20 | Look at the top three cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order."
+mtg,Armory Veteran,Creature — Orc Warrior,2,2,2,R,,Adventures in the Forgotten Realms,"As long as this creature is equipped, it has menace. (It can't be blocked except by two or more creatures.)"
+mtg,Battle Cry Goblin,Creature — Goblin,2,2,2,R,Pack tactics,Adventures in the Forgotten Realms,"{1}{R}: Goblins you control get +1/+0 and gain haste until end of turn.
+Pack tactics — Whenever this creature attacks, if you attacked with creatures with total power 6 or greater this combat, create a 1/1 red Goblin creature token that's tapped and attacking."
+mtg,Brazen Dwarf,Creature — Dwarf Shaman,2,1,3,R,,Adventures in the Forgotten Realms,"Whenever you roll one or more dice, this creature deals 1 damage to each opponent."
+mtg,Dawnbringer Cleric,Creature — Human Cleric,2,1,3,W,,Adventures in the Forgotten Realms,"When this creature enters, choose one —
+• Cure Wounds — You gain 2 life.
+• Dispel Magic — Destroy target enchantment.
+• Gentle Repose — Exile target card from a graveyard."
+mtg,Dragon's Disciple,Creature — Human Monk,2,1,3,W,,Adventures in the Forgotten Realms,"As this creature enters, you may reveal a Dragon card from your hand. If you do or if you control a Dragon, this creature enters with a +1/+1 counter on it.
+Dragons you control have ward {1}. (Whenever a Dragon you control becomes the target of a spell or ability an opponent controls, counter it unless that player pays {1}.)"
+mtg,Dwarfhold Champion,Creature — Dwarf Warrior,2,3,1,W,,Adventures in the Forgotten Realms,"As long as this creature is equipped, it gets +0/+2."
+mtg,Flumph,Creature — Jellyfish,2,0,4,W,"Flying,Defender",Adventures in the Forgotten Realms,"Defender, flying
+Whenever this creature is dealt damage, you and target opponent each draw a card."
+mtg,Gnoll Hunter,Creature — Gnoll,2,2,2,G,Pack tactics,Adventures in the Forgotten Realms,"Pack tactics — Whenever this creature attacks, if you attacked with creatures with total power 6 or greater this combat, put a +1/+1 counter on this creature."
+mtg,Gretchen Titchwillow,Legendary Creature — Halfling Druid,2,0,4,"G,U",,Adventures in the Forgotten Realms,{2}{G}{U}: Draw a card. You may put a land card from your hand onto the battlefield.
+mtg,Grim Wanderer,Creature — Goblin Warlock,2,5,3,B,Flash,Adventures in the Forgotten Realms,"Flash
+Tragic Backstory — Cast this spell only if a creature died this turn."
+mtg,Guild Thief,Creature — Orc Rogue,2,1,1,U,,Adventures in the Forgotten Realms,"Whenever this creature deals combat damage to a player, put a +1/+1 counter on it.
+Cunning Action — {3}{U}: This creature can't be blocked this turn."
+mtg,Hired Hexblade,Creature — Elf Warlock,2,2,2,B,,Adventures in the Forgotten Realms,"When this creature enters, if mana from a Treasure was spent to cast it, you draw a card and you lose 1 life."
+mtg,Hoard Robber,Creature — Tiefling Rogue,2,1,3,B,Treasure,Adventures in the Forgotten Realms,"Whenever this creature deals combat damage to a player, create a Treasure token. (It's an artifact with ""{T}, Sacrifice this token: Add one mana of any color."")"
+mtg,Hobgoblin Captain,Creature — Goblin Barbarian,2,3,1,R,Pack tactics,Adventures in the Forgotten Realms,"Pack tactics — Whenever this creature attacks, if you attacked with creatures with total power 6 or greater this combat, this creature gains first strike until end of turn."
+mtg,Ingenious Smith,Creature — Human Artificer,2,1,1,W,,Adventures in the Forgotten Realms,"When this creature enters, look at the top four cards of your library. You may reveal an artifact card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.
+Whenever one or more artifacts you control enter, put a +1/+1 counter on this creature. This ability triggers only once each turn."
+mtg,Intrepid Outlander,Creature — Orc Ranger,2,2,3,G,"Pack tactics,Reach,Venture into the dungeon",Adventures in the Forgotten Realms,"Reach
+Pack tactics — Whenever this creature attacks, if you attacked with creatures with total power 6 or greater this combat, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,"Kalain, Reclusive Painter",Legendary Creature — Human Elf Bard,2,1,2,"B,R",Treasure,Adventures in the Forgotten Realms,"When Kalain enters, create a Treasure token. (It's an artifact with ""{T}, Sacrifice this token: Add one mana of any color."")
+Other creatures you control enter with an additional +1/+1 counter on them for each mana from a Treasure spent to cast them."
+mtg,Keen-Eared Sentry,Creature — Human Soldier,2,2,1,W,Venture into the dungeon,Adventures in the Forgotten Realms,"You have hexproof. (You can't be the target of spells or abilities your opponents control.)
+Each opponent can't venture into the dungeon more than once each turn."
+mtg,Krydle of Baldur's Gate,Legendary Creature — Human Elf Rogue,2,1,3,"B,U","Mill,Scry",Adventures in the Forgotten Realms,"Whenever Krydle deals combat damage to a player, that player loses 1 life and mills a card, then you gain 1 life and scry 1.
+Whenever you attack, you may pay {2}. If you do, target creature can't be blocked this turn."
+mtg,Lightfoot Rogue,Creature — Halfling Rogue,2,2,1,B,,Adventures in the Forgotten Realms,"Sneak Attack — Whenever this creature attacks, roll a d20.
+1—9 | This creature gains deathtouch until end of turn.
+10—19 | It gets +1/+0 and gains deathtouch until end of turn.
+20 | It gets +3/+0 and gains first strike and deathtouch until end of turn."
+mtg,Loyal Warhound,Creature — Dog,2,3,1,W,Vigilance,Adventures in the Forgotten Realms,"Vigilance
+When this creature enters, if an opponent controls more lands than you, search your library for a basic Plains card, put it onto the battlefield tapped, then shuffle."
+mtg,Oswald Fiddlebender,Legendary Creature — Gnome Artificer,2,2,2,W,,Adventures in the Forgotten Realms,"Magical Tinkering — {W}, {T}, Sacrifice an artifact: Search your library for an artifact card with mana value equal to 1 plus the sacrificed artifact's mana value, put it onto the battlefield, then shuffle. Activate only as a sorcery."
+mtg,Pixie Guide,Creature — Faerie,2,1,3,U,Flying,Adventures in the Forgotten Realms,"Flying
+Grant an Advantage — If you would roll one or more dice, instead roll that many dice plus one and ignore the lowest roll."
+mtg,Prosperous Innkeeper,Creature — Halfling Citizen,2,1,1,G,Treasure,Adventures in the Forgotten Realms,"When this creature enters, create a Treasure token. (It's an artifact with ""{T}, Sacrifice this token: Add one mana of any color."")
+Whenever another creature you control enters, you gain 1 life."
+mtg,Scaled Herbalist,Creature — Lizard Druid,2,1,3,G,,Adventures in the Forgotten Realms,{T}: You may put a land card from your hand onto the battlefield.
+mtg,Sepulcher Ghoul,Creature — Zombie,2,2,1,B,,Adventures in the Forgotten Realms,Sacrifice another creature: This creature gets +2/+2 until end of turn. Activate only once each turn.
+mtg,Steadfast Paladin,Creature — Dwarf Knight,2,2,2,W,Lifelink,Adventures in the Forgotten Realms,Lifelink
+mtg,"Targ Nar, Demon-Fang Gnoll",Legendary Creature — Gnoll,2,2,2,"G,R",Pack tactics,Adventures in the Forgotten Realms,"Pack tactics — Whenever Targ Nar attacks, if you attacked with creatures with total power 6 or greater this combat, attacking creatures get +1/+0 until end of turn.
+{2}{R}{G}: Double Targ Nar's power and toughness until end of turn."
+mtg,"Trelasarra, Moon Dancer",Legendary Creature — Elf Cleric,2,2,2,"G,W",Scry,Adventures in the Forgotten Realms,"Whenever you gain life, put a +1/+1 counter on Trelasarra and scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+mtg,Triumphant Adventurer,Creature — Human Knight,2,1,1,"B,W","Venture into the dungeon,Deathtouch",Adventures in the Forgotten Realms,"Deathtouch
+During your turn, this creature has first strike.
+Whenever this creature attacks, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,Underdark Basilisk,Creature — Basilisk,2,1,2,G,Deathtouch,Adventures in the Forgotten Realms,Deathtouch
+mtg,Werewolf Pack Leader,Creature — Human Werewolf,2,3,3,G,Pack tactics,Adventures in the Forgotten Realms,"Pack tactics — Whenever this creature attacks, if you attacked with creatures with total power 6 or greater this combat, draw a card.
+{3}{G}: Until end of turn, this creature has base power and toughness 5/3, gains trample, and isn't a Human."
+mtg,Wight,Creature — Zombie Soldier,2,3,2,B,,Adventures in the Forgotten Realms,"This creature enters tapped.
+Life Drain — Whenever a creature dealt damage by this creature this turn dies, create a tapped 2/2 black Zombie creature token and exile that card."
+mtg,Yuan-Ti Malison,Creature — Snake Rogue,2,2,1,U,Venture into the dungeon,Adventures in the Forgotten Realms,"This creature can't be blocked as long as it's attacking alone.
+Whenever this creature deals combat damage to a player, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,Acererak the Archlich,Legendary Creature — Zombie Wizard,3,5,5,B,Venture into the dungeon,Adventures in the Forgotten Realms,"When Acererak enters, if you haven't completed Tomb of Annihilation, return Acererak to its owner's hand and venture into the dungeon.
+Whenever Acererak attacks, for each opponent, you create a 2/2 black Zombie creature token unless that player sacrifices a creature of their choice."
+mtg,Blink Dog,Creature — Dog,3,1,1,W,Double strike,Adventures in the Forgotten Realms,"Double strike
+Teleport — {3}{W}: This creature phases out. (Treat it and anything attached to it as though they don't exist until your next turn.)"
+mtg,Celestial Unicorn,Creature — Unicorn,3,3,2,W,,Adventures in the Forgotten Realms,"Whenever you gain life, put a +1/+1 counter on this creature."
+mtg,Circle of Dreams Druid,Creature — Elf Druid,3,2,1,G,,Adventures in the Forgotten Realms,{T}: Add {G} for each creature you control.
+mtg,Circle of the Moon Druid,Creature — Human Elf Druid,3,2,4,G,,Adventures in the Forgotten Realms,"Bear Form — During your turn, this creature is a Bear with base power and toughness 4/2. (It loses all other creature types.)"
+mtg,Clever Conjurer,Creature — Gnome Wizard,3,2,3,U,,Adventures in the Forgotten Realms,Mage Hand — {T}: Untap target permanent not named Clever Conjurer. Activate only as a sorcery.
+mtg,Cloister Gargoyle,Artifact Creature — Gargoyle,3,0,4,W,Venture into the dungeon,Adventures in the Forgotten Realms,"When this creature enters, venture into the dungeon. (Enter the first room or advance to the next room.)
+As long as you've completed a dungeon, this creature gets +3/+0 and has flying."
+mtg,Dire Wolf Prowler,Creature — Wolf,3,2,2,G,,Adventures in the Forgotten Realms,{1}{G}: This creature gets +2/+2 and gains haste until end of turn. Activate only once each turn.
+mtg,Displacer Beast,Creature — Cat Beast,3,3,2,U,Venture into the dungeon,Adventures in the Forgotten Realms,"When this creature enters, venture into the dungeon. (Enter the first room or advance to the next room.)
+Displacement — {3}{U}: Return this creature to its owner's hand."
+mtg,Dragon Turtle,Creature — Dragon Turtle,3,3,5,U,Flash,Adventures in the Forgotten Realms,"Flash
+Drag Below — When this creature enters, tap it and up to one target creature an opponent controls. They don't untap during their controllers' next untap steps."
+mtg,Eccentric Apprentice,Creature — Tiefling Wizard,3,2,2,U,"Flying,Venture into the dungeon",Adventures in the Forgotten Realms,"Flying
+When this creature enters, venture into the dungeon. (Enter the first room or advance to the next room.)
+At the beginning of combat on your turn, if you've completed a dungeon, up to one target creature becomes a Bird with base power and toughness 1/1 and flying until end of turn."
+mtg,Feywild Trickster,Creature — Gnome Warlock,3,2,2,U,,Adventures in the Forgotten Realms,"Whenever you roll one or more dice, create a 1/1 blue Faerie Dragon creature token with flying."
+mtg,Flameskull,Creature — Skeleton,3,3,1,R,Flying,Adventures in the Forgotten Realms,"Flying
+This creature can't block.
+Rejuvenation — When this creature dies, exile it. If you do, exile the top card of your library. Until the end of your next turn, you may play one of those cards. (If you cast Flameskull this way, you can't play the other card, and vice versa.)"
+mtg,Gloom Stalker,Creature — Dwarf Ranger,3,2,3,W,,Adventures in the Forgotten Realms,"As long as you've completed a dungeon, this creature has double strike."
+mtg,"Grazilaxx, Illithid Scholar",Legendary Creature — Horror,3,3,2,U,,Adventures in the Forgotten Realms,"Whenever a creature you control becomes blocked, you may return it to its owner's hand.
+Whenever one or more creatures you control deal combat damage to a player, draw a card."
+mtg,Guardian of Faith,Creature — Spirit Knight,3,3,2,W,"Vigilance,Flash",Adventures in the Forgotten Realms,"Flash
+Vigilance
+When this creature enters, any number of other target creatures you control phase out. (Treat them and anything attached to them as though they don't exist until their controller's next turn.)"
+mtg,"Hama Pashar, Ruin Seeker",Legendary Creature — Human Wizard,3,2,3,"U,W",,Adventures in the Forgotten Realms,Room abilities of dungeons you own trigger an additional time.
+mtg,Hobgoblin Bandit Lord,Creature — Goblin Rogue,3,2,3,R,,Adventures in the Forgotten Realms,"Other Goblins you control get +1/+1.
+{R}, {T}: This creature deals damage equal to the number of Goblins that entered the battlefield under your control this turn to any target."
+mtg,Hulking Bugbear,Creature — Goblin,3,3,3,R,Haste,Adventures in the Forgotten Realms,Haste
+mtg,Lurking Roper,Creature — Horror,3,4,5,G,,Adventures in the Forgotten Realms,"This creature doesn't untap during your untap step.
+Whenever you gain life, untap this creature."
+mtg,"Minsc, Beloved Ranger",Legendary Creature — Human Ranger,3,3,3,"G,R,W",,Adventures in the Forgotten Realms,"When Minsc enters, create Boo, a legendary 1/1 red Hamster creature token with trample and haste.
+{X}: Until end of turn, target creature you control has base power and toughness X/X and becomes a Giant in addition to its other types. Activate only as a sorcery."
+mtg,Moon-Blessed Cleric,Creature — Human Elf Cleric,3,3,2,W,,Adventures in the Forgotten Realms,"Divine Intervention — When this creature enters, you may search your library for an enchantment card, reveal it, then shuffle and put that card on top."
+mtg,"Nadaar, Selfless Paladin",Legendary Creature — Dragon Knight,3,3,3,W,"Vigilance,Venture into the dungeon",Adventures in the Forgotten Realms,"Vigilance
+Whenever Nadaar enters or attacks, venture into the dungeon. (Enter the first room or advance to the next room.)
+Other creatures you control get +1/+1 as long as you've completed a dungeon."
+mtg,Plundering Barbarian,Creature — Dwarf Barbarian,3,2,2,R,Treasure,Adventures in the Forgotten Realms,"When this creature enters, choose one —
+• Smash the Chest — Destroy target artifact.
+• Pry It Open — Create a Treasure token. (It's an artifact with ""{T}, Sacrifice this token: Add one mana of any color."")"
+mtg,Priest of Ancient Lore,Creature — Dwarf Cleric,3,2,1,W,,Adventures in the Forgotten Realms,"When this creature enters, you gain 1 life and draw a card."
+mtg,Rust Monster,Creature — Beast,3,2,1,R,First strike,Adventures in the Forgotten Realms,"First strike
+Sacrifice an artifact: This creature gets +2/+0 until end of turn."
+mtg,Scion of Stygia,Creature — Tiefling Shaman,3,2,1,U,Flash,Adventures in the Forgotten Realms,"Flash
+Cone of Cold — When this creature enters, choose target creature an opponent controls, then roll a d20.
+1—9 | Tap that creature.
+10—20 | Tap that creature. It doesn't untap during its controller's next untap step."
+mtg,Skullport Merchant,Creature — Dwarf Citizen,3,1,4,B,Treasure,Adventures in the Forgotten Realms,"When this creature enters, create a Treasure token. (It's an artifact with ""{T}, Sacrifice this token: Add one mana of any color."")
+{1}{B}, Sacrifice another creature or a Treasure: Draw a card."
+mtg,Soulknife Spy,Creature — Elf Rogue,3,3,2,U,,Adventures in the Forgotten Realms,"Whenever this creature deals combat damage to a player, draw a card."
+mtg,Sylvan Shepherd,Creature — Human Druid,3,2,3,G,Vigilance,Adventures in the Forgotten Realms,"Vigilance
+Whenever this creature attacks, roll a d20.
+1—9 | You gain 1 life.
+10—19 | You gain 2 life.
+20 | You gain 5 life."
+mtg,Valor Singer,Creature — Tiefling Bard,3,2,3,R,,Adventures in the Forgotten Realms,"Combat Inspiration — At the beginning of combat on your turn, target creature you control gets +1/+0 until end of turn."
+mtg,Vampire Spawn,Creature — Vampire,3,2,3,B,,Adventures in the Forgotten Realms,"When this creature enters, each opponent loses 2 life and you gain 2 life."
+mtg,"Varis, Silverymoon Ranger",Legendary Creature — Human Elf Ranger,3,3,3,G,"Reach,Ward,Venture into the dungeon",Adventures in the Forgotten Realms,"Reach, ward {1}
+Whenever you cast a creature or planeswalker spell, venture into the dungeon. This ability triggers only once each turn. (To venture into the dungeon, enter the first room or advance to the next room.)
+Whenever you complete a dungeon, create a 2/2 green Wolf creature token."
+mtg,Xorn,Creature — Elemental,3,3,2,R,Treasure,Adventures in the Forgotten Realms,"If you would create one or more Treasure tokens, instead create those tokens plus an additional Treasure token."
+mtg,Yuan-Ti Fang-Blade,Creature — Snake Rogue,3,2,2,B,"Venture into the dungeon,Deathtouch",Adventures in the Forgotten Realms,"Deathtouch
+Whenever this creature deals combat damage to a player, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,Arborea Pegasus,Creature — Pegasus,4,2,3,W,Flying,Adventures in the Forgotten Realms,"Flying
+When this creature enters, target creature gets +1/+1 and gains flying until end of turn."
+mtg,Barrowin of Clan Undurr,Legendary Creature — Dwarf Cleric,4,3,3,"B,W",Venture into the dungeon,Adventures in the Forgotten Realms,"When Barrowin enters, venture into the dungeon. (Enter the first room or advance to the next room.)
+Whenever Barrowin attacks, return up to one creature card with mana value 3 or less from your graveyard to the battlefield if you've completed a dungeon."
+mtg,Bruenor Battlehammer,Legendary Creature — Dwarf Warrior,4,5,3,"R,W",,Adventures in the Forgotten Realms,"Each creature you control gets +2/+0 for each Equipment attached to it.
+You may pay {0} rather than pay the equip cost of the first equip ability you activate each turn."
+mtg,Bulette,Creature — Beast,4,3,3,G,,Adventures in the Forgotten Realms,"At the beginning of your end step, if a creature died this turn, put a +1/+1 counter on this creature."
+mtg,Chaos Channeler,Creature — Human Shaman,4,4,3,R,,Adventures in the Forgotten Realms,"Wild Magic Surge — Whenever this creature attacks, roll a d20.
+1—9 | Exile the top card of your library. You may play it this turn.
+10—19 | Exile the top two cards of your library. You may play them this turn.
+20 | Exile the top three cards of your library. You may play them this turn."
+mtg,Clattering Skeletons,Creature — Skeleton,4,4,3,B,Venture into the dungeon,Adventures in the Forgotten Realms,"When this creature dies, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,Death-Priest of Myrkul,Creature — Tiefling Cleric,4,2,2,B,,Adventures in the Forgotten Realms,"Skeletons, Vampires, and Zombies you control get +1/+1.
+At the beginning of your end step, if a creature died this turn, you may pay {1}. If you do, create a 1/1 black Skeleton creature token."
+mtg,"Delina, Wild Mage",Legendary Creature — Elf Shaman,4,3,2,R,,Adventures in the Forgotten Realms,"Whenever Delina attacks, choose target creature you control, then roll a d20.
+1—14 | Create a tapped and attacking token that's a copy of that creature, except it's not legendary and it has ""At end of combat, exile this token.""
+15—20 | Create one of those tokens. You may roll again."
+mtg,Demilich,Creature — Skeleton Wizard,4,4,3,U,,Adventures in the Forgotten Realms,"This spell costs {U} less to cast for each instant and sorcery spell you've cast this turn.
+Whenever this creature attacks, exile up to one target instant or sorcery card from your graveyard. Copy it. You may cast the copy.
+You may cast this card from your graveyard by exiling four instant and/or sorcery cards from your graveyard in addition to paying its other costs."
+mtg,Djinni Windseer,Creature — Djinn,4,3,3,U,"Scry,Flying",Adventures in the Forgotten Realms,"Flying
+When this creature enters, roll a d20.
+1—9 | Scry 1.
+10—19 | Scry 2.
+20 | Scry 3."
+mtg,"Ebondeath, Dracolich",Legendary Creature — Zombie Dragon,4,5,2,B,"Flying,Flash",Adventures in the Forgotten Realms,"Flash
+Flying
+Ebondeath enters tapped.
+You may cast this card from your graveyard if a creature not named Ebondeath, Dracolich died this turn."
+mtg,"Farideh, Devil's Chosen",Legendary Creature — Tiefling Warlock,4,3,3,"R,U",,Adventures in the Forgotten Realms,"Dark One's Own Luck — Whenever you roll one or more dice, Farideh gains flying and menace until end of turn. If any of those results was 10 or higher, draw a card."
+mtg,Gelatinous Cube,Creature — Ooze,4,4,3,B,,Adventures in the Forgotten Realms,"Engulf — When this creature enters, exile target non-Ooze creature an opponent controls until this creature leaves the battlefield.
+Dissolve — {X}{B}: Put target creature card with mana value X exiled with this creature into its owner's graveyard."
+mtg,Half-Elf Monk,Creature — Human Elf Monk,4,1,4,W,Vigilance,Adventures in the Forgotten Realms,"Vigilance
+Stunning Strike — {1}{W}, {T}: Tap target creature."
+mtg,Hoarding Ogre,Creature — Ogre,4,3,3,R,Treasure,Adventures in the Forgotten Realms,"Whenever this creature attacks, roll a d20.
+1—9 | Create a Treasure token. (It's an artifact with ""{T}, Sacrifice this token: Add one mana of any color."")
+10—19 | Create two Treasure tokens.
+20 | Create three Treasure tokens."
+mtg,"Icingdeath, Frost Tyrant",Legendary Creature — Dragon,4,4,3,W,"Flying,Vigilance",Adventures in the Forgotten Realms,"Flying, vigilance
+When Icingdeath, Frost Tyrant dies, create Icingdeath, Frost Tongue, a legendary white Equipment artifact token with ""Equipped creature gets +2/+0,"" ""Whenever equipped creature attacks, tap target creature defending player controls,"" and equip {2}."
+mtg,Inspiring Bard,Creature — Elf Bard,4,3,3,G,,Adventures in the Forgotten Realms,"When this creature enters, choose one —
+• Bardic Inspiration — Target creature gets +2/+2 until end of turn.
+• Song of Rest — You gain 3 life."
+mtg,Iron Golem,Artifact Creature — Golem,4,5,3,,Vigilance,Adventures in the Forgotten Realms,"Vigilance
+This creature attacks or blocks each combat if able."
+mtg,Jaded Sell-Sword,Creature — Dragon Warrior,4,4,3,R,,Adventures in the Forgotten Realms,"When this creature enters, if mana from a Treasure was spent to cast it, it gains first strike and haste until end of turn."
+mtg,Manticore,Creature — Manticore,4,2,1,B,"Flying,Flash",Adventures in the Forgotten Realms,"Flash
+Flying
+Tail Spikes — When this creature enters, destroy target creature an opponent controls that was dealt damage this turn."
+mtg,"Orcus, Prince of Undeath",Legendary Creature — Demon,4,5,3,"B,R","Flying,Trample",Adventures in the Forgotten Realms,"Flying, trample
+When Orcus enters, choose one —
+• Each other creature gets -X/-X until end of turn. You lose X life.
+• Return up to X target creature cards with total mana value X or less from your graveyard to the battlefield. They gain haste until end of turn."
+mtg,"Shessra, Death's Whisper",Legendary Creature — Human Elf Warlock,4,1,3,"B,G",,Adventures in the Forgotten Realms,"Bewitching Whispers — When Shessra enters, target creature blocks this turn if able.
+Whispers of the Grave — At the beginning of your end step, if a creature died this turn, you may pay 2 life. If you do, draw a card."
+mtg,Shortcut Seeker,Creature — Human Rogue,4,2,5,U,Venture into the dungeon,Adventures in the Forgotten Realms,"Whenever this creature deals combat damage to a player, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,Veteran Dungeoneer,Creature — Human Warrior,4,3,4,W,Venture into the dungeon,Adventures in the Forgotten Realms,"When this creature enters, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,"Volo, Guide to Monsters",Legendary Creature — Human Wizard,4,3,2,"G,U",,Adventures in the Forgotten Realms,"Whenever you cast a creature spell that doesn't share a creature type with a creature you control or a creature card in your graveyard, copy that spell. (A copy of a creature spell becomes a token.)"
+mtg,Wandering Troubadour,Creature — Dragon Bard,4,4,2,G,Venture into the dungeon,Adventures in the Forgotten Realms,"At the beginning of your end step, if you had a land enter the battlefield under your control this turn, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,Aberrant Mind Sorcerer,Creature — Human Elf Shaman Sorcerer,5,3,4,U,,Adventures in the Forgotten Realms,"Psionic Spells — When this creature enters, choose target instant or sorcery card in your graveyard, then roll a d20.
+1—9 | You may put that card on top of your library.
+10—20 | Return that card to your hand."
+mtg,Adult Gold Dragon,Creature — Dragon,5,4,3,"R,W","Flying,Lifelink,Haste",Adventures in the Forgotten Realms,"Flying, lifelink, haste"
+mtg,Devoted Paladin,Creature — Orc Knight,5,4,4,W,,Adventures in the Forgotten Realms,"Beacon of Hope — When this creature enters, creatures you control get +1/+1 and gain vigilance until end of turn."
+mtg,Drider,Creature — Elf Spider,5,4,3,B,Reach,Adventures in the Forgotten Realms,"Reach
+Whenever this creature deals combat damage to a player, create a 2/1 black Spider creature token with menace and reach."
+mtg,Drizzt Do'Urden,Legendary Creature — Elf Ranger,5,3,3,"G,W",Double strike,Adventures in the Forgotten Realms,"Double strike
+When Drizzt enters, create Guenhwyvar, a legendary 4/1 green Cat creature token with trample.
+Whenever a creature dies, if it had power greater than Drizzt's power, put a number of +1/+1 counters on Drizzt equal to the difference."
+mtg,Elturgard Ranger,Creature — Human Elf Ranger,5,4,1,G,Reach,Adventures in the Forgotten Realms,"Reach
+When this creature enters, create a 2/2 green Wolf creature token."
+mtg,Froghemoth,Creature — Frog Horror,5,4,4,G,"Haste,Trample",Adventures in the Forgotten Realms,"Trample, haste
+Whenever this creature deals combat damage to a player, exile up to that many target cards from their graveyard. Put a +1/+1 counter on this creature for each creature card exiled this way. You gain 1 life for each noncreature card exiled this way."
+mtg,Herald of Hadar,Creature — Human Warlock,5,4,4,B,Treasure,Adventures in the Forgotten Realms,"Circle of Death — {5}{B}: Roll a d20.
+1—9 | Each opponent loses 2 life.
+10—19 | Each opponent loses 2 life and you gain 2 life.
+20 | Each opponent loses 2 life and you gain 2 life. Create two Treasure tokens. (They're artifacts with ""{T}, Sacrifice this token: Add one mana of any color."")"
+mtg,"Iymrith, Desert Doom",Legendary Creature — Dragon,5,5,5,U,Flying,Adventures in the Forgotten Realms,"Flying
+Iymrith has ward {4} as long as it's untapped.
+Whenever Iymrith deals combat damage to a player, draw a card. Then if you have fewer than three cards in hand, draw cards equal to the difference."
+mtg,Loathsome Troll,Creature — Troll,5,6,2,G,,Adventures in the Forgotten Realms,"{3}{G}: Roll a d20. Activate only if this card is in your graveyard.
+1—9 | Put this card on top of your library.
+10—19 | Return this card to your hand.
+20 | Return this card to the battlefield tapped."
+mtg,Mind Flayer,Creature — Horror,5,3,3,U,,Adventures in the Forgotten Realms,"Dominate Monster — When this creature enters, gain control of target creature for as long as you control this creature."
+mtg,Owlbear,Creature — Bird Bear,5,4,4,G,Trample,Adventures in the Forgotten Realms,"Trample
+Keen Senses — When this creature enters, draw a card."
+mtg,Planar Ally,Creature — Angel,5,3,3,W,"Flying,Venture into the dungeon",Adventures in the Forgotten Realms,"Flying
+Whenever this creature attacks, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,Rimeshield Frost Giant,Creature — Giant Warrior,5,4,5,U,Ward,Adventures in the Forgotten Realms,"Ward {3} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {3}.)"
+mtg,Swarming Goblins,Creature — Goblin,5,4,3,R,,Adventures in the Forgotten Realms,"When this creature enters, roll a d20.
+1—9 | Create a 1/1 red Goblin creature token.
+10—19 | Create two of those tokens.
+20 | Create three of those tokens."
+mtg,Tiger-Tribe Hunter,Creature — Human Barbarian,5,4,4,R,"Pack tactics,Trample",Adventures in the Forgotten Realms,"Trample
+Pack tactics — Whenever this creature attacks, if you attacked with creatures with total power 6 or greater this combat, you may sacrifice another creature. When you do, this creature deals damage equal to the sacrificed creature's power to target creature."
+mtg,Westgate Regent,Creature — Vampire,5,4,4,B,"Flying,Ward",Adventures in the Forgotten Realms,"Flying
+Ward—Discard a card. (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player discards a card.)
+Whenever this creature deals combat damage to a player, put that many +1/+1 counters on it."
+mtg,"Zalto, Fire Giant Duke",Legendary Creature — Giant Barbarian,5,7,3,R,"Trample,Venture into the dungeon",Adventures in the Forgotten Realms,"Trample
+Whenever Zalto is dealt damage, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,Zombie Ogre,Creature — Zombie Ogre,5,3,5,B,Venture into the dungeon,Adventures in the Forgotten Realms,"At the beginning of your end step, if a creature died this turn, venture into the dungeon. (Enter the first room or advance to the next room.)"
+mtg,Air-Cult Elemental,Creature — Elemental,6,2,5,U,Flying,Adventures in the Forgotten Realms,"Flying
+Whirlwind — When this creature enters, return up to one other target creature to its owner's hand."
+mtg,Asmodeus the Archfiend,Legendary Creature — Devil God,6,6,6,B,,Adventures in the Forgotten Realms,"Binding Contract — If you would draw a card, exile the top card of your library face down instead.
+{B}{B}{B}: Draw seven cards.
+{B}: Return all cards exiled with Asmodeus to their owner's hand and you lose that much life."
+mtg,Baleful Beholder,Creature — Beholder,6,6,5,B,,Adventures in the Forgotten Realms,"When this creature enters, choose one —
+• Antimagic Cone — Each opponent sacrifices an enchantment of their choice.
+• Fear Ray — Creatures you control gain menace until end of turn. (A creature with menace can't be blocked except by two or more creatures.)"
+mtg,Earth-Cult Elemental,Creature — Elemental,6,6,6,R,,Adventures in the Forgotten Realms,"Siege Monster — When this creature enters, roll a d20.
+1—9 | Each player sacrifices a permanent of their choice.
+10—19 | Each opponent sacrifices a permanent of their choice.
+20 | Each opponent sacrifices two permanents of their choice."
+mtg,Green Dragon,Creature — Dragon,6,4,4,G,Flying,Adventures in the Forgotten Realms,"Flying
+Poison Breath — When this creature enters, until end of turn, whenever a creature an opponent controls is dealt damage, destroy it."
+mtg,Hill Giant Herdgorger,Creature — Giant,6,7,6,G,,Adventures in the Forgotten Realms,"When this creature enters, you gain 3 life."
+mtg,Inferno of the Star Mounts,Legendary Creature — Dragon,6,6,6,R,"Flying,Haste",Adventures in the Forgotten Realms,"This spell can't be countered.
+Flying, haste
+{R}: Inferno of the Star Mounts gets +1/+0 until end of turn. When its power becomes 20 this way, it deals 20 damage to any target."
+mtg,Red Dragon,Creature — Dragon,6,4,4,R,Flying,Adventures in the Forgotten Realms,"Flying
+Fire Breath — When this creature enters, it deals 4 damage to each opponent."
+mtg,White Dragon,Creature — Dragon,6,4,4,W,Flying,Adventures in the Forgotten Realms,"Flying
+Cold Breath — When this creature enters, tap target creature an opponent controls. That creature doesn't untap during its controller's next untap step."
+mtg,"Xanathar, Guild Kingpin",Legendary Creature — Beholder,6,5,6,"B,U",,Adventures in the Forgotten Realms,"At the beginning of your upkeep, choose target opponent. Until end of turn, that player can't cast spells, you may look at the top card of their library any time, you may play the top card of their library, and you may spend mana as though it were mana of any color to cast spells this way."
+mtg,Black Dragon,Creature — Dragon,7,4,4,B,Flying,Adventures in the Forgotten Realms,"Flying
+Acid Breath — When this creature enters, target creature an opponent controls gets -3/-3 until end of turn."
+mtg,Blue Dragon,Creature — Dragon,7,5,5,U,Flying,Adventures in the Forgotten Realms,"Flying
+Lightning Breath — When this creature enters, until your next turn, target creature an opponent controls gets -3/-0, up to one other target creature gets -2/-0, and up to one other target creature gets -1/-0."
+mtg,Old Gnawbone,Legendary Creature — Dragon,7,7,7,G,"Flying,Treasure",Adventures in the Forgotten Realms,"Flying
+Whenever a creature you control deals combat damage to a player, create that many Treasure tokens."
+mtg,Purple Worm,Creature — Worm,7,8,7,G,Ward,Adventures in the Forgotten Realms,"This spell costs {2} less to cast if a creature died this turn.
+Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)"
+mtg,Tiamat,Legendary Creature — Dragon God,7,7,7,"B,G,R,U,W",Flying,Adventures in the Forgotten Realms,"Flying
+When Tiamat enters, if you cast it, search your library for up to five Dragon cards not named Tiamat that each have different names, reveal them, put them into your hand, then shuffle."
+mtg,The Tarrasque,Legendary Creature — Dinosaur,9,10,10,G,Fight,Adventures in the Forgotten Realms,"The Tarrasque has haste and ward {10} as long as it was cast.
+Whenever The Tarrasque attacks, it fights target creature defending player controls."
