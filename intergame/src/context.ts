@@ -3,7 +3,7 @@
 import Concept from './concept';
 import Creature from './creature';
 
-import FS from 'fs';
+import * as FS from 'fs';
 
 export default abstract class Context {
     readonly id: string;
