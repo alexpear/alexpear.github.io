@@ -16,11 +16,11 @@ export default abstract class Context {
         // let csv = Object.keys(abridgeds[0]).join(',') + '\n';
         const headers = Object.keys(abridgeds[0]);
 
-        return abridgeds
-            .map((abridged) =>
-                headers.map((header) => abridged[header]).join(','),
-            )
-            .join('\n');
+        const rows = abridgeds.map((abridged) =>
+            headers.map((header) => abridged[header]).join(','),
+        );
+
+        return [headers.join(','), ...rows].join('\n');
     }
 
     summary(creature: Creature): Record<string, unknown> {
@@ -30,7 +30,7 @@ export default abstract class Context {
         };
 
         for (const prop of this.salientProps()) {
-            summary[prop] = familiarVersion[prop];
+            summary[prop] = familiarVersion[prop]; // TODO escape commas
         }
 
         return summary;
