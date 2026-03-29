@@ -17,7 +17,7 @@ export default abstract class Context {
         const headers = Object.keys(abridgeds[0]);
 
         const rows = abridgeds.map((abridged) =>
-            headers.map((header) => abridged[header]).join(','),
+            headers.map((key) => Context.csvEscape(abridged[key])).join(','),
         );
 
         return [headers.join(','), ...rows].join('\n');
@@ -30,7 +30,7 @@ export default abstract class Context {
         };
 
         for (const prop of this.salientProps()) {
-            summary[prop] = familiarVersion[prop]; // TODO escape commas
+            summary[prop] = familiarVersion[prop];
         }
 
         return summary;
@@ -49,6 +49,14 @@ export default abstract class Context {
             concept.versions[this.id] = entry;
             return concept;
         });
+    }
+
+    static csvEscape(value: unknown): string {
+        const str = String(value ?? '');
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+            return '"' + str.replace(/"/g, '""') + '"';
+        }
+        return str;
     }
 
     // static run (): void {
