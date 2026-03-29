@@ -9,7 +9,9 @@ export default abstract class Context {
     abstract readonly id: string;
 
     comparisonCSV(): string {
-        const concepts = this.familiar2concepts(this.creaturesPath());
+        const concepts = this.familiar2concepts(
+            `${__dirname}/../data/${this.creaturesFilename()}`,
+        );
 
         const abridgeds = concepts.map((concept) => this.summary(concept));
 
@@ -36,7 +38,7 @@ export default abstract class Context {
         return summary;
     }
 
-    abstract creaturesPath(): string;
+    abstract creaturesFilename(): string;
     abstract salientProps(): string[];
 
     familiar2concepts(path: string): Concept[] {

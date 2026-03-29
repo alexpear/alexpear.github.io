@@ -18,8 +18,8 @@ export default class MtG extends Context {
         ];
     }
 
-    creaturesPath(): string {
-        return 'data/mtg-afr-creatures-scryfall.json';
+    creaturesFilename(): string {
+        return 'mtg-afr-creatures-scryfall.json';
     }
 
     static run(): void {

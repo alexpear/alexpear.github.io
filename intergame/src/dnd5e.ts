@@ -22,8 +22,8 @@ export default class DnD5e extends Context {
         ];
     }
 
-    creaturesPath(): string {
-        return 'data/dnd5e-monsters.json';
+    creaturesFilename(): string {
+        return 'dnd5e-monsters.json';
     }
 
     static run(): void {

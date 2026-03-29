@@ -64,9 +64,9 @@
     "testOld": "jest",
     "test": "npm run lint && npm run prettierwrite && npm run buildblockscout && npm run buildspoilerfree && npm run history && NODE_NO_WARNINGS=1 node --experimental-vm-modules node_modules/.bin/jest",
     "testAll": "npm run test && npm run testRingWorld && npm run testDeathPlanet",
-    "lint": "eslint --cache games/**/*.ts",
+    "lint": "eslint --cache games/**/*.ts intergame spoilerfree",
     "prettier": "prettier --check games/",
-    "prettierwrite": "prettier --write games/ pages/ spoilerfree/",
+    "prettierwrite": "prettier --write games/ intergame/ pages/ spoilerfree/",
     "wgenerator": "node generation/wgenerator.js",
     "wkrieg": "node generation/wkriegArmy.js",
     "40k": "node generation/grimDarkArmy.js",
@@ -78,7 +78,8 @@
     "buildblockscout": "tsc -p games/blockscout && browserify games/blockscout/dist/blockscout.js -o games/blockscout/dist/bundle.js",
     "openblockscout": "npm run open games/blockscout/blockscout.html",
     "buildspoilerfree": "tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js",
-    "history": "tsc -p pages/pophistory/tsconfig.json && browserify pages/pophistory/dist/popHistory.js -o pages/pophistory/dist/bundle.js"
+    "history": "tsc -p pages/pophistory/tsconfig.json && browserify pages/pophistory/dist/popHistory.js -o pages/pophistory/dist/bundle.js",
+    "intergame": "tsc -p intergame/tsconfig.json && npm run test && node intergame/dist/mtg.js > intergame/data/mtg.csv; node intergame/dist/dnd5e.js > intergame/data/dnd5e.csv"
   },
   "repository": {
     "type": "git",
