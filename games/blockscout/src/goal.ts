@@ -3,7 +3,7 @@ export class Goal {
     lastVisited: Date;
 
     // After you visit a Goal, its points start at START_POINTS the next midnight, & grow from there.
-    static readonly START_POINTS: number = 4;
+    static readonly START_POINTS: number = 2;
 
     constructor(lastVisited?: Date) {
         // Default to 1970 for never-visited places.
