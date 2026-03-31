@@ -372,6 +372,6 @@ class Goal {
 }
 exports.Goal = Goal;
 // After you visit a Goal, its points start at START_POINTS the next midnight, & grow from there.
-Goal.START_POINTS = 4;
+Goal.START_POINTS = 2;
 
 },{}]},{},[1]);
