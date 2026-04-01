@@ -44,6 +44,8 @@ export default class MtG extends Context {
     }
 }
 
-MtG.run();
+if (require.main === module) {
+    MtG.run();
+}
 
 // TODO tsc -p tsconfig.json

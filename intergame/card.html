@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Intergame — Card Viewer</title>
+
+        <!-- Mana symbols (W, U, B, R, G, tap, etc.) -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/mana-font@latest/css/mana.css"
+            rel="stylesheet"
+        />
+
+        <!-- Beleren Bold — the official MTG card title/type font -->
+        <link
+            href="https://unpkg.com/@saeris/typeface-beleren-bold@latest/index.css"
+            rel="stylesheet"
+        />
+
+        <!-- Crimson Text — close approximation of MPlantin for oracle text -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
+            rel="stylesheet"
+        />
+
+        <link rel="stylesheet" href="card.css" />
+
+        <style>
+            body {
+                background: #2a2a2a;
+                margin: 0;
+                padding: 30px;
+            }
+
+            #card-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                align-items: flex-start;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="card-container"></div>
+        <script src="dist/bundle.js"></script>
+    </body>
+</html>

@@ -80,7 +80,8 @@
     "buildspoilerfree": "tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js",
     "history": "tsc -p pages/pophistory/tsconfig.json && browserify pages/pophistory/dist/popHistory.js -o pages/pophistory/dist/bundle.js",
     "intergame": "tsc -p intergame/tsconfig.json && npm run test && node intergame/dist/intergame.js",
-    "intergamecsv": "tsc -p intergame/tsconfig.json && npm run test && node intergame/dist/mtg.js > intergame/data/mtg.csv; node intergame/dist/dnd5e.js > intergame/data/dnd5e.csv"
+    "intergamecsv": "tsc -p intergame/tsconfig.json && npm run test && node intergame/dist/mtg.js > intergame/data/mtg.csv; node intergame/dist/dnd5e.js > intergame/data/dnd5e.csv",
+    "buildintergame": "tsc -p intergame/tsconfig.json && browserify intergame/dist/cardViewer.js -o intergame/dist/bundle.js"
   },
   "repository": {
     "type": "git",
