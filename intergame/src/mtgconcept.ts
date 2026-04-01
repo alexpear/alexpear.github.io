@@ -35,18 +35,18 @@ export default class MtGConcept extends Concept {
 
         card.typeLine = 'Creature';
 
-        card.power = Math.round(
-            Math.max(
-                Number(rawDnD.strength),
-                Number(rawDnD.dexterity),
-                Number(rawDnD.intelligence),
-                Number(rawDnD.wisdom),
-                Number(rawDnD.charisma),
-                0,
-            ) / 6,
+        const bestDamageAbility = Math.max(
+            Number(rawDnD.strength),
+            Number(rawDnD.dexterity),
+            Number(rawDnD.intelligence),
+            Number(rawDnD.wisdom),
+            Number(rawDnD.charisma),
         );
+        const power = Math.round((bestDamageAbility - 10) / 2);
+        card.power = power >= 0 ? power : 0;
 
-        card.toughness = Math.round(Number(rawDnD.armor_class) / 6) || 1;
+        const toughness = Math.round((Number(rawDnD.constitution) - 10) / 2);
+        card.toughness = toughness >= 1 ? toughness : 1;
 
         card.colors = MtG.alignment2color(dndCreature.alignment);
 
