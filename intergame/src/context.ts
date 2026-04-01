@@ -48,7 +48,33 @@ export default abstract class Context {
         return array.map((entry: Record<string, unknown>) => {
             const concept = new Concept();
 
+            // LATER each of these values in .versions should probably be its own Concept instance.
             concept.versions[this.id] = entry;
+
+            concept.name = String(entry.slug || entry.id || entry.name || '')
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, '-');
+
+            // LATER move this to dnd5e.ts
+            if (entry.alignment) {
+                const listed = String(entry.alignment).trim().toLowerCase();
+
+                concept.alignment =
+                    {
+                        'lawful good': 'lg',
+                        'neutral good': 'ng',
+                        'chaotic good': 'cg',
+                        'lawful neutral': 'ln',
+                        neutral: 'nn',
+                        'chaotic neutral': 'cn',
+                        'lawful evil': 'le',
+                        'neutral evil': 'ne',
+                        'chaotic evil': 'ce',
+                        'any alignment': 'any',
+                    }[listed] || listed;
+            }
+
             return concept;
         });
     }

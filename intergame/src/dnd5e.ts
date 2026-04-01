@@ -32,4 +32,4 @@ export default class DnD5e extends Context {
     }
 }
 
-DnD5e.run();
+// DnD5e.run();

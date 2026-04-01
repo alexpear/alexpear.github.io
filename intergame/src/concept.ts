@@ -6,6 +6,7 @@ export default class Concept {
 
     // keyed by context id, value is the original data from that context
     versions: Record<string, Record<string, unknown>> = {};
+    alignment: string | undefined; // lg, nn, ce, etc.
 
     type(): string {
         return 'concept';

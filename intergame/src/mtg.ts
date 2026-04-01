@@ -22,6 +22,22 @@ export default class MtG extends Context {
         return 'mtg-afr-creatures-scryfall.json';
     }
 
+    static alignment2color(abbrv?: string): string {
+        return (
+            {
+                lg: 'w',
+                ng: 'wg',
+                cg: 'g',
+                cn: 'r',
+                ce: 'br',
+                ne: 'b',
+                le: 'ub',
+                ln: 'u',
+                nn: '',
+            }[abbrv?.toLowerCase() || ''] || ''
+        );
+    }
+
     static run(): void {
         const csv = new MtG().comparisonCSV();
         console.log(csv);
