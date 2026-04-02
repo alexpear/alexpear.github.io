@@ -18,7 +18,13 @@ const HIVE_COLORS: Record<string, string> = {
     mason: '#4a1a6b',
 };
 
-export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<WotsState>) {
+export function WotsBoard({
+    G,
+    ctx,
+    moves,
+    playerID,
+    isActive,
+}: BoardProps<WotsState>) {
     const myID = playerID ?? '0';
     const player = G.players[myID];
     const needed = agentsPerTurn(ctx.numPlayers);
@@ -45,15 +51,23 @@ export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<Wots
                 <span style={{ color: '#aaa' }}>Phase: {ctx.phase}</span>
                 {'  '}
                 {isActive && isDeployPhase && (
-                    <span style={{ color: '#8f8', fontWeight: 'bold' }}>Your turn</span>
+                    <span style={{ color: '#8f8', fontWeight: 'bold' }}>
+                        Your turn
+                    </span>
                 )}
             </div>
 
             {/* Hive Banners */}
             <div style={{ marginBottom: '12px' }}>
-                <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '4px' }}>
-                    HIVE BANNERS — click a square to place agent ({player?.agentsOnBoard ?? 0}/
-                    {needed})
+                <div
+                    style={{
+                        fontSize: '12px',
+                        color: '#aaa',
+                        marginBottom: '4px',
+                    }}
+                >
+                    HIVE BANNERS — click a square to place agent (
+                    {player?.agentsOnBoard ?? 0}/{needed})
                 </div>
                 {HIVE_IDS.map((hiveId) => (
                     <div
@@ -65,7 +79,13 @@ export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<Wots
                             border: '1px solid ' + HIVE_COLORS[hiveId],
                         }}
                     >
-                        <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '3px' }}>
+                        <div
+                            style={{
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                marginBottom: '3px',
+                            }}
+                        >
                             {HIVE_NAMES[hiveId]}
                         </div>
                         <div style={{ display: 'flex', gap: '3px' }}>
@@ -79,21 +99,34 @@ export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<Wots
                                 return (
                                     <button
                                         key={i}
-                                        onClick={() => canPlace && moves.placeAgent(hiveId, i)}
+                                        onClick={() =>
+                                            canPlace &&
+                                            moves.placeAgent(hiveId, i)
+                                        }
                                         disabled={!canPlace}
                                         title={role}
                                         style={{
                                             flex: 1,
                                             padding: '3px 0',
                                             fontSize: '11px',
-                                            background: occupant !== null ? '#556' : '#222',
-                                            color: occupant !== null ? '#ccf' : '#888',
+                                            background:
+                                                occupant !== null
+                                                    ? '#556'
+                                                    : '#222',
+                                            color:
+                                                occupant !== null
+                                                    ? '#ccf'
+                                                    : '#888',
                                             border: '1px solid #555',
-                                            cursor: canPlace ? 'pointer' : 'default',
+                                            cursor: canPlace
+                                                ? 'pointer'
+                                                : 'default',
                                         }}
                                     >
                                         {role.slice(0, 4)}
-                                        {occupant !== null ? `·P${occupant}` : ''}
+                                        {occupant !== null
+                                            ? `·P${occupant}`
+                                            : ''}
                                     </button>
                                 );
                             })}
@@ -104,19 +137,46 @@ export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<Wots
 
             {/* Territory Table */}
             <div style={{ marginBottom: '12px' }}>
-                <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '4px' }}>
+                <div
+                    style={{
+                        fontSize: '12px',
+                        color: '#aaa',
+                        marginBottom: '4px',
+                    }}
+                >
                     TERRITORIES
                 </div>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
+                <table
+                    style={{
+                        width: '100%',
+                        borderCollapse: 'collapse',
+                        fontSize: '11px',
+                    }}
+                >
                     <thead>
                         <tr style={{ color: '#888' }}>
-                            <th style={{ textAlign: 'left', paddingRight: '4px' }}>Name</th>
+                            <th
+                                style={{
+                                    textAlign: 'left',
+                                    paddingRight: '4px',
+                                }}
+                            >
+                                Name
+                            </th>
                             {HIVE_IDS.map((h) => (
-                                <th key={h} style={{ textAlign: 'center', width: '28px' }}>
+                                <th
+                                    key={h}
+                                    style={{
+                                        textAlign: 'center',
+                                        width: '28px',
+                                    }}
+                                >
                                     {h.slice(0, 3)}
                                 </th>
                             ))}
-                            <th style={{ textAlign: 'center', width: '20px' }}>⚑</th>
+                            <th style={{ textAlign: 'center', width: '20px' }}>
+                                ⚑
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -125,7 +185,10 @@ export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<Wots
                                 <td style={{ paddingRight: '4px' }}>
                                     {t.name}
                                     {t.homeHive ? (
-                                        <span style={{ color: '#666' }}> ({t.homeHive.slice(0, 3)})</span>
+                                        <span style={{ color: '#666' }}>
+                                            {' '}
+                                            ({t.homeHive.slice(0, 3)})
+                                        </span>
                                     ) : null}
                                 </td>
                                 {HIVE_IDS.map((h) => (
@@ -135,7 +198,8 @@ export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<Wots
                                             textAlign: 'center',
                                             color:
                                                 (t.troops[h] ?? 0) > 0
-                                                    ? HIVE_COLORS[h] === undefined
+                                                    ? HIVE_COLORS[h] ===
+                                                      undefined
                                                         ? '#fff'
                                                         : '#ddf'
                                                     : '#333',
@@ -144,8 +208,15 @@ export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<Wots
                                         {t.troops[h] ?? 0}
                                     </td>
                                 ))}
-                                <td style={{ textAlign: 'center', color: '#ff8' }}>
-                                    {t.harbingerCount > 0 ? t.harbingerCount : ''}
+                                <td
+                                    style={{
+                                        textAlign: 'center',
+                                        color: '#ff8',
+                                    }}
+                                >
+                                    {t.harbingerCount > 0
+                                        ? t.harbingerCount
+                                        : ''}
                                 </td>
                             </tr>
                         ))}
@@ -155,7 +226,13 @@ export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<Wots
 
             {/* Loyalty Tokens */}
             <div>
-                <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '4px' }}>
+                <div
+                    style={{
+                        fontSize: '12px',
+                        color: '#aaa',
+                        marginBottom: '4px',
+                    }}
+                >
                     YOUR LOYALTY (peek only)
                 </div>
                 <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
@@ -165,14 +242,19 @@ export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<Wots
                             style={{
                                 padding: '3px 6px',
                                 background: HIVE_COLORS[token.hiveId] + '88',
-                                border: '1px solid ' + (token.revealed ? '#ff8' : '#555'),
+                                border:
+                                    '1px solid ' +
+                                    (token.revealed ? '#ff8' : '#555'),
                                 fontSize: '11px',
                                 borderRadius: '3px',
                             }}
                         >
-                            <span style={{ color: '#ff8' }}>{LOYALTY_MULTIPLIERS[i]}×</span>
-                            {' '}
-                            {token.revealed ? HIVE_NAMES[token.hiveId] : token.hiveId}
+                            <span style={{ color: '#ff8' }}>
+                                {LOYALTY_MULTIPLIERS[i]}×
+                            </span>{' '}
+                            {token.revealed
+                                ? HIVE_NAMES[token.hiveId]
+                                : token.hiveId}
                         </div>
                     ))}
                 </div>
@@ -188,16 +270,22 @@ export function WotsBoard({ G, ctx, moves, playerID, isActive }: BoardProps<Wots
                         border: '1px solid #ff8',
                     }}
                 >
-                    <div style={{ color: '#ff8', fontWeight: 'bold', marginBottom: '6px' }}>
+                    <div
+                        style={{
+                            color: '#ff8',
+                            fontWeight: 'bold',
+                            marginBottom: '6px',
+                        }}
+                    >
                         GAME OVER — Player {ctx.gameover.winner} wins!
                     </div>
-                    {Object.entries(ctx.gameover.scores as Record<string, number>).map(
-                        ([pid, score]) => (
-                            <div key={pid} style={{ fontSize: '13px' }}>
-                                Player {pid}: {score} points
-                            </div>
-                        ),
-                    )}
+                    {Object.entries(
+                        ctx.gameover.scores as Record<string, number>,
+                    ).map(([pid, score]) => (
+                        <div key={pid} style={{ fontSize: '13px' }}>
+                            Player {pid}: {score} points
+                        </div>
+                    ))}
                 </div>
             )}
         </div>

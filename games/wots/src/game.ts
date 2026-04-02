@@ -1,7 +1,13 @@
 import { INVALID_MOVE } from 'boardgame.io/core';
 import type { Game } from 'boardgame.io';
 
-export const HIVE_IDS = ['eu', 'humanist', 'cousins', 'mitsubishi', 'mason'] as const;
+export const HIVE_IDS = [
+    'eu',
+    'humanist',
+    'cousins',
+    'mitsubishi',
+    'mason',
+] as const;
 export type HiveId = (typeof HIVE_IDS)[number];
 
 export const HIVE_NAMES: Record<HiveId, string> = {
@@ -17,7 +23,12 @@ export const LOYALTY_MULTIPLIERS = [4, 3, 2, 0, -1] as const;
 export type LoyaltyMultiplier = (typeof LOYALTY_MULTIPLIERS)[number];
 
 // Each hive has 4 squares players can place agents on
-export const SQUARE_ROLES = ['Logistics', 'Opposition', 'Marshal', 'Leader'] as const;
+export const SQUARE_ROLES = [
+    'Logistics',
+    'Opposition',
+    'Marshal',
+    'Leader',
+] as const;
 export type SquareRole = (typeof SQUARE_ROLES)[number];
 
 export interface Territory {
@@ -78,7 +89,8 @@ export function scoreFor(G: WotsState, playerID: string): number {
     const player = G.players[playerID];
     if (!player) return 0;
     return player.loyaltyTokens.reduce(
-        (sum, token) => sum + token.multiplier * harbingersControlledBy(G, token.hiveId),
+        (sum, token) =>
+            sum + token.multiplier * harbingersControlledBy(G, token.hiveId),
         0,
     );
 }
@@ -144,10 +156,9 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 function emptyHiveSquares(): Record<HiveId, (string | null)[]> {
-    return Object.fromEntries(HIVE_IDS.map((h) => [h, [null, null, null, null]])) as Record<
-        HiveId,
-        (string | null)[]
-    >;
+    return Object.fromEntries(
+        HIVE_IDS.map((h) => [h, [null, null, null, null]]),
+    ) as Record<HiveId, (string | null)[]>;
 }
 
 export const WotsGame: Game<WotsState> = {
@@ -176,10 +187,15 @@ export const WotsGame: Game<WotsState> = {
     },
 
     moves: {
-        placeAgent: ({ G, ctx, playerID }, hiveId: HiveId, squareIndex: number) => {
+        placeAgent: (
+            { G, ctx, playerID },
+            hiveId: HiveId,
+            squareIndex: number,
+        ) => {
             if (!HIVE_IDS.includes(hiveId)) return INVALID_MOVE;
             if (squareIndex < 0 || squareIndex > 3) return INVALID_MOVE;
-            if (G.hiveSquares[hiveId][squareIndex] !== null) return INVALID_MOVE;
+            if (G.hiveSquares[hiveId][squareIndex] !== null)
+                return INVALID_MOVE;
 
             const player = G.players[playerID];
             const needed = agentsPerTurn(ctx.numPlayers);
@@ -202,7 +218,9 @@ export const WotsGame: Game<WotsState> = {
             },
             endIf: ({ G, ctx }) => {
                 const needed = agentsPerTurn(ctx.numPlayers);
-                return Object.values(G.players).every((p) => p.agentsOnBoard >= needed);
+                return Object.values(G.players).every(
+                    (p) => p.agentsOnBoard >= needed,
+                );
             },
             next: 'hiveTurns',
         },
@@ -226,7 +244,9 @@ export const WotsGame: Game<WotsState> = {
             for (let i = 0; i < ctx.numPlayers; i++) {
                 scores[String(i)] = scoreFor(G, String(i));
             }
-            const winner = Object.entries(scores).sort(([, a], [, b]) => b - a)[0][0];
+            const winner = Object.entries(scores).sort(
+                ([, a], [, b]) => b - a,
+            )[0][0];
             return { scores, winner };
         }
     },
