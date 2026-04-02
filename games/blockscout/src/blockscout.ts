@@ -6,7 +6,6 @@ import { Goal } from './goal';
 declare const L;
 const GRID_STEP: number = 0.01;
 const GOAL_FONT_PX: number = 32;
-const MIN_ZOOM: number = 12; // User can't zoom out too much.
 const FOG_BUFFER: number = 1; // Extra cells of fog rendered beyond the viewport edge
 const HOUR = 60 * 60 * 1000; // in ms
 const SAN_FRANCISCO = [37.77, -122.42];
@@ -16,16 +15,18 @@ const TEST_MODE: string = undefined; // 'font';
 export class BlockScout {
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
-        minZoom: MIN_ZOOM,
         renderer: L.canvas({ padding: 0.1 }),
         zoomControl: false,
     }).setView(SAN_FRANCISCO, 15);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tileLayer: Record<string, any> | undefined = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     playerMarker: Record<string, any> | undefined = undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     renderedGoals: Map<string, Record<string, any>> = new Map();
     fogRectangles: Map<string, Record<string, object>> = new Map();
+    exploredRectangles: Map<string, Record<string, object>> = new Map();
     locationKnown: boolean = false;
 
     // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
@@ -41,7 +42,7 @@ export class BlockScout {
 
     constructor() {
         // --- Map setup ---
-        const tileLayer = L.tileLayer(
+        this.tileLayer = L.tileLayer(
             'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
             {
                 maxZoom: 19,
@@ -57,8 +58,12 @@ export class BlockScout {
         this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
 
         // Hide tiles during pan/zoom so unfogged street tiles don't show before fog is drawn.
-        this.map.on('movestart', () => tileLayer.setOpacity(0));
-        this.map.on('moveend', () => tileLayer.setOpacity(1));
+        this.map.on('movestart', () => this.tileLayer.setOpacity(0));
+        this.map.on('moveend', () => {
+            if (this.map.getZoom() > 11) {
+                this.tileLayer.setOpacity(1);
+            }
+        });
 
         this.load();
         this.updateScoreDisplay();
@@ -253,6 +258,81 @@ export class BlockScout {
 
         const activeKeys = new Set<string>();
 
+        // TODO bug - slow performance when very zoomed out
+        if (this.map.getZoom() <= 11) {
+            this.tileLayer.setOpacity(0);
+            this.map.getContainer().style.backgroundColor = 'black';
+
+            // Clear normal-mode layers
+            for (const rect of this.fogRectangles.values()) {
+                this.map.removeLayer(rect);
+            }
+            this.fogRectangles.clear();
+            for (const marker of this.renderedGoals.values()) {
+                this.map.removeLayer(marker);
+            }
+            this.renderedGoals.clear();
+
+            // Render white rectangles over explored cells on black background
+            for (
+                let lat = latMin;
+                lat <= latMax + GRID_STEP / 2;
+                lat += GRID_STEP
+            ) {
+                for (
+                    let long = longMin;
+                    long <= longMax + GRID_STEP / 2;
+                    long += GRID_STEP
+                ) {
+                    const key = BlockScout.keyFormat(lat, long);
+                    activeKeys.add(key);
+                    const goal = this.goalAt(lat, long);
+
+                    if (goal.pointsAvailable() < 1000) {
+                        if (!this.exploredRectangles.has(key)) {
+                            const s = this.snapToGrid(lat);
+                            const w = this.snapToGrid(long);
+                            const rect = L.rectangle(
+                                [
+                                    [s - GRID_STEP / 2, w - GRID_STEP / 2],
+                                    [s + GRID_STEP / 2, w + GRID_STEP / 2],
+                                ],
+                                {
+                                    color: 'white',
+                                    fillColor: 'white',
+                                    fillOpacity: 1,
+                                    weight: 0,
+                                    interactive: false,
+                                },
+                            ).addTo(this.map);
+                            this.exploredRectangles.set(key, rect);
+                        }
+                    } else {
+                        const existing = this.exploredRectangles.get(key);
+                        if (existing) {
+                            this.map.removeLayer(existing);
+                            this.exploredRectangles.delete(key);
+                        }
+                    }
+                }
+            }
+
+            for (const [key, rect] of this.exploredRectangles) {
+                if (!activeKeys.has(key)) {
+                    this.map.removeLayer(rect);
+                    this.exploredRectangles.delete(key);
+                }
+            }
+            return;
+        }
+
+        // Normal mode (zoom > 11): restore background, clear overview layers
+        this.map.getContainer().style.backgroundColor = '';
+        for (const rect of this.exploredRectangles.values()) {
+            this.map.removeLayer(rect);
+        }
+        this.exploredRectangles.clear();
+
         for (
             let lat = latMin;
             lat <= latMax + GRID_STEP / 2;
@@ -303,8 +383,6 @@ export class BlockScout {
                         this.map.removeLayer(existingFog);
                         this.fogRectangles.delete(key);
                     }
-
-                    // TODO Allow zooming out all the way, but render map tiles as black (opacity), and render visited blocks as white rectangles. If they get too small, consider rendering at grid_step 1 at this zoom.
 
                     // When very zoomed out, don't show labels. They overlap each other.
                     if (this.map.getZoom() < 13) {
