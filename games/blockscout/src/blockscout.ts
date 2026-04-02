@@ -298,6 +298,7 @@ export class BlockScout {
                                     [s + GRID_STEP / 2, w + GRID_STEP / 2],
                                 ],
                                 {
+                                    pane: 'fogPane',
                                     color: 'white',
                                     fillColor: 'white',
                                     fillOpacity: 1,
