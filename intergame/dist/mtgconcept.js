@@ -28,7 +28,7 @@ class MtGConcept extends concept_1.default {
         card.name = dndCreature.name || '';
         const rawDnD = dndCreature.versions.dnd5e;
         card.typeLine = 'Creature';
-        const bestDamageAbility = Math.max(Number(rawDnD.strength), Number(rawDnD.dexterity), Number(rawDnD.intelligence), Number(rawDnD.wisdom), Number(rawDnD.charisma), 0);
+        const bestDamageAbility = Math.max(Number(rawDnD.strength), Number(rawDnD.dexterity), Number(rawDnD.intelligence), Number(rawDnD.wisdom), Number(rawDnD.charisma));
         const power = Math.round((bestDamageAbility - 10) / 2);
         card.power = power >= 0 ? power : 0;
         const toughness = Math.round((Number(rawDnD.constitution) - 10) / 2);

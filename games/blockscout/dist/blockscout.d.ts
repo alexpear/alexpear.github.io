@@ -1,9 +1,11 @@
 import { Goal } from './goal';
 export declare class BlockScout {
     map: any;
+    tileLayer: Record<string, any> | undefined;
     playerMarker: Record<string, any> | undefined;
     renderedGoals: Map<string, Record<string, any>>;
     fogRectangles: Map<string, Record<string, object>>;
+    exploredRectangles: Map<string, Record<string, object>>;
     locationKnown: boolean;
     playerScore: number;
     scoreEl: HTMLElement;

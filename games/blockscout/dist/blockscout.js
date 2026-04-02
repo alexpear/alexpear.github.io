@@ -5,7 +5,6 @@ exports.BlockScout = void 0;
 const goal_1 = require("./goal");
 const GRID_STEP = 0.01;
 const GOAL_FONT_PX = 32;
-const MIN_ZOOM = 12; // User can't zoom out too much.
 const FOG_BUFFER = 1; // Extra cells of fog rendered beyond the viewport edge
 const HOUR = 60 * 60 * 1000; // in ms
 const SAN_FRANCISCO = [37.77, -122.42];
@@ -14,15 +13,17 @@ class BlockScout {
     constructor() {
         // eslint-disable-next-line @typescript-eslint/typedef
         this.map = L.map('map', {
-            minZoom: MIN_ZOOM,
             renderer: L.canvas({ padding: 0.1 }),
             zoomControl: false,
         }).setView(SAN_FRANCISCO, 15);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.tileLayer = undefined;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.playerMarker = undefined;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.renderedGoals = new Map();
         this.fogRectangles = new Map();
+        this.exploredRectangles = new Map();
         this.locationKnown = false;
         // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
         this.playerScore = 0;
@@ -33,7 +34,7 @@ class BlockScout {
         this.lastSeenLat = SAN_FRANCISCO[0];
         this.lastSeenLong = SAN_FRANCISCO[1];
         // --- Map setup ---
-        const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        this.tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             maxZoom: 19,
             // NOTE: This attribution string displays as hyperlinks in the bottom right of the screen.
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
@@ -42,8 +43,12 @@ class BlockScout {
         this.map.createPane('fogPane');
         this.map.getPane('fogPane').style.zIndex = '250'; // above tiles (200), below overlays (400)
         // Hide tiles during pan/zoom so unfogged street tiles don't show before fog is drawn.
-        this.map.on('movestart', () => tileLayer.setOpacity(0));
-        this.map.on('moveend', () => tileLayer.setOpacity(1));
+        this.map.on('movestart', () => this.tileLayer.setOpacity(0));
+        this.map.on('moveend', () => {
+            if (this.map.getZoom() > 11) {
+                this.tileLayer.setOpacity(1);
+            }
+        });
         this.load();
         this.updateScoreDisplay();
         if (navigator.geolocation) {
@@ -187,6 +192,83 @@ class BlockScout {
         const longMin = this.snapToGrid(bounds.getWest() - buf);
         const longMax = this.snapToGrid(bounds.getEast() + buf);
         const activeKeys = new Set();
+        // TODO bug - slow performance when very zoomed out
+        if (this.map.getZoom() <= 11) {
+            console.time('overview-total');
+            console.time('overview-setup');
+            this.tileLayer.setOpacity(0);
+            this.map.getContainer().style.backgroundColor = 'black';
+            console.timeEnd('overview-setup');
+            console.time('overview-clear-normal-layers');
+            // Clear normal-mode layers
+            for (const rect of this.fogRectangles.values()) {
+                this.map.removeLayer(rect);
+            }
+            this.fogRectangles.clear();
+            for (const marker of this.renderedGoals.values()) {
+                this.map.removeLayer(marker);
+            }
+            this.renderedGoals.clear();
+            console.timeEnd('overview-clear-normal-layers');
+            console.time('overview-render-loop');
+            // Iterate only visited cells rather than every cell in the viewport.
+            for (const key of Object.keys(this.coords2dates)) {
+                const [lat, long] = key.split(',').map(Number);
+                if (lat < latMin ||
+                    lat > latMax ||
+                    long < longMin ||
+                    long > longMax) {
+                    continue;
+                }
+                const goal = this.goalAt(lat, long);
+                if (goal.pointsAvailable() < 1000) {
+                    if (!this.exploredRectangles.has(key)) {
+                        const s = this.snapToGrid(lat);
+                        const w = this.snapToGrid(long);
+                        const rect = L.rectangle([
+                            [s - GRID_STEP / 2, w - GRID_STEP / 2],
+                            [s + GRID_STEP / 2, w + GRID_STEP / 2],
+                        ], {
+                            pane: 'fogPane',
+                            color: 'white',
+                            fillColor: 'white',
+                            fillOpacity: 1,
+                            weight: 0,
+                            interactive: false,
+                        }).addTo(this.map);
+                        this.exploredRectangles.set(key, rect);
+                    }
+                }
+                else {
+                    const existing = this.exploredRectangles.get(key);
+                    if (existing) {
+                        this.map.removeLayer(existing);
+                        this.exploredRectangles.delete(key);
+                    }
+                }
+            }
+            console.timeEnd('overview-render-loop');
+            console.time('overview-cull');
+            for (const [key, rect] of this.exploredRectangles) {
+                const [lat, long] = key.split(',').map(Number);
+                if (lat < latMin ||
+                    lat > latMax ||
+                    long < longMin ||
+                    long > longMax) {
+                    this.map.removeLayer(rect);
+                    this.exploredRectangles.delete(key);
+                }
+            }
+            console.timeEnd('overview-cull');
+            console.timeEnd('overview-total');
+            return;
+        }
+        // Normal mode (zoom > 11): restore background, clear overview layers
+        this.map.getContainer().style.backgroundColor = '';
+        for (const rect of this.exploredRectangles.values()) {
+            this.map.removeLayer(rect);
+        }
+        this.exploredRectangles.clear();
         for (let lat = latMin; lat <= latMax + GRID_STEP / 2; lat += GRID_STEP) {
             for (let long = longMin; long <= longMax + GRID_STEP / 2; long += GRID_STEP) {
                 const key = BlockScout.keyFormat(lat, long);
@@ -225,7 +307,6 @@ class BlockScout {
                         this.map.removeLayer(existingFog);
                         this.fogRectangles.delete(key);
                     }
-                    // TODO Allow zooming out all the way, but render map tiles as black (opacity), and render visited blocks as white rectangles. If they get too small, consider rendering at grid_step 1 at this zoom.
                     // When very zoomed out, don't show labels. They overlap each other.
                     if (this.map.getZoom() < 13) {
                         const existingLabel = this.renderedGoals.get(key);
