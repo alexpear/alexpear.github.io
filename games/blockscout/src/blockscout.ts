@@ -258,11 +258,15 @@ export class BlockScout {
 
         const activeKeys = new Set<string>();
 
-        // TODO bug - slow performance when very zoomed out
         if (this.map.getZoom() <= 11) {
+            console.time('overview-total');
+
+            console.time('overview-setup');
             this.tileLayer.setOpacity(0);
             this.map.getContainer().style.backgroundColor = 'black';
+            console.timeEnd('overview-setup');
 
+            console.time('overview-clear-normal-layers');
             // Clear normal-mode layers
             for (const rect of this.fogRectangles.values()) {
                 this.map.removeLayer(rect);
@@ -272,58 +276,67 @@ export class BlockScout {
                 this.map.removeLayer(marker);
             }
             this.renderedGoals.clear();
+            console.timeEnd('overview-clear-normal-layers');
 
-            // Render white rectangles over explored cells on black background
-            for (
-                let lat = latMin;
-                lat <= latMax + GRID_STEP / 2;
-                lat += GRID_STEP
-            ) {
-                for (
-                    let long = longMin;
-                    long <= longMax + GRID_STEP / 2;
-                    long += GRID_STEP
+            console.time('overview-render-loop');
+            // Iterate only visited cells rather than every cell in the viewport.
+            for (const key of Object.keys(this.coords2dates)) {
+                const [lat, long] = key.split(',').map(Number);
+                if (
+                    lat < latMin ||
+                    lat > latMax ||
+                    long < longMin ||
+                    long > longMax
                 ) {
-                    const key = BlockScout.keyFormat(lat, long);
-                    activeKeys.add(key);
-                    const goal = this.goalAt(lat, long);
-
-                    if (goal.pointsAvailable() < 1000) {
-                        if (!this.exploredRectangles.has(key)) {
-                            const s = this.snapToGrid(lat);
-                            const w = this.snapToGrid(long);
-                            const rect = L.rectangle(
-                                [
-                                    [s - GRID_STEP / 2, w - GRID_STEP / 2],
-                                    [s + GRID_STEP / 2, w + GRID_STEP / 2],
-                                ],
-                                {
-                                    pane: 'fogPane',
-                                    color: 'white',
-                                    fillColor: 'white',
-                                    fillOpacity: 1,
-                                    weight: 0,
-                                    interactive: false,
-                                },
-                            ).addTo(this.map);
-                            this.exploredRectangles.set(key, rect);
-                        }
-                    } else {
-                        const existing = this.exploredRectangles.get(key);
-                        if (existing) {
-                            this.map.removeLayer(existing);
-                            this.exploredRectangles.delete(key);
-                        }
+                    continue;
+                }
+                const goal = this.goalAt(lat, long);
+                if (goal.pointsAvailable() < 1000) {
+                    if (!this.exploredRectangles.has(key)) {
+                        const s = this.snapToGrid(lat);
+                        const w = this.snapToGrid(long);
+                        const rect = L.rectangle(
+                            [
+                                [s - GRID_STEP / 2, w - GRID_STEP / 2],
+                                [s + GRID_STEP / 2, w + GRID_STEP / 2],
+                            ],
+                            {
+                                pane: 'fogPane',
+                                color: 'white',
+                                fillColor: 'white',
+                                fillOpacity: 1,
+                                weight: 0,
+                                interactive: false,
+                            },
+                        ).addTo(this.map);
+                        this.exploredRectangles.set(key, rect);
+                    }
+                } else {
+                    const existing = this.exploredRectangles.get(key);
+                    if (existing) {
+                        this.map.removeLayer(existing);
+                        this.exploredRectangles.delete(key);
                     }
                 }
             }
+            console.timeEnd('overview-render-loop');
 
+            console.time('overview-cull');
             for (const [key, rect] of this.exploredRectangles) {
-                if (!activeKeys.has(key)) {
+                const [lat, long] = key.split(',').map(Number);
+                if (
+                    lat < latMin ||
+                    lat > latMax ||
+                    long < longMin ||
+                    long > longMax
+                ) {
                     this.map.removeLayer(rect);
                     this.exploredRectangles.delete(key);
                 }
             }
+            console.timeEnd('overview-cull');
+
+            console.timeEnd('overview-total');
             return;
         }
 
