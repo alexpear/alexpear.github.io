@@ -4,7 +4,10 @@
   "description": "website + procedurally generated narrative + other fun scripts",
   "main": "WGenerator.js",
   "dependencies": {
+    "boardgame.io": "^0.50.0",
     "browserify": "^17.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "comma-number": "^2.0.0",
     "d20": "^1.4.1",
     "geotiff": "^2.1.2",
@@ -34,6 +37,9 @@
     "typescript": "^4.9.5",
     "typescript-eslint": "^8.55.0",
     "webpack": "^5.24.2",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "ts-loader": "^9.0.0",
     "webpack-cli": "^4.5.0"
   },
   "scripts": {
@@ -75,6 +81,7 @@
     "testRingWorld": "node bottleWorld/ringWorldState.js test",
     "buildlimitless": "browserify bottleWorld/chronarchon/src/*.js --exclude bottleWorld/chronarchon/src/*.test.js -o bottleWorld/chronarchon/bundle.js && npm run server && open bottleWorld/chronarchon/chronarchon.html",
     "shelf": "node visuals/wildbow/shelf.js > visuals/wildbow/shelf.html && prettier --write visuals/wildbow/",
+    "wots": "webpack --config games/wots/webpack.config.js && npm run server",
     "buildblockscout": "tsc -p games/blockscout && browserify games/blockscout/dist/blockscout.js -o games/blockscout/dist/bundle.js",
     "openblockscout": "npm run open games/blockscout/blockscout.html",
     "buildspoilerfree": "tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js",
