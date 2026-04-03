@@ -14,11 +14,11 @@ import {
 // ─── Theme ───────────────────────────────────────────────────────────────────
 
 const HIVE_COLOR: Record<HiveId, string> = {
-    eu: '#4a6fa5',
-    humanist: '#c8a000',
-    cousins: '#2aaa80',
-    mitsubishi: '#c84040',
-    mason: '#9a50d8',
+    eu: 'rgb(83, 115, 227)',
+    humanist: 'rgb(254, 209, 29)',
+    cousins: 'rgb(88, 249, 255)',
+    mitsubishi: 'rgb(254, 23, 23)',
+    mason: 'rgb(142, 89, 255)',
 };
 
 const HIVE_BG: Record<HiveId, string> = {
@@ -217,7 +217,7 @@ function BetweenRoundsSection({ round }: { round: number }) {
         <div
             style={{
                 background: '#111',
-                border: '1px solid #555',
+                border: '1px solid white',
                 padding: '6px',
                 height: '100%',
                 boxSizing: 'border-box',
@@ -230,7 +230,7 @@ function BetweenRoundsSection({ round }: { round: number }) {
             <div style={{ fontSize: 11, fontWeight: 'bold', color: '#aaa' }}>
                 Round {round} / 4
             </div>
-            <div style={{ fontSize: 9, color: '#555', marginBottom: 2 }}>
+            <div style={{ fontSize: 9, color: 'white', marginBottom: 2 }}>
                 Between Rounds
             </div>
             {steps.map((s) => (
@@ -238,7 +238,7 @@ function BetweenRoundsSection({ round }: { round: number }) {
                     key={s}
                     style={{
                         fontSize: 9,
-                        color: '#555',
+                        color: 'white',
                         padding: '2px 4px',
                         border: '1px solid #2a2a2a',
                     }}
@@ -268,7 +268,7 @@ function MapCenter({ G }: { G: WotsState }) {
                     left: '54%',
                     transform: 'translateX(-50%)',
                     background: 'rgba(0,0,0,0.8)',
-                    border: '1px solid #444',
+                    border: '1px solid white',
                     padding: '4px 10px',
                     fontSize: 11,
                     color: '#ccc',
@@ -303,7 +303,7 @@ const sectionHeadStyle: React.CSSProperties = {
     margin: '0 0 8px',
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#666',
+    color: 'white',
     textTransform: 'uppercase',
     letterSpacing: 1,
 };
@@ -334,7 +334,11 @@ function Scoreboard({ G, ctx }: { G: WotsState; ctx: any }) {
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
                 <div>
                     <div
-                        style={{ fontSize: 11, color: '#555', marginBottom: 4 }}
+                        style={{
+                            fontSize: 11,
+                            color: 'white',
+                            marginBottom: 4,
+                        }}
                     >
                         Harbingers controlled
                     </div>
@@ -352,7 +356,11 @@ function Scoreboard({ G, ctx }: { G: WotsState; ctx: any }) {
                 </div>
                 <div>
                     <div
-                        style={{ fontSize: 11, color: '#555', marginBottom: 4 }}
+                        style={{
+                            fontSize: 11,
+                            color: 'white',
+                            marginBottom: 4,
+                        }}
                     >
                         Player scores (if game ended now)
                     </div>
@@ -428,7 +436,7 @@ function PlayerArea({
                 )}
             </div>
 
-            <div style={{ fontSize: 11, color: '#555', marginBottom: 4 }}>
+            <div style={{ fontSize: 11, color: 'white', marginBottom: 4 }}>
                 Loyalty tokens
             </div>
             <div
@@ -455,7 +463,7 @@ function PlayerArea({
                                 isSelf || token.revealed
                                     ? HIVE_BG[token.hiveId]
                                     : '#1a1a1a',
-                            border: `2px solid ${isSelf || token.revealed ? HIVE_COLOR[token.hiveId] : '#333'}`,
+                            border: `2px solid ${isSelf || token.revealed ? HIVE_COLOR[token.hiveId] : 'white'}`,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -463,7 +471,7 @@ function PlayerArea({
                             color:
                                 isSelf || token.revealed
                                     ? HIVE_COLOR[token.hiveId]
-                                    : '#333',
+                                    : 'white',
                             cursor: isSelf ? 'help' : 'default',
                         }}
                     >
@@ -477,7 +485,7 @@ function PlayerArea({
             <div
                 style={{
                     fontSize: 11,
-                    color: '#555',
+                    color: 'white',
                     marginBottom: isSelf ? 6 : 0,
                 }}
             >
@@ -488,13 +496,13 @@ function PlayerArea({
             </div>
 
             {isSelf && (
-                <div style={{ fontSize: 11, color: '#555' }}>
+                <div style={{ fontSize: 11, color: 'white' }}>
                     Next agent name:{' '}
                     <select
                         style={{
                             background: '#1a1a1a',
                             color: '#aaa',
-                            border: '1px solid #444',
+                            border: '1px solid white',
                             fontSize: 11,
                         }}
                     >
@@ -559,7 +567,7 @@ function LogPane() {
                     border: '1px solid #222',
                     padding: '6px 8px',
                     fontSize: 11,
-                    color: '#444',
+                    color: 'white',
                     overflowY: 'auto',
                 }}
             >
