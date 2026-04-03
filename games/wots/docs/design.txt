@@ -1,0 +1,201 @@
+- Game elements that should be visible
+    - Round Wheel
+        - It has 6 sections
+            - The 5 non-current sections go in the 4 corners around the map, & 1 below the map
+            - Current section
+                - Current Step
+                    - eg a Hive VIP
+                        - or that we are midway thru a Eagle Card effect and will teleport back to another VIP after
+                        - or that we are midway thru resolving a stack of card plays
+                    - enlarged and highlighted
+                    - Text saying who exactly needs to do what next
+                - Other steps before/after the Current Step
+                    - to the left & right of the CStep
+        - Actions available to VIPs
+        - Agents on VIPs
+            - Agents have names
+        - Supply steps
+    - Map in center of Wheel
+        - Places
+        - Various things on Places
+            - N troops
+            - Agents on Places (advanced rule)
+    - Scoreboard
+        - display in South Pacific or other spare area
+        - Current Hive (NPC) scores
+        - Your current score 
+            - (if game ended now)
+    - Player areas
+        - Indication of seating order
+        - Your player area
+            - Your loyalty circles
+            - Your cards
+            - Dropdown for which of your agent names you'll place next
+        - Opponent player areas
+            - Opponent loyalty circles 
+                - often facedown
+            - How many cards of each color they have 
+        - 1st player marker (by a player area)
+            - or just indicate this by them being at the top of the list 
+    - Number of cubes off-board for each color
+    - Number of cards in each deck
+    - Log pane
+
+- UX basics for this game
+    - Top of the screen clearly says what is currently happening and who we are waiting on
+    - Troops can only be placed on Places
+        - and they snap into position
+            - or perhaps are drawn as numbers
+    - Place visuals
+        - Troops do not obscure map symbols
+        - Starting troop numerals not displayed at all
+        - Hovering over
+            - Under normal circumstances, it highlights the adjacent Places
+            - When you are choosing a effect such as a Attack, it highlights only the permissible adjacent Places
+        - Visually emphasize who controls a Place
+            - but still show the default Hive, if it is a occupied Place
+        - Harbingers should be very visually prominent
+        - Emphasize when a Place is over supply limit 
+    - It's easy to move N troops from a Place
+        - perhaps via context menu
+            - Pick up how many troops?
+        - Or maybe you select start/end, then choose how many to move 
+    - All your gamestate knowledge is always available without zooming in
+        - such as
+            - Everything that is at each Place
+                - But you can zoom in if you want
+            - What every Hive Leader does
+                - but you can zoom in
+            - What cards are in your hand
+                - But you are likely to want to zoom in on each card - by hovering
+            - How many cards everyone has
+            - Everyone's loyalties 
+                - mostly facedown ofc
+            - The log pane
+
+- Topics of focus
+    - Gamestate that must be tracked
+        1. [[Undo]] - see notes linked to this Roam page
+        2. Which optional rules are active this game
+        3. Loyalty circles
+        4. Player seating order
+        5. 1st Player marker
+        6. Our position on the round wheel
+        7. Status of any cards being played
+            - or pauses reserved for the chance to play cards
+        8. Agents
+            - on the round wheel
+            - on the map (advanced rule)
+        9. Troops on the map
+            - these counts imply the number of troops in reserve for each Hive
+        10. Cards in hands
+            - implied: which cards are in the decks
+        11. Final scores
+    - Mechanic topics that need not be tracked as gamestate
+        1. Which agent controls each Hive Leader
+        2. Which Hive controls each Place
+        3. Map iconography
+            - Lines between Places
+            - Default loyalty of a Place
+            - Starting troops
+            - Harbingers
+            - Fortified Positions
+            - Cities
+        4. Scoreboard
+            - agents on map can affect this 
+        5. A x B variable-quantity actions
+            - messaging thereof
+        6. Attacks
+        7. Swap action
+        8. Supply steps
+        9. 1st player marker moving
+        10. Discard to 5 menu & timing
+        11. Loyalty swapping step
+        12. Deploy agents steps
+            - Swapping 2 of your own agents
+                - This has no mechanical effect, but we should add it if we name agents individually
+        13. Cards
+            - Card drawing & discarding
+            - When you can/must play a card
+            - Choose which effect on the card to play
+            - Adding on a 2nd card
+                - Unknown rules question: Can the 2nd card be a Offer / Dark Alliance card?
+                    - https://boardgamegeek.com/thread/3608296/dark-alliances-card-play-as-regular-card
+                    - seems reasonable to me. Even in AWOW they have the faction symbol at the top 
+            - Setting up a pause to play cards 
+            - Criteria constraining how to execute a card
+                - activeHive()
+                - Choose a place from a given subset of places
+                - Europe
+                    - Playable only after you complete a attack
+                        - That attack must start from 'the surviving troops'
+                - Humanist
+                    - Only playable before your action
+                - Humanist Humanist
+                    - Playable before your attack
+                    - including before a extra attack from a blue card
+                - Cousin
+                    - Same as Humanist Humanist: Playable before your attack, including your extra attacks
+                - Mitsubishi
+                    - Only playable before your action
+                - Mason Mason
+                    - Move troops to anywhere that Hive already controls
+                        - Constraints: Dont abandon, dont exceed supply
+                    - Once you do one, all the other moves must be for that same Hive
+                    - Repeat until done
+                - Atë
+                    - Choose a location
+                    - Choose to kill 1-3 troops
+                - Peacewash
+                    - You must do Add Troops effects until the counter of converted troops reaches 0
+                - The Prince Speaks
+                    - Similarly, you must do move effects until the chosen place is empty
+                - Missiles Launched
+                    - Choose any place that has 1+ troops of the activeHive()
+                    - Do Kill X effects until you reach 5 or are done
+                - Servicers
+                    - No choices once you play it, no need to wait for input
+                - World Civil War
+                    - playable before your attack or extra attack, as above
+                - World Ringing River
+                    - playable before your attack as above
+                    - Choose a source place
+                    - Choose 1-6
+                - Antisleep
+                    - Playable after your action
+                    - {{[[TODO]]}} I should remember this when working on the Hive Leader action timing functions
+                    - Note that this could technically loop a few times, if lucky
+                - Nationalism Faustburst
+                    - note that this violates the idea that attacks must target enemies
+                - Perry-Kraye Strikes!
+                    - Each must move:
+                        - Remember the original state
+                        - Allow free rearranging by dragging
+                        - If not all have moved, show a greyed out Confirm button
+                        - else, enable the Confirm button
+                - Admin Override
+                    - The presence of this card must be checked during all normal Hive Leader actions
+                - The Best & Briefest War - De-escalation
+                    - The presence of this card must be checked during all normal Hive Leader actions
+                - Archtraitors Discovered
+                    - see Each Much Move above
+                    - Note that this moves the round wheel back
+                - Offer Cards
+                    - At the start of Romanova's action, Madame gains the ability to click to play a offer card
+                        - But we are waiting for Romanova only, not Madame
+                    - Once it is played, we are waiting for Romanova to accept or decline 
+                    - {{[[TODO]]}} Timing question: Which part of the card happens first after they accept?
+                        - My intuition
+                            - If Romanova accepts Madame controlling the action, we do the compensation and then the action
+                                - Because the action could have tons of nested complexity, eg additional attacks, replacement actions, antisleep, more Offer cards, or Archtraitors Revealed
+                            - But if Romanova is accepting a +4 attack bonus, 
+                                - we 1st make the attack bigger 
+                                    - but still frozen mid-attack
+                                - then we do the compensation
+                                - then we do the attack
+                                - Because this is the way the text is ordered.
+                        - Timing is particularly important for Cousin offer cards.
+                        - Note that the AWoW version has very similar wording, so that doesn't help
+                        - https://boardgamegeek.com/boardgame/310150/a-war-of-whispers-dark-alliances/forums/0
+                - ...
+    - Component hover highlighting
