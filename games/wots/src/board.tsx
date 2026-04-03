@@ -123,7 +123,7 @@ export function WotsBoard({
                                                 : 'default',
                                         }}
                                     >
-                                        {role.slice(0, 4)}
+                                        {role}
                                         {occupant !== null
                                             ? `·P${occupant}`
                                             : ''}
