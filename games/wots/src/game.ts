@@ -23,13 +23,13 @@ export const LOYALTY_MULTIPLIERS = [4, 3, 2, 0, -1] as const;
 export type LoyaltyMultiplier = (typeof LOYALTY_MULTIPLIERS)[number];
 
 // Each hive has 4 squares players can place agents on
-export const SQUARE_ROLES = [
+export const VIP_ROLES = [
     'Logistics',
     'Opposition',
     'Marshal',
     'Leader',
 ] as const;
-export type SquareRole = (typeof SQUARE_ROLES)[number];
+export type VipRole = (typeof VIP_ROLES)[number];
 
 export interface Territory {
     id: string;
