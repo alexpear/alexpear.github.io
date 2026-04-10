@@ -252,7 +252,58 @@ function BetweenRoundsSection({ round }: { round: number }) {
 
 // ─── Map ──────────────────────────────────────────────────────────────────────
 
+const MAP_W = 3637;
+const MAP_H = 2077;
+
+// Territory hit-area positions in SVG viewBox space (3637 × 2077)
+const TERRITORY_COORDS: { id: string; x: number; y: number }[] = [
+    { id: 't1', x: 351, y: 778 },
+    { id: 't2', x: 772, y: 544 },
+    { id: 't3', x: 834, y: 794 },
+    { id: 't4', x: 1021, y: 965 },
+    { id: 't5', x: 1123, y: 575 },
+    { id: 't6', x: 1247, y: 1402 },
+    { id: 't7', x: 1349, y: 1846 },
+    { id: 't8', x: 1629, y: 794 },
+    { id: 't9', x: 1699, y: 638 },
+    { id: 't10', x: 1723, y: 466 },
+    { id: 't11', x: 1629, y: 326 },
+    { id: 't12', x: 1894, y: 420 },
+    { id: 't13', x: 1926, y: 591 },
+    { id: 't14', x: 1871, y: 817 },
+    { id: 't15', x: 2027, y: 747 },
+    { id: 't16', x: 2019, y: 918 },
+    { id: 't17', x: 1879, y: 1215 },
+    { id: 't18', x: 2167, y: 848 },
+    { id: 't19', x: 2175, y: 1230 },
+    { id: 't20', x: 2315, y: 763 },
+    { id: 't21', x: 2463, y: 872 },
+    { id: 't22', x: 2612, y: 778 },
+    { id: 't23', x: 2775, y: 731 },
+    { id: 't24', x: 2105, y: 232 },
+    { id: 't25', x: 2144, y: 404 },
+    { id: 't26', x: 2237, y: 536 },
+    { id: 't27', x: 2401, y: 599 },
+    { id: 't28', x: 2565, y: 303 },
+    { id: 't29', x: 2643, y: 591 },
+    { id: 't30', x: 2908, y: 599 },
+    { id: 't31', x: 3079, y: 614 },
+    { id: 't32', x: 2939, y: 996 },
+    { id: 't33', x: 2682, y: 1020 },
+    { id: 't34', x: 2604, y: 1160 },
+    { id: 't35', x: 2869, y: 1183 },
+    { id: 't36', x: 3033, y: 1215 },
+    { id: 't37', x: 2962, y: 1495 },
+    { id: 't38', x: 3134, y: 1542 },
+    { id: 't39', x: 3181, y: 1308 },
+    { id: 't40', x: 3352, y: 1230 },
+];
+
+const TERRITORY_HIT_R = 65;
+
 function MapCenter({ G }: { G: WotsState }) {
+    const [hoveredId, setHoveredId] = React.useState<string | null>(null);
+
     return (
         <div style={{ position: 'relative', lineHeight: 0 }}>
             <img
@@ -260,6 +311,37 @@ function MapCenter({ G }: { G: WotsState }) {
                 style={{ width: '100%', height: 'auto', display: 'block' }}
                 alt="World map"
             />
+            {/* SVG overlay — territory hit areas */}
+            <svg
+                viewBox={`0 0 ${MAP_W} ${MAP_H}`}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                }}
+            >
+                {TERRITORY_COORDS.map((t) => (
+                    <circle
+                        key={t.id}
+                        cx={t.x}
+                        cy={t.y}
+                        r={TERRITORY_HIT_R}
+                        fill="transparent"
+                        stroke={
+                            hoveredId === t.id
+                                ? 'rgba(255,255,255,0.55)'
+                                : 'transparent'
+                        }
+                        strokeWidth={10}
+                        style={{ cursor: 'pointer' }}
+                        onMouseEnter={() => setHoveredId(t.id)}
+                        onMouseLeave={() => setHoveredId(null)}
+                        onClick={() => console.log('territory clicked:', t.id)}
+                    />
+                ))}
+            </svg>
             {/* Scoreboard overlay */}
             <div
                 style={{
