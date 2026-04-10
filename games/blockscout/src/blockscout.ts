@@ -511,6 +511,8 @@ export class BlockScout {
         this.coords2dates[BlockScout.keyFormat(lat, long)] = date.toISOString();
     }
 
+    // TODO ability to patch mistakes, eg if you use your phone while driving. Can also be used to manually set challenges perhaps. Menu > mode where you click on a block to select it > confirmation screen y/n. No brings you back to normal mode.
+
     static run(): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).blockscout = new BlockScout();
