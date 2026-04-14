@@ -60,7 +60,7 @@ export class BlockScout {
         // Hide tiles during pan/zoom so unfogged street tiles don't show before fog is drawn.
         this.map.on('movestart', () => this.tileLayer.setOpacity(0));
         this.map.on('moveend', () => {
-            if (this.map.getZoom() > 11) {
+            if (this.map.getZoom() > 12) {
                 this.tileLayer.setOpacity(1);
             }
         });
@@ -258,7 +258,7 @@ export class BlockScout {
 
         const activeKeys = new Set<string>();
 
-        if (this.map.getZoom() <= 11) {
+        if (this.map.getZoom() <= 12) {
             console.time('overview-total');
 
             console.time('overview-setup');
@@ -340,7 +340,7 @@ export class BlockScout {
             return;
         }
 
-        // Normal mode (zoom > 11): restore background, clear overview layers
+        // Normal mode (zoom > 12): restore background, clear overview layers
         this.map.getContainer().style.backgroundColor = '';
         for (const rect of this.exploredRectangles.values()) {
             this.map.removeLayer(rect);
