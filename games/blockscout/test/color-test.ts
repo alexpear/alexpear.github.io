@@ -3,7 +3,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { overviewColor } from '../src/blockscout';
+import { overviewColor } from '../dist/blockscout';
 
 const STEP = 10;
 const inputs: number[] = [];
