@@ -91,7 +91,8 @@
     "intergame": "tsc -p intergame/tsconfig.json && npm run test && node intergame/dist/intergame.js",
     "intergamecsv": "tsc -p intergame/tsconfig.json && npm run test && node intergame/dist/mtg.js > intergame/data/mtg.csv; node intergame/dist/dnd5e.js > intergame/data/dnd5e.csv",
     "buildintergame": "tsc -p intergame/tsconfig.json && browserify intergame/dist/cardViewer.js -o intergame/dist/bundle.js",
-    "cityIsolation": "tsc -p generation/demographics/tsconfig.json && node generation/demographics/city-isolation.js"
+    "cityisolation": "tsc -p generation/demographics/tsconfig.json && node generation/demographics/city-isolation.js",
+    "colortest": "tsc -p games/blockscout/test/tsconfig.color-test.json && node games/blockscout/test/color-test.js"
   },
   "repository": {
     "type": "git",

@@ -13,7 +13,7 @@ const SAN_FRANCISCO = [37.77, -122.42];
 const TEST_MODE: string = undefined; // 'font';
 
 // 0 points → white, 1000 points → black
-function overviewColor(points: number): string {
+export function overviewColor(points: number): string {
     const redBlue = Math.round(255 * (1 - points / 1000));
     const green = Math.round(
         255 * Math.max(0, 1 - points / 500)
