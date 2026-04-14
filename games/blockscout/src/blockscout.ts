@@ -12,10 +12,13 @@ const SAN_FRANCISCO = [37.77, -122.42];
 
 const TEST_MODE: string = undefined; // 'font';
 
-// 0 points → white, 1000 points → black, linear.
+// 0 points → white, 1000 points → black
 function overviewColor(points: number): string {
-    const brightness = Math.round(255 * (1 - points / 1000));
-    return `rgb(${brightness},${brightness},${brightness})`;
+    const redBlue = Math.round(255 * (1 - points / 1000));
+    const green = Math.round(
+        255 * Math.max(0, 1 - points / 500)
+    ); // Green fades quickly, leaving purples.
+    return `rgb(${redBlue},${green},${redBlue})`;
 }
 
 export class BlockScout {
