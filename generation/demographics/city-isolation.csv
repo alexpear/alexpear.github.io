@@ -1,0 +1,101 @@
+rank,name,country,population,isolation_km,nearest_larger_city
+1,São Paulo,Brazil,18949790,10221,Cairo
+2,Mexico City,Mexico,17734212,7432,São Paulo
+3,Sydney,Australia,5312000,4930,Surabaya
+4,Tokyo,Japan,33412512,4889,Dhaka
+5,Cairo,Egypt,25566102,4428,Delhi
+6,Lagos,Nigeria,12791699,3920,Cairo
+7,Dhaka,Bangladesh,36585479,3776,Jakarta
+8,New York City,USA,13920148,3359,Mexico City
+9,Bogotá,Colombia,10624315,3171,Mexico City
+10,Dar es Salaam,Tanzania,7795114,2664,Kinshasa
+11,London,UK,10416420,2499,Istanbul
+12,Los Angeles,USA,12740420,2491,Mexico City
+13,Johannesburg,South Africa,7077175,2464,Dar es Salaam
+14,Tehran,Iran,9174964,1917,Karachi
+15,Lima,Peru,10580241,1892,Bogotá
+16,Kinshasa,DR Congo,10943641,1787,Lagos
+17,Shanghai,China,29558908,1758,Tokyo
+18,Moscow,Russia,14524753,1756,Istanbul
+19,Buenos Aires,Argentina,14017736,1675,São Paulo
+20,Recife,Brazil,4100000,1641,Belo Horizonte
+21,Khartoum,Sudan,6809355,1619,Cairo
+22,Miami,USA,6036000,1557,Houston
+23,Bangkok,Thailand,18180280,1536,Dhaka
+24,Delhi,India,30222405,1424,Dhaka
+25,Riyadh,Saudi Arabia,6916417,1303,Tehran
+26,Manila,Philippines,24735305,1248,Guangzhou
+27,Chengdu,China,8813000,1237,Guangzhou
+28,Istanbul,Turkey,15014763,1235,Cairo
+29,Guangzhou,China,27563372,1212,Shanghai
+30,Houston,USA,6115000,1210,Mexico City
+31,Chicago,USA,8864000,1146,New York City
+32,Santiago,Chile,6726045,1138,Buenos Aires
+33,Karachi,Pakistan,21422590,1099,Delhi
+34,Madrid,Spain,6497000,1053,Paris
+35,Caracas,Venezuela,2900000,1020,Bogotá
+36,Kuala Lumpur,Malaysia,8443731,1013,Ho Chi Minh City
+37,Addis Ababa,Ethiopia,4794000,992,Khartoum
+38,Beijing,China,17013303,954,Seoul
+39,Atlanta,USA,5572000,945,Chicago
+40,Mumbai,India,20203056,883,Karachi
+41,Berlin,Germany,3769000,877,Paris
+42,Seoul,South Korea,22490482,867,Shanghai
+43,Bengaluru,India,13187098,845,Mumbai
+44,Porto Alegre,Brazil,4300000,842,Buenos Aires
+45,Casablanca,Morocco,4300000,835,Madrid
+46,Abidjan,Ivory Coast,5000000,829,Lagos
+47,Ho Chi Minh City,Vietnam,14052713,739,Bangkok
+48,Melbourne,Australia,5078000,713,Sydney
+49,Baghdad,Iraq,6812000,694,Tehran
+50,Nairobi,Kenya,4922000,670,Dar es Salaam
+51,Monterrey,Mexico,5300000,666,Houston
+52,Saint Petersburg,Russia,5383000,635,Moscow
+53,Kunming,China,4000000,629,Chongqing
+54,Xi'an,China,7444000,609,Chengdu
+55,Taipei,Taiwan,2646000,596,Hangzhou
+56,Kabul,Afghanistan,4900000,585,Lahore
+57,Yangon,Myanmar,5157000,583,Bangkok
+58,Surabaya,Indonesia,6843503,568,Bandung
+59,Wuhan,China,7363548,561,Hangzhou
+60,Shenyang,China,6921000,560,Seoul
+61,Toronto,Canada,6082000,556,New York City
+62,Luanda,Angola,9051000,553,Kinshasa
+63,Harbin,China,6115000,510,Shenyang
+64,Barcelona,Spain,5494000,503,Madrid
+65,Hyderabad,India,9190795,501,Bengaluru
+66,Fukuoka,Japan,5551000,485,Osaka
+67,Guadalajara,Mexico,5023000,462,Mexico City
+68,Qingdao,China,5381000,442,Tianjin
+69,Ahmedabad,India,7632408,440,Mumbai
+70,Zhengzhou,China,5052000,432,Xi'an
+71,Lahore,Pakistan,15156430,425,Delhi
+72,Accra,Ghana,4699000,408,Lagos
+73,Osaka,Japan,12964145,397,Tokyo
+74,Dallas,USA,6099000,362,Houston
+75,Rio de Janeiro,Brazil,9500336,361,São Paulo
+76,Ankara,Turkey,5700000,352,Istanbul
+77,Paris,France,9381921,343,London
+78,Belo Horizonte,Brazil,5972000,342,Rio de Janeiro
+79,Dalian,China,5300000,334,Qingdao
+80,Singapore,Singapore,5792000,309,Kuala Lumpur
+81,Chennai,India,11153205,291,Bengaluru
+82,Jinan,China,5052000,274,Tianjin
+83,Chongqing,China,7071073,268,Chengdu
+84,Kolkata,India,22549738,246,Dhaka
+85,Surat,India,6908925,208,Ahmedabad
+86,Washington DC,USA,5207000,198,Philadelphia
+87,Nanjing,China,6800676,193,Suzhou
+88,Alexandria,Egypt,7266957,180,Cairo
+89,Nagoya,Japan,7146160,140,Osaka
+90,Philadelphia,USA,5695000,130,New York City
+91,Hangzhou,China,7500208,123,Suzhou
+92,Pune,India,6817951,120,Mumbai
+93,Bandung,Indonesia,8909104,115,Jakarta
+94,Tianjin,China,7285342,110,Beijing
+95,Shenzhen,China,13878396,105,Guangzhou
+96,Suzhou,China,7731101,82,Shanghai
+97,Dongguan,China,7360000,52,Guangzhou
+98,Hong Kong,China,7429000,27,Shenzhen
+99,Foshan,China,7236000,19,Guangzhou
+100,Jakarta,Indonesia,41913860,,
