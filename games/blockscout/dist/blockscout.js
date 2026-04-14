@@ -1,7 +1,7 @@
 "use strict";
 // Mobile game that suggests nearby places to go while exercising, eg biking or jogging.
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BlockScout = void 0;
+exports.BlockScout = exports.overviewColor = void 0;
 const goal_1 = require("./goal");
 const GRID_STEP = 0.01;
 const GOAL_FONT_PX = 32;
@@ -9,6 +9,13 @@ const FOG_BUFFER = 1; // Extra cells of fog rendered beyond the viewport edge
 const HOUR = 60 * 60 * 1000; // in ms
 const SAN_FRANCISCO = [37.77, -122.42];
 const TEST_MODE = undefined; // 'font';
+// 0 points → white, 1000 points → black
+function overviewColor(points) {
+    const redBlue = Math.round(255 * (1 - points / 1000));
+    const green = Math.round(255 * Math.max(0, 1 - points / 500)); // Green fades quickly, leaving purples.
+    return `rgb(${redBlue},${green},${redBlue})`;
+}
+exports.overviewColor = overviewColor;
 class BlockScout {
     constructor() {
         // eslint-disable-next-line @typescript-eslint/typedef
@@ -45,7 +52,7 @@ class BlockScout {
         // Hide tiles during pan/zoom so unfogged street tiles don't show before fog is drawn.
         this.map.on('movestart', () => this.tileLayer.setOpacity(0));
         this.map.on('moveend', () => {
-            if (this.map.getZoom() > 11) {
+            if (this.map.getZoom() > 12) {
                 this.tileLayer.setOpacity(1);
             }
         });
@@ -192,8 +199,7 @@ class BlockScout {
         const longMin = this.snapToGrid(bounds.getWest() - buf);
         const longMax = this.snapToGrid(bounds.getEast() + buf);
         const activeKeys = new Set();
-        // TODO bug - slow performance when very zoomed out
-        if (this.map.getZoom() <= 11) {
+        if (this.map.getZoom() <= 12) {
             console.time('overview-total');
             console.time('overview-setup');
             this.tileLayer.setOpacity(0);
@@ -222,6 +228,7 @@ class BlockScout {
                 }
                 const goal = this.goalAt(lat, long);
                 if (goal.pointsAvailable() < 1000) {
+                    const color = overviewColor(goal.pointsAvailable());
                     if (!this.exploredRectangles.has(key)) {
                         const s = this.snapToGrid(lat);
                         const w = this.snapToGrid(long);
@@ -230,8 +237,8 @@ class BlockScout {
                             [s + GRID_STEP / 2, w + GRID_STEP / 2],
                         ], {
                             pane: 'fogPane',
-                            color: 'white',
-                            fillColor: 'white',
+                            color,
+                            fillColor: color,
                             fillOpacity: 1,
                             weight: 0,
                             interactive: false,
@@ -263,7 +270,7 @@ class BlockScout {
             console.timeEnd('overview-total');
             return;
         }
-        // Normal mode (zoom > 11): restore background, clear overview layers
+        // Normal mode (zoom > 12): restore background, clear overview layers
         this.map.getContainer().style.backgroundColor = '';
         for (const rect of this.exploredRectangles.values()) {
             this.map.removeLayer(rect);
@@ -400,6 +407,7 @@ class BlockScout {
         goal.lastVisited = date;
         this.coords2dates[BlockScout.keyFormat(lat, long)] = date.toISOString();
     }
+    // TODO ability to patch mistakes, eg if you use your phone while driving. Can also be used to manually set challenges perhaps. Menu > mode where you click on a block to select it > confirmation screen y/n. No brings you back to normal mode.
     static run() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         window.blockscout = new BlockScout();

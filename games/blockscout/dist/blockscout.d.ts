@@ -1,4 +1,5 @@
 import { Goal } from './goal';
+export declare function overviewColor(points: number): string;
 export declare class BlockScout {
     map: any;
     tileLayer: Record<string, any> | undefined;
