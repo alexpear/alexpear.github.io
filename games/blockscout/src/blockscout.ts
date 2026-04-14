@@ -12,6 +12,12 @@ const SAN_FRANCISCO = [37.77, -122.42];
 
 const TEST_MODE: string = undefined; // 'font';
 
+// 0 points → white, 1000 points → black, linear.
+function overviewColor(points: number): string {
+    const brightness = Math.round(255 * (1 - points / 1000));
+    return `rgb(${brightness},${brightness},${brightness})`;
+}
+
 export class BlockScout {
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
@@ -292,6 +298,7 @@ export class BlockScout {
                 }
                 const goal = this.goalAt(lat, long);
                 if (goal.pointsAvailable() < 1000) {
+                    const color = overviewColor(goal.pointsAvailable());
                     if (!this.exploredRectangles.has(key)) {
                         const s = this.snapToGrid(lat);
                         const w = this.snapToGrid(long);
@@ -302,8 +309,8 @@ export class BlockScout {
                             ],
                             {
                                 pane: 'fogPane',
-                                color: 'white',
-                                fillColor: 'white',
+                                color,
+                                fillColor: color,
                                 fillOpacity: 1,
                                 weight: 0,
                                 interactive: false,
