@@ -4,98 +4,135 @@ rank,name,country,population,isolation_km,nearest_larger_city
 3,Sydney,Australia,5312000,4930,Surabaya
 4,Tokyo,Japan,33412512,4889,Dhaka
 5,Cairo,Egypt,25566102,4428,Delhi
-6,Lagos,Nigeria,12791699,3920,Cairo
-7,Dhaka,Bangladesh,36585479,3776,Jakarta
-8,New York City,USA,13920148,3359,Mexico City
-9,Bogotá,Colombia,10624315,3171,Mexico City
-10,Dar es Salaam,Tanzania,7795114,2664,Kinshasa
-11,London,UK,10416420,2499,Istanbul
-12,Los Angeles,USA,12740420,2491,Mexico City
-13,Johannesburg,South Africa,7077175,2464,Dar es Salaam
-14,Tehran,Iran,9174964,1917,Karachi
-15,Lima,Peru,10580241,1892,Bogotá
-16,Kinshasa,DR Congo,10943641,1787,Lagos
-17,Shanghai,China,29558908,1758,Tokyo
-18,Moscow,Russia,14524753,1756,Istanbul
-19,Buenos Aires,Argentina,14017736,1675,São Paulo
-20,Recife,Brazil,4100000,1641,Belo Horizonte
-21,Khartoum,Sudan,6809355,1619,Cairo
-22,Miami,USA,6036000,1557,Houston
-23,Bangkok,Thailand,18180280,1536,Dhaka
-24,Delhi,India,30222405,1424,Dhaka
-25,Riyadh,Saudi Arabia,6916417,1303,Tehran
-26,Manila,Philippines,24735305,1248,Guangzhou
-27,Chengdu,China,8813000,1237,Guangzhou
-28,Istanbul,Turkey,15014763,1235,Cairo
-29,Guangzhou,China,27563372,1212,Shanghai
-30,Houston,USA,6115000,1210,Mexico City
-31,Chicago,USA,8864000,1146,New York City
-32,Santiago,Chile,6726045,1138,Buenos Aires
-33,Karachi,Pakistan,21422590,1099,Delhi
-34,Madrid,Spain,6497000,1053,Paris
-35,Caracas,Venezuela,2900000,1020,Bogotá
-36,Kuala Lumpur,Malaysia,8443731,1013,Ho Chi Minh City
-37,Addis Ababa,Ethiopia,4794000,992,Khartoum
-38,Beijing,China,17013303,954,Seoul
-39,Atlanta,USA,5572000,945,Chicago
-40,Mumbai,India,20203056,883,Karachi
-41,Berlin,Germany,3769000,877,Paris
-42,Seoul,South Korea,22490482,867,Shanghai
-43,Bengaluru,India,13187098,845,Mumbai
-44,Porto Alegre,Brazil,4300000,842,Buenos Aires
-45,Casablanca,Morocco,4300000,835,Madrid
-46,Abidjan,Ivory Coast,5000000,829,Lagos
-47,Ho Chi Minh City,Vietnam,14052713,739,Bangkok
-48,Melbourne,Australia,5078000,713,Sydney
-49,Baghdad,Iraq,6812000,694,Tehran
-50,Nairobi,Kenya,4922000,670,Dar es Salaam
-51,Monterrey,Mexico,5300000,666,Houston
-52,Saint Petersburg,Russia,5383000,635,Moscow
-53,Kunming,China,4000000,629,Chongqing
-54,Xi'an,China,7444000,609,Chengdu
-55,Taipei,Taiwan,2646000,596,Hangzhou
-56,Kabul,Afghanistan,4900000,585,Lahore
-57,Yangon,Myanmar,5157000,583,Bangkok
-58,Surabaya,Indonesia,6843503,568,Bandung
-59,Wuhan,China,7363548,561,Hangzhou
-60,Shenyang,China,6921000,560,Seoul
-61,Toronto,Canada,6082000,556,New York City
-62,Luanda,Angola,9051000,553,Kinshasa
-63,Harbin,China,6115000,510,Shenyang
-64,Barcelona,Spain,5494000,503,Madrid
-65,Hyderabad,India,9190795,501,Bengaluru
-66,Fukuoka,Japan,5551000,485,Osaka
-67,Guadalajara,Mexico,5023000,462,Mexico City
-68,Qingdao,China,5381000,442,Tianjin
-69,Ahmedabad,India,7632408,440,Mumbai
-70,Zhengzhou,China,5052000,432,Xi'an
-71,Lahore,Pakistan,15156430,425,Delhi
-72,Accra,Ghana,4699000,408,Lagos
-73,Osaka,Japan,12964145,397,Tokyo
-74,Dallas,USA,6099000,362,Houston
-75,Rio de Janeiro,Brazil,9500336,361,São Paulo
-76,Ankara,Turkey,5700000,352,Istanbul
-77,Paris,France,9381921,343,London
-78,Belo Horizonte,Brazil,5972000,342,Rio de Janeiro
-79,Dalian,China,5300000,334,Qingdao
-80,Singapore,Singapore,5792000,309,Kuala Lumpur
-81,Chennai,India,11153205,291,Bengaluru
-82,Jinan,China,5052000,274,Tianjin
-83,Chongqing,China,7071073,268,Chengdu
-84,Kolkata,India,22549738,246,Dhaka
-85,Surat,India,6908925,208,Ahmedabad
-86,Washington DC,USA,5207000,198,Philadelphia
-87,Nanjing,China,6800676,193,Suzhou
-88,Alexandria,Egypt,7266957,180,Cairo
-89,Nagoya,Japan,7146160,140,Osaka
-90,Philadelphia,USA,5695000,130,New York City
-91,Hangzhou,China,7500208,123,Suzhou
-92,Pune,India,6817951,120,Mumbai
-93,Bandung,Indonesia,8909104,115,Jakarta
-94,Tianjin,China,7285342,110,Beijing
-95,Shenzhen,China,13878396,105,Guangzhou
-96,Suzhou,China,7731101,82,Shanghai
-97,Dongguan,China,7360000,52,Guangzhou
-98,Hong Kong,China,7429000,27,Shenzhen
-99,Foshan,China,7236000,19,Guangzhou
-100,Jakarta,Indonesia,41913860,,
+6,Honolulu,USA,1016508,4120,Los Angeles
+7,Papeete,French Polynesia,136771,4015,Tauranga
+8,Lagos,Nigeria,12791699,3920,Cairo
+9,Dhaka,Bangladesh,36585479,3776,Jakarta
+10,New York City,USA,13920148,3359,Mexico City
+11,Bogotá,Colombia,10624315,3171,Mexico City
+12,Jayapura,Indonesia,414862,2891,Manila
+13,Perth,Australia,2099530,2721,Melbourne
+14,Dar es Salaam,Tanzania,7795114,2664,Kinshasa
+15,London,UK,10416420,2499,Istanbul
+16,Los Angeles,USA,12740420,2491,Mexico City
+17,Johannesburg,South Africa,7077175,2464,Dar es Salaam
+18,Auckland,New Zealand,1547200,2156,Sydney
+19,Tehran,Iran,9174964,1917,Karachi
+20,Lima,Peru,10580241,1892,Bogotá
+21,Kinshasa,DR Congo,10943641,1787,Lagos
+22,Shanghai,China,29558908,1758,Tokyo
+23,Moscow,Russia,14524753,1756,Istanbul
+24,Buenos Aires,Argentina,14017736,1675,São Paulo
+25,Recife,Brazil,4100000,1641,Belo Horizonte
+26,Khartoum,Sudan,6809355,1619,Cairo
+27,Miami,USA,6036000,1557,Houston
+28,Bangkok,Thailand,18180280,1536,Dhaka
+29,Nouméa,New Caledonia,179509,1439,Sunshine Coast
+30,Delhi,India,30222405,1424,Dhaka
+31,Honiara,Solomon Islands,84520,1403,Port Moresby
+32,Suva,Fiji,87000,1331,Nouméa
+33,Riyadh,Saudi Arabia,6916417,1303,Tehran
+34,Darwin,Australia,132921,1288,Sorong
+35,Manila,Philippines,24735305,1248,Guangzhou
+36,Chengdu,China,8813000,1237,Guangzhou
+37,Istanbul,Turkey,15014763,1235,Cairo
+38,Guangzhou,China,27563372,1212,Shanghai
+39,Houston,USA,6115000,1210,Mexico City
+40,Chicago,USA,8864000,1146,New York City
+41,Santiago,Chile,6726045,1138,Buenos Aires
+42,Karachi,Pakistan,21422590,1099,Delhi
+43,Sorong,Indonesia,284410,1067,Jayapura
+44,Madrid,Spain,6497000,1053,Paris
+45,Port Moresby,Papua New Guinea,364145,1049,Jayapura
+46,Townsville,Australia,184271,1040,Sunshine Coast
+47,Caracas,Venezuela,2900000,1020,Bogotá
+48,Kuala Lumpur,Malaysia,8443731,1013,Ho Chi Minh City
+49,Addis Ababa,Ethiopia,4794000,992,Khartoum
+50,Beijing,China,17013303,954,Seoul
+51,Atlanta,USA,5572000,945,Chicago
+52,Mumbai,India,20203056,883,Karachi
+53,Berlin,Germany,3769000,877,Paris
+54,Seoul,South Korea,22490482,867,Shanghai
+55,Bengaluru,India,13187098,845,Mumbai
+56,Porto Alegre,Brazil,4300000,842,Buenos Aires
+57,Casablanca,Morocco,4300000,835,Madrid
+58,Abidjan,Ivory Coast,5000000,829,Lagos
+59,Christchurch,New Zealand,407800,763,Auckland
+60,Ho Chi Minh City,Vietnam,14052713,739,Bangkok
+61,Brisbane,Australia,2568927,732,Sydney
+62,Melbourne,Australia,5078000,713,Sydney
+63,Baghdad,Iraq,6812000,694,Tehran
+64,Nairobi,Kenya,4922000,670,Dar es Salaam
+65,Monterrey,Mexico,5300000,666,Houston
+66,Adelaide,Australia,1469163,653,Melbourne
+67,Saint Petersburg,Russia,5383000,635,Moscow
+68,Kunming,China,4000000,629,Chongqing
+69,Xi'an,China,7444000,609,Chengdu
+70,Taipei,Taiwan,2646000,596,Hangzhou
+71,Kabul,Afghanistan,4900000,585,Lahore
+72,Yangon,Myanmar,5157000,583,Bangkok
+73,Hobart,Australia,218386,583,Geelong
+74,Surabaya,Indonesia,6843503,568,Bandung
+75,Wuhan,China,7363548,561,Hangzhou
+76,Shenyang,China,6921000,560,Seoul
+77,Toronto,Canada,6082000,556,New York City
+78,Luanda,Angola,9051000,553,Kinshasa
+79,Harbin,China,6115000,510,Shenyang
+80,Barcelona,Spain,5494000,503,Madrid
+81,Hyderabad,India,9190795,501,Bengaluru
+82,Fukuoka,Japan,5551000,485,Osaka
+83,Guadalajara,Mexico,5023000,462,Mexico City
+84,Qingdao,China,5381000,442,Tianjin
+85,Ahmedabad,India,7632408,440,Mumbai
+86,Zhengzhou,China,5052000,432,Xi'an
+87,Lahore,Pakistan,15156430,425,Delhi
+88,Accra,Ghana,4699000,408,Lagos
+89,Osaka,Japan,12964145,397,Tokyo
+90,Dallas,USA,6099000,362,Houston
+91,Rio de Janeiro,Brazil,9500336,361,São Paulo
+92,Ankara,Turkey,5700000,352,Istanbul
+93,Paris,France,9381921,343,London
+94,Belo Horizonte,Brazil,5972000,342,Rio de Janeiro
+95,Dalian,China,5300000,334,Qingdao
+96,Dunedin,New Zealand,104000,310,Christchurch
+97,Singapore,Singapore,5792000,309,Kuala Lumpur
+98,Wellington,New Zealand,209800,305,Christchurch
+99,Lae,Papua New Guinea,100677,303,Port Moresby
+100,Chennai,India,11153205,291,Bengaluru
+101,Cairns,Australia,155529,283,Townsville
+102,Jinan,China,5052000,274,Tianjin
+103,Chongqing,China,7071073,268,Chengdu
+104,Canberra,Australia,462984,247,Sydney
+105,Kolkata,India,22549738,246,Dhaka
+106,Albury,Australia,97274,219,Canberra
+107,Surat,India,6908925,208,Ahmedabad
+108,Washington DC,USA,5207000,198,Philadelphia
+109,Nanjing,China,6800676,193,Suzhou
+110,Alexandria,Egypt,7266957,180,Cairo
+111,Launceston,Australia,88884,161,Hobart
+112,Nagoya,Japan,7146160,140,Osaka
+113,Philadelphia,USA,5695000,130,New York City
+114,Hangzhou,China,7500208,123,Suzhou
+115,Pune,India,6817951,120,Mumbai
+116,Newcastle,Australia,505489,118,Sydney
+117,Bandung,Indonesia,8909104,115,Jakarta
+118,Hamilton,New Zealand,192100,112,Auckland
+119,Palmerston North,New Zealand,81200,111,Lower Hutt
+120,Tianjin,China,7285342,110,Beijing
+121,Toowoomba,Australia,140303,106,Brisbane
+122,Shenzhen,China,13878396,105,Guangzhou
+123,Bendigo,Australia,103575,96,Ballarat
+124,Sunshine Coast,Australia,353906,91,Brisbane
+125,Suzhou,China,7731101,82,Shanghai
+126,Tauranga,New Zealand,160900,79,Hamilton
+127,Ballarat,Australia,111348,79,Geelong
+128,Gold Coast,Australia,718772,73,Brisbane
+129,Wollongong,Australia,312167,68,Sydney
+130,Geelong,Australia,287704,65,Melbourne
+131,Mandurah,Australia,98883,65,Perth
+132,Dongguan,China,7360000,52,Guangzhou
+133,Central Coast,Australia,338567,52,Newcastle
+134,Hong Kong,China,7429000,27,Shenzhen
+135,Foshan,China,7236000,19,Guangzhou
+136,Lower Hutt,New Zealand,113200,14,Wellington
+137,Jakarta,Indonesia,41913860,,
