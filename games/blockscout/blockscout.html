@@ -141,9 +141,130 @@
                 border: none;
                 cursor: pointer;
             }
+            #risk-banner {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1500;
+                background: #7a0000;
+                color: white;
+                padding: 8px 12px;
+                font: 14px sans-serif;
+                align-items: center;
+                gap: 10px;
+            }
+            #risk-banner.visible {
+                display: flex;
+            }
+            #risk-banner span {
+                flex: 1;
+            }
+            #risk-open-btn,
+            #risk-dismiss-btn {
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                border: 1px solid rgba(255, 255, 255, 0.5);
+                border-radius: 4px;
+                padding: 4px 10px;
+                font: 13px sans-serif;
+                cursor: pointer;
+                white-space: nowrap;
+            }
+            #recovery-modal {
+                display: none;
+                position: fixed;
+                inset: 0;
+                z-index: 2000;
+                background: rgba(0, 0, 0, 0.6);
+                align-items: center;
+                justify-content: center;
+            }
+            #recovery-modal.open {
+                display: flex;
+            }
+            #recovery-modal-box {
+                background: white;
+                border-radius: 10px;
+                padding: 24px;
+                max-width: 340px;
+                width: 90%;
+                font: 15px sans-serif;
+                line-height: 1.5;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            }
+            #recovery-modal-box h2 {
+                margin-bottom: 10px;
+                font-size: 18px;
+            }
+            #recovery-url-text {
+                word-break: break-all;
+                font: 11px monospace;
+                background: #f0f0f0;
+                padding: 8px;
+                border-radius: 4px;
+                margin: 12px 0;
+                min-height: 2em;
+                color: #333;
+            }
+            #copy-url-btn,
+            #email-url-btn {
+                display: inline-block;
+                margin-right: 8px;
+                margin-bottom: 12px;
+                padding: 8px 14px;
+                font: bold 14px sans-serif;
+                background: purple;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+            #recovery-privacy-warning {
+                font-size: 12px;
+                color: #900;
+                margin-bottom: 12px;
+            }
+            #recovery-close-btn {
+                display: block;
+                width: 100%;
+                padding: 8px;
+                font: bold 15px sans-serif;
+                background: #ddd;
+                color: #333;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+            }
         </style>
     </head>
     <body>
+        <div id="risk-banner">
+            <span
+                >⚠ iOS Safari may erase your progress after 7 days without
+                use</span
+            >
+            <button id="risk-open-btn">Protect it</button>
+            <button id="risk-dismiss-btn">✕</button>
+        </div>
+        <div id="recovery-modal">
+            <div id="recovery-modal-box">
+                <h2>Protect your progress</h2>
+                <p>
+                    On iOS Safari, game data can be erased after 7 days without
+                    use. Save your recovery URL — if your data is lost, visiting
+                    it will restore your progress from the cloud.
+                </p>
+                <div id="recovery-url-text"></div>
+                <button id="copy-url-btn">Copy URL</button>
+                <button id="email-url-btn">Email to me</button>
+                <p id="recovery-privacy-warning">
+                    ⚠ Keep this URL private — it encodes your location history.
+                </p>
+                <button id="recovery-close-btn">Close</button>
+            </div>
+        </div>
         <div id="score">Score: 0</div>
         <button id="help-btn">?</button>
         <div id="help-modal">
