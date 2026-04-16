@@ -3,13 +3,13 @@
 import { Goal } from './goal';
 import { createClient } from '@supabase/supabase-js';
 
-// TODO: fill in your Supabase project values. The anon key is safe to commit
-// when row-level security is enabled (see supabase-setup.sql).
-const SUPABASE_URL = '';
-const SUPABASE_ANON_KEY = '';
+// The publishable key is safe to commit when row-level security is enabled (see supabase-setup.sql).
+const SUPABASE_URL = 'https://jqbepxpfnhhpklmyrlrv.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY =
+    'sb_publishable_lop0dZzKMPMf86bQUUSW-w_XZYJRLu3';
 const supabase =
-    SUPABASE_URL && SUPABASE_ANON_KEY
-        ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY
+        ? createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
         : null;
 
 // L (Leaflet) is loaded as a global by leaflet.js, a script that index.html loads from the unpkg.com CDN.
@@ -517,9 +517,12 @@ export class BlockScout {
     }
 
     scheduleSupabaseSave(): void {
+        // If the timer is already going, cancel it & make a new one below.
         if (this.supabaseSaveTimeout !== undefined) {
             clearTimeout(this.supabaseSaveTimeout);
         }
+
+        // TODO does this prop always become undefined after the timer?
         this.supabaseSaveTimeout = window.setTimeout(
             () => void this.pushToSupabase(),
             5000,
