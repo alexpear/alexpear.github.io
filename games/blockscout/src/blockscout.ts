@@ -116,7 +116,7 @@ export class BlockScout {
             .getElementById('recenter-btn')!
             .addEventListener('click', () => this.panToPlayer());
 
-        const helpModal = document.getElementById('help-modal')!;
+        const helpModal = document.getElementById('help-modal')!; // The ! tells the Typescript compiler not to worry about the function returning undefined.
         document
             .getElementById('help-btn')!
             .addEventListener('click', () => helpModal.classList.add('open'));
