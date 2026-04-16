@@ -560,7 +560,7 @@ export class BlockScout {
         const recoveryModal = document.getElementById('recovery-modal')!;
         const urlText = document.getElementById('recovery-url-text')!;
 
-        if (!localStorage.getItem('risk-banner-dismissed')) {
+        if (!localStorage.getItem('risk-banner-hidden')) {
             banner.classList.add('visible');
         }
 
@@ -583,13 +583,15 @@ export class BlockScout {
             .getElementById('risk-dismiss-btn')!
             .addEventListener('click', () => {
                 banner.classList.remove('visible');
-                localStorage.setItem('risk-banner-dismissed', '1');
+                localStorage.setItem('risk-banner-hidden', '1');
             });
 
         document
             .getElementById('copy-url-btn')!
             .addEventListener('click', async () => {
                 await navigator.clipboard.writeText(this.recoveryUrl);
+                localStorage.setItem('risk-banner-hidden', '1');
+                banner.classList.remove('visible');
                 const btn = document.getElementById(
                     'copy-url-btn',
                 ) as HTMLButtonElement;
@@ -610,6 +612,8 @@ export class BlockScout {
                         'Keep it private — it encodes your location history.\n\n' +
                         this.recoveryUrl,
                 );
+                localStorage.setItem('risk-banner-hidden', '1');
+                banner.classList.remove('visible');
                 location.href = `mailto:?subject=${subject}&body=${body}`;
             });
 
