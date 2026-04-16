@@ -574,7 +574,10 @@ export class BlockScout {
             .addEventListener('click', openRecoveryModal);
         document
             .getElementById('save-recovery-url-btn')!
-            .addEventListener('click', openRecoveryModal);
+            .addEventListener('click', () => {
+                document.getElementById('help-modal').classList.remove('open');
+                openRecoveryModal();
+            });
 
         document
             .getElementById('risk-dismiss-btn')!
