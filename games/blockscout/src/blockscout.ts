@@ -557,7 +557,7 @@ export class BlockScout {
 
     setupRecoveryUI(): void {
         const banner = document.getElementById('risk-banner')!;
-        const modal = document.getElementById('recovery-modal')!;
+        const recoveryModal = document.getElementById('recovery-modal')!;
         const urlText = document.getElementById('recovery-url-text')!;
 
         if (!localStorage.getItem('risk-banner-dismissed')) {
@@ -566,7 +566,7 @@ export class BlockScout {
 
         const openRecoveryModal = () => {
             urlText.textContent = this.recoveryUrl;
-            modal.classList.add('open');
+            recoveryModal.classList.add('open');
         };
 
         document
@@ -616,11 +616,12 @@ export class BlockScout {
         document
             .getElementById('recovery-close-btn')!
             .addEventListener('click', () => {
-                modal.classList.remove('open');
+                recoveryModal.classList.remove('open');
             });
 
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.classList.remove('open');
+        recoveryModal.addEventListener('click', (e) => {
+            if (e.target === recoveryModal)
+                recoveryModal.classList.remove('open');
         });
     }
 
