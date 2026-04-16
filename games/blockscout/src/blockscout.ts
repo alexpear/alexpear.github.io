@@ -552,21 +552,12 @@ export class BlockScout {
         );
     }
 
-    get isAtRisk(): boolean {
-        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-        const isPWA =
-            window.matchMedia('(display-mode: standalone)').matches ||
-            (navigator as unknown as Record<string, unknown>)['standalone'] ===
-                true;
-        return isIOS && !isPWA;
-    }
-
     setupRecoveryUI(): void {
         const banner = document.getElementById('risk-banner')!;
         const modal = document.getElementById('recovery-modal')!;
         const urlText = document.getElementById('recovery-url-text')!;
 
-        if (this.isAtRisk && !localStorage.getItem('risk-banner-dismissed')) {
+        if (!localStorage.getItem('risk-banner-dismissed')) {
             banner.classList.add('visible');
         }
 
