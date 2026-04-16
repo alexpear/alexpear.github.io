@@ -30,6 +30,8 @@ export function overviewColor(points: number): string {
 }
 
 export class BlockScout {
+    // TODO if user hasnt refreshed in over a month, refresh the page to get latest logic. Be careful to avoid refresh loop obviously.
+
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
         renderer: L.canvas({ padding: 0.1 }),
@@ -57,7 +59,7 @@ export class BlockScout {
     lastSeenLat: number = SAN_FRANCISCO[0];
     lastSeenLong: number = SAN_FRANCISCO[1];
 
-    // Cloud backup identity. Generated fresh on first visit; persisted in localStorage.
+    // Cloud backup identity. Constructor calls this.load() which always overwrites this with the id from browser storage, if one is present.
     userId: string = crypto.randomUUID();
     offsetLat: number = (Math.random() - 0.5) * 90;
     offsetLng: number = (Math.random() - 0.5) * 360;
@@ -523,10 +525,13 @@ export class BlockScout {
         const shifted: Record<string, string> = {};
         for (const [key, dateStr] of Object.entries(this.coords2dates)) {
             const [lat, lng] = key.split(',').map(Number);
+
+            // All coords in the cloud are relative to the offset coord, which is PII & never touches the server.
             shifted[
                 BlockScout.keyFormat(lat - this.offsetLat, lng - this.offsetLng)
             ] = dateStr;
         }
+
         await supabase.from('blockscout_saves').upsert({
             user_id: this.userId,
             data: { coords2dates: shifted, playerScore: this.playerScore },
