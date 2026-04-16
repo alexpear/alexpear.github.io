@@ -59,10 +59,13 @@ export class BlockScout {
     lastSeenLat: number = SAN_FRANCISCO[0];
     lastSeenLong: number = SAN_FRANCISCO[1];
 
-    // Cloud backup identity. Constructor calls this.load() which always overwrites this with the id from browser storage, if one is present.
+    // Cloud backup identity. Constructor calls this.load() which always overwrites userId with the id from browser storage, if one is present.
     userId: string = crypto.randomUUID();
+
+    // PII because these can be combined with the relative coords in supabase to reconstruct where the user lives & works. These only ever are stored in the mobile browser & in the recovery URL's params.
     offsetLat: number = (Math.random() - 0.5) * 90;
     offsetLng: number = (Math.random() - 0.5) * 360;
+
     supabaseSaveTimeout: number | undefined = undefined;
 
     constructor() {
@@ -137,7 +140,9 @@ export class BlockScout {
         // TODO brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends.
 
         this.setupRecoveryUI();
-        void this.recoverFromUrl();
+
+        // void means we are treating this async func as a void by ignoring the Promise it returns.
+        void this.maybeRecoverFromUrl();
 
         this.updateScreen();
     }
@@ -560,21 +565,23 @@ export class BlockScout {
         const modal = document.getElementById('recovery-modal')!;
         const urlText = document.getElementById('recovery-url-text')!;
 
-        if (this.isAtRisk) {
+        if (this.isAtRisk && !localStorage.getItem('risk-banner-dismissed')) {
             banner.classList.add('visible');
         }
 
-        document
-            .getElementById('risk-open-btn')!
-            .addEventListener('click', () => {
-                urlText.textContent = this.recoveryUrl;
-                modal.classList.add('open');
-            });
+        const openRecoveryModal = () => {
+            urlText.textContent = this.recoveryUrl;
+            modal.classList.add('open');
+        };
+
+        document.getElementById('risk-open-btn')!.addEventListener('click', openRecoveryModal);
+        document.getElementById('save-recovery-url-btn')!.addEventListener('click', openRecoveryModal);
 
         document
             .getElementById('risk-dismiss-btn')!
             .addEventListener('click', () => {
                 banner.classList.remove('visible');
+                localStorage.setItem('risk-banner-dismissed', '1');
             });
 
         document
@@ -615,7 +622,7 @@ export class BlockScout {
         });
     }
 
-    async recoverFromUrl(): Promise<void> {
+    async maybeRecoverFromUrl(): Promise<void> {
         const params = new URLSearchParams(location.search);
         const uid = params.get('uid');
         const off = params.get('off');
@@ -634,6 +641,7 @@ export class BlockScout {
             return;
         }
 
+        // The constructor (which calls maybeRecoverFromUrl) will not be blocked during this await call.
         const { data, error } = await supabase
             .from('blockscout_saves')
             .select('data')
