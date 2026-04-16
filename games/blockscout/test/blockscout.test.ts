@@ -58,6 +58,13 @@ function makeGame(): BlockScout {
     jest.spyOn(BlockScout.prototype, 'quickUpdateScreen').mockImplementation(
         () => {},
     );
+    jest.spyOn(BlockScout.prototype, 'setupRecoveryUI').mockImplementation(
+        () => {},
+    );
+    jest.spyOn(BlockScout.prototype, 'maybeRecoverFromUrl').mockResolvedValue();
+    jest.spyOn(BlockScout.prototype, 'scheduleSupabaseSave').mockImplementation(
+        () => {},
+    );
     setupLeafletMock();
     return new BlockScout();
 }

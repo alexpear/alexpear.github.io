@@ -137,7 +137,7 @@ export class BlockScout {
             if (!document.hidden) this.refreshNumbers();
         });
 
-        // TODO brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends. 
+        // TODO brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends.
         // TODO Points/day metric displayed somewhere, eg brag screen.
 
         this.setupRecoveryUI();
