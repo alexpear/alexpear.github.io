@@ -574,8 +574,12 @@ export class BlockScout {
             modal.classList.add('open');
         };
 
-        document.getElementById('risk-open-btn')!.addEventListener('click', openRecoveryModal);
-        document.getElementById('save-recovery-url-btn')!.addEventListener('click', openRecoveryModal);
+        document
+            .getElementById('risk-open-btn')!
+            .addEventListener('click', openRecoveryModal);
+        document
+            .getElementById('save-recovery-url-btn')!
+            .addEventListener('click', openRecoveryModal);
 
         document
             .getElementById('risk-dismiss-btn')!
