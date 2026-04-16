@@ -137,7 +137,7 @@ export class BlockScout {
             if (!document.hidden) this.refreshNumbers();
         });
 
-        // TODO brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends.
+        // LATER brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends.
         // TODO Points/day metric displayed somewhere, eg brag screen.
 
         this.setupRecoveryUI();
@@ -707,7 +707,7 @@ export class BlockScout {
         this.coords2dates[BlockScout.keyFormat(lat, long)] = date.toISOString();
     }
 
-    // TODO ability to patch mistakes, eg if you use your phone while driving. Can also be used to manually set challenges perhaps. Menu > mode where you click on a block to select it > confirmation screen y/n. No brings you back to normal mode.
+    // LATER ability to patch mistakes, eg if you use your phone while driving. Can also be used to manually set challenges perhaps. Menu > mode where you click on a block to select it > confirmation screen y/n. No brings you back to normal mode.
 
     static run(): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -716,7 +716,6 @@ export class BlockScout {
 }
 
 // TODO call buildblockscout from Github CI. Stop having to commit dist/*.js.
-// TODO Ability to export your save file. Ability to import a save file (merging it into current state).
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 
