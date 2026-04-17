@@ -100,7 +100,7 @@
                 margin-bottom: 12px;
                 font-size: 20px;
             }
-            #help-close {
+            #help-close, #save-recovery-url-btn {
                 margin-top: 16px;
                 display: block;
                 width: 100%;
@@ -109,9 +109,14 @@
                 outline: 1px solid white;
                 border: none;
                 border-radius: 6px;
-                background: purple;
                 color: white;
                 cursor: pointer;
+            }
+            #save-recovery-url-btn {
+                background: blue;
+            }
+            #help-close {
+                background: purple;
             }
             .leaflet-bottom.leaflet-left {
                 bottom: 80px;
@@ -275,7 +280,7 @@
                     its points. Have fun exploring!
                 </p>
                 <!-- LATER could mention that location permissions are required, but none of your PII leaves your phone. -->
-                <button id="save-recovery-url-btn">Save recovery URL</button>
+                <button id="save-recovery-url-btn">Get your backup link</button>
                 <button id="help-close">Close</button>
             </div>
         </div>
