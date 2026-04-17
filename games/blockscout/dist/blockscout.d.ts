@@ -14,6 +14,10 @@ export declare class BlockScout {
     lastSeenTime: Date;
     lastSeenLat: number;
     lastSeenLong: number;
+    userId: string;
+    offsetLat: number;
+    offsetLng: number;
+    supabaseSaveTimeout: number | undefined;
     constructor();
     updateAfterPan(): void;
     updateAfterGPS(latitude: number, longitude: number): void;
@@ -30,6 +34,11 @@ export declare class BlockScout {
     panToPlayer(): void;
     stateString(): string;
     save(): void;
+    scheduleSupabaseSave(): void;
+    pushToSupabase(): Promise<void>;
+    get recoveryUrl(): string;
+    setupRecoveryUI(): void;
+    maybeRecoverFromUrl(): Promise<void>;
     load(): void;
     private _mockWideFont;
     private _setLastVisit;

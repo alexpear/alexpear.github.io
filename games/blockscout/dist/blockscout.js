@@ -3,6 +3,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlockScout = exports.overviewColor = void 0;
 const goal_1 = require("./goal");
+const supabase_js_1 = require("@supabase/supabase-js");
+// The publishable key is safe to commit when row-level security is enabled (see supabase-setup.sql).
+const SUPABASE_URL = 'https://jqbepxpfnhhpklmyrlrv.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_lop0dZzKMPMf86bQUUSW-w_XZYJRLu3';
+const supabase = SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY
+    ? (0, supabase_js_1.createClient)(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+    : null;
 const GRID_STEP = 0.01;
 const GOAL_FONT_PX = 32;
 const FOG_BUFFER = 1; // Extra cells of fog rendered beyond the viewport edge
@@ -18,6 +25,7 @@ function overviewColor(points) {
 exports.overviewColor = overviewColor;
 class BlockScout {
     constructor() {
+        // TODO if user hasnt refreshed in over a month, refresh the page to get latest logic. Be careful to avoid refresh loop obviously.
         // eslint-disable-next-line @typescript-eslint/typedef
         this.map = L.map('map', {
             renderer: L.canvas({ padding: 0.1 }),
@@ -40,6 +48,12 @@ class BlockScout {
         this.lastSeenTime = new Date(0); // 1970
         this.lastSeenLat = SAN_FRANCISCO[0];
         this.lastSeenLong = SAN_FRANCISCO[1];
+        // Cloud backup identity. Constructor calls this.load() which always overwrites userId with the id from browser storage, if one is present.
+        this.userId = crypto.randomUUID();
+        // PII because these can be combined with the relative coords in supabase to reconstruct where the user lives & works. These only ever are stored in the mobile browser & in the recovery URL's params.
+        this.offsetLat = (Math.random() - 0.5) * 90;
+        this.offsetLng = (Math.random() - 0.5) * 360;
+        this.supabaseSaveTimeout = undefined;
         // --- Map setup ---
         this.tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             maxZoom: 19,
@@ -67,7 +81,7 @@ class BlockScout {
         document
             .getElementById('recenter-btn')
             .addEventListener('click', () => this.panToPlayer());
-        const helpModal = document.getElementById('help-modal');
+        const helpModal = document.getElementById('help-modal'); // The ! tells the Typescript compiler not to worry about the function returning undefined.
         document
             .getElementById('help-btn')
             .addEventListener('click', () => helpModal.classList.add('open'));
@@ -83,7 +97,11 @@ class BlockScout {
             if (!document.hidden)
                 this.refreshNumbers();
         });
-        // TODO brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends.
+        // LATER brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends.
+        // TODO Points/day metric displayed somewhere, eg brag screen.
+        this.setupRecoveryUI();
+        // void means we are treating this async func as a void by ignoring the Promise it returns.
+        void this.maybeRecoverFromUrl();
         this.updateScreen();
     }
     updateAfterPan() {
@@ -370,29 +388,165 @@ class BlockScout {
         }
     }
     stateString() {
-        const state = {
+        return JSON.stringify({
             coords2dates: this.coords2dates,
             playerScore: this.playerScore,
-        };
-        return JSON.stringify(state);
+            userId: this.userId,
+            offsetLat: this.offsetLat,
+            offsetLng: this.offsetLng,
+        });
     }
     // Save & load are both the whole gamestate, ie playerScore AND coords2dates.
     save() {
         localStorage.setItem('mapGame', this.stateString());
+        this.scheduleSupabaseSave();
+    }
+    scheduleSupabaseSave() {
+        // If the timer is already going, cancel it & make a new one below.
+        if (this.supabaseSaveTimeout !== undefined) {
+            clearTimeout(this.supabaseSaveTimeout);
+        }
+        // TODO does this prop always become undefined after the timer?
+        this.supabaseSaveTimeout = window.setTimeout(() => void this.pushToSupabase(), 5000);
+    }
+    async pushToSupabase() {
+        if (!supabase)
+            return;
+        const shifted = {};
+        for (const [key, dateStr] of Object.entries(this.coords2dates)) {
+            const [lat, lng] = key.split(',').map(Number);
+            // All coords in the cloud are relative to the offset coord, which is PII & never touches the server.
+            shifted[BlockScout.keyFormat(lat - this.offsetLat, lng - this.offsetLng)] = dateStr;
+        }
+        await supabase.from('blockscout_saves').upsert({
+            user_id: this.userId,
+            data: { coords2dates: shifted, playerScore: this.playerScore },
+            updated_at: new Date().toISOString(),
+        });
+    }
+    get recoveryUrl() {
+        return (`${location.origin}${location.pathname}` +
+            `?uid=${this.userId}&off=${this.offsetLat},${this.offsetLng}`);
+    }
+    setupRecoveryUI() {
+        const banner = document.getElementById('risk-banner');
+        const recoveryModal = document.getElementById('recovery-modal');
+        const urlText = document.getElementById('recovery-url-text');
+        if (!localStorage.getItem('risk-banner-hidden')) {
+            banner.classList.add('visible');
+        }
+        const openRecoveryModal = () => {
+            urlText.textContent = this.recoveryUrl;
+            recoveryModal.classList.add('open');
+        };
+        document
+            .getElementById('risk-open-btn')
+            .addEventListener('click', openRecoveryModal);
+        document
+            .getElementById('save-recovery-url-btn')
+            .addEventListener('click', () => {
+            document.getElementById('help-modal').classList.remove('open');
+            openRecoveryModal();
+        });
+        document
+            .getElementById('risk-dismiss-btn')
+            .addEventListener('click', () => {
+            banner.classList.remove('visible');
+            localStorage.setItem('risk-banner-hidden', '1');
+        });
+        document
+            .getElementById('copy-url-btn')
+            .addEventListener('click', async () => {
+            await navigator.clipboard.writeText(this.recoveryUrl);
+            localStorage.setItem('risk-banner-hidden', '1');
+            banner.classList.remove('visible');
+            const btn = document.getElementById('copy-url-btn');
+            btn.textContent = 'Copied!';
+            window.setTimeout(() => {
+                btn.textContent = 'Copy URL';
+            }, 2000);
+        });
+        document
+            .getElementById('email-url-btn')
+            .addEventListener('click', () => {
+            const subject = encodeURIComponent('My Block Scout recovery URL');
+            const body = encodeURIComponent('Here is my Block Scout recovery URL.\n' +
+                'Keep it private — it encodes your location history.\n\n' +
+                this.recoveryUrl);
+            localStorage.setItem('risk-banner-hidden', '1');
+            banner.classList.remove('visible');
+            location.href = `mailto:?subject=${subject}&body=${body}`;
+        });
+        document
+            .getElementById('recovery-close-btn')
+            .addEventListener('click', () => {
+            recoveryModal.classList.remove('open');
+        });
+        recoveryModal.addEventListener('click', (e) => {
+            if (e.target === recoveryModal)
+                recoveryModal.classList.remove('open');
+        });
+    }
+    async maybeRecoverFromUrl() {
+        const params = new URLSearchParams(location.search);
+        const uid = params.get('uid');
+        const off = params.get('off');
+        if (!uid || !off)
+            return;
+        const [offLat, offLng] = off.split(',').map(Number);
+        if (isNaN(offLat) || isNaN(offLng))
+            return;
+        // Strip params immediately so a refresh doesn't re-trigger recovery.
+        history.replaceState({}, '', location.pathname);
+        if (!supabase) {
+            console.warn('BlockScout: recovery URL detected but Supabase is not configured.');
+            return;
+        }
+        // The constructor (which calls maybeRecoverFromUrl) will not be blocked during this await call.
+        const { data, error } = await supabase
+            .from('blockscout_saves')
+            .select('data')
+            .eq('user_id', uid)
+            .single();
+        if (error || !data) {
+            console.warn('BlockScout: cloud recovery failed', error);
+            return;
+        }
+        const cloudCoords = data.data?.coords2dates ?? {};
+        let mergedCount = 0;
+        for (const [key, dateStr] of Object.entries(cloudCoords)) {
+            const [lat, lng] = key.split(',').map(Number);
+            const realKey = BlockScout.keyFormat(lat + offLat, lng + offLng);
+            const localDate = this.coords2dates[realKey];
+            if (!localDate || dateStr > localDate) {
+                this.coords2dates[realKey] = dateStr;
+                mergedCount++;
+            }
+        }
+        // Adopt the recovered identity so future saves go to the same cloud record.
+        this.userId = uid;
+        this.offsetLat = offLat;
+        this.offsetLng = offLng;
+        this.save();
+        this.updateScreen();
+        console.log(`BlockScout: recovery complete — merged ${mergedCount} blocks from cloud.`);
     }
     // Load the saved gamestate from local storage.
     load() {
         const raw = localStorage.getItem('mapGame');
-        if (!raw) {
+        if (!raw)
             return;
-        }
-        const worldState = JSON.parse(raw);
-        if (worldState.playerScore) {
-            this.playerScore = Number(worldState.playerScore);
-        }
-        if (worldState.coords2dates) {
-            this.coords2dates = worldState.coords2dates;
-        }
+        const s = JSON.parse(raw);
+        if (s.playerScore)
+            this.playerScore = Number(s.playerScore);
+        if (s.coords2dates)
+            this.coords2dates = s.coords2dates;
+        if (s.userId)
+            this.userId = s.userId;
+        if (typeof s.offsetLat === 'number')
+            this.offsetLat = s.offsetLat;
+        if (typeof s.offsetLng === 'number')
+            this.offsetLng = s.offsetLng;
     }
     // NOTE Players that visit a vast quantity of places will have large gamestates. Hopefully this only affects performance at inhuman levels.
     // For testing.
@@ -407,7 +561,7 @@ class BlockScout {
         goal.lastVisited = date;
         this.coords2dates[BlockScout.keyFormat(lat, long)] = date.toISOString();
     }
-    // TODO ability to patch mistakes, eg if you use your phone while driving. Can also be used to manually set challenges perhaps. Menu > mode where you click on a block to select it > confirmation screen y/n. No brings you back to normal mode.
+    // LATER ability to patch mistakes, eg if you use your phone while driving. Can also be used to manually set challenges perhaps. Menu > mode where you click on a block to select it > confirmation screen y/n. No brings you back to normal mode.
     static run() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         window.blockscout = new BlockScout();
@@ -415,7 +569,6 @@ class BlockScout {
 }
 exports.BlockScout = BlockScout;
 // TODO call buildblockscout from Github CI. Stop having to commit dist/*.js.
-// TODO Ability to export your save file. Ability to import a save file (merging it into current state).
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 // Run in browser, not during unit tests (DOM is empty at import time).
