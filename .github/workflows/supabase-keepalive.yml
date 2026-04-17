@@ -1,0 +1,19 @@
+name: Supabase Keepalive
+
+on:
+  schedule:
+    - cron: '0 0 */6 * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          curl -sf \
+            "https://jqbepxpfnhhpklmyrlrv.supabase.co/rest/v1/blockscout_saves?limit=1" \
+            -H "apikey: sb_publishable_lop0dZzKMPMf86bQUUSW-w_XZYJRLu3" \
+            -H "Authorization: Bearer sb_publishable_lop0dZzKMPMf86bQUUSW-w_XZYJRLu3" \
+            > /dev/null
+          echo "Supabase ping succeeded"
