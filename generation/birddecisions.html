@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html>
+<body style="background: #236A89; color: #FFFFFF; font-size: 24px"> 
+  <script type="text/javascript">
+    // tableString excludes * but includes name
+    function loadTable(tableString) {
+      var results = [];
+      var lines = tableString.split("\n");
+
+      var tableName = lines[0].trim();
+      // TODO somewhat clumsy checking if it's * output instead of just output for root table
+      if (tableName.slice(0,2) == "* ") {
+        tableName = tableName.slice(1).trim();  // cut off the '*' and trim
+      }
+
+      // iterate over other lines, starting at 1.
+      for (var i = 1; i < lines.length; i++) {
+        var words = lines[i].split(/\s+/);  // regex: one or more Space characters (" ")
+        if (words.length < 2) {
+          continue;  // Skip blank or invalid lines
+        }
+        // ie the tail/rest of 'words', in string form, omitting trailing spaces.
+        var resultText = words.slice(1).join(' ').trim();
+        // anonymous class Result
+        var result = {
+          text: resultText,  
+          lineNumber: i,
+          table: tableName  // for learning later.
+        };
+        // Add result to 'results' weight times (memory-inelegant)
+        var weight = words[0];
+        for (var w = 0; w < weight; w++) {
+          results.push(result);
+        }
+      }
+    
+      // anonymous class Table
+      return { results: results, name: tableName };
+    }
+
+    function tableResult(results) {
+      var resultIndex = Math.floor(Math.random() * results.length);  // random index into 'table'
+      return results[resultIndex].text;
+    }
+
+    function fillBlanks(origString, tables) {
+      // TODO: gender/choice [] brackets
+      // iLeft is the index of first left bracket
+      for (var iLeft = 0; iLeft < origString.length; iLeft++) {
+        if (origString[iLeft] == '{') {
+          // Now find corresponding '}'
+          for (var iRight = iLeft+1; iRight < origString.length; iRight++) {
+            if (origString[iRight] == '{') {
+              alert("syntax error: I'm confused by this { that i found inside a {...} pair.");
+              return origString;
+            }
+            if (origString[iRight] == '}') {
+              var subtableName = origString.slice(iLeft+1, iRight);  // inclusive, exclusive
+              var subtableText = tableResult(tables[subtableName]);
+              // recursively fill out the {} blanks in the new substring.
+              // possibly clumsy
+              subtableText = fillBlanks(subtableText, tables);
+              return ( 
+                origString.slice(0, iLeft) +
+                subtableText +
+                origString.slice(iRight+1, origString.length));
+            }
+          }
+        }
+      }
+
+      return origString;  // if no {...} pair found, just return it unchanged
+    }
+
+
+    function genText() {
+      var fullText = document.getElementById("boxaleph").value;
+
+      // Load into table objects.
+      var tableStrings = fullText.split('\n*');
+      // TODO: don't hardcode 'output' lower down
+      var tables = [];
+      for (var i=0; i < tableStrings.length; i++) {
+        var table = loadTable(tableStrings[i]);
+        tables[table.name] = table.results;
+      }
+
+      // Now roll a result in root table and recurse down.
+      var outputStr = tableResult(tables['output']);
+
+      // BTW: indexOf() is runtime-inefficient for long strings
+      while (outputStr.indexOf('{') != -1) {
+        outputStr = fillBlanks(outputStr, tables);
+      }
+
+      document.getElementById("outputDiv").innerHTML = outputStr;
+    }
+  </script>
+
+  <style>
+    .center * {
+      display: block;
+      margin: 0 auto 0 auto;
+    }
+
+    .center h3 {
+      text-align: center;
+    }
+
+    #generateButton {
+      margin-top: 30px;
+    }
+
+    #outputDiv {
+      width: 700px;
+    }
+
+    #boxaleph {
+      margin-bottom: 100px;
+    }
+  </style>
+
+  <div class="center">
+    <h3 id="title">Customizable Random Fiction Generator</h3>
+    <input id="generateButton" type="button" onclick="genText()" value="Generate a new one!"/><br>
+    <div id="outputDiv"></div><br>
+    <textarea id="boxaleph" rows="48" cols="100">
+* output
+43 She is {anadj} {charnoun} {charfurtherinfo}. She {wears} {outfitfurtherinfo}. She {hashair} and {vistrait}. In the field she {infield}. She {plotsentence}. 
+43 She is {anadj} {charnoun} {charfurtherinfo}. She {hashair} and {vistrait}. She {wears} {outfitfurtherinfo}. In the field she {infield}. She {plotsentence}. 
+
+* anadj
+6 a sneaky
+9 a loyal
+4 a married
+1 a lovesick 
+15 a nervousness
+14 an anxious
+1 a wistful
+15 a distracted
+1 a hopeful
+9 a hopeless
+12 a careless
+11 a careful
+2 a wide-eyed
+9 a young
+12 an old
+18 an elderly
+11 a cultured
+11 a well-read
+11 a grey-haired
+17 a grizzled
+11 a weary
+12 a retired
+9 a wise
+11 a compassionate
+9 a cheerful
+7 a cheery
+11 a charismatic
+9 a chatty
+6 a long-winded 
+5 a rather pedantic 
+11 an introverted
+5 an insular 
+11 a quiet
+11 a taciturn
+11 a laconic 
+9 an extroverted
+9 a cocky
+11 a confident
+18 a gloomy
+5 a downtrodden
+2 an unlucky
+9 an eager
+9 an openminded
+9 an unusual
+24 a remarkable
+15 a kind
+18 a cautious
+15 a reckless
+11 volatile
+15 a nobleborn
+18 a commonborn
+12 a lowborn
+11 an Earthborn
+9 a guarded
+21 a suspicious
+15 a pretentious
+6 a sanctimonious
+15 a polite
+21 a gentle
+12 a harsh
+9 an angry
+12 an antsy
+18 an angsty
+15 a lighthearted
+12 a heavy-hearted
+12 a cruel
+8 a scruffy
+9 a tidy
+12 a grubby
+12 a neat
+12 a dignified
+18 a macabre
+18 a strict
+12 a vegetarian
+12 a violent
+12 a lonely
+15 a hunted
+1 an outlaw
+5 an exiled
+12 a famous
+11 an infamous
+11 a renowned
+9 a wealthy
+9 a poor
+9 a healthy
+12 a sickly
+18 a dying
+11 an injured
+11 a limping
+11 an old-fashioned
+11 an iconoclastic
+11 a stubborn
+11 a rebellious
+11 a hotheaded
+11 a stoic
+1 a condescending
+11 a disdainful
+10 a cursed
+12 a confused
+9 a forgetful
+15 an absentminded
+15 a pious
+11 a devout
+12 a proud
+9 a stuck-up
+12 a humble
+12 an intelligent
+15 a brainy
+1 a slow-witted
+3 a fast-talking
+9 a curt
+9 a courteous
+1 a lethargic
+9 an energetic
+9 a tall
+8 a petite
+9 a long-limbed
+12 a skinny
+12 a slender
+9 a thin
+11 a gaunt
+12 a muscular
+11 a graceful
+14 a bulky
+9 a stout
+1 a frail
+9 a tough
+12 a brave
+1 a cowardly
+12 a mischievous
+18 a callous
+1 a scholarly
+15 a bookish
+1 a pretty
+1 a rather plain
+9 a rugged
+1 a languid
+9 a luckless
+9 an orphaned
+2 a heartbroken
+12 a curious
+9 an obsessive
+12 an obsessed
+9 a manic
+9 an optimistic
+12 a pessimistic 
+12 a mysterious
+12 a shadowy
+11 a secretive
+9 a sinister
+9 a deceitful
+12 a manipulative
+19 an enthusiastic
+11 easygoing
+19 a cynical
+11 sardonic
+11 sarcastic
+11 ill-tempered
+11 bad-tempered
+22 a grim
+22 a death-obsessed
+9 a morbid
+
+* charnoun
+17 stormtrooper
+14 cyborg
+11 full cyborg
+14 combat cyborg
+36 soldier
+12 warrior
+12 sergeant
+18 lieutenant
+3 colonel
+18 deserter from the Rebellion
+9 pilot
+33 demolitions expert
+18 EOD expert
+11 veteran
+33 rookie
+9 captain
+39 commander
+15 lone wolf 
+18 astrophysics major
+2 orphan
+30 jokester
+
+* charfurtherinfo
+18 who specializes in long-term infiltration 
+24 who specializes in stealth
+18 who specializes in melting into the shadows
+12 who specializes in long-range weapons
+12 who specializes in driving the getaway car
+27 who specializes in explosives
+12 who specializes in battlefield command
+27 who specializes in network infiltration
+18 who specializes in alien technology
+20 who specializes in alien psychology
+16 who specializes in psychological warfare
+9 who specializes in unconventional warfare
+9 who specializes in guerrilla tactics
+49 who specializes in close quarters combat
+27 who specializes in zero gravity and vacuum operations
+15 who specializes in boarding actions
+39 who was trained for hostage situations
+21 who is rapidly losing faith in the mission
+12 who is not getting much sleep these days
+17 who spends a lot of time practicing in the firing range
+14 who spends a lot of time beating up the bags in the gym
+11 who is speaking less and less these days
+12 who is losing the will to keep going
+11 who is not proud of herself 
+11 who tries not to think about what she did
+12 with a PhD in {discipline}
+
+* discipline
+9 xenopsychology
+9 xenoarchaeology
+9 astrophysics
+9 aeronautics
+9 aeronautical engineering
+9 military history
+9 military psychology
+9 mathematics
+9 slipspace physics
+9 physics
+9 mechanical engineering
+9 computer engineering
+9 robotics
+9 brain science
+9 artificial biology
+9 astrobiology
+12 planetary science
+9 xenoaesthetics
+9 interstellar genetics
+
+* wears
+234 wears {armoradj} {color} armor
+
+* armoradj
+12 battered
+12 rusty
+15 scarred
+9 sleek
+19 angular
+12 brand-new
+19 reinforced
+19 aging
+12 modified
+16 custom
+11 customized
+12 painted
+13 decorated
+9 hand-repaired
+18 bulky
+21 grimy
+14 dirty
+12 grubby
+15 faded
+12 camouflage-patterned
+15 unshielded
+18 minimal
+15 lightweight
+21 heavy
+12 prototype
+12 unusual
+15 pre-war
+14 archaic
+21 reliable
+12 well-tested
+18 heavily modified
+27 deceptively light-looking 
+18 aerodynamic
+15 crude
+15 a retired model of
+19 trophy-strewn
+12 heavily damaged
+18 damaged
+12 mostly-functional
+9 classified
+9 top secret 
+10 Mark I
+7 Mark II 
+15 Mark III
+15 Mark IV
+12 Mark V
+12 Mark VI
+15 Mark VII
+9 high-endurance
+15 strength-enhancing
+18 plasma-resistant
+24 hardened
+
+* color
+1 magenta
+1 salmon
+30 red
+5 crimson
+4 vermillion
+5 scarlet
+36 orange
+14 yellow
+1 lemon yellow
+36 green
+1 lime green
+1 lime
+1 bright green
+14 olive green
+30 blue
+5 sky blue
+4 aquamarine
+4 turquoise
+30 purple
+4 violet
+33 white
+1 beige
+1 light grey
+28 steel
+12 gunmetal
+19 gunmetal grey
+7 chrome
+16 bronze
+66 grey
+4 dark grey
+57 black
+33 brown
+1 tan
+1 olive
+27 silver 
+1 opal
+12 gold
+
+* outfitfurtherinfo
+31 that has seen a lot of action
+18 with a very large number of ammo pouches
+17 with a hidden compartment in case of capture
+28 with hardwired self-destruct capability
+15 with custom camouflage gear
+10 with a large scar across the chestplate
+9 with a large hole in the chestplate
+9 with a gaping gash in the chestplate
+17 with no helmet
+11 without a helmet
+31 designed for mobility and agility
+19 optimized for hazardous environments
+28 designed to be lightweight
+12 designed to be nonmagnetic
+24 designed to withstand an electromagnetic pulse
+25 optimized for airless environments
+14 designed for zero-gravity and vacuum combat
+11 with magnetized boots
+20 designed to reseal quickly if breached
+14 sealed against vacuum, biohazards, and chemical weapons
+15 made from classified self-healing materials
+18 that can keep the wearer operational despite extreme injuries
+28 but hates the sight of it
+27 and rarely removes it
+21 that was acquired by less than legal means 
+8 that violates multiple navy regulations
+28 that reminds the whole squad of its previous owner
+14 that her squadmates suspect is cursed
+14 that has served her well so far
+14 that makes her think of some enormous insect
+
+* hashair
+15 has short black hair
+24 has short brown hair
+24 has short blond hair
+20 has short white hair
+15 has short red hair
+54 has long black hair
+18 has curly brown hair
+24 has curly black hair
+24 has chin-length black hair
+24 has chin-length white hair
+27 has chin-length blond hair
+31 has chin-length brown hair
+14 has chin-length red hair
+
+* vistrait
+9 a wide mouth
+12 is missing one eye
+18 a distinctive scar on one cheek
+14 a large scar on her face
+15 a strong chin
+15 thick eyebrows
+15 very pale skin
+12 brown skin
+18 dark brown skin 
+15 freckles
+15 high cheekbones
+9 blue eyes
+15 green eyes
+18 brown eyes
+15 grey eyes
+21 wears glasses when helmetless
+15 wears an almost spherical helmet
+15 wears an armored helmet with a very narrow visor
+12 wears a helmet optimized for peripheral vision
+12 a small mouth
+12 never smiles
+18 is always smiling
+7 a sudden, manic smile
+7 a sudden, manic grin
+18 a deep, gravelly voice
+9 a surprisingly gentle voice
+12 a very deep voice
+9 white, perfect teeth
+9 a small nose
+15 an English accent
+18 an Indian accent
+12 a Russian accent
+24 a Kenyan accent
+12 an Australian accent
+15 a German accent
+12 a Japanese accent 
+
+* infield
+130 carries {weapons}, plus {items}
+222 carries {weapons}
+
+* weapons
+39 {1weapon}
+138 only {1weapon} 
+102 {2weapons}
+26 {3weapons}
+
+* 1weapon
+151 {smallweapon}
+55 {bigweapon}
+
+* smallweapon
+87 a pistol
+14 a scoped pistol
+44 a heavy pistol
+60 a magnum
+78 an SMG
+116 a combat knife
+89 a gladius
+6 a small buckler
+7 a buckler
+9 a small combat shield
+7 a combat shield
+6 a hand shield
+29 a free hand
+19 a wrist-mounted energy shield
+39 a plasma rifle
+22 a plasma pistol
+44 an energy sword
+1 a mauler
+18 a plasma knife
+7 a spiker
+1 a needler
+17 a boltshot
+
+* bigweapon
+57 an assault rifle
+47 a sniper rifle
+47 a longrifle
+49 a shotgun
+20 a rocket launcher
+20 a lascannon
+28 a grenade launcher
+19 a katana
+22 a broadsword
+13 a greatsword 
+35 a length of reinforced cable
+22 a railgun
+14 a flamethrower
+19 a heavy machine gun
+44 a tower shield
+14 a large shield
+21 a plasma rifle
+12 a needler
+9 a needle rifle
+12 a carbine
+12 a focus rifle
+28 an energy sword
+22 a grav hammer
+4 a fuel rod cannon 
+14 a plasma cannon 
+1 a brute shot
+13 a plasma repeater
+7 a plasma launcher
+1 a storm rifle
+13 a lightrifle
+1 a binary rifle
+25 an incineration cannon 
+
+* 2weapons
+61 {smallweapon} and {smallweapon}
+67 {bigweapon} and {smallweapon}
+15 {bigweapon} and {bigweapon}
+
+* 3weapons
+34 {smallweapon}, {smallweapon}, and {smallweapon}
+34 {bigweapon}, {smallweapon}, and {smallweapon}
+15 {bigweapon}, {bigweapon}, and {smallweapon}
+
+* items
+103 {anitem}
+50 {anitem} and {anitem}
+55 {anitem}, {anitem}, and {anitem}
+
+* anitem
+55 {grenades}
+30 extra ammo
+12 extra magazines
+25 extra bullets
+15 a radio
+12 a commlink
+22 an extraction beacon
+21 a teleport beacon
+12 a tracking beacon 
+12 a locket
+15 a tactical nuke
+18 satchel charges
+15 proximity mines
+21 two dog tags
+37 a starship-rated AI
+19 a Koran
+16 a Bible
+15 a crucifix
+18 network intrusion equipment
+9 a datapad
+28 a grappling hook
+40 a jetpack
+24 an armorlock capacitor
+30 a hologram projector
+19 a bubble shield
+18 active camouflage projectors
+
+* grenades
+28 frag grenades
+28 grenades
+9 captured plasma grenades
+11 plasma grenades
+11 pulse grenades
+9 napalm grenades
+8 spike grenades
+
+* plotsentence
+18 is afraid the war will take the life of another teammate
+12 has never left the planet before
+21 doesn't think about the past
+12 is careful not to look into the void for any longer than necessary
+11 has never failed a mission
+12 doesn't have a home planet any more
+12 cares more about the navy than frivolous things like parents
+18 has seen too much
+21 really doesn't give a shit
+11 thinks you should go fuck yourself
+12 loves coming back to hot food at the base
+15 never talks about personal topics
+11 keeps running through the same catas over and over but can't get them quite right
+1 strips down weapons and reassembles them in the barracks, over and over
+11 sits in the barracks and strips down weapons, then reassembles them, over and over
+11 had a transcranial chip inserted that records everything seen, heard, or felt on the mission 
+14 has had extensive brain surgery
+9 has three prosthetic limbs
+18 recites the names of fallen planets every night
+12 mutters when no one else is around
+12 still prays to God
+18 shocked the team with a seizure last week
+11 gets huge, debilitating migraines
+8 sometimes feels like she's trapped in someone else's body
+11 doesn't like being planetside, under the wide empty sky
+8 wishes she could spend all the time in zero-g
+8 was rendered blind on the last mission, and has received two prosthetic eyes
+8 is a virgin
+8 never told the squad she was homosexual, and somehow this keeps her up at night more than ever-shrinking odds of getting back to base alive 
+2 hates being in small, enclosed spaces
+8 gets antsy in small, enclosed spaces 
+11 sometimes forgets her squadmates' names
+8 has been waking up from dreams that frighten her, but she doesn't know why
+1 has been having pretty weird dreams lately
+8 has been having very strange dreams lately
+8 has been having strange dreams lately
+8 sometimes finds her face wet with tears and doesn't know why
+8 sometimes finds tears on her face and doesn't know why
+8 can remember things that never happened to her, that feel like someone else's life
+11 has been blacking out more and more lately
+8 sometimes finds herself in strange parts of the base and can't remember how she got there
+8 sometimes finds herself in strange parts of the base and can't remember what she was doing for the last few hours
+8 is eating less and less
+8 has been thinking about this mission and it doesn't add up
+11 thinks her squadmates are hiding something from her  
+12 can speak two alien languages
+9 knows the ship better than its designers
+15 is married back home
+15 registered as a conscientious objector before the war
+9 is a vegan
+12 is hiding an alien dataslate in the barracks
+18 is hiding an alien egg in the barracks
+15 has been to prison
+30 spent 3 years alone in an abandoned hab as a teenager
+15 was born into slavery
+12 once was captured by the enemy
+21 survived our bombardment of New Salvation
+15 sometimes stares into space and does not respond when addressed
+12 has imprisoned and tortured aliens in the past
+1 listens to bubbly pop music when off duty
+18 was the heir to a huge fortune before the war 
+9 has a suspiciously short file in the Navy intelligence database 
+1 has a lot of blank ink in her file
+    </textarea>
+  </div>
+</body>
+</html>
