@@ -15,20 +15,20 @@
 
       // iterate over other lines, starting at 1.
       for (var i = 1; i < lines.length; i++) {
-        var words = lines[i].split(/\s+/);  // regex: one or more Space characters (" ")
-        if (words.length < 2) {
-          continue;  // Skip blank or invalid lines
+        var words = lines[i].trim().split(/\s+/);
+        var weight = parseInt(words[0]);
+        if (isNaN(weight)) {
+          continue;  // Skip blank or non-numeric-weight lines
         }
         // ie the tail/rest of 'words', in string form, omitting trailing spaces.
         var resultText = words.slice(1).join(' ').trim();
         // anonymous class Result
         var result = {
-          text: resultText,  
+          text: resultText,
           lineNumber: i,
           table: tableName  // for learning later.
         };
         // Add result to 'results' weight times (memory-inelegant)
-        var weight = words[0];
         for (var w = 0; w < weight; w++) {
           results.push(result);
         }
