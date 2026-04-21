@@ -39,14 +39,33 @@ Game loop
 From the main menu, the player has a list of all planets they have ever played, plus a New Planet option. 
 They may play as any of that planet's factions, or randomize which one.
 Expedition gameplay is inspired by the hexcrawl TTRPG genre.
+The game has 2 main topics, hexcrawl and customization. 
+You can customize your items, kinds, places, and your faction. 
 You have indirect control over your faction. If your orders don't benefit them, it will drain their patience. Then they might choose their own actions.
 Even your protagonist can have mental limitations that make them act temporarily outside your control.
 (This indirect control constraint helps the faction perform well in NPC mode.)
-<copy from gdoc to here>
+Food and water and other supplies are assumed to be plentiful, but ammo can run out after a few shootouts. 
+
+Data model
+Planet
+Faction
+Kind
+Group
+Item
+Place 
 ...
 
+
 UI
-...
+
+Customize screens
+Item
+Kind
+Faction 
+
+Place screen
+Map screen
+Main menu 
 
 
 Implementation Plan:
