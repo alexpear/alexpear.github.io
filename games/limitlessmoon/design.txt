@@ -1,10 +1,10 @@
-Overview
+# Overview
 Limitless Moon is a single-player browser-based video game. It's a new genre somewhat related to turn-based roguelikes. The game consists of expeditions, which are 5-60 minute runs. 
 
-Narrative context
+# Narrative context
 Scifi adventure with aliens, combat, exploration, base building, & NPC diplomacy. You play as a faction of humans or aliens pursuing science & mischief on wild, unexplored space opera planets.
 
-Glossary
+# Glossary
 - Planet - Each expedition takes place on 1 planet. Each planet is essentially its own variant of the game. A player might return to the same planet many times, customizing it, or try many new planets once, looking for fun new variety. Narratively, a 'planet' really means a volume of space a few light-seconds across, which usually includes a planet & may also include moons, space stations, etc.
     Each planet contains:
     - 2+ factions
@@ -35,7 +35,7 @@ The player can communicate by radio with all faction members, but does not have 
 - Place - A hexagonal area 10km across. Part of a procedurally generated hex grid.
 
 
-Game loop
+# Game loop
 From the main menu, the player has a list of all planets they have ever played, plus a New Planet option. 
 They may play as any of that planet's factions, or randomize which one.
 Expedition gameplay is inspired by the hexcrawl TTRPG genre.
@@ -46,7 +46,8 @@ Even your protagonist can have mental limitations that make them act temporarily
 (This indirect control constraint helps the faction perform well in NPC mode.)
 Food and water and other supplies are assumed to be plentiful, but ammo can run out after a few shootouts. 
 
-Data model
+
+# Data model
 Planet
 Faction
 Kind
@@ -56,28 +57,48 @@ Place
 ...
 
 
-UI
+# UI screens
 
-Customize screens
-Item
-Kind
-Faction 
+Customize Item
+Customize Kind
+Customize Faction
 
 Place screen
+- Most gameplay time happens here, viewing your current place (hex).
 Map screen
+- When we zoom out from the place screen, we see a map of many hexes, without much detail rendered in them.
 Main menu 
+- Used when setting up a new run.
 
 
-Implementation Plan:
+# Software Architecture
+Website (web app) 
+- Mobile-first design
+- Browser storage is the source of truth
+- Supabase is the cloud backup system
+- Supabase also stores all multiverse concepts (UCG characters & places that can be shared with other players)
 
-UI Prototype
 
-Data Model vertical slice
+# Implementation Plan:
+
+## UI Prototype
+- Mobile-first design
+  - Portrait orientation
+- A zoomable, scrollable grid of random hex tiles
+- Each hex corresponds to a Place object & is colored based on its terrain type.
+- For now, terrain types can just be flat colors.
+- When we zoom in on a hex such that it fills the screen, we snap into the Place View (centered on that hex, zoomed such that it dominates the screen).
+  - When in Place View, more details render in the hex. (This can be placeholder text at first.)
+  - Scrolling slides us over to center on another adjacent hex.
+  - Zooming out exits Place view mode.
+
+
+## Data Model vertical slice
 Knife (item)
 Soldier (kind)
 Hills (place)
 Planet
 
-Loading a start state & resolving its random values 
+## Loading a start state & resolving its random values 
 
 ...
