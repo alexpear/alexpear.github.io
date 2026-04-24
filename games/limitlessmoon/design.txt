@@ -75,8 +75,10 @@ Main menu
 Website (web app) 
 - Mobile-first design
 - Browser storage is the source of truth
+- Works offline; the backend is not critical
 - Supabase is the cloud backup system
-- Supabase also stores all multiverse concepts (UCG characters & places that can be shared with other players)
+- Supabase also stores all multiverse concepts (UGC characters & places that can be shared with other players)
+- TypeScript
 
 
 # Implementation Plan:
