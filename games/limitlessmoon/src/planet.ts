@@ -1,15 +1,29 @@
 import { hashAxial } from './hex';
 import { Expedition } from './expedition';
 import { Place, Terrain, TERRAIN_LIST } from './place';
+import { Faction } from './faction';
 
 // Lazy procedural hex map. Terrain for each hex is deterministic given the
 // planet seed, so panning away and back shows the same world.
 export class Planet {
     seed: number;
+    // TODO replace claude's hex cache with expedition.placeGrid
     private cache: Map<string, Place> = new Map();
+
+    factions: Faction[] = [];
 
     constructor(seed: number = 1) {
         this.seed = seed;
+    }
+
+    static random(): Planet {
+        const planet = new Planet();
+
+        for (let i = 0; i < 2; i++) {
+            planet.factions.push(Faction.random());
+        }
+
+        return planet;
     }
 
     place(q: number, r: number): Place {
@@ -24,6 +38,6 @@ export class Planet {
     }
 
     startExpedition(): Expedition {
-        // TODO
+        return new Expedition(this);
     }
 }
