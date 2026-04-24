@@ -1,9 +1,4 @@
-import {
-    axialToWorld,
-    hexCorners,
-    HEX_WIDTH,
-    worldToAxial,
-} from './hex';
+import { axialToWorld, hexCorners, HEX_WIDTH, worldToAxial } from './hex';
 import { Planet } from './planet';
 import { Place } from './place';
 
@@ -158,7 +153,12 @@ export class UI {
             };
             const ratio = dist / this.pinchStart.dist;
             const newScale = this.pinchStart.scale * ratio;
-            this.setScaleAnchored(newScale, mid.x, mid.y, this.pinchStart.midWorld);
+            this.setScaleAnchored(
+                newScale,
+                mid.x,
+                mid.y,
+                this.pinchStart.midWorld,
+            );
         }
     }
 

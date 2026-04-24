@@ -22,8 +22,8 @@ export function axialToWorld(q: number, r: number): WorldPoint {
 }
 
 export function worldToAxial(x: number, y: number): Axial {
-    const qf = (Math.sqrt(3) / 3 * x - y / 3) / HEX_SIZE;
-    const rf = (2 / 3 * y) / HEX_SIZE;
+    const qf = ((Math.sqrt(3) / 3) * x - y / 3) / HEX_SIZE;
+    const rf = ((2 / 3) * y) / HEX_SIZE;
     return axialRound(qf, rf);
 }
 

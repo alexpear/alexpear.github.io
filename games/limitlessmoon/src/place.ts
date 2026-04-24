@@ -39,7 +39,8 @@ export class Place {
     }
 
     name(): string {
-        const label = this.terrain.charAt(0).toUpperCase() + this.terrain.slice(1);
+        const label =
+            this.terrain.charAt(0).toUpperCase() + this.terrain.slice(1);
         return `${label} (${this.q}, ${this.r})`;
     }
 
