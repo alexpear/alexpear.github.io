@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+        />
+        <title>Limitless Moon</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                width: 100vw;
+                height: 100vh;
+                overflow: hidden;
+                background: #000;
+                font-family: sans-serif;
+                -webkit-user-select: none;
+                user-select: none;
+                touch-action: none;
+                overscroll-behavior: none;
+            }
+            #canvas {
+                display: block;
+                width: 100vw;
+                height: 100vh;
+            }
+            #hud {
+                position: fixed;
+                top: 8px;
+                left: 8px;
+                z-index: 10;
+                color: #fff;
+                background: rgba(0, 0, 0, 0.45);
+                padding: 4px 8px;
+                border-radius: 4px;
+                font: 12px sans-serif;
+                pointer-events: none;
+            }
+            #zoom-hint {
+                position: fixed;
+                bottom: 12px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 10;
+                color: #fff;
+                background: rgba(0, 0, 0, 0.45);
+                padding: 4px 10px;
+                border-radius: 4px;
+                font: 12px sans-serif;
+                pointer-events: none;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+        <div id="hud">Limitless Moon — UI prototype</div>
+        <div id="zoom-hint">Drag to pan &middot; pinch / wheel to zoom</div>
+        <script src="dist/bundle.js"></script>
+    </body>
+</html>
