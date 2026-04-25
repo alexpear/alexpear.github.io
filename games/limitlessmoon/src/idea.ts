@@ -2,10 +2,10 @@
 
 import { Util } from './util';
 
-// TODO The builder Github Action will create .yml.js files from the data/*.yml files.
+// TODO The builder Github Action should create .yml.js files from the data/*.yml files.
 import thingsYML from '../data/things.yml.js';
 
-import YAML from 'yaml';
+import YAML from 'js-yaml';
 
 export class Idea {
     cost: number = 1;

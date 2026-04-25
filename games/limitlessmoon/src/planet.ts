@@ -7,7 +7,7 @@ import { Faction } from './faction';
 // planet seed, so panning away and back shows the same world.
 export class Planet {
     seed: number;
-    // TODO replace claude's hex cache with expedition.placeGrid
+    // TODO merge claude's hex cache with expedition.placeGrid
     private cache: Map<string, Place> = new Map();
 
     factions: Faction[] = [];
@@ -41,3 +41,6 @@ export class Planet {
         return new Expedition(this);
     }
 }
+
+// Run during testing.
+new Planet().startExpedition();

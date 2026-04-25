@@ -1,7 +1,7 @@
 creature:
     human:
         weight: 80
-        # TODO
+        # LATER fill out
 
     # TODO is a tank a creature or a item?
 
