@@ -1,4 +1,4 @@
-// TODO move this to alexpear.github.io/util/. Make sure it gets compiled properly by each project that uses it.
+// LATER move this to alexpear.github.io/util/. Make sure it gets compiled properly by each project that uses it.
 
 export class Util {
     // Note that typeof NaN is also 'number',
@@ -35,6 +35,21 @@ export class Util {
 
     static array<T>(x: T | T[]): T[] {
         return Array.isArray(x) ? x : [x];
+    }
+
+    // Modifies the array.
+    static shuffle<T>(array: T[]): T[] {
+        for (let i = 0; i <= array.length - 2; i++) {
+            const untouchedCount = array.length - 1 - i;
+
+            const swapWith = i + Math.ceil(Math.random() * untouchedCount);
+
+            const temp = array[i];
+            array[i] = array[swapWith];
+            array[swapWith] = temp;
+        }
+
+        return array;
     }
 
     static exists(x: unknown): boolean {

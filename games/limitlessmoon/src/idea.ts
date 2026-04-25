@@ -10,16 +10,22 @@ import YAML from 'yaml';
 export class Idea {
     cost: number = 1;
     weight: number = 1;
+    ideaType: 'creature' | 'item' | 'trait';
 
     static encyclopedia: Record<string, Idea> = {};
 
     static init(): void {
         const rawThings = YAML.load(thingsYML);
-        // TODO imitate templates.js
+        // TODO imitate templates.js. Also populate a .ideaType field, etc.
     }
 
-    isCreature(): boolean {} // TODO
-    isItem(): boolean {} // TODO
+    isCreature(): boolean {
+        return this.ideaType === 'creature';
+    }
+
+    isItem(): boolean {
+        return this.ideaType === 'item';
+    }
 
     static random(): Idea {
         return Util.randomOf(Object.values(Idea.encyclopedia));

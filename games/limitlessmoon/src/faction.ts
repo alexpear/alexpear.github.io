@@ -6,18 +6,20 @@ import { Group } from './group';
 import { Idea } from './idea';
 import { Kind } from './kind';
 import { Place } from './place';
-// import { Thing } from './thing';
 import { Util } from './util';
 
 export class Faction {
     // Each Faction has several offscreen cities. Each produces something useful. For example: [Human, Android, Sword, Armor, Robohorse]. These are the ingredients the faction can use.
     cities: Kind[] = [];
     outpostPlace: Place;
+
+    // When a player controls this faction, these groups start in the dropoff hex.
+    // When this is a NPC faction, these groups will be encountered in random places.
     groups: Group[] = [];
 
     static readonly MAX_CITIES: number = 5;
 
-    static random(budget: number = Util.randomBelow(10_000)): Faction {
+    static random(budget: number = Util.randomBelow(1_000)): Faction {
         const faction = new Faction();
 
         faction.cities.push(new Kind(Idea.randomCreature()));
@@ -25,18 +27,34 @@ export class Faction {
             faction.cities.push(new Kind(Idea.random()));
         }
 
-        while (faction.cost() < budget) {
-            const group = faction.randomIndividual();
-
-            group.quantity = Util.randomIntBetween(
-                1,
-                Math.floor((budget - faction.cost()) / group.cost()),
+        let budgetLeft = budget;
+        while (budgetLeft > 0) {
+            const kindsOfCreatures = Util.shuffle(
+                faction.cities.filter((city) => city.mainIdea.isCreature()),
             );
 
-            faction.groups.push(group);
-        }
+            let i;
+            for (i = 0; i < kindsOfCreatures.length; i++) {
+                const kind = kindsOfCreatures[i];
+                if (kind.cost() > budgetLeft) {
+                    continue;
+                }
 
-        // TODO refactor that while to a do-while or something, so it can back out after randomIndividual() returns a high-cost Idea.
+                const maxQuantity = Math.floor(budgetLeft / kind.cost());
+                const group = new Group(
+                    kind,
+                    Util.randomIntBetween(1, maxQuantity),
+                );
+                faction.groups.push(group);
+                budgetLeft -= group.cost();
+                break;
+            }
+
+            if (i === kindsOfCreatures.length) {
+                // Adding even 1 more individual is too expensive, so break out of the while loop.
+                break;
+            }
+        }
 
         return faction;
     }
