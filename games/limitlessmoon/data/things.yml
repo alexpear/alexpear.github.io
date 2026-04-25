@@ -1,172 +1,173 @@
-# TODO Opts for how to specify categories in YML
+creature:
+    human:
+        weight: 80
+        # TODO
 
-## Tag each thing with item, trait, or creature. also weapon/attack.
-### dislike.
+    # TODO is a tank a creature or a item?
 
-## Many files, weapons.yml, gear.yml, traits.yml, creatures.yml
+trait:
+    stealthy:
+        stealth: 10
 
-## Top-level YAML object keys in here. creature:, trait:, item:, subset weapon: etc
-### appealing
+item:
+    knife:
+        weight: 1
+        cost: 1
+        attack:
+            range: 0
+            damage: 5
+            type: blade
+        moddable: true
 
-# Weapons
-knife:
-    weight: 1
-    cost: 1
-    attack:
-        range: 0
-        damage: 5
-        type: blade
-    moddable: true
+    gun:
+        weight: 1
+        cost: 1
+        attack:
+            range: 10
+            damage: 10
+            shotspersec: 1
+            stealth: -10
+            type: pierce
+        moddable: true
 
-gun:
-    weight: 1
-    cost: 1
-    attack:
-        range: 10
-        damage: 10
-        shotspersec: 1
-        stealth: -10
-        type: pierce
-    moddable: true
+    # Item parts
+    extendedBarrel:
+        weight: 1
+        cost: 1
+        asMod:
+            attachto: gun
+            rename: rifle
+            range: 20
+            hands: 2 # NOTE: This is a little confusing because it sets the hands number to 2, but range above is a relative modifier +20.
 
-# Item parts
-extendedBarrel:
-    weight: 1
-    cost: 1
-    asMod:
-        attachto: gun
-        rename: rifle
-        range: 20
-        hands: 2 # NOTE: This is a little confusing because it sets the hands number to 2, but range above is a relative modifier +20.
+        # NOTE Carrying a extended barrel by itself with no gun should not increase your range. Items can have these effects on range:
+        # As a top level item, it increases the group's range. Eg a tank robot with a upgrade item.
+        # As a top level item, its ability has X range
+        # As a mod, it increases its parent's range
 
-    # NOTE Carrying a extended barrel by itself with no gun should not increase your range. Items can have these effects on range: 
-    # As a top level item, it increases the group's range. Eg a tank robot with a upgrade item.
-    # As a top level item, its ability has X range
-    # As a mod, it increases its parent's range
+    silencer:
+        weight: 1
+        cost: 1
+        asMod:
+            attachto: gun
+            prefix: 'stealth '
+            stealth: 5
+            damage: -1
 
-silencer:
-    weight: 1
-    cost: 1
-    asMod:
-        attachto: gun
-        prefix: 'stealth '
-        stealth: 5
-        damage: -1
+    heavyAmmo:
+        weight: 5
+        cost: 1
+        asMod:
+            attachto: gun
+            prefix: 'heavy '
+            damage: 10
 
-heavyAmmo:
-    weight: 5
-    cost: 1
-    asMod:
-        attachto: gun
-        prefix: 'heavy '
-        damage: 10
+    autofireModule:
+        weight: 5
+        cost: 1
+        asMod:
+            attachto: gun
+            prefix: auto
+            shotspersec: 10
+            attachcopies: 2 # You can attach 2 copies of this. Only 1 prefix is applied.
 
-autofireModule:
-    weight: 5
-    cost: 1
-    asMod:
-        attachto: gun
-        prefix: auto
-        shotspersec: 10
-        attachcopies: 2 # You can attach 2 copies of this. Only 1 prefix is applied.
+    # Obstacle - There should be some sort of slot limit where you can't have multiple damage type mods. TODO
 
-# Obstacle - There should be some sort of slot limit where you can't have multiple damage type mods. TODO
+    battery:
+        weight: 3
+        cost: 1
+        asMod:
+            attachto: any
+            damage: 5
+            damagetype: electric
+            prefix: electro
 
-battery:
-    weight: 3
-    cost: 1
-    asMod:
-        attachto: any
-        damage: 5
-        damagetype: electric
-        prefix: electro
+    thermalCoil:
+        weight: 1
+        cost: 2
+        asMod:
+            attachto: any
+            damage: 5
+            damagetype: fire
+            prefix: pyro
 
-thermalCoil:
-    weight: 1
-    cost: 2
-    asMod:
-        attachto: any
-        damage: 5
-        damagetype: fire
-        prefix: pyro
+    chronanchor:
+        weight: 1
+        cost: 5
+        asMod:
+            attachto: any
+            effect: slowtime 1
+            prefix: chrono
 
-chronanchor:
-    weight: 1
-    cost: 5
-    asMod:
-        attachto: any
-        effect: slowtime 1
-        prefix: chrono
+    dataIkon:
+        weight: 1
+        cost: 5
+        asMod:
+            attachto: any
+            damagetype: data
+            damage: 1
+            prefix: info
 
-dataIkon:
-    weight: 1
-    cost: 5
-    asMod:
-        attachto: any
-        damagetype: data
-        damage: 1
-        prefix: info
+    hoverAmmo:
+        weight: 1
+        cost: 10
+        asMod:
+            attachto: any
+            damagetype: antigrav
+            damage: 1
+            prefix: hover
 
-hoverAmmo:
-    weight: 1
-    cost: 10
-    asMod:
-        attachto: any
-        damagetype: antigrav
-        damage: 1
-        prefix: hover
+    laserCrystal:
+        weight: 1
+        cost: 2
+        asMod:
+            attachto: any
+            damagetype: laser
+            # LATER should we distinguish between fire, heat, and/or laser damage? Or are they different delivery methods for heat damage?
+            # TODO laser crystal should replace bullets, not add a laser effect to them.
+            prefix: las
 
-laserCrystal:
-    weight: 1
-    cost: 2
-    asMod:
-        attachto: any
-        damagetype: laser
-        # LATER should we distinguish between fire, heat, and/or laser damage? Or are they different delivery methods for heat damage?
-        # TODO laser crystal should replace bullets, not add a laser effect to them.
-        prefix: las
+    technovirusPhial:
+        weight: 1
+        cost: 10
+        asMod:
+            attachto: any
+            damagetype: nano
+            damage: 1
+            prefix: nano
 
-technovirusPhial:
-    weight: 1
-    cost: 10
-    asMod:
-        attachto: any
-        damagetype: nano
-        damage: 1
-        prefix: nano
+    acidPhial:
+        weight: 1
+        cost: 2
+        asMod:
+            attachto: any
+            damagetype: acid
+            damage: 1
+            prefix: acid
 
-acidPhial:
-    weight: 1
-    cost: 2
-    asMod:
-        attachto: any
-        damagetype: acid
-        damage: 1
-        prefix: acid
+    adhesiveCapsule:
+        weight: 1
+        cost: 2
+        asMod:
+            attachto: any
+            effect: adhesive 1
+            prefix: sticky
 
-adhesiveCapsule:
-    weight: 1
-    cost: 2
-    asMod:
-        attachto: any
-        effect: adhesive 1
-        prefix: sticky
+    sonicIntoner:
+        weight: 1
+        cost: 2
+        asMod:
+            attachto: any
+            damagetype: sonic
+            damage: 1
+            # TODO this should replace bullets, not make sonic bullets
+            prefix: thunder
 
-sonicIntoner:
-    weight: 1
-    cost: 2
-    asMod:
-        attachto: any
-        damagetype: sonic
-        damage: 1
-        # TODO this should replace bullets, not make sonic bullets
-        prefix: thunder
-
-stingrayCoil:
-    weight: 1
-    cost: 2
-    asMod:
-        attachto: any
-        damagetype: microwave
-        # TODO this should replace bullets, not make microwave bullets
-        prefix: sting
+    stingrayCoil:
+        weight: 1
+        cost: 2
+        asMod:
+            attachto: any
+            damagetype: microwave
+            # TODO this should replace bullets, not make microwave bullets
+            prefix: sting
