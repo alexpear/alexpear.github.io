@@ -1,3 +1,11 @@
+# TODO Opts for how to specify categories in YML
+# Tag each thing with item, trait, or creature. also weapon/attack.
+# dislike.
+# Many files, weapons.yml, gear.yml, traits.yml, creatures.yml
+# Top-level YAML object keys in here. creature:, trait:, item:, subset weapon: etc
+# appealing
+# What about narrative contexts, too? And factions?
+
 # Weapons
 knife:
     weight: 1

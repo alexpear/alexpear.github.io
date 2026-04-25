@@ -24,7 +24,7 @@ export class Expedition {
         this.planet = planet;
 
         this.playerFaction = Util.randomOf(this.planet.factions);
-        const dropoff = this.playerFaction.dropoffPlace();
+        const dropoff = this.playerFaction.outpostPlace;
         this.placeGrid[0][0] = dropoff;
 
         // LATER do buildings & faction item inventory fall under dropoffPlace or startingCompany()?

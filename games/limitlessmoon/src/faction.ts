@@ -3,13 +3,15 @@
 // import { Kind } from "./kind";
 import { Company } from './company';
 import { Group } from './group';
+import { Idea } from './idea';
+import { Kind } from './kind';
 import { Place } from './place';
-import { Thing } from './thing';
+// import { Thing } from './thing';
 import { Util } from './util';
 
 export class Faction {
-    // Each Faction has several offscreen cities. Each produces 1 type of useful Thing for the faction to use. For example: [Human, Android, Sword, Armor, Robohorse]. These are the ingredients the faction can use.
-    cities: Thing[] = [];
+    // Each Faction has several offscreen cities. Each produces something useful. For example: [Human, Android, Sword, Armor, Robohorse]. These are the ingredients the faction can use.
+    cities: Kind[] = [];
     outpostPlace: Place;
     groups: Group[] = [];
 
@@ -18,17 +20,17 @@ export class Faction {
     static random(budget: number = Util.randomBelow(10_000)): Faction {
         const faction = new Faction();
 
-        faction.cities.push(Idea.randomCreature());
+        faction.cities.push(new Kind(Idea.randomCreature()));
         for (let i = 1; i < Faction.MAX_CITIES; i++) {
-            faction.cities.push(Idea.random());
+            faction.cities.push(new Kind(Idea.random()));
         }
 
-        while (faction.totalCost() < budget) {
+        while (faction.cost() < budget) {
             const group = faction.randomIndividual();
 
             group.quantity = Util.randomIntBetween(
                 1,
-                Math.floor((budget - faction.totalCost()) / group.cost()),
+                Math.floor((budget - faction.cost()) / group.cost()),
             );
 
             faction.groups.push(group);
@@ -39,7 +41,7 @@ export class Faction {
         return faction;
     }
 
-    totalCost(): number {
+    cost(): number {
         return Util.sum(this.groups.map((group) => group.cost()));
     }
 
@@ -49,8 +51,9 @@ export class Faction {
 
     randomIndividual(): Group {
         const kind = Util.randomOf(
-            this.cities.filter((city) => city.template.isCreature()),
+            this.cities.filter((city) => city.mainIdea.isCreature()),
         );
+
         return new Group(kind, 1);
     }
 
@@ -60,5 +63,11 @@ export class Faction {
         hero.add(this.randomItem());
         hero.add(this.randomItem());
         return hero;
+    }
+
+    randomItem(): Kind {
+        return Util.randomOf(
+            this.cities.filter((city) => city.mainIdea.isItem()),
+        );
     }
 }
