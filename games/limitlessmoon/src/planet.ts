@@ -43,4 +43,4 @@ export class Planet {
 }
 
 // Run during testing.
-new Planet().startExpedition();
+Planet.random().startExpedition();
