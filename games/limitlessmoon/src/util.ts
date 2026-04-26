@@ -81,11 +81,14 @@ export class Util {
                 'error: Util.randomIntBetween() called with missing parameters.',
             );
             throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
-        } else if (maxExclusive <= minInclusive) {
+        } else if (maxExclusive < minInclusive) {
             console.log(
-                'error: Util.randomIntBetween() called with max <= min.',
+                'error: Util.randomIntBetween() called with max < min.',
             );
             throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
+        }
+        else if (maxExclusive === minInclusive) {
+            return minInclusive;
         }
 
         return Math.floor(
