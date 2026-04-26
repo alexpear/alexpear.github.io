@@ -19,7 +19,7 @@ export class Kind {
         return Util.sum(allIdeas.map((idea) => idea.cost || 0));
     }
 
-    json() {
+    json(): object {
         return {
             id: this.id,
             mainIdea: this.mainIdea.json(),

@@ -47,7 +47,7 @@ export class Planet {
         return venture;
     }
 
-    json() {
+    json(): object {
         return {
             id: this.id,
             seed: this.seed,

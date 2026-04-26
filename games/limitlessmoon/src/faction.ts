@@ -90,7 +90,7 @@ export class Faction {
         );
     }
 
-    json() {
+    json(): object {
         return {
             id: this.id,
             cities: this.cities.map((k) => k.json()),

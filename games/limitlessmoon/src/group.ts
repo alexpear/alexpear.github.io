@@ -23,7 +23,7 @@ export class Group {
         this.items.push(item);
     }
 
-    json() {
+    json(): object {
         return {
             id: this.id,
             kind: this.kind.json(),

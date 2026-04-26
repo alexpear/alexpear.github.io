@@ -5,7 +5,7 @@ import { Util } from './util';
 export class Thing {
     id: string = Util.uuid();
 
-    json() {
+    json(): object {
         return {
             id: this.id,
         };

@@ -46,7 +46,7 @@ export class Expedition {
         return loggedText;
     }
 
-    json() {
+    json(): object {
         return {
             id: this.id,
             planet: this.planet.json(),

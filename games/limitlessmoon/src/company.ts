@@ -22,7 +22,7 @@ export class Company {
         this.groups.push(group);
     }
 
-    json() {
+    json(): object {
         return {
             id: this.id,
             groups: this.groups.map((g) => g.json()),

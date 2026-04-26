@@ -59,7 +59,7 @@ export class Place {
         return TERRAIN_COLORS[this.terrain];
     }
 
-    json() {
+    json(): object {
         return {
             q: this.q,
             r: this.r,

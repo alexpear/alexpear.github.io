@@ -1,7 +1,7 @@
 import { Planet } from './planet';
 import { UI } from './ui';
 
-function boot() {
+function boot(): void {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
     if (!canvas) {
         console.error('canvas element not found');
