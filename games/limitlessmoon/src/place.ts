@@ -1,4 +1,5 @@
 // A Place is one hex on a Planet. Prototype: terrain type + placeholder flavor.
+// Note: a Place's identity is its (q, r) coords on the Planet, not a uuid.
 
 export enum Terrain {
     Plains = 'plains',
@@ -56,5 +57,13 @@ export class Place {
 
     color(): string {
         return TERRAIN_COLORS[this.terrain];
+    }
+
+    json() {
+        return {
+            q: this.q,
+            r: this.r,
+            terrain: this.terrain,
+        };
     }
 }

@@ -40,6 +40,12 @@ export class Idea {
         return this.ideaType === 'item';
     }
 
+    json() {
+        // Includes any extra properties copied from things.yml
+        // (attack, asMod, moddable, ...) along with the declared fields.
+        return { ...this };
+    }
+
     static random(): Idea {
         const all = IDEA_TYPES.flatMap((t) =>
             Object.values(Idea.encyclopedia[t]),

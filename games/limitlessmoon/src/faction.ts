@@ -9,6 +9,7 @@ import { Place } from './place';
 import { Util } from './util';
 
 export class Faction {
+    id: string = Util.uuid();
     // Each Faction has several offscreen cities. Each produces something useful. For example: [Human, Android, Sword, Armor, Robohorse]. These are the ingredients the faction can use.
     cities: Kind[] = [];
     outpostPlace: Place;
@@ -87,5 +88,14 @@ export class Faction {
         return Util.randomOf(
             this.cities.filter((city) => city.mainIdea.isItem()),
         );
+    }
+
+    json() {
+        return {
+            id: this.id,
+            cities: this.cities.map((k) => k.json()),
+            outpostPlace: this.outpostPlace?.json(),
+            groups: this.groups.map((g) => g.json()),
+        };
     }
 }

@@ -68,6 +68,10 @@ export class Util {
         return Math.floor(Math.random() * maxExclusive);
     }
 
+    static uuid(): string {
+        return crypto.randomUUID();
+    }
+
     static randomOf<T>(array: T[]): T {
         return array[Util.randomBelow(array.length)];
     }

@@ -4,6 +4,7 @@ import { Group } from './group';
 import { Util } from './util';
 
 export class Company {
+    id: string = Util.uuid();
     groups: Group[] = [];
 
     // Complex companies might include a detailed combined-arms army, or a fellowship of 9 + 1 pony.
@@ -19,6 +20,13 @@ export class Company {
 
     add(group: Group): void {
         this.groups.push(group);
+    }
+
+    json() {
+        return {
+            id: this.id,
+            groups: this.groups.map((g) => g.json()),
+        };
     }
 }
 

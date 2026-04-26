@@ -2,8 +2,10 @@
 
 import { Idea } from './idea';
 import { Kind } from './kind';
+import { Util } from './util';
 
 export class Group {
+    id: string = Util.uuid();
     kind: Kind;
     quantity: number = 1;
     items: Kind[] = [];
@@ -19,5 +21,14 @@ export class Group {
 
     add(item: Kind): void {
         this.items.push(item);
+    }
+
+    json() {
+        return {
+            id: this.id,
+            kind: this.kind.json(),
+            quantity: this.quantity,
+            items: this.items.map((k) => k.json()),
+        };
     }
 }
