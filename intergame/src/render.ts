@@ -4,7 +4,7 @@ import MtGConcept from './mtgconcept';
 
 // Converts {W}, {2}, {T} etc. to mana-font <i> tags.
 // inCost=true adds ms-cost (colored circle) for the name bar display.
-export function parseManaSymbols(text: string, inCost = false): string {
+export function parseManaSymbols(text: string, inCost: boolean = false): string {
     const extra = inCost ? ' ms-cost ms-shadow' : '';
     return text.replace(/\{([^}]+)\}/g, (_, sym: string) => {
         const cls = sym.toLowerCase().replace('/', '');

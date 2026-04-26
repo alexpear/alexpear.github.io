@@ -564,7 +564,7 @@ export class BlockScout {
             banner.classList.add('visible');
         }
 
-        const openRecoveryModal = () => {
+        const openRecoveryModal = (): void => {
             urlText.textContent = this.recoveryUrl;
             recoveryModal.classList.add('open');
         };
