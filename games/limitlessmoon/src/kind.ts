@@ -21,10 +21,10 @@ export class Kind {
     static sketchesWIP(): object[] {
         // NOTE Don't call this func. It's just a scratchpad.
         return [
-            {
-                mainIdea: Idea.encyclopedia.human,
-                traits: [Idea.encyclopedia.stealthy, Idea.encyclopedia.gills],
-            },
+            // {
+            //     mainIdea: Idea.encyclopedia.human,
+            //     traits: [Idea.encyclopedia.stealthy, Idea.encyclopedia.gills],
+            // },
         ];
     }
 }

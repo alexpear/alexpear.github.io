@@ -1,22 +1,35 @@
-// A herd of horses is a instance of class Group where herd.idea is a pointer to Idea.encyclopedia.horse. This is the singular global object that describes the traits of horses. It's a instance of class Idea. It's like the wikipedia page 'Horse', or the Platonic idea of a horse.
+// A herd of horses is a instance of class Group where herd.idea is a pointer to Idea.encyclopedia.creature.horse. This is the singular global object that describes the traits of horses. It's a instance of class Idea. It's like the wikipedia page 'Horse', or the Platonic idea of a horse.
 
 import { Util } from './util';
+import { THINGS } from './generated/things.gen';
 
-// TODO The builder Github Action should create .yml.js files from the data/*.yml files.
-import thingsYML from '../data/things.yml.js';
+export type IdeaType = 'creature' | 'item' | 'trait';
 
-import YAML from 'js-yaml';
+const IDEA_TYPES: IdeaType[] = ['creature', 'item', 'trait'];
 
 export class Idea {
+    id: string = '';
     cost: number = 1;
     weight: number = 1;
-    ideaType: 'creature' | 'item' | 'trait';
+    ideaType: IdeaType = 'item';
 
-    static encyclopedia: Record<string, Idea> = {};
+    static encyclopedia: Record<IdeaType, Record<string, Idea>> = {
+        creature: {},
+        item: {},
+        trait: {},
+    };
 
     static init(): void {
-        const rawThings = YAML.load(thingsYML);
-        // TODO imitate templates.js. Also populate a .ideaType field, etc.
+        for (const ideaType of IDEA_TYPES) {
+            const bucket = (THINGS as Record<string, Record<string, object>>)[
+                ideaType
+            ];
+            if (!bucket) continue;
+            for (const [id, def] of Object.entries(bucket)) {
+                const idea = Object.assign(new Idea(), def, { id, ideaType });
+                Idea.encyclopedia[ideaType][id] = idea;
+            }
+        }
     }
 
     isCreature(): boolean {
@@ -28,16 +41,14 @@ export class Idea {
     }
 
     static random(): Idea {
-        return Util.randomOf(Object.values(Idea.encyclopedia));
+        const all = IDEA_TYPES.flatMap((t) =>
+            Object.values(Idea.encyclopedia[t]),
+        );
+        return Util.randomOf(all);
     }
 
     static randomCreature(): Idea {
-        // LATER check if this runs slow. Multiple speedup options.
-        return Util.randomOf(
-            Object.values(Idea.encyclopedia).filter((idea) =>
-                idea.isCreature(),
-            ),
-        );
+        return Util.randomOf(Object.values(Idea.encyclopedia.creature));
     }
 }
 

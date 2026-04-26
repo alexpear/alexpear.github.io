@@ -7,4 +7,6 @@ squareList.txt
 bottleWorld/chronarchon/world.yml
 bottleWorld/waffleCards/cardSet.html
 bottleWorld/waffleCards/data/cards.yml.js
+games/limitlessmoon/src/generated/
+games/limitlessmoon/build/dist/
 util/fandomscraper/*/
