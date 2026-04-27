@@ -25,7 +25,7 @@ function overviewColor(points) {
 exports.overviewColor = overviewColor;
 class BlockScout {
     constructor() {
-        // TODO if user hasnt refreshed in over a month, refresh the page to get latest logic. Be careful to avoid refresh loop obviously.
+        // LATER if user hasnt refreshed in over a month, refresh the page to get latest logic. Be careful to avoid refresh loop obviously.
         // eslint-disable-next-line @typescript-eslint/typedef
         this.map = L.map('map', {
             renderer: L.canvas({ padding: 0.1 }),
@@ -107,10 +107,10 @@ class BlockScout {
     updateAfterPan() {
         this.updateAfterGPS(this.lastSeenLat, this.lastSeenLong);
     }
-    // TODO bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
+    // bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
     // Perhaps moveend should trigger a wrapper of updateAfterGPS(), using cached coords.
     updateAfterGPS(latitude, longitude) {
-        // Bug TODO - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing. Seen again 2026 mar 26 (even after waiting 5 for autoupdate).
+        // Bug LATER - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing. Seen again 2026 mar 26 (even after waiting 5 for autoupdate).
         if (this.playerMarker) {
             this.playerMarker.setLatLng([latitude, longitude]);
         }
@@ -432,6 +432,10 @@ class BlockScout {
         this.helpButton = document.getElementById('help-btn');
         const recoveryModal = document.getElementById('recovery-modal');
         const urlText = document.getElementById('recovery-url-text');
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            document.getElementById('recovery-safari-info').style.display =
+                'block';
+        }
         if (!localStorage.getItem('risk-banner-hidden')) {
             // ? button loads in backup reminder mode.
             this.helpButton.innerHTML = 'Save Game';
@@ -561,7 +565,7 @@ class BlockScout {
     }
 }
 exports.BlockScout = BlockScout;
-// TODO call buildblockscout from Github CI. Stop having to commit dist/*.js.
+// LATER call buildblockscout from Github CI. Stop having to commit dist/*.js.
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 // Run in browser, not during unit tests (DOM is empty at import time).
