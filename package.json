@@ -88,7 +88,7 @@
     "wots": "npm run lint && npm run prettierwrite && webpack --config games/wots/webpack.config.js &&  npm run jest && npm run server",
     "openwots": "open http://127.0.0.1:8083/games/wots/wots.html",
     "buildblockscout": "tsc -p games/blockscout && browserify games/blockscout/dist/blockscout.js -o games/blockscout/dist/bundle.js",
-    "openblockscout": "npm run open games/blockscout/blockscout.html",
+    "openblockscout": "open games/blockscout/blockscout.html",
     "buildspoilerfree": "tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js",
     "history": "tsc -p pages/pophistory/tsconfig.json && browserify pages/pophistory/dist/popHistory.js -o pages/pophistory/dist/bundle.js",
     "intergame": "tsc -p intergame/tsconfig.json && npm run test && node intergame/dist/intergame.js",
