@@ -601,9 +601,7 @@ export class BlockScout {
                     'My Block Scout recovery URL',
                 );
                 const body = encodeURIComponent(
-                    `If you ever lose your game progress in Block Scout, click this personalized URL. (Safari in particular likes to delete game data without warning.) ${this.recoveryUrl}\n\n  On Safari, you can additionally protect your game progress by installing Block
-                    Scout to your home screen: Click Safari's Share icon,
-                    then 'Add to Home Screen', then 'Add'.`,
+                    `If you ever lose your game progress in Block Scout, click this personalized URL. (Safari in particular likes to delete game data without warning.)\n\n${this.recoveryUrl}\n\nOn Safari, you can additionally protect your game progress by installing Block Scout to your home screen: Click Safari's Share icon, then 'Add to Home Screen', then 'Add'.`,
                 );
                 this.ceaseBackupHighlighting();
                 location.href = `mailto:?subject=${subject}&body=${body}`;
