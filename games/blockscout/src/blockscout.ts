@@ -562,6 +562,11 @@ export class BlockScout {
         const recoveryModal = document.getElementById('recovery-modal')!;
         const urlText = document.getElementById('recovery-url-text')!;
 
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            document.getElementById('recovery-safari-info')!.style.display =
+                'block';
+        }
+
         if (!localStorage.getItem('risk-banner-hidden')) {
             // ? button loads in backup reminder mode.
             this.helpButton.innerHTML = 'Save Game';
