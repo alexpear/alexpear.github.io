@@ -519,12 +519,11 @@ export class BlockScout {
     }
 
     scheduleSupabaseSave(): void {
-        // If the timer is already going, cancel it & make a new one below.
+        // Cancel any previous timer.
         if (this.supabaseSaveTimeout !== undefined) {
             clearTimeout(this.supabaseSaveTimeout);
         }
 
-        // TODO does this prop always become undefined after the timer?
         this.supabaseSaveTimeout = window.setTimeout(
             () => void this.pushToSupabase(),
             5000,
