@@ -90,8 +90,7 @@ export class Util {
                 'error: Util.randomIntBetween() called with max < min.',
             );
             throw new Error(`max ${maxExclusive}, min ${minInclusive}`);
-        }
-        else if (maxExclusive === minInclusive) {
+        } else if (maxExclusive === minInclusive) {
             return minInclusive;
         }
 
