@@ -18,6 +18,7 @@ export default tseslint.config(
             eslintConfigPrettier,
         ],
         rules: {
+            '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
             '@typescript-eslint/explicit-function-return-type': 'warn',
             '@typescript-eslint/typedef': [
                 'warn',
