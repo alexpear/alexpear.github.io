@@ -74,6 +74,9 @@
                 border: none;
                 cursor: pointer;
             }
+            .backup-highlight {
+                background: blue;
+            }
             #help-modal {
                 display: none;
                 position: fixed;
@@ -112,9 +115,6 @@
                 border-radius: 6px;
                 color: white;
                 cursor: pointer;
-            }
-            #save-recovery-url-btn {
-                background: blue;
             }
             #help-close {
                 background: purple;
@@ -246,11 +246,6 @@
         </style>
     </head>
     <body>
-        <div id="risk-banner">
-            <span>⚠ Backup your progress to keep playing</span>
-            <button id="risk-open-btn">Get backup link</button>
-            <button id="risk-dismiss-btn">✕</button>
-        </div>
         <div id="recovery-modal">
             <div id="recovery-modal-box">
                 <h2>Protect your progress</h2>
@@ -288,7 +283,7 @@
                     its points. Have fun exploring!
                 </p>
                 <!-- LATER could mention that location permissions are required, but none of your PII leaves your phone. -->
-                <button id="save-recovery-url-btn">Get your backup link</button>
+                <button id="save-recovery-url-btn", class="backup-highlight">Get your backup link</button>
                 <button id="help-close">Close</button>
             </div>
         </div>

@@ -48,6 +48,8 @@ export class BlockScout {
     exploredRectangles: Map<string, Record<string, object>> = new Map();
     locationKnown: boolean = false;
 
+    helpButton: HTMLElement;
+
     // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
     playerScore: number = 0;
     scoreEl: HTMLElement = document.getElementById('score');
@@ -556,42 +558,29 @@ export class BlockScout {
     }
 
     setupRecoveryUI(): void {
-        const banner = document.getElementById('risk-banner')!;
+        this.helpButton = document.getElementById('help-btn')!;
         const recoveryModal = document.getElementById('recovery-modal')!;
         const urlText = document.getElementById('recovery-url-text')!;
 
         if (!localStorage.getItem('risk-banner-hidden')) {
-            banner.classList.add('visible');
+            // ? button loads in backup reminder mode.
+            this.helpButton.innerHTML = 'Save Game';
+            this.helpButton.classList.add('backup-highlight');
         }
 
-        const openRecoveryModal = (): void => {
-            urlText.textContent = this.recoveryUrl;
-            recoveryModal.classList.add('open');
-        };
-
-        document
-            .getElementById('risk-open-btn')!
-            .addEventListener('click', openRecoveryModal);
         document
             .getElementById('save-recovery-url-btn')!
             .addEventListener('click', () => {
+                urlText.textContent = this.recoveryUrl;
                 document.getElementById('help-modal').classList.remove('open');
-                openRecoveryModal();
-            });
-
-        document
-            .getElementById('risk-dismiss-btn')!
-            .addEventListener('click', () => {
-                banner.classList.remove('visible');
-                localStorage.setItem('risk-banner-hidden', '1');
+                recoveryModal.classList.add('open');
             });
 
         document
             .getElementById('copy-url-btn')!
             .addEventListener('click', async () => {
                 await navigator.clipboard.writeText(this.recoveryUrl);
-                localStorage.setItem('risk-banner-hidden', '1');
-                banner.classList.remove('visible');
+                this.ceaseBackupHighlighting();
                 const btn = document.getElementById(
                     'copy-url-btn',
                 ) as HTMLButtonElement;
@@ -612,8 +601,7 @@ export class BlockScout {
                     Scout to your home screen: Click Safari's Share icon,
                     then 'Add to Home Screen', then 'Add'.`,
                 );
-                localStorage.setItem('risk-banner-hidden', '1');
-                banner.classList.remove('visible');
+                this.ceaseBackupHighlighting();
                 location.href = `mailto:?subject=${subject}&body=${body}`;
             });
 
@@ -627,6 +615,12 @@ export class BlockScout {
             if (e.target === recoveryModal)
                 recoveryModal.classList.remove('open');
         });
+    }
+
+    ceaseBackupHighlighting(): void {
+        localStorage.setItem('risk-banner-hidden', '1');
+        this.helpButton.innerHTML = '?';
+        this.helpButton.classList.remove('backup-highlight');
     }
 
     async maybeRecoverFromUrl(): Promise<void> {
