@@ -8,6 +8,7 @@ export declare class BlockScout {
     fogRectangles: Map<string, Record<string, object>>;
     exploredRectangles: Map<string, Record<string, object>>;
     locationKnown: boolean;
+    helpButton: HTMLElement;
     playerScore: number;
     scoreEl: HTMLElement;
     coords2dates: Record<string, string>;
@@ -38,6 +39,7 @@ export declare class BlockScout {
     pushToSupabase(): Promise<void>;
     get recoveryUrl(): string;
     setupRecoveryUI(): void;
+    ceaseBackupHighlighting(): void;
     maybeRecoverFromUrl(): Promise<void>;
     load(): void;
     private _mockWideFont;

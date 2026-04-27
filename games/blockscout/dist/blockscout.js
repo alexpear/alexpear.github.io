@@ -98,7 +98,7 @@ class BlockScout {
                 this.refreshNumbers();
         });
         // LATER brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends.
-        // TODO Points/day metric displayed somewhere, eg brag screen.
+        // LATER Points/day metric displayed somewhere, eg brag screen.
         this.setupRecoveryUI();
         // void means we are treating this async func as a void by ignoring the Promise it returns.
         void this.maybeRecoverFromUrl();
@@ -429,37 +429,26 @@ class BlockScout {
             `?uid=${this.userId}&off=${this.offsetLat},${this.offsetLng}`);
     }
     setupRecoveryUI() {
-        const banner = document.getElementById('risk-banner');
+        this.helpButton = document.getElementById('help-btn');
         const recoveryModal = document.getElementById('recovery-modal');
         const urlText = document.getElementById('recovery-url-text');
         if (!localStorage.getItem('risk-banner-hidden')) {
-            banner.classList.add('visible');
+            // ? button loads in backup reminder mode.
+            this.helpButton.innerHTML = 'Save Game';
+            this.helpButton.classList.add('backup-highlight');
         }
-        const openRecoveryModal = () => {
-            urlText.textContent = this.recoveryUrl;
-            recoveryModal.classList.add('open');
-        };
-        document
-            .getElementById('risk-open-btn')
-            .addEventListener('click', openRecoveryModal);
         document
             .getElementById('save-recovery-url-btn')
             .addEventListener('click', () => {
+            urlText.textContent = this.recoveryUrl;
             document.getElementById('help-modal').classList.remove('open');
-            openRecoveryModal();
-        });
-        document
-            .getElementById('risk-dismiss-btn')
-            .addEventListener('click', () => {
-            banner.classList.remove('visible');
-            localStorage.setItem('risk-banner-hidden', '1');
+            recoveryModal.classList.add('open');
         });
         document
             .getElementById('copy-url-btn')
             .addEventListener('click', async () => {
             await navigator.clipboard.writeText(this.recoveryUrl);
-            localStorage.setItem('risk-banner-hidden', '1');
-            banner.classList.remove('visible');
+            this.ceaseBackupHighlighting();
             const btn = document.getElementById('copy-url-btn');
             btn.textContent = 'Copied!';
             window.setTimeout(() => {
@@ -470,11 +459,10 @@ class BlockScout {
             .getElementById('email-url-btn')
             .addEventListener('click', () => {
             const subject = encodeURIComponent('My Block Scout recovery URL');
-            const body = encodeURIComponent('Here is my Block Scout recovery URL.\n' +
-                'Keep it private — it encodes your location history.\n\n' +
-                this.recoveryUrl);
-            localStorage.setItem('risk-banner-hidden', '1');
-            banner.classList.remove('visible');
+            const body = encodeURIComponent(`If you ever lose your game progress in Block Scout, click this personalized URL. (Safari in particular likes to delete game data without warning.) ${this.recoveryUrl}\n\n  On Safari, you can additionally protect your game progress by installing Block
+                    Scout to your home screen: Click Safari's Share icon,
+                    then 'Add to Home Screen', then 'Add'.`);
+            this.ceaseBackupHighlighting();
             location.href = `mailto:?subject=${subject}&body=${body}`;
         });
         document
@@ -486,6 +474,11 @@ class BlockScout {
             if (e.target === recoveryModal)
                 recoveryModal.classList.remove('open');
         });
+    }
+    ceaseBackupHighlighting() {
+        localStorage.setItem('risk-banner-hidden', '1');
+        this.helpButton.innerHTML = '?';
+        this.helpButton.classList.remove('backup-highlight');
     }
     async maybeRecoverFromUrl() {
         const params = new URLSearchParams(location.search);
