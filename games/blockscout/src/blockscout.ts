@@ -30,7 +30,7 @@ export function overviewColor(points: number): string {
 }
 
 export class BlockScout {
-    // TODO if user hasnt refreshed in over a month, refresh the page to get latest logic. Be careful to avoid refresh loop obviously.
+    // LATER if user hasnt refreshed in over a month, refresh the page to get latest logic. Be careful to avoid refresh loop obviously.
 
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
@@ -154,10 +154,10 @@ export class BlockScout {
         this.updateAfterGPS(this.lastSeenLat, this.lastSeenLong);
     }
 
-    // TODO bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
+    // bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
     // Perhaps moveend should trigger a wrapper of updateAfterGPS(), using cached coords.
     updateAfterGPS(latitude: number, longitude: number): void {
-        // Bug TODO - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing. Seen again 2026 mar 26 (even after waiting 5 for autoupdate).
+        // Bug LATER - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing. Seen again 2026 mar 26 (even after waiting 5 for autoupdate).
         if (this.playerMarker) {
             this.playerMarker.setLatLng([latitude, longitude]);
         } else {
@@ -722,7 +722,7 @@ export class BlockScout {
     }
 }
 
-// TODO call buildblockscout from Github CI. Stop having to commit dist/*.js.
+// LATER call buildblockscout from Github CI. Stop having to commit dist/*.js.
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 
