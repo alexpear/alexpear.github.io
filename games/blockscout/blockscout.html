@@ -247,7 +247,7 @@
     </head>
     <body>
         <div id="risk-banner">
-            <span>⚠ Backup your game progress</span>
+            <span>⚠ Backup your progress to keep playing</span>
             <button id="risk-open-btn">Get backup link</button>
             <button id="risk-dismiss-btn">✕</button>
         </div>
@@ -255,15 +255,22 @@
             <div id="recovery-modal-box">
                 <h2>Protect your progress</h2>
                 <p>
-                    On iOS Safari, game data can be erased after 7 days without
-                    use. Save your recovery URL — if your data is lost, visiting
-                    it will restore your progress from the cloud.
+                    Save this personalized URL somewhere to back up your game
+                    progress. (Safari in particular likes to delete game data if
+                    you don't play for 7 days, so watch out.)
                 </p>
                 <div id="recovery-url-text"></div>
                 <button id="copy-url-btn">Copy URL</button>
                 <button id="email-url-btn">Email to me</button>
                 <p id="recovery-privacy-warning">
-                    ⚠ Keep this URL private — it encodes your location history.
+                    ⚠ Note: This URL can be used to decode your location
+                    history. Don't post it publicly.
+                </p>
+                <p id="recovery-safari-info" style="display: none">
+                    <!-- TODO unhide this for safari users -->
+                    To prevent Safari clearing your game progress, install Block
+                    Scout to your home screen by clicking Safari's Share icon,
+                    then 'Add to Home Screen', then 'Add'.
                 </p>
                 <button id="recovery-close-btn">Close</button>
             </div>
