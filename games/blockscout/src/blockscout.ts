@@ -668,12 +668,6 @@ export class BlockScout {
             const realKey = BlockScout.keyFormat(lat + offLat, lng + offLng);
             const localDate = this.coords2dates[realKey];
 
-            // One-off patch for 1 early user with some bad data.
-            if (localDate === '2026-03-20T07:00:00.000Z') {
-                delete this.coords2dates[realKey];
-                continue;
-            }
-
             if (!localDate || dateStr > localDate) {
                 this.coords2dates[realKey] = dateStr;
                 mergedCount++;
