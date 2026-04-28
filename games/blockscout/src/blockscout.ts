@@ -653,6 +653,9 @@ export class BlockScout {
 
         if (error || !data) {
             console.warn('BlockScout: cloud recovery failed', error);
+
+            // Make sure they have a cloud presence.
+            this.save();
             return;
         }
 
