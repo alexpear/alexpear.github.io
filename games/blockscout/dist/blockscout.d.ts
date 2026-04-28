@@ -36,10 +36,12 @@ export declare class BlockScout {
     stateString(): string;
     save(): void;
     scheduleSupabaseSave(): void;
+    private mergeCloudData;
     pushToSupabase(): Promise<void>;
     get recoveryUrl(): string;
     setupRecoveryUI(): void;
     ceaseBackupHighlighting(): void;
+    private showRecoverConfirm;
     maybeRecoverFromUrl(): Promise<void>;
     load(): void;
     private _mockWideFont;

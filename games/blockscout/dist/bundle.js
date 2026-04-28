@@ -219,12 +219,8 @@ class BlockScout {
         const longMax = this.snapToGrid(bounds.getEast() + buf);
         const activeKeys = new Set();
         if (this.map.getZoom() <= 12) {
-            console.time('overview-total');
-            console.time('overview-setup');
             this.tileLayer.setOpacity(0);
             this.map.getContainer().style.backgroundColor = 'black';
-            console.timeEnd('overview-setup');
-            console.time('overview-clear-normal-layers');
             // Clear normal-mode layers
             for (const rect of this.fogRectangles.values()) {
                 this.map.removeLayer(rect);
@@ -234,8 +230,6 @@ class BlockScout {
                 this.map.removeLayer(marker);
             }
             this.renderedGoals.clear();
-            console.timeEnd('overview-clear-normal-layers');
-            console.time('overview-render-loop');
             // Iterate only visited cells rather than every cell in the viewport.
             for (const key of Object.keys(this.coords2dates)) {
                 const [lat, long] = key.split(',').map(Number);
@@ -273,8 +267,6 @@ class BlockScout {
                     }
                 }
             }
-            console.timeEnd('overview-render-loop');
-            console.time('overview-cull');
             for (const [key, rect] of this.exploredRectangles) {
                 const [lat, long] = key.split(',').map(Number);
                 if (lat < latMin ||
@@ -285,8 +277,6 @@ class BlockScout {
                     this.exploredRectangles.delete(key);
                 }
             }
-            console.timeEnd('overview-cull');
-            console.timeEnd('overview-total');
             return;
         }
         // Normal mode (zoom > 12): restore background, clear overview layers
@@ -409,9 +399,40 @@ class BlockScout {
         }
         this.supabaseSaveTimeout = window.setTimeout(() => void this.pushToSupabase(), 5000);
     }
+    // Merges shifted cloud coords (in offset space) into local state.
+    // offLat/offLng are the offset used to encode those cloud coords.
+    // Returns the number of newly merged blocks.
+    mergeCloudData(cloudCoords, cloudScore, offLat, offLng) {
+        let mergedCount = 0;
+        for (const [key, dateStr] of Object.entries(cloudCoords)) {
+            const [lat, lng] = key.split(',').map(Number);
+            const realKey = BlockScout.keyFormat(lat + offLat, lng + offLng);
+            if (!this.coords2dates[realKey] ||
+                dateStr > this.coords2dates[realKey]) {
+                this.coords2dates[realKey] = dateStr;
+                mergedCount++;
+            }
+        }
+        this.playerScore = Math.max(this.playerScore, cloudScore, 0);
+        return mergedCount;
+    }
     async pushToSupabase() {
         if (!supabase)
             return;
+        // Fetch current cloud state first so we merge rather than overwrite.
+        // This handles the case where 2 phones share a userId and push independently.
+        const { data: cloudRow } = await supabase
+            .from('blockscout_saves')
+            .select('data')
+            .eq('user_id', this.userId)
+            .single();
+        if (cloudRow?.data?.coords2dates) {
+            this.mergeCloudData(cloudRow.data.coords2dates, cloudRow.data.playerScore ?? 0, this.offsetLat, this.offsetLng);
+            // Persist the merge locally without scheduling another supabase push.
+            localStorage.setItem('mapGame', this.stateString());
+            this.updateScoreDisplay();
+        }
+        // Build shifted coords for upload.
         const shifted = {};
         for (const [key, dateStr] of Object.entries(this.coords2dates)) {
             const [lat, lng] = key.split(',').map(Number);
@@ -482,6 +503,28 @@ class BlockScout {
         this.helpButton.innerHTML = '?';
         this.helpButton.classList.remove('backup-highlight');
     }
+    showRecoverConfirm(date, score) {
+        const modal = document.getElementById('confirm-recover-modal');
+        document.getElementById('confirm-recover-text').textContent =
+            `Load saved progress from ${date} with score ${score.toLocaleString()}?`;
+        modal.classList.add('open');
+        return new Promise((resolve) => {
+            const finish = (result) => {
+                modal.classList.remove('open');
+                resolve(result);
+            };
+            document
+                .getElementById('confirm-recover-yes')
+                .addEventListener('click', () => finish(true), { once: true });
+            document
+                .getElementById('confirm-recover-no')
+                .addEventListener('click', () => finish(false), { once: true });
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal)
+                    finish(false);
+            }, { once: true });
+        });
+    }
     async maybeRecoverFromUrl() {
         const params = new URLSearchParams(location.search);
         const uid = params.get('uid');
@@ -500,7 +543,7 @@ class BlockScout {
         // The constructor (which calls maybeRecoverFromUrl) will not be blocked during this await call.
         const { data, error } = await supabase
             .from('blockscout_saves')
-            .select('data')
+            .select('data, updated_at')
             .eq('user_id', uid)
             .single();
         if (error || !data) {
@@ -509,18 +552,12 @@ class BlockScout {
             this.save();
             return;
         }
-        const cloudCoords = data.data?.coords2dates ?? {};
-        let mergedCount = 0;
-        for (const [key, dateStr] of Object.entries(cloudCoords)) {
-            const [lat, lng] = key.split(',').map(Number);
-            const realKey = BlockScout.keyFormat(lat + offLat, lng + offLng);
-            const localDate = this.coords2dates[realKey];
-            if (!localDate || dateStr > localDate) {
-                this.coords2dates[realKey] = dateStr;
-                mergedCount++;
-            }
-        }
-        this.playerScore = Math.max(this.playerScore, data.data?.playerScore, 0);
+        const cloudScore = data.data?.playerScore ?? 0;
+        const cloudDate = new Date(data.updated_at).toLocaleDateString();
+        const confirmed = await this.showRecoverConfirm(cloudDate, cloudScore);
+        if (!confirmed)
+            return;
+        const mergedCount = this.mergeCloudData(data.data?.coords2dates ?? {}, data.data?.playerScore ?? 0, offLat, offLng);
         // Adopt the recovered identity so future saves go to the same cloud record.
         this.userId = uid;
         this.offsetLat = offLat;
