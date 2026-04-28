@@ -525,6 +525,7 @@ class BlockScout {
                 mergedCount++;
             }
         }
+        this.playerScore = Math.max(this.playerScore, data.data?.playerScore, 0);
         // Adopt the recovered identity so future saves go to the same cloud record.
         this.userId = uid;
         this.offsetLat = offLat;
