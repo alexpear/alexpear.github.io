@@ -462,9 +462,7 @@ class BlockScout {
             .getElementById('email-url-btn')
             .addEventListener('click', () => {
             const subject = encodeURIComponent('My Block Scout recovery URL');
-            const body = encodeURIComponent(`If you ever lose your game progress in Block Scout, click this personalized URL. (Safari in particular likes to delete game data without warning.) ${this.recoveryUrl}\n\n  On Safari, you can additionally protect your game progress by installing Block
-                    Scout to your home screen: Click Safari's Share icon,
-                    then 'Add to Home Screen', then 'Add'.`);
+            const body = encodeURIComponent(`If you ever lose your game progress in Block Scout, click this personalized URL. (Safari in particular likes to delete game data without warning.)\n\n${this.recoveryUrl}\n\nOn Safari, you can additionally protect your game progress by installing Block Scout to your home screen: Click Safari's Share icon, then 'Add to Home Screen', then 'Add'.`);
             this.ceaseBackupHighlighting();
             location.href = `mailto:?subject=${subject}&body=${body}`;
         });
@@ -506,6 +504,8 @@ class BlockScout {
             .single();
         if (error || !data) {
             console.warn('BlockScout: cloud recovery failed', error);
+            // Make sure they have a cloud presence.
+            this.save();
             return;
         }
         const cloudCoords = data.data?.coords2dates ?? {};
@@ -514,6 +514,11 @@ class BlockScout {
             const [lat, lng] = key.split(',').map(Number);
             const realKey = BlockScout.keyFormat(lat + offLat, lng + offLng);
             const localDate = this.coords2dates[realKey];
+            // One-off patch for 1 early user with some bad data.
+            if (localDate === '2026-03-20T07:00:00.000Z') {
+                delete this.coords2dates[realKey];
+                continue;
+            }
             if (!localDate || dateStr > localDate) {
                 this.coords2dates[realKey] = dateStr;
                 mergedCount++;
