@@ -625,6 +625,38 @@ export class BlockScout {
         this.helpButton.classList.remove('backup-highlight');
     }
 
+    private showRecoverConfirm(date: string, score: number): Promise<boolean> {
+        const modal = document.getElementById('confirm-recover-modal')!;
+
+        document.getElementById('confirm-recover-text')!.textContent =
+            `Load saved progress from ${date} with score ${score.toLocaleString()}?`;
+
+        modal.classList.add('open');
+
+        return new Promise<boolean>((resolve) => {
+            const finish = (result: boolean): void => {
+                modal.classList.remove('open');
+                resolve(result);
+            };
+
+            document
+                .getElementById('confirm-recover-yes')!
+                .addEventListener('click', () => finish(true), { once: true });
+
+            document
+                .getElementById('confirm-recover-no')!
+                .addEventListener('click', () => finish(false), { once: true });
+
+            modal.addEventListener(
+                'click',
+                (e) => {
+                    if (e.target === modal) finish(false);
+                },
+                { once: true },
+            );
+        });
+    }
+
     async maybeRecoverFromUrl(): Promise<void> {
         const params = new URLSearchParams(location.search);
         const uid = params.get('uid');
@@ -647,7 +679,7 @@ export class BlockScout {
         // The constructor (which calls maybeRecoverFromUrl) will not be blocked during this await call.
         const { data, error } = await supabase
             .from('blockscout_saves')
-            .select('data')
+            .select('data, updated_at')
             .eq('user_id', uid)
             .single();
 
@@ -658,6 +690,13 @@ export class BlockScout {
             this.save();
             return;
         }
+
+        const cloudScore: number = data.data?.playerScore ?? 0;
+        const cloudDate: string = new Date(
+            data.updated_at,
+        ).toLocaleDateString();
+        const confirmed = await this.showRecoverConfirm(cloudDate, cloudScore);
+        if (!confirmed) return;
 
         const cloudCoords: Record<string, string> =
             data.data?.coords2dates ?? {};

@@ -243,6 +243,48 @@
                 border-radius: 6px;
                 cursor: pointer;
             }
+            #confirm-recover-modal {
+                display: none;
+                position: fixed;
+                inset: 0;
+                z-index: 2000;
+                background: rgba(0, 0, 0, 0.6);
+                align-items: center;
+                justify-content: center;
+            }
+            #confirm-recover-modal.open {
+                display: flex;
+            }
+            #confirm-recover-box {
+                background: white;
+                border-radius: 10px;
+                padding: 24px;
+                max-width: 340px;
+                width: 90%;
+                font: 15px sans-serif;
+                line-height: 1.5;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            }
+            #confirm-recover-box h2 {
+                margin-bottom: 12px;
+                font-size: 18px;
+            }
+            #confirm-recover-yes,
+            #confirm-recover-no {
+                flex: 1;
+                padding: 10px;
+                font: bold 15px sans-serif;
+                border: none;
+                border-radius: 6px;
+                color: white;
+                cursor: pointer;
+            }
+            #confirm-recover-yes {
+                background: purple;
+            }
+            #confirm-recover-no {
+                background: black;
+            }
         </style>
     </head>
     <body>
@@ -267,6 +309,16 @@
                     then 'Add to Home Screen', then 'Add'.
                 </p>
                 <button id="recovery-close-btn">Close</button>
+            </div>
+        </div>
+        <div id="confirm-recover-modal">
+            <div id="confirm-recover-box">
+                <!-- <h2>Restore saved progress?</h2> -->
+                <p id="confirm-recover-text"></p>
+                <div style="display: flex; gap: 8px; margin-top: 16px">
+                    <button id="confirm-recover-no">Cancel</button>
+                    <button id="confirm-recover-yes">Load</button>
+                </div>
             </div>
         </div>
         <div id="score">Score: 0</div>
