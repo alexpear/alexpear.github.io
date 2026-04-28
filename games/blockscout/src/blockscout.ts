@@ -519,12 +519,65 @@ export class BlockScout {
         );
     }
 
+    // Merges shifted cloud coords (in offset space) into local state.
+    // offLat/offLng are the offset used to encode those cloud coords.
+    // Returns the number of newly merged blocks.
+    private mergeCloudData(
+        cloudCoords: Record<string, string>,
+        cloudScore: number,
+        offLat: number,
+        offLng: number,
+    ): number {
+        let mergedCount = 0;
+
+        for (const [key, dateStr] of Object.entries(cloudCoords)) {
+            const [lat, lng] = key.split(',').map(Number);
+
+            const realKey = BlockScout.keyFormat(lat + offLat, lng + offLng);
+
+            if (
+                !this.coords2dates[realKey] ||
+                dateStr > this.coords2dates[realKey]
+            ) {
+                this.coords2dates[realKey] = dateStr;
+                mergedCount++;
+            }
+        }
+
+        this.playerScore = Math.max(this.playerScore, cloudScore, 0);
+
+        return mergedCount;
+    }
+
     async pushToSupabase(): Promise<void> {
         if (!supabase) return;
+
+        // Fetch current cloud state first so we merge rather than overwrite.
+        // This handles the case where 2 phones share a userId and push independently.
+        const { data: cloudRow } = await supabase
+            .from('blockscout_saves')
+            .select('data')
+            .eq('user_id', this.userId)
+            .single();
+
+        if (cloudRow?.data?.coords2dates) {
+            this.mergeCloudData(
+                cloudRow.data.coords2dates,
+                cloudRow.data.playerScore ?? 0,
+                this.offsetLat,
+                this.offsetLng,
+            );
+
+            // Persist the merge locally without scheduling another supabase push.
+            localStorage.setItem('mapGame', this.stateString());
+
+            this.updateScoreDisplay();
+        }
+
+        // Build shifted coords for upload.
         const shifted: Record<string, string> = {};
         for (const [key, dateStr] of Object.entries(this.coords2dates)) {
             const [lat, lng] = key.split(',').map(Number);
-
             // All coords in the cloud are relative to the offset coord, which is PII & never touches the server.
             shifted[
                 BlockScout.keyFormat(lat - this.offsetLat, lng - this.offsetLng)
@@ -687,25 +740,11 @@ export class BlockScout {
         const confirmed = await this.showRecoverConfirm(cloudDate, cloudScore);
         if (!confirmed) return;
 
-        const cloudCoords: Record<string, string> =
-            data.data?.coords2dates ?? {};
-        let mergedCount = 0;
-
-        for (const [key, dateStr] of Object.entries(cloudCoords)) {
-            const [lat, lng] = key.split(',').map(Number);
-            const realKey = BlockScout.keyFormat(lat + offLat, lng + offLng);
-            const localDate = this.coords2dates[realKey];
-
-            if (!localDate || dateStr > localDate) {
-                this.coords2dates[realKey] = dateStr;
-                mergedCount++;
-            }
-        }
-
-        this.playerScore = Math.max(
-            this.playerScore,
-            data.data?.playerScore,
-            0,
+        const mergedCount = this.mergeCloudData(
+            data.data?.coords2dates ?? {},
+            data.data?.playerScore ?? 0,
+            offLat,
+            offLng,
         );
 
         // Adopt the recovered identity so future saves go to the same cloud record.
