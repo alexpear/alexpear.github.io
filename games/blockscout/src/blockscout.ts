@@ -295,14 +295,9 @@ export class BlockScout {
         const activeKeys = new Set<string>();
 
         if (this.map.getZoom() <= 12) {
-            console.time('overview-total');
-
-            console.time('overview-setup');
             this.tileLayer.setOpacity(0);
             this.map.getContainer().style.backgroundColor = 'black';
-            console.timeEnd('overview-setup');
 
-            console.time('overview-clear-normal-layers');
             // Clear normal-mode layers
             for (const rect of this.fogRectangles.values()) {
                 this.map.removeLayer(rect);
@@ -312,9 +307,7 @@ export class BlockScout {
                 this.map.removeLayer(marker);
             }
             this.renderedGoals.clear();
-            console.timeEnd('overview-clear-normal-layers');
 
-            console.time('overview-render-loop');
             // Iterate only visited cells rather than every cell in the viewport.
             for (const key of Object.keys(this.coords2dates)) {
                 const [lat, long] = key.split(',').map(Number);
@@ -356,9 +349,7 @@ export class BlockScout {
                     }
                 }
             }
-            console.timeEnd('overview-render-loop');
 
-            console.time('overview-cull');
             for (const [key, rect] of this.exploredRectangles) {
                 const [lat, long] = key.split(',').map(Number);
                 if (
@@ -371,9 +362,7 @@ export class BlockScout {
                     this.exploredRectangles.delete(key);
                 }
             }
-            console.timeEnd('overview-cull');
 
-            console.timeEnd('overview-total');
             return;
         }
 
