@@ -528,7 +528,7 @@ export class BlockScout {
         offLat: number,
         offLng: number,
     ): number {
-        let mergedCount = 0;
+        let blocksEdited = 0;
 
         for (const [key, dateStr] of Object.entries(cloudCoords)) {
             const [lat, lng] = key.split(',').map(Number);
@@ -540,13 +540,13 @@ export class BlockScout {
                 dateStr > this.coords2dates[realKey]
             ) {
                 this.coords2dates[realKey] = dateStr;
-                mergedCount++;
+                blocksEdited++;
             }
         }
 
         this.playerScore = Math.max(this.playerScore, cloudScore, 0);
 
-        return mergedCount;
+        return blocksEdited;
     }
 
     async pushToSupabase(): Promise<void> {
