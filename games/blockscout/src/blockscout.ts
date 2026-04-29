@@ -808,7 +808,6 @@ export class BlockScout {
     }
 }
 
-// TODO call buildblockscout from Github CI. Stop having to commit dist/*.js.
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 
