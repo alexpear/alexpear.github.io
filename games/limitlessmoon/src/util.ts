@@ -56,6 +56,16 @@ export class Util {
         return x !== undefined && x !== null && x !== '' && !Util.isNaN(x);
     }
 
+    static legit(x: unknown): boolean {
+        return (
+            Util.exists(x) &&
+            // it's not []
+            !(Array.isArray(x) && x.length === 0) &&
+            // it's not {}
+            !(typeof x === 'object' && Object.keys(x).length === 0)
+        );
+    }
+
     // Default 0
     static sum(array: number[]): number {
         return Util.array(array).reduce((sumSoFar, element) => {
@@ -97,5 +107,26 @@ export class Util {
         return Math.floor(
             Math.random() * (maxExclusive - minInclusive) + minInclusive,
         );
+    }
+
+    // Returns a deep copy of the object, with chaff removed.
+    static tidy(obj: object, ...badProps: string[]): object {
+        if (Array.isArray(obj)) {
+            return obj.map((element) => Util.tidy(element, ...badProps));
+        } else if (obj && typeof obj === 'object') {
+            return Object.fromEntries(
+                Object.entries(obj)
+                    .filter(
+                        ([key]) =>
+                            !badProps.includes(key) && Util.legit(obj[key]),
+                    )
+                    .map(([key, value]) => [
+                        key,
+                        Util.tidy(value, ...badProps),
+                    ]),
+            );
+        }
+
+        return obj;
     }
 }

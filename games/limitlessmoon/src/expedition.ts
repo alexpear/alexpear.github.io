@@ -37,7 +37,7 @@ export class Expedition {
     }
 
     log(): string {
-        const json = this.json();
+        const json = Util.tidy(this.json(), 'id');
 
         const loggedText = JSON.stringify(json, undefined, 4);
 
