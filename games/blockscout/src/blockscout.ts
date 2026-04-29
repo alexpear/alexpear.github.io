@@ -30,7 +30,7 @@ export function overviewColor(points: number): string {
 }
 
 export class BlockScout {
-    // LATER if user hasnt refreshed in over a month, refresh the page to get latest logic. Be careful to avoid refresh loop obviously.
+    // TODO if user hasnt refreshed in over a month, refresh the page to get latest logic. Be careful to avoid refresh loop obviously.
 
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
@@ -50,7 +50,6 @@ export class BlockScout {
 
     helpButton: HTMLElement;
 
-    // LATER could make this decay 1 point/day, eg by storing a started: Date and subtracting points from score equal to today - started.
     playerScore: number = 0;
     scoreEl: HTMLElement = document.getElementById('score');
 
@@ -798,7 +797,7 @@ export class BlockScout {
     }
 }
 
-// LATER call buildblockscout from Github CI. Stop having to commit dist/*.js.
+// TODO call buildblockscout from Github CI. Stop having to commit dist/*.js.
 // LATER Measure mobile performance in more detail. Can measure much of this from the emulator.
 // LATER improve VSCode integration with CC.
 
