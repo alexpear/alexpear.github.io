@@ -30,8 +30,6 @@ export function overviewColor(points: number): string {
 }
 
 export class BlockScout {
-    // TODO if user hasnt refreshed in over a month, refresh the page to get latest logic. Be careful to avoid refresh loop obviously.
-
     // eslint-disable-next-line @typescript-eslint/typedef
     map = L.map('map', {
         renderer: L.canvas({ padding: 0.1 }),
