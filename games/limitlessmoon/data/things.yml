@@ -34,11 +34,13 @@ item:
     extendedBarrel:
         weight: 1
         cost: 1
-        asMod:
+        asmod:
             attachto: gun
-            rename: rifle
-            range: 20
-            hands: 2 # NOTE: This is a little confusing because it sets the hands number to 2, but range above is a relative modifier +20.
+            overwrite:
+                name: rifle
+                hands: 2
+            add:
+                range: 20
 
         # NOTE Carrying a extended barrel by itself with no gun should not increase your range. Items can have these effects on range:
         # As a top level item, it increases the group's range. Eg a tank robot with a upgrade item.
@@ -48,126 +50,136 @@ item:
     silencer:
         weight: 1
         cost: 1
-        asMod:
+        asmod:
             attachto: gun
             prefix: 'stealth '
-            stealth: 5
-            damage: -1
+            add:
+                stealth: 5
+                damage: -1
 
     heavyAmmo:
         weight: 5
         cost: 1
-        asMod:
+        asmod:
             attachto: gun
             prefix: 'heavy '
-            damage: 10
+            add:
+                damage: 10
 
     autofireModule:
         weight: 5
         cost: 1
-        asMod:
+        asmod:
             attachto: gun
-            prefix: auto
-            shotspersec: 10
             attachcopies: 2 # You can attach 2 copies of this. Only 1 prefix is applied.
+            prefix: auto
+            add:
+                shotspersec: 10
 
-    # Obstacle - There should be some sort of slot limit where you can't have multiple damage type mods. TODO
+    # Obstacle - There should be some sort of slot limit where you can't have multiple damage type mods. TODO slot: core, and the weapon can have slots: core: 1
 
     battery:
         weight: 3
         cost: 1
-        asMod:
+        asmod:
             attachto: any
-            damage: 5
-            damagetype: electric
             prefix: electro
+            add:
+                damagetype: electric
+                damage: 5
 
     thermalCoil:
         weight: 1
         cost: 2
-        asMod:
+        asmod:
             attachto: any
-            damage: 5
-            damagetype: fire
             prefix: pyro
+            add:
+                damagetype: fire
+                damage: 5
 
     chronanchor:
         weight: 1
         cost: 5
-        asMod:
+        asmod:
             attachto: any
-            effect: slowtime 1
             prefix: chrono
+            add:
+                effect: slowtime 1
 
     dataIkon:
         weight: 1
         cost: 5
-        asMod:
+        asmod:
             attachto: any
-            damagetype: data
-            damage: 1
             prefix: info
+            add:
+                damagetype: data
+                damage: 1
 
     hoverAmmo:
         weight: 1
         cost: 10
-        asMod:
+        asmod:
             attachto: any
-            damagetype: antigrav
-            damage: 1
             prefix: hover
+            add:
+                damagetype: antigrav
+                damage: 1
 
     laserCrystal:
         weight: 1
         cost: 2
-        asMod:
+        asmod:
             attachto: any
-            damagetype: laser
-            # LATER should we distinguish between fire, heat, and/or laser damage? Or are they different delivery methods for heat damage?
-            # TODO laser crystal should replace bullets, not add a laser effect to them.
-            prefix: las
+            prefix: las # prefix can be a child of asmod or of add.
+            overwrite:
+                damagetype: laser
+                # LATER should we distinguish between fire, heat, and/or laser damage? Or are they different delivery methods for heat damage?
 
     technovirusPhial:
         weight: 1
         cost: 10
-        asMod:
+        asmod:
             attachto: any
-            damagetype: nano
-            damage: 1
+            add:
+                damagetype: nano
+                damage: 1
             prefix: nano
 
     acidPhial:
         weight: 1
         cost: 2
-        asMod:
+        asmod:
             attachto: any
-            damagetype: acid
-            damage: 1
+            add:
+                damagetype: acid
+                damage: 1
             prefix: acid
 
     adhesiveCapsule:
         weight: 1
         cost: 2
-        asMod:
+        asmod:
             attachto: any
-            effect: adhesive 1
+            add:
+                effect: adhesive 1
             prefix: sticky
 
     sonicIntoner:
         weight: 1
         cost: 2
-        asMod:
+        asmod:
             attachto: any
-            damagetype: sonic
-            damage: 1
-            # TODO this should replace bullets, not make sonic bullets
+            overwrite:
+                damagetype: sonic
             prefix: thunder
 
     stingrayCoil:
         weight: 1
         cost: 2
-        asMod:
+        asmod:
             attachto: any
-            damagetype: microwave
-            # TODO this should replace bullets, not make microwave bullets
+            overwrite:
+                damagetype: microwave
             prefix: sting
