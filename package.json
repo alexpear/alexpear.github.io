@@ -74,7 +74,7 @@
     "testAll": "npm run test && npm run testRingWorld && npm run testDeathPlanet",
     "lint": "eslint --cache games/**/*.ts intergame spoilerfree",
     "prettier": "prettier --check games/",
-    "prettierwrite": "prettier --write games/ intergame/ pages/ spoilerfree/",
+    "prettierwrite": "prettier --write --log-level warn games/ intergame/ pages/ spoilerfree/",
     "wgenerator": "node generation/wgenerator.js",
     "wkrieg": "node generation/wkriegArmy.js",
     "40k": "node generation/grimDarkArmy.js",
