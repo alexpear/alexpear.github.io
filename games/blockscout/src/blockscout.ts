@@ -791,6 +791,19 @@ export class BlockScout {
 
     // LATER ability to patch mistakes, eg if you use your phone while driving. Can also be used to manually set challenges perhaps. Menu > mode where you click on a block to select it > confirmation screen y/n. No brings you back to normal mode.
 
+    // If the page hasn't been refreshed in over a week, reload to pick up any new code.
+    static maybeRefresh(): void {
+        const match = document.cookie.match(/(?:^|;\s*)lastCodeRefresh=(\d+)/);
+        const lastRefresh = match ? parseInt(match[1]) : 0;
+
+        const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+        if (Date.now() - lastRefresh > WEEK_MS) {
+            // Write the updated timestamp before reloading to prevent an infinite loop.
+            document.cookie = `lastCodeRefresh=${Date.now()}; max-age=${365 * 24 * 3600}; SameSite=Lax; Secure`;
+            location.reload();
+        }
+    }
+
     static run(): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).blockscout = new BlockScout();
@@ -803,5 +816,6 @@ export class BlockScout {
 
 // Run in browser, not during unit tests (DOM is empty at import time).
 if (typeof document !== 'undefined' && document.getElementById('map')) {
+    BlockScout.maybeRefresh();
     BlockScout.run();
 }
