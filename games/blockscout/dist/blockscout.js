@@ -402,18 +402,18 @@ class BlockScout {
     // offLat/offLng are the offset used to encode those cloud coords.
     // Returns the number of newly merged blocks.
     mergeCloudData(cloudCoords, cloudScore, offLat, offLng) {
-        let mergedCount = 0;
+        let blocksEdited = 0;
         for (const [key, dateStr] of Object.entries(cloudCoords)) {
             const [lat, lng] = key.split(',').map(Number);
             const realKey = BlockScout.keyFormat(lat + offLat, lng + offLng);
             if (!this.coords2dates[realKey] ||
                 dateStr > this.coords2dates[realKey]) {
                 this.coords2dates[realKey] = dateStr;
-                mergedCount++;
+                blocksEdited++;
             }
         }
         this.playerScore = Math.max(this.playerScore, cloudScore, 0);
-        return mergedCount;
+        return blocksEdited;
     }
     async pushToSupabase() {
         if (!supabase)
@@ -562,6 +562,7 @@ class BlockScout {
         this.offsetLat = offLat;
         this.offsetLng = offLng;
         this.save();
+        this.ceaseBackupHighlighting();
         this.updateScreen();
         console.log(`BlockScout: recovery complete — merged ${mergedCount} blocks from cloud.`);
     }
