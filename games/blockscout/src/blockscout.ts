@@ -737,6 +737,7 @@ export class BlockScout {
         const cloudDate: string = new Date(
             data.updated_at,
         ).toLocaleDateString();
+
         const confirmed = await this.showRecoverConfirm(cloudDate, cloudScore);
         if (!confirmed) return;
 
@@ -752,6 +753,7 @@ export class BlockScout {
         this.offsetLat = offLat;
         this.offsetLng = offLng;
         this.save();
+        this.ceaseBackupHighlighting();
         this.updateScreen();
 
         console.log(
