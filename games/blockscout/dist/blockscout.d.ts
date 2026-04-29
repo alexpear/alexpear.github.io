@@ -36,7 +36,12 @@ export declare class BlockScout {
     stateString(): string;
     save(): void;
     scheduleSupabaseSave(): void;
-    private mergeCloudData;
+    mergeCloudData(
+        cloudCoords: Record<string, string>,
+        cloudScore: number,
+        offLat: number,
+        offLng: number,
+    ): number;
     pushToSupabase(): Promise<void>;
     get recoveryUrl(): string;
     setupRecoveryUI(): void;
