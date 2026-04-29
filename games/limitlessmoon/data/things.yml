@@ -17,7 +17,8 @@ item:
             range: 0
             damage: 5
             type: blade
-        moddable: true
+        slots:
+            core: 1
 
     gun:
         weight: 1
@@ -28,7 +29,10 @@ item:
             shotspersec: 1
             stealth: -10
             type: pierce
-        moddable: true
+        slots:
+            core: 1
+            barrel: 1
+            chamber: 2
 
     # Item parts
     extendedBarrel:
@@ -36,6 +40,7 @@ item:
         cost: 1
         asmod:
             attachto: gun
+            slot: barrel
             overwrite:
                 name: rifle
                 hands: 2
@@ -52,6 +57,7 @@ item:
         cost: 1
         asmod:
             attachto: gun
+            slot: barrel
             prefix: 'stealth '
             add:
                 stealth: 5
@@ -62,6 +68,7 @@ item:
         cost: 1
         asmod:
             attachto: gun
+            slot: core
             prefix: 'heavy '
             add:
                 damage: 10
@@ -71,18 +78,18 @@ item:
         cost: 1
         asmod:
             attachto: gun
+            slot: chamber
             attachcopies: 2 # You can attach 2 copies of this. Only 1 prefix is applied.
             prefix: auto
             add:
                 shotspersec: 10
-
-    # Obstacle - There should be some sort of slot limit where you can't have multiple damage type mods. TODO slot: core, and the weapon can have slots: core: 1
 
     battery:
         weight: 3
         cost: 1
         asmod:
             attachto: any
+            slot: core
             prefix: electro
             add:
                 damagetype: electric
@@ -93,6 +100,7 @@ item:
         cost: 2
         asmod:
             attachto: any
+            slot: core
             prefix: pyro
             add:
                 damagetype: fire
@@ -103,6 +111,7 @@ item:
         cost: 5
         asmod:
             attachto: any
+            slot: core
             prefix: chrono
             add:
                 effect: slowtime 1
@@ -112,6 +121,7 @@ item:
         cost: 5
         asmod:
             attachto: any
+            slot: core
             prefix: info
             add:
                 damagetype: data
@@ -122,6 +132,7 @@ item:
         cost: 10
         asmod:
             attachto: any
+            slot: core
             prefix: hover
             add:
                 damagetype: antigrav
@@ -132,6 +143,7 @@ item:
         cost: 2
         asmod:
             attachto: any
+            slot: core
             prefix: las # prefix can be a child of asmod or of add.
             overwrite:
                 damagetype: laser
@@ -142,6 +154,7 @@ item:
         cost: 10
         asmod:
             attachto: any
+            slot: core
             add:
                 damagetype: nano
                 damage: 1
@@ -152,6 +165,7 @@ item:
         cost: 2
         asmod:
             attachto: any
+            slot: core
             add:
                 damagetype: acid
                 damage: 1
@@ -162,6 +176,7 @@ item:
         cost: 2
         asmod:
             attachto: any
+            slot: core
             add:
                 effect: adhesive 1
             prefix: sticky
@@ -171,6 +186,7 @@ item:
         cost: 2
         asmod:
             attachto: any
+            slot: core
             overwrite:
                 damagetype: sonic
             prefix: thunder
@@ -180,6 +196,7 @@ item:
         cost: 2
         asmod:
             attachto: any
+            slot: core
             overwrite:
                 damagetype: microwave
             prefix: sting
