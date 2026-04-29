@@ -338,6 +338,89 @@ describe('BlockScout', () => {
         });
     });
 
+    describe('mergeCloudData()', () => {
+        const OLD = '2020-01-01T00:00:00.000Z';
+        const NEW = '2025-01-01T00:00:00.000Z';
+
+        // Helper: call the private method with zero offset (cloud keys == real keys).
+        function merge(
+            cloudCoords: Record<string, string>,
+            cloudScore: number = 0,
+        ): number {
+            return game.mergeCloudData(cloudCoords, cloudScore, 0, 0);
+        }
+
+        test('empty cloud: no changes, returns 0', () => {
+            game.coords2dates['0,0'] = OLD;
+            const cloudResponse = {};
+            const count = merge(cloudResponse);
+            expect(count).toBe(0);
+            expect(game.coords2dates['0,0']).toBe(OLD);
+        });
+
+        test('cloud has a block local lacks: block added, returns 1', () => {
+            const count = merge({ '0,0': OLD });
+            expect(count).toBe(1);
+            expect(game.coords2dates['0,0']).toBe(OLD);
+        });
+
+        test('cloud date is newer: cloud wins, returns 1', () => {
+            game.coords2dates['0,0'] = OLD;
+            const count = merge({ '0,0': NEW });
+            expect(count).toBe(1);
+            expect(game.coords2dates['0,0']).toBe(NEW);
+        });
+
+        test('local date is newer: local wins, returns 0', () => {
+            game.coords2dates['0,0'] = NEW;
+            const count = merge({ '0,0': OLD });
+            expect(count).toBe(0);
+            expect(game.coords2dates['0,0']).toBe(NEW);
+        });
+
+        test('same date: local unchanged, returns 0', () => {
+            game.coords2dates['0,0'] = OLD;
+            const count = merge({ '0,0': OLD });
+            expect(count).toBe(0);
+            expect(game.coords2dates['0,0']).toBe(OLD);
+        });
+
+        test('cloud score higher: playerScore updated', () => {
+            game.playerScore = 100;
+            merge({}, 500);
+            expect(game.playerScore).toBe(500);
+        });
+
+        test('local score higher: playerScore unchanged', () => {
+            game.playerScore = 500;
+            merge({}, 100);
+            expect(game.playerScore).toBe(500);
+        });
+
+        test('mixed blocks: correct merged count and values', () => {
+            game.coords2dates['0,0'] = NEW; // local wins
+            game.coords2dates['0,0.01'] = OLD; // cloud wins
+            // '0,0.02' is new from cloud
+
+            const count = merge({
+                '0,0': OLD,
+                '0,0.01': NEW,
+                '0,0.02': OLD,
+            });
+
+            expect(count).toBe(2);
+            expect(game.coords2dates['0,0']).toBe(NEW);
+            expect(game.coords2dates['0,0.01']).toBe(NEW);
+            expect(game.coords2dates['0,0.02']).toBe(OLD);
+        });
+
+        test('offset applied: cloud key (0,0) with off (1,2) maps to real key (1,2)', () => {
+            game.mergeCloudData({ '0,0': OLD }, 0, 1, 2);
+            expect(game.coords2dates['1,2']).toBe(OLD);
+            expect(game.coords2dates['0,0']).toBeUndefined();
+        });
+    });
+
     describe('save() and load()', () => {
         test('save & reloading preserves score & a goal state', () => {
             const game1 = makeGame();

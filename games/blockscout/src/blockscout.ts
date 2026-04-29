@@ -522,7 +522,7 @@ export class BlockScout {
     // Merges shifted cloud coords (in offset space) into local state.
     // offLat/offLng are the offset used to encode those cloud coords.
     // Returns the number of newly merged blocks.
-    private mergeCloudData(
+    mergeCloudData(
         cloudCoords: Record<string, string>,
         cloudScore: number,
         offLat: number,
