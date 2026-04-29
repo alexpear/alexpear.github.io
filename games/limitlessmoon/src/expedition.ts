@@ -7,6 +7,8 @@ import { Place } from './place';
 import { Planet } from './planet';
 import { Util } from './util';
 
+import * as YAML from 'js-yaml';
+
 export class Expedition {
     id: string = Util.uuid();
     planet: Planet;
@@ -39,7 +41,7 @@ export class Expedition {
     log(): string {
         const json = Util.tidy(this.json(), 'id');
 
-        const loggedText = JSON.stringify(json, undefined, 4);
+        const loggedText = YAML.dump(json);
 
         console.log(loggedText);
 
