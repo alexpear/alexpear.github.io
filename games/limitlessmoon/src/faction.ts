@@ -65,7 +65,9 @@ export class Faction {
     }
 
     startingCompany(): Company {
-        return new Company(this.groups);
+        const company = new Company(this.groups);
+        company.factionID = this.id;
+        return company;
     }
 
     randomIndividual(): Group {

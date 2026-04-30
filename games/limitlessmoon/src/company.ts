@@ -5,6 +5,7 @@ import { Util } from './util';
 
 export class Company {
     id: string = Util.uuid();
+    factionID: string;
     groups: Group[] = [];
 
     // Complex companies might include a detailed combined-arms army, or a fellowship of 9 + 1 pony.
