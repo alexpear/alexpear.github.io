@@ -4,6 +4,37 @@ import { Util } from './util';
 import { THINGS } from './generated/things.gen';
 
 export type IdeaType = 'creature' | 'item' | 'trait';
+export type DamageType =
+    | 'impact'
+    | 'blade'
+    | 'pierce'
+    | 'fire'
+    | 'laser'
+    | 'electric'
+    | 'sonic'
+    | 'acid'
+    | 'nano'
+    | 'antigrav'
+    | 'data';
+type ModEffects = {
+    attachto?: string;
+    slot?: string;
+    prefix?: string;
+    add?: ModAdditions;
+    overwrite?: Overwrites;
+};
+
+type ModAdditions = {
+    damagetype?: DamageType;
+    damage?: number;
+    range?: number;
+    stealth?: number;
+    shotspersec?: number;
+    effect?: string;
+    prefix?: string;
+};
+
+type Overwrites = { name?: string; damagetype?: DamageType; hands?: number };
 
 const IDEA_TYPES: IdeaType[] = ['creature', 'item', 'trait'];
 
@@ -11,7 +42,8 @@ export class Idea {
     id: string = '';
     cost: number = 1;
     weight: number = 1;
-    ideaType: IdeaType = 'item';
+    ideaType: IdeaType;
+    asmod?: ModEffects;
 
     static encyclopedia: Record<IdeaType, Record<string, Idea>> = {
         creature: {},
