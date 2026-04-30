@@ -198,5 +198,5 @@ item:
             attachto: any
             slot: core
             overwrite:
-                damagetype: microwave
+                damagetype: laser
             prefix: sting
