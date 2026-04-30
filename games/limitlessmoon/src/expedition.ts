@@ -7,7 +7,7 @@ import { Place } from './place';
 import { Planet } from './planet';
 import { Util } from './util';
 
-import * as YAML from 'js-yaml';
+// import * as YAML from 'js-yaml';
 
 export class Expedition {
     id: string = Util.uuid();
@@ -38,14 +38,17 @@ export class Expedition {
         this.companies.push(startingCompany);
     }
 
-    log(): string {
-        const json = Util.tidy(this.json(), 'id');
+    log(): void {
+        // const json = Util.tidy(this.json(), 'id');
+        // const loggedText = YAML.dump(json);
+        // return loggedText;
 
-        const loggedText = YAML.dump(json);
-
-        console.log(loggedText);
-
-        return loggedText;
+        console.log();
+        console.log(
+            this.planet.factions
+                .map((faction) => faction.prettyString())
+                .join('\n\n'),
+        );
     }
 
     json(): object {

@@ -44,10 +44,15 @@ export class Idea {
         return this.id;
     }
 
+    prettyString(): string {
+        return Util.fromCamelCase(this.id);
+    }
+
     static random(): Idea {
         const all = IDEA_TYPES.flatMap((t) =>
             Object.values(Idea.encyclopedia[t]),
         );
+
         return Util.randomOf(all);
     }
 

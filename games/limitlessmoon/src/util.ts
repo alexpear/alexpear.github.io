@@ -82,6 +82,141 @@ export class Util {
         return crypto.randomUUID();
     }
 
+    static containsVowels(s: string): boolean {
+        const chars = s.toUpperCase().split('');
+
+        for (const char of chars) {
+            if ('AEIOUY'.includes(char)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static isAllCaps(s: string): boolean {
+        return s === s.toUpperCase();
+    }
+
+    static isCapitalized(s: string): boolean {
+        return /[A-Z]/.test(s[0]);
+    }
+
+    static capitalized(s: string): string {
+        if (!Util.exists(s)) {
+            return '';
+        } else if (s.length === 1) {
+            return s.toUpperCase();
+        }
+        // Controversially, interpret no-vowel strings as acronyms
+        else if (!Util.containsVowels(s)) {
+            return s.toUpperCase();
+        }
+
+        return s[0].toUpperCase() + s.slice(1);
+        // s.slice(1).toLowerCase();
+    }
+
+    static toCamelCase(s: string): string {
+        if (!Util.exists(s)) {
+            return '';
+        }
+
+        const words = s.split(/\s/);
+        const tail = words
+            .slice(1)
+            .map((sub) => Util.capitalized(sub))
+            .join('');
+
+        return words[0].toLowerCase() + tail;
+    }
+
+    // input: 'dolphinWithWings'
+    // returns: 'Dolphin With Wings'
+    static fromCamelCase(s: string): string {
+        if (!Util.exists(s)) {
+            return '';
+        } else if (s.length === 1) {
+            return s.toUpperCase();
+        }
+
+        const wordStarts = [0];
+        const words = [];
+
+        for (let i = 1; i < s.length; i++) {
+            // Util.logDebug(`fromCamelCase(), s is ${s}, i is ${i}, s[i] is ${s[i]}`)
+
+            if (Util.isCapitalized(s[i])) {
+                if (Util.isCapitalized(s[i - 1])) {
+                    // Detect acronym words and leave them uppercase.
+                    // eg: openHTMLFile
+                    const followedByLowercase =
+                        i < s.length - 1 && !Util.isCapitalized(s[i + 1]);
+                    if (!followedByLowercase) {
+                        continue;
+                    }
+                }
+
+                wordStarts.push(i);
+
+                const firstLetter = wordStarts[wordStarts.length - 2];
+                const word = s.slice(firstLetter, i);
+                words.push(word);
+            }
+
+            // Also want to consider a digit after a nondigit, or vice versa, to be a word start.
+            else if (Util.alphanumericTransition(s, i)) {
+                wordStarts.push(i);
+
+                const firstLetter = wordStarts[wordStarts.length - 2];
+                const word = s.slice(firstLetter, i);
+                words.push(word);
+            }
+        }
+
+        const lastCapital = wordStarts[wordStarts.length - 1];
+        const lastWord = s.slice(lastCapital);
+        words.push(lastWord);
+
+        return words
+            .map(
+                // Do not change acronyms
+                (w) => (Util.isAllCaps(w) ? w : Util.capitalized(w)),
+            )
+            .join(' ');
+    }
+
+    // True when string[i2-1] and string[i2] are a digit and a letter, in either order.
+    static alphanumericTransition(string: string, i2: number): boolean {
+        const digitStart = Util.isNumericString(string[i2 - 1]);
+
+        const digitEnd = Util.isNumericString(string[i2]);
+
+        return (digitStart && !digitEnd) || (!digitStart && digitEnd);
+    }
+
+    static testCamelCase(): void {
+        const tests = [
+            ['Hector Breaker Of Horses', 'hectorBreakerOfHorses'],
+            ['Cellar Door', 'cellarDoor'],
+            ['C Deck', 'cDeck'],
+            ['Awakening', 'awakening'],
+            ['No URL Found', 'noURLFound'],
+        ];
+
+        tests.forEach((t) => {
+            const camelized = Util.toCamelCase(t[0]);
+            const uncamelized = Util.fromCamelCase(t[1]);
+
+            if (camelized !== t[1]) {
+                throw new Error(camelized);
+            }
+            if (uncamelized !== t[0]) {
+                throw new Error(uncamelized);
+            }
+        });
+    }
+
     static randomOf<T>(array: T[]): T {
         return array[Util.randomBelow(array.length)];
     }

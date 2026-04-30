@@ -100,4 +100,18 @@ export class Faction {
             groups: this.groups.map((g) => g.json()),
         };
     }
+
+    prettyString(): string {
+        const groupLines = this.groups.map((g) => g.prettyString()).join('\n');
+        const cityOutputs = this.cities
+            .map((k) => k.prettyString())
+            .sort()
+            .join(', ');
+
+        return [
+            `Faction ${this.id}`,
+            `Cities: ${cityOutputs}`,
+            `Groups: ${groupLines}`,
+        ].join('\n\n');
+    }
 }
