@@ -1326,8 +1326,7 @@ class Util {
     }
 
     static isAllCaps (s) {
-        // TODO implement this.
-        return false;
+        return s === s.toUpperCase();
     }
 
     static stringify (x) {
