@@ -7,6 +7,10 @@ export class Util {
         return typeof x === 'number' && !Util.isNaN(x);
     }
 
+    static isNumericString(x: string): boolean {
+        return /[0-9]/.test(x);
+    }
+
     static isString(x: unknown): boolean {
         return typeof x === 'string';
     }
