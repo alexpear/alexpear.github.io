@@ -5,7 +5,7 @@ import { Util } from './util';
 
 export class Kind {
     id: string = Util.uuid();
-    // The main Idea can represent a creature or item, not a trait.
+    // The main Idea can represent a creature or item, but can't represent a trait.
     // LATER could add subclasses extending Idea to represent that at the Typescript level, if that seems clearer. CreatureIdea, ItemIdea, TraitIdea.
 
     mainIdea: Idea;

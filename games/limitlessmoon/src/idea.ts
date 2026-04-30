@@ -56,7 +56,9 @@ export class Idea {
             const bucket = (THINGS as Record<string, Record<string, object>>)[
                 ideaType
             ];
+
             if (!bucket) continue;
+
             for (const [id, def] of Object.entries(bucket)) {
                 const idea = Object.assign(new Idea(), def, { id, ideaType });
                 Idea.encyclopedia[ideaType][id] = idea;
