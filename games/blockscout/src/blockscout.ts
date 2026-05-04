@@ -166,17 +166,21 @@ export class BlockScout {
         this.updateScreen();
     }
 
+    // bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
+    // Initial solution: moveend triggers visual updates using cached coords.
     updateAfterPan(): void {
-        if (!this.locationKnown) return; // TODO no, we still want to call some of the visual update logic even if ! locationKnown.
-        this.updateAfterGPS(this.lastSeenLat, this.lastSeenLong);
+        if (this.playerMarker && this.locationKnown) {
+            this.playerMarker.setLatLng([this.lastSeenLat, this.lastSeenLong]);
+        }
+
+        this.updateScreen();
     }
 
-    // bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
-    // Perhaps moveend should trigger a wrapper of updateAfterGPS(), using cached coords.
+    // BUG 2026 may 4 - Grant location permission (or perhaps merely refresh), then wait ~5s. Screen will pan to correct location, then a few seconds later player marker will appear. It should appear right away.
     updateAfterGPS(latitude: number, longitude: number): void {
         this.locationWarningEl.style.display = 'none';
         this.locationInstructionsEl.style.display = 'none';
-        // Bug LATER - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing. Seen again 2026 mar 26 (even after waiting 5 for autoupdate).
+
         if (this.playerMarker) {
             this.playerMarker.setLatLng([latitude, longitude]);
         } else {
