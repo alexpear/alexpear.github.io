@@ -221,16 +221,16 @@ export class BlockScout {
                         (latDelta + longDelta) / GRID_STEP,
                     );
 
-                    let lastVisitedLat = this.lastSeenLat;
-                    let lastVisitedLong = this.lastSeenLong;
+                    let lastVisitedLat = recentLat;
+                    let lastVisitedLong = recentLong;
 
                     for (let v = 1; v < visits; v++) {
+                        // We're considering calling visit(lat,long) - a coord which is partway down a line between (recentLat,recentLong) and the current real (latitude,longitude).
                         const lat =
-                            this.lastSeenLat +
-                            (latitude - this.lastSeenLat) * (v / visits);
+                            recentLat + (latitude - recentLat) * (v / visits);
                         const long =
-                            this.lastSeenLong +
-                            (longitude - this.lastSeenLong) * (v / visits);
+                            recentLong +
+                            (longitude - recentLong) * (v / visits);
 
                         if (
                             lat === lastVisitedLat &&
