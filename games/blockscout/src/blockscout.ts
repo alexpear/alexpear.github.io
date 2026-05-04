@@ -312,9 +312,9 @@ export class BlockScout {
             // LATER could call this less often, or on a cooldown timer, or check GPS position less often.
             this.save();
 
-            const existingMarker = this.renderedGoals.get(key);
-            if (existingMarker) {
-                existingMarker.setIcon(this.icon(goal));
+            const existingLabel = this.renderedGoals.get(key);
+            if (existingLabel) {
+                existingLabel.setIcon(this.icon(goal));
             }
         }
     }
@@ -366,8 +366,8 @@ export class BlockScout {
                 this.map.removeLayer(rect);
             }
             this.fogRectangles.clear();
-            for (const marker of this.renderedGoals.values()) {
-                this.map.removeLayer(marker);
+            for (const goalLabel of this.renderedGoals.values()) {
+                this.map.removeLayer(goalLabel);
             }
             this.renderedGoals.clear();
 
@@ -512,9 +512,9 @@ export class BlockScout {
         }
 
         // Remove markers and fog outside the buffered viewport
-        for (const [key, marker] of this.renderedGoals) {
+        for (const [key, goalLabel] of this.renderedGoals) {
             if (!activeKeys.has(key)) {
-                this.map.removeLayer(marker);
+                this.map.removeLayer(goalLabel);
                 this.renderedGoals.delete(key);
             }
         }
@@ -529,9 +529,9 @@ export class BlockScout {
     // Refresh the label text on already-rendered goal markers without rebuilding the full viewport.
     // Used by the periodic timer and visibility-change handler so stale point counts update overnight.
     refreshNumbers(): void {
-        for (const [key, marker] of this.renderedGoals) {
+        for (const [key, goalLabel] of this.renderedGoals) {
             const [lat, long] = key.split(',').map(Number);
-            marker.setIcon(this.icon(this.goalAt(lat, long)));
+            goalLabel.setIcon(this.icon(this.goalAt(lat, long)));
         }
         this.updateScoreDisplay();
     }
