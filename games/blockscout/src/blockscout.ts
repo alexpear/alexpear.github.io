@@ -22,9 +22,17 @@ const SAN_FRANCISCO = [37.77, -122.42];
 
 const TEST_MODE: string = undefined; // 'font';
 
+type TileLayer = {
+    setOpacity: (number) => void;
+};
+
 type PlayerMarker = {
     getLatLng: () => [number, number];
     setLatLng: (coord: [number, number]) => void;
+};
+
+type GoalLabel = {
+    setIcon: (object) => void;
 };
 
 // 0 points → white, 1000 points → black
@@ -41,12 +49,9 @@ export class BlockScout {
         zoomControl: false,
     }).setView(SAN_FRANCISCO, 15);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    tileLayer: Record<string, any> | undefined = undefined;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tileLayer: TileLayer | undefined = undefined;
     playerMarker: PlayerMarker | undefined = undefined;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    renderedGoals: Map<string, Record<string, any>> = new Map();
+    renderedGoals: Map<string, GoalLabel> = new Map();
     fogRectangles: Map<string, Record<string, object>> = new Map();
     exploredRectangles: Map<string, Record<string, object>> = new Map();
     locationKnown: boolean = false;
