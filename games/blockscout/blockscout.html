@@ -298,6 +298,23 @@
                 border-radius: 6px;
                 font: 14px sans-serif;
                 white-space: nowrap;
+                cursor: pointer;
+            }
+            #location-instructions {
+                display: none;
+                position: fixed;
+                top: 108px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+                background: white;
+                color: #333;
+                padding: 8px 14px;
+                border-radius: 6px;
+                font: 13px sans-serif;
+                max-width: 300px;
+                text-align: center;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
             }
         </style>
     </head>
@@ -337,6 +354,7 @@
         </div>
         <div id="score">Score: 0</div>
         <div id="location-warning">Your GPS location is unknown</div>
+        <div id="location-instructions"></div>
         <button id="help-btn">?</button>
         <div id="help-modal">
             <div id="help-modal-box">

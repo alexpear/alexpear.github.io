@@ -52,6 +52,9 @@ export class BlockScout {
     scoreEl: HTMLElement = document.getElementById('score');
     locationWarningEl: HTMLElement =
         document.getElementById('location-warning');
+    locationInstructionsEl: HTMLElement = document.getElementById(
+        'location-instructions',
+    );
 
     // Dict storing Dates in string format.
     coords2dates: Record<string, string> = {};
@@ -143,6 +146,10 @@ export class BlockScout {
 
         this.setupRecoveryUI();
 
+        this.locationWarningEl.addEventListener('click', () =>
+            this.onLocationWarningClick(),
+        );
+
         // void means we are treating this async func as a void by ignoring the Promise it returns.
         void this.maybeRecoverFromUrl();
 
@@ -150,6 +157,7 @@ export class BlockScout {
     }
 
     updateAfterPan(): void {
+        if (!this.locationKnown) return; // TODO no, we still want to call some of the visual update logic even if ! locationKnown.
         this.updateAfterGPS(this.lastSeenLat, this.lastSeenLong);
     }
 
@@ -157,6 +165,7 @@ export class BlockScout {
     // Perhaps moveend should trigger a wrapper of updateAfterGPS(), using cached coords.
     updateAfterGPS(latitude: number, longitude: number): void {
         this.locationWarningEl.style.display = 'none';
+        this.locationInstructionsEl.style.display = 'none';
         // Bug LATER - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing. Seen again 2026 mar 26 (even after waiting 5 for autoupdate).
         if (this.playerMarker) {
             this.playerMarker.setLatLng([latitude, longitude]);
@@ -232,6 +241,45 @@ export class BlockScout {
     gpsError(err: GeolocationPositionError): void {
         console.error('Geolocation error:', err.message);
         this.locationWarningEl.style.display = 'block';
+    }
+
+    onLocationWarningClick(): void {
+        navigator.geolocation.getCurrentPosition(
+            (pos) =>
+                this.updateAfterGPS(pos.coords.latitude, pos.coords.longitude),
+            (err) => {
+                this.gpsError(err);
+                if (err.code === err.PERMISSION_DENIED) {
+                    this.locationInstructionsEl.textContent =
+                        this.deniedInstructions();
+                    this.locationInstructionsEl.style.display = 'block';
+                }
+            },
+            { enableHighAccuracy: true },
+        );
+    }
+
+    private deniedInstructions(): string {
+        const ua = navigator.userAgent;
+        const isIOS = /iPhone|iPad|iPod/.test(ua);
+        const isSafari =
+            ua.includes('Safari') &&
+            !ua.includes('Chrome') &&
+            !ua.includes('Firefox');
+        const isFirefox = ua.includes('Firefox');
+
+        if (isIOS) {
+            return 'Go to Settings → Privacy & Security → Location Services → Safari → Allow While Using';
+        }
+        if (isSafari) {
+            return 'Safari menu → Settings for This Website → Location → Allow.';
+        }
+        if (isFirefox) {
+            return "Tap the icon left of 'alexpear.github.io' → Permissions → Location → Blocked → Allowed. Then refresh the page";
+        }
+
+        // Chrome, Brave, Edge, Opera, and other Chromium browsers all use the same UI.
+        return "Tap the icon left of 'alexpear.github.io' → Permissions → Location → Allowed, then reload.";
     }
 
     // LATER params might be neater as just coordKey: string
