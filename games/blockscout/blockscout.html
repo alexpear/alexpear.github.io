@@ -285,6 +285,20 @@
             #confirm-recover-no {
                 background: black;
             }
+            #location-warning {
+                display: block;
+                position: fixed;
+                top: 72px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+                background: purple;
+                color: white;
+                padding: 4px 12px;
+                border-radius: 6px;
+                font: 14px sans-serif;
+                white-space: nowrap;
+            }
         </style>
     </head>
     <body>
@@ -322,6 +336,7 @@
             </div>
         </div>
         <div id="score">Score: 0</div>
+        <div id="location-warning">Your GPS location is unknown</div>
         <button id="help-btn">?</button>
         <div id="help-modal">
             <div id="help-modal-box">

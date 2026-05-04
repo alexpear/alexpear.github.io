@@ -50,6 +50,8 @@ export class BlockScout {
 
     playerScore: number = 0;
     scoreEl: HTMLElement = document.getElementById('score');
+    locationWarningEl: HTMLElement =
+        document.getElementById('location-warning');
 
     // Dict storing Dates in string format.
     coords2dates: Record<string, string> = {};
@@ -154,6 +156,7 @@ export class BlockScout {
     // bug 2026 march 18. Sometimes player dot does not react to recent real-life movement until you refresh the page. Goal labels and score display don't update either. Unclear whether visit() was called invisibly. Refreshing fixes everything.
     // Perhaps moveend should trigger a wrapper of updateAfterGPS(), using cached coords.
     updateAfterGPS(latitude: number, longitude: number): void {
+        this.locationWarningEl.style.display = 'none';
         // Bug LATER - refresh then wait for first GPS decection. It will center correctly but the playerMarker circle will be missing. Seen again 2026 mar 26 (even after waiting 5 for autoupdate).
         if (this.playerMarker) {
             this.playerMarker.setLatLng([latitude, longitude]);
@@ -228,6 +231,7 @@ export class BlockScout {
 
     gpsError(err: GeolocationPositionError): void {
         console.error('Geolocation error:', err.message);
+        this.locationWarningEl.style.display = 'block';
     }
 
     // LATER params might be neater as just coordKey: string

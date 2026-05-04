@@ -74,6 +74,7 @@ function makeGame(): BlockScout {
 function makeMockEl(): object {
     return {
         textContent: '',
+        style: { display: '' },
         addEventListener: jest.fn(),
         classList: { add: jest.fn(), remove: jest.fn() },
     };
