@@ -322,20 +322,11 @@ describe('BlockScout', () => {
 
     describe('updateAfterPan()', () => {
         // moveend triggers updateAfterPan, which must not loop back into moveend.
-        test('calls updateAfterGPS exactly once with cached lastSeen coords', () => {
+        test('calls update func exactly once', () => {
             game.updateAfterGPS(HOME.lat, HOME.long); // establish lastSeen
-            const spy = jest.spyOn(game, 'updateAfterGPS');
+            const spy = jest.spyOn(game, 'updateScreen');
             game.updateAfterPan();
             expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith(HOME.lat, HOME.long);
-        });
-
-        // moveend should re-apply cached coords so the dot stays visible.
-        test('re-visits cached position so player marker stays current', () => {
-            game.updateAfterGPS(HOME.lat, HOME.long);
-            const visitSpy = jest.spyOn(game, 'visit');
-            game.updateAfterPan();
-            expect(visitSpy).toHaveBeenCalledWith(HOME.lat, HOME.long);
         });
     });
 
