@@ -193,15 +193,23 @@ export class BlockScout {
             }).addTo(this.map);
         }
 
+        // We will care about these values during this func, but we need to update the member props before map.setView(), because it triggers a moveend event which calls updateAfterPan() which references them.
+        const recentLat = this.lastSeenLat;
+        const recentLong = this.lastSeenLong;
+        const recentTime = this.lastSeenTime;
+        this.lastSeenLat = latitude;
+        this.lastSeenLong = longitude;
+        this.lastSeenTime = new Date();
+
         if (!this.locationKnown) {
             this.locationKnown = true;
             this.map.setView([latitude, longitude], 16);
         } else {
             // Infer a line of recent travel
             // If the last checkin was too long ago, no credit is inferred.
-            const sinceLastSeen = Date.now() - this.lastSeenTime.getTime();
-            const latDelta = Math.abs(this.lastSeenLat - latitude);
-            const longDelta = Math.abs(this.lastSeenLong - longitude);
+            const sinceLastSeen = Date.now() - recentTime.getTime();
+            const latDelta = Math.abs(recentLat - latitude);
+            const longDelta = Math.abs(recentLong - longitude);
             const dist = Math.sqrt(latDelta ** 2 + longDelta ** 2);
 
             // Waiting then driving can be misread as biking. We want to be lenient with distracted hikers but strict with bikers who can more easily check in often.
@@ -240,10 +248,6 @@ export class BlockScout {
         }
 
         this.visit(latitude, longitude);
-
-        this.lastSeenTime = new Date();
-        this.lastSeenLat = latitude;
-        this.lastSeenLong = longitude;
 
         if (TEST_MODE === 'font') {
             this._mockWideFont(latitude, longitude);
