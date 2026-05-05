@@ -33,10 +33,14 @@ export class Group {
     }
 
     prettyString(): string {
+        const chassisQuantity = `${this.kind.prettyString()} x${this.quantity}`;
+
+        if (this.items.length === 0) return chassisQuantity;
+
         const itemsString = this.items
             .map((item) => item.prettyString())
             .join(', ');
 
-        return `${this.kind.prettyString()} x${this.quantity} w/ ${itemsString}`;
+        return `${chassisQuantity} w/ ${itemsString}`;
     }
 }
