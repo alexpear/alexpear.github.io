@@ -861,13 +861,15 @@ export class BlockScout {
 
     // If the page hasn't been refreshed in over a week, reload to pick up any new code.
     static maybeRefresh(): void {
-        const match = document.cookie.match(/(?:^|;\s*)lastCodeRefresh=(\d+)/);
-        const lastRefresh = match ? parseInt(match[1]) : 0;
-
         const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+        const LAST_CHECK_KEY = 'lastRefreshedSource';
+
+        const lastRefresh = parseInt(
+            localStorage.getItem(LAST_CHECK_KEY) ?? '0',
+        );
+
         if (Date.now() - lastRefresh > WEEK_MS) {
-            // Write the updated timestamp before reloading to prevent an infinite loop.
-            document.cookie = `lastCodeRefresh=${Date.now()}; max-age=${365 * 24 * 3600}; SameSite=Lax; Secure`;
+            localStorage.setItem(LAST_CHECK_KEY, String(Date.now()));
             location.reload();
         }
     }
