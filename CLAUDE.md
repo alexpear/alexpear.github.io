@@ -30,6 +30,8 @@ npm run buildVillainverse
 npm run buildblockscout   # TypeScript compile
 ```
 
+See package.json for the most current list.
+
 ## Architecture
 
 This is a multi-project monorepo centered on **procedural generation** and **interactive browser simulations**.
@@ -91,3 +93,7 @@ A digital implementation of the A War of Whispers board game retheme. Open `game
 - ESLint configured for TypeScript (`**/*.ts`)
 - Never use null when you could use undefined
 - Avoid using 'any' because it turns off typechecking
+
+### General Guidance
+
+- When asked to plan a new project, it's generally best to look up documentation and context online.
