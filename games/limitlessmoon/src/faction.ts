@@ -25,6 +25,7 @@ export class Faction {
 
         faction.cities.push(new Kind(Idea.randomCreature()));
         for (let i = 1; i < Faction.MAX_CITIES; i++) {
+            // TODO cities with mutli-idea kinds
             faction.cities.push(new Kind(Idea.random()));
         }
 
@@ -46,6 +47,9 @@ export class Faction {
                     kind,
                     Util.randomIntBetween(1, maxQuantity),
                 );
+
+                // TODO add randomItem() sometimes
+
                 faction.groups.push(group);
                 budgetLeft -= group.cost();
                 break;

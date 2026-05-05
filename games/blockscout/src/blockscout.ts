@@ -151,7 +151,7 @@ export class BlockScout {
             if (!document.hidden) this.refreshNumbers();
         });
 
-        // LATER brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends.
+        // LATER brag screen for sharing with friends. Points earned in the last 7 days (including today). Performance relative to personal trends. Doesn't include where you live.
         // LATER Points/day metric displayed somewhere, eg brag screen.
 
         this.setupRecoveryUI();
