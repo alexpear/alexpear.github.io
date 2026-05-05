@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Manifold Timing Calculator</title>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                font: 16px/1.5 sans-serif;
+                background: #f5f5f5;
+                color: #222;
+                padding: 32px 16px;
+            }
+            h1 {
+                font-size: 22px;
+                margin-bottom: 24px;
+            }
+            .input-row {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 24px;
+                max-width: 720px;
+            }
+            #url-input {
+                flex: 1;
+                padding: 8px 12px;
+                font: 15px sans-serif;
+                border: 1px solid #bbb;
+                border-radius: 6px;
+            }
+            #fetch-btn {
+                padding: 8px 18px;
+                font: bold 15px sans-serif;
+                background: #6c3fa3;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                white-space: nowrap;
+            }
+            #fetch-btn:hover {
+                background: #5a2e8a;
+            }
+            #error {
+                display: none;
+                color: #c00;
+                margin-bottom: 16px;
+            }
+            #results {
+                display: none;
+                max-width: 720px;
+            }
+            #market-title {
+                font-size: 19px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            .summary-card {
+                background: white;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 24px;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            }
+            .summary-card h2 {
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #888;
+                margin-bottom: 6px;
+            }
+            .summary-card .value {
+                font-size: 26px;
+                font-weight: bold;
+                color: #6c3fa3;
+            }
+            .summary-card .sub {
+                font-size: 14px;
+                color: #666;
+                margin-top: 2px;
+            }
+            .cards-row {
+                display: flex;
+                gap: 16px;
+                margin-bottom: 24px;
+                flex-wrap: wrap;
+            }
+            .cards-row .summary-card {
+                flex: 1;
+                min-width: 200px;
+                margin-bottom: 0;
+            }
+            #warning {
+                display: none;
+                font-size: 13px;
+                color: #996600;
+                background: #fffbe6;
+                border: 1px solid #f0d060;
+                border-radius: 6px;
+                padding: 8px 12px;
+                margin-bottom: 16px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            }
+            th {
+                text-align: left;
+                padding: 10px 14px;
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #888;
+                border-bottom: 1px solid #eee;
+            }
+            td {
+                padding: 10px 14px;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 15px;
+            }
+            tr:last-child td {
+                border-bottom: none;
+            }
+            tr.modal-row td {
+                background: #f8f3ff;
+                font-weight: bold;
+            }
+            .bar-cell {
+                width: 160px;
+            }
+            .bar-bg {
+                background: #eee;
+                border-radius: 4px;
+                height: 10px;
+                overflow: hidden;
+            }
+            .bar-fill {
+                background: #6c3fa3;
+                height: 100%;
+                border-radius: 4px;
+            }
+            .prob-cell {
+                width: 60px;
+                text-align: right;
+                color: #444;
+            }
+            .date-cell {
+                color: #666;
+                font-size: 14px;
+            }
+            .unparsed {
+                color: #aaa;
+                font-style: italic;
+                font-size: 13px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Manifold Timing Calculator</h1>
+        <div class="input-row">
+            <input
+                id="url-input"
+                type="text"
+                placeholder="https://manifold.markets/user/market-slug"
+            />
+            <button id="fetch-btn">Calculate</button>
+        </div>
+        <div id="error"></div>
+        <div id="results">
+            <div id="market-title"></div>
+            <div class="cards-row">
+                <div class="summary-card">
+                    <h2>Most likely answer</h2>
+                    <div class="value" id="modal-answer"></div>
+                    <div class="sub" id="modal-prob"></div>
+                </div>
+                <div class="summary-card" id="expected-card">
+                    <h2>Expected date</h2>
+                    <div class="value" id="expected-date"></div>
+                    <div class="sub" id="expected-days"></div>
+                </div>
+            </div>
+            <div id="warning"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Answer</th>
+                        <th class="bar-cell"></th>
+                        <th class="prob-cell">%</th>
+                        <th class="date-cell">Parsed date</th>
+                    </tr>
+                </thead>
+                <tbody id="answer-tbody"></tbody>
+            </table>
+        </div>
+
+        <script>
+            const MONTHS = {
+                january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+                july: 6, august: 7, september: 8, october: 9, november: 10, december: 11,
+                jan: 0, feb: 1, mar: 2, apr: 3, jun: 5, jul: 6, aug: 7,
+                sep: 8, oct: 9, nov: 10, dec: 11,
+            };
+
+            function monthNum(name) {
+                return MONTHS[name.toLowerCase()];
+            }
+
+            // Infer year: use current year, bump to next if month+day is >2 months in the past.
+            function inferYear(month, day) {
+                const now = new Date();
+                const candidate = new Date(now.getFullYear(), month, day ?? 15);
+                const TWO_MONTHS = 60 * 24 * 60 * 60 * 1000;
+                if (now - candidate > TWO_MONTHS) return now.getFullYear() + 1;
+                return now.getFullYear();
+            }
+
+            function parseDate(text) {
+                const t = text.trim();
+
+                if (/never|not in|none|no \w+ in/i.test(t)) return null;
+
+                let m;
+
+                // Q1-Q4 YYYY
+                m = t.match(/Q([1-4])\s*(\d{4})/i);
+                if (m) {
+                    const midMonth = (parseInt(m[1]) - 1) * 3 + 1;
+                    return new Date(parseInt(m[2]), midMonth, 15);
+                }
+
+                // "Before Month D, YYYY" or "Before Month D YYYY"
+                m = t.match(/before\s+(\w+)\s+(\d{1,2}),?\s*(\d{4})?/i);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) {
+                        const day = parseInt(m[2]);
+                        const year = m[3] ? parseInt(m[3]) : inferYear(mo, day);
+                        const d = new Date(year, mo, day);
+                        d.setDate(d.getDate() - 7);
+                        return d;
+                    }
+                }
+
+                // "Before Month YYYY" or "Before Month"
+                m = t.match(/before\s+(\w+)(?:\s+(\d{4}))?/i);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) {
+                        const year = m[2] ? parseInt(m[2]) : inferYear(mo, 1);
+                        const prevMo = mo === 0 ? 11 : mo - 1;
+                        const prevYear = mo === 0 ? year - 1 : year;
+                        return new Date(prevYear, prevMo, 15);
+                    }
+                }
+
+                // "After Month YYYY" or "After Month"
+                m = t.match(/after\s+(\w+)(?:\s+(\d{4}))?/i);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) {
+                        const year = m[2] ? parseInt(m[2]) : inferYear(mo, 1);
+                        const nextMo = mo === 11 ? 0 : mo + 1;
+                        const nextYear = mo === 11 ? year + 1 : year;
+                        return new Date(nextYear, nextMo, 15);
+                    }
+                }
+
+                // "Month D-D, YYYY" or "Month D-D YYYY" or "Month D-D" (range, take midpoint)
+                m = t.match(/(\w+)\s+(\d{1,2})\s*[-–]\s*(\d{1,2}),?\s*(\d{4})?/);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) {
+                        const mid = Math.round((parseInt(m[2]) + parseInt(m[3])) / 2);
+                        const year = m[4] ? parseInt(m[4]) : inferYear(mo, mid);
+                        return new Date(year, mo, mid);
+                    }
+                }
+
+                // "Month D - Month D, YYYY" cross-month range
+                m = t.match(/(\w+)\s+(\d{1,2})\s*[-–]\s*(\w+)\s+(\d{1,2}),?\s*(\d{4})?/);
+                if (m) {
+                    const mo1 = monthNum(m[1]);
+                    const mo2 = monthNum(m[3]);
+                    if (mo1 !== undefined && mo2 !== undefined) {
+                        const year = m[5] ? parseInt(m[5]) : inferYear(mo1, parseInt(m[2]));
+                        const d1 = new Date(year, mo1, parseInt(m[2]));
+                        const d2 = new Date(year, mo2, parseInt(m[4]));
+                        return new Date((d1.getTime() + d2.getTime()) / 2);
+                    }
+                }
+
+                // "Month D, YYYY" or "Month D YYYY"
+                m = t.match(/(\w+)\s+(\d{1,2}),\s*(\d{4})/);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) return new Date(parseInt(m[3]), mo, parseInt(m[2]));
+                }
+
+                // "Month YYYY"
+                m = t.match(/(\w+)\s+(\d{4})/);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) return new Date(parseInt(m[2]), mo, 15);
+                }
+
+                // "YYYY" alone
+                m = t.match(/^(\d{4})$/);
+                if (m) return new Date(parseInt(m[1]), 6, 1);
+
+                return null;
+            }
+
+            function formatDate(d) {
+                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            }
+
+            function daysFromNow(d) {
+                const diff = Math.round((d - Date.now()) / (1000 * 60 * 60 * 24));
+                if (diff === 0) return 'today';
+                if (diff > 0) return `in ${diff} day${diff === 1 ? '' : 's'}`;
+                return `${-diff} day${-diff === 1 ? '' : 's'} ago`;
+            }
+
+            function slugFromUrl(url) {
+                // https://manifold.markets/User/some-slug-here
+                const m = url.match(/manifold\.markets\/[^/]+\/([^/?#]+)/);
+                return m ? m[1] : null;
+            }
+
+            function showError(msg) {
+                const el = document.getElementById('error');
+                el.textContent = msg;
+                el.style.display = 'block';
+                document.getElementById('results').style.display = 'none';
+            }
+
+            function clearError() {
+                document.getElementById('error').style.display = 'none';
+            }
+
+            async function calculate() {
+                clearError();
+                const url = document.getElementById('url-input').value.trim();
+                const slug = slugFromUrl(url);
+                if (!slug) {
+                    showError('Please paste a valid Manifold market URL.');
+                    return;
+                }
+
+                document.getElementById('fetch-btn').textContent = 'Loading…';
+                document.getElementById('fetch-btn').disabled = true;
+
+                let market;
+                try {
+                    const res = await fetch(`https://api.manifold.markets/v0/slug/${slug}`);
+                    if (!res.ok) throw new Error(`API error ${res.status}`);
+                    market = await res.json();
+                } catch (e) {
+                    showError(`Failed to fetch market: ${e.message}`);
+                    document.getElementById('fetch-btn').textContent = 'Calculate';
+                    document.getElementById('fetch-btn').disabled = false;
+                    return;
+                }
+
+                document.getElementById('fetch-btn').textContent = 'Calculate';
+                document.getElementById('fetch-btn').disabled = false;
+
+                if (market.outcomeType !== 'MULTIPLE_CHOICE') {
+                    showError(`This tool only supports multiple-choice markets (got "${market.outcomeType}").`);
+                    return;
+                }
+
+                const answers = (market.answers ?? []).map(a => ({
+                    text: a.text,
+                    prob: a.probability ?? 0,
+                    date: parseDate(a.text),
+                }));
+
+                answers.sort((a, b) => b.prob - a.prob);
+
+                const modal = answers[0];
+
+                // Expected date: weighted average over parseable answers
+                const parseable = answers.filter(a => a.date !== null);
+                const unparsedCount = answers.length - parseable.length;
+
+                let expectedDate = null;
+                if (parseable.length > 0) {
+                    const totalProb = parseable.reduce((s, a) => s + a.prob, 0);
+                    const weightedMs = parseable.reduce((s, a) => s + a.date.getTime() * a.prob, 0);
+                    expectedDate = new Date(weightedMs / totalProb);
+                }
+
+                // Render
+                document.getElementById('results').style.display = 'block';
+                document.getElementById('market-title').textContent = market.question;
+
+                document.getElementById('modal-answer').textContent = modal.text;
+                document.getElementById('modal-prob').textContent =
+                    `${Math.round(modal.prob * 100)}% probability` +
+                    (modal.date ? ` · ${daysFromNow(modal.date)}` : '');
+
+                const expectedCard = document.getElementById('expected-card');
+                if (expectedDate) {
+                    expectedCard.style.display = '';
+                    document.getElementById('expected-date').textContent = formatDate(expectedDate);
+                    document.getElementById('expected-days').textContent = daysFromNow(expectedDate);
+                } else {
+                    expectedCard.style.display = 'none';
+                }
+
+                const warning = document.getElementById('warning');
+                if (unparsedCount > 0) {
+                    const noun = unparsedCount === 1 ? 'answer' : 'answers';
+                    warning.textContent =
+                        `⚠ ${unparsedCount} ${noun} couldn't be parsed as a date and were excluded from the expected-date calculation.`;
+                    warning.style.display = 'block';
+                } else {
+                    warning.style.display = 'none';
+                }
+
+                const tbody = document.getElementById('answer-tbody');
+                tbody.innerHTML = '';
+                const maxProb = answers[0].prob;
+                for (const a of answers) {
+                    const tr = document.createElement('tr');
+                    if (a === modal) tr.classList.add('modal-row');
+
+                    const pct = Math.round(a.prob * 100);
+                    const barWidth = maxProb > 0 ? Math.round((a.prob / maxProb) * 100) : 0;
+
+                    tr.innerHTML = `
+                        <td>${escHtml(a.text)}</td>
+                        <td class="bar-cell">
+                            <div class="bar-bg"><div class="bar-fill" style="width:${barWidth}%"></div></div>
+                        </td>
+                        <td class="prob-cell">${pct}%</td>
+                        <td class="date-cell">${a.date ? formatDate(a.date) : '<span class="unparsed">—</span>'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            }
+
+            function escHtml(s) {
+                return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+
+            document.getElementById('fetch-btn').addEventListener('click', calculate);
+            document.getElementById('url-input').addEventListener('keydown', e => {
+                if (e.key === 'Enter') calculate();
+            });
+        </script>
+    </body>
+</html>
