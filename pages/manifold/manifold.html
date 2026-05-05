@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Manifold Timing Calculator</title>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                font: 16px/1.5 sans-serif;
+                background: #f5f5f5;
+                color: #222;
+                padding: 32px 16px;
+            }
+            h1 {
+                font-size: 22px;
+                margin-bottom: 24px;
+            }
+            .input-row {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 24px;
+                max-width: 720px;
+            }
+            #url-input {
+                flex: 1;
+                padding: 8px 12px;
+                font: 15px sans-serif;
+                border: 1px solid #bbb;
+                border-radius: 6px;
+            }
+            #fetch-btn {
+                padding: 8px 18px;
+                font: bold 15px sans-serif;
+                background: #6c3fa3;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                white-space: nowrap;
+            }
+            #fetch-btn:hover { background: #5a2e8a; }
+            #error {
+                display: none;
+                color: #c00;
+                margin-bottom: 16px;
+            }
+            #results {
+                display: none;
+                max-width: 720px;
+            }
+            #market-title {
+                font-size: 19px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            .summary-card {
+                background: white;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 24px;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            }
+            .summary-card h2 {
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #888;
+                margin-bottom: 6px;
+            }
+            .summary-card .value {
+                font-size: 26px;
+                font-weight: bold;
+                color: #6c3fa3;
+            }
+            .summary-card .sub {
+                font-size: 14px;
+                color: #666;
+                margin-top: 2px;
+            }
+            .cards-row {
+                display: flex;
+                gap: 16px;
+                margin-bottom: 24px;
+                flex-wrap: wrap;
+            }
+            .cards-row .summary-card {
+                flex: 1;
+                min-width: 200px;
+                margin-bottom: 0;
+            }
+            #warning {
+                display: none;
+                font-size: 13px;
+                color: #996600;
+                background: #fffbe6;
+                border: 1px solid #f0d060;
+                border-radius: 6px;
+                padding: 8px 12px;
+                margin-bottom: 16px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            }
+            th {
+                text-align: left;
+                padding: 10px 14px;
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #888;
+                border-bottom: 1px solid #eee;
+            }
+            td {
+                padding: 10px 14px;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 15px;
+                vertical-align: middle;
+            }
+            tr:last-child td { border-bottom: none; }
+            tr.modal-row td {
+                background: #f8f3ff;
+                font-weight: bold;
+            }
+            .bar-cell { width: 140px; }
+            .bar-bg {
+                background: #eee;
+                border-radius: 4px;
+                height: 10px;
+                overflow: hidden;
+            }
+            .bar-fill {
+                background: #6c3fa3;
+                height: 100%;
+                border-radius: 4px;
+            }
+            .num-cell {
+                width: 58px;
+                text-align: right;
+                color: #444;
+            }
+            .cumul-cell {
+                width: 68px;
+                text-align: right;
+                color: #aaa;
+                font-size: 13px;
+            }
+            .unparsed {
+                color: #aaa;
+                font-style: italic;
+                font-size: 13px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Manifold Timing Calculator</h1>
+        <div class="input-row">
+            <input
+                id="url-input"
+                type="text"
+                placeholder="https://manifold.markets/user/market-slug"
+            />
+            <button id="fetch-btn">Calculate</button>
+        </div>
+        <div id="error"></div>
+        <div id="results">
+            <div id="market-title"></div>
+            <div class="cards-row">
+                <div class="summary-card" id="expected-card">
+                    <h2 id="expected-label">Expected date</h2>
+                    <div class="value" id="expected-date"></div>
+                    <div class="sub" id="expected-days"></div>
+                </div>
+                <div class="summary-card">
+                    <h2 id="modal-label">Most likely answer</h2>
+                    <div class="value" id="modal-answer"></div>
+                    <div class="sub" id="modal-prob"></div>
+                </div>
+            </div>
+            <div id="warning"></div>
+            <table>
+                <thead id="table-head"></thead>
+                <tbody id="answer-tbody"></tbody>
+            </table>
+        </div>
+
+        <script>
+            // --- Date utilities ---
+
+            const MONTHS = {
+                january:0, february:1, march:2, april:3, may:4, june:5,
+                july:6, august:7, september:8, october:9, november:10, december:11,
+                jan:0, feb:1, mar:2, apr:3, jun:5, jul:6, aug:7,
+                sep:8, oct:9, nov:10, dec:11,
+            };
+
+            function monthNum(name) { return MONTHS[name.toLowerCase()]; }
+
+            function inferYear(month, day) {
+                const now = new Date();
+                const candidate = new Date(now.getFullYear(), month, day ?? 15);
+                if (now - candidate > 60 * 24 * 60 * 60 * 1000) return now.getFullYear() + 1;
+                return now.getFullYear();
+            }
+
+            // Parse "YYYY-MM-DD" exactly.
+            function parseIsoDate(text) {
+                const m = text.match(/(\d{4})-(\d{2})-(\d{2})/);
+                if (!m) return null;
+                return new Date(parseInt(m[1]), parseInt(m[2]) - 1, parseInt(m[3]));
+            }
+
+            // Heuristic parser for freeform date text used in independent markets.
+            function parseDate(text) {
+                const t = text.trim();
+                if (/never|not in|none|no \w+ in/i.test(t)) return null;
+                let m;
+
+                m = t.match(/Q([1-4])\s*(\d{4})/i);
+                if (m) return new Date(parseInt(m[2]), (parseInt(m[1]) - 1) * 3 + 1, 15);
+
+                m = t.match(/before\s+(\w+)\s+(\d{1,2}),?\s*(\d{4})?/i);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) {
+                        const day = parseInt(m[2]);
+                        const d = new Date(m[3] ? parseInt(m[3]) : inferYear(mo, day), mo, day);
+                        d.setDate(d.getDate() - 7);
+                        return d;
+                    }
+                }
+
+                m = t.match(/before\s+(\w+)(?:\s+(\d{4}))?/i);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) {
+                        const year = m[2] ? parseInt(m[2]) : inferYear(mo, 1);
+                        return new Date(mo === 0 ? year - 1 : year, mo === 0 ? 11 : mo - 1, 15);
+                    }
+                }
+
+                m = t.match(/after\s+(\w+)(?:\s+(\d{4}))?/i);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) {
+                        const year = m[2] ? parseInt(m[2]) : inferYear(mo, 1);
+                        return new Date(mo === 11 ? year + 1 : year, mo === 11 ? 0 : mo + 1, 15);
+                    }
+                }
+
+                m = t.match(/(\w+)\s+(\d{1,2})\s*[-–]\s*(\w+)\s+(\d{1,2}),?\s*(\d{4})?/);
+                if (m) {
+                    const mo1 = monthNum(m[1]), mo2 = monthNum(m[3]);
+                    if (mo1 !== undefined && mo2 !== undefined) {
+                        const year = m[5] ? parseInt(m[5]) : inferYear(mo1, parseInt(m[2]));
+                        const d1 = new Date(year, mo1, parseInt(m[2]));
+                        const d2 = new Date(year, mo2, parseInt(m[4]));
+                        return new Date((d1.getTime() + d2.getTime()) / 2);
+                    }
+                }
+
+                m = t.match(/(\w+)\s+(\d{1,2})\s*[-–]\s*(\d{1,2}),?\s*(\d{4})?/);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) {
+                        const mid = Math.round((parseInt(m[2]) + parseInt(m[3])) / 2);
+                        return new Date(m[4] ? parseInt(m[4]) : inferYear(mo, mid), mo, mid);
+                    }
+                }
+
+                m = t.match(/(\w+)\s+(\d{1,2}),\s*(\d{4})/);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) return new Date(parseInt(m[3]), mo, parseInt(m[2]));
+                }
+
+                m = t.match(/(\w+)\s+(\d{4})/);
+                if (m) {
+                    const mo = monthNum(m[1]);
+                    if (mo !== undefined) return new Date(parseInt(m[2]), mo, 15);
+                }
+
+                m = t.match(/^(\d{4})$/);
+                if (m) return new Date(parseInt(m[1]), 6, 1);
+
+                return null;
+            }
+
+            function formatDate(d) {
+                return d.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+            }
+
+            function formatDateShort(d) {
+                return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+            }
+
+            function daysFromNow(d) {
+                const diff = Math.round((d - Date.now()) / 86400000);
+                if (diff === 0) return 'today';
+                if (diff > 0) return `in ${diff} day${diff === 1 ? '' : 's'}`;
+                return `${-diff} day${-diff === 1 ? '' : 's'} ago`;
+            }
+
+            function pct(p) { return Math.round(p * 100) + '%'; }
+            function escHtml(s) {
+                return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            }
+
+            // --- CDF market detection and processing ---
+
+            function isCdfMarket(rawAnswers) {
+                const cdfCount = rawAnswers.filter(
+                    a => /^Before \d{4}-\d{2}-\d{2}$/i.test(a.text.trim())
+                ).length;
+                return cdfCount > rawAnswers.length * 0.5;
+            }
+
+            function processCdf(rawAnswers) {
+                // Sort entries by date ascending, ignore any that don't parse.
+                const entries = rawAnswers
+                    .map(a => ({ text: a.text, cumulativeProb: a.prob, date: parseIsoDate(a.text) }))
+                    .filter(e => e.date !== null)
+                    .sort((a, b) => a.date - b.date);
+
+                if (entries.length === 0) return null;
+
+                // Build intervals: each interval spans [prevDate, thisDate).
+                // intervalProb is the probability mass for that window.
+                let prevProb = 0;
+                let prevDate = null;
+                const intervals = [];
+
+                for (const e of entries) {
+                    intervals.push({
+                        text: e.text,
+                        date: e.date,
+                        prevDate,
+                        cumulativeProb: e.cumulativeProb,
+                        intervalProb: Math.max(0, e.cumulativeProb - prevProb),
+                    });
+                    prevProb = e.cumulativeProb;
+                    prevDate = e.date;
+                }
+
+                const residualProb = Math.max(0, 1 - entries[entries.length - 1].cumulativeProb);
+
+                // Modal = interval with highest probability mass.
+                const modalInterval = intervals.reduce((best, iv) =>
+                    iv.intervalProb > best.intervalProb ? iv : best);
+
+                // Median = 50th percentile via linear interpolation between CDF points.
+                // We treat each "Before DATE" as the CDF value at that date.
+                // The CDF starts at 0 before the first date.
+                let medianDate = null;
+                let prevCumul = 0;
+                let prevDateForInterp = null;
+
+                for (const iv of intervals) {
+                    if (prevCumul < 0.5 && iv.cumulativeProb >= 0.5) {
+                        const span = iv.cumulativeProb - prevCumul;
+                        const fraction = span > 0 ? (0.5 - prevCumul) / span : 0;
+                        if (prevDateForInterp !== null) {
+                            const ms = prevDateForInterp.getTime()
+                                + fraction * (iv.date.getTime() - prevDateForInterp.getTime());
+                            medianDate = new Date(ms);
+                        } else {
+                            // 50% falls before the first listed date — use it as a lower bound.
+                            medianDate = iv.date;
+                        }
+                        break;
+                    }
+                    prevCumul = iv.cumulativeProb;
+                    prevDateForInterp = iv.date;
+                }
+                // If medianDate is still null, 50% is in the residual (after last date) — can't determine.
+
+                return { intervals, residualProb, medianDate, modalInterval };
+            }
+
+            // --- Independent market processing ---
+
+            function processIndependent(rawAnswers) {
+                const answers = rawAnswers.map(a => ({
+                    text: a.text,
+                    prob: a.prob,
+                    date: parseDate(a.text),
+                })).sort((a, b) => b.prob - a.prob);
+
+                const modal = answers[0];
+                const parseable = answers.filter(a => a.date !== null);
+                const unparsedCount = answers.length - parseable.length;
+
+                let expectedDate = null;
+                if (parseable.length > 0) {
+                    const totalProb = parseable.reduce((s, a) => s + a.prob, 0);
+                    const weightedMs = parseable.reduce((s, a) => s + a.date.getTime() * a.prob, 0);
+                    expectedDate = new Date(weightedMs / totalProb);
+                }
+
+                return { answers, modal, expectedDate, unparsedCount };
+            }
+
+            // --- Rendering ---
+
+            function renderCdf(market, { intervals, residualProb, medianDate, modalInterval }) {
+                document.getElementById('market-title').textContent = market.question;
+
+                document.getElementById('modal-label').textContent = 'Most likely window';
+                const winText = modalInterval.prevDate
+                    ? `${formatDateShort(modalInterval.prevDate)} – ${formatDateShort(modalInterval.date)}`
+                    : `Before ${formatDateShort(modalInterval.date)}`;
+                document.getElementById('modal-answer').textContent = winText;
+                document.getElementById('modal-prob').textContent =
+                    `${pct(modalInterval.intervalProb)} of probability mass`;
+
+                document.getElementById('expected-label').textContent = '50th percentile';
+                const expectedCard = document.getElementById('expected-card');
+                if (medianDate) {
+                    expectedCard.style.display = '';
+                    document.getElementById('expected-date').textContent = formatDate(medianDate);
+                    document.getElementById('expected-days').textContent = daysFromNow(medianDate);
+                } else {
+                    expectedCard.style.display = 'none';
+                }
+
+                const warning = document.getElementById('warning');
+                const warnings = [];
+                if (residualProb > 0.05) {
+                    warnings.push(`${pct(residualProb)} probability falls after the last listed date and is excluded.`);
+                }
+                if (!medianDate) {
+                    warnings.push('The 50th percentile is beyond the last listed date — median cannot be determined.');
+                }
+                if (warnings.length > 0) {
+                    warning.textContent = '⚠ ' + warnings.join(' ');
+                    warning.style.display = 'block';
+                } else {
+                    warning.style.display = 'none';
+                }
+
+                // Table: sorted by date ascending.
+                document.getElementById('table-head').innerHTML = `<tr>
+                    <th>Window</th>
+                    <th class="bar-cell"></th>
+                    <th class="num-cell">Interval</th>
+                    <th class="cumul-cell">Cumul.</th>
+                </tr>`;
+
+                const maxIntervalProb = Math.max(...intervals.map(iv => iv.intervalProb));
+                const tbody = document.getElementById('answer-tbody');
+                tbody.innerHTML = '';
+
+                for (const iv of intervals) {
+                    const tr = document.createElement('tr');
+                    if (iv === modalInterval) tr.classList.add('modal-row');
+
+                    const winLabel = iv.prevDate
+                        ? `${formatDateShort(iv.prevDate)} – ${formatDateShort(iv.date)}, ${iv.date.getFullYear()}`
+                        : `Before ${formatDate(iv.date)}`;
+                    const barWidth = maxIntervalProb > 0
+                        ? Math.round((iv.intervalProb / maxIntervalProb) * 100) : 0;
+
+                    tr.innerHTML = `
+                        <td>${escHtml(winLabel)}</td>
+                        <td class="bar-cell">
+                            <div class="bar-bg"><div class="bar-fill" style="width:${barWidth}%"></div></div>
+                        </td>
+                        <td class="num-cell">${pct(iv.intervalProb)}</td>
+                        <td class="cumul-cell">${pct(iv.cumulativeProb)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+
+                // Residual row
+                if (residualProb > 0.001) {
+                    const tr = document.createElement('tr');
+                    const barWidth = maxIntervalProb > 0
+                        ? Math.round((residualProb / maxIntervalProb) * 100) : 0;
+                    tr.innerHTML = `
+                        <td>After ${formatDateShort(intervals[intervals.length - 1].date)}, ${intervals[intervals.length - 1].date.getFullYear()}</td>
+                        <td class="bar-cell">
+                            <div class="bar-bg"><div class="bar-fill" style="width:${barWidth}%"></div></div>
+                        </td>
+                        <td class="num-cell">${pct(residualProb)}</td>
+                        <td class="cumul-cell">100%</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            }
+
+            function renderIndependent(market, { answers, modal, expectedDate, unparsedCount }) {
+                document.getElementById('market-title').textContent = market.question;
+
+                document.getElementById('modal-label').textContent = 'Most likely answer';
+                document.getElementById('modal-answer').textContent = modal.text;
+                document.getElementById('modal-prob').textContent =
+                    `${pct(modal.prob)} probability` +
+                    (modal.date ? ` · ${daysFromNow(modal.date)}` : '');
+
+                document.getElementById('expected-label').textContent = 'Expected date';
+                const expectedCard = document.getElementById('expected-card');
+                if (expectedDate) {
+                    expectedCard.style.display = '';
+                    document.getElementById('expected-date').textContent = formatDate(expectedDate);
+                    document.getElementById('expected-days').textContent = daysFromNow(expectedDate);
+                } else {
+                    expectedCard.style.display = 'none';
+                }
+
+                const warning = document.getElementById('warning');
+                if (unparsedCount > 0) {
+                    warning.textContent = `⚠ ${unparsedCount} answer${unparsedCount === 1 ? '' : 's'} couldn't be parsed as a date and ${unparsedCount === 1 ? 'was' : 'were'} excluded from the expected-date calculation.`;
+                    warning.style.display = 'block';
+                } else {
+                    warning.style.display = 'none';
+                }
+
+                document.getElementById('table-head').innerHTML = `<tr>
+                    <th>Answer</th>
+                    <th class="bar-cell"></th>
+                    <th class="num-cell">%</th>
+                    <th class="cumul-cell">Parsed date</th>
+                </tr>`;
+
+                const tbody = document.getElementById('answer-tbody');
+                tbody.innerHTML = '';
+                const maxProb = answers[0].prob;
+
+                for (const a of answers) {
+                    const tr = document.createElement('tr');
+                    if (a === modal) tr.classList.add('modal-row');
+                    const barWidth = maxProb > 0 ? Math.round((a.prob / maxProb) * 100) : 0;
+                    tr.innerHTML = `
+                        <td>${escHtml(a.text)}</td>
+                        <td class="bar-cell">
+                            <div class="bar-bg"><div class="bar-fill" style="width:${barWidth}%"></div></div>
+                        </td>
+                        <td class="num-cell">${pct(a.prob)}</td>
+                        <td class="cumul-cell">${a.date ? formatDate(a.date) : '<span class="unparsed">—</span>'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            }
+
+            // --- Main ---
+
+            function slugFromUrl(url) {
+                const m = url.match(/manifold\.markets\/[^/]+\/([^/?#]+)/);
+                return m ? m[1] : null;
+            }
+
+            function showError(msg) {
+                const el = document.getElementById('error');
+                el.textContent = msg;
+                el.style.display = 'block';
+                document.getElementById('results').style.display = 'none';
+            }
+
+            function clearError() { document.getElementById('error').style.display = 'none'; }
+
+            async function calculate() {
+                clearError();
+                const url = document.getElementById('url-input').value.trim();
+                const slug = slugFromUrl(url);
+                if (!slug) { showError('Please paste a valid Manifold market URL.'); return; }
+
+                const btn = document.getElementById('fetch-btn');
+                btn.textContent = 'Loading…';
+                btn.disabled = true;
+
+                let market;
+                try {
+                    const res = await fetch(`https://api.manifold.markets/v0/slug/${slug}`);
+                    if (!res.ok) throw new Error(`API error ${res.status}`);
+                    market = await res.json();
+                } catch (e) {
+                    showError(`Failed to fetch market: ${e.message}`);
+                    btn.textContent = 'Calculate';
+                    btn.disabled = false;
+                    return;
+                }
+
+                btn.textContent = 'Calculate';
+                btn.disabled = false;
+
+                if (market.outcomeType !== 'MULTIPLE_CHOICE') {
+                    showError(`This tool only supports multiple-choice markets (got "${market.outcomeType}").`);
+                    return;
+                }
+
+                const rawAnswers = (market.answers ?? []).map(a => ({
+                    text: a.text,
+                    prob: a.probability ?? 0,
+                }));
+
+                document.getElementById('results').style.display = 'block';
+
+                if (isCdfMarket(rawAnswers)) {
+                    const result = processCdf(rawAnswers);
+                    if (result) {
+                        renderCdf(market, result);
+                    } else {
+                        showError('Could not parse any dates from this market\'s answers.');
+                    }
+                } else {
+                    renderIndependent(market, processIndependent(rawAnswers));
+                }
+            }
+
+            document.getElementById('fetch-btn').addEventListener('click', calculate);
+            document.getElementById('url-input').addEventListener('keydown', e => {
+                if (e.key === 'Enter') calculate();
+            });
+        </script>
+    </body>
+</html>
