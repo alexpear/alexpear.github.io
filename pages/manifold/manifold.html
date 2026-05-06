@@ -179,6 +179,7 @@
                     <h2 id="expected-label">Expected date</h2>
                     <div class="value" id="expected-date"></div>
                     <div class="sub" id="expected-days"></div>
+                    <div class="sub" id="expected-2do"></div>
                 </div>
                 <div class="summary-card">
                     <h2 id="modal-label">Most likely answer</h2>
@@ -304,10 +305,21 @@
             }
 
             function daysFromNow(d) {
-                const diff = Math.round((d - Date.now()) / 86400000);
+                return Math.round((d - Date.now()) / 86400000);
+            }
+
+            function relativeDayString(d) {
+                const diff = daysFromNow(d);
                 if (diff === 0) return 'today';
                 if (diff > 0) return `in ${diff} day${diff === 1 ? '' : 's'}`;
                 return `${-diff} day${-diff === 1 ? '' : 's'} ago`;
+            }
+
+            function doubleDaysOut(d) {
+                const diff = daysFromNow(d);
+                // const cynical = diff * 2 + Date.now();
+                const cynical = new Date(Date.now() + diff * 2 * 86400000);
+                return `2x Days Out: ${formatDate(cynical)}`;
             }
 
             function pct(p) { return Math.round(p * 100) + '%'; }
@@ -427,7 +439,8 @@
                 if (medianDate) {
                     expectedCard.style.display = '';
                     document.getElementById('expected-date').textContent = formatDate(medianDate);
-                    document.getElementById('expected-days').textContent = daysFromNow(medianDate);
+                    document.getElementById('expected-days').textContent = relativeDayString(medianDate);
+                    document.getElementById('expected-2do').textContent = doubleDaysOut(medianDate);
                 } else {
                     expectedCard.style.display = 'none';
                 }
