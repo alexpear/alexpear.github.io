@@ -43,7 +43,9 @@
                 cursor: pointer;
                 white-space: nowrap;
             }
-            #fetch-btn:hover { background: #5a2e8a; }
+            #fetch-btn:hover {
+                background: #5a2e8a;
+            }
             #error {
                 display: none;
                 color: #c00;
@@ -63,7 +65,7 @@
                 border-radius: 10px;
                 padding: 20px 24px;
                 margin-bottom: 24px;
-                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
             }
             .summary-card h2 {
                 font-size: 13px;
@@ -109,7 +111,7 @@
                 background: white;
                 border-radius: 10px;
                 overflow: hidden;
-                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
             }
             th {
                 text-align: left;
@@ -126,12 +128,16 @@
                 font-size: 15px;
                 vertical-align: middle;
             }
-            tr:last-child td { border-bottom: none; }
+            tr:last-child td {
+                border-bottom: none;
+            }
             tr.modal-row td {
                 background: #f8f3ff;
                 font-weight: bold;
             }
-            .bar-cell { width: 140px; }
+            .bar-cell {
+                width: 140px;
+            }
             .bar-bg {
                 background: #eee;
                 border-radius: 4px;
@@ -198,18 +204,40 @@
             // --- Date utilities ---
 
             const MONTHS = {
-                january:0, february:1, march:2, april:3, may:4, june:5,
-                july:6, august:7, september:8, october:9, november:10, december:11,
-                jan:0, feb:1, mar:2, apr:3, jun:5, jul:6, aug:7,
-                sep:8, oct:9, nov:10, dec:11,
+                january: 0,
+                february: 1,
+                march: 2,
+                april: 3,
+                may: 4,
+                june: 5,
+                july: 6,
+                august: 7,
+                september: 8,
+                october: 9,
+                november: 10,
+                december: 11,
+                jan: 0,
+                feb: 1,
+                mar: 2,
+                apr: 3,
+                jun: 5,
+                jul: 6,
+                aug: 7,
+                sep: 8,
+                oct: 9,
+                nov: 10,
+                dec: 11,
             };
 
-            function monthNum(name) { return MONTHS[name.toLowerCase()]; }
+            function monthNum(name) {
+                return MONTHS[name.toLowerCase()];
+            }
 
             function inferYear(month, day) {
                 const now = new Date();
                 const candidate = new Date(now.getFullYear(), month, day ?? 15);
-                if (now - candidate > 60 * 24 * 60 * 60 * 1000) return now.getFullYear() + 1;
+                if (now - candidate > 60 * 24 * 60 * 60 * 1000)
+                    return now.getFullYear() + 1;
                 return now.getFullYear();
             }
 
@@ -217,7 +245,11 @@
             function parseIsoDate(text) {
                 const m = text.match(/(\d{4})-(\d{2})-(\d{2})/);
                 if (!m) return null;
-                return new Date(parseInt(m[1]), parseInt(m[2]) - 1, parseInt(m[3]));
+                return new Date(
+                    parseInt(m[1]),
+                    parseInt(m[2]) - 1,
+                    parseInt(m[3]),
+                );
             }
 
             // Heuristic parser for freeform date text used in independent markets.
@@ -227,14 +259,23 @@
                 let m;
 
                 m = t.match(/Q([1-4])\s*(\d{4})/i);
-                if (m) return new Date(parseInt(m[2]), (parseInt(m[1]) - 1) * 3 + 1, 15);
+                if (m)
+                    return new Date(
+                        parseInt(m[2]),
+                        (parseInt(m[1]) - 1) * 3 + 1,
+                        15,
+                    );
 
                 m = t.match(/before\s+(\w+)\s+(\d{1,2}),?\s*(\d{4})?/i);
                 if (m) {
                     const mo = monthNum(m[1]);
                     if (mo !== undefined) {
                         const day = parseInt(m[2]);
-                        const d = new Date(m[3] ? parseInt(m[3]) : inferYear(mo, day), mo, day);
+                        const d = new Date(
+                            m[3] ? parseInt(m[3]) : inferYear(mo, day),
+                            mo,
+                            day,
+                        );
                         d.setDate(d.getDate() - 7);
                         return d;
                     }
@@ -245,7 +286,11 @@
                     const mo = monthNum(m[1]);
                     if (mo !== undefined) {
                         const year = m[2] ? parseInt(m[2]) : inferYear(mo, 1);
-                        return new Date(mo === 0 ? year - 1 : year, mo === 0 ? 11 : mo - 1, 15);
+                        return new Date(
+                            mo === 0 ? year - 1 : year,
+                            mo === 0 ? 11 : mo - 1,
+                            15,
+                        );
                     }
                 }
 
@@ -254,40 +299,59 @@
                     const mo = monthNum(m[1]);
                     if (mo !== undefined) {
                         const year = m[2] ? parseInt(m[2]) : inferYear(mo, 1);
-                        return new Date(mo === 11 ? year + 1 : year, mo === 11 ? 0 : mo + 1, 15);
+                        return new Date(
+                            mo === 11 ? year + 1 : year,
+                            mo === 11 ? 0 : mo + 1,
+                            15,
+                        );
                     }
                 }
 
-                m = t.match(/(\w+)\s+(\d{1,2})\s*[-–]\s*(\w+)\s+(\d{1,2}),?\s*(\d{4})?/);
+                m = t.match(
+                    /(\w+)\s+(\d{1,2})\s*[-–]\s*(\w+)\s+(\d{1,2}),?\s*(\d{4})?/,
+                );
                 if (m) {
-                    const mo1 = monthNum(m[1]), mo2 = monthNum(m[3]);
+                    const mo1 = monthNum(m[1]),
+                        mo2 = monthNum(m[3]);
                     if (mo1 !== undefined && mo2 !== undefined) {
-                        const year = m[5] ? parseInt(m[5]) : inferYear(mo1, parseInt(m[2]));
+                        const year = m[5]
+                            ? parseInt(m[5])
+                            : inferYear(mo1, parseInt(m[2]));
                         const d1 = new Date(year, mo1, parseInt(m[2]));
                         const d2 = new Date(year, mo2, parseInt(m[4]));
                         return new Date((d1.getTime() + d2.getTime()) / 2);
                     }
                 }
 
-                m = t.match(/(\w+)\s+(\d{1,2})\s*[-–]\s*(\d{1,2}),?\s*(\d{4})?/);
+                m = t.match(
+                    /(\w+)\s+(\d{1,2})\s*[-–]\s*(\d{1,2}),?\s*(\d{4})?/,
+                );
                 if (m) {
                     const mo = monthNum(m[1]);
                     if (mo !== undefined) {
-                        const mid = Math.round((parseInt(m[2]) + parseInt(m[3])) / 2);
-                        return new Date(m[4] ? parseInt(m[4]) : inferYear(mo, mid), mo, mid);
+                        const mid = Math.round(
+                            (parseInt(m[2]) + parseInt(m[3])) / 2,
+                        );
+                        return new Date(
+                            m[4] ? parseInt(m[4]) : inferYear(mo, mid),
+                            mo,
+                            mid,
+                        );
                     }
                 }
 
                 m = t.match(/(\w+)\s+(\d{1,2}),\s*(\d{4})/);
                 if (m) {
                     const mo = monthNum(m[1]);
-                    if (mo !== undefined) return new Date(parseInt(m[3]), mo, parseInt(m[2]));
+                    if (mo !== undefined)
+                        return new Date(parseInt(m[3]), mo, parseInt(m[2]));
                 }
 
                 m = t.match(/(\w+)\s+(\d{4})/);
                 if (m) {
                     const mo = monthNum(m[1]);
-                    if (mo !== undefined) return new Date(parseInt(m[2]), mo, 15);
+                    if (mo !== undefined)
+                        return new Date(parseInt(m[2]), mo, 15);
                 }
 
                 m = t.match(/^(\d{4})$/);
@@ -297,11 +361,18 @@
             }
 
             function formatDate(d) {
-                return d.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+                return d.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                });
             }
 
             function formatDateShort(d) {
-                return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+                return d.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                });
             }
 
             function daysFromNow(d) {
@@ -322,16 +393,21 @@
                 return `2x Days Out: ${formatDate(cynical)}`;
             }
 
-            function pct(p) { return Math.round(p * 100) + '%'; }
+            function pct(p) {
+                return Math.round(p * 100) + '%';
+            }
             function escHtml(s) {
-                return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                return s
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
             }
 
             // --- CDF market detection and processing ---
 
             function isCdfMarket(rawAnswers) {
-                const cdfCount = rawAnswers.filter(
-                    a => /^Before \d{4}-\d{2}-\d{2}$/i.test(a.text.trim())
+                const cdfCount = rawAnswers.filter((a) =>
+                    /^Before \d{4}-\d{2}-\d{2}$/i.test(a.text.trim()),
                 ).length;
                 return cdfCount > rawAnswers.length * 0.5;
             }
@@ -339,8 +415,12 @@
             function processCdf(rawAnswers) {
                 // Sort entries by date ascending, ignore any that don't parse.
                 const entries = rawAnswers
-                    .map(a => ({ text: a.text, cumulativeProb: a.prob, date: parseIsoDate(a.text) }))
-                    .filter(e => e.date !== null)
+                    .map((a) => ({
+                        text: a.text,
+                        cumulativeProb: a.prob,
+                        date: parseIsoDate(a.text),
+                    }))
+                    .filter((e) => e.date !== null)
                     .sort((a, b) => a.date - b.date);
 
                 if (entries.length === 0) return null;
@@ -363,11 +443,15 @@
                     prevDate = e.date;
                 }
 
-                const residualProb = Math.max(0, 1 - entries[entries.length - 1].cumulativeProb);
+                const residualProb = Math.max(
+                    0,
+                    1 - entries[entries.length - 1].cumulativeProb,
+                );
 
                 // Modal = interval with highest probability mass.
                 const modalInterval = intervals.reduce((best, iv) =>
-                    iv.intervalProb > best.intervalProb ? iv : best);
+                    iv.intervalProb > best.intervalProb ? iv : best,
+                );
 
                 // Median = 50th percentile via linear interpolation between CDF points.
                 // We treat each "Before DATE" as the CDF value at that date.
@@ -379,10 +463,14 @@
                 for (const iv of intervals) {
                     if (prevCumul < 0.5 && iv.cumulativeProb >= 0.5) {
                         const span = iv.cumulativeProb - prevCumul;
-                        const fraction = span > 0 ? (0.5 - prevCumul) / span : 0;
+                        const fraction =
+                            span > 0 ? (0.5 - prevCumul) / span : 0;
                         if (prevDateForInterp !== null) {
-                            const ms = prevDateForInterp.getTime()
-                                + fraction * (iv.date.getTime() - prevDateForInterp.getTime());
+                            const ms =
+                                prevDateForInterp.getTime() +
+                                fraction *
+                                    (iv.date.getTime() -
+                                        prevDateForInterp.getTime());
                             medianDate = new Date(ms);
                         } else {
                             // 50% falls before the first listed date — use it as a lower bound.
@@ -401,20 +489,25 @@
             // --- Independent market processing ---
 
             function processIndependent(rawAnswers) {
-                const answers = rawAnswers.map(a => ({
-                    text: a.text,
-                    prob: a.prob,
-                    date: parseDate(a.text),
-                })).sort((a, b) => b.prob - a.prob);
+                const answers = rawAnswers
+                    .map((a) => ({
+                        text: a.text,
+                        prob: a.prob,
+                        date: parseDate(a.text),
+                    }))
+                    .sort((a, b) => b.prob - a.prob);
 
                 const modal = answers[0];
-                const parseable = answers.filter(a => a.date !== null);
+                const parseable = answers.filter((a) => a.date !== null);
                 const unparsedCount = answers.length - parseable.length;
 
                 let expectedDate = null;
                 if (parseable.length > 0) {
                     const totalProb = parseable.reduce((s, a) => s + a.prob, 0);
-                    const weightedMs = parseable.reduce((s, a) => s + a.date.getTime() * a.prob, 0);
+                    const weightedMs = parseable.reduce(
+                        (s, a) => s + a.date.getTime() * a.prob,
+                        0,
+                    );
                     expectedDate = new Date(weightedMs / totalProb);
                 }
 
@@ -423,16 +516,24 @@
 
             // --- Rendering ---
 
-            function renderCdf(market, { intervals, residualProb, medianDate, modalInterval }) {
-                document.getElementById('market-title').textContent = market.question;
+            function renderCdf(
+                market,
+                { intervals, residualProb, medianDate, modalInterval },
+            ) {
+                document.getElementById('market-title').textContent =
+                    market.question;
 
-                document.getElementById('expected-label').textContent = '50th percentile';
+                document.getElementById('expected-label').textContent =
+                    '50th percentile';
                 const expectedCard = document.getElementById('expected-card');
                 if (medianDate) {
                     expectedCard.style.display = '';
-                    document.getElementById('expected-date').textContent = formatDate(medianDate);
-                    document.getElementById('expected-days').textContent = relativeDayString(medianDate);
-                    document.getElementById('expected-2do').textContent = doubleDaysOut(medianDate);
+                    document.getElementById('expected-date').textContent =
+                        formatDate(medianDate);
+                    document.getElementById('expected-days').textContent =
+                        relativeDayString(medianDate);
+                    document.getElementById('expected-2do').textContent =
+                        doubleDaysOut(medianDate);
                 } else {
                     expectedCard.style.display = 'none';
                 }
@@ -440,10 +541,14 @@
                 const warning = document.getElementById('warning');
                 const warnings = [];
                 if (residualProb > 0.05) {
-                    warnings.push(`${pct(residualProb)} probability falls after the last listed date and is excluded.`);
+                    warnings.push(
+                        `${pct(residualProb)} probability falls after the last listed date and is excluded.`,
+                    );
                 }
                 if (!medianDate) {
-                    warnings.push('The 50th percentile is beyond the last listed date — median cannot be determined.');
+                    warnings.push(
+                        'The 50th percentile is beyond the last listed date — median cannot be determined.',
+                    );
                 }
                 if (warnings.length > 0) {
                     warning.textContent = '⚠ ' + warnings.join(' ');
@@ -460,7 +565,9 @@
                     <th class="cumul-cell">Cumul.</th>
                 </tr>`;
 
-                const maxIntervalProb = Math.max(...intervals.map(iv => iv.intervalProb));
+                const maxIntervalProb = Math.max(
+                    ...intervals.map((iv) => iv.intervalProb),
+                );
                 const tbody = document.getElementById('answer-tbody');
                 tbody.innerHTML = '';
 
@@ -471,8 +578,12 @@
                     const winLabel = iv.prevDate
                         ? `${formatDateShort(iv.prevDate)} – ${formatDateShort(iv.date)}, ${iv.date.getFullYear()}`
                         : `Before ${formatDate(iv.date)}`;
-                    const barWidth = maxIntervalProb > 0
-                        ? Math.round((iv.intervalProb / maxIntervalProb) * 100) : 0;
+                    const barWidth =
+                        maxIntervalProb > 0
+                            ? Math.round(
+                                  (iv.intervalProb / maxIntervalProb) * 100,
+                              )
+                            : 0;
 
                     tr.innerHTML = `
                         <td>${escHtml(winLabel)}</td>
@@ -488,8 +599,10 @@
                 // Residual row
                 if (residualProb > 0.001) {
                     const tr = document.createElement('tr');
-                    const barWidth = maxIntervalProb > 0
-                        ? Math.round((residualProb / maxIntervalProb) * 100) : 0;
+                    const barWidth =
+                        maxIntervalProb > 0
+                            ? Math.round((residualProb / maxIntervalProb) * 100)
+                            : 0;
                     tr.innerHTML = `
                         <td>After ${formatDateShort(intervals[intervals.length - 1].date)}, ${intervals[intervals.length - 1].date.getFullYear()}</td>
                         <td class="bar-cell">
@@ -502,21 +615,30 @@
                 }
             }
 
-            function renderIndependent(market, { answers, modal, expectedDate, unparsedCount }) {
-                document.getElementById('market-title').textContent = market.question;
+            function renderIndependent(
+                market,
+                { answers, modal, expectedDate, unparsedCount },
+            ) {
+                document.getElementById('market-title').textContent =
+                    market.question;
 
-                document.getElementById('modal-label').textContent = 'Most likely answer';
-                document.getElementById('modal-answer').textContent = modal.text;
+                document.getElementById('modal-label').textContent =
+                    'Most likely answer';
+                document.getElementById('modal-answer').textContent =
+                    modal.text;
                 document.getElementById('modal-prob').textContent =
                     `${pct(modal.prob)} probability` +
                     (modal.date ? ` · ${daysFromNow(modal.date)}` : '');
 
-                document.getElementById('expected-label').textContent = 'Expected date';
+                document.getElementById('expected-label').textContent =
+                    'Expected date';
                 const expectedCard = document.getElementById('expected-card');
                 if (expectedDate) {
                     expectedCard.style.display = '';
-                    document.getElementById('expected-date').textContent = formatDate(expectedDate);
-                    document.getElementById('expected-days').textContent = daysFromNow(expectedDate);
+                    document.getElementById('expected-date').textContent =
+                        formatDate(expectedDate);
+                    document.getElementById('expected-days').textContent =
+                        daysFromNow(expectedDate);
                 } else {
                     expectedCard.style.display = 'none';
                 }
@@ -543,7 +665,8 @@
                 for (const a of answers) {
                     const tr = document.createElement('tr');
                     if (a === modal) tr.classList.add('modal-row');
-                    const barWidth = maxProb > 0 ? Math.round((a.prob / maxProb) * 100) : 0;
+                    const barWidth =
+                        maxProb > 0 ? Math.round((a.prob / maxProb) * 100) : 0;
                     tr.innerHTML = `
                         <td>${escHtml(a.text)}</td>
                         <td class="bar-cell">
@@ -570,13 +693,18 @@
                 document.getElementById('results').style.display = 'none';
             }
 
-            function clearError() { document.getElementById('error').style.display = 'none'; }
+            function clearError() {
+                document.getElementById('error').style.display = 'none';
+            }
 
             async function calculate() {
                 clearError();
                 const url = document.getElementById('url-input').value.trim();
                 const slug = slugFromUrl(url);
-                if (!slug) { showError('Please paste a valid Manifold market URL.'); return; }
+                if (!slug) {
+                    showError('Please paste a valid Manifold market URL.');
+                    return;
+                }
 
                 const btn = document.getElementById('fetch-btn');
                 btn.textContent = 'Loading…';
@@ -584,7 +712,9 @@
 
                 let market;
                 try {
-                    const res = await fetch(`https://api.manifold.markets/v0/slug/${slug}`);
+                    const res = await fetch(
+                        `https://api.manifold.markets/v0/slug/${slug}`,
+                    );
                     if (!res.ok) throw new Error(`API error ${res.status}`);
                     market = await res.json();
                 } catch (e) {
@@ -598,11 +728,13 @@
                 btn.disabled = false;
 
                 if (market.outcomeType !== 'MULTIPLE_CHOICE') {
-                    showError(`This tool only supports multiple-choice markets (got "${market.outcomeType}").`);
+                    showError(
+                        `This tool only supports multiple-choice markets (got "${market.outcomeType}").`,
+                    );
                     return;
                 }
 
-                const rawAnswers = (market.answers ?? []).map(a => ({
+                const rawAnswers = (market.answers ?? []).map((a) => ({
                     text: a.text,
                     prob: a.probability ?? 0,
                 }));
@@ -614,17 +746,23 @@
                     if (result) {
                         renderCdf(market, result);
                     } else {
-                        showError('Could not parse any dates from this market\'s answers.');
+                        showError(
+                            "Could not parse any dates from this market's answers.",
+                        );
                     }
                 } else {
                     renderIndependent(market, processIndependent(rawAnswers));
                 }
             }
 
-            document.getElementById('fetch-btn').addEventListener('click', calculate);
-            document.getElementById('url-input').addEventListener('keydown', e => {
-                if (e.key === 'Enter') calculate();
-            });
+            document
+                .getElementById('fetch-btn')
+                .addEventListener('click', calculate);
+            document
+                .getElementById('url-input')
+                .addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') calculate();
+                });
         </script>
     </body>
 </html>
