@@ -182,7 +182,7 @@
                     <div class="sub" id="expected-2do"></div>
                 </div>
                 <div class="summary-card">
-                    <h2 id="modal-label">Most likely answer</h2>
+                    <h2 id="modal-label"></h2>
                     <div class="value" id="modal-answer"></div>
                     <div class="sub" id="modal-prob"></div>
                 </div>
@@ -425,14 +425,6 @@
 
             function renderCdf(market, { intervals, residualProb, medianDate, modalInterval }) {
                 document.getElementById('market-title').textContent = market.question;
-
-                document.getElementById('modal-label').textContent = 'Most likely window';
-                const winText = modalInterval.prevDate
-                    ? `${formatDateShort(modalInterval.prevDate)} – ${formatDateShort(modalInterval.date)}`
-                    : `Before ${formatDateShort(modalInterval.date)}`;
-                document.getElementById('modal-answer').textContent = winText;
-                document.getElementById('modal-prob').textContent =
-                    `${pct(modalInterval.intervalProb)} of probability mass`;
 
                 document.getElementById('expected-label').textContent = '50th percentile';
                 const expectedCard = document.getElementById('expected-card');
