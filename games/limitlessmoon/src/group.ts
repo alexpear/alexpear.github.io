@@ -1,46 +1,68 @@
 // A gathering of homogenous colocated Creatures. Only the leader has a personality.
 
 import { Idea } from './idea';
-import { Kind } from './kind';
 import { Util } from './util';
 
 export class Group {
     id: string = Util.uuid();
-    kind: Kind;
+    ideas: Idea[] = [];
     quantity: number = 1;
-    items: Kind[] = [];
 
-    constructor(kind: Kind | Idea, quantity: number) {
-        this.kind = kind instanceof Kind ? kind : new Kind(kind);
+    constructor(ideas: Idea[] | Idea, quantity: number = 1) {
+        this.ideas = Array.isArray(ideas) ? ideas : [ideas];
         this.quantity = quantity;
     }
 
     cost(): number {
-        return this.quantity * this.kind.cost();
+        return this.quantity * Util.sum(this.ideas.map((idea) => idea.cost));
     }
 
-    add(item: Kind): void {
-        this.items.push(item);
+    isCreature(): boolean {
+        return this.ideas[0].isCreature();
+    }
+
+    isItem(): boolean {
+        return this.ideas[0].isItem();
+    }
+
+    copy(quantity: number = this.quantity): Group {
+        return new Group(this.ideas, quantity);
     }
 
     json(): object {
         return {
             id: this.id,
-            kind: this.kind.json(),
+            ideas: this.ideas.map((i) => i.json()),
             quantity: this.quantity,
-            items: this.items.map((k) => k.json()),
         };
     }
 
     prettyString(): string {
-        const chassisQuantity = `${this.kind.prettyString()} x${this.quantity}`;
+        let mainIdeaName = this.ideas[0].prettyString();
 
-        if (this.items.length === 0) return chassisQuantity;
+        let prefix = '';
 
-        const itemsString = this.items
-            .map((item) => item.prettyString())
-            .join(', ');
+        for (let i = 0; i < this.ideas.length; i++) {
+            const idea = this.ideas[i];
+            if (idea?.asmod?.prefix) {
+                prefix = idea.asmod.prefix;
+            } else if (idea?.asmod?.add?.prefix) {
+                prefix = idea.asmod.add.prefix;
+            }
 
-        return `${chassisQuantity} w/ ${itemsString}`;
+            if (idea?.asmod?.overwrite?.name) {
+                mainIdeaName = idea.asmod.overwrite.name;
+            }
+
+            // LATER auto test to look for combinations of items that can contribute multiple colliding prefices or name replacements.
+        }
+
+        mainIdeaName = Util.capitalized(`${prefix}${mainIdeaName}`);
+
+        const chassisQuantity = `${mainIdeaName} x${this.quantity}`;
+
+        return chassisQuantity;
+
+        // TODO the data model should perhaps handle some nesting, like a modified creature with a modified item, eg Ghosttongue Scout with Electrorifle <-> [scout, ghosttongue, gun, battery, extendedBarrel]
     }
 }

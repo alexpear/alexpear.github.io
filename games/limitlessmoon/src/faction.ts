@@ -4,14 +4,13 @@
 import { Company } from './company';
 import { Group } from './group';
 import { Idea } from './idea';
-import { Kind } from './kind';
 import { Place } from './place';
 import { Util } from './util';
 
 export class Faction {
     id: string = Util.uuid();
     // Each Faction has several offscreen cities. Each produces something useful. For example: [Human, Android, Sword, Armor, Robohorse]. These are the ingredients the faction can use.
-    cities: Kind[] = [];
+    cities: Group[] = [];
     outpostPlace: Place;
 
     // When a player controls this faction, these groups start in the dropoff hex.
@@ -23,27 +22,27 @@ export class Faction {
     static random(budget: number = Util.randomBelow(1_000)): Faction {
         const faction = new Faction();
 
-        faction.cities.push(new Kind(Idea.randomCreature()));
+        // At least 1 city must produce a creature, or else the faction will just be a pile of items.
+        faction.cities.push(new Group(Idea.randomCreature(), 1));
         for (let i = 1; i < Faction.MAX_CITIES; i++) {
-            faction.cities.push(Kind.random());
+            faction.cities.push(new Group(Idea.random(), 1));
         }
 
         let budgetLeft = budget;
         while (budgetLeft > 0) {
-            const kindsOfCreatures = Util.shuffle(
-                faction.cities.filter((city) => city.mainIdea.isCreature()),
+            const availableCreatures = Util.shuffle(
+                faction.cities.filter((city) => city.isCreature()),
             );
 
             let i;
-            for (i = 0; i < kindsOfCreatures.length; i++) {
-                const kind = kindsOfCreatures[i];
-                if (kind.cost() > budgetLeft) {
+            for (i = 0; i < availableCreatures.length; i++) {
+                const creature = availableCreatures[i];
+                if (creature.cost() > budgetLeft) {
                     continue;
                 }
 
-                const maxQuantity = Math.floor(budgetLeft / kind.cost());
-                const group = new Group(
-                    kind,
+                const maxQuantity = Math.floor(budgetLeft / creature.cost());
+                const group = creature.copy(
                     Util.randomIntBetween(1, maxQuantity),
                 );
 
@@ -54,7 +53,7 @@ export class Faction {
                 break;
             }
 
-            if (i === kindsOfCreatures.length) {
+            if (i === availableCreatures.length) {
                 // Adding even 1 more individual is too expensive, so break out of the while loop.
                 break;
             }
@@ -74,25 +73,23 @@ export class Faction {
     }
 
     randomIndividual(): Group {
-        const kind = Util.randomOf(
-            this.cities.filter((city) => city.mainIdea.isCreature()),
+        const city = Util.randomOf(
+            this.cities.filter((city) => city.isCreature()),
         );
 
-        return new Group(kind, 1);
+        return city.copy(1);
     }
 
     randomHero(): Group {
         const hero = this.randomIndividual();
-        hero.add(this.randomItem());
-        hero.add(this.randomItem());
-        hero.add(this.randomItem());
+        // hero.ideas.push(this.randomItem());
+        // hero.ideas.push(this.randomItem());
+        // hero.ideas.push(this.randomItem());
         return hero;
     }
 
-    randomItem(): Kind {
-        return Util.randomOf(
-            this.cities.filter((city) => city.mainIdea.isItem()),
-        );
+    randomItem(): Group {
+        return Util.randomOf(this.cities.filter((city) => city.isItem()));
     }
 
     json(): object {
