@@ -20,6 +20,18 @@ export class Kind {
         return Util.sum(allIdeas.map((idea) => idea.cost || 0));
     }
 
+    static random(): Kind {
+        const kind = new Kind(Idea.random());
+
+        if (Math.random() < 0.5) {
+            kind.has.push(Idea.randomItem());
+        }
+
+        // TODO This adds items to Kinds, which is different from adding items to Groups. That's right for modded items but wrong for creature-chassis Kinds.
+
+        return kind;
+    }
+
     json(): object {
         return {
             id: this.id,

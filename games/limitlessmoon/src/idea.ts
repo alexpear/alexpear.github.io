@@ -93,6 +93,10 @@ export class Idea {
     static randomCreature(): Idea {
         return Util.randomOf(Object.values(Idea.encyclopedia.creature));
     }
+
+    static randomItem(): Idea {
+        return Util.randomOf(Object.values(Idea.encyclopedia.item));
+    }
 }
 
 Idea.init();
