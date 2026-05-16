@@ -57,13 +57,15 @@ export class Planet {
     }
 
     static logExamples(generator: () => object, quantity: number = 10): void {
+        console.log(`\nExample generator outputs:`);
+
         const examples = [];
 
         for (let i = 0; i < quantity; i++) {
             examples.push(generator());
         }
 
-        console.log(examples.map(i => i.prettyString()).join('\n\n'));
+        console.log(examples.map((i) => i.prettyString()).join('\n\n'));
     }
 
     static test(): void {
