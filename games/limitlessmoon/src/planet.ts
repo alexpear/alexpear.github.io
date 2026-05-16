@@ -3,6 +3,7 @@ import { Expedition } from './expedition';
 import { Place, Terrain, TERRAIN_LIST } from './place';
 import { Faction } from './faction';
 import { Util } from './util';
+import { Group } from './group';
 
 // Lazy procedural hex map. Terrain for each hex is deterministic given the
 // planet seed, so panning away and back shows the same world.
@@ -54,7 +55,23 @@ export class Planet {
             factions: this.factions.map((f) => f.json()),
         };
     }
+
+    static logExamples(generator: () => object, quantity: number = 10): void {
+        const examples = [];
+
+        for (let i = 0; i < quantity; i++) {
+            examples.push(generator());
+        }
+
+        console.log(examples.map(i => i.prettyString()).join('\n\n'));
+    }
+
+    static test(): void {
+        Planet.random().startExpedition();
+
+        Planet.logExamples(Group.randomItem);
+        Planet.logExamples(Group.randomCreature);
+    }
 }
 
-// Run during testing.
-Planet.random().startExpedition();
+Planet.test();

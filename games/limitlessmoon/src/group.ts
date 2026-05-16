@@ -65,4 +65,20 @@ export class Group {
 
         // TODO the data model should perhaps handle some nesting, like a modified creature with a modified item, eg Ghosttongue Scout with Electrorifle <-> [scout, ghosttongue, gun, battery, extendedBarrel]
     }
+
+    static randomItem(): Group {
+        const group = new Group(Idea.randomItem(), 1);
+
+        // TODO chance of adding more ideas
+
+        return group;
+    }
+
+    static randomCreature(): Group {
+        const group = new Group(Idea.randomCreature(), 1);
+
+        // TODO chance of adding more ideas
+
+        return group;
+    }
 }
