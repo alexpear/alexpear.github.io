@@ -42,7 +42,7 @@ export class Group {
 
         let prefix = '';
 
-        for (let i = 0; i < this.ideas.length; i++) {
+        for (let i = 1; i < this.ideas.length; i++) {
             const idea = this.ideas[i];
             if (idea?.asmod?.prefix) {
                 prefix = idea.asmod.prefix;
