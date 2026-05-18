@@ -75,10 +75,25 @@ class Titles extends TextGen {
         };
     }
 
-    static seriesOverviews () {
+    static allSeriesTitles () {
         for (const letter in Titles.series()) {
             console.log(`\n${Titles.series()[letter]}verse serials: ${Titles.all4s().filter(title => title[0] === letter).sort().join(', ')}`);
         }
+    }
+
+    static sequels () {
+        const verse = Util.randomOf([
+            ['Worm', 'Ward'],
+            ['Pact', 'Pale', 'Poke', 'Paté', 'Plex', 'Pyre'],
+            ['Twig'],
+            ['Face'],
+            ['Claw'],
+            ['Seek'],
+        ]);
+
+        verse.push(Util.randomOf(Titles.all4s().filter(word => word[0] === verse[0][0])));
+        console.log();
+        console.log(verse.join(', '));
     }
 
     output () {
@@ -101,7 +116,7 @@ class Titles extends TextGen {
 
         // console.log(all.join("', '"));
         console.log(new Titles().output());
-        Titles.seriesOverviews();
+        Titles.sequels();
     }
 }
 
