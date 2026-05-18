@@ -64,17 +64,27 @@ class Titles extends TextGen {
     //     return Util.randomOf()
     // }
 
-    output () {
-        const title = Util.randomOf(Titles.all4s());
-
-        const series = {
+    static series () {
+        return {
             W: 'Worm',
             P: 'Pact',
             T: 'Twig',
-            F: 'Face'
+            F: 'Face',
+            C: 'Claw',
+            S: 'Seek',
         };
+    }
 
-        const seriesName = series[title[0]];
+    static seriesOverviews () {
+        for (const letter in Titles.series()) {
+            console.log(`\n${Titles.series()[letter]}verse serials: ${Titles.all4s().filter(title => title[0] === letter).sort().join(', ')}`);
+        }
+    }
+
+    output () {
+        const title = Util.randomOf(Titles.all4s());
+
+        const seriesName = Titles.series()[title[0]];
         if (seriesName) {
             return title + ', the sequel to ' + seriesName;
         }
@@ -91,6 +101,7 @@ class Titles extends TextGen {
 
         // console.log(all.join("', '"));
         console.log(new Titles().output());
+        Titles.seriesOverviews();
     }
 }
 
