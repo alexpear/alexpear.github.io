@@ -56,10 +56,11 @@ class Shelf {
                 const booksHTML = shelf.map(
                     book => {
                         const px = this.words2px(book.words);
-                        const text = book.spine.split(': ')[1];
+                        const fontSize = px >= 25 ? '' : ' style="font-size: 90cqw"';
+                        const text = book.spine.split(': ')[1]; // book.spine.replace(/:\s/g, '   ');
 
                         return `        <div class="book ${book.serial.toLowerCase()}" style="width: ${px}px">
-          <p>${text}</p>
+          <p${fontSize}>${text}</p>
         </div>`;
                     }
                 )
@@ -238,8 +239,13 @@ ${booksHTML}
     static run () {
         const shelf = new Shelf();
 
+        // FS.writeFileSync(
+        //     Path.join(__dirname, 'shelf.html'),
+        //     shelf.asHTML()
+        // );
         console.log(shelf.asHTML());
     }
 }
 
 Shelf.run();
+// Usage: npm run shelf

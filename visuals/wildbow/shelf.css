@@ -4,7 +4,7 @@ body {
 
 #bookcase {
     margin: 50px;
-    width: 670px;
+    width: 925px;
     outline: 10px solid #79574a;
     padding: 10px;
 }
@@ -17,7 +17,7 @@ body {
 
 .book {
     margin: 5px 0;
-    height: 150px;
+    height: 400px;
     border-color: white;
     outline: 1px solid white;
     writing-mode: vertical-rl;
@@ -25,13 +25,15 @@ body {
     /*    text-align: center;*/
 
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Whether the text is at the top, center, or bottom of the spine. */
     align-items: center;
+    container-type: size;
 }
 
 .book > p {
     margin: 0;
-    font-size: 16px;
+    font-size: 25px;
+    font-family: serif;
 }
 
 .worm {
@@ -50,7 +52,7 @@ body {
 }
 
 .pale {
-    background-color: cornflowerblue;
+    background-color: skyblue;
     color: black;
 }
 
