@@ -56,7 +56,7 @@ export class Planet {
         };
     }
 
-    static logExamples(generator: () => object, quantity: number = 10): void {
+    static logExamples(generator: () => Group, quantity: number = 10): void {
         console.log(`\nExample generator outputs:`);
 
         const examples = [];
