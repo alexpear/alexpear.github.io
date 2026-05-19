@@ -69,7 +69,7 @@
     "server": "http-server",
     "cape": "node wnode/cape.js",
     "testOld": "jest",
-    "test": "npm run lint && npm run prettierwrite && npm run buildblockscout && npm run buildspoilerfree && npm run history && npm run jest",
+    "test": "npm run lint && npm run prettierwrite && npm run buildblockscout && npm run limitlessdata && npx tsc -p games/limitlessmoon && npm run buildspoilerfree && npm run history && npm run jest",
     "jest": "NODE_NO_WARNINGS=1 node --experimental-vm-modules node_modules/.bin/jest",
     "testAll": "npm run test && npm run testRingWorld && npm run testDeathPlanet",
     "lint": "eslint --cache games/**/*.ts intergame spoilerfree",
