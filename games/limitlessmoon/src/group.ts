@@ -69,9 +69,47 @@ export class Group {
     static randomItem(): Group {
         const group = new Group(Idea.randomItem(), 1);
 
-        // TODO chance of adding more ideas
+        if (!group.ideas[0].slots || Math.random() < 0.2) return group;
+
+        // Add more parts/mods to this item's slots.
+        const modCandidates = Util.shuffle(
+            Object.values(Idea.encyclopedia.item).filter((idea) =>
+                // TODO runtime typeerror - includes is not a function 
+                idea.slots?.includes(idea?.asmod?.slot),
+            ),
+        );
+
+        for (const mod of modCandidates) {
+            if (!group.slotIsOpen(mod.asmod.slot)) continue;
+
+            group.ideas.push(mod);
+
+            // We might be done.
+            if (Math.random() < 0.5) break;
+        }
 
         return group;
+    }
+
+    // TODO unit tests
+    slotIsOpen(slot: string): boolean {
+        if (!this.ideas[0].slots) return false;
+
+        let copiesOfThisSlot = this.ideas[0].slots.filter(
+            (s) => s === slot,
+        ).length;
+
+        for (let i = 1; i < this.ideas.length; i++) {
+            if (this.ideas[i].asmod?.slot === slot) {
+                copiesOfThisSlot--;
+            }
+
+            if (copiesOfThisSlot < 1) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     static randomCreature(): Group {
