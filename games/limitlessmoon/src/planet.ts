@@ -71,7 +71,7 @@ export class Planet {
     static test(): void {
         Planet.random().startExpedition();
 
-        Planet.logExamples(Group.randomItem);
+        Planet.logExamples(Group.randomWeapon);
         Planet.logExamples(Group.randomCreature);
     }
 }

@@ -76,7 +76,29 @@ export class Group {
     static randomItem(): Group {
         const group = new Group(Idea.randomItem(), 1);
 
-        if (!group.ideas[0].slots || Math.random() < 0.2) return group;
+        group.maybeAddParts();
+
+        return group;
+    }
+
+    static randomWeapon(): Group {
+        const group = new Group(Idea.randomWeapon(), 1);
+
+        group.maybeAddParts();
+
+        return group;
+    }
+
+    static randomCreature(): Group {
+        const group = new Group(Idea.randomCreature(), 1);
+
+        // TODO chance of adding more ideas
+
+        return group;
+    }
+
+    maybeAddParts(): void {
+        if (!this.ideas[0].slots || Math.random() < 0.2) return;
 
         // Add more parts/mods to this item's slots.
         const modCandidates = Util.shuffle(
@@ -85,19 +107,18 @@ export class Group {
             ),
         );
 
-        for (const mod of modCandidates) {
-            if (!group.slotIsOpen(mod.asmod.slot)) continue;
+        // console.log(`maybeAddParts() with ${modCandidates.length} candidates`);
 
-            group.ideas.push(mod);
+        for (const mod of modCandidates) {
+            if (!this.slotIsOpen(mod.asmod.slot)) continue;
+
+            this.ideas.push(mod);
 
             // We might be done.
-            if (Math.random() < 0.5) break;
+            if (Math.random() < 0.5) return;
         }
-
-        return group;
     }
 
-    // TODO unit tests
     slotIsOpen(slot: string): boolean {
         if (!this.ideas[0].slots) return false;
 
@@ -114,13 +135,5 @@ export class Group {
         }
 
         return true;
-    }
-
-    static randomCreature(): Group {
-        const group = new Group(Idea.randomCreature(), 1);
-
-        // TODO chance of adding more ideas
-
-        return group;
     }
 }

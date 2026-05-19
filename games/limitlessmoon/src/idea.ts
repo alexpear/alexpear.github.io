@@ -16,6 +16,15 @@ export type DamageType =
     | 'nano'
     | 'antigrav'
     | 'data';
+
+type Attack = {
+    range?: number;
+    damage?: number;
+    shotspersec?: number;
+    stealth?: number;
+    type?: DamageType;
+};
+
 type ModEffects = {
     attachto?: string;
     slot?: string;
@@ -43,6 +52,7 @@ export class Idea {
     cost: number = 1;
     weight: number = 1;
     ideaType: IdeaType;
+    attack: Attack;
     asmod?: ModEffects;
     slots?: Record<string, number>;
 
@@ -97,6 +107,12 @@ export class Idea {
 
     static randomItem(): Idea {
         return Util.randomOf(Object.values(Idea.encyclopedia.item));
+    }
+
+    static randomWeapon(): Idea {
+        return Util.randomOf(
+            Object.values(Idea.encyclopedia.item).filter((idea) => idea.attack),
+        );
     }
 }
 
