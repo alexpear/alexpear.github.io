@@ -10,6 +10,7 @@ trait:
         stealth: 10
 
 item:
+    # Weapons
     knife:
         weight: 1
         cost: 1
@@ -33,6 +34,56 @@ item:
             core: 1
             barrel: 1
             chamber: 2
+
+    sword:
+        weight: 2
+        cost: 2
+        attack:
+            range: 1
+            damage: 10
+            type: blade
+        slots:
+            core: 1
+
+    axe:
+        weight: 3
+        cost: 2
+        attack:
+            range: 1
+            damage: 15
+            type: blade
+        slots:
+            core: 1
+
+    hammer:
+        weight: 5
+        cost: 2
+        attack:
+            range: 1
+            damage: 15
+            type: impact
+        slots:
+            core: 1
+
+    spear:
+        weight: 3
+        cost: 2
+        attack:
+            range: 2
+            damage: 10
+            type: pierce
+        slots:
+            core: 1
+
+    whip:
+        weight: 1
+        cost: 1
+        attack:
+            range: 3
+            damage: 1
+            type: impact
+        slots:
+            core: 1
 
     # Item parts
     extendedBarrel:

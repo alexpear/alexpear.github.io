@@ -65,14 +65,15 @@ export class Planet {
             examples.push(generator());
         }
 
-        console.log(examples.map((i) => i.prettyString()).join('\n\n'));
+        console.log(examples.map((i) => i.prettyString()).join('\n'));
+        console.log();
     }
 
     static test(): void {
         Planet.random().startExpedition();
 
-        Planet.logExamples(Group.randomWeapon);
-        Planet.logExamples(Group.randomCreature);
+        Planet.logExamples(Group.randomWeapon, 50);
+        // Planet.logExamples(Group.randomCreature);
     }
 }
 
