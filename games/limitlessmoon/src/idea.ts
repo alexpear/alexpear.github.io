@@ -44,7 +44,7 @@ export class Idea {
     weight: number = 1;
     ideaType: IdeaType;
     asmod?: ModEffects;
-    slots?: string[];
+    slots?: Record<string, number>;
 
     static encyclopedia: Record<IdeaType, Record<string, Idea>> = {
         creature: {},

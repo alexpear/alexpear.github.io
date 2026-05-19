@@ -73,9 +73,8 @@ export class Group {
 
         // Add more parts/mods to this item's slots.
         const modCandidates = Util.shuffle(
-            Object.values(Idea.encyclopedia.item).filter((idea) =>
-                // TODO runtime typeerror - includes is not a function 
-                idea.slots?.includes(idea?.asmod?.slot),
+            Object.values(Idea.encyclopedia.item).filter(
+                (idea) => idea.slots[idea?.asmod?.slot],
             ),
         );
 
@@ -95,9 +94,7 @@ export class Group {
     slotIsOpen(slot: string): boolean {
         if (!this.ideas[0].slots) return false;
 
-        let copiesOfThisSlot = this.ideas[0].slots.filter(
-            (s) => s === slot,
-        ).length;
+        let copiesOfThisSlot = this.ideas[0].slots[slot] || 0;
 
         for (let i = 1; i < this.ideas.length; i++) {
             if (this.ideas[i].asmod?.slot === slot) {
