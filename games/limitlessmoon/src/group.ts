@@ -45,21 +45,28 @@ export class Group {
         for (let i = 1; i < this.ideas.length; i++) {
             const idea = this.ideas[i];
             if (idea?.asmod?.prefix) {
-                prefix = idea.asmod.prefix;
+                prefix += ` ${idea.asmod.prefix}`;
             } else if (idea?.asmod?.add?.prefix) {
-                prefix = idea.asmod.add.prefix;
+                prefix += ` ${idea.asmod.add.prefix}`;
             }
 
             if (idea?.asmod?.overwrite?.name) {
                 mainIdeaName = idea.asmod.overwrite.name;
             }
 
+            // console.log(`(processed subidea ${idea.id})`);
+
             // LATER auto test to look for combinations of items that can contribute multiple colliding prefices or name replacements.
         }
 
-        mainIdeaName = Util.capitalized(`${prefix}${mainIdeaName}`);
+        mainIdeaName = `${prefix}${mainIdeaName}`
+            // .trim()
+            .split(' ')
+            .filter((word) => word.length > 0)
+            .map((word) => Util.capitalized(word.trim().toLowerCase()))
+            .join(' ');
 
-        const chassisQuantity = `${mainIdeaName} x${this.quantity}`;
+        const chassisQuantity = `${mainIdeaName} (${this.ideas.map((i) => i.id).join(', ')}) x${this.quantity}`;
 
         return chassisQuantity;
 
