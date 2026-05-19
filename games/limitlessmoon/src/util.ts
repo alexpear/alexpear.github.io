@@ -221,6 +221,33 @@ export class Util {
         });
     }
 
+    static stringify(x: unknown): string {
+        return JSON.stringify(x, undefined, '    ');
+    }
+
+    static log(input: unknown, tag?: string): void {
+        tag = tag || 'event';
+        const tagStr = tag.toUpperCase();
+        const dateTime = new Date().toLocaleString('en-US');
+        const info = Util.isString(input) ? input : Util.stringify(input);
+
+        // Later: Red error and beacon text
+        console.log(`  ${tagStr} (${dateTime}) \n${info}\n`);
+    }
+
+    static logDebug(input: unknown): void {
+        Util.log(input, 'debug');
+    }
+
+    static error(summary: Record<string, unknown>): never {
+        throw new Error(Util.stringify(summary));
+    }
+
+    // alias for the above.
+    static throw(summary: Record<string, unknown>): never {
+        return Util.error(summary);
+    }
+
     static randomOf<T>(array: T[]): T {
         return array[Util.randomBelow(array.length)];
     }
