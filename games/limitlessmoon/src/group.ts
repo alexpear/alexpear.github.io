@@ -102,9 +102,13 @@ export class Group {
 
         // Add more parts/mods to this item's slots.
         const modCandidates = Util.shuffle(
-            Object.values(Idea.encyclopedia.item).filter(
-                (idea) => this.ideas[0].slots?.[idea?.asmod?.slot],
-            ),
+            Object.values(Idea.encyclopedia.item).filter((idea) => {
+                if (!this.ideas[0].slots?.[idea?.asmod?.slot]) return false;
+
+                return [this.ideas[0].id, 'any', undefined].includes(
+                    idea.asmod?.attachto,
+                );
+            }),
         );
 
         // console.log(`maybeAddParts() with ${modCandidates.length} candidates`);
