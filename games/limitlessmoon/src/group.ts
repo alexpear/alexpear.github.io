@@ -103,7 +103,7 @@ export class Group {
         // Add more parts/mods to this item's slots.
         const modCandidates = Util.shuffle(
             Object.values(Idea.encyclopedia.item).filter(
-                (idea) => idea.slots?.[idea?.asmod?.slot],
+                (idea) => this.ideas[0].slots?.[idea?.asmod?.slot],
             ),
         );
 
