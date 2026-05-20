@@ -177,7 +177,7 @@ ${booksHTML}
             { spine: 'III: Out on a Limb', words: 102295, serial: 'Pale' },
             { spine: 'IV: Leaving a Mark', words: 120625, serial: 'Pale' },
             { spine: 'V: Back Away', words: 93160, serial: 'Pale' },
-            { spine: 'VI: Cutting Glass', words: 117665, serial: 'Pale' },
+            { spine: 'VI: Cutting Class', words: 117665, serial: 'Pale' },
             { spine: 'VII: Gone Ahead', words: 115721, serial: 'Pale' },
             { spine: 'VIII: Vanishing Points', words: 99578, serial: 'Pale' },
             { spine: 'IX: Shaking Hands', words: 125438, serial: 'Pale' },
