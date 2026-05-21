@@ -21,20 +21,6 @@ item:
         slots:
             core: 1
 
-    gun:
-        weight: 1
-        cost: 1
-        attack:
-            range: 10
-            damage: 10
-            shotspersec: 1
-            stealth: -10
-            type: pierce
-        slots:
-            core: 1
-            barrel: 1
-            chamber: 2
-
     sword:
         weight: 2
         cost: 2
@@ -82,6 +68,31 @@ item:
             range: 3
             damage: 1
             type: impact
+        slots:
+            core: 1
+
+    gun:
+        weight: 1
+        cost: 1
+        attack:
+            range: 10
+            damage: 10
+            shotspersec: 1
+            stealth: -10
+            type: pierce
+        slots:
+            core: 1
+            barrel: 1
+            chamber: 2
+
+    bow:
+        weight: 1
+        cost: 1
+        attack:
+            range: 20
+            damage: 5
+            shotspersec: 1
+            type: pierce
         slots:
             core: 1
 
