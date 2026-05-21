@@ -16,6 +16,13 @@ export type DamageType =
     | 'nano'
     | 'antigrav'
     | 'data';
+export type Condition =
+    | 'ko'
+    | 'berserk'
+    | 'aflame'
+    | 'poisoned'
+    | 'cursed'
+    | 'blessed';
 
 type Attack = {
     range?: number;

@@ -1,9 +1,10 @@
-import { hashAxial } from './hex';
 import { Expedition } from './expedition';
-import { Place, Terrain, TERRAIN_LIST } from './place';
 import { Faction } from './faction';
+// import { Group } from './group';
+import { hashAxial } from './hex';
+import { Item } from './item';
+import { Place, Terrain, TERRAIN_LIST } from './place';
 import { Util } from './util';
-import { Group } from './group';
 
 // Lazy procedural hex map. Terrain for each hex is deterministic given the
 // planet seed, so panning away and back shows the same world.
@@ -56,7 +57,7 @@ export class Planet {
         };
     }
 
-    static logExamples(generator: () => Group, quantity: number = 10): void {
+    static logExamples(generator: () => Item, quantity: number = 10): void {
         console.log(`\nExample generator outputs:`);
 
         const examples = [];
@@ -72,7 +73,7 @@ export class Planet {
     static test(): void {
         Planet.random().startExpedition();
 
-        Planet.logExamples(Group.randomWeapon, 50);
+        Planet.logExamples(Item.randomWeapon, 50);
         // Planet.logExamples(Group.randomCreature);
     }
 }
