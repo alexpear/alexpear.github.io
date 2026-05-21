@@ -182,7 +182,7 @@ item:
         weight: 1
         cost: 10
         asmod:
-            attachto: any
+            attachto: gun
             slot: core
             prefix: hover
             add:
