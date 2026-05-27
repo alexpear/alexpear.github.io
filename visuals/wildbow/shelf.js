@@ -220,12 +220,12 @@ ${booksHTML}
             { spine: 'XX: Crown of Thorns', words: 102119, serial: 'Twig' },
             { spine: 'XXI: Forest for the Trees', words: 22469, serial: 'Twig' },
 
-            { spine: 'I: The Point', words: 53900, serial: 'Claw' },
-            { spine: 'II: Retraction', words: 46200, serial: 'Claw' },
-            { spine: 'III: Scrape', words: 46200, serial: 'Claw' },
-            { spine: 'IV: Tip', words: 46200, serial: 'Claw' },
-            { spine: 'V: The Quick', words: 53900, serial: 'Claw' },
-            { spine: 'VI: Bear', words: 46200, serial: 'Claw' },
+            { spine: 'I: The Point', words: 49620, serial: 'Claw' },
+            { spine: 'II: Retraction', words: 40321, serial: 'Claw' },
+            { spine: 'III: Scrape', words: 45314, serial: 'Claw' },
+            { spine: 'IV: Tip', words: 48317, serial: 'Claw' },
+            { spine: 'V: The Quick', words: 64149, serial: 'Claw' },
+            { spine: 'VI: Bear', words: 55142, serial: 'Claw' },
 
             { spine: '0: HACK', words: 4 * 6000, serial: 'Seek' },
             { spine: '1: CONTROL', words: 8 * 6000, serial: 'Seek' },
@@ -233,7 +233,7 @@ ${booksHTML}
             { spine: '3: MUTE', words: 12 * 6000, serial: 'Seek' },
             { spine: '4: ESC', words: 7 * 6000, serial: 'Seek' },
             { spine: '5: SEARCH', words: 8 * 6000, serial: 'Seek' },
-            { spine: '6: ?', words: 8 * 6000, serial: 'Seek' },
+            { spine: '6: ', words: 8 * 6000, serial: 'Seek' },
         ];
     }
 
