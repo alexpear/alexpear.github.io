@@ -38,6 +38,9 @@ export class UI {
         midWorld: { x: number; y: number };
     } | null = null;
     private mouseDragging = false;
+
+    private iconCache: Map<string, HTMLImageElement> = new Map();
+    private iconLoaded: Set<string> = new Set();
     private lastPointer: { x: number; y: number } | null = null;
 
     // DPR-scaled screen size in CSS pixels
@@ -310,14 +313,14 @@ export class UI {
         const ctx = this.ctx;
         const place = this.planet.place(q, r);
         const center = axialToWorld(q, r);
-        const s = this.worldToScreen(center.x, center.y);
+        const screenCoord = this.worldToScreen(center.x, center.y);
         const size = this.camera.scale; // world size is 1
         const corners = hexCorners(size);
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
             const c = corners[i];
-            const x = s.x + c.x;
-            const y = s.y + c.y;
+            const x = screenCoord.x + c.x;
+            const y = screenCoord.y + c.y;
             if (i === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
         }
@@ -332,12 +335,17 @@ export class UI {
         if (this.mode === 'place') {
             const focus = worldToAxial(this.camera.x, this.camera.y);
             if (focus.q === q && focus.r === r) {
-                this.drawPlaceText(place, s.x, s.y, size);
+                this.drawPlaceText(place, screenCoord.x, screenCoord.y, size);
             }
         }
     }
 
-    private drawPlaceText(place: Place, cx: number, cy: number, size: number) {
+    private drawPlaceText(
+        place: Place,
+        centerX: number,
+        centerY: number,
+        size: number,
+    ) {
         const ctx = this.ctx;
         ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
         ctx.textAlign = 'center';
@@ -345,13 +353,68 @@ export class UI {
         const titleSize = Math.min(28, size * 0.09);
         const bodySize = Math.min(16, size * 0.055);
         ctx.font = `bold ${titleSize}px sans-serif`;
-        ctx.fillText(place.name(), cx, cy - size * 0.35);
+        ctx.fillText(place.name(), centerX, centerY - size * 0.35);
         ctx.font = `${bodySize}px sans-serif`;
         const lines = place.flavor();
         const lineGap = bodySize * 1.4;
-        const startY = cy - ((lines.length - 1) * lineGap) / 2 + size * 0.05;
+        const startY =
+            centerY - ((lines.length - 1) * lineGap) / 2 + size * 0.05;
         for (let i = 0; i < lines.length; i++) {
-            ctx.fillText(lines[i], cx, startY + i * lineGap);
+            ctx.fillText(lines[i], centerX, startY + i * lineGap);
+        }
+        this.drawItemIcons(place, centerX, centerY, size);
+    }
+
+    private getIcon(ideaId: string): HTMLImageElement | null {
+        if (!this.iconCache.has(ideaId)) {
+            const img = new Image();
+            img.onload = () => this.iconLoaded.add(ideaId);
+            img.src = `media/${ideaId}.svg`;
+            this.iconCache.set(ideaId, img);
+        }
+        return this.iconLoaded.has(ideaId) ? this.iconCache.get(ideaId)! : null;
+    }
+
+    private drawItemIcons(
+        place: Place,
+        centerX: number,
+        centerY: number,
+        size: number,
+    ) {
+        const ideaIds: string[] = [];
+        for (const item of place.items) {
+            ideaIds.push(item.mainIdea.id);
+            for (const mod of item.has) {
+                ideaIds.push(mod.id);
+            }
+        }
+        if (ideaIds.length === 0) return;
+
+        const maxRowWidth = size * 1.4;
+        const gap = size * 0.02;
+        let iconSize = Math.min(size * 0.15, 44);
+        const totalWidth =
+            ideaIds.length * iconSize + (ideaIds.length - 1) * gap;
+        if (totalWidth > maxRowWidth) {
+            iconSize =
+                (maxRowWidth - (ideaIds.length - 1) * gap) / ideaIds.length;
+        }
+
+        const rowWidth = ideaIds.length * iconSize + (ideaIds.length - 1) * gap;
+        const startX = centerX - rowWidth / 2;
+
+        // centerY + size * 1 would be the bottom of the hex.
+        const iconY = centerY + size * 0.2;
+
+        for (let i = 0; i < ideaIds.length; i++) {
+            const x = startX + i * (iconSize + gap);
+            const img = this.getIcon(ideaIds[i]);
+            if (img) {
+                this.ctx.drawImage(img, x, iconY, iconSize, iconSize);
+            } else {
+                this.ctx.fillStyle = 'rgba(0,0,0,0.15)';
+                this.ctx.fillRect(x, iconY, iconSize, iconSize);
+            }
         }
     }
 
