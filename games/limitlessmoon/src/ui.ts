@@ -15,7 +15,7 @@ interface Camera {
 // Scale at which one hex fills the screen horizontally. Computed per resize.
 function placeScale(screenWidth: number): number {
     // Add a small margin so hex edges don't touch screen edges.
-    return (screenWidth * 0.92) / HEX_WIDTH;
+    return (screenWidth * 0.8) / HEX_WIDTH;
 }
 
 // Default map-view scale — roughly a hex per thumb-width on mobile.
@@ -266,7 +266,9 @@ export class UI {
     // Called when a drag/pinch finishes. Handles mode transitions and snapping.
     private onGestureEnd() {
         const pScale = placeScale(this.width);
-        if (this.camera.scale >= pScale * 0.85) {
+        const SNAP_THRESHOLD = 0.75; // fraction of placeScale at which we snap into place view
+
+        if (this.camera.scale >= pScale * SNAP_THRESHOLD) {
             // Snap into Place View.
             this.mode = 'place';
             this.camera.scale = pScale;
