@@ -116,11 +116,11 @@ export class Item {
     }
 
     static randomItem(): Item {
-        const weapon = new Item(Idea.randomItem());
+        const item = new Item(Idea.randomItem());
 
-        weapon.maybeAddParts();
+        item.maybeAddParts();
 
-        return weapon;
+        return item;
     }
 
     static randomWeapon(): Item {
