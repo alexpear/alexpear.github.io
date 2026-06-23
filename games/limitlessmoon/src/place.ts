@@ -1,6 +1,8 @@
 // A Place is one hex on a Planet. Prototype: terrain type + placeholder flavor.
 // Note: a Place's identity is its (q, r) coords on the Planet, not a uuid.
 
+import { Item } from './item';
+
 export enum Terrain {
     Plains = 'plains',
     Hills = 'hills',
@@ -32,11 +34,14 @@ export class Place {
     q: number;
     r: number;
     terrain: Terrain;
+    items: Item[];
 
     constructor(q: number, r: number, terrain: Terrain) {
         this.q = q;
         this.r = r;
         this.terrain = terrain;
+        // TODO Later we will call expedition.thingsAt(this)
+        this.items = [Item.random()];
     }
 
     name(): string {
@@ -51,7 +56,7 @@ export class Place {
             `Terrain: ${this.terrain}`,
             `Axial coord: ${this.q}, ${this.r}`,
             'No creatures sighted.',
-            'No items on the ground.',
+            `Items: ${this.items.map((i) => i.prettyString()).join(', ')}`,
         ];
     }
 

@@ -115,7 +115,7 @@ export class Item {
         return newItem;
     }
 
-    static randomItem(): Item {
+    static random(): Item {
         const item = new Item(Idea.randomItem());
 
         item.maybeAddParts();
