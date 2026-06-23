@@ -85,7 +85,7 @@
     "limitlessdata": "npx tsc -p games/limitlessmoon/build && node games/limitlessmoon/build/dist/builder.js",
     "jestlimitless": "NODE_NO_WARNINGS=1 node --experimental-vm-modules node_modules/.bin/jest --testPathPattern=limitlessmoon",
     "limitless": "npm run lint && npm run prettierwrite && npm run limitlessdata && npx tsc -p games/limitlessmoon && npm run jestlimitless && npx browserify games/limitlessmoon/dist/main.js -o games/limitlessmoon/dist/bundle.js && node games/limitlessmoon/dist/planet.js",
-    "limitlessui": "npm run server & open http://localhost:8081/games/limitlessmoon/limitless.html",
+    "limitlessui": "npm run server & open http://localhost:8080/games/limitlessmoon/limitless.html",
     "shelf": "node visuals/wildbow/shelf.js > visuals/wildbow/shelf.html && prettier --write visuals/wildbow/",
     "wots": "npm run lint && npm run prettierwrite && webpack --config games/wots/webpack.config.js &&  npm run jest && npm run server",
     "openwots": "open http://127.0.0.1:8083/games/wots/wots.html",
