@@ -79,6 +79,7 @@ export class UI {
         canvas.addEventListener('wheel', (e) => this.onWheel(e), {
             passive: false,
         });
+        window.addEventListener('keydown', (e) => this.onKeyDown(e));
 
         const loop = () => {
             this.draw();
@@ -208,6 +209,23 @@ export class UI {
         if (!this.mouseDragging) return;
         this.mouseDragging = false;
         this.lastPointer = null;
+        this.onGestureEnd();
+    }
+
+    private onKeyDown(e: KeyboardEvent) {
+        const deltas: Record<string, { dq: number; dr: number }> = {
+            ArrowUp: { dq: 0, dr: -1 },
+            ArrowDown: { dq: 0, dr: 1 },
+            ArrowLeft: { dq: -1, dr: 0 },
+            ArrowRight: { dq: 1, dr: 0 },
+        };
+        const delta = deltas[e.key];
+        if (!delta) return;
+        e.preventDefault();
+        const cur = worldToAxial(this.camera.x, this.camera.y);
+        const next = axialToWorld(cur.q + delta.dq, cur.r + delta.dr);
+        this.camera.x = next.x;
+        this.camera.y = next.y;
         this.onGestureEnd();
     }
 
