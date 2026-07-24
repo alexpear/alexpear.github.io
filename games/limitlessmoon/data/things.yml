@@ -1,7 +1,137 @@
 creature:
     human:
         weight: 80
-        # LATER fill out
+        tags: animal
+        # if likely is not listed, it defaults to 1
+        likely: 10
+
+    robot:
+        weight: 100
+        tags: machine
+
+    cyborg:
+        weight: 80
+        tags: animal machine
+
+    digivampyr:
+        weight: 80
+        tags: animal
+
+    voidling:
+        weight: 80
+        tags: animal
+
+    asura:
+        weight: 80
+        tags: animal
+
+    gorillaform:
+        weight: 80
+        tags: animal
+
+    monkeyform:
+        weight: 80
+        tags: animal
+
+    foxform:
+        weight: 80
+        tags: animal
+
+    wolfform:
+        weight: 80
+        tags: animal
+
+    lionform:
+        weight: 80
+        tags: animal
+
+    tigerform:
+        weight: 120
+        tags: animal
+
+    minotaurus:
+        weight: 120
+        tags: animal
+
+    stagform:
+        weight: 120
+        tags: animal
+
+    elephantine:
+        weight: 200
+        tags: animal
+
+    raccoonform:
+        weight: 80
+        tags: animal
+
+    ramform:
+        weight: 80
+        tags: animal
+
+    rhinoform:
+        weight: 180
+        tags: animal
+
+    birdform:
+        weight: 80
+        tags: animal
+
+    lizardform:
+        weight: 90
+        tags: animal
+
+    snakeform:
+        weight: 80
+        tags: animal
+
+    turtleform:
+        weight: 80
+        tags: animal
+
+    crocoform:
+        weight: 80
+        tags: animal
+
+    brontoform:
+        weight: 200
+        tags: animal
+
+    stegaform:
+        weight: 200
+        tags: animal
+
+    fishform:
+        weight: 80
+        tags: animal
+
+    antform:
+        weight: 80
+        tags: animal
+
+    spiderform:
+        weight: 80
+        tags: animal
+
+    octoform:
+        weight: 80
+        tags: animal
+
+    snailform:
+        weight: 80
+        tags: animal
+
+    dragonform:
+        weight: 1000
+        tags: animal
+
+    angelform:
+        weight: 80
+        tags: animal
+
+    cyberghost:
+        weight: 0
+        tags: digital
 
     # TODO is a tank a creature or a item?
 
@@ -262,3 +392,7 @@ item:
             overwrite:
                 damagetype: laser
             prefix: sting
+
+tag_implications:
+    # tag: other tags it implies
+    animal: biological
