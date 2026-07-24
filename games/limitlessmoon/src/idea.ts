@@ -52,21 +52,29 @@ type ModAdditions = {
 
 type Overwrites = { name?: string; damagetype?: DamageType; hands?: number };
 
+type IdeaCategory = {
+    [key: string]: Idea | MetaEntry;
+    meta: MetaEntry;
+}
+
+type MetaEntry = { likelySum: number };
+
 const IDEA_TYPES: IdeaType[] = ['creature', 'item', 'trait'];
 
 export class Idea {
     id: string = '';
     cost: number = 1;
     weight: number = 1;
+    likely: number = 1;
     ideaType: IdeaType;
-    attack: Attack;
+    attack?: Attack;
     asmod?: ModEffects;
     slots?: Record<string, number>;
 
-    static encyclopedia: Record<IdeaType, Record<string, Idea>> = {
-        creature: {},
-        item: {},
-        trait: {},
+    static encyclopedia: Record<IdeaType, IdeaCategory> = {
+        creature: { meta: { likelySum: 1 } },
+        item: { meta: { likelySum: 1 } },
+        trait: { meta: { likelySum: 1 } },
     };
 
     static init(): void {
@@ -77,10 +85,17 @@ export class Idea {
 
             if (!bucket) continue;
 
+            let likelySum = 0;
+
             for (const [id, def] of Object.entries(bucket)) {
                 const idea = Object.assign(new Idea(), def, { id, ideaType });
                 Idea.encyclopedia[ideaType][id] = idea;
+                likelySum += idea.likely;
             }
+
+            // Idea.encyclopedia[ideaType].meta = { likelySum };
+            Idea.encyclopedia[ideaType].meta.likelySum = likelySum;
+            // Idea.encyclopedia.meta[ideaType].likelySum = likelySum;
         }
     }
 
@@ -99,10 +114,17 @@ export class Idea {
     prettyString(): string {
         return Util.fromCamelCase(this.id);
     }
+    
+    static entries(ideaType: IdeaType): Idea[] {
+        return Object.keys(Idea.encyclopedia[ideaType])
+            .filter((key) => key !== 'meta')
+            .map((key => Idea.encyclopedia[ideaType][key] as Idea));
+    }
 
     static random(): Idea {
+        // TODO likely weighting
         const all = IDEA_TYPES.flatMap((t) =>
-            Object.values(Idea.encyclopedia[t]),
+            Idea.entries(t)
         );
 
         return Util.randomOf(all);
