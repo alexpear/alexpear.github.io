@@ -55,7 +55,7 @@ type Overwrites = { name?: string; damagetype?: DamageType; hands?: number };
 type IdeaCategory = {
     [key: string]: Idea | MetaEntry;
     meta: MetaEntry;
-}
+};
 
 type MetaEntry = { likelySum: number };
 
@@ -114,18 +114,17 @@ export class Idea {
     prettyString(): string {
         return Util.fromCamelCase(this.id);
     }
-    
+
+    // Returns array of all Ideas of a given type.
     static entries(ideaType: IdeaType): Idea[] {
         return Object.keys(Idea.encyclopedia[ideaType])
             .filter((key) => key !== 'meta')
-            .map((key => Idea.encyclopedia[ideaType][key] as Idea));
+            .map((key) => Idea.encyclopedia[ideaType][key] as Idea);
     }
 
     static random(): Idea {
         // TODO likely weighting
-        const all = IDEA_TYPES.flatMap((t) =>
-            Idea.entries(t)
-        );
+        const all = IDEA_TYPES.flatMap((t) => Idea.entries(t));
 
         return Util.randomOf(all);
     }
