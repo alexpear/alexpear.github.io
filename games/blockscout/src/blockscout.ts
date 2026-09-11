@@ -85,12 +85,13 @@ export class BlockScout {
     constructor() {
         // --- Map setup ---
         this.tileLayer = L.tileLayer(
-            'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+            // NOTE: tile.openstreetmap.org & cartocdn.com both block this app (403 / 'API Key Required'). The OSM Germany community server serves the standard style without a key.
+            'https://tile.openstreetmap.de/{z}/{x}/{y}.png',
             {
                 maxZoom: 19,
                 // NOTE: This attribution string displays as hyperlinks in the bottom right of the screen.
                 attribution:
-                    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+                    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             },
         ).addTo(this.map);
 
