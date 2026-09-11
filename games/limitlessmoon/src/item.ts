@@ -70,7 +70,7 @@ export class Item {
 
         // Add more parts/mods to this item's slots.
         const modCandidates = Util.shuffle(
-            Object.values(Idea.encyclopedia.item).filter((idea) => {
+            Idea.entries('item').filter((idea) => {
                 if (!this.mainIdea.slots?.[idea?.asmod?.slot]) return false;
 
                 return [this.mainIdea.id, 'any', undefined].includes(

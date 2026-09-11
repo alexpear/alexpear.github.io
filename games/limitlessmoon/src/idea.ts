@@ -79,9 +79,8 @@ export class Idea {
 
     static init(): void {
         for (const ideaType of IDEA_TYPES) {
-            const bucket = (THINGS as Record<string, Record<string, object>>)[
-                ideaType
-            ];
+            // THINGS also has non-idea sections (eg tag_implications), so index by IdeaType rather than casting the whole object.
+            const bucket: Record<string, object> = THINGS[ideaType];
 
             if (!bucket) continue;
 
@@ -130,16 +129,16 @@ export class Idea {
     }
 
     static randomCreature(): Idea {
-        return Util.randomOf(Object.values(Idea.encyclopedia.creature));
+        return Util.randomOf(Idea.entries('creature'));
     }
 
     static randomItem(): Idea {
-        return Util.randomOf(Object.values(Idea.encyclopedia.item));
+        return Util.randomOf(Idea.entries('item'));
     }
 
     static randomWeapon(): Idea {
         return Util.randomOf(
-            Object.values(Idea.encyclopedia.item).filter((idea) => idea.attack),
+            Idea.entries('item').filter((idea) => idea.attack),
         );
     }
 }
