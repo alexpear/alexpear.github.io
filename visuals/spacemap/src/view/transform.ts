@@ -1,4 +1,4 @@
-import { Point2D } from '../orbital/positions';
+import { Point2D } from '../orbital/types';
 
 export interface Framing {
     centroid: Point2D;

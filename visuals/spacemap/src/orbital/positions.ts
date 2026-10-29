@@ -1,10 +1,11 @@
-import { Body, Ecliptic, HelioVector } from 'astronomy-engine';
-import { PlanetDef } from './planetData';
-
-export interface Point2D {
-    x: number;
-    y: number;
-}
+import {
+    AstroTime,
+    Body,
+    Ecliptic,
+    HelioVector,
+    Vector,
+} from 'astronomy-engine';
+import { Point2D } from './types';
 
 const MILLISECONDS_PER_DAY = 86400000;
 
@@ -16,18 +17,34 @@ export function eclipticPositionAu(body: Body, date: Date): Point2D {
     return { x: ecliptic.vec.x, y: ecliptic.vec.y };
 }
 
-export function orbitPathAu(
-    planet: PlanetDef,
+// Same ecliptic flattening as eclipticPositionAu, but for a vector that
+// isn't already a Vector instance (eg a StateVector's position components,
+// such as from JupiterMoons or LagrangePoint).
+export function toEclipticPoint(
+    x: number,
+    y: number,
+    z: number,
+    t: AstroTime,
+): Point2D {
+    const ecliptic = Ecliptic(new Vector(x, y, z, t));
+    return { x: ecliptic.vec.x, y: ecliptic.vec.y };
+}
+
+// Traces an object's orbit by sampling its position across one period.
+// Works for any periodic object (planet, moon, Lagrange point), not just planets.
+export function tracedOrbitPathAu(
+    positionAu: (date: Date) => Point2D,
+    periodDays: number,
     date: Date,
     samples: number = 180,
 ): Point2D[] {
     const points: Point2D[] = [];
     for (let i = 0; i <= samples; i++) {
-        const dayOffset = (planet.orbitalPeriodDays * i) / samples;
+        const dayOffset = (periodDays * i) / samples;
         const sampleDate = new Date(
             date.getTime() + dayOffset * MILLISECONDS_PER_DAY,
         );
-        points.push(eclipticPositionAu(planet.body, sampleDate));
+        points.push(positionAu(sampleDate));
     }
     return points;
 }

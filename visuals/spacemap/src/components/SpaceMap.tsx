@@ -1,11 +1,11 @@
-import { Body } from 'astronomy-engine';
 import React from 'react';
 import { SpaceMapConfig } from '../config';
-import { PLANETS, PlanetDef } from '../orbital/planetData';
-import { eclipticPositionAu, orbitPathAu, Point2D } from '../orbital/positions';
+import { PLANETS } from '../orbital/catalog';
+import { CelestialObject, Point2D } from '../orbital/types';
 import { computeFraming, makeAuToScreenTransform } from '../view/transform';
 
 const BODY_RADIUS_PX = 5;
+const LAGRANGE_POINT_RADIUS_PX = 4;
 const SUN_RADIUS_PX = 8;
 const MIN_ZOOM_MULTIPLIER = 0.05;
 const MAX_ZOOM_MULTIPLIER = 50;
@@ -62,9 +62,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
 
     const focusPoints = React.useMemo(
         () =>
-            config.focusBodies.map((body) =>
-                eclipticPositionAu(body, config.date),
-            ),
+            config.focusObjects.map((object) => object.positionAu(config.date)),
         [config],
     );
 
@@ -90,9 +88,19 @@ export function SpaceMap({ config }: Props): JSX.Element {
         [framing, viewportSize, panOffset, zoomMultiplier],
     );
 
-    const focusBodySet = React.useMemo(
-        () => new Set<Body>(config.focusBodies),
-        [config.focusBodies],
+    const planetIdSet = React.useMemo(
+        () => new Set(PLANETS.map((planet) => planet.id)),
+        [],
+    );
+    const focusIdSet = React.useMemo(
+        () => new Set(config.focusObjects.map((object) => object.id)),
+        [config],
+    );
+    // Moons, Lagrange points, etc: only rendered when they're in the current focus list.
+    const focusedExtras = React.useMemo(
+        () =>
+            config.focusObjects.filter((object) => !planetIdSet.has(object.id)),
+        [config, planetIdSet],
     );
 
     function handlePointerDown(event: React.PointerEvent<SVGSVGElement>): void {
@@ -156,8 +164,16 @@ export function SpaceMap({ config }: Props): JSX.Element {
             >
                 {PLANETS.map((planet) => (
                     <OrbitPath
-                        key={planet.name}
-                        planet={planet}
+                        key={planet.id}
+                        object={planet}
+                        date={config.date}
+                        toScreen={toScreen}
+                    />
+                ))}
+                {focusedExtras.map((object) => (
+                    <OrbitPath
+                        key={object.id}
+                        object={object}
                         date={config.date}
                         toScreen={toScreen}
                     />
@@ -168,35 +184,24 @@ export function SpaceMap({ config }: Props): JSX.Element {
                     r={SUN_RADIUS_PX}
                     fill="#ffd27f"
                 />
-                {PLANETS.map((planet) => {
-                    const auPoint = eclipticPositionAu(
-                        planet.body,
-                        config.date,
-                    );
-                    const screenPoint = toScreen(auPoint);
-                    const isFocused = focusBodySet.has(planet.body);
-                    return (
-                        <g key={planet.name}>
-                            <circle
-                                cx={screenPoint.x}
-                                cy={screenPoint.y}
-                                r={BODY_RADIUS_PX}
-                                fill={planet.color}
-                            />
-                            {isFocused && (
-                                <text
-                                    x={screenPoint.x + BODY_RADIUS_PX + 4}
-                                    y={screenPoint.y + 4}
-                                    fill="#e6e6e6"
-                                    fontSize={13}
-                                    fontFamily="sans-serif"
-                                >
-                                    {planet.name}
-                                </text>
-                            )}
-                        </g>
-                    );
-                })}
+                {PLANETS.map((planet) => (
+                    <ObjectMarker
+                        key={planet.id}
+                        object={planet}
+                        date={config.date}
+                        toScreen={toScreen}
+                        showLabel={focusIdSet.has(planet.id)}
+                    />
+                ))}
+                {focusedExtras.map((object) => (
+                    <ObjectMarker
+                        key={object.id}
+                        object={object}
+                        date={config.date}
+                        toScreen={toScreen}
+                        showLabel
+                    />
+                ))}
             </svg>
             <button onClick={resetView} style={resetButtonStyle}>
                 Reset view
@@ -205,17 +210,24 @@ export function SpaceMap({ config }: Props): JSX.Element {
     );
 }
 
-interface OrbitPathProps {
-    planet: PlanetDef;
+interface ObjectLayerProps {
+    object: CelestialObject;
     date: Date;
     toScreen: (point: Point2D) => Point2D;
 }
 
-function OrbitPath({ planet, date, toScreen }: OrbitPathProps): JSX.Element {
+function OrbitPath({
+    object,
+    date,
+    toScreen,
+}: ObjectLayerProps): JSX.Element | null {
     const pathAu = React.useMemo(
-        () => orbitPathAu(planet, date),
-        [planet, date],
+        () => object.orbitPathAu?.(date) ?? null,
+        [object, date],
     );
+    if (!pathAu) {
+        return null;
+    }
     const pathData =
         pathAu
             .map((point, index) => {
@@ -227,10 +239,55 @@ function OrbitPath({ planet, date, toScreen }: OrbitPathProps): JSX.Element {
         <path
             d={pathData}
             fill="none"
-            stroke={planet.color}
+            stroke={object.color}
             strokeOpacity={0.35}
             strokeWidth={1}
         />
+    );
+}
+
+function ObjectMarker({
+    object,
+    date,
+    toScreen,
+    showLabel,
+}: ObjectLayerProps & { showLabel: boolean }): JSX.Element {
+    const screenPoint = toScreen(object.positionAu(date));
+    const radius = object.isPhysicalBody
+        ? BODY_RADIUS_PX
+        : LAGRANGE_POINT_RADIUS_PX;
+    return (
+        <g>
+            {object.isPhysicalBody ? (
+                <circle
+                    cx={screenPoint.x}
+                    cy={screenPoint.y}
+                    r={radius}
+                    fill={object.color}
+                />
+            ) : (
+                <circle
+                    cx={screenPoint.x}
+                    cy={screenPoint.y}
+                    r={radius}
+                    fill="none"
+                    stroke={object.color}
+                    strokeWidth={1.5}
+                    strokeDasharray="2,2"
+                />
+            )}
+            {showLabel && (
+                <text
+                    x={screenPoint.x + radius + 4}
+                    y={screenPoint.y + 4}
+                    fill="#e6e6e6"
+                    fontSize={13}
+                    fontFamily="sans-serif"
+                >
+                    {object.name}
+                </text>
+            )}
+        </g>
     );
 }
 
