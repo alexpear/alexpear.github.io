@@ -1,21 +1,31 @@
-import { JUPITER_MOONS } from './jupiterMoons';
-import { LAGRANGE_POINTS } from './lagrangePoints';
-import { PLANETS } from './planets';
-import { CelestialObject } from './types';
+import { lagrange } from './lagrangePoints';
+import { EARTH, JUPITER, JUPITER_MOONS, PLANETS, SOL } from './things';
+import { Thing } from './types';
 
-// Planets are the map's always-visible base layer (for orientation), drawn
-// whether or not they're focused. Everything else only appears when focused.
-export { PLANETS };
-
-export const FOCUSABLE_EXTRAS: CelestialObject[] = [
-    ...JUPITER_MOONS,
-    ...LAGRANGE_POINTS,
+// L3 (far side of Sol) is omitted: it's rarely referenced outside fiction,
+// and for a minimal-astronomy audience it's not worth the extra label to
+// explain. Computed here rather than cataloged, since a Lagrange point is
+// just a derived position, not a Thing with its own data to list.
+const LAGRANGE_POINTS: Thing[] = [
+    lagrange(SOL, EARTH, 1),
+    lagrange(SOL, EARTH, 2),
+    lagrange(SOL, EARTH, 4),
+    lagrange(SOL, EARTH, 5),
+    lagrange(SOL, JUPITER, 4),
+    lagrange(SOL, JUPITER, 5),
 ];
 
-export const ALL_OBJECTS: CelestialObject[] = [...PLANETS, ...FOCUSABLE_EXTRAS];
+// Sol and the planets are the map's always-visible base layer (for
+// orientation), drawn whether or not they're focused. Everything else only
+// appears when focused.
+export const BASE_LAYER: Thing[] = [SOL, ...PLANETS];
 
-export const OBJECTS_BY_ID: ReadonlyMap<string, CelestialObject> = new Map(
-    ALL_OBJECTS.map((celestialObject) => [celestialObject.id, celestialObject]),
+export const FOCUSABLE_EXTRAS: Thing[] = [...JUPITER_MOONS, ...LAGRANGE_POINTS];
+
+export const ALL_THINGS: Thing[] = [...BASE_LAYER, ...FOCUSABLE_EXTRAS];
+
+export const THINGS_BY_ID: ReadonlyMap<string, Thing> = new Map(
+    ALL_THINGS.map((thing) => [thing.id, thing]),
 );
 
 export const DEFAULT_FOCUS_IDS: string[] = PLANETS.map((planet) => planet.id);

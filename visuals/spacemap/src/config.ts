@@ -1,8 +1,8 @@
-import { DEFAULT_FOCUS_IDS, OBJECTS_BY_ID } from './orbital/catalog';
-import { CelestialObject } from './orbital/types';
+import { DEFAULT_FOCUS_IDS, THINGS_BY_ID } from './orbital/catalog';
+import { Thing } from './orbital/types';
 
 export interface SpaceMapConfig {
-    focusObjects: CelestialObject[];
+    focusObjects: Thing[];
     date: Date;
 }
 
@@ -16,8 +16,8 @@ export function parseConfigFromUrl(search: string): SpaceMapConfig {
         ? focusParam.split(',').map((id) => id.trim().toLowerCase())
         : DEFAULT_FOCUS_IDS;
     const focusObjects = requestedIds
-        .map((id) => OBJECTS_BY_ID.get(id))
-        .filter((object): object is CelestialObject => object !== undefined);
+        .map((id) => THINGS_BY_ID.get(id))
+        .filter((object): object is Thing => object !== undefined);
 
     const timeParam = params.get('t');
     const parsedDate = timeParam ? new Date(timeParam) : new Date();
@@ -26,7 +26,7 @@ export function parseConfigFromUrl(search: string): SpaceMapConfig {
         focusObjects:
             focusObjects.length > 0
                 ? focusObjects
-                : DEFAULT_FOCUS_IDS.map((id) => OBJECTS_BY_ID.get(id)!),
+                : DEFAULT_FOCUS_IDS.map((id) => THINGS_BY_ID.get(id)!),
         date: isNaN(parsedDate.getTime()) ? new Date() : parsedDate,
     };
 }

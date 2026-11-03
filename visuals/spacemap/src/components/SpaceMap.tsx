@@ -1,12 +1,17 @@
 import React from 'react';
 import { SpaceMapConfig } from '../config';
-import { PLANETS } from '../orbital/catalog';
-import { CelestialObject, Point2D } from '../orbital/types';
+import { BASE_LAYER } from '../orbital/catalog';
+import { Point2D, Thing, ThingKind } from '../orbital/types';
 import { computeFraming, makeAuToScreenTransform } from '../view/transform';
 
-const BODY_RADIUS_PX = 5;
-const LAGRANGE_POINT_RADIUS_PX = 4;
-const SUN_RADIUS_PX = 8;
+const RADIUS_PX: Record<ThingKind, number> = {
+    star: 8,
+    planet: 5,
+    moon: 5,
+    asteroid: 3,
+    spacecraft: 3,
+    lagrangePoint: 4,
+};
 const MIN_ZOOM_MULTIPLIER = 0.05;
 const MAX_ZOOM_MULTIPLIER = 50;
 const WHEEL_ZOOM_STEP = 1.15;
@@ -88,8 +93,8 @@ export function SpaceMap({ config }: Props): JSX.Element {
         [framing, viewportSize, panOffset, zoomMultiplier],
     );
 
-    const planetIdSet = React.useMemo(
-        () => new Set(PLANETS.map((planet) => planet.id)),
+    const baseLayerIdSet = React.useMemo(
+        () => new Set(BASE_LAYER.map((thing) => thing.id)),
         [],
     );
     const focusIdSet = React.useMemo(
@@ -99,8 +104,10 @@ export function SpaceMap({ config }: Props): JSX.Element {
     // Moons, Lagrange points, etc: only rendered when they're in the current focus list.
     const focusedExtras = React.useMemo(
         () =>
-            config.focusObjects.filter((object) => !planetIdSet.has(object.id)),
-        [config, planetIdSet],
+            config.focusObjects.filter(
+                (object) => !baseLayerIdSet.has(object.id),
+            ),
+        [config, baseLayerIdSet],
     );
 
     function handlePointerDown(event: React.PointerEvent<SVGSVGElement>): void {
@@ -140,8 +147,6 @@ export function SpaceMap({ config }: Props): JSX.Element {
         );
     }
 
-    const sunScreenPoint = toScreen({ x: 0, y: 0 });
-
     return (
         <div
             ref={containerRef}
@@ -162,10 +167,10 @@ export function SpaceMap({ config }: Props): JSX.Element {
                 onPointerLeave={handlePointerUp}
                 onWheel={handleWheel}
             >
-                {PLANETS.map((planet) => (
+                {BASE_LAYER.map((thing) => (
                     <OrbitPath
-                        key={planet.id}
-                        object={planet}
+                        key={thing.id}
+                        object={thing}
                         date={config.date}
                         toScreen={toScreen}
                     />
@@ -178,19 +183,13 @@ export function SpaceMap({ config }: Props): JSX.Element {
                         toScreen={toScreen}
                     />
                 ))}
-                <circle
-                    cx={sunScreenPoint.x}
-                    cy={sunScreenPoint.y}
-                    r={SUN_RADIUS_PX}
-                    fill="#ffd27f"
-                />
-                {PLANETS.map((planet) => (
+                {BASE_LAYER.map((thing) => (
                     <ObjectMarker
-                        key={planet.id}
-                        object={planet}
+                        key={thing.id}
+                        object={thing}
                         date={config.date}
                         toScreen={toScreen}
-                        showLabel={focusIdSet.has(planet.id)}
+                        showLabel={focusIdSet.has(thing.id)}
                     />
                 ))}
                 {focusedExtras.map((object) => (
@@ -211,7 +210,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
 }
 
 interface ObjectLayerProps {
-    object: CelestialObject;
+    object: Thing;
     date: Date;
     toScreen: (point: Point2D) => Point2D;
 }
@@ -253,19 +252,11 @@ function ObjectMarker({
     showLabel,
 }: ObjectLayerProps & { showLabel: boolean }): JSX.Element {
     const screenPoint = toScreen(object.positionAu(date));
-    const radius = object.isPhysicalBody
-        ? BODY_RADIUS_PX
-        : LAGRANGE_POINT_RADIUS_PX;
+    const radius = RADIUS_PX[object.kind];
+    const isLagrangePoint = object.kind === 'lagrangePoint';
     return (
         <g>
-            {object.isPhysicalBody ? (
-                <circle
-                    cx={screenPoint.x}
-                    cy={screenPoint.y}
-                    r={radius}
-                    fill={object.color}
-                />
-            ) : (
+            {isLagrangePoint ? (
                 <circle
                     cx={screenPoint.x}
                     cy={screenPoint.y}
@@ -274,6 +265,13 @@ function ObjectMarker({
                     stroke={object.color}
                     strokeWidth={1.5}
                     strokeDasharray="2,2"
+                />
+            ) : (
+                <circle
+                    cx={screenPoint.x}
+                    cy={screenPoint.y}
+                    r={radius}
+                    fill={object.color}
                 />
             )}
             {showLabel && (

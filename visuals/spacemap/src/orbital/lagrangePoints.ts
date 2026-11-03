@@ -1,108 +1,56 @@
-import { Body, LagrangePoint } from 'astronomy-engine';
+import { LagrangePoint } from 'astronomy-engine';
 import { toEclipticPoint, tracedOrbitPathAu } from './positions';
-import { CelestialObject, Point2D } from './types';
+import { Point2D, Thing } from './types';
 
-interface LagrangePointDef {
-    id: string;
-    name: string;
-    color: string;
-    point: number; // 1..5
-    majorBody: Body;
-    minorBody: Body;
-    orbitalPeriodDays: number; // the minor body's period: a fixed astronomical constant, not live data
+// A Lagrange point isn't a catalogable object: it's a position defined by
+// a pair of bodies, so we compute it on demand instead of listing each one
+// as a static def. `thing1` is the major body (eg Sol) and `thing2` is the
+// minor body (eg Earth) of the two-body system, matching astronomy-engine's
+// own major/minor convention; `lagrangeNumber` selects which of the 5 points
+// (1, 2, 4, and 5 are the stable/commonly-used ones; 3, on the far side of
+// the major body, is rarely referenced outside fiction).
+export function lagrange(
+    thing1: Thing,
+    thing2: Thing,
+    lagrangeNumber: number,
+): Thing {
+    if (!thing1.body || !thing2.body) {
+        throw new Error(
+            `lagrange() requires both Things to have a body: ${thing1.id}, ${thing2.id}`,
+        );
+    }
+    const majorBody = thing1.body;
+    const minorBody = thing2.body;
+
+    // LagrangePoint() returns a vector relative to the major body's center,
+    // so no extra offset is needed to place it in the map's frame.
+    function positionAu(date: Date): Point2D {
+        const stateVector = LagrangePoint(
+            lagrangeNumber,
+            date,
+            majorBody,
+            minorBody,
+        );
+        return toEclipticPoint(
+            stateVector.x,
+            stateVector.y,
+            stateVector.z,
+            stateVector.t,
+        );
+    }
+
+    return {
+        id: `${thing1.id}-${thing2.id}-l${lagrangeNumber}`,
+        name: `${thing1.name}–${thing2.name} L${lagrangeNumber}`,
+        color: thing2.color,
+        kind: 'lagrangePoint',
+        // Traces the minor body's orbit, since that's the period this
+        // Lagrange point shares (eg Earth's, for a Sun-Earth point).
+        orbitalPeriodDays: thing2.orbitalPeriodDays,
+        positionAu,
+        orbitPathAu: thing2.orbitalPeriodDays
+            ? (date: Date): Point2D[] =>
+                  tracedOrbitPathAu(positionAu, thing2.orbitalPeriodDays!, date)
+            : undefined,
+    };
 }
-
-const EARTH_ORBITAL_PERIOD_DAYS = 365.256;
-const JUPITER_ORBITAL_PERIOD_DAYS = 4332.59;
-
-// L3 (far side of the Sun) is omitted: it's rarely referenced outside fiction,
-// and for a minimal-astronomy audience it's not worth the extra label to explain.
-const LAGRANGE_POINT_DEFS: LagrangePointDef[] = [
-    {
-        id: 'sun-earth-l1',
-        name: 'Sun–Earth L1',
-        color: '#8fd1c7',
-        point: 1,
-        majorBody: Body.Sun,
-        minorBody: Body.EMB,
-        orbitalPeriodDays: EARTH_ORBITAL_PERIOD_DAYS,
-    },
-    {
-        id: 'sun-earth-l2',
-        name: 'Sun–Earth L2',
-        color: '#8fd1c7',
-        point: 2,
-        majorBody: Body.Sun,
-        minorBody: Body.EMB,
-        orbitalPeriodDays: EARTH_ORBITAL_PERIOD_DAYS,
-    },
-    {
-        id: 'sun-earth-l4',
-        name: 'Sun–Earth L4',
-        color: '#8fd1c7',
-        point: 4,
-        majorBody: Body.Sun,
-        minorBody: Body.EMB,
-        orbitalPeriodDays: EARTH_ORBITAL_PERIOD_DAYS,
-    },
-    {
-        id: 'sun-earth-l5',
-        name: 'Sun–Earth L5',
-        color: '#8fd1c7',
-        point: 5,
-        majorBody: Body.Sun,
-        minorBody: Body.EMB,
-        orbitalPeriodDays: EARTH_ORBITAL_PERIOD_DAYS,
-    },
-    {
-        id: 'sun-jupiter-l4',
-        name: 'Sun–Jupiter L4 (Trojans)',
-        color: '#d9b36c',
-        point: 4,
-        majorBody: Body.Sun,
-        minorBody: Body.Jupiter,
-        orbitalPeriodDays: JUPITER_ORBITAL_PERIOD_DAYS,
-    },
-    {
-        id: 'sun-jupiter-l5',
-        name: 'Sun–Jupiter L5 (Trojans)',
-        color: '#d9b36c',
-        point: 5,
-        majorBody: Body.Sun,
-        minorBody: Body.Jupiter,
-        orbitalPeriodDays: JUPITER_ORBITAL_PERIOD_DAYS,
-    },
-];
-
-// LagrangePoint() returns a vector relative to the major body's center
-// (the Sun, for all points defined here), so no extra offset is needed.
-function lagrangePointPositionAu(def: LagrangePointDef, date: Date): Point2D {
-    const stateVector = LagrangePoint(
-        def.point,
-        date,
-        def.majorBody,
-        def.minorBody,
-    );
-    return toEclipticPoint(
-        stateVector.x,
-        stateVector.y,
-        stateVector.z,
-        stateVector.t,
-    );
-}
-
-export const LAGRANGE_POINTS: CelestialObject[] = LAGRANGE_POINT_DEFS.map(
-    (def) => ({
-        id: def.id,
-        name: def.name,
-        color: def.color,
-        isPhysicalBody: false,
-        positionAu: (date: Date) => lagrangePointPositionAu(def, date),
-        orbitPathAu: (date: Date) =>
-            tracedOrbitPathAu(
-                (sampleDate) => lagrangePointPositionAu(def, sampleDate),
-                def.orbitalPeriodDays,
-                date,
-            ),
-    }),
-);
