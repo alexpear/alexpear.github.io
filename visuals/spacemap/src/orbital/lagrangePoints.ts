@@ -1,6 +1,7 @@
 import { LagrangePoint } from 'astronomy-engine';
 import { toEclipticPoint, tracedOrbitPathAu } from './positions';
-import { Point2D, Thing } from './types';
+import { Thing } from './thing';
+import { Point2D } from './types';
 
 // A Lagrange point isn't a catalogable object: it's a position defined by
 // a pair of bodies, so we compute it on demand instead of listing each one
@@ -39,18 +40,18 @@ export function lagrange(
         );
     }
 
-    return {
-        id: `${thing1.id}-${thing2.id}-l${lagrangeNumber}`,
-        name: `${thing1.name}–${thing2.name} L${lagrangeNumber}`,
-        colorHex: thing2.colorHex,
-        kind: 'lagrangePoint',
-        // Traces the minor body's orbit, since that's the period this
-        // Lagrange point shares (eg Earth's, for a Sun-Earth point).
-        orbitalPeriodDays: thing2.orbitalPeriodDays,
-        positionAu,
-        orbitPathAu: thing2.orbitalPeriodDays
-            ? (date: Date): Point2D[] =>
-                  tracedOrbitPathAu(positionAu, thing2.orbitalPeriodDays!, date)
-            : undefined,
-    };
+    return new Thing(
+        `${thing1.name}–${thing2.name} L${lagrangeNumber}`,
+        majorBody,
+        'lagrangePoint',
+        '#aaffaa',
+        thing2.orbitalPeriodDays || 0,
+    );
+    
+    // orbitPathAu: thing2.orbitalPeriodDays
+    //     ? (date: Date): Point2D[] =>
+    //             tracedOrbitPathAu(positionAu, thing2.orbitalPeriodDays!, date)
+    //     : undefined,
 }
+
+/** TEMP i want to move some of these funcs into thing.ts */
