@@ -26,19 +26,17 @@ export class Thing {
     // Only set for Things that actually orbit something (not Sol). Used to
     // trace orbitPathAu, and by lagrange() to trace its own orbit path.
     orbitalPeriodDays?: number;
-    
-    positionAu: (date: Date) => Point2D;
-    
-    // Only set for objects whose traced orbit is worth drawing.
-    orbitPathAu?: (date: Date) => Point2D[];
 
-    constructor(name: string, body: Body, kind: ThingKind, colorHex: string, orbitalPeriodDays: number) {
+    smallLagrangeParent?: Thing; // for Lagrange points, the minor body of the two-body system
+
+    constructor(name: string, body: Body, kind: ThingKind, colorHex: string, orbitalPeriodDays: number, smallLagrangeParent?: Thing) {
         this.name = name;
         this.id = name.toLowerCase(); // TODO slugify instead
         this.colorHex = colorHex;
         this.kind = kind;
         this.body = body;
         this.orbitalPeriodDays = orbitalPeriodDays;
+        this.smallLagrangeParent = smallLagrangeParent;
         // this.positionAu = (date: Date) => this.eclipticPositionAu(body, date);
         // this.orbitPathAu = (date: Date) =>
         //     tracedOrbitPathAu(this.positionAu, orbitalPeriodDays, date);
@@ -47,7 +45,8 @@ export class Thing {
     // Flattened onto the ecliptic plane: this map is 2D and does not express
     // orbital tilt (eg Pluto's), so we discard the z-component.
     // TODO probably unify with positionAu()
-     eclipticPositionAu(date: Date): Point2D {
+     positionAu(date: Date): Point2D {
+        // TODO case where there's no Body (eg spacecraft)
         const helioVector = HelioVector(this.body, date);
         const ecliptic = Ecliptic(helioVector);
         return { x: ecliptic.vec.x, y: ecliptic.vec.y };
@@ -56,7 +55,7 @@ export class Thing {
     // Traces an object's orbit by sampling its position across one period.
     // Works for any periodic object (planet, moon, Lagrange point), not just planets.
     // TODO probably unify with orbitPathAu()
-    tracedOrbitPathAu(
+    orbitPathAu(
         date: Date,
         samples: number = 180,
     ): Point2D[] {
@@ -66,12 +65,12 @@ export class Thing {
             const sampleDate = new Date(
                 date.getTime() + dayOffset * MILLISECONDS_PER_DAY,
             );
-            points.push(this.eclipticPositionAu(sampleDate));
+            points.push(this.positionAu(sampleDate));
         }
         return points;
     }
 
-    // A Lagrange point isn't a catalogable object: it's a position defined by
+    // A Lagrange point is a position defined by
     // a pair of bodies, so we compute it on demand instead of listing each one
     // as a static def. `this` is the major body (eg Sol) and `thing2` is the
     // minor body (eg Earth) of the two-body system, matching astronomy-engine's
@@ -80,16 +79,18 @@ export class Thing {
     // the major body, is less useful).
     // Usage: sol.lagrange(earth, 1) returns the Sol-Earth L1 point.
     lagrange(
-        thing2: Thing,
+        smallParent: Thing,
         lagrangeNumber: number,
     ): Thing {
-        if (!this.body || !thing2.body) {
+        if (!this.body || !smallParent.body) {
             throw new Error(
-                `lagrange() requires both Things to have a body: ${this.id}, ${thing2.id}`,
+                `lagrange() requires both Things to have a Body: ${this.id}, ${smallParent.id}`,
             );
         }
-        const majorBody = this.body;
-        const minorBody = thing2.body;
+
+        // TODO case where earth.lagrange(sol, 2) is called. Swap em.
+        const bigBody = this.body;
+        const smallBody = smallParent.body;
     
         // LagrangePoint() returns a vector relative to the major body's center,
         // so no extra offset is needed to place it in the map's frame.
@@ -97,8 +98,8 @@ export class Thing {
             const stateVector = LagrangePoint(
                 lagrangeNumber,
                 date,
-                majorBody,
-                minorBody,
+                bigBody,
+                smallBody,
             );
             return toEclipticPoint(
                 stateVector.x,
@@ -109,11 +110,12 @@ export class Thing {
         }
     
         return new Thing(
-            `${this.name}–${thing2.name} L${lagrangeNumber}`,
-            majorBody,
+            `${this.name}–${smallParent.name} L${lagrangeNumber}`,
+            bigBody, // TODO swap, this.body should be the small one, & Thing should have a field for bigParent
             'lagrangePoint',
             '#aaffaa',
-            thing2.orbitalPeriodDays || 0,
+            smallParent.orbitalPeriodDays || 0,
+            smallParent,
         );
         
         // TODO this should be one of the cases of Thing's orbit path func. 

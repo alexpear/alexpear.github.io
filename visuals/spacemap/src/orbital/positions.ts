@@ -28,8 +28,8 @@ export function toEclipticPoint(
     return { x: ecliptic.vec.x, y: ecliptic.vec.y };
 }
 
-// // Traces an object's orbit by sampling its position across one period.
-// // Works for any periodic object (planet, moon, Lagrange point), not just planets.
+// Traces an object's orbit by sampling its position across one period.
+// Works for any periodic object (planet, moon, Lagrange point), not just planets.
 export function tracedOrbitPathAu(
     positionAu: (date: Date) => Point2D,
     periodDays: number,

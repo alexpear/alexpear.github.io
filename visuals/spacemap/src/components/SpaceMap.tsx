@@ -68,7 +68,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
 
     const focusPoints = React.useMemo(
         () =>
-            config.focusObjects.map((object) => object.positionAu(config.date)),
+            config.focusedThings.map((object) => object.positionAu(config.date)),
         [config],
     );
 
@@ -99,13 +99,13 @@ export function SpaceMap({ config }: Props): JSX.Element {
         [],
     );
     const focusIdSet = React.useMemo(
-        () => new Set(config.focusObjects.map((object) => object.id)),
+        () => new Set(config.focusedThings.map((object) => object.id)),
         [config],
     );
     // Moons, Lagrange points, etc: only rendered when they're in the current focus list.
     const focusedExtras = React.useMemo(
         () =>
-            config.focusObjects.filter(
+            config.focusedThings.filter(
                 (object) => !baseLayerIdSet.has(object.id),
             ),
         [config, baseLayerIdSet],

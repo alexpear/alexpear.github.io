@@ -2,7 +2,7 @@ import { DEFAULT_FOCUS_IDS, THINGS_BY_ID } from './orbital/catalog';
 import { Thing } from './orbital/thing';
 
 export interface SpaceMapConfig {
-    focusObjects: Thing[];
+    focusedThings: Thing[];
     date: Date;
 }
 
@@ -23,7 +23,7 @@ export function parseConfigFromUrl(search: string): SpaceMapConfig {
     const parsedDate = timeParam ? new Date(timeParam) : new Date();
 
     return {
-        focusObjects:
+        focusedThings:
             focusObjects.length > 0
                 ? focusObjects
                 : DEFAULT_FOCUS_IDS.map((id) => THINGS_BY_ID.get(id)!),
