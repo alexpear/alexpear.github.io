@@ -139,3 +139,25 @@ export function makeAuToScreenTransform(
         };
     };
 }
+
+// The pan/zoom part of the transform above is screen = viewportCenter +
+// panOffset + effectiveScale * rotated(auPoint). Zooming by `zoomRatio`
+// (newZoomMultiplier / oldZoomMultiplier) scales effectiveScale by that same
+// ratio; this returns the panOffset that keeps `anchorScreen` (eg the
+// cursor, or a pinch's midpoint) fixed on screen through that change, so the
+// zoom feels anchored to it rather than to the framing's centroid.
+export function panOffsetForZoomAnchor(
+    anchorScreen: Point2D,
+    viewportCenter: Point2D,
+    panOffset: Point2D,
+    zoomRatio: number,
+): Point2D {
+    return {
+        x:
+            (anchorScreen.x - viewportCenter.x) * (1 - zoomRatio) +
+            zoomRatio * panOffset.x,
+        y:
+            (anchorScreen.y - viewportCenter.y) * (1 - zoomRatio) +
+            zoomRatio * panOffset.y,
+    };
+}
