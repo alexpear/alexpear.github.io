@@ -18,7 +18,7 @@ const RADIUS_PX: Record<ThingKind, number> = {
     lagrangePoint: 4,
 };
 const MIN_ZOOM_MULTIPLIER = 0.05;
-const MAX_ZOOM_MULTIPLIER = 50;
+const MAX_ZOOM_MULTIPLIER = 1000;
 // Wheel deltaY -> zoom ratio. Chosen so an ordinary mouse wheel notch
 // (deltaY roughly 100-120 in most browsers) is a gentle ~8% step; a trackpad's
 // continuous small deltas each nudge the zoom by a fraction of a percent.
@@ -43,6 +43,17 @@ interface PinchState {
     midpoint: Point2D;
 }
 
+// panOffset and zoomMultiplier are updated together: see applyZoom() for why.
+interface ViewState {
+    panOffset: Point2D;
+    zoomMultiplier: number;
+}
+
+const INITIAL_VIEW_STATE: ViewState = {
+    panOffset: { x: 0, y: 0 },
+    zoomMultiplier: 1,
+};
+
 function pinchStateOf(pointers: Map<number, Point2D>): PinchState {
     const [a, b] = [...pointers.values()];
     return {
@@ -61,8 +72,9 @@ export function SpaceMap({ config }: Props): JSX.Element {
         width: 800,
         height: 600,
     });
-    const [panOffset, setPanOffset] = React.useState<Point2D>({ x: 0, y: 0 });
-    const [zoomMultiplier, setZoomMultiplier] = React.useState(1);
+    const [viewState, setViewState] =
+        React.useState<ViewState>(INITIAL_VIEW_STATE);
+    const { panOffset, zoomMultiplier } = viewState;
 
     React.useEffect(() => {
         const container = containerRef.current;
@@ -83,8 +95,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
     }, []);
 
     const resetView = React.useCallback(() => {
-        setPanOffset({ x: 0, y: 0 });
-        setZoomMultiplier(1);
+        setViewState(INITIAL_VIEW_STATE);
     }, []);
 
     // Re-frame automatically whenever the embed config (focus list, timestamp) changes.
@@ -142,22 +153,34 @@ export function SpaceMap({ config }: Props): JSX.Element {
     // Applies a zoom change by `zoomRatio` (newZoom / oldZoom) anchored at
     // `anchorScreen` (a cursor position or a pinch midpoint, in the SVG's
     // own coordinate space), so that point stays fixed on screen.
+    //
+    // panOffset and zoomMultiplier update in one setState call, not two,
+    // because the ratio that actually reaches panOffsetForZoomAnchor has to
+    // be the ratio zoomMultiplier actually moved by — not the requested
+    // zoomRatio. Once zoomMultiplier is pinned at MIN/MAX, requested zoom
+    // keeps coming in (eg still scrolling the wheel) while the multiplier
+    // itself can't move any further; applying the full requested zoomRatio
+    // to panOffset regardless would keep panning it every event even though
+    // no zoom is actually happening, drifting it unboundedly off-screen.
     function applyZoom(anchorScreen: Point2D, zoomRatio: number): void {
-        setZoomMultiplier((current) =>
-            clamp(
-                current * zoomRatio,
+        setViewState((current) => {
+            const nextZoomMultiplier = clamp(
+                current.zoomMultiplier * zoomRatio,
                 MIN_ZOOM_MULTIPLIER,
                 MAX_ZOOM_MULTIPLIER,
-            ),
-        );
-        setPanOffset((current) =>
-            panOffsetForZoomAnchor(
-                anchorScreen,
-                { x: viewportSize.width / 2, y: viewportSize.height / 2 },
-                current,
-                zoomRatio,
-            ),
-        );
+            );
+            const appliedZoomRatio =
+                nextZoomMultiplier / current.zoomMultiplier;
+            return {
+                zoomMultiplier: nextZoomMultiplier,
+                panOffset: panOffsetForZoomAnchor(
+                    anchorScreen,
+                    { x: viewportSize.width / 2, y: viewportSize.height / 2 },
+                    current.panOffset,
+                    appliedZoomRatio,
+                ),
+            };
+        });
     }
 
     function handlePointerDown(event: React.PointerEvent<SVGSVGElement>): void {
@@ -205,14 +228,17 @@ export function SpaceMap({ config }: Props): JSX.Element {
         if (!dragState) {
             return;
         }
-        setPanOffset({
-            x:
-                dragState.startPanOffset.x +
-                (event.clientX - dragState.startClientX),
-            y:
-                dragState.startPanOffset.y +
-                (event.clientY - dragState.startClientY),
-        });
+        setViewState((current) => ({
+            ...current,
+            panOffset: {
+                x:
+                    dragState.startPanOffset.x +
+                    (event.clientX - dragState.startClientX),
+                y:
+                    dragState.startPanOffset.y +
+                    (event.clientY - dragState.startClientY),
+            },
+        }));
     }
 
     function handlePointerUp(event: React.PointerEvent<SVGSVGElement>): void {
