@@ -11,7 +11,7 @@ import {
 
 const RADIUS_PX: Record<ThingKind, number> = {
     star: 8,
-    planet: 5,
+    heliocentric: 5,
     moon: 5,
     asteroid: 3,
     spacecraft: 3,
