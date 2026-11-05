@@ -9,7 +9,6 @@ import {
     HelioVector,
     LagrangePoint,
     Vector,
-    // Vector,
 } from 'astronomy-engine';
 
 export class Thing {
@@ -27,24 +26,23 @@ export class Thing {
     orbitalPeriodDays?: number;
 
     lagrangeNumber?: number; // for Lagrange points, 1-5.
-    bigLagrangeParent?: Body; // for Lagrange points, the bigger of the 2 parents.
+    bigLagrangeParent?: Body; // for Lagrange points, the bigger of the 2 masses.
 
-    constructor(name: string, body: Body, kind: ThingKind, colorHex: string, orbitalPeriodDays: number, lagrangeNumber?: number, smallLagrangeParent?: Body) {
+    constructor(name: string, body: Body, kind: ThingKind, colorHex: string, orbitalPeriodDays: number, lagrangeNumber?: number, bigLagrangeParent?: Body) {
         this.name = name;
         this.id = name.toLowerCase(); // TODO slugify instead
         this.colorHex = colorHex;
         this.kind = kind;
         this.body = body;
+        // if (!body) { throw new Error(`Thing ${name} must have a Body`); }
         this.orbitalPeriodDays = orbitalPeriodDays;
         this.lagrangeNumber = lagrangeNumber;
-        this.bigLagrangeParent = smallLagrangeParent;
+        this.bigLagrangeParent = bigLagrangeParent;
     }
 
     // Flattened onto the ecliptic plane: this map is 2D and does not express
     // orbital tilt (eg Pluto's), so we discard the z-component.
      positionAu(date: Date): Point2D {
-        // TODO case where there's no Body (eg spacecraft)
-
         if (this.lagrangeNumber) {
             const stateVector = LagrangePoint(
                 this.lagrangeNumber,
@@ -61,6 +59,7 @@ export class Thing {
             return { x: ecliptic.vec.x, y: ecliptic.vec.y };
         }
 
+        // TODO case where there's no Body (eg spacecraft or even moons)
         const helioVector = HelioVector(this.body, date);
         const ecliptic = Ecliptic(helioVector);
         return { x: ecliptic.vec.x, y: ecliptic.vec.y };
@@ -68,7 +67,6 @@ export class Thing {
 
     // Traces an object's orbit by sampling its position across one period.
     // Works for any periodic object (planet, moon, Lagrange point), not just planets.
-    // TODO probably unify with orbitPathAu()
     orbitPathAu(
         date: Date,
         samples: number = 180,
