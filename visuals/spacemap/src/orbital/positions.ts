@@ -1,10 +1,10 @@
-import {
-    AstroTime,
-    // Body,
-    Ecliptic,
-    // HelioVector,
-    Vector,
-} from 'astronomy-engine';
+// import {
+//     AstroTime,
+//     // Body,
+//     Ecliptic,
+//     // HelioVector,
+//     Vector,
+// } from 'astronomy-engine';
 import { MILLISECONDS_PER_DAY, Point2D } from './types';
 
 // Flattened onto the ecliptic plane: this map is 2D and does not express
@@ -14,19 +14,6 @@ import { MILLISECONDS_PER_DAY, Point2D } from './types';
 //     const ecliptic = Ecliptic(helioVector);
 //     return { x: ecliptic.vec.x, y: ecliptic.vec.y };
 // }
-
-// Same ecliptic flattening as eclipticPositionAu, but for a vector that
-// isn't already a Vector instance (eg a StateVector's position components,
-// such as from JupiterMoons or LagrangePoint).
-export function toEclipticPoint(
-    x: number,
-    y: number,
-    z: number,
-    t: AstroTime,
-): Point2D {
-    const ecliptic = Ecliptic(new Vector(x, y, z, t));
-    return { x: ecliptic.vec.x, y: ecliptic.vec.y };
-}
 
 // Traces an object's orbit by sampling its position across one period.
 // Works for any periodic object (planet, moon, Lagrange point), not just planets.
