@@ -42,7 +42,7 @@ export function lagrange(
     return {
         id: `${thing1.id}-${thing2.id}-l${lagrangeNumber}`,
         name: `${thing1.name}–${thing2.name} L${lagrangeNumber}`,
-        color: thing2.color,
+        colorHex: thing2.colorHex,
         kind: 'lagrangePoint',
         // Traces the minor body's orbit, since that's the period this
         // Lagrange point shares (eg Earth's, for a Sun-Earth point).

@@ -238,7 +238,7 @@ function OrbitPath({
         <path
             d={pathData}
             fill="none"
-            stroke={object.color}
+            stroke={object.colorHex}
             strokeOpacity={0.35}
             strokeWidth={1}
         />
@@ -262,7 +262,7 @@ function ObjectMarker({
                     cy={screenPoint.y}
                     r={radius}
                     fill="none"
-                    stroke={object.color}
+                    stroke={object.colorHex}
                     strokeWidth={1.5}
                     strokeDasharray="2,2"
                 />
@@ -271,7 +271,7 @@ function ObjectMarker({
                     cx={screenPoint.x}
                     cy={screenPoint.y}
                     r={radius}
-                    fill={object.color}
+                    fill={object.colorHex}
                 />
             )}
             {showLabel && (
