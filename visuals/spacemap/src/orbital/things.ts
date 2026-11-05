@@ -15,25 +15,6 @@ import {Thing} from './thing';
 // Sol itself: fixed at the ecliptic origin, so no orbit to trace.
 export const SOL = new Thing('Sol', Body.Sun, 'star', '#ffd27f', 0);
 
-// {
-//     id: 'sol',
-//     name: 'Sol',
-//     colorHex: '#ffd27f',
-//     kind: 'star',
-//     body: Body.Sun,
-//     positionAu: () => ({ x: 0, y: 0 }),
-// };
-
-// NOTE - old, we already have interface Thing
-// interface ThingListing {
-//     id: string;
-//     body: Body;
-//     name: string;
-//     color: string;
-//     orbitalPeriodDays: number;
-// }
-
-// TODO put all Things here, such as the Galilean moons, not just planets. Rename.
 export const MAIN_THINGS: Thing[] = [
 // const PLANET_DEFS: PlanetDef[] = [
     new Thing ('Mercury', Body.Mercury, 'heliocentric', '#9e9e9e', 87.969),
@@ -49,113 +30,7 @@ export const MAIN_THINGS: Thing[] = [
     // new Thing('Europa', null, 'moon', '#d8dde0', 3.551),
     // new Thing('Ganymede', null, 'moon', '#a9977f', 7.155),
     // new Thing('Callisto', null, 'moon', '#7d7265', 16.689),
-    // {
-    //     id: 'venus',
-    //     body: Body.Venus,
-    //     name: 'Venus',
-    //     colorHex: '#e0c074',
-    //     orbitalPeriodDays: 224.701,
-    // },
-    // {
-    //     // Body.EMB (the Earth-Moon barycenter) rather than Body.Earth: the
-    //     // offset from Earth's center is a few thousand km, invisible at this
-    //     // map's AU scale, and using EMB makes lagrange() exact when this
-    //     // Thing is used as the minor body of a Sun-Earth Lagrange point.
-    //     id: 'earth',
-    //     body: Body.EMB,
-    //     name: 'Earth',
-    //     colorHex: '#4f82c6',
-    //     orbitalPeriodDays: 365.256,
-    // },
-    // {
-    //     id: 'mars',
-    //     body: Body.Mars,
-    //     name: 'Mars',
-    //     colorHex: '#c1562d',
-    //     orbitalPeriodDays: 686.98,
-    // },
-    // {
-    //     id: 'jupiter',
-    //     body: Body.Jupiter,
-    //     name: 'Jupiter',
-    //     colorHex: '#c99a6b',
-    //     orbitalPeriodDays: 4332.59,
-    // },
-    // {
-    //     id: 'saturn',
-    //     body: Body.Saturn,
-    //     name: 'Saturn',
-    //     colorHex: '#d4c58a',
-    //     orbitalPeriodDays: 10759.22,
-    // },
-    // {
-    //     id: 'uranus',
-    //     body: Body.Uranus,
-    //     name: 'Uranus',
-    //     colorHex: '#9fd4d8',
-    //     orbitalPeriodDays: 30688.5,
-    // },
-    // {
-    //     id: 'neptune',
-    //     body: Body.Neptune,
-    //     name: 'Neptune',
-    //     colorHex: '#5a74e0',
-    //     orbitalPeriodDays: 60182,
-    // },
-    // {
-    //     id: 'pluto',
-    //     body: Body.Pluto,
-    //     name: 'Pluto',
-    //     colorHex: '#b8a08c',
-    //     orbitalPeriodDays: 90560,
-    // },
-    // {
-    //     id: 'io',
-    //     name: 'Io',
-    //     color: '#e8d99a',
-    //     orbitalPeriodDays: 1.769,
-    //     stateVector: (m) => m.io,
-    // },
-    // {
-    //     id: 'europa',
-    //     name: 'Europa',
-    //     color: '#d8dde0',
-    //     orbitalPeriodDays: 3.551,
-    //     stateVector: (m) => m.europa,
-    // },
-    // {
-    //     id: 'ganymede',
-    //     name: 'Ganymede',
-    //     color: '#a9977f',
-    //     orbitalPeriodDays: 7.155,
-    //     stateVector: (m) => m.ganymede,
-    // },
-    // {
-    //     id: 'callisto',
-    //     name: 'Callisto',
-    //     color: '#7d7265',
-    //     orbitalPeriodDays: 16.689,
-    //     stateVector: (m) => m.callisto,
-    // },
 ];
-
-// export const PLANETS: Thing[] = MAIN_THINGS.map(
-//     (def): Thing => ({
-//         id: def.id,
-//         name: def.name,
-//         colorHex: def.colorHex,
-//         kind: 'planet',
-//         body: def.body,
-//         orbitalPeriodDays: def.orbitalPeriodDays,
-//         positionAu: (date: Date) => eclipticPositionAu(def.body, date),
-//         orbitPathAu: (date: Date) =>
-//             tracedOrbitPathAu(
-//                 (sampleDate) => eclipticPositionAu(def.body, sampleDate),
-//                 def.orbitalPeriodDays,
-//                 date,
-//             ),
-//     }),
-// );
 
 // Named references into PLANETS, for callers (eg the Lagrange points in
 // catalog.ts) that need a specific planet Thing rather than the whole list.
