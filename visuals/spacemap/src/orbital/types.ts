@@ -1,5 +1,7 @@
 // import { Body } from 'astronomy-engine';
 
+export const MILLISECONDS_PER_DAY = 86400000;
+
 export interface Point2D {
     x: number;
     y: number;

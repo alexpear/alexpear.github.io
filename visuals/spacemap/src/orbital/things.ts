@@ -1,26 +1,28 @@
 import {
     Body,
-    JupiterMoons,
-    JupiterMoonsInfo,
-    StateVector,
+    // JupiterMoons,
+    // JupiterMoonsInfo,
+    // StateVector,
 } from 'astronomy-engine';
-import {
-    // eclipticPositionAu,
-    toEclipticPoint,
-    // tracedOrbitPathAu,
-} from './positions';
-import { Point2D } from './types';
+// import {
+//     // eclipticPositionAu,
+//     toEclipticPoint,
+//     // tracedOrbitPathAu,
+// } from './positions';
+// import { Point2D } from './types';
 import {Thing} from './thing';
 
 // Sol itself: fixed at the ecliptic origin, so no orbit to trace.
-export const SOL: Thing = {
-    id: 'sol',
-    name: 'Sol',
-    colorHex: '#ffd27f',
-    kind: 'star',
-    body: Body.Sun,
-    positionAu: () => ({ x: 0, y: 0 }),
-};
+export const SOL = new Thing('Sol', Body.Sun, 'star', '#ffd27f', 0);
+
+// {
+//     id: 'sol',
+//     name: 'Sol',
+//     colorHex: '#ffd27f',
+//     kind: 'star',
+//     body: Body.Sun,
+//     positionAu: () => ({ x: 0, y: 0 }),
+// };
 
 // NOTE - old, we already have interface Thing
 // interface ThingListing {
@@ -32,10 +34,21 @@ export const SOL: Thing = {
 // }
 
 // TODO put all Things here, such as the Galilean moons, not just planets. Rename.
-const MAIN_THINGS: Thing[] = [
+export const MAIN_THINGS: Thing[] = [
 // const PLANET_DEFS: PlanetDef[] = [
     new Thing ('Mercury', Body.Mercury, 'planet', '#9e9e9e', 87.969),
-    // TODO use constructor for these commented out ones too:
+    new Thing('Venus', Body.Venus, 'planet', '#e0c074', 224.701),
+    new Thing('Earth', Body.EMB, 'planet', '#4f82c6', 365.256),
+    new Thing('Mars', Body.Mars, 'planet', '#c1562d', 686.98),
+    new Thing('Jupiter', Body.Jupiter, 'planet', '#c99a6b', 4332.59),
+    new Thing('Saturn', Body.Saturn, 'planet', '#d4c58a', 10759.22),
+    new Thing('Uranus', Body.Uranus, 'planet', '#9fd4d8', 30688.5),
+    new Thing('Neptune', Body.Neptune, 'planet', '#5a74e0', 60182),
+    new Thing('Pluto', Body.Pluto, 'planet', '#b8a08c', 90560),
+    new Thing('Io', null, 'moon', '#e8d99a', 1.769),
+    new Thing('Europa', null, 'moon', '#d8dde0', 3.551),
+    new Thing('Ganymede', null, 'moon', '#a9977f', 7.155),
+    new Thing('Callisto', null, 'moon', '#7d7265', 16.689),
     // {
     //     id: 'venus',
     //     body: Body.Venus,
@@ -151,13 +164,13 @@ export const JUPITER: Thing = MAIN_THINGS.find(
     (planet) => planet.id === 'jupiter',
 )!;
 
-interface GalileanMoonDef {
-    id: string;
-    name: string;
-    color: string;
-    orbitalPeriodDays: number;
-    stateVector: (moons: JupiterMoonsInfo) => StateVector; // TODO this func seems useless
-}
+// interface GalileanMoonDef {
+//     id: string;
+//     name: string;
+//     color: string;
+//     orbitalPeriodDays: number;
+//     stateVector: (moons: JupiterMoonsInfo) => StateVector; // TODO this func seems useless
+// }
 
 // const GALILEAN_MOON_DEFS: GalileanMoonDef[] = [
     
@@ -165,20 +178,20 @@ interface GalileanMoonDef {
 
 // Jovicentric (relative to Jupiter's center); add Jupiter's own heliocentric
 // position to place the moon in the same frame as everything else on the map.
-function moonPositionAu(def: GalileanMoonDef, date: Date): Point2D {
-    const jupiterHelio = eclipticPositionAu(Body.Jupiter, date);
-    const jovicentric = def.stateVector(JupiterMoons(date));
-    const jovicentricEcliptic = toEclipticPoint(
-        jovicentric.x,
-        jovicentric.y,
-        jovicentric.z,
-        jovicentric.t,
-    );
-    return {
-        x: jupiterHelio.x + jovicentricEcliptic.x,
-        y: jupiterHelio.y + jovicentricEcliptic.y,
-    };
-}
+// function moonPositionAu(def: GalileanMoonDef, date: Date): Point2D {
+//     const jupiterHelio = eclipticPositionAu(Body.Jupiter, date);
+//     const jovicentric = def.stateVector(JupiterMoons(date));
+//     const jovicentricEcliptic = toEclipticPoint(
+//         jovicentric.x,
+//         jovicentric.y,
+//         jovicentric.z,
+//         jovicentric.t,
+//     );
+//     return {
+//         x: jupiterHelio.x + jovicentricEcliptic.x,
+//         y: jupiterHelio.y + jovicentricEcliptic.y,
+//     };
+// }
 
 // export const JUPITER_MOONS: Thing[] = GALILEAN_MOON_DEFS.map(
 //     (def): Thing => ({

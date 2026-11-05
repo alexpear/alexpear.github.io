@@ -1,7 +1,8 @@
 import React from 'react';
 import { SpaceMapConfig } from '../config';
 import { BASE_LAYER } from '../orbital/catalog';
-import { Point2D, Thing, ThingKind } from '../orbital/types';
+import { Point2D, ThingKind } from '../orbital/types';
+import { Thing } from '../orbital/thing';
 import { computeFraming, makeAuToScreenTransform } from '../view/transform';
 
 const RADIUS_PX: Record<ThingKind, number> = {

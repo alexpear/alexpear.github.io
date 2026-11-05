@@ -1,5 +1,5 @@
 import { DEFAULT_FOCUS_IDS, THINGS_BY_ID } from './orbital/catalog';
-import { Thing } from './orbital/types';
+import { Thing } from './orbital/thing';
 
 export interface SpaceMapConfig {
     focusObjects: Thing[];
