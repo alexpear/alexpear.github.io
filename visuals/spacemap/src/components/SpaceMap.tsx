@@ -106,7 +106,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
     const focusPoints = React.useMemo(
         () =>
             config.focusedThings.map((object) =>
-                object.positionAu(config.date),
+                object.position(config.date),
             ),
         [config],
     );
@@ -345,7 +345,7 @@ function OrbitPath({
     toScreen,
 }: ObjectLayerProps): JSX.Element | null {
     const pathAu = React.useMemo(
-        () => object.orbitPathAu?.(date) ?? null,
+        () => object.orbitPath?.(date) ?? null,
         [object, date],
     );
     if (!pathAu) {
@@ -375,7 +375,7 @@ function ObjectMarker({
     toScreen,
     showLabel,
 }: ObjectLayerProps & { showLabel: boolean }): JSX.Element {
-    const screenPoint = toScreen(object.positionAu(date));
+    const screenPoint = toScreen(object.position(date));
     const radius = RADIUS_PX[object.kind];
     const isLagrangePoint = object.kind === 'lagrangePoint';
     return (

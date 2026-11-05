@@ -42,7 +42,8 @@ export class Thing {
 
     // Flattened onto the ecliptic plane: this map is 2D and does not express
     // orbital tilt (eg Pluto's), so we discard the z-component.
-     positionAu(date: Date): Point2D {
+    // Expressed in astronomical units (AU).
+     position(date: Date): Point2D {
         if (this.lagrangeNumber) {
             const stateVector = LagrangePoint(
                 this.lagrangeNumber,
@@ -67,7 +68,7 @@ export class Thing {
 
     // Traces an object's orbit by sampling its position across one period.
     // Works for any periodic object (planet, moon, Lagrange point), not just planets.
-    orbitPathAu(
+    orbitPath(
         date: Date,
         samples: number = 180,
     ): Point2D[] {
@@ -78,7 +79,7 @@ export class Thing {
             const sampleDate = new Date(
                 date.getTime() + dayOffset * MILLISECONDS_PER_DAY,
             );
-            points.push(this.positionAu(sampleDate));
+            points.push(this.position(sampleDate));
         }
         return points;
     }
