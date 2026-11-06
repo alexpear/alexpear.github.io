@@ -141,7 +141,7 @@ export class Thing {
         new Thing('Iapetus', null, 'moon', '#8f8370', 79.471398, 'saturn', 0.023828887, 69.7235),
         new Thing('Phoebe', null, 'moon', '#6f6a63', 548.154922, 'saturn', 0.086343888, 266.5226),
         new Thing('Janus', null, 'moon', '#b9b4a8', 0.700196, 'saturn', 0.001016504, 271.3066),
-        new Thing('Epimetheus', null, 'moon', '#b0ab9f', 0.699856, 'saturn', 0.001016175, 341.6707),
+        // new Thing('Epimetheus', null, 'moon', '#b0ab9f', 0.699856, 'saturn', 0.001016175, 341.6707),
         new Thing('Miranda', null, 'moon', '#9fa8ad', 1.413995, 'uranus', 0.000868135, 281.0398),
         new Thing('Ariel', null, 'moon', '#b9c4c9', 2.520790, 'uranus', 0.001276386, 37.8302),
         new Thing('Umbriel', null, 'moon', '#7d7d80', 4.145019, 'uranus', 0.001778178, 359.8002),
