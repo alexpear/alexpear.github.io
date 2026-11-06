@@ -1,5 +1,6 @@
 .DS_Store
 .eslintcache
+.vscode/
 node_modules
 ppp_2020_1km_Aggregated.tif
 worldpop-4x4res.txt
