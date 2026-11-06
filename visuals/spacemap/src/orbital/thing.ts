@@ -252,7 +252,7 @@ export class Thing {
         new Thing('Chiminigagua', null, 'asteroid', '#7d7873', 164520.090082, 'sol', 58.786074691, 185.7727, 0.394895, 326.2602), // 2013 FY27
         new Thing('Gonggong', null, 'asteroid', '#a84a3a', 200476.359847, 'sol', 67.066238396, 295.0887, 0.503411, 183.8297),
         new Thing('Eris', null, 'asteroid', '#e8e4da', 203938.828094, 'sol', 67.836241717, 38.3488, 0.438418, 187.1967),
-        new Thing("G!kún||'hòmdímà", null, 'asteroid', '#8c4536', 229715.696183, 'sol', 73.438243982, 106.4853, 0.488740, 117.6101), // 2007 UK126
+        new Thing("G!kún||'hòmdímà", null, 'asteroid', '#8c4536', 229715.696183, 'sol', 73.438243982, 106.4853, 0.488740, 117.6101), // 2007 UK126, aka Gkunhomdima
         new Thing('Sedna', null, 'asteroid', '#8b2e22', 4160095.140159, 'sol', 506.443123106, 94.1288, 0.849556, 95.6863),
     ];
 
