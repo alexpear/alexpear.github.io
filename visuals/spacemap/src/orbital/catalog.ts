@@ -1,5 +1,3 @@
-// import { lagrange } from './lagrangePoints';
-import { MAIN_THINGS, SOL } from './things';
 import { Thing } from './thing';
 
 // Computed here rather than cataloged, since a Lagrange point is
@@ -16,7 +14,7 @@ import { Thing } from './thing';
 // Sol and the planets are the map's always-visible base layer (for
 // orientation), drawn whether or not they're focused. Everything else only
 // appears when focused.
-export const BASE_LAYER: Thing[] = [SOL, ...MAIN_THINGS];
+export const BASE_LAYER: Thing[] = [...Thing.MAIN_THINGS];
 
 // export const FOCUSABLE_EXTRAS: Thing[] = [/*...JUPITER_MOONS,*/ ...LAGRANGE_POINTS];
 
@@ -27,6 +25,5 @@ export const THINGS_BY_ID: ReadonlyMap<string, Thing> = new Map(
 );
 
 export const DEFAULT_FOCUS_IDS: string[] = [
-    SOL.id,
-    ...MAIN_THINGS.map((planet) => planet.id),
+    ...Thing.MAIN_THINGS.map((planet) => planet.id),
 ];
