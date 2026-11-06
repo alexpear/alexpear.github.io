@@ -27,15 +27,15 @@ const WHEEL_ZOOM_SENSITIVITY = 0.0007;
 // occasional large deltaY spike can't jump the zoom level all at once.
 const MAX_WHEEL_ZOOM_RATIO = 1.3;
 // When two Things would render within this many screen pixels of each
-// other, the smaller one's marker and label are hidden rather than drawn on
-// top of (or right next to) the bigger one - mainly moons collapsing onto
-// their parent planet at low zoom. Real mass data isn't tracked anywhere
-// here, so "smaller" is approximated by thing.parentID !== 'sol': a moon or
-// asteroid orbiting something other than Sol is assumed less massive than
-// whatever it's crowding. That approximation can hide two mutually-close
-// moons entirely (eg Saturn's co-orbital Janus and Epimetheus both yield to
-// each other, since neither orbits Sol) rather than keeping the bigger one -
-// an acceptable rough edge for now.
+// other, the lower-priority one's marker and label are hidden rather than
+// drawn on top of (or right next to) the other - mainly moons and distant
+// asteroids/TNOs collapsing onto a planet, or onto each other, at low zoom.
+// Real mass data isn't tracked anywhere here, so priority is approximated
+// instead - see hidePriority() below: Sol always wins; otherwise a
+// heliocentric planet always beats a non-heliocentric body; otherwise the
+// shorter orbital period wins (eg Neptune beats Pluto). A tie only happens
+// for two literally-identical orbital periods, which doesn't occur in this
+// catalog.
 const MIN_MARKER_SEPARATION_PX = 20;
 // On some touchscreens, lifting both pinch fingers at (near) the same instant
 // produces a spurious pointermove reporting one finger's coordinates as
@@ -82,6 +82,27 @@ function pinchStateOf(pointers: Map<number, Point2D>): PinchState {
         distance: Math.hypot(b.x - a.x, b.y - a.y),
         midpoint: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 },
     };
+}
+
+// See MIN_MARKER_SEPARATION_PX: a [category, orbitalPeriodDays] pair, lower
+// in both is higher priority (less likely to be hidden on overlap). Category
+// 0 (Sol) always beats 1 (a heliocentric planet), which always beats 2
+// (everything else - moons, asteroids, TNOs); within a category, the
+// shorter orbital period wins.
+function hidePriority(thing: Thing): [number, number] {
+    const category = thing.kind === 'star' ? 0 : thing.kind === 'heliocentric' ? 1 : 2;
+    return [category, thing.orbitalPeriodDays ?? 0];
+}
+
+// True if `a` loses to `b` under hidePriority() - ie `a` is the one that
+// should be hidden when the two render within MIN_MARKER_SEPARATION_PX.
+function loses(a: Thing, b: Thing): boolean {
+    const [aCategory, aPeriodDays] = hidePriority(a);
+    const [bCategory, bPeriodDays] = hidePriority(b);
+    if (aCategory !== bCategory) {
+        return aCategory > bCategory;
+    }
+    return aPeriodDays > bPeriodDays;
 }
 
 export function SpaceMap({ config }: Props): JSX.Element {
@@ -182,9 +203,6 @@ export function SpaceMap({ config }: Props): JSX.Element {
         );
         const hidden = new Set<string>();
         for (let i = 0; i < displayedThings.length; i++) {
-            if (displayedThings[i].parentID === 'sol') {
-                continue;
-            }
             for (let j = 0; j < displayedThings.length; j++) {
                 if (i === j) {
                     continue;
@@ -193,7 +211,10 @@ export function SpaceMap({ config }: Props): JSX.Element {
                     screenPoints[i].x - screenPoints[j].x,
                     screenPoints[i].y - screenPoints[j].y,
                 );
-                if (distance < MIN_MARKER_SEPARATION_PX) {
+                if (
+                    distance < MIN_MARKER_SEPARATION_PX &&
+                    loses(displayedThings[i], displayedThings[j])
+                ) {
                     hidden.add(displayedThings[i].id);
                     break;
                 }
