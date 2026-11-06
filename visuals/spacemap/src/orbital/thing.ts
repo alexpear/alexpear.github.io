@@ -46,6 +46,9 @@ function toFixedEclipticPoint(vector: Vector): Point2D {
 // by single hyphens, no leading/trailing hyphen. Handles names toLowerCase()
 // alone can't, eg lagrange()'s "Sol–Earth L1" (en dash + space) -> "sol-earth-l1".
 function slugify(name: string): string {
+    if (name.startsWith('G!kun'))
+        return 'gkunhomdima';
+
     return name
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
@@ -219,10 +222,7 @@ export class Thing {
         //
         // A few of these were only given proper names in 2025 and may still
         // be unfamiliar even as TNOs go - their old provisional designation
-        // is noted in a trailing comment. 2007 UK126's actual name,
-        // G!kun||'homdima (San mythology), uses characters this file's id
-        // scheme (name.toLowerCase()) can't carry, so it's listed here under
-        // a plain transliteration instead.
+        // is noted in a trailing comment.
         //
         // Several of these orbits are eccentric enough (Sedna e=0.85,
         // Gonggong e=0.50, 2007 UK126 e=0.49, Eris e=0.44, Chiminigagua
@@ -252,7 +252,7 @@ export class Thing {
         new Thing('Chiminigagua', null, 'asteroid', '#7d7873', 164520.090082, 'sol', 58.786074691, 185.7727, 0.394895, 326.2602), // 2013 FY27
         new Thing('Gonggong', null, 'asteroid', '#a84a3a', 200476.359847, 'sol', 67.066238396, 295.0887, 0.503411, 183.8297),
         new Thing('Eris', null, 'asteroid', '#e8e4da', 203938.828094, 'sol', 67.836241717, 38.3488, 0.438418, 187.1967),
-        new Thing('Gkunhomdima', null, 'asteroid', '#8c4536', 229715.696183, 'sol', 73.438243982, 106.4853, 0.488740, 117.6101), // 2007 UK126, full name G!kun||'homdima
+        new Thing("G!kún||'hòmdímà", null, 'asteroid', '#8c4536', 229715.696183, 'sol', 73.438243982, 106.4853, 0.488740, 117.6101), // 2007 UK126
         new Thing('Sedna', null, 'asteroid', '#8b2e22', 4160095.140159, 'sol', 506.443123106, 94.1288, 0.849556, 95.6863),
     ];
 
