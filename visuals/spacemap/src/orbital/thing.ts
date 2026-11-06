@@ -50,7 +50,7 @@ export class Thing {
 
     // astronomy-engine's identifier for this Thing, when it has one. If this Thing is a Lagrange point, body refers to the smaller of the 2 parent masses.
     // TODO rename to bodyAE etc to clarify what this is.
-    body?: Body;
+    bodyAE?: Body;
 
     parentID: string; // this orbits parent. SOL.parentID === 'sol', ie itself.
 
@@ -88,7 +88,7 @@ export class Thing {
         this.id = name.toLowerCase(); // TODO slugify instead
         this.colorHex = colorHex;
         this.kind = kind;
-        this.body = body; // TODO make build process stricter, catch null passed here at compile time.
+        this.bodyAE = body; // TODO make build process stricter, catch null passed here at compile time.
         this.orbitalPeriodDays = orbitalPeriodDays;
         this.parentID = parentID;
         this.semiMajorAxisAu = semiMajorAxisAu;
@@ -154,7 +154,7 @@ export class Thing {
         new Thing('Larissa', null, 'moon', '#7f8089', 0.555318, 'neptune', 0.000491934, 317.6936),
         new Thing('Proteus', null, 'moon', '#6f7079', 1.122823, 'neptune', 0.000786598, 285.4243),
         new Thing('Charon', null, 'moon', '#a89a8c', 6.387221, 'pluto', 0.000130990, 195.0751),
-        new Thing('Moon', null, 'moon', '#d8d8d8', 27.115683, 'earth', 0.002558939, 167.1504),
+        new Thing('Luna', null, 'moon', '#d8d8d8', 27.115683, 'earth', 0.002558939, 167.1504),
         // Asteroids: just the two biggest main-belt bodies for now (Ceres is
         // also classified as a dwarf planet). Smaller Belt objects, Trojans,
         // etc. aren't included - flag if you want specific ones added.
@@ -175,7 +175,7 @@ export class Thing {
                 this.lagrangeNumber,
                 date,
                 this.bigLagrangeParent,
-                this.body,
+                this.bodyAE,
             );
 
             return toFixedEclipticPoint(
@@ -192,7 +192,7 @@ export class Thing {
 
         // Anything astronomy-engine doesn't track directly: every moon, or a
         // Sol-orbiting body like an asteroid.
-        if (!this.body) {
+        if (!this.bodyAE) {
             const parent = Thing.byID(this.parentID);
             if (!parent) {
                 throw new Error(
@@ -225,7 +225,7 @@ export class Thing {
             };
         }
 
-        return toFixedEclipticPoint(HelioVector(this.body, date));
+        return toFixedEclipticPoint(HelioVector(this.bodyAE, date));
     }
 
     // Traces an object's orbit by sampling its position across one period.
@@ -274,15 +274,15 @@ export class Thing {
         smallParent: Thing,
         lagrangeNumber: number,
     ): Thing {
-        if (!this.body || !smallParent.body) {
+        if (!this.bodyAE || !smallParent.bodyAE) {
             throw new Error(
                 `lagrange() requires both Things to have a Body: ${this.id}, ${smallParent.id}`,
             );
         }
 
         // TODO case where earth.lagrange(sol, 2) is called. Swap em.
-        const bigBody = this.body;
-        const smallBody = smallParent.body;
+        const bigBody = this.bodyAE;
+        const smallBody = smallParent.bodyAE;
     
         const lp = new Thing(
             `${this.name}–${smallParent.name} L${lagrangeNumber}`,
