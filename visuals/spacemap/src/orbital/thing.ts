@@ -145,120 +145,649 @@ export class Thing {
         this.periapsisLongitudeDeg = periapsisLongitudeDeg;
     }
 
-    static MAIN_THINGS: Thing[] = [
-        // TODO reorder all of these by AU
-        new Thing('Sol', Body.Sun, 'star', '#ffd27f', 0),
-        new Thing('Mercury', Body.Mercury, 'heliocentric', '#9e9e9e', 87.969),
-        new Thing('Venus', Body.Venus, 'heliocentric', '#e0c074', 224.701),
-        new Thing('Earth', Body.EMB, 'heliocentric', '#4f82c6', 365.256),
-        new Thing('Mars', Body.Mars, 'heliocentric', '#c1562d', 686.98),
-        new Thing('Jupiter', Body.Jupiter, 'heliocentric', '#c99a6b', 4332.59),
-        new Thing('Saturn', Body.Saturn, 'heliocentric', '#d4c58a', 10759.22),
-        new Thing('Uranus', Body.Uranus, 'heliocentric', '#9fd4d8', 30688.5),
-        new Thing('Neptune', Body.Neptune, 'heliocentric', '#5a74e0', 60182),
-        new Thing('Pluto', Body.Pluto, 'heliocentric', '#b8a08c', 90560),
-        // Every moon's (and asteroid's) period, semi-major axis, and mean
-        // longitude (OM + W + MA) at SIMPLE_ORBIT_EPOCH below are osculating
-        // elements from JPL Horizons (ssd.jpl.nasa.gov/api/horizons.api),
-        // queried relative to each one's own parent (Sol, for an asteroid)
-        // in the ecliptic-of-J2000 frame, at SIMPLE_ORBIT_EPOCH's date
-        // (JDTDB 2461349.5). Re-fetch and update everything below - don't
-        // just touch one entry - if SIMPLE_ORBIT_EPOCH ever moves forward,
-        // so they all stay anchored to the same instant; a known ~69-second
-        // TDB-vs-UTC imprecision, negligible for everything here except
-        // Phobos (period under 8 hours, where it's worth ~0.25 degrees of
-        // phase).
-        //
-        // Moons: every one at least as large as Saturn's Epimetheus (mean
-        // radius ~58 km, per JPL's Planetary Satellite Physical Parameters
-        // table at ssd.jpl.nasa.gov/sats/phys_par/), plus Phobos and Deimos
-        // (both smaller, included anyway since they're Mars' only moons).
-        new Thing('Io', null, 'moon', '#e8d99a', 1.771433, 'jupiter', 0.002821179, 5.6688),
-        new Thing('Europa', null, 'moon', '#d8dde0', 3.552391, 'jupiter', 0.004486332, 181.1794),
-        new Thing('Ganymede', null, 'moon', '#a9977f', 7.157812, 'jupiter', 0.007157128, 358.9916),
-        new Thing('Callisto', null, 'moon', '#7d7265', 16.692561, 'jupiter', 0.012586283, 252.7720),
-        new Thing('Himalia', null, 'moon', '#8f8064', 250.285587, 'jupiter', 0.076529912, 149.3419),
-        new Thing('Amalthea', null, 'moon', '#b08a6a', 0.501639, 'jupiter', 0.001216563, 294.5177),
-        new Thing('Titan', null, 'moon', '#d9b36c', 15.947349, 'saturn', 0.008168130, 93.0371),
-        new Thing('Phobos', null, 'moon', '#8a7d6b', 0.3191196, 'mars', 0.00006268688, 176.5605),
-        new Thing('Deimos', null, 'moon', '#a89a86', 1.262587, 'mars', 0.0001568129, 50.2769),
-        new Thing('Mimas', null, 'moon', '#c9c9c9', 0.947399, 'saturn', 0.001243515, 72.9939),
-        new Thing('Enceladus', null, 'moon', '#eef0f2', 1.374539, 'saturn', 0.001593679, 106.3438),
-        new Thing('Tethys', null, 'moon', '#d8d8d8', 1.891653, 'saturn', 0.001971774, 177.9322),
-        new Thing('Dione', null, 'moon', '#cfcfcf', 2.740340, 'saturn', 0.002524445, 60.7380),
-        new Thing('Rhea', null, 'moon', '#bdbdbd', 4.520396, 'saturn', 0.003524366, 302.8426),
-        new Thing('Hyperion', null, 'moon', '#a89880', 21.382504, 'saturn', 0.009931201, 345.7900),
-        new Thing('Iapetus', null, 'moon', '#8f8370', 79.471398, 'saturn', 0.023828887, 69.7235),
-        new Thing('Phoebe', null, 'moon', '#6f6a63', 548.154922, 'saturn', 0.086343888, 266.5226),
-        new Thing('Janus', null, 'moon', '#b9b4a8', 0.700196, 'saturn', 0.001016504, 271.3066),
-        // new Thing('Epimetheus', null, 'moon', '#b0ab9f', 0.699856, 'saturn', 0.001016175, 341.6707),
-        new Thing('Miranda', null, 'moon', '#9fa8ad', 1.413995, 'uranus', 0.000868135, 281.0398),
-        new Thing('Ariel', null, 'moon', '#b9c4c9', 2.520790, 'uranus', 0.001276386, 37.8302),
-        new Thing('Umbriel', null, 'moon', '#7d7d80', 4.145019, 'uranus', 0.001778178, 359.8002),
-        new Thing('Titania', null, 'moon', '#9aa6ad', 8.704609, 'uranus', 0.002916043, 154.1154),
-        new Thing('Oberon', null, 'moon', '#8f8a84', 13.466214, 'uranus', 0.003900537, 242.4414),
-        new Thing('Triton', null, 'moon', '#c9d8e0', 5.877119, 'neptune', 0.002371476, 59.9426),
-        // Nereid's orbit is eccentric enough (e=0.746) that the plain
-        // circular model above would put it visibly in the wrong place -
-        // same EC/OM/W/MA source and epoch as everything else here, just
-        // also given eccentricity + periapsisLongitudeDeg (OM+W) so
-        // offsetFromParent() solves the real ellipse instead.
-        new Thing('Nereid', null, 'moon', '#9fa0a3', 360.655661, 'neptune', 0.036892716, 194.1457, 0.746100, 256.0251),
-        new Thing('Despina', null, 'moon', '#8f909a', 0.335448, 'neptune', 0.000351530, 252.0855),
-        new Thing('Galatea', null, 'moon', '#8a8b94', 0.429472, 'neptune', 0.000414479, 88.0302),
-        new Thing('Larissa', null, 'moon', '#7f8089', 0.555318, 'neptune', 0.000491934, 317.6936),
-        new Thing('Proteus', null, 'moon', '#6f7079', 1.122823, 'neptune', 0.000786598, 285.4243),
-        new Thing('Charon', null, 'moon', '#a89a8c', 6.387221, 'pluto', 0.000130990, 195.0751),
-        new Thing('Luna', null, 'moon', '#d8d8d8', 27.115683, 'earth', 0.002558939, 167.1504),
-        // Asteroids: just the two biggest main-belt bodies for now (Ceres is
-        // also classified as a dwarf planet). Smaller Belt objects, Trojans,
-        // etc. aren't included - flag if you want specific ones added.
-        new Thing('Ceres', null, 'asteroid', '#b5a898', 1680.497869, 'sol', 2.766260186, 99.8940),
-        new Thing('Vesta', null, 'asteroid', '#cbb89a', 1325.220467, 'sol', 2.361165733, 16.8330),
-        // Trans-Neptunian objects (TNOs): every one with a best current
-        // measured diameter at least as large as Varuna's own (668 km, per
-        // Herschel thermal measurements - Lellouch et al. 2013). Diameters
-        // from Johnston's Archive (johnstonsarchive.net/astro/tnodiam.html),
-        // cross-checked against Wikipedia. Orbital elements fetched the same
-        // way as everything else above: JPL Horizons osculating elements at
-        // SIMPLE_ORBIT_EPOCH, queried against each body's own numbered
-        // primary body (not a system barycenter or satellite).
-        //
-        // A few of these were only given proper names in 2025 and may still
-        // be unfamiliar even as TNOs go - their old provisional designation
-        // is noted in a trailing comment.
-        //
-        // Several of these orbits are eccentric enough (Sedna e=0.85,
-        // Gonggong e=0.50, 2007 UK126 e=0.49, Eris e=0.44, Chiminigagua
-        // e=0.39, Ixion e=0.24, Haumea e=0.195) that the plain circular
-        // model above would put them visibly in the wrong place - Sedna
-        // most of all, since its semi-major axis (506 AU) is nothing like
-        // its real current ~83 AU (it's near perihelion, reached ~2076).
-        // Those 7 are given eccentricity + periapsisLongitudeDeg (OM+W)
-        // below so offsetFromParent() solves their real ellipse instead;
-        // the rest are left on the circular approximation, same as every
-        // main-belt asteroid/moon above - fine, since their eccentricities
-        // are all comparable to or lower than Ceres'/Vesta's own (~0.08).
-        new Thing('Orcus', null, 'asteroid', '#9fb0b8', 89858.842999, 'sol', 39.279780416, 171.9480),
-        new Thing('Achlys', null, 'asteroid', '#8f7a6a', 90511.211881, 'sol', 39.469663417, 150.7006), // 2003 AZ84
-        new Thing('Ixion', null, 'asteroid', '#7a5248', 90604.038287, 'sol', 39.496644981, 307.2560, 0.244049, 10.8943),
-        new Thing('Ritona', null, 'asteroid', '#827a70', 97629.551428, 'sol', 41.512864217, 354.7265), // 2005 RN43
-        new Thing('Mani', null, 'asteroid', '#7a5f55', 98422.675932, 'sol', 41.737389478, 302.4300), // 2002 MS4
-        new Thing('Goibniu', null, 'asteroid', '#8a7a68', 99157.788905, 'sol', 41.944954311, 232.9718), // 2004 GV9
-        new Thing('Salacia', null, 'asteroid', '#6b6b6f', 99445.037399, 'sol', 42.025921662, 4.1625),
-        new Thing('Uni', null, 'asteroid', '#7d7d7d', 101730.412251, 'sol', 42.667353498, 71.1968), // 2002 UX25
-        new Thing('Varuna', null, 'asteroid', '#9a6a52', 102737.646564, 'sol', 42.948524187, 126.8887),
-        new Thing('Haumea', null, 'asteroid', '#eef2f5', 103290.237023, 'sol', 43.102390018, 226.4926, 0.195026, 1.8938),
-        new Thing('Quaoar', null, 'asteroid', '#8a6a5a', 104127.208876, 'sol', 43.334918876, 285.5082),
-        new Thing('Makemake', null, 'asteroid', '#b5704a', 112022.364296, 'sol', 45.498630639, 187.1252),
-        new Thing('Varda', null, 'asteroid', '#857064', 112934.211987, 'sol', 45.745198902, 286.7399),
-        new Thing('Aya', null, 'asteroid', '#9a5a46', 118349.368157, 'sol', 47.196065893, 176.5155), // 2002 AW197
-        new Thing('Chiminigagua', null, 'asteroid', '#7d7873', 164520.090082, 'sol', 58.786074691, 185.7727, 0.394895, 326.2602), // 2013 FY27
-        new Thing('Gonggong', null, 'asteroid', '#a84a3a', 200476.359847, 'sol', 67.066238396, 295.0887, 0.503411, 183.8297),
-        new Thing('Eris', null, 'asteroid', '#e8e4da', 203938.828094, 'sol', 67.836241717, 38.3488, 0.438418, 187.1967),
-        new Thing("G!kún||'hòmdímà", null, 'asteroid', '#8c4536', 229715.696183, 'sol', 73.438243982, 106.4853, 0.488740, 117.6101), // 2007 UK126, aka Gkunhomdima
-        new Thing('Sedna', null, 'asteroid', '#8b2e22', 4160095.140159, 'sol', 506.443123106, 94.1288, 0.849556, 95.6863),
-    ];
+    static MAIN_THINGS: Thing[] = (() => {
+        const things: Thing[] = [
+            // TODO reorder all of these by AU
+            new Thing('Sol', Body.Sun, 'star', '#ffd27f', 0),
+            new Thing(
+                'Mercury',
+                Body.Mercury,
+                'heliocentric',
+                '#9e9e9e',
+                87.969,
+            ),
+            new Thing('Venus', Body.Venus, 'heliocentric', '#e0c074', 224.701),
+            new Thing('Earth', Body.EMB, 'heliocentric', '#4f82c6', 365.256),
+            new Thing('Mars', Body.Mars, 'heliocentric', '#c1562d', 686.98),
+            new Thing(
+                'Jupiter',
+                Body.Jupiter,
+                'heliocentric',
+                '#c99a6b',
+                4332.59,
+            ),
+            new Thing(
+                'Saturn',
+                Body.Saturn,
+                'heliocentric',
+                '#d4c58a',
+                10759.22,
+            ),
+            new Thing(
+                'Uranus',
+                Body.Uranus,
+                'heliocentric',
+                '#9fd4d8',
+                30688.5,
+            ),
+            new Thing(
+                'Neptune',
+                Body.Neptune,
+                'heliocentric',
+                '#5a74e0',
+                60182,
+            ),
+            new Thing('Pluto', Body.Pluto, 'heliocentric', '#b8a08c', 90560),
+            // Every moon's (and asteroid's) period, semi-major axis, and mean
+            // longitude (OM + W + MA) at SIMPLE_ORBIT_EPOCH below are osculating
+            // elements from JPL Horizons (ssd.jpl.nasa.gov/api/horizons.api),
+            // queried relative to each one's own parent (Sol, for an asteroid)
+            // in the ecliptic-of-J2000 frame, at SIMPLE_ORBIT_EPOCH's date
+            // (JDTDB 2461349.5). Re-fetch and update everything below - don't
+            // just touch one entry - if SIMPLE_ORBIT_EPOCH ever moves forward,
+            // so they all stay anchored to the same instant; a known ~69-second
+            // TDB-vs-UTC imprecision, negligible for everything here except
+            // Phobos (period under 8 hours, where it's worth ~0.25 degrees of
+            // phase).
+            //
+            // Moons: every one at least as large as Saturn's Epimetheus (mean
+            // radius ~58 km, per JPL's Planetary Satellite Physical Parameters
+            // table at ssd.jpl.nasa.gov/sats/phys_par/), plus Phobos and Deimos
+            // (both smaller, included anyway since they're Mars' only moons).
+            new Thing(
+                'Io',
+                null,
+                'moon',
+                '#e8d99a',
+                1.771433,
+                'jupiter',
+                0.002821179,
+                5.6688,
+            ),
+            new Thing(
+                'Europa',
+                null,
+                'moon',
+                '#d8dde0',
+                3.552391,
+                'jupiter',
+                0.004486332,
+                181.1794,
+            ),
+            new Thing(
+                'Ganymede',
+                null,
+                'moon',
+                '#a9977f',
+                7.157812,
+                'jupiter',
+                0.007157128,
+                358.9916,
+            ),
+            new Thing(
+                'Callisto',
+                null,
+                'moon',
+                '#7d7265',
+                16.692561,
+                'jupiter',
+                0.012586283,
+                252.772,
+            ),
+            new Thing(
+                'Himalia',
+                null,
+                'moon',
+                '#8f8064',
+                250.285587,
+                'jupiter',
+                0.076529912,
+                149.3419,
+            ),
+            new Thing(
+                'Amalthea',
+                null,
+                'moon',
+                '#b08a6a',
+                0.501639,
+                'jupiter',
+                0.001216563,
+                294.5177,
+            ),
+            new Thing(
+                'Titan',
+                null,
+                'moon',
+                '#d9b36c',
+                15.947349,
+                'saturn',
+                0.00816813,
+                93.0371,
+            ),
+            new Thing(
+                'Phobos',
+                null,
+                'moon',
+                '#8a7d6b',
+                0.3191196,
+                'mars',
+                0.00006268688,
+                176.5605,
+            ),
+            new Thing(
+                'Deimos',
+                null,
+                'moon',
+                '#a89a86',
+                1.262587,
+                'mars',
+                0.0001568129,
+                50.2769,
+            ),
+            new Thing(
+                'Mimas',
+                null,
+                'moon',
+                '#c9c9c9',
+                0.947399,
+                'saturn',
+                0.001243515,
+                72.9939,
+            ),
+            new Thing(
+                'Enceladus',
+                null,
+                'moon',
+                '#eef0f2',
+                1.374539,
+                'saturn',
+                0.001593679,
+                106.3438,
+            ),
+            new Thing(
+                'Tethys',
+                null,
+                'moon',
+                '#d8d8d8',
+                1.891653,
+                'saturn',
+                0.001971774,
+                177.9322,
+            ),
+            new Thing(
+                'Dione',
+                null,
+                'moon',
+                '#cfcfcf',
+                2.74034,
+                'saturn',
+                0.002524445,
+                60.738,
+            ),
+            new Thing(
+                'Rhea',
+                null,
+                'moon',
+                '#bdbdbd',
+                4.520396,
+                'saturn',
+                0.003524366,
+                302.8426,
+            ),
+            new Thing(
+                'Hyperion',
+                null,
+                'moon',
+                '#a89880',
+                21.382504,
+                'saturn',
+                0.009931201,
+                345.79,
+            ),
+            new Thing(
+                'Iapetus',
+                null,
+                'moon',
+                '#8f8370',
+                79.471398,
+                'saturn',
+                0.023828887,
+                69.7235,
+            ),
+            new Thing(
+                'Phoebe',
+                null,
+                'moon',
+                '#6f6a63',
+                548.154922,
+                'saturn',
+                0.086343888,
+                266.5226,
+            ),
+            new Thing(
+                'Janus',
+                null,
+                'moon',
+                '#b9b4a8',
+                0.700196,
+                'saturn',
+                0.001016504,
+                271.3066,
+            ),
+            // new Thing('Epimetheus', null, 'moon', '#b0ab9f', 0.699856, 'saturn', 0.001016175, 341.6707),
+            new Thing(
+                'Miranda',
+                null,
+                'moon',
+                '#9fa8ad',
+                1.413995,
+                'uranus',
+                0.000868135,
+                281.0398,
+            ),
+            new Thing(
+                'Ariel',
+                null,
+                'moon',
+                '#b9c4c9',
+                2.52079,
+                'uranus',
+                0.001276386,
+                37.8302,
+            ),
+            new Thing(
+                'Umbriel',
+                null,
+                'moon',
+                '#7d7d80',
+                4.145019,
+                'uranus',
+                0.001778178,
+                359.8002,
+            ),
+            new Thing(
+                'Titania',
+                null,
+                'moon',
+                '#9aa6ad',
+                8.704609,
+                'uranus',
+                0.002916043,
+                154.1154,
+            ),
+            new Thing(
+                'Oberon',
+                null,
+                'moon',
+                '#8f8a84',
+                13.466214,
+                'uranus',
+                0.003900537,
+                242.4414,
+            ),
+            new Thing(
+                'Triton',
+                null,
+                'moon',
+                '#c9d8e0',
+                5.877119,
+                'neptune',
+                0.002371476,
+                59.9426,
+            ),
+            // Nereid's orbit is eccentric enough (e=0.746) that the plain
+            // circular model above would put it visibly in the wrong place -
+            // same EC/OM/W/MA source and epoch as everything else here, just
+            // also given eccentricity + periapsisLongitudeDeg (OM+W) so
+            // offsetFromParent() solves the real ellipse instead.
+            new Thing(
+                'Nereid',
+                null,
+                'moon',
+                '#9fa0a3',
+                360.655661,
+                'neptune',
+                0.036892716,
+                194.1457,
+                0.7461,
+                256.0251,
+            ),
+            new Thing(
+                'Despina',
+                null,
+                'moon',
+                '#8f909a',
+                0.335448,
+                'neptune',
+                0.00035153,
+                252.0855,
+            ),
+            new Thing(
+                'Galatea',
+                null,
+                'moon',
+                '#8a8b94',
+                0.429472,
+                'neptune',
+                0.000414479,
+                88.0302,
+            ),
+            new Thing(
+                'Larissa',
+                null,
+                'moon',
+                '#7f8089',
+                0.555318,
+                'neptune',
+                0.000491934,
+                317.6936,
+            ),
+            new Thing(
+                'Proteus',
+                null,
+                'moon',
+                '#6f7079',
+                1.122823,
+                'neptune',
+                0.000786598,
+                285.4243,
+            ),
+            new Thing(
+                'Charon',
+                null,
+                'moon',
+                '#a89a8c',
+                6.387221,
+                'pluto',
+                0.00013099,
+                195.0751,
+            ),
+            new Thing(
+                'Luna',
+                null,
+                'moon',
+                '#d8d8d8',
+                27.115683,
+                'earth',
+                0.002558939,
+                167.1504,
+            ),
+            // Asteroids: just the two biggest main-belt bodies for now (Ceres is
+            // also classified as a dwarf planet). Smaller Belt objects, Trojans,
+            // etc. aren't included - flag if you want specific ones added.
+            new Thing(
+                'Ceres',
+                null,
+                'asteroid',
+                '#b5a898',
+                1680.497869,
+                'sol',
+                2.766260186,
+                99.894,
+            ),
+            new Thing(
+                'Vesta',
+                null,
+                'asteroid',
+                '#cbb89a',
+                1325.220467,
+                'sol',
+                2.361165733,
+                16.833,
+            ),
+            // Trans-Neptunian objects (TNOs): every one with a best current
+            // measured diameter at least as large as Varuna's own (668 km, per
+            // Herschel thermal measurements - Lellouch et al. 2013). Diameters
+            // from Johnston's Archive (johnstonsarchive.net/astro/tnodiam.html),
+            // cross-checked against Wikipedia. Orbital elements fetched the same
+            // way as everything else above: JPL Horizons osculating elements at
+            // SIMPLE_ORBIT_EPOCH, queried against each body's own numbered
+            // primary body (not a system barycenter or satellite).
+            //
+            // A few of these were only given proper names in 2025 and may still
+            // be unfamiliar even as TNOs go - their old provisional designation
+            // is noted in a trailing comment.
+            //
+            // Several of these orbits are eccentric enough (Sedna e=0.85,
+            // Gonggong e=0.50, 2007 UK126 e=0.49, Eris e=0.44, Chiminigagua
+            // e=0.39, Ixion e=0.24, Haumea e=0.195) that the plain circular
+            // model above would put them visibly in the wrong place - Sedna
+            // most of all, since its semi-major axis (506 AU) is nothing like
+            // its real current ~83 AU (it's near perihelion, reached ~2076).
+            // Those 7 are given eccentricity + periapsisLongitudeDeg (OM+W)
+            // below so offsetFromParent() solves their real ellipse instead;
+            // the rest are left on the circular approximation, same as every
+            // main-belt asteroid/moon above - fine, since their eccentricities
+            // are all comparable to or lower than Ceres'/Vesta's own (~0.08).
+            new Thing(
+                'Orcus',
+                null,
+                'asteroid',
+                '#9fb0b8',
+                89858.842999,
+                'sol',
+                39.279780416,
+                171.948,
+            ),
+            new Thing(
+                'Achlys',
+                null,
+                'asteroid',
+                '#8f7a6a',
+                90511.211881,
+                'sol',
+                39.469663417,
+                150.7006,
+            ), // 2003 AZ84
+            new Thing(
+                'Ixion',
+                null,
+                'asteroid',
+                '#7a5248',
+                90604.038287,
+                'sol',
+                39.496644981,
+                307.256,
+                0.244049,
+                10.8943,
+            ),
+            new Thing(
+                'Ritona',
+                null,
+                'asteroid',
+                '#827a70',
+                97629.551428,
+                'sol',
+                41.512864217,
+                354.7265,
+            ), // 2005 RN43
+            new Thing(
+                'Mani',
+                null,
+                'asteroid',
+                '#7a5f55',
+                98422.675932,
+                'sol',
+                41.737389478,
+                302.43,
+            ), // 2002 MS4
+            new Thing(
+                'Goibniu',
+                null,
+                'asteroid',
+                '#8a7a68',
+                99157.788905,
+                'sol',
+                41.944954311,
+                232.9718,
+            ), // 2004 GV9
+            new Thing(
+                'Salacia',
+                null,
+                'asteroid',
+                '#6b6b6f',
+                99445.037399,
+                'sol',
+                42.025921662,
+                4.1625,
+            ),
+            new Thing(
+                'Uni',
+                null,
+                'asteroid',
+                '#7d7d7d',
+                101730.412251,
+                'sol',
+                42.667353498,
+                71.1968,
+            ), // 2002 UX25
+            new Thing(
+                'Varuna',
+                null,
+                'asteroid',
+                '#9a6a52',
+                102737.646564,
+                'sol',
+                42.948524187,
+                126.8887,
+            ),
+            new Thing(
+                'Haumea',
+                null,
+                'asteroid',
+                '#eef2f5',
+                103290.237023,
+                'sol',
+                43.102390018,
+                226.4926,
+                0.195026,
+                1.8938,
+            ),
+            new Thing(
+                'Quaoar',
+                null,
+                'asteroid',
+                '#8a6a5a',
+                104127.208876,
+                'sol',
+                43.334918876,
+                285.5082,
+            ),
+            new Thing(
+                'Makemake',
+                null,
+                'asteroid',
+                '#b5704a',
+                112022.364296,
+                'sol',
+                45.498630639,
+                187.1252,
+            ),
+            new Thing(
+                'Varda',
+                null,
+                'asteroid',
+                '#857064',
+                112934.211987,
+                'sol',
+                45.745198902,
+                286.7399,
+            ),
+            new Thing(
+                'Aya',
+                null,
+                'asteroid',
+                '#9a5a46',
+                118349.368157,
+                'sol',
+                47.196065893,
+                176.5155,
+            ), // 2002 AW197
+            new Thing(
+                'Chiminigagua',
+                null,
+                'asteroid',
+                '#7d7873',
+                164520.090082,
+                'sol',
+                58.786074691,
+                185.7727,
+                0.394895,
+                326.2602,
+            ), // 2013 FY27
+            new Thing(
+                'Gonggong',
+                null,
+                'asteroid',
+                '#a84a3a',
+                200476.359847,
+                'sol',
+                67.066238396,
+                295.0887,
+                0.503411,
+                183.8297,
+            ),
+            new Thing(
+                'Eris',
+                null,
+                'asteroid',
+                '#e8e4da',
+                203938.828094,
+                'sol',
+                67.836241717,
+                38.3488,
+                0.438418,
+                187.1967,
+            ),
+            new Thing(
+                "G!kún||'hòmdímà",
+                null,
+                'asteroid',
+                '#8c4536',
+                229715.696183,
+                'sol',
+                73.438243982,
+                106.4853,
+                0.48874,
+                117.6101,
+            ), // 2007 UK126, aka Gkunhomdima
+            new Thing(
+                'Sedna',
+                null,
+                'asteroid',
+                '#8b2e22',
+                4160095.140159,
+                'sol',
+                506.443123106,
+                94.1288,
+                0.849556,
+                95.6863,
+            ),
+        ];
+
+        const sol = things.find((thing) => thing.id === 'sol')!;
+        const earth = things.find((thing) => thing.id === 'earth')!;
+        const luna = things.find((thing) => thing.id === 'luna')!;
+        for (const lagrangeNumber of [1, 2, 3, 4, 5]) {
+            things.push(
+                sol.lagrange(earth, lagrangeNumber, Body.Sun, Body.EMB),
+            );
+            things.push(
+                earth.lagrange(luna, lagrangeNumber, Body.Earth, Body.Moon),
+            );
+        }
+        return things;
+    })();
 
     static byID(id: string): Thing | undefined {
         return Thing.MAIN_THINGS.find((thing) => thing.id === id);
