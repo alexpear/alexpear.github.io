@@ -367,7 +367,10 @@ export class Thing {
     // itself (SVG 'Z'), so sampling a last point meant to coincide with the
     // first would be redundant - and it never exactly does, since
     // orbitalPeriodDays is a rounded constant and real orbits precess
-    // slightly anyway.
+    // slightly anyway. For a body with real ephemeris (the bottom loop
+    // below), that mismatch shows up as a visible kink right where the
+    // sweep wraps back to its own start - see that loop's comment for why
+    // it deliberately starts the sweep away from `date`.
     //
     // 2000 samples, not 180: each sample point is a vertex where the drawn
     // path bends slightly to follow the curve, which is invisible at low
@@ -415,11 +418,27 @@ export class Thing {
             return points;
         }
 
+        // This body has real ephemeris (astronomy-engine), which doesn't
+        // repeat exactly every orbitalPeriodDays the way the simplified
+        // moon/asteroid model above does by construction - so the seam
+        // where the sweep wraps back to its own start (see the comment
+        // above on stopping short of a full period) is a real, visible
+        // kink, not just a theoretical one. Starting the sweep half an
+        // orbit before `date` instead of at `date` itself puts that seam
+        // on the far side of the orbit from the body's current (and
+        // visually prominent) position, rather than right on top of it -
+        // most noticeable for Jupiter, Saturn, and Uranus, where
+        // orbitalPeriodDays is furthest from matching a true 360-degree
+        // sweep of the body's real current position.
+        const startDate = new Date(
+            date.getTime() -
+                (this.orbitalPeriodDays / 2) * MILLISECONDS_PER_DAY,
+        );
         const points: Point2D[] = [];
         for (let i = 0; i < samples; i++) {
             const dayOffset = (this.orbitalPeriodDays * i) / samples;
             const sampleDate = new Date(
-                date.getTime() + dayOffset * MILLISECONDS_PER_DAY,
+                startDate.getTime() + dayOffset * MILLISECONDS_PER_DAY,
             );
             points.push(this.position(sampleDate));
         }
