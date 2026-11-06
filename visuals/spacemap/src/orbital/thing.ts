@@ -4,6 +4,8 @@ import { Point2D, MILLISECONDS_PER_DAY, ThingKind } from './types';
 import {
     Body,
     HelioVector,
+    JupiterMoons,
+    JupiterMoonsInfo,
     LagrangePoint,
     RotateVector,
     Rotation_EQJ_ECL,
@@ -68,10 +70,10 @@ export class Thing {
         new Thing('Uranus', Body.Uranus, 'heliocentric', '#9fd4d8', 30688.5),
         new Thing('Neptune', Body.Neptune, 'heliocentric', '#5a74e0', 60182),
         new Thing('Pluto', Body.Pluto, 'heliocentric', '#b8a08c', 90560),
-        // new Thing('Io', null, 'moon', '#e8d99a', 1.769), 
+        new Thing('Io', null, 'moon', '#e8d99a', 1.769, 'jupiter'),
         new Thing('Europa', null, 'moon', '#d8dde0', 3.551, 'jupiter'),
-        // new Thing('Ganymede', null, 'moon', '#a9977f', 7.155),
-        // new Thing('Callisto', null, 'moon', '#7d7265', 16.689),
+        new Thing('Ganymede', null, 'moon', '#a9977f', 7.155, 'jupiter'),
+        new Thing('Callisto', null, 'moon', '#7d7265', 16.689, 'jupiter'),
     ];
 
     static byID(id: string): Thing | undefined {
@@ -100,21 +102,41 @@ export class Thing {
             );
         }
 
-        // TODO case where there's no Body (eg spacecraft or moons)
+        // TODO case where there's no Body and no known parent API (eg spacecraft)
 
-        // Moons or spacecraft orbiting something.
-        if (! this.body && this.parentID !== 'sol') {
-            const parentHelio = Thing.byID(this.parentID).position(date);
-            const parentcentricVector = {foo: true}; //def.stateVector(JupiterMoons(date));
-            const parentcentricEclipticPt = toEclipticPoint(
-                parentcentricVector.x,
-                parentcentricVector.y,
-                parentcentricVector.z,
-                parentcentricVector.t,
+        // Moons orbiting something other than Sol.
+        if (!this.body && this.parentID !== 'sol') {
+            const parent = Thing.byID(this.parentID);
+            if (!parent) {
+                throw new Error(
+                    `${this.id}'s parentID "${this.parentID}" doesn't match any Thing`,
+                );
+            }
+            // TODO standardize variable name suffices like position, vector, point, pt.
+            const parentPosition = parent.position(date);
+
+            // TODO astronomy-engine only models Jupiter's own moons this way
+            // (there's no generic "moons of X" function); a moon of a
+            // different parent needs a different lookup here.
+            if (this.parentID !== 'jupiter') {
+                throw new Error(
+                    `No moon-position lookup for parent "${this.parentID}" (only Jupiter's moons are supported)`,
+                );
+            }
+            const parentcentricVector =
+                JupiterMoons(date)[this.id as keyof JupiterMoonsInfo];
+
+            const parentcentricEclipticPt = toFixedEclipticPoint(
+                new Vector(
+                    parentcentricVector.x,
+                    parentcentricVector.y,
+                    parentcentricVector.z,
+                    parentcentricVector.t,
+                ),
             );
             return {
-                x: parentHelio.x + parentcentricEclipticPt.x,
-                y: parentHelio.y + parentcentricEclipticPt.y,
+                x: parentPosition.x + parentcentricEclipticPt.x,
+                y: parentPosition.y + parentcentricEclipticPt.y,
             };
         }
 
