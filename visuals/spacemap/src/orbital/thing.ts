@@ -3,13 +3,30 @@
 // LATER single quotes
 import { Point2D, MILLISECONDS_PER_DAY, ThingKind } from "./types";
 import {
-    // AstroTime,
     Body,
-    Ecliptic,
     HelioVector,
     LagrangePoint,
+    RotateVector,
+    Rotation_EQJ_ECL,
     Vector,
 } from 'astronomy-engine';
+
+// A fixed (J2000-epoch) equatorial-to-ecliptic rotation. Deliberately not
+// astronomy-engine's Ecliptic() helper, which rotates into the TRUE ecliptic
+// OF DATE - a frame that itself precesses (~1.4 degrees/century) with the
+// date of the vector being converted. Using that per-sample means every
+// position on the map is expressed in a slightly different, date-dependent
+// frame; comparing positions sampled across a long span - eg one full lap of
+// Neptune's 165-year or Pluto's 248-year orbit - shows a spurious twist,
+// big enough to look like a "Z"-shaped kink where the drawn orbit path
+// closes back on itself. A fixed frame keeps every position comparable
+// regardless of its date.
+const EQJ_TO_ECL = Rotation_EQJ_ECL();
+
+function toFixedEclipticPoint(vector: Vector): Point2D {
+    const ecliptic = RotateVector(EQJ_TO_ECL, vector);
+    return { x: ecliptic.x, y: ecliptic.y };
+}
 
 export class Thing {
     id: string; // lowercase key used in the ?focus= query param
@@ -51,30 +68,45 @@ export class Thing {
                 this.bigLagrangeParent,
                 this.body,
             );
-            const ecliptic = Ecliptic(new Vector(
-                stateVector.x,
-                stateVector.y,
-                stateVector.z,
-                stateVector.t,
-            ));
-            return { x: ecliptic.vec.x, y: ecliptic.vec.y };
+            return toFixedEclipticPoint(
+                new Vector(
+                    stateVector.x,
+                    stateVector.y,
+                    stateVector.z,
+                    stateVector.t,
+                ),
+            );
         }
 
         // TODO case where there's no Body (eg spacecraft or even moons)
-        const helioVector = HelioVector(this.body, date);
-        const ecliptic = Ecliptic(helioVector);
-        return { x: ecliptic.vec.x, y: ecliptic.vec.y };
+        return toFixedEclipticPoint(HelioVector(this.body, date));
     }
 
     // Traces an object's orbit by sampling its position across one period.
     // Works for any periodic object (planet, moon, Lagrange point), not just planets.
+    //
+    // Deliberately stops short of a full period (i < samples, not i <=
+    // samples): the caller closes the drawn path back to the first point
+    // itself (SVG 'Z'), so sampling a last point meant to coincide with the
+    // first would be redundant - and it never exactly does, since
+    // orbitalPeriodDays is a rounded constant and real orbits precess
+    // slightly anyway.
+    //
+    // 2000 samples, not 180: each sample point is a vertex where the drawn
+    // path bends slightly to follow the curve, which is invisible at low
+    // zoom but shows up as a "jag" right at the body's current position once
+    // you're zoomed in close enough to see individual segments - worst for
+    // Neptune and Pluto, whose huge orbits give each segment the most actual
+    // distance to span. More samples means each one covers less distance.
+    // Cheap to raise: this only reruns when `date` changes (useMemo in
+    // OrbitPath), not on every zoom/pan.
     orbitPath(
         date: Date,
-        samples: number = 180,
+        samples: number = 2000,
     ): Point2D[] {
         const points: Point2D[] = [];
 
-        for (let i = 0; i <= samples; i++) {
+        for (let i = 0; i < samples; i++) {
             const dayOffset = (this.orbitalPeriodDays * i) / samples;
             const sampleDate = new Date(
                 date.getTime() + dayOffset * MILLISECONDS_PER_DAY,
