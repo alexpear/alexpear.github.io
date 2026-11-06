@@ -7,6 +7,7 @@ import { Thing } from '../orbital/thing';
 import {
     computeFraming,
     makeAuToScreenTransform,
+    makeAuToWorldTransform,
     panOffsetForZoomAnchor,
 } from '../view/transform';
 
@@ -131,6 +132,9 @@ export function SpaceMap({ config }: Props): JSX.Element {
         [focusPoints, viewportSize],
     );
 
+    // Used only for the screen-pixel-distance check in hiddenThingIds below;
+    // rendering itself uses toWorld, not this - see makeAuToWorldTransform's
+    // comment for why.
     const toScreen = React.useMemo(
         () =>
             makeAuToScreenTransform(
@@ -141,6 +145,15 @@ export function SpaceMap({ config }: Props): JSX.Element {
                 zoomMultiplier,
             ),
         [framing, viewportSize, panOffset, zoomMultiplier],
+    );
+
+    // Deliberately NOT dependent on panOffset/zoomMultiplier: this is the
+    // "world" position every rendered element is actually placed at, with
+    // the viewer's pan/zoom applied afterward as a single <g transform=...>
+    // in the render below, instead of being baked into every point here.
+    const toWorld = React.useMemo(
+        () => makeAuToWorldTransform(framing),
+        [framing],
     );
 
     const baseLayerIdSet = React.useMemo(
@@ -165,10 +178,39 @@ export function SpaceMap({ config }: Props): JSX.Element {
         [focusedExtras],
     );
 
+    // Each Thing's AU position, computed once per date rather than once per
+    // render - position() can be real work (eg a Lagrange point's two
+    // astronomy-engine calls, or an eccentric orbit's Kepler solve), and
+    // without this it would otherwise re-run on every pan/zoom tick too,
+    // for every Thing on screen.
+    const thingPositions = React.useMemo(
+        () =>
+            new Map(
+                displayedThings.map((thing) => [
+                    thing.id,
+                    thing.position(config.date),
+                ]),
+            ),
+        [displayedThings, config.date],
+    );
+
+    // Same positions, converted to world space (see toWorld's comment) -
+    // what ObjectMarker actually renders at. Still independent of pan/zoom.
+    const thingWorldPoints = React.useMemo(
+        () =>
+            new Map(
+                displayedThings.map((thing) => [
+                    thing.id,
+                    toWorld(thingPositions.get(thing.id)!),
+                ]),
+            ),
+        [displayedThings, thingPositions, toWorld],
+    );
+
     // See MIN_MARKER_SEPARATION_PX for the approximation this applies.
     const hiddenThingIds = React.useMemo(() => {
         const screenPoints = displayedThings.map((thing) =>
-            toScreen(thing.position(config.date)),
+            toScreen(thingPositions.get(thing.id)!),
         );
         const hidden = new Set<string>();
         for (let i = 0; i < displayedThings.length; i++) {
@@ -190,7 +232,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
             }
         }
         return hidden;
-    }, [displayedThings, toScreen, config.date]);
+    }, [displayedThings, thingPositions, toScreen]);
 
     // Applies a zoom change by `zoomRatio` (newZoom / oldZoom) anchored at
     // `anchorScreen` (a cursor position or a pinch midpoint, in the SVG's
@@ -322,6 +364,15 @@ export function SpaceMap({ config }: Props): JSX.Element {
         },
     );
 
+    // Pan/zoom, applied once here rather than baked into every rendered
+    // point - see makeAuToWorldTransform's comment. A pure pan only touches
+    // this one attribute (OrbitPath/ObjectMarker don't re-render at all,
+    // since none of their own props changed); a zoom also touches this plus
+    // each ObjectMarker's own counter-scale (see ObjectMarker), but still
+    // never touches OrbitPath, whose geometry the browser scales for free
+    // as part of applying this same transform.
+    const viewTransform = `translate(${viewportSize.width / 2 + panOffset.x}, ${viewportSize.height / 2 + panOffset.y}) scale(${zoomMultiplier})`;
+
     return (
         <div
             ref={containerRef}
@@ -339,44 +390,46 @@ export function SpaceMap({ config }: Props): JSX.Element {
                 }}
                 onWheel={handleWheel}
             >
-                {BASE_LAYER.map((thing) => (
-                    <OrbitPath
-                        key={thing.id}
-                        object={thing}
-                        date={config.date}
-                        toScreen={toScreen}
-                    />
-                ))}
-                {focusedExtras.map((object) => (
-                    <OrbitPath
-                        key={object.id}
-                        object={object}
-                        date={config.date}
-                        toScreen={toScreen}
-                    />
-                ))}
-                {BASE_LAYER.filter(
-                    (thing) => !hiddenThingIds.has(thing.id),
-                ).map((thing) => (
-                    <ObjectMarker
-                        key={thing.id}
-                        object={thing}
-                        date={config.date}
-                        toScreen={toScreen}
-                        showLabel={focusIdSet.has(thing.id)}
-                    />
-                ))}
-                {focusedExtras
-                    .filter((object) => !hiddenThingIds.has(object.id))
-                    .map((object) => (
-                        <ObjectMarker
+                <g transform={viewTransform}>
+                    {BASE_LAYER.map((thing) => (
+                        <OrbitPath
+                            key={thing.id}
+                            object={thing}
+                            date={config.date}
+                            toWorld={toWorld}
+                        />
+                    ))}
+                    {focusedExtras.map((object) => (
+                        <OrbitPath
                             key={object.id}
                             object={object}
                             date={config.date}
-                            toScreen={toScreen}
-                            showLabel
+                            toWorld={toWorld}
                         />
                     ))}
+                    {BASE_LAYER.filter(
+                        (thing) => !hiddenThingIds.has(thing.id),
+                    ).map((thing) => (
+                        <ObjectMarker
+                            key={thing.id}
+                            object={thing}
+                            worldPoint={thingWorldPoints.get(thing.id)!}
+                            zoomMultiplier={zoomMultiplier}
+                            showLabel={focusIdSet.has(thing.id)}
+                        />
+                    ))}
+                    {focusedExtras
+                        .filter((object) => !hiddenThingIds.has(object.id))
+                        .map((object) => (
+                            <ObjectMarker
+                                key={object.id}
+                                object={object}
+                                worldPoint={thingWorldPoints.get(object.id)!}
+                                zoomMultiplier={zoomMultiplier}
+                                showLabel
+                            />
+                        ))}
+                </g>
             </svg>
             <button onClick={resetView} style={resetButtonStyle}>
                 Reset view
@@ -385,17 +438,17 @@ export function SpaceMap({ config }: Props): JSX.Element {
     );
 }
 
-interface ObjectLayerProps {
+interface OrbitPathProps {
     object: Thing;
     date: Date;
-    toScreen: (point: Point2D) => Point2D;
+    toWorld: (point: Point2D) => Point2D;
 }
 
-function OrbitPath({
+const OrbitPath = React.memo(function OrbitPath({
     object,
     date,
-    toScreen,
-}: ObjectLayerProps): JSX.Element | null {
+    toWorld,
+}: OrbitPathProps): JSX.Element | null {
     const pathAu = React.useMemo(
         () =>
             object.kind === 'lagrangePoint'
@@ -409,8 +462,8 @@ function OrbitPath({
     const pathData =
         pathAu
             .map((point, index) => {
-                const screenPoint = toScreen(point);
-                return `${index === 0 ? 'M' : 'L'}${screenPoint.x.toFixed(2)},${screenPoint.y.toFixed(2)}`;
+                const worldPoint = toWorld(point);
+                return `${index === 0 ? 'M' : 'L'}${worldPoint.x.toFixed(2)},${worldPoint.y.toFixed(2)}`;
             })
             .join(' ') + ' Z';
     return (
@@ -420,52 +473,69 @@ function OrbitPath({
             stroke={object.colorHex}
             strokeOpacity={0.35}
             strokeWidth={1}
+            // The path's own geometry (above) is in world space, so it's
+            // meant to scale with the ancestor <g>'s zoom - but the stroke
+            // itself should stay a crisp, constant screen pixel regardless
+            // of zoom, same as before this was reworked to use a <g>
+            // transform at all.
+            vectorEffect="non-scaling-stroke"
         />
     );
+});
+
+interface ObjectMarkerProps {
+    object: Thing;
+    worldPoint: Point2D;
+    zoomMultiplier: number;
+    showLabel: boolean;
 }
 
-function ObjectMarker({
+const ObjectMarker = React.memo(function ObjectMarker({
     object,
-    date,
-    toScreen,
+    worldPoint,
+    zoomMultiplier,
     showLabel,
-}: ObjectLayerProps & { showLabel: boolean }): JSX.Element {
-    const screenPoint = toScreen(object.position(date));
+}: ObjectMarkerProps): JSX.Element {
     const radius = RADIUS_PX[object.kind];
     const isLagrangePoint = object.kind === 'lagrangePoint';
     return (
-        <g>
+        // worldPoint positions the marker correctly under the ancestor <g>'s
+        // zoom (see SpaceMap's viewTransform comment); scale(1/zoomMultiplier)
+        // then cancels that same zoom for everything inside this <g>, so the
+        // marker/label's own size on screen stays constant regardless of
+        // zoom level, same as before this was reworked to use a <g>
+        // transform at all. Both transforms are cheap - this is still far
+        // less work per pan/zoom tick than recomputing every point's screen
+        // position used to be.
+        <g
+            transform={`translate(${worldPoint.x}, ${worldPoint.y}) scale(${1 / zoomMultiplier})`}
+        >
             {isLagrangePoint ? (
                 <>
                     <line
-                        x1={screenPoint.x - radius}
-                        y1={screenPoint.y}
-                        x2={screenPoint.x + radius}
-                        y2={screenPoint.y}
+                        x1={-radius}
+                        y1={0}
+                        x2={radius}
+                        y2={0}
                         stroke={object.colorHex}
                         strokeWidth={1.5}
                     />
                     <line
-                        x1={screenPoint.x}
-                        y1={screenPoint.y - radius}
-                        x2={screenPoint.x}
-                        y2={screenPoint.y + radius}
+                        x1={0}
+                        y1={-radius}
+                        x2={0}
+                        y2={radius}
                         stroke={object.colorHex}
                         strokeWidth={1.5}
                     />
                 </>
             ) : (
-                <circle
-                    cx={screenPoint.x}
-                    cy={screenPoint.y}
-                    r={radius}
-                    fill={object.colorHex}
-                />
+                <circle cx={0} cy={0} r={radius} fill={object.colorHex} />
             )}
             {showLabel && (
                 <text
-                    x={screenPoint.x + radius + 4}
-                    y={screenPoint.y + 4}
+                    x={radius + 4}
+                    y={4}
                     fill="#e6e6e6"
                     fontSize={13}
                     fontFamily="'Gelasio', Georgia, serif"
@@ -475,7 +545,7 @@ function ObjectMarker({
             )}
         </g>
     );
-}
+});
 
 function clamp(value: number, min: number, max: number): number {
     return Math.max(min, Math.min(max, value));

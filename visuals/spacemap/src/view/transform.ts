@@ -115,17 +115,17 @@ export function computeFraming(
     };
 }
 
-// Builds an AU-space-to-screen-pixel-space transform: auto framing composed
-// with the viewer's manual pan/zoom.
-export function makeAuToScreenTransform(
+// Builds an AU-space-to-"world"-pixel-space transform: auto framing alone,
+// with no pan/zoom baked in. "World" space is what every rendered SVG
+// element is actually positioned in; the viewer's pan/zoom is applied once,
+// declaratively, as a single transform attribute on a wrapping <g> (see
+// SpaceMap's render) rather than by recomputing every point here on every
+// pan/zoom change - the whole reason this is split out from
+// makeAuToScreenTransform below.
+export function makeAuToWorldTransform(
     framing: Framing,
-    viewportWidth: number,
-    viewportHeight: number,
-    panOffset: Point2D,
-    zoomMultiplier: number,
 ): (auPoint: Point2D) => Point2D {
     const angleRad = (-framing.rotationDeg * Math.PI) / 180;
-    const effectiveScale = framing.scale * zoomMultiplier;
     return (auPoint: Point2D) => {
         const centered = {
             x: auPoint.x - framing.centroid.x,
@@ -133,9 +133,32 @@ export function makeAuToScreenTransform(
         };
         const rotated = rotatePoint(centered, angleRad);
         return {
-            x: viewportWidth / 2 + rotated.x * effectiveScale + panOffset.x,
+            x: rotated.x * framing.scale,
             // Ecliptic +y is counterclockwise (astronomical convention); SVG +y points down.
-            y: viewportHeight / 2 - rotated.y * effectiveScale + panOffset.y,
+            y: -rotated.y * framing.scale,
+        };
+    };
+}
+
+// Builds an AU-space-to-screen-pixel-space transform: makeAuToWorldTransform
+// above, composed with the viewer's manual pan/zoom. Rendering doesn't use
+// this directly (see that function's comment) - it's for the few things
+// that need an actual screen pixel position outside of rendering, eg
+// deciding whether two Things are within MIN_MARKER_SEPARATION_PX of each
+// other on screen right now.
+export function makeAuToScreenTransform(
+    framing: Framing,
+    viewportWidth: number,
+    viewportHeight: number,
+    panOffset: Point2D,
+    zoomMultiplier: number,
+): (auPoint: Point2D) => Point2D {
+    const toWorld = makeAuToWorldTransform(framing);
+    return (auPoint: Point2D) => {
+        const world = toWorld(auPoint);
+        return {
+            x: viewportWidth / 2 + panOffset.x + world.x * zoomMultiplier,
+            y: viewportHeight / 2 + panOffset.y + world.y * zoomMultiplier,
         };
     };
 }
