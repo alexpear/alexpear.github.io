@@ -18,7 +18,7 @@ const RADIUS_PX: Record<ThingKind, number> = {
     lagrangePoint: 4,
 };
 const MIN_ZOOM_MULTIPLIER = 0.05;
-const MAX_ZOOM_MULTIPLIER = 10000;
+const MAX_ZOOM_MULTIPLIER = 100_000;
 // Wheel deltaY -> zoom ratio. Chosen so an ordinary mouse wheel notch
 // (deltaY roughly 100-120 in most browsers) is a gentle ~8% step; a trackpad's
 // continuous small deltas each nudge the zoom by a fraction of a percent.
