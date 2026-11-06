@@ -88,7 +88,8 @@ function pinchStateOf(pointers: Map<number, Point2D>): PinchState {
 // (everything else - moons, asteroids, TNOs); within a category, the
 // shorter orbital period wins.
 function hidePriority(thing: Thing): [number, number] {
-    const category = thing.kind === 'star' ? 0 : thing.kind === 'heliocentric' ? 1 : 2;
+    const category =
+        thing.kind === 'star' ? 0 : thing.kind === 'heliocentric' ? 1 : 2;
     return [category, thing.orbitalPeriodDays ?? 0];
 }
 

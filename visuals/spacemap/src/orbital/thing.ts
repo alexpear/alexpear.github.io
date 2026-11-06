@@ -1,4 +1,4 @@
-// Every entity that we might display at a location on the map is a Thing, including stars, planets, moons, asteroids, spacecraft, debris, & Lagrange points. 
+// Every entity that we might display at a location on the map is a Thing, including stars, planets, moons, asteroids, spacecraft, debris, & Lagrange points.
 
 import { Point2D, MILLISECONDS_PER_DAY, ThingKind } from './types';
 import {
@@ -46,8 +46,7 @@ function toFixedEclipticPoint(vector: Vector): Point2D {
 // by single hyphens, no leading/trailing hyphen. Handles names toLowerCase()
 // alone can't, eg lagrange()'s "Sol–Earth L1" (en dash + space) -> "sol-earth-l1".
 function slugify(name: string): string {
-    if (name.startsWith('G!kun'))
-        return 'gkunhomdima';
+    if (name.startsWith('G!kun')) return 'gkunhomdima';
 
     return name
         .toLowerCase()
@@ -61,7 +60,10 @@ function slugify(name: string): string {
 // 20 iterations for every eccentricity in this file (up to Sedna's 0.85) -
 // this orbit model has no use for anything approaching e=1, where that
 // guess would stop being good enough.
-function solveEccentricAnomaly(meanAnomalyRad: number, eccentricity: number): number {
+function solveEccentricAnomaly(
+    meanAnomalyRad: number,
+    eccentricity: number,
+): number {
     let eccentricAnomalyRad = meanAnomalyRad;
     for (let i = 0; i < 30; i++) {
         const delta =
@@ -796,7 +798,7 @@ export class Thing {
     // Flattened onto the ecliptic plane: this map is 2D and does not express
     // orbital tilt (eg Pluto's), so we discard the z-component.
     // Expressed in astronomical units (AU).
-     position(date: Date): Point2D {
+    position(date: Date): Point2D {
         if (this.lagrangeNumber) {
             // LagrangePoint() returns the point's position relative to the
             // MAJOR body's own center, not an absolute heliocentric
@@ -931,10 +933,7 @@ export class Thing {
     // distance to span. More samples means each one covers less distance.
     // Cheap to raise: this only reruns when `date` changes (useMemo in
     // OrbitPath), not on every zoom/pan.
-    orbitPath(
-        date: Date,
-        samples: number = 2000,
-    ): Point2D[] {
+    orbitPath(date: Date, samples: number = 2000): Point2D[] {
         // A moon's orbit is drawn around its parent's position AT `date`,
         // held fixed for the whole sweep - not the parent's position at each
         // sample's own (later) date, which is what position() would give if
