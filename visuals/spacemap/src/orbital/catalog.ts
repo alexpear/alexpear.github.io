@@ -26,4 +26,7 @@ export const THINGS_BY_ID: ReadonlyMap<string, Thing> = new Map(
     ALL_THINGS.map((thing) => [thing.id, thing]),
 );
 
-export const DEFAULT_FOCUS_IDS: string[] = MAIN_THINGS.map((planet) => planet.id);
+export const DEFAULT_FOCUS_IDS: string[] = [
+    SOL.id,
+    ...MAIN_THINGS.map((planet) => planet.id),
+];
