@@ -201,31 +201,42 @@ export class Thing {
             }
             // TODO standardize variable name suffices like position, vector, point, pt.
             const parentPosition = parent.position(date);
-
-            // Simplified circular-orbit model (see the
-            // semiMajorAxisAu/epochAngleDeg field comments).
-            if (
-                this.semiMajorAxisAu === undefined ||
-                this.epochAngleDeg === undefined
-            ) {
-                throw new Error(
-                    `${this.id} needs semiMajorAxisAu and epochAngleDeg: astronomy-engine doesn't track it directly, and it has no parent "${this.parentID}" lookup either`,
-                );
-            }
-            const daysSinceEpoch =
-                (date.getTime() - SIMPLE_ORBIT_EPOCH.getTime()) /
-                MILLISECONDS_PER_DAY;
-            const angleDeg =
-                this.epochAngleDeg +
-                (360 * daysSinceEpoch) / this.orbitalPeriodDays;
-            const angleRad = (angleDeg * Math.PI) / 180;
+            const offset = this.offsetFromParent(date);
             return {
-                x: parentPosition.x + this.semiMajorAxisAu * Math.cos(angleRad),
-                y: parentPosition.y + this.semiMajorAxisAu * Math.sin(angleRad),
+                x: parentPosition.x + offset.x,
+                y: parentPosition.y + offset.y,
             };
         }
 
         return toFixedEclipticPoint(HelioVector(this.bodyAE, date));
+    }
+
+    // The simplified circular-orbit model (see the
+    // semiMajorAxisAu/epochAngleDeg field comments): this Thing's offset
+    // from its immediate parent, with no parent position added in. Split
+    // out from position() so orbitPath() can hold the parent fixed across
+    // a whole sweep instead of re-fetching it per sample - see orbitPath()'s
+    // comment for why that matters.
+    offsetFromParent(date: Date): Point2D {
+        if (
+            this.semiMajorAxisAu === undefined ||
+            this.epochAngleDeg === undefined
+        ) {
+            throw new Error(
+                `${this.id} needs semiMajorAxisAu and epochAngleDeg: astronomy-engine doesn't track it directly, and it has no parent "${this.parentID}" lookup either`,
+            );
+        }
+        const daysSinceEpoch =
+            (date.getTime() - SIMPLE_ORBIT_EPOCH.getTime()) /
+            MILLISECONDS_PER_DAY;
+        const angleDeg =
+            this.epochAngleDeg +
+            (360 * daysSinceEpoch) / this.orbitalPeriodDays;
+        const angleRad = (angleDeg * Math.PI) / 180;
+        return {
+            x: this.semiMajorAxisAu * Math.cos(angleRad),
+            y: this.semiMajorAxisAu * Math.sin(angleRad),
+        };
     }
 
     // Traces an object's orbit by sampling its position across one period.
@@ -250,8 +261,41 @@ export class Thing {
         date: Date,
         samples: number = 2000,
     ): Point2D[] {
-        const points: Point2D[] = [];
+        // A moon's orbit is drawn around its parent's position AT `date`,
+        // held fixed for the whole sweep - not the parent's position at each
+        // sample's own (later) date, which is what position() would give if
+        // called per sample. The difference matters because a moon is swept
+        // across its own full period while its parent keeps moving along a
+        // much bigger, slower orbit of its own: eg Jupiter moves ~21 degrees
+        // (~1.9 AU of arc) during Himalia's 250-day period, dwarfing
+        // Himalia's own ~0.077 AU orbit around Jupiter. Using position()
+        // directly would trace mostly Jupiter's own heliocentric drift, not
+        // a circle/ellipse around Jupiter - this is why moon orbits used to
+        // render "Sol-relative" instead of centered on their parent.
+        if (this.parentID !== 'sol') {
+            const parent = Thing.byID(this.parentID);
+            if (!parent) {
+                throw new Error(
+                    `${this.id}'s parentID "${this.parentID}" doesn't match any Thing`,
+                );
+            }
+            const parentPosition = parent.position(date);
+            const points: Point2D[] = [];
+            for (let i = 0; i < samples; i++) {
+                const dayOffset = (this.orbitalPeriodDays * i) / samples;
+                const sampleDate = new Date(
+                    date.getTime() + dayOffset * MILLISECONDS_PER_DAY,
+                );
+                const offset = this.offsetFromParent(sampleDate);
+                points.push({
+                    x: parentPosition.x + offset.x,
+                    y: parentPosition.y + offset.y,
+                });
+            }
+            return points;
+        }
 
+        const points: Point2D[] = [];
         for (let i = 0; i < samples; i++) {
             const dayOffset = (this.orbitalPeriodDays * i) / samples;
             const sampleDate = new Date(
