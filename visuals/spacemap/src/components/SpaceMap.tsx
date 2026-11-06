@@ -463,7 +463,7 @@ const OrbitPath = React.memo(function OrbitPath({
         pathAu
             .map((point, index) => {
                 const worldPoint = toWorld(point);
-                return `${index === 0 ? 'M' : 'L'}${worldPoint.x.toFixed(2)},${worldPoint.y.toFixed(2)}`;
+                return `${index === 0 ? 'M' : 'L'}${worldPoint.x},${worldPoint.y}`;
             })
             .join(' ') + ' Z';
     return (
