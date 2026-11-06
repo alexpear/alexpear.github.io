@@ -37,6 +37,15 @@ const MAX_WHEEL_ZOOM_RATIO = 1.3;
 // each other, since neither orbits Sol) rather than keeping the bigger one -
 // an acceptable rough edge for now.
 const MIN_MARKER_SEPARATION_PX = 20;
+// On some touchscreens, lifting both pinch fingers at (near) the same instant
+// produces a spurious pointermove for whichever pointer is reported as lifting
+// last, jumping its coordinates toward where the other finger had been - which
+// this code would otherwise read as a sudden one-finger drag. Delaying the
+// handoff from pinch to single-finger drag by this long is enough to tell a
+// simultaneous two-finger release (both pointerup events land within a few ms
+// of each other) apart from a deliberate "lift one finger, keep panning with
+// the other" gesture.
+const PINCH_RELEASE_GRACE_MS = 120;
 
 interface Props {
     config: SpaceMapConfig;
@@ -78,6 +87,15 @@ export function SpaceMap({ config }: Props): JSX.Element {
     const dragStateRef = React.useRef<DragState | null>(null);
     const activePointersRef = React.useRef<Map<number, Point2D>>(new Map());
     const pinchStateRef = React.useRef<PinchState | null>(null);
+    const pinchReleaseTimeoutRef = React.useRef<number | null>(null);
+
+    React.useEffect(() => {
+        return () => {
+            if (pinchReleaseTimeoutRef.current !== null) {
+                window.clearTimeout(pinchReleaseTimeoutRef.current);
+            }
+        };
+    }, []);
 
     const [viewportSize, setViewportSize] = React.useState({
         width: 800,
@@ -226,6 +244,10 @@ export function SpaceMap({ config }: Props): JSX.Element {
 
     function handlePointerDown(event: React.PointerEvent<SVGSVGElement>): void {
         event.currentTarget.setPointerCapture(event.pointerId);
+        if (pinchReleaseTimeoutRef.current !== null) {
+            window.clearTimeout(pinchReleaseTimeoutRef.current);
+            pinchReleaseTimeoutRef.current = null;
+        }
         activePointersRef.current.set(event.pointerId, {
             x: event.clientX,
             y: event.clientY,
@@ -283,17 +305,44 @@ export function SpaceMap({ config }: Props): JSX.Element {
     }
 
     function handlePointerUp(event: React.PointerEvent<SVGSVGElement>): void {
+        const wasPinching = activePointersRef.current.size === 2;
         activePointersRef.current.delete(event.pointerId);
         pinchStateRef.current = null;
-        const remaining = [...activePointersRef.current.values()];
-        dragStateRef.current =
-            remaining.length === 1
-                ? {
-                      startClientX: remaining[0].x,
-                      startClientY: remaining[0].y,
-                      startPanOffset: panOffset,
-                  }
-                : null;
+        if (pinchReleaseTimeoutRef.current !== null) {
+            window.clearTimeout(pinchReleaseTimeoutRef.current);
+            pinchReleaseTimeoutRef.current = null;
+        }
+
+        const remainingEntries = [...activePointersRef.current.entries()];
+        if (remainingEntries.length !== 1) {
+            dragStateRef.current = null;
+            return;
+        }
+
+        if (!wasPinching) {
+            dragStateRef.current = {
+                startClientX: remainingEntries[0][1].x,
+                startClientY: remainingEntries[0][1].y,
+                startPanOffset: panOffset,
+            };
+            return;
+        }
+
+        // See PINCH_RELEASE_GRACE_MS: don't trust this remaining pointer with
+        // a drag until it's clear the other finger isn't also lifting right now.
+        dragStateRef.current = null;
+        const remainingPointerId = remainingEntries[0][0];
+        pinchReleaseTimeoutRef.current = window.setTimeout(() => {
+            pinchReleaseTimeoutRef.current = null;
+            const stillDown = activePointersRef.current.get(remainingPointerId);
+            if (stillDown) {
+                dragStateRef.current = {
+                    startClientX: stillDown.x,
+                    startClientY: stillDown.y,
+                    startPanOffset: panOffset,
+                };
+            }
+        }, PINCH_RELEASE_GRACE_MS);
     }
 
     function handleWheel(event: React.WheelEvent<SVGSVGElement>): void {
