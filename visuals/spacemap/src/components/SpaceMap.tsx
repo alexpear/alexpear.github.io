@@ -519,7 +519,7 @@ function ObjectMarker({
                     y={screenPoint.y + 4}
                     fill="#e6e6e6"
                     fontSize={13}
-                    fontFamily="sans-serif"
+                    fontFamily="'Gelasio', Georgia, serif"
                 >
                     {object.name}
                 </text>
@@ -543,4 +543,8 @@ const resetButtonStyle: React.CSSProperties = {
     borderRadius: 4,
     cursor: 'pointer',
     fontSize: 13,
+    // Buttons don't inherit font-family from body by default in every
+    // browser (a long-standing UA-stylesheet quirk for form controls), so
+    // this needs to be set explicitly to actually get Gelasio here too.
+    fontFamily: "'Gelasio', Georgia, serif",
 };
