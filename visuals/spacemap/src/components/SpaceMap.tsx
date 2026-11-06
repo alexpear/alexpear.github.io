@@ -18,7 +18,7 @@ const RADIUS_PX: Record<ThingKind, number> = {
     lagrangePoint: 4,
 };
 const MIN_ZOOM_MULTIPLIER = 0.05;
-const MAX_ZOOM_MULTIPLIER = 1000;
+const MAX_ZOOM_MULTIPLIER = 10000;
 // Wheel deltaY -> zoom ratio. Chosen so an ordinary mouse wheel notch
 // (deltaY roughly 100-120 in most browsers) is a gentle ~8% step; a trackpad's
 // continuous small deltas each nudge the zoom by a fraction of a percent.
@@ -26,6 +26,17 @@ const WHEEL_ZOOM_SENSITIVITY = 0.0007;
 // Clamp on a single wheel event's zoom ratio, so an inertial scroll's
 // occasional large deltaY spike can't jump the zoom level all at once.
 const MAX_WHEEL_ZOOM_RATIO = 1.3;
+// When two Things would render within this many screen pixels of each
+// other, the smaller one's marker and label are hidden rather than drawn on
+// top of (or right next to) the bigger one - mainly moons collapsing onto
+// their parent planet at low zoom. Real mass data isn't tracked anywhere
+// here, so "smaller" is approximated by thing.parentID !== 'sol': a moon or
+// asteroid orbiting something other than Sol is assumed less massive than
+// whatever it's crowding. That approximation can hide two mutually-close
+// moons entirely (eg Saturn's co-orbital Janus and Epimetheus both yield to
+// each other, since neither orbits Sol) rather than keeping the bigger one -
+// an acceptable rough edge for now.
+const MIN_MARKER_SEPARATION_PX = 20;
 
 interface Props {
     config: SpaceMapConfig;
@@ -105,9 +116,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
 
     const focusPoints = React.useMemo(
         () =>
-            config.focusedThings.map((object) =>
-                object.position(config.date),
-            ),
+            config.focusedThings.map((object) => object.position(config.date)),
         [config],
     );
 
@@ -149,6 +158,38 @@ export function SpaceMap({ config }: Props): JSX.Element {
             ),
         [config, baseLayerIdSet],
     );
+
+    const displayedThings = React.useMemo(
+        () => [...BASE_LAYER, ...focusedExtras],
+        [focusedExtras],
+    );
+
+    // See MIN_MARKER_SEPARATION_PX for the approximation this applies.
+    const hiddenThingIds = React.useMemo(() => {
+        const screenPoints = displayedThings.map((thing) =>
+            toScreen(thing.position(config.date)),
+        );
+        const hidden = new Set<string>();
+        for (let i = 0; i < displayedThings.length; i++) {
+            if (displayedThings[i].parentID === 'sol') {
+                continue;
+            }
+            for (let j = 0; j < displayedThings.length; j++) {
+                if (i === j) {
+                    continue;
+                }
+                const distance = Math.hypot(
+                    screenPoints[i].x - screenPoints[j].x,
+                    screenPoints[i].y - screenPoints[j].y,
+                );
+                if (distance < MIN_MARKER_SEPARATION_PX) {
+                    hidden.add(displayedThings[i].id);
+                    break;
+                }
+            }
+        }
+        return hidden;
+    }, [displayedThings, toScreen, config.date]);
 
     // Applies a zoom change by `zoomRatio` (newZoom / oldZoom) anchored at
     // `anchorScreen` (a cursor position or a pinch midpoint, in the SVG's
@@ -307,7 +348,9 @@ export function SpaceMap({ config }: Props): JSX.Element {
                         toScreen={toScreen}
                     />
                 ))}
-                {BASE_LAYER.map((thing) => (
+                {BASE_LAYER.filter(
+                    (thing) => !hiddenThingIds.has(thing.id),
+                ).map((thing) => (
                     <ObjectMarker
                         key={thing.id}
                         object={thing}
@@ -316,15 +359,17 @@ export function SpaceMap({ config }: Props): JSX.Element {
                         showLabel={focusIdSet.has(thing.id)}
                     />
                 ))}
-                {focusedExtras.map((object) => (
-                    <ObjectMarker
-                        key={object.id}
-                        object={object}
-                        date={config.date}
-                        toScreen={toScreen}
-                        showLabel
-                    />
-                ))}
+                {focusedExtras
+                    .filter((object) => !hiddenThingIds.has(object.id))
+                    .map((object) => (
+                        <ObjectMarker
+                            key={object.id}
+                            object={object}
+                            date={config.date}
+                            toScreen={toScreen}
+                            showLabel
+                        />
+                    ))}
             </svg>
             <button onClick={resetView} style={resetButtonStyle}>
                 Reset view
