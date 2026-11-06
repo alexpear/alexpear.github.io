@@ -79,7 +79,11 @@ function solveEccentricAnomaly(meanAnomalyRad: number, eccentricity: number): nu
 
 export class Thing {
     id: string; // lowercase key used in the ?focus= query param
-    name: string; // display label
+    name: string; // full display label; also what `id` is slugified from
+    // Overrides `name` for display only, eg a Lagrange point's short "L4" -
+    // `name` has to stay long enough (eg "Sol–Earth L4") to keep `id`
+    // unique from "Earth–Luna L4"'s.
+    label?: string;
     colorHex: string;
     kind: ThingKind;
 
@@ -265,6 +269,14 @@ export class Thing {
     // Expressed in astronomical units (AU).
      position(date: Date): Point2D {
         if (this.lagrangeNumber) {
+            // LagrangePoint() returns the point's position relative to the
+            // MAJOR body's own center, not an absolute heliocentric
+            // position - the two happen to be the same thing when the
+            // major body is Sol itself (Sol's own heliocentric position is
+            // always the origin), which is why this worked before without
+            // adding anything, but it's wrong for eg an Earth-Luna Lagrange
+            // point, whose major body (Earth) is itself well off-origin.
+            const majorBodyVector = HelioVector(this.bigLagrangeParent, date);
             const stateVector = LagrangePoint(
                 this.lagrangeNumber,
                 date,
@@ -274,9 +286,9 @@ export class Thing {
 
             return toFixedEclipticPoint(
                 new Vector(
-                    stateVector.x,
-                    stateVector.y,
-                    stateVector.z,
+                    stateVector.x + majorBodyVector.x,
+                    stateVector.y + majorBodyVector.y,
+                    stateVector.z + majorBodyVector.z,
                     stateVector.t,
                 ),
             );
@@ -455,38 +467,41 @@ export class Thing {
         return points;
     }
 
-    // A Lagrange point is a position defined by
-    // a pair of bodies, so we compute it on demand instead of listing each one
-    // as a static def. `this` is the major body (eg Sol) and `thing2` is the
-    // minor body (eg Earth) of the two-body system, matching astronomy-engine's
-    // own major/minor convention; `lagrangeNumber` selects which of the 5 points
-    // (1, 2, 4, and 5 are the stable/commonly-used ones; 3, on the far side of
-    // the major body, is less useful).
-    // Usage: sol.lagrange(earth, 1) returns the Sol-Earth L1 point.
+    // A Lagrange point is a position defined by a pair of bodies, so we
+    // compute it on demand instead of listing each one as a static def.
+    // `this` is the major body (eg Sol) and `smallParent` is the minor body
+    // (eg Earth) of the two-body system; `lagrangeNumber` selects which of
+    // the 5 points.
+    //
+    // `bigBody`/`smallBody` are passed explicitly rather than read off
+    // this.bodyAE/smallParent.bodyAE, because astronomy-engine's own
+    // documented convention for LagrangePoint()'s major_body/minor_body
+    // doesn't always match the Body a Thing uses for its own position: eg
+    // Earth's own Thing uses Body.EMB (appropriate for its own heliocentric
+    // position), but astronomy-engine's Earth-Moon Lagrange point
+    // convention specifically wants major_body=Body.Earth, not Body.EMB.
+    // Callers must pass whatever astronomy-engine's own docs say for that
+    // particular pair - see LagrangePoint()'s doc comment in astronomy.d.ts.
+    // Usage: sol.lagrange(earth, 1, Body.Sun, Body.EMB) returns the
+    // Sol-Earth L1 point.
     lagrange(
         smallParent: Thing,
         lagrangeNumber: number,
+        bigBody: Body,
+        smallBody: Body,
     ): Thing {
-        if (!this.bodyAE || !smallParent.bodyAE) {
-            throw new Error(
-                `lagrange() requires both Things to have a Body: ${this.id}, ${smallParent.id}`,
-            );
-        }
-
-        // TODO case where earth.lagrange(sol, 2) is called. Swap em.
-        const bigBody = this.bodyAE;
-        const smallBody = smallParent.bodyAE;
-    
         const lp = new Thing(
             `${this.name}–${smallParent.name} L${lagrangeNumber}`,
             smallBody,
             'lagrangePoint',
             '#aaffaa',
             smallParent.orbitalPeriodDays,
+            this.id, // parentID: the major body, eg 'sol' or 'earth'
         );
 
         lp.lagrangeNumber = lagrangeNumber;
         lp.bigLagrangeParent = bigBody;
+        lp.label = `L${lagrangeNumber}`;
 
         return lp;
     }

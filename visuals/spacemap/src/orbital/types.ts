@@ -7,8 +7,8 @@ export interface Point2D {
     y: number;
 }
 
-// Lagrange points render as a hollow marker, since they aren't physical
-// objects; everything else renders as a solid marker.
+// Lagrange points render as a "+", since they aren't physical objects;
+// everything else renders as a solid circle.
 export type ThingKind =
     | 'star'
     | 'heliocentric'

@@ -499,15 +499,24 @@ function ObjectMarker({
     return (
         <g>
             {isLagrangePoint ? (
-                <circle
-                    cx={screenPoint.x}
-                    cy={screenPoint.y}
-                    r={radius}
-                    fill="none"
-                    stroke={object.colorHex}
-                    strokeWidth={1.5}
-                    strokeDasharray="2,2"
-                />
+                <>
+                    <line
+                        x1={screenPoint.x - radius}
+                        y1={screenPoint.y}
+                        x2={screenPoint.x + radius}
+                        y2={screenPoint.y}
+                        stroke={object.colorHex}
+                        strokeWidth={1.5}
+                    />
+                    <line
+                        x1={screenPoint.x}
+                        y1={screenPoint.y - radius}
+                        x2={screenPoint.x}
+                        y2={screenPoint.y + radius}
+                        stroke={object.colorHex}
+                        strokeWidth={1.5}
+                    />
+                </>
             ) : (
                 <circle
                     cx={screenPoint.x}
@@ -524,7 +533,7 @@ function ObjectMarker({
                     fontSize={13}
                     fontFamily="'Gelasio', Georgia, serif"
                 >
-                    {object.name}
+                    {object.label ?? object.name}
                 </text>
             )}
         </g>
