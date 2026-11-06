@@ -38,16 +38,14 @@ const MAX_WHEEL_ZOOM_RATIO = 1.3;
 // catalog.
 const MIN_MARKER_SEPARATION_PX = 20;
 // On some touchscreens, lifting both pinch fingers at (near) the same instant
-// produces a spurious pointermove reporting one finger's coordinates as
-// having jumped toward where the other finger had been, just before its
-// pointerup arrives - a hardware/driver artifact, not a real finger movement.
-// Since that fake jump still happens while both pointers are technically
-// active, it would otherwise feed straight into the pinch's distance/midpoint
-// math and show up as a sudden zoom+pan right as the gesture ends. No real
-// finger (pinching or dragging) can plausibly move this many screen pixels
-// between two consecutive pointermove events, so any single event implying a
-// bigger jump than this is rejected outright rather than applied.
-const MAX_PLAUSIBLE_POINTER_JUMP_PX = 200;
+// produces a spurious pointermove for whichever pointer is reported as lifting
+// last, jumping its coordinates toward where the other finger had been - which
+// this code would otherwise read as a sudden one-finger drag. Delaying the
+// handoff from pinch to single-finger drag by this long is enough to tell a
+// simultaneous two-finger release (both pointerup events land within a few ms
+// of each other) apart from a deliberate "lift one finger, keep panning with
+// the other" gesture.
+const PINCH_RELEASE_GRACE_MS = 120;
 
 interface Props {
     config: SpaceMapConfig;
@@ -110,6 +108,15 @@ export function SpaceMap({ config }: Props): JSX.Element {
     const dragStateRef = React.useRef<DragState | null>(null);
     const activePointersRef = React.useRef<Map<number, Point2D>>(new Map());
     const pinchStateRef = React.useRef<PinchState | null>(null);
+    const pinchReleaseTimeoutRef = React.useRef<number | null>(null);
+
+    React.useEffect(() => {
+        return () => {
+            if (pinchReleaseTimeoutRef.current !== null) {
+                window.clearTimeout(pinchReleaseTimeoutRef.current);
+            }
+        };
+    }, []);
 
     const [viewportSize, setViewportSize] = React.useState({
         width: 800,
@@ -258,6 +265,10 @@ export function SpaceMap({ config }: Props): JSX.Element {
 
     function handlePointerDown(event: React.PointerEvent<SVGSVGElement>): void {
         event.currentTarget.setPointerCapture(event.pointerId);
+        if (pinchReleaseTimeoutRef.current !== null) {
+            window.clearTimeout(pinchReleaseTimeoutRef.current);
+            pinchReleaseTimeoutRef.current = null;
+        }
         activePointersRef.current.set(event.pointerId, {
             x: event.clientX,
             y: event.clientY,
@@ -275,19 +286,13 @@ export function SpaceMap({ config }: Props): JSX.Element {
     }
 
     function handlePointerMove(event: React.PointerEvent<SVGSVGElement>): void {
-        const previous = activePointersRef.current.get(event.pointerId);
-        if (!previous) {
+        if (!activePointersRef.current.has(event.pointerId)) {
             return;
         }
-        const next = { x: event.clientX, y: event.clientY };
-        // See MAX_PLAUSIBLE_POINTER_JUMP_PX: discard a single event's
-        // implausible jump rather than act on it. The stale `previous`
-        // position is left in place, so a genuine subsequent move is judged
-        // against it rather than against the rejected, corrupted one.
-        if (Math.hypot(next.x - previous.x, next.y - previous.y) > MAX_PLAUSIBLE_POINTER_JUMP_PX) {
-            return;
-        }
-        activePointersRef.current.set(event.pointerId, next);
+        activePointersRef.current.set(event.pointerId, {
+            x: event.clientX,
+            y: event.clientY,
+        });
 
         if (activePointersRef.current.size === 2 && pinchStateRef.current) {
             const nextPinchState = pinchStateOf(activePointersRef.current);
@@ -321,17 +326,44 @@ export function SpaceMap({ config }: Props): JSX.Element {
     }
 
     function handlePointerUp(event: React.PointerEvent<SVGSVGElement>): void {
+        const wasPinching = activePointersRef.current.size === 2;
         activePointersRef.current.delete(event.pointerId);
         pinchStateRef.current = null;
-        const remaining = [...activePointersRef.current.values()];
-        dragStateRef.current =
-            remaining.length === 1
-                ? {
-                      startClientX: remaining[0].x,
-                      startClientY: remaining[0].y,
-                      startPanOffset: panOffset,
-                  }
-                : null;
+        if (pinchReleaseTimeoutRef.current !== null) {
+            window.clearTimeout(pinchReleaseTimeoutRef.current);
+            pinchReleaseTimeoutRef.current = null;
+        }
+
+        const remainingEntries = [...activePointersRef.current.entries()];
+        if (remainingEntries.length !== 1) {
+            dragStateRef.current = null;
+            return;
+        }
+
+        if (!wasPinching) {
+            dragStateRef.current = {
+                startClientX: remainingEntries[0][1].x,
+                startClientY: remainingEntries[0][1].y,
+                startPanOffset: panOffset,
+            };
+            return;
+        }
+
+        // See PINCH_RELEASE_GRACE_MS: don't trust this remaining pointer with
+        // a drag until it's clear the other finger isn't also lifting right now.
+        dragStateRef.current = null;
+        const remainingPointerId = remainingEntries[0][0];
+        pinchReleaseTimeoutRef.current = window.setTimeout(() => {
+            pinchReleaseTimeoutRef.current = null;
+            const stillDown = activePointersRef.current.get(remainingPointerId);
+            if (stillDown) {
+                dragStateRef.current = {
+                    startClientX: stillDown.x,
+                    startClientY: stillDown.y,
+                    startPanOffset: panOffset,
+                };
+            }
+        }, PINCH_RELEASE_GRACE_MS);
     }
 
     function handleWheel(event: React.WheelEvent<SVGSVGElement>): void {
