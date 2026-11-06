@@ -160,6 +160,54 @@ export class Thing {
         // etc. aren't included - flag if you want specific ones added.
         new Thing('Ceres', null, 'asteroid', '#b5a898', 1680.497869, 'sol', 2.766260186, 99.8940),
         new Thing('Vesta', null, 'asteroid', '#cbb89a', 1325.220467, 'sol', 2.361165733, 16.8330),
+        // Trans-Neptunian objects (TNOs): every one with a best current
+        // measured diameter at least as large as Varuna's own (668 km, per
+        // Herschel thermal measurements - Lellouch et al. 2013). Diameters
+        // from Johnston's Archive (johnstonsarchive.net/astro/tnodiam.html),
+        // cross-checked against Wikipedia. Orbital elements fetched the same
+        // way as everything else above: JPL Horizons osculating elements at
+        // SIMPLE_ORBIT_EPOCH, queried against each body's own numbered
+        // primary body (not a system barycenter or satellite).
+        //
+        // A few of these were only given proper names in 2025 and may still
+        // be unfamiliar even as TNOs go - their old provisional designation
+        // is noted in a trailing comment. 2007 UK126's actual name,
+        // G!kun||'homdima (San mythology), uses characters this file's id
+        // scheme (name.toLowerCase()) can't carry, so it's listed here under
+        // a plain transliteration instead.
+        //
+        // This circular-orbit model ignores eccentricity entirely (see the
+        // semiMajorAxisAu field comment), which is a much bigger
+        // approximation here than for any moon or main-belt asteroid above:
+        // several of these orbits are markedly eccentric (Sedna e=0.85,
+        // Gonggong e=0.50, 2007 UK126 e=0.49, Eris e=0.44, Chiminigagua
+        // e=0.39), so their modeled position can be noticeably off from
+        // where they actually are right now. Sedna is the extreme case: its
+        // semi-major axis (506 AU) is nothing like its real current ~83 AU
+        // (it's near perihelion, reached ~2076) - that's large enough an
+        // error that it's deliberately left out of DEFAULT_FOCUS_IDS
+        // (catalog.ts), or the startup view would zoom out to fit a point
+        // 6x farther away than Sedna actually is. It's still in this
+        // always-visible layer and reachable via ?focus=sedna.
+        new Thing('Orcus', null, 'asteroid', '#9fb0b8', 89858.842999, 'sol', 39.279780416, 171.9480),
+        new Thing('Achlys', null, 'asteroid', '#8f7a6a', 90511.211881, 'sol', 39.469663417, 150.7006), // 2003 AZ84
+        new Thing('Ixion', null, 'asteroid', '#7a5248', 90604.038287, 'sol', 39.496644981, 307.2560),
+        new Thing('Ritona', null, 'asteroid', '#827a70', 97629.551428, 'sol', 41.512864217, 354.7265), // 2005 RN43
+        new Thing('Mani', null, 'asteroid', '#7a5f55', 98422.675932, 'sol', 41.737389478, 302.4300), // 2002 MS4
+        new Thing('Goibniu', null, 'asteroid', '#8a7a68', 99157.788905, 'sol', 41.944954311, 232.9718), // 2004 GV9
+        new Thing('Salacia', null, 'asteroid', '#6b6b6f', 99445.037399, 'sol', 42.025921662, 4.1625),
+        new Thing('Uni', null, 'asteroid', '#7d7d7d', 101730.412251, 'sol', 42.667353498, 71.1968), // 2002 UX25
+        new Thing('Varuna', null, 'asteroid', '#9a6a52', 102737.646564, 'sol', 42.948524187, 126.8887),
+        new Thing('Haumea', null, 'asteroid', '#eef2f5', 103290.237023, 'sol', 43.102390018, 226.4926),
+        new Thing('Quaoar', null, 'asteroid', '#8a6a5a', 104127.208876, 'sol', 43.334918876, 285.5082),
+        new Thing('Makemake', null, 'asteroid', '#b5704a', 112022.364296, 'sol', 45.498630639, 187.1252),
+        new Thing('Varda', null, 'asteroid', '#857064', 112934.211987, 'sol', 45.745198902, 286.7399),
+        new Thing('Aya', null, 'asteroid', '#9a5a46', 118349.368157, 'sol', 47.196065893, 176.5155), // 2002 AW197
+        new Thing('Chiminigagua', null, 'asteroid', '#7d7873', 164520.090082, 'sol', 58.786074691, 185.7727), // 2013 FY27
+        new Thing('Gonggong', null, 'asteroid', '#a84a3a', 200476.359847, 'sol', 67.066238396, 295.0887),
+        new Thing('Eris', null, 'asteroid', '#e8e4da', 203938.828094, 'sol', 67.836241717, 38.3488),
+        new Thing('Gkunhomdima', null, 'asteroid', '#8c4536', 229715.696183, 'sol', 73.438243982, 106.4853), // 2007 UK126, full name G!kun||'homdima
+        new Thing('Sedna', null, 'asteroid', '#8b2e22', 4160095.140159, 'sol', 506.443123106, 94.1288),
     ];
 
     static byID(id: string): Thing | undefined {

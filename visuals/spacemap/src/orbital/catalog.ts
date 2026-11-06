@@ -24,6 +24,12 @@ export const THINGS_BY_ID: ReadonlyMap<string, Thing> = new Map(
     ALL_THINGS.map((thing) => [thing.id, thing]),
 );
 
+// See thing.ts's Sedna comment for why it's excluded here specifically:
+// its modeled (semi-major-axis) distance is ~6x its real current one, so
+// fitting the startup view to it would shrink everything else to a speck.
 export const DEFAULT_FOCUS_IDS: string[] = [
-    ...Thing.MAIN_THINGS.map((planet) => planet.id),
+    // ...Thing.MAIN_THINGS.map((planet) => planet.id),
+    ...Thing.MAIN_THINGS.filter((thing) => thing.id !== 'sedna').map(
+        (thing) => thing.id,
+    ),
 ];
