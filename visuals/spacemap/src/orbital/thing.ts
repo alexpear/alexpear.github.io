@@ -42,6 +42,28 @@ function toFixedEclipticPoint(vector: Vector): Point2D {
     return { x: ecliptic.x, y: ecliptic.y };
 }
 
+// Solves Kepler's equation M = E - e*sin(E) for the eccentric anomaly E
+// (radians) given the mean anomaly M (radians) and eccentricity e, by
+// Newton's method. Starting the guess at M itself converges in well under
+// 20 iterations for every eccentricity in this file (up to Sedna's 0.85) -
+// this orbit model has no use for anything approaching e=1, where that
+// guess would stop being good enough.
+function solveEccentricAnomaly(meanAnomalyRad: number, eccentricity: number): number {
+    let eccentricAnomalyRad = meanAnomalyRad;
+    for (let i = 0; i < 30; i++) {
+        const delta =
+            (eccentricAnomalyRad -
+                eccentricity * Math.sin(eccentricAnomalyRad) -
+                meanAnomalyRad) /
+            (1 - eccentricity * Math.cos(eccentricAnomalyRad));
+        eccentricAnomalyRad -= delta;
+        if (Math.abs(delta) < 1e-12) {
+            break;
+        }
+    }
+    return eccentricAnomalyRad;
+}
+
 export class Thing {
     id: string; // lowercase key used in the ?focus= query param
     name: string; // display label
@@ -62,17 +84,24 @@ export class Thing {
     lagrangeNumber?: number; // for Lagrange points, 1-5.
     bigLagrangeParent?: Body; // for Lagrange points, the bigger of the 2 masses.
 
-    // Simplified circular-orbit model, used for every Thing with no
+    // Simplified Kepler-orbit model, used for every Thing with no
     // astronomy-engine body: every moon (astronomy-engine has no ephemeris
     // for any of them, including Jupiter's), plus any Sol-orbiting body
     // (eg an asteroid) astronomy-engine doesn't track either. Flattened like
-    // everything else here: no inclination, no eccentricity, just a
-    // constant-rate circle of radius semiMajorAxisAu around the parent
-    // (Sol, for an asteroid), starting at epochAngleDeg at SIMPLE_ORBIT_EPOCH.
-    // Fine for a near-circular orbit (eg Titan, Ceres); visibly wrong for an
-    // eccentric one (eg Neptune's Nereid).
+    // everything else here: no inclination, just a fixed ellipse of
+    // semi-major axis semiMajorAxisAu and eccentricity around the parent
+    // (Sol, for an asteroid), with epochAngleDeg giving its mean longitude
+    // (OM + W + MA) at SIMPLE_ORBIT_EPOCH and periapsisLongitudeDeg (OM + W)
+    // fixing where that ellipse's long axis points. eccentricity defaults to
+    // 0 (a circle, periapsisLongitudeDeg meaningless/unused) for every body
+    // this hasn't been bothered for - fine for a near-circular orbit (eg
+    // Titan, Ceres); see offsetFromParent() for why it stops being fine
+    // (and periapsisLongitudeDeg becomes required) once eccentricity is
+    // actually set (eg Neptune's Nereid, Sedna).
     semiMajorAxisAu?: number;
-    epochAngleDeg?: number; // this Thing's angle around its parent at SIMPLE_ORBIT_EPOCH
+    epochAngleDeg?: number; // this Thing's mean longitude (OM+W+MA) at SIMPLE_ORBIT_EPOCH
+    eccentricity: number;
+    periapsisLongitudeDeg?: number; // OM+W; required once eccentricity != 0
 
     constructor(
         name: string,
@@ -83,6 +112,8 @@ export class Thing {
         parentID: string = 'sol',
         semiMajorAxisAu?: number,
         epochAngleDeg?: number,
+        eccentricity: number = 0,
+        periapsisLongitudeDeg?: number,
     ) {
         this.name = name;
         this.id = name.toLowerCase(); // TODO slugify instead
@@ -93,6 +124,8 @@ export class Thing {
         this.parentID = parentID;
         this.semiMajorAxisAu = semiMajorAxisAu;
         this.epochAngleDeg = epochAngleDeg;
+        this.eccentricity = eccentricity;
+        this.periapsisLongitudeDeg = periapsisLongitudeDeg;
     }
 
     static MAIN_THINGS: Thing[] = [
@@ -148,7 +181,12 @@ export class Thing {
         new Thing('Titania', null, 'moon', '#9aa6ad', 8.704609, 'uranus', 0.002916043, 154.1154),
         new Thing('Oberon', null, 'moon', '#8f8a84', 13.466214, 'uranus', 0.003900537, 242.4414),
         new Thing('Triton', null, 'moon', '#c9d8e0', 5.877119, 'neptune', 0.002371476, 59.9426),
-        new Thing('Nereid', null, 'moon', '#9fa0a3', 360.655661, 'neptune', 0.036892716, 194.1457),
+        // Nereid's orbit is eccentric enough (e=0.746) that the plain
+        // circular model above would put it visibly in the wrong place -
+        // same EC/OM/W/MA source and epoch as everything else here, just
+        // also given eccentricity + periapsisLongitudeDeg (OM+W) so
+        // offsetFromParent() solves the real ellipse instead.
+        new Thing('Nereid', null, 'moon', '#9fa0a3', 360.655661, 'neptune', 0.036892716, 194.1457, 0.746100, 256.0251),
         new Thing('Despina', null, 'moon', '#8f909a', 0.335448, 'neptune', 0.000351530, 252.0855),
         new Thing('Galatea', null, 'moon', '#8a8b94', 0.429472, 'neptune', 0.000414479, 88.0302),
         new Thing('Larissa', null, 'moon', '#7f8089', 0.555318, 'neptune', 0.000491934, 317.6936),
@@ -176,38 +214,36 @@ export class Thing {
         // scheme (name.toLowerCase()) can't carry, so it's listed here under
         // a plain transliteration instead.
         //
-        // This circular-orbit model ignores eccentricity entirely (see the
-        // semiMajorAxisAu field comment), which is a much bigger
-        // approximation here than for any moon or main-belt asteroid above:
-        // several of these orbits are markedly eccentric (Sedna e=0.85,
+        // Several of these orbits are eccentric enough (Sedna e=0.85,
         // Gonggong e=0.50, 2007 UK126 e=0.49, Eris e=0.44, Chiminigagua
-        // e=0.39), so their modeled position can be noticeably off from
-        // where they actually are right now. Sedna is the extreme case: its
-        // semi-major axis (506 AU) is nothing like its real current ~83 AU
-        // (it's near perihelion, reached ~2076) - that's large enough an
-        // error that it's deliberately left out of DEFAULT_FOCUS_IDS
-        // (catalog.ts), or the startup view would zoom out to fit a point
-        // 6x farther away than Sedna actually is. It's still in this
-        // always-visible layer and reachable via ?focus=sedna.
+        // e=0.39, Ixion e=0.24, Haumea e=0.195) that the plain circular
+        // model above would put them visibly in the wrong place - Sedna
+        // most of all, since its semi-major axis (506 AU) is nothing like
+        // its real current ~83 AU (it's near perihelion, reached ~2076).
+        // Those 7 are given eccentricity + periapsisLongitudeDeg (OM+W)
+        // below so offsetFromParent() solves their real ellipse instead;
+        // the rest are left on the circular approximation, same as every
+        // main-belt asteroid/moon above - fine, since their eccentricities
+        // are all comparable to or lower than Ceres'/Vesta's own (~0.08).
         new Thing('Orcus', null, 'asteroid', '#9fb0b8', 89858.842999, 'sol', 39.279780416, 171.9480),
         new Thing('Achlys', null, 'asteroid', '#8f7a6a', 90511.211881, 'sol', 39.469663417, 150.7006), // 2003 AZ84
-        new Thing('Ixion', null, 'asteroid', '#7a5248', 90604.038287, 'sol', 39.496644981, 307.2560),
+        new Thing('Ixion', null, 'asteroid', '#7a5248', 90604.038287, 'sol', 39.496644981, 307.2560, 0.244049, 10.8943),
         new Thing('Ritona', null, 'asteroid', '#827a70', 97629.551428, 'sol', 41.512864217, 354.7265), // 2005 RN43
         new Thing('Mani', null, 'asteroid', '#7a5f55', 98422.675932, 'sol', 41.737389478, 302.4300), // 2002 MS4
         new Thing('Goibniu', null, 'asteroid', '#8a7a68', 99157.788905, 'sol', 41.944954311, 232.9718), // 2004 GV9
         new Thing('Salacia', null, 'asteroid', '#6b6b6f', 99445.037399, 'sol', 42.025921662, 4.1625),
         new Thing('Uni', null, 'asteroid', '#7d7d7d', 101730.412251, 'sol', 42.667353498, 71.1968), // 2002 UX25
         new Thing('Varuna', null, 'asteroid', '#9a6a52', 102737.646564, 'sol', 42.948524187, 126.8887),
-        new Thing('Haumea', null, 'asteroid', '#eef2f5', 103290.237023, 'sol', 43.102390018, 226.4926),
+        new Thing('Haumea', null, 'asteroid', '#eef2f5', 103290.237023, 'sol', 43.102390018, 226.4926, 0.195026, 1.8938),
         new Thing('Quaoar', null, 'asteroid', '#8a6a5a', 104127.208876, 'sol', 43.334918876, 285.5082),
         new Thing('Makemake', null, 'asteroid', '#b5704a', 112022.364296, 'sol', 45.498630639, 187.1252),
         new Thing('Varda', null, 'asteroid', '#857064', 112934.211987, 'sol', 45.745198902, 286.7399),
         new Thing('Aya', null, 'asteroid', '#9a5a46', 118349.368157, 'sol', 47.196065893, 176.5155), // 2002 AW197
-        new Thing('Chiminigagua', null, 'asteroid', '#7d7873', 164520.090082, 'sol', 58.786074691, 185.7727), // 2013 FY27
-        new Thing('Gonggong', null, 'asteroid', '#a84a3a', 200476.359847, 'sol', 67.066238396, 295.0887),
-        new Thing('Eris', null, 'asteroid', '#e8e4da', 203938.828094, 'sol', 67.836241717, 38.3488),
-        new Thing('Gkunhomdima', null, 'asteroid', '#8c4536', 229715.696183, 'sol', 73.438243982, 106.4853), // 2007 UK126, full name G!kun||'homdima
-        new Thing('Sedna', null, 'asteroid', '#8b2e22', 4160095.140159, 'sol', 506.443123106, 94.1288),
+        new Thing('Chiminigagua', null, 'asteroid', '#7d7873', 164520.090082, 'sol', 58.786074691, 185.7727, 0.394895, 326.2602), // 2013 FY27
+        new Thing('Gonggong', null, 'asteroid', '#a84a3a', 200476.359847, 'sol', 67.066238396, 295.0887, 0.503411, 183.8297),
+        new Thing('Eris', null, 'asteroid', '#e8e4da', 203938.828094, 'sol', 67.836241717, 38.3488, 0.438418, 187.1967),
+        new Thing('Gkunhomdima', null, 'asteroid', '#8c4536', 229715.696183, 'sol', 73.438243982, 106.4853, 0.488740, 117.6101), // 2007 UK126, full name G!kun||'homdima
+        new Thing('Sedna', null, 'asteroid', '#8b2e22', 4160095.140159, 'sol', 506.443123106, 94.1288, 0.849556, 95.6863),
     ];
 
     static byID(id: string): Thing | undefined {
@@ -259,12 +295,12 @@ export class Thing {
         return toFixedEclipticPoint(HelioVector(this.bodyAE, date));
     }
 
-    // The simplified circular-orbit model (see the
-    // semiMajorAxisAu/epochAngleDeg field comments): this Thing's offset
-    // from its immediate parent, with no parent position added in. Split
-    // out from position() so orbitPath() can hold the parent fixed across
-    // a whole sweep instead of re-fetching it per sample - see orbitPath()'s
-    // comment for why that matters.
+    // The simplified Kepler-orbit model (see the semiMajorAxisAu/
+    // epochAngleDeg/eccentricity/periapsisLongitudeDeg field comments):
+    // this Thing's offset from its immediate parent, with no parent
+    // position added in. Split out from position() so orbitPath() can hold
+    // the parent fixed across a whole sweep instead of re-fetching it per
+    // sample - see orbitPath()'s comment for why that matters.
     offsetFromParent(date: Date): Point2D {
         if (
             this.semiMajorAxisAu === undefined ||
@@ -277,13 +313,49 @@ export class Thing {
         const daysSinceEpoch =
             (date.getTime() - SIMPLE_ORBIT_EPOCH.getTime()) /
             MILLISECONDS_PER_DAY;
-        const angleDeg =
+        // Mean longitude: this is exact (constant-rate) regardless of
+        // eccentricity - it's the *position* angle that isn't, once
+        // eccentricity != 0, which is why a circular orbit can read it
+        // directly as the position angle but an eccentric one can't.
+        const meanLongitudeDeg =
             this.epochAngleDeg +
             (360 * daysSinceEpoch) / this.orbitalPeriodDays;
-        const angleRad = (angleDeg * Math.PI) / 180;
+
+        if (!this.eccentricity) {
+            const angleRad = (meanLongitudeDeg * Math.PI) / 180;
+            return {
+                x: this.semiMajorAxisAu * Math.cos(angleRad),
+                y: this.semiMajorAxisAu * Math.sin(angleRad),
+            };
+        }
+        if (this.periapsisLongitudeDeg === undefined) {
+            throw new Error(
+                `${this.id} has eccentricity set but no periapsisLongitudeDeg`,
+            );
+        }
+
+        const meanAnomalyRad =
+            ((meanLongitudeDeg - this.periapsisLongitudeDeg) * Math.PI) / 180;
+        const eccentricAnomalyRad = solveEccentricAnomaly(
+            meanAnomalyRad,
+            this.eccentricity,
+        );
+        const trueAnomalyRad =
+            2 *
+            Math.atan2(
+                Math.sqrt(1 + this.eccentricity) *
+                    Math.sin(eccentricAnomalyRad / 2),
+                Math.sqrt(1 - this.eccentricity) *
+                    Math.cos(eccentricAnomalyRad / 2),
+            );
+        const radiusAu =
+            this.semiMajorAxisAu *
+            (1 - this.eccentricity * Math.cos(eccentricAnomalyRad));
+        const angleRad =
+            (this.periapsisLongitudeDeg * Math.PI) / 180 + trueAnomalyRad;
         return {
-            x: this.semiMajorAxisAu * Math.cos(angleRad),
-            y: this.semiMajorAxisAu * Math.sin(angleRad),
+            x: radiusAu * Math.cos(angleRad),
+            y: radiusAu * Math.sin(angleRad),
         };
     }
 
