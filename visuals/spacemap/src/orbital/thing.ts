@@ -523,6 +523,8 @@ export class Thing {
                 'earth',
                 0.002558939,
                 167.1504,
+                0.03972,
+                76.5518,
             ),
             // Asteroids: just the two biggest main-belt bodies for now (Ceres is
             // also classified as a dwarf planet). Smaller Belt objects, Trojans,
