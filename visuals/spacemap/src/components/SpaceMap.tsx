@@ -1,4 +1,5 @@
 import React from 'react';
+import { useGesture } from '@use-gesture/react';
 import { SpaceMapConfig } from '../config';
 import { BASE_LAYER } from '../orbital/catalog';
 import { Point2D, ThingKind } from '../orbital/types';
@@ -37,30 +38,9 @@ const MAX_WHEEL_ZOOM_RATIO = 1.3;
 // for two literally-identical orbital periods, which doesn't occur in this
 // catalog.
 const MIN_MARKER_SEPARATION_PX = 20;
-// On some touchscreens, lifting both pinch fingers at (near) the same instant
-// produces a spurious pointermove for whichever pointer is reported as lifting
-// last, jumping its coordinates toward where the other finger had been - which
-// this code would otherwise read as a sudden one-finger drag. Delaying the
-// handoff from pinch to single-finger drag by this long is enough to tell a
-// simultaneous two-finger release (both pointerup events land within a few ms
-// of each other) apart from a deliberate "lift one finger, keep panning with
-// the other" gesture.
-const PINCH_RELEASE_GRACE_MS = 120;
 
 interface Props {
     config: SpaceMapConfig;
-}
-
-interface DragState {
-    startClientX: number;
-    startClientY: number;
-    startPanOffset: Point2D;
-}
-
-// Distance and midpoint between the two pointers of a pinch gesture.
-interface PinchState {
-    distance: number;
-    midpoint: Point2D;
 }
 
 // panOffset and zoomMultiplier are updated together: see applyZoom() for why.
@@ -73,14 +53,6 @@ const INITIAL_VIEW_STATE: ViewState = {
     panOffset: { x: 0, y: 0 },
     zoomMultiplier: 1,
 };
-
-function pinchStateOf(pointers: Map<number, Point2D>): PinchState {
-    const [a, b] = [...pointers.values()];
-    return {
-        distance: Math.hypot(b.x - a.x, b.y - a.y),
-        midpoint: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 },
-    };
-}
 
 // See MIN_MARKER_SEPARATION_PX: a [category, orbitalPeriodDays] pair, lower
 // in both is higher priority (less likely to be hidden on overlap). Category
@@ -106,18 +78,7 @@ function loses(a: Thing, b: Thing): boolean {
 
 export function SpaceMap({ config }: Props): JSX.Element {
     const containerRef = React.useRef<HTMLDivElement>(null);
-    const dragStateRef = React.useRef<DragState | null>(null);
-    const activePointersRef = React.useRef<Map<number, Point2D>>(new Map());
-    const pinchStateRef = React.useRef<PinchState | null>(null);
-    const pinchReleaseTimeoutRef = React.useRef<number | null>(null);
-
-    React.useEffect(() => {
-        return () => {
-            if (pinchReleaseTimeoutRef.current !== null) {
-                window.clearTimeout(pinchReleaseTimeoutRef.current);
-            }
-        };
-    }, []);
+    const svgRef = React.useRef<SVGSVGElement>(null);
 
     const [viewportSize, setViewportSize] = React.useState({
         width: 800,
@@ -264,107 +225,32 @@ export function SpaceMap({ config }: Props): JSX.Element {
         });
     }
 
-    function handlePointerDown(event: React.PointerEvent<SVGSVGElement>): void {
-        event.currentTarget.setPointerCapture(event.pointerId);
-        if (pinchReleaseTimeoutRef.current !== null) {
-            window.clearTimeout(pinchReleaseTimeoutRef.current);
-            pinchReleaseTimeoutRef.current = null;
-        }
-        activePointersRef.current.set(event.pointerId, {
-            x: event.clientX,
-            y: event.clientY,
-        });
-        if (activePointersRef.current.size === 2) {
-            dragStateRef.current = null;
-            pinchStateRef.current = pinchStateOf(activePointersRef.current);
-        } else if (activePointersRef.current.size === 1) {
-            dragStateRef.current = {
-                startClientX: event.clientX,
-                startClientY: event.clientY,
-                startPanOffset: panOffset,
-            };
-        }
-    }
-
-    function handlePointerMove(event: React.PointerEvent<SVGSVGElement>): void {
-        if (!activePointersRef.current.has(event.pointerId)) {
-            return;
-        }
-        activePointersRef.current.set(event.pointerId, {
-            x: event.clientX,
-            y: event.clientY,
-        });
-
-        if (activePointersRef.current.size === 2 && pinchStateRef.current) {
-            const nextPinchState = pinchStateOf(activePointersRef.current);
-            const rect = event.currentTarget.getBoundingClientRect();
-            applyZoom(
-                {
-                    x: nextPinchState.midpoint.x - rect.left,
-                    y: nextPinchState.midpoint.y - rect.top,
-                },
-                nextPinchState.distance / pinchStateRef.current.distance,
+    // Same as applyZoom, but takes the new zoomMultiplier directly instead
+    // of a ratio - used by the pinch gesture below, whose own `offset` is
+    // already an absolute target (see the `pinch.from` option), not a
+    // per-event delta.
+    function applyAbsoluteZoom(
+        anchorScreen: Point2D,
+        targetZoomMultiplier: number,
+    ): void {
+        setViewState((current) => {
+            const nextZoomMultiplier = clamp(
+                targetZoomMultiplier,
+                MIN_ZOOM_MULTIPLIER,
+                MAX_ZOOM_MULTIPLIER,
             );
-            pinchStateRef.current = nextPinchState;
-            return;
-        }
-
-        const dragState = dragStateRef.current;
-        if (!dragState) {
-            return;
-        }
-        setViewState((current) => ({
-            ...current,
-            panOffset: {
-                x:
-                    dragState.startPanOffset.x +
-                    (event.clientX - dragState.startClientX),
-                y:
-                    dragState.startPanOffset.y +
-                    (event.clientY - dragState.startClientY),
-            },
-        }));
-    }
-
-    function handlePointerUp(event: React.PointerEvent<SVGSVGElement>): void {
-        const wasPinching = activePointersRef.current.size === 2;
-        activePointersRef.current.delete(event.pointerId);
-        pinchStateRef.current = null;
-        if (pinchReleaseTimeoutRef.current !== null) {
-            window.clearTimeout(pinchReleaseTimeoutRef.current);
-            pinchReleaseTimeoutRef.current = null;
-        }
-
-        const remainingEntries = [...activePointersRef.current.entries()];
-        if (remainingEntries.length !== 1) {
-            dragStateRef.current = null;
-            return;
-        }
-
-        if (!wasPinching) {
-            dragStateRef.current = {
-                startClientX: remainingEntries[0][1].x,
-                startClientY: remainingEntries[0][1].y,
-                startPanOffset: panOffset,
+            const appliedZoomRatio =
+                nextZoomMultiplier / current.zoomMultiplier;
+            return {
+                zoomMultiplier: nextZoomMultiplier,
+                panOffset: panOffsetForZoomAnchor(
+                    anchorScreen,
+                    { x: viewportSize.width / 2, y: viewportSize.height / 2 },
+                    current.panOffset,
+                    appliedZoomRatio,
+                ),
             };
-            return;
-        }
-
-        // See PINCH_RELEASE_GRACE_MS: don't trust this remaining pointer with
-        // a drag until it's clear the other finger isn't also lifting right now.
-        dragStateRef.current = null;
-        const remainingPointerId = remainingEntries[0][0];
-        pinchReleaseTimeoutRef.current = window.setTimeout(() => {
-            pinchReleaseTimeoutRef.current = null;
-            const stillDown = activePointersRef.current.get(remainingPointerId);
-            if (stillDown) {
-                dragStateRef.current = {
-                    startClientX: stillDown.x,
-                    startClientY: stillDown.y,
-                    startPanOffset: panOffset,
-                };
-            }
-        }, PINCH_RELEASE_GRACE_MS);
+        });
     }
 
     function handleWheel(event: React.WheelEvent<SVGSVGElement>): void {
@@ -382,12 +268,67 @@ export function SpaceMap({ config }: Props): JSX.Element {
         applyZoom(anchorScreen, zoomRatio);
     }
 
+    // Dragging (mouse or single-finger touch) and pinch-zoom (two-finger
+    // touch) are both handled by @use-gesture rather than hand-rolled
+    // Pointer Event tracking: a previous hand-rolled version had a
+    // persistent bug where lifting both pinch fingers at once produced a
+    // spurious jump, which survived two different hand-written mitigation
+    // attempts. @use-gesture is a widely-used library that's already dealt
+    // with this class of real-device touch-event inconsistency, so this
+    // leans on that instead of trying to out-guess mobile touchscreens.
+    //
+    // onDrag's `offset` is wired to start from the current panOffset (see
+    // `drag.from` below) each time a new drag begins, so it's already the
+    // absolute new panOffset - not a delta to add to it. Same idea for
+    // onPinch's `offset[0]` (`pinch.from`) against zoomMultiplier; `[1]`
+    // is pinch rotation, unused here (this map doesn't rotate).
+    // `pinching` (shared state) is true for the whole time 2 fingers are
+    // down; canceling the drag then is what stops it from also trying to
+    // pan while a pinch is already moving things around.
+    useGesture(
+        {
+            onDrag: ({ pinching, cancel, offset: [x, y] }) => {
+                if (pinching) {
+                    cancel();
+                    return;
+                }
+                setViewState((current) => ({
+                    ...current,
+                    panOffset: { x, y },
+                }));
+            },
+            onPinch: ({ origin: [originX, originY], offset: [scale] }) => {
+                const rect = svgRef.current?.getBoundingClientRect();
+                if (!rect) {
+                    return;
+                }
+                applyAbsoluteZoom(
+                    { x: originX - rect.left, y: originY - rect.top },
+                    scale,
+                );
+            },
+        },
+        {
+            target: svgRef,
+            eventOptions: { passive: false },
+            drag: { from: () => [panOffset.x, panOffset.y] },
+            pinch: {
+                from: () => [zoomMultiplier, 0],
+                // Wheel-to-zoom is handled by handleWheel/onWheel below,
+                // already tuned for a gentle per-notch step; leave pinch
+                // out of the wheel event entirely rather than double up.
+                pinchOnWheel: false,
+            },
+        },
+    );
+
     return (
         <div
             ref={containerRef}
             style={{ width: '100%', height: '100%', position: 'relative' }}
         >
             <svg
+                ref={svgRef}
                 width={viewportSize.width}
                 height={viewportSize.height}
                 viewBox={`0 0 ${viewportSize.width} ${viewportSize.height}`}
@@ -396,11 +337,6 @@ export function SpaceMap({ config }: Props): JSX.Element {
                     cursor: 'grab',
                     touchAction: 'none',
                 }}
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-                onPointerLeave={handlePointerUp}
-                onPointerCancel={handlePointerUp}
                 onWheel={handleWheel}
             >
                 {BASE_LAYER.map((thing) => (
