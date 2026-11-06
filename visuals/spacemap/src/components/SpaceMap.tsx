@@ -460,7 +460,10 @@ function OrbitPath({
     toScreen,
 }: ObjectLayerProps): JSX.Element | null {
     const pathAu = React.useMemo(
-        () => object.orbitPath?.(date) ?? null,
+        () =>
+            object.kind === 'lagrangePoint'
+                ? null
+                : (object.orbitPath?.(date) ?? null),
         [object, date],
     );
     if (!pathAu) {
