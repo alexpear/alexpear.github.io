@@ -42,6 +42,16 @@ function toFixedEclipticPoint(vector: Vector): Point2D {
     return { x: ecliptic.x, y: ecliptic.y };
 }
 
+// Turns a display name into a Thing.id: lowercase, alphanumeric runs joined
+// by single hyphens, no leading/trailing hyphen. Handles names toLowerCase()
+// alone can't, eg lagrange()'s "Sol–Earth L1" (en dash + space) -> "sol-earth-l1".
+function slugify(name: string): string {
+    return name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
 // Solves Kepler's equation M = E - e*sin(E) for the eccentric anomaly E
 // (radians) given the mean anomaly M (radians) and eccentricity e, by
 // Newton's method. Starting the guess at M itself converges in well under
@@ -116,7 +126,7 @@ export class Thing {
         periapsisLongitudeDeg?: number,
     ) {
         this.name = name;
-        this.id = name.toLowerCase(); // TODO slugify instead
+        this.id = slugify(name);
         this.colorHex = colorHex;
         this.kind = kind;
         this.bodyAE = body; // TODO make build process stricter, catch null passed here at compile time.
