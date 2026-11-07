@@ -364,14 +364,20 @@ export function SpaceMap({ config }: Props): JSX.Element {
         },
     );
 
-    // Pan/zoom, applied once here rather than baked into every rendered
-    // point - see makeAuToWorldTransform's comment. A pure pan only touches
-    // this one attribute (OrbitPath/ObjectMarker don't re-render at all,
-    // since none of their own props changed); a zoom also touches this plus
-    // each ObjectMarker's own counter-scale (see ObjectMarker), but still
-    // never touches OrbitPath, whose geometry the browser scales for free
-    // as part of applying this same transform.
-    const viewTransform = `translate(${viewportSize.width / 2 + panOffset.x}, ${viewportSize.height / 2 + panOffset.y}) scale(${zoomMultiplier})`;
+    // Pan only, applied once here rather than baked into every rendered
+    // point - a pure pan only touches this one attribute (OrbitPath and
+    // ObjectMarker don't re-render at all, since none of their own props
+    // changed).
+    //
+    // Zoom is deliberately NOT a scale() here: mobile browsers rasterize a
+    // scaled SVG group into a bitmap at some resolution of their own
+    // choosing and then stretch that bitmap, so after a pinch the whole map
+    // (text included) could come out blurry/pixelated, at a seemingly random
+    // level per gesture. Instead, zoom is multiplied into each point's
+    // coordinates (see OrbitPath, ObjectMarker), so geometry is always drawn
+    // at true screen resolution. OrbitPath still caches its world-space
+    // points, so a zoom tick is just a multiply per point, not a re-solve.
+    const viewTransform = `translate(${viewportSize.width / 2 + panOffset.x}, ${viewportSize.height / 2 + panOffset.y})`;
 
     return (
         <div
@@ -397,6 +403,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
                             object={thing}
                             date={config.date}
                             toWorld={toWorld}
+                            zoomMultiplier={zoomMultiplier}
                         />
                     ))}
                     {focusedExtras.map((object) => (
@@ -405,6 +412,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
                             object={object}
                             date={config.date}
                             toWorld={toWorld}
+                            zoomMultiplier={zoomMultiplier}
                         />
                     ))}
                     {BASE_LAYER.filter(
@@ -442,30 +450,42 @@ interface OrbitPathProps {
     object: Thing;
     date: Date;
     toWorld: (point: Point2D) => Point2D;
+    zoomMultiplier: number;
 }
 
 const OrbitPath = React.memo(function OrbitPath({
     object,
     date,
     toWorld,
+    zoomMultiplier,
 }: OrbitPathProps): JSX.Element | null {
-    const pathAu = React.useMemo(
-        () =>
-            object.kind === 'lagrangePoint'
-                ? null
-                : (object.orbitPath?.(date) ?? null),
-        [object, date],
-    );
-    if (!pathAu) {
+    // World-space points (see makeAuToWorldTransform): independent of
+    // pan/zoom, so only recomputed when the date or framing changes.
+    const worldPoints = React.useMemo(() => {
+        if (object.kind === 'lagrangePoint') {
+            return undefined;
+        }
+        return object.orbitPath?.(date)?.map(toWorld);
+    }, [object, date, toWorld]);
+    // Screen-scale geometry relative to the viewport center + pan (which
+    // SpaceMap's <g> applies as a translate). See SpaceMap's viewTransform
+    // comment for why zoom is applied here rather than as an SVG scale().
+    const pathData = React.useMemo(() => {
+        if (!worldPoints) {
+            return undefined;
+        }
+        return (
+            worldPoints
+                .map(
+                    (point, index) =>
+                        `${index === 0 ? 'M' : 'L'}${roundTenth(point.x * zoomMultiplier)},${roundTenth(point.y * zoomMultiplier)}`,
+                )
+                .join(' ') + ' Z'
+        );
+    }, [worldPoints, zoomMultiplier]);
+    if (!pathData) {
         return null;
     }
-    const pathData =
-        pathAu
-            .map((point, index) => {
-                const worldPoint = toWorld(point);
-                return `${index === 0 ? 'M' : 'L'}${worldPoint.x},${worldPoint.y}`;
-            })
-            .join(' ') + ' Z';
     return (
         <path
             d={pathData}
@@ -473,15 +493,15 @@ const OrbitPath = React.memo(function OrbitPath({
             stroke={object.colorHex}
             strokeOpacity={0.35}
             strokeWidth={1}
-            // The path's own geometry (above) is in world space, so it's
-            // meant to scale with the ancestor <g>'s zoom - but the stroke
-            // itself should stay a crisp, constant screen pixel regardless
-            // of zoom, same as before this was reworked to use a <g>
-            // transform at all.
-            vectorEffect="non-scaling-stroke"
         />
     );
 });
+
+// Sub-pixel precision finer than this is invisible, and rounding keeps the
+// path strings short.
+function roundTenth(value: number): number {
+    return Math.round(value * 10) / 10;
+}
 
 interface ObjectMarkerProps {
     object: Thing;
@@ -499,16 +519,11 @@ const ObjectMarker = React.memo(function ObjectMarker({
     const radius = RADIUS_PX[object.kind];
     const isLagrangePoint = object.kind === 'lagrangePoint';
     return (
-        // worldPoint positions the marker correctly under the ancestor <g>'s
-        // zoom (see SpaceMap's viewTransform comment); scale(1/zoomMultiplier)
-        // then cancels that same zoom for everything inside this <g>, so the
-        // marker/label's own size on screen stays constant regardless of
-        // zoom level, same as before this was reworked to use a <g>
-        // transform at all. Both transforms are cheap - this is still far
-        // less work per pan/zoom tick than recomputing every point's screen
-        // position used to be.
+        // Translate only, never scale: see SpaceMap's viewTransform comment
+        // for why zoom is multiplied in here instead of being an SVG
+        // scale(). The marker/label's own size stays constant on screen.
         <g
-            transform={`translate(${worldPoint.x}, ${worldPoint.y}) scale(${1 / zoomMultiplier})`}
+            transform={`translate(${worldPoint.x * zoomMultiplier}, ${worldPoint.y * zoomMultiplier})`}
         >
             {isLagrangePoint ? (
                 <>

@@ -116,12 +116,11 @@ export function computeFraming(
 }
 
 // Builds an AU-space-to-"world"-pixel-space transform: auto framing alone,
-// with no pan/zoom baked in. "World" space is what every rendered SVG
-// element is actually positioned in; the viewer's pan/zoom is applied once,
-// declaratively, as a single transform attribute on a wrapping <g> (see
-// SpaceMap's render) rather than by recomputing every point here on every
-// pan/zoom change - the whole reason this is split out from
-// makeAuToScreenTransform below.
+// with no pan/zoom baked in. World points are cached per Thing/orbit and
+// only multiplied by the zoom at render time, while pan is a single
+// translate on a wrapping <g> (see SpaceMap's viewTransform comment) -
+// so a pan/zoom never re-runs this rotation math per point. That's the
+// whole reason this is split out from makeAuToScreenTransform below.
 export function makeAuToWorldTransform(
     framing: Framing,
 ): (auPoint: Point2D) => Point2D {
