@@ -99,6 +99,7 @@ export interface ThingOptions {
     orbitalPeriodDays?: number;
     lagrangeNumber?: number;
     bigLagrangeParent?: Body;
+    lagrangeSmallParentID?: string;
     semiMajorAxisAu?: number;
     epochAngleDeg?: number;
     eccentricity?: number;
@@ -126,7 +127,12 @@ export class Thing {
     orbitalPeriodDays?: number;
 
     lagrangeNumber?: number; // for Lagrange points, 1-5.
-    bigLagrangeParent?: Body; // for Lagrange points, the bigger of the 2 masses.
+    // For Lagrange points located via astronomy-engine, the bigger of the 2
+    // masses; undefined for one located by analyticLagrangePosition3D().
+    bigLagrangeParent?: Body;
+    // For Lagrange points, the id of the smaller of the 2 Things (the
+    // bigger one is parentID).
+    lagrangeSmallParentID?: string;
 
     // Simplified Kepler-orbit model, used for every Thing with no
     // astronomy-engine body: every moon (astronomy-engine has no ephemeris
@@ -166,6 +172,7 @@ export class Thing {
         this.orbitalPeriodDays = options.orbitalPeriodDays;
         this.lagrangeNumber = options.lagrangeNumber;
         this.bigLagrangeParent = options.bigLagrangeParent;
+        this.lagrangeSmallParentID = options.lagrangeSmallParentID;
         this.semiMajorAxisAu = options.semiMajorAxisAu;
         this.epochAngleDeg = options.epochAngleDeg;
         this.eccentricity = options.eccentricity ?? 0;
@@ -975,6 +982,9 @@ export class Thing {
     // Lagrange points; for the simplified Kepler model, just the parent's
     // own z (the model has no inclination of its own).
     position3D(date: Date): Point3D {
+        if (this.lagrangeNumber && this.bigLagrangeParent === undefined) {
+            return this.analyticLagrangePosition3D(date);
+        }
         if (this.lagrangeNumber) {
             // LagrangePoint() returns the point's position relative to the
             // MAJOR body's own center, not an absolute heliocentric
@@ -1178,33 +1188,134 @@ export class Thing {
     // (eg Earth) of the two-body system; `lagrangeNumber` selects which of
     // the 5 points.
     //
-    // `bigBody`/`smallBody` are passed explicitly rather than read off
-    // this.bodyAE/smallParent.bodyAE, because astronomy-engine's own
-    // documented convention for LagrangePoint()'s major_body/minor_body
-    // doesn't always match the Body a Thing uses for its own position: eg
-    // Earth's own Thing uses Body.EMB (appropriate for its own heliocentric
-    // position), but astronomy-engine's Earth-Moon Lagrange point
-    // convention specifically wants major_body=Body.Earth, not Body.EMB.
-    // Callers must pass whatever astronomy-engine's own docs say for that
-    // particular pair - see LagrangePoint()'s doc comment in astronomy.d.ts.
-    // Usage: sol.lagrange(earth, 1, Body.Sun, Body.EMB) returns the
-    // Sol-Earth L1 point.
+    // With `bigBody`/`smallBody`, the point's position comes from
+    // astronomy-engine's LagrangePoint(). They're passed explicitly rather
+    // than read off this.bodyAE/smallParent.bodyAE, because
+    // astronomy-engine's own documented convention for LagrangePoint()'s
+    // major_body/minor_body doesn't always match the Body a Thing uses for
+    // its own position: eg Earth's own Thing uses Body.EMB (appropriate for
+    // its own heliocentric position), but astronomy-engine's Earth-Moon
+    // Lagrange point convention specifically wants major_body=Body.Earth,
+    // not Body.EMB. Callers must pass whatever astronomy-engine's own docs
+    // say for that particular pair - see LagrangePoint()'s doc comment in
+    // astronomy.d.ts. Usage: sol.lagrange(earth, 1, Body.Sun, Body.EMB)
+    // returns the Sol-Earth L1 point.
+    //
+    // Without them, it's approximated from the two Things' own positions
+    // and masses instead - see analyticLagrangePosition3D(). Both Things
+    // then need massKg.
     lagrange(
         smallParent: Thing,
         lagrangeNumber: number,
-        bigBody: Body,
-        smallBody: Body,
+        bigBody?: Body,
+        smallBody?: Body,
     ): Thing {
+        const useAstronomyEngine =
+            bigBody !== undefined && smallBody !== undefined;
         return new Thing({
             name: `${this.name}–${smallParent.name} L${lagrangeNumber}`,
             label: `L${lagrangeNumber}`,
-            bodyAE: smallBody,
+            bodyAE: useAstronomyEngine ? smallBody : undefined,
             kind: 'lagrangePoint',
             colorHex: '#aaffaa',
             orbitalPeriodDays: smallParent.orbitalPeriodDays,
             parentID: this.id, // major body, eg 'sol' or 'earth'
             lagrangeNumber,
-            bigLagrangeParent: bigBody,
+            bigLagrangeParent: useAstronomyEngine ? bigBody : undefined,
+            lagrangeSmallParentID: smallParent.id,
         });
+    }
+
+    // The 5 Lagrange points of this Thing and the Thing it orbits (eg
+    // Sol-Mars, Jupiter-Europa), as new Things - or [] if they can't be
+    // computed: Sol (orbits nothing), a Lagrange point itself, or a pair
+    // where either body's mass is unknown (eg Sedna, Nereid). A planet
+    // orbiting Sol uses astronomy-engine's precise LagrangePoint(); every
+    // other pair, the mass-based approximation (see lagrange()).
+    lagrangePointsWithParent(): Thing[] {
+        if (this.kind === 'lagrangePoint' || this.parentID === this.id) {
+            return [];
+        }
+        const parent = Thing.byID(this.parentID);
+        if (!parent) {
+            return [];
+        }
+        const lagrangeNumbers = [1, 2, 3, 4, 5];
+        if (parent.kind === 'star' && this.bodyAE !== undefined) {
+            return lagrangeNumbers.map((n) =>
+                parent.lagrange(this, n, Body.Sun, this.bodyAE),
+            );
+        }
+        if (parent.massKg === undefined || this.massKg === undefined) {
+            return [];
+        }
+        return lagrangeNumbers.map((n) => parent.lagrange(this, n));
+    }
+
+    // Approximate Lagrange point position for a lagrange() Thing made
+    // without astronomy-engine bodies, from the restricted three-body
+    // problem's standard small-mass-ratio results. With r the vector from
+    // the big body to the small one and mu = m_small / (m_big + m_small):
+    // - L1, L2: on the line through both, at r * (1 -/+ (mu/3)^(1/3)) from
+    //   the big body - the Hill-sphere approximation, good for mu << 1
+    //   (nearly every pair here; the exception is Pluto-Charon, mu ~0.11,
+    //   where it's only rough).
+    // - L3: opposite the small body, at -r * (1 + 5mu/12).
+    // - L4, L5: r rotated 60 degrees ahead of / behind the small body in
+    //   its orbit (every orbit here runs counterclockwise in the ecliptic),
+    //   so each forms an equilateral triangle with the two bodies.
+    // As with the rest of the simplified Kepler model, rotation is within
+    // the ecliptic plane only.
+    private analyticLagrangePosition3D(date: Date): Point3D {
+        const big = Thing.byID(this.parentID);
+        const small = Thing.byID(this.lagrangeSmallParentID ?? '');
+        if (
+            !big ||
+            !small ||
+            big.massKg === undefined ||
+            small.massKg === undefined
+        ) {
+            throw new Error(
+                `${this.id} needs both parents, with massKg, to locate it`,
+            );
+        }
+        const bigPosition = big.position3D(date);
+        const smallPosition = small.position3D(date);
+        const r = {
+            x: smallPosition.x - bigPosition.x,
+            y: smallPosition.y - bigPosition.y,
+            z: smallPosition.z - bigPosition.z,
+        };
+        const mu = small.massKg / (big.massKg + small.massKg);
+        const hill = Math.cbrt(mu / 3);
+        const offsetAlongR = (scale: number): Point3D => ({
+            x: bigPosition.x + r.x * scale,
+            y: bigPosition.y + r.y * scale,
+            z: bigPosition.z + r.z * scale,
+        });
+        switch (this.lagrangeNumber) {
+            case 1:
+                return offsetAlongR(1 - hill);
+            case 2:
+                return offsetAlongR(1 + hill);
+            case 3:
+                return offsetAlongR(-(1 + (5 * mu) / 12));
+            case 4:
+            case 5: {
+                const angleRad =
+                    ((this.lagrangeNumber === 4 ? 60 : -60) * Math.PI) / 180;
+                const cos = Math.cos(angleRad);
+                const sin = Math.sin(angleRad);
+                return {
+                    x: bigPosition.x + r.x * cos - r.y * sin,
+                    y: bigPosition.y + r.x * sin + r.y * cos,
+                    z: bigPosition.z + r.z,
+                };
+            }
+            default:
+                throw new Error(
+                    `${this.id} has invalid lagrangeNumber ${this.lagrangeNumber}`,
+                );
+        }
     }
 }

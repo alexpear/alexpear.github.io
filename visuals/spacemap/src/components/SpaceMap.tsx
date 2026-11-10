@@ -35,10 +35,11 @@ const MAX_WHEEL_ZOOM_RATIO = 1.3;
 // asteroids/TNOs collapsing onto a planet, or onto each other, at low zoom.
 // Real mass data isn't tracked anywhere here, so priority is approximated
 // instead - see hidePriority() below: Sol always wins; otherwise a
-// heliocentric planet always beats a non-heliocentric body; otherwise the
-// shorter orbital period wins (eg Neptune beats Pluto). A tie only happens
-// for two literally-identical orbital periods, which doesn't occur in this
-// catalog.
+// heliocentric planet always beats a non-heliocentric body; any physical
+// body beats a Lagrange point; otherwise the shorter orbital period wins (eg
+// Neptune beats Pluto). A tie only happens for two literally-identical
+// orbital periods - which is exactly what a Lagrange point shares with its
+// small body (see Thing.lagrange()), hence Lagrange points' own category.
 const MIN_MARKER_SEPARATION_PX = 20;
 // Radius of each marker's invisible click/tap target, so tiny markers are
 // still easy to hit with a finger. Half of MIN_MARKER_SEPARATION_PX, so two
@@ -61,15 +62,20 @@ const INITIAL_VIEW_STATE: ViewState = {
 };
 
 // See MIN_MARKER_SEPARATION_PX: a [category, orbitalPeriodDays] pair, lower
-// in both is higher priority (less likely to be hidden on overlap). Category
-// 0 (Sol) always beats 1 (a heliocentric planet), which always beats 2
-// (everything else - moons, asteroids, TNOs); within a category, the
-// shorter orbital period wins.
+// in both is higher priority (less likely to be hidden on overlap).
+// Within a category, the shorter orbital period wins.
 function hidePriority(thing: Thing): [number, number] {
-    const category =
-        thing.kind === 'star' ? 0 : thing.kind === 'heliocentric' ? 1 : 2;
-    return [category, thing.orbitalPeriodDays ?? 0];
+    return [HIDE_CATEGORY[thing.kind], thing.orbitalPeriodDays ?? 0];
 }
+
+const HIDE_CATEGORY: Record<ThingKind, number> = {
+    star: 0,
+    heliocentric: 1,
+    moon: 2,
+    asteroid: 3,
+    spacecraft: 4,
+    lagrangePoint: 5,
+};
 
 // True if `a` loses to `b` under hidePriority() - ie `a` is the one that
 // should be hidden when the two render within MIN_MARKER_SEPARATION_PX.
@@ -95,6 +101,14 @@ export function SpaceMap({ config }: Props): JSX.Element {
     const { panOffset, zoomMultiplier } = viewState;
     // The Thing whose info menu is open, if any.
     const [selectedThingId, setSelectedThingId] = React.useState<
+        string | undefined
+    >(undefined);
+    // EXPERIMENTAL: the Thing whose 5 Lagrange points (with its parent) are
+    // currently shown - the last non-Lagrange-point Thing clicked. It stays
+    // put while the selection moves between it and those points, and is
+    // cleared along with the selection when the menu closes. See
+    // anchorLagrangePoints.
+    const [lagrangeAnchorId, setLagrangeAnchorId] = React.useState<
         string | undefined
     >(undefined);
 
@@ -182,9 +196,33 @@ export function SpaceMap({ config }: Props): JSX.Element {
         [config, baseLayerIdSet],
     );
 
-    const displayedThings = React.useMemo(
+    // Everything shown regardless of selection.
+    const baseDisplayedThings = React.useMemo(
         () => [...BASE_LAYER, ...focusedExtras],
         [focusedExtras],
+    );
+
+    // The anchor Thing's Lagrange points with its parent (see
+    // lagrangeAnchorId), minus any already shown anyway - eg the catalog's
+    // permanent Sol-Earth and Earth-Luna points, which would otherwise be
+    // drawn twice under the same id. Memoized on the anchor, so the same
+    // Thing objects persist while the selection moves among them.
+    const anchorLagrangePoints = React.useMemo(() => {
+        const anchor = baseDisplayedThings.find(
+            (thing) => thing.id === lagrangeAnchorId,
+        );
+        if (!anchor) {
+            return [];
+        }
+        const shownIds = new Set(baseDisplayedThings.map((thing) => thing.id));
+        return anchor
+            .lagrangePointsWithParent()
+            .filter((point) => !shownIds.has(point.id));
+    }, [baseDisplayedThings, lagrangeAnchorId]);
+
+    const displayedThings = React.useMemo(
+        () => [...baseDisplayedThings, ...anchorLagrangePoints],
+        [baseDisplayedThings, anchorLagrangePoints],
     );
 
     // Each Thing's AU position, computed once per date rather than once per
@@ -232,6 +270,11 @@ export function SpaceMap({ config }: Props): JSX.Element {
             return;
         }
         setSelectedThingId(thingId);
+        // Moving between the anchor and its own Lagrange points keeps them
+        // shown; clicking anything else makes it the new anchor instead.
+        if (!anchorLagrangePoints.some((point) => point.id === thingId)) {
+            setLagrangeAnchorId(thingId);
+        }
         // Inverse of makeAuToScreenTransform's
         // screen = viewportCenter + panOffset + world * zoomMultiplier.
         setViewState((current) => ({
@@ -251,6 +294,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
 
     const closeMenu = React.useCallback(() => {
         setSelectedThingId(undefined);
+        setLagrangeAnchorId(undefined);
     }, []);
 
     React.useEffect(() => {
@@ -511,6 +555,18 @@ export function SpaceMap({ config }: Props): JSX.Element {
                                 zoomMultiplier={zoomMultiplier}
                                 showLabel
                                 selected={object.id === selectedThingId}
+                            />
+                        ))}
+                    {anchorLagrangePoints
+                        .filter((point) => !hiddenThingIds.has(point.id))
+                        .map((point) => (
+                            <ObjectMarker
+                                key={point.id}
+                                object={point}
+                                worldPoint={thingWorldPoints.get(point.id)!}
+                                zoomMultiplier={zoomMultiplier}
+                                showLabel
+                                selected={point.id === selectedThingId}
                             />
                         ))}
                 </g>
