@@ -76,13 +76,20 @@ export function ThingMenu({
     // A Lagrange point is a location, not a physical body: no size or mass
     // to report, as opposed to a body whose value just isn't known.
     if (thing.kind !== 'lagrangePoint') {
-        fields.push([
-            'Diameter',
-            thing.diameterKm === undefined
-                ? 'Unknown'
-                : // TODO if diameter is large, show it relative to Earth
-                  `${formatDiameterKm(thing.diameterKm)} km`,
-        ]);
+        let diameterText: string;
+
+        if (thing.diameterKm === undefined) {
+            diameterText = 'Unknown';
+        } else if (thing.diameterKm <= 1000) {
+            diameterText = `${formatDiameterKm(thing.diameterKm)} km`;
+        } else {
+            const earthDiameters = (thing.diameterKm / 12756).toLocaleString(
+                'en-US',
+                { maximumSignificantDigits: 2 },
+            );
+            diameterText = `${earthDiameters} Earths`;
+        }
+        fields.push(['Diameter', diameterText]);
 
         const earthMasses = (thing.massKg / EARTH_KG).toLocaleString('en-US', {
             maximumSignificantDigits: 2,
