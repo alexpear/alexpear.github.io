@@ -90,7 +90,6 @@ export class Thing {
     kind: ThingKind;
 
     // astronomy-engine's identifier for this Thing, when it has one. If this Thing is a Lagrange point, body refers to the smaller of the 2 parent masses.
-    // TODO rename to bodyAE etc to clarify what this is.
     bodyAE?: Body;
 
     parentID: string; // this orbits parent. SOL.parentID === 'sol', ie itself.
@@ -833,7 +832,7 @@ export class Thing {
             );
         }
 
-        // TODO case where there's no Body and no known parent API (eg spacecraft)
+        // TODO case where there's no Body and no known parent (eg spacecraft)
 
         // Anything astronomy-engine doesn't track directly: every moon, or a
         // Sol-orbiting body like an asteroid.
