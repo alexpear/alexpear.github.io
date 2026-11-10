@@ -36,6 +36,12 @@ const EQJ_TO_ECL = Rotation_EQJ_ECL();
 // 4.6 years), the longer this stays good.
 const SIMPLE_ORBIT_EPOCH = new Date('2026-11-05T00:00:00Z');
 
+// Both exact by definition (IAU 2012 for the AU; SI for c), so their
+// ratio - ~499.005 s, light's travel time across 1 AU - is too.
+const KM_PER_AU = 149_597_870.7;
+const LIGHTSPEED_KM_PER_S = 299_792.458;
+const LIGHT_SECONDS_PER_AU = KM_PER_AU / LIGHTSPEED_KM_PER_S;
+
 // TODO put inside class Thing.
 function toFixedEcliptic(vector: Vector): Point3D {
     const ecliptic = RotateVector(EQJ_TO_ECL, vector);
@@ -946,6 +952,21 @@ export class Thing {
     distanceFromSolAu(date: Date): number {
         const { x, y, z } = this.position3D(date);
         return Math.hypot(x, y, z);
+    }
+
+    // How long light takes to travel between this Thing and `other` at
+    // `date` (default: now), in seconds - eg ~500 for Sol-Earth, ~1.3 for
+    // Earth-Luna. Straight-line distance between their position3D()s, so
+    // it has the same limit as that model: two bodies on the simplified
+    // Kepler model (z = 0, no inclination) are treated as sharing the
+    // ecliptic plane, so eg Eris (inclined ~44 degrees) vs Neptune comes
+    // out somewhat off. Anything involving Earth is barely affected, since
+    // Earth sits at ~1 AU and nearly on the ecliptic anyway.
+    lightSeconds(other: Thing, date: Date = new Date()): number {
+        const a = this.position3D(date);
+        const b = other.position3D(date);
+        const distanceAu = Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
+        return distanceAu * LIGHT_SECONDS_PER_AU;
     }
 
     // Heliocentric position in the fixed J2000 ecliptic frame (see

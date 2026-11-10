@@ -70,9 +70,13 @@ export function ThingMenu({
     // LATER: ~10 fields per Thing, eg surface gravity, lightspeed lag from
     // Earth.
     const fields: [string, string][] = [];
-    if (thing.kind !== 'star') {
-        fields.push(['Distance from Sol', formatAu(distanceFromSolAu)]);
-    }
+
+    fields.push(['Distance from Sol', formatAu(distanceFromSolAu)]);
+
+    // TODO Pass in the date being displayed.
+    const seconds = THINGS_BY_ID.get('earth').lightSeconds(thing);
+    fields.push([`Lag from Earth`, formatSeconds(seconds)]);
+
     // A Lagrange point is a location, not a physical body: no size or mass
     // to report, as opposed to a body whose value just isn't known.
     if (thing.kind !== 'lagrangePoint') {
@@ -153,16 +157,27 @@ function formatDiameterKm(km: number): string {
     });
 }
 
-const SUPERSCRIPT_DIGITS = '⁰¹²³⁴⁵⁶⁷⁸⁹';
-
-// eg 5.97e24 -> "5.97 × 10²⁴ kg", to 3 significant figures.
-function formatScientific(value: number, unit: string): string {
-    const [mantissa, exponent] = value.toExponential(2).split('e');
-    const superscript = String(Number(exponent))
-        .split('')
-        .map((char) => (char === '-' ? '⁻' : SUPERSCRIPT_DIGITS[Number(char)]))
-        .join('');
-    return `${Number(mantissa)} × 10${superscript} ${unit}`;
+function formatSeconds(seconds: number): string {
+    if (seconds < 59.5) {
+        return `${seconds.toLocaleString('en-US', {
+            maximumSignificantDigits: 1,
+        })} sec`;
+    } else if (seconds < 59.5 * 60) {
+        const minutes = seconds / 60;
+        return `${minutes.toLocaleString('en-US', {
+            maximumSignificantDigits: 1,
+        })} min`;
+    } else if (seconds < 23.5 * 3600) {
+        const hours = seconds / 3600;
+        return `${hours.toLocaleString('en-US', {
+            maximumSignificantDigits: 1,
+        })} hour`;
+    } else {
+        const days = seconds / 86400;
+        return `${days.toLocaleString('en-US', {
+            maximumSignificantDigits: 1,
+        })} day`;
+    }
 }
 
 const menuBorder = '1px solid #3a3f52';
