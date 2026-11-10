@@ -10,6 +10,7 @@ import {
     makeAuToWorldTransform,
     panOffsetForZoomAnchor,
 } from '../view/transform';
+import { ThingMenu, computeMenuLayout } from './ThingMenu';
 
 const RADIUS_PX: Record<ThingKind, number> = {
     star: 8,
@@ -39,6 +40,10 @@ const MAX_WHEEL_ZOOM_RATIO = 1.3;
 // for two literally-identical orbital periods, which doesn't occur in this
 // catalog.
 const MIN_MARKER_SEPARATION_PX = 20;
+// Radius of each marker's invisible click/tap target, so tiny markers are
+// still easy to hit with a finger. Half of MIN_MARKER_SEPARATION_PX, so two
+// visible markers' targets never overlap.
+const MARKER_HIT_RADIUS_PX = MIN_MARKER_SEPARATION_PX / 2;
 
 interface Props {
     config: SpaceMapConfig;
@@ -88,6 +93,10 @@ export function SpaceMap({ config }: Props): JSX.Element {
     const [viewState, setViewState] =
         React.useState<ViewState>(INITIAL_VIEW_STATE);
     const { panOffset, zoomMultiplier } = viewState;
+    // The Thing whose info menu is open, if any.
+    const [selectedThingId, setSelectedThingId] = React.useState<
+        string | undefined
+    >(undefined);
 
     React.useEffect(() => {
         const container = containerRef.current;
@@ -206,6 +215,53 @@ export function SpaceMap({ config }: Props): JSX.Element {
             ),
         [displayedThings, thingPositions, toWorld],
     );
+
+    const menuLayout = computeMenuLayout(
+        viewportSize.width,
+        viewportSize.height,
+    );
+    const selectedThing = displayedThings.find(
+        (thing) => thing.id === selectedThingId,
+    );
+
+    // Opens `thingId`'s info menu and pans (without zooming) so the Thing
+    // sits at the center of the screen area the menu leaves uncovered.
+    function selectThing(thingId: string): void {
+        const worldPoint = thingWorldPoints.get(thingId);
+        if (!worldPoint) {
+            return;
+        }
+        setSelectedThingId(thingId);
+        // Inverse of makeAuToScreenTransform's
+        // screen = viewportCenter + panOffset + world * zoomMultiplier.
+        setViewState((current) => ({
+            ...current,
+            panOffset: {
+                x:
+                    menuLayout.uncoveredCenter.x -
+                    viewportSize.width / 2 -
+                    worldPoint.x * current.zoomMultiplier,
+                y:
+                    menuLayout.uncoveredCenter.y -
+                    viewportSize.height / 2 -
+                    worldPoint.y * current.zoomMultiplier,
+            },
+        }));
+    }
+
+    const closeMenu = React.useCallback(() => {
+        setSelectedThingId(undefined);
+    }, []);
+
+    React.useEffect(() => {
+        function handleKeyDown(event: KeyboardEvent): void {
+            if (event.key === 'Escape') {
+                closeMenu();
+            }
+        }
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [closeMenu]);
 
     // See MIN_MARKER_SEPARATION_PX for the approximation this applies.
     const hiddenThingIds = React.useMemo(() => {
@@ -327,11 +383,26 @@ export function SpaceMap({ config }: Props): JSX.Element {
     // `pinching` (shared state) is true for the whole time 2 fingers are
     // down; canceling the drag then is what stops it from also trying to
     // pan while a pinch is already moving things around.
+    //
+    // Clicks/taps are handled here too, rather than via onClick, because a
+    // browser fires click at the end of a drag as well. With `filterTaps`,
+    // @use-gesture flags a press that barely moved as `tap` instead, so
+    // only a real tap opens/closes the menu, and a tap never pans the map
+    // (except to center a tapped Thing - see selectThing).
     useGesture(
         {
-            onDrag: ({ pinching, cancel, offset: [x, y] }) => {
+            onDrag: ({ pinching, cancel, tap, event, offset: [x, y] }) => {
                 if (pinching) {
                     cancel();
+                    return;
+                }
+                if (tap) {
+                    const thingId = thingIdAtPoint(event);
+                    if (thingId) {
+                        selectThing(thingId);
+                    } else {
+                        closeMenu();
+                    }
                     return;
                 }
                 setViewState((current) => ({
@@ -353,7 +424,10 @@ export function SpaceMap({ config }: Props): JSX.Element {
         {
             target: svgRef,
             eventOptions: { passive: false },
-            drag: { from: () => [panOffset.x, panOffset.y] },
+            drag: {
+                from: () => [panOffset.x, panOffset.y],
+                filterTaps: true,
+            },
             pinch: {
                 from: () => [zoomMultiplier, 0],
                 // Wheel-to-zoom is handled by handleWheel/onWheel below,
@@ -424,6 +498,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
                             worldPoint={thingWorldPoints.get(thing.id)!}
                             zoomMultiplier={zoomMultiplier}
                             showLabel={focusIdSet.has(thing.id)}
+                            selected={thing.id === selectedThingId}
                         />
                     ))}
                     {focusedExtras
@@ -435,11 +510,25 @@ export function SpaceMap({ config }: Props): JSX.Element {
                                 worldPoint={thingWorldPoints.get(object.id)!}
                                 zoomMultiplier={zoomMultiplier}
                                 showLabel
+                                selected={object.id === selectedThingId}
                             />
                         ))}
                 </g>
             </svg>
-            <button onClick={resetView} style={resetButtonStyle}>
+            {selectedThing && (
+                <ThingMenu
+                    thing={selectedThing}
+                    layout={menuLayout}
+                    onClose={closeMenu}
+                />
+            )}
+            <button
+                onClick={resetView}
+                style={{
+                    ...resetButtonStyle,
+                    ...(selectedThing ? menuLayout.resetButtonOffset : {}),
+                }}
+            >
                 Reset view
             </button>
         </div>
@@ -508,6 +597,7 @@ interface ObjectMarkerProps {
     worldPoint: Point2D;
     zoomMultiplier: number;
     showLabel: boolean;
+    selected: boolean;
 }
 
 const ObjectMarker = React.memo(function ObjectMarker({
@@ -515,6 +605,7 @@ const ObjectMarker = React.memo(function ObjectMarker({
     worldPoint,
     zoomMultiplier,
     showLabel,
+    selected,
 }: ObjectMarkerProps): JSX.Element {
     const radius = RADIUS_PX[object.kind];
     const isLagrangePoint = object.kind === 'lagrangePoint';
@@ -522,9 +613,25 @@ const ObjectMarker = React.memo(function ObjectMarker({
         // Translate only, never scale: see SpaceMap's viewTransform comment
         // for why zoom is multiplied in here instead of being an SVG
         // scale(). The marker/label's own size stays constant on screen.
+        // data-thing-id is how a tap on the marker or its label is mapped
+        // back to this Thing - see thingIdAtPoint.
         <g
             transform={`translate(${worldPoint.x * zoomMultiplier}, ${worldPoint.y * zoomMultiplier})`}
+            data-thing-id={object.id}
+            style={{ cursor: 'pointer' }}
         >
+            {/* Invisible, finger-sized tap target. */}
+            <circle cx={0} cy={0} r={MARKER_HIT_RADIUS_PX} fill="transparent" />
+            {selected && (
+                <circle
+                    cx={0}
+                    cy={0}
+                    r={radius + 4}
+                    fill="none"
+                    stroke="#e6e6e6"
+                    strokeWidth={1.5}
+                />
+            )}
             {isLagrangePoint ? (
                 <>
                     <line
@@ -561,6 +668,26 @@ const ObjectMarker = React.memo(function ObjectMarker({
         </g>
     );
 });
+
+// The id of the Thing whose marker/label is under the pointer, or undefined
+// if it's empty space (or an orbit line) instead.
+//
+// Hit-tests by coordinates rather than reading event.target: @use-gesture
+// captures the pointer on the <svg> when a drag starts (so a drag keeps
+// tracking even if the pointer leaves it), which makes the pointerup that
+// ends a tap report the <svg> itself as its target, never the marker.
+function thingIdAtPoint(event: Event): string | undefined {
+    if (!('clientX' in event) || !('clientY' in event)) {
+        return undefined;
+    }
+    const { clientX, clientY } = event as PointerEvent;
+    return (
+        document
+            .elementFromPoint(clientX, clientY)
+            ?.closest('[data-thing-id]')
+            ?.getAttribute('data-thing-id') ?? undefined
+    );
+}
 
 function clamp(value: number, min: number, max: number): number {
     return Math.max(min, Math.min(max, value));
