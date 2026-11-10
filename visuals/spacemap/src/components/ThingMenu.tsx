@@ -73,6 +73,19 @@ export function ThingMenu({
 
     fields.push(['Distance from Sol', formatAu(distanceFromSolAu)]);
 
+    if (distanceFromSolAu < 0.0001) {
+        fields.push(['Sunniness', `Maximum`]);
+    } else {
+        // const sunnyString = 0.95 < distanceFromSolAu && distanceFromSolAu < 1.05 ?
+        //     100 :
+        const sunnyPercentString = (
+            (1 / distanceFromSolAu ** 2) *
+            100
+        ).toLocaleString('en-US', { maximumSignificantDigits: 2 });
+
+        fields.push(['Sunniness', `${sunnyPercentString}% of Earth normal`]);
+    }
+
     // TODO Pass in the date being displayed.
     const seconds = THINGS_BY_ID.get('earth').lightSeconds(thing);
     fields.push([`Lag from Earth`, formatSeconds(seconds)]);
@@ -94,6 +107,25 @@ export function ThingMenu({
             diameterText = `${earthDiameters} Earths`;
         }
         fields.push(['Diameter', diameterText]);
+
+        if (thing.diameterKm !== undefined) {
+            const surfaceArea = 4 * Math.PI * (thing.diameterKm / 2) ** 2;
+
+            // fields.push(['Surface Area', `${surfaceArea.toLocaleString(
+            //     'en-US',
+            //     { maximumSignificantDigits: 2 }
+            // )} km²`]);
+
+            const EARTH_KM2 = 510.1e6;
+            fields.push([
+                'Surface Area',
+                `${(surfaceArea / EARTH_KM2).toLocaleString('en-US', {
+                    maximumSignificantDigits: 2,
+                })} Earths`,
+            ]);
+        }
+
+        // TODO surface area via lookup table: Argentina, etc.
 
         const earthMasses = (thing.massKg / EARTH_KG).toLocaleString('en-US', {
             maximumSignificantDigits: 2,
