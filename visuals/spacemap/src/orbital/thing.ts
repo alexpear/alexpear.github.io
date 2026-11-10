@@ -97,6 +97,8 @@ export interface ThingOptions {
     epochAngleDeg?: number;
     eccentricity?: number;
     periapsisLongitudeDeg?: number;
+    diameterKm?: number;
+    massKg?: number;
 }
 
 export class Thing {
@@ -139,6 +141,13 @@ export class Thing {
     eccentricity: number;
     periapsisLongitudeDeg?: number; // OM+W; required once eccentricity != 0
 
+    // Physical properties, for the info menu (ThingMenu) only - the map
+    // itself draws fixed-size markers regardless (see RADIUS_PX).
+    // Undefined when not meaningfully known, eg a Lagrange point, or a TNO
+    // with no moon to measure its mass by. See MAIN_THINGS for sources.
+    diameterKm?: number; // mean, or equatorial for planets - see MAIN_THINGS
+    massKg?: number;
+
     // `id` is derived from `name`, never passed in.
     constructor(options: ThingOptions) {
         this.name = options.name;
@@ -155,13 +164,34 @@ export class Thing {
         this.epochAngleDeg = options.epochAngleDeg;
         this.eccentricity = options.eccentricity ?? 0;
         this.periapsisLongitudeDeg = options.periapsisLongitudeDeg;
+        this.diameterKm = options.diameterKm;
+        this.massKg = options.massKg;
     }
 
     // Could move this to catalog.js if it makes it easier to maintain.
+    // diameterKm/massKg sources, fetched 2026-11-09:
+    // - Sol, planets, Pluto: NASA Planetary Fact Sheet
+    //   (nssdc.gsfc.nasa.gov/planetary/factsheet/). Its planet diameters are
+    //   equatorial; Sol's is twice its volumetric mean radius. Luna's mass is
+    //   the Moon fact sheet's more precise 7.346e22, not the table's 0.073e24.
+    // - Moons: JPL Planetary Satellite Physical Parameters
+    //   (ssd.jpl.nasa.gov/sats/phys_par/) - diameter is 2x mean radius, mass
+    //   is GM / G (G = 6.6743e-20 km^3 kg^-1 s^-2). Mass is left out where
+    //   JPL's GM is unusable: Nereid (listed as 0), and Despina, Galatea,
+    //   Larissa, Proteus (GM uncertainty around or above the value itself).
+    //   Himalia's mass is kept but rough (GM +/-38%).
+    // - Ceres, Vesta: Dawn spacecraft values, via Wikipedia.
+    // - TNOs: Wikipedia and Johnston's Archive
+    //   (johnstonsarchive.net/astro/tnodiam.html). Mass only where it's been
+    //   measured, from a moon's orbit; for Salacia, Uni, Varda, and
+    //   G!kun||'homdima only the whole system's mass (primary + moon) is
+    //   published, used here as-is since each moon is a small fraction of it.
     static MAIN_THINGS: Thing[] = ((): Thing[] => {
         const things: Thing[] = [
             new Thing({
                 name: 'Sol',
+                diameterKm: 1391400,
+                massKg: 1.9884e30,
                 bodyAE: Body.Sun,
                 kind: 'star',
                 colorHex: '#ffd27f',
@@ -169,6 +199,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Mercury',
+                diameterKm: 4879,
+                massKg: 3.3e23,
                 bodyAE: Body.Mercury,
                 kind: 'heliocentric',
                 colorHex: '#9e9e9e',
@@ -176,6 +208,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Venus',
+                diameterKm: 12104,
+                massKg: 4.87e24,
                 bodyAE: Body.Venus,
                 kind: 'heliocentric',
                 colorHex: '#e0c074',
@@ -183,6 +217,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Earth',
+                diameterKm: 12756,
+                massKg: 5.97e24,
                 bodyAE: Body.EMB,
                 kind: 'heliocentric',
                 colorHex: '#4f82c6',
@@ -190,6 +226,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Luna',
+                diameterKm: 3475,
+                massKg: 7.346e22,
                 kind: 'moon',
                 colorHex: '#d8d8d8',
                 orbitalPeriodDays: 27.115683,
@@ -201,6 +239,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Mars',
+                diameterKm: 6792,
+                massKg: 6.42e23,
                 bodyAE: Body.Mars,
                 kind: 'heliocentric',
                 colorHex: '#c1562d',
@@ -208,6 +248,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Phobos',
+                diameterKm: 22.2,
+                massKg: 1.06e16,
                 kind: 'moon',
                 colorHex: '#8a7d6b',
                 orbitalPeriodDays: 0.3191196,
@@ -217,6 +259,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Deimos',
+                diameterKm: 12.4,
+                massKg: 1.44e15,
                 kind: 'moon',
                 colorHex: '#a89a86',
                 orbitalPeriodDays: 1.262587,
@@ -230,6 +274,8 @@ export class Thing {
             // etc. aren't included.
             new Thing({
                 name: 'Ceres',
+                diameterKm: 939.4,
+                massKg: 9.384e20,
                 kind: 'asteroid',
                 colorHex: '#b5a898',
                 orbitalPeriodDays: 1680.497869,
@@ -239,6 +285,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Vesta',
+                diameterKm: 525.4,
+                massKg: 2.59e20,
                 kind: 'asteroid',
                 colorHex: '#cbb89a',
                 orbitalPeriodDays: 1325.220467,
@@ -249,6 +297,8 @@ export class Thing {
 
             new Thing({
                 name: 'Jupiter',
+                diameterKm: 142984,
+                massKg: 1.898e27,
                 bodyAE: Body.Jupiter,
                 kind: 'heliocentric',
                 colorHex: '#c99a6b',
@@ -272,6 +322,8 @@ export class Thing {
             // (both smaller, included anyway since they're Mars' only moons).
             new Thing({
                 name: 'Io',
+                diameterKm: 3643,
+                massKg: 8.93e22,
                 kind: 'moon',
                 colorHex: '#e8d99a',
                 orbitalPeriodDays: 1.771433,
@@ -281,6 +333,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Europa',
+                diameterKm: 3121.6,
+                massKg: 4.8e22,
                 kind: 'moon',
                 colorHex: '#d8dde0',
                 orbitalPeriodDays: 3.552391,
@@ -290,6 +344,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Ganymede',
+                diameterKm: 5262.4,
+                massKg: 1.48e23,
                 kind: 'moon',
                 colorHex: '#a9977f',
                 orbitalPeriodDays: 7.157812,
@@ -299,6 +355,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Callisto',
+                diameterKm: 4820.6,
+                massKg: 1.08e23,
                 kind: 'moon',
                 colorHex: '#7d7265',
                 orbitalPeriodDays: 16.692561,
@@ -308,6 +366,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Himalia',
+                diameterKm: 170,
+                massKg: 2.27e18,
                 kind: 'moon',
                 colorHex: '#8f8064',
                 orbitalPeriodDays: 250.285587,
@@ -317,6 +377,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Amalthea',
+                diameterKm: 167,
+                massKg: 2.47e18,
                 kind: 'moon',
                 colorHex: '#b08a6a',
                 orbitalPeriodDays: 0.501639,
@@ -327,6 +389,8 @@ export class Thing {
 
             new Thing({
                 name: 'Saturn',
+                diameterKm: 120536,
+                massKg: 5.68e26,
                 bodyAE: Body.Saturn,
                 kind: 'heliocentric',
                 colorHex: '#d4c58a',
@@ -334,6 +398,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Titan',
+                diameterKm: 5149.5,
+                massKg: 1.35e23,
                 kind: 'moon',
                 colorHex: '#d9b36c',
                 orbitalPeriodDays: 15.947349,
@@ -343,6 +409,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Mimas',
+                diameterKm: 396.4,
+                massKg: 3.75e19,
                 kind: 'moon',
                 colorHex: '#c9c9c9',
                 orbitalPeriodDays: 0.947399,
@@ -352,6 +420,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Enceladus',
+                diameterKm: 504.2,
+                massKg: 1.08e20,
                 kind: 'moon',
                 colorHex: '#eef0f2',
                 orbitalPeriodDays: 1.374539,
@@ -361,6 +431,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Tethys',
+                diameterKm: 1062.2,
+                massKg: 6.17e20,
                 kind: 'moon',
                 colorHex: '#d8d8d8',
                 orbitalPeriodDays: 1.891653,
@@ -370,6 +442,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Dione',
+                diameterKm: 1122.8,
+                massKg: 1.1e21,
                 kind: 'moon',
                 colorHex: '#cfcfcf',
                 orbitalPeriodDays: 2.74034,
@@ -379,6 +453,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Rhea',
+                diameterKm: 1527,
+                massKg: 2.31e21,
                 kind: 'moon',
                 colorHex: '#bdbdbd',
                 orbitalPeriodDays: 4.520396,
@@ -388,6 +464,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Hyperion',
+                diameterKm: 270,
+                massKg: 5.55e18,
                 kind: 'moon',
                 colorHex: '#a89880',
                 orbitalPeriodDays: 21.382504,
@@ -397,6 +475,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Iapetus',
+                diameterKm: 1468.6,
+                massKg: 1.81e21,
                 kind: 'moon',
                 colorHex: '#8f8370',
                 orbitalPeriodDays: 79.471398,
@@ -406,6 +486,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Phoebe',
+                diameterKm: 213,
+                massKg: 8.31e18,
                 kind: 'moon',
                 colorHex: '#6f6a63',
                 orbitalPeriodDays: 548.154922,
@@ -415,6 +497,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Janus',
+                diameterKm: 178.4,
+                massKg: 1.9e18,
                 kind: 'moon',
                 colorHex: '#b9b4a8',
                 orbitalPeriodDays: 0.700196,
@@ -426,6 +510,8 @@ export class Thing {
 
             new Thing({
                 name: 'Uranus',
+                diameterKm: 51118,
+                massKg: 8.68e25,
                 bodyAE: Body.Uranus,
                 kind: 'heliocentric',
                 colorHex: '#9fd4d8',
@@ -433,6 +519,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Miranda',
+                diameterKm: 471.6,
+                massKg: 6.44e19,
                 kind: 'moon',
                 colorHex: '#9fa8ad',
                 orbitalPeriodDays: 1.413995,
@@ -442,6 +530,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Ariel',
+                diameterKm: 1157.8,
+                massKg: 1.25e21,
                 kind: 'moon',
                 colorHex: '#b9c4c9',
                 orbitalPeriodDays: 2.52079,
@@ -451,6 +541,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Umbriel',
+                diameterKm: 1169.4,
+                massKg: 1.28e21,
                 kind: 'moon',
                 colorHex: '#7d7d80',
                 orbitalPeriodDays: 4.145019,
@@ -460,6 +552,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Titania',
+                diameterKm: 1577.8,
+                massKg: 3.4e21,
                 kind: 'moon',
                 colorHex: '#9aa6ad',
                 orbitalPeriodDays: 8.704609,
@@ -469,6 +563,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Oberon',
+                diameterKm: 1522.8,
+                massKg: 3.08e21,
                 kind: 'moon',
                 colorHex: '#8f8a84',
                 orbitalPeriodDays: 13.466214,
@@ -479,6 +575,8 @@ export class Thing {
 
             new Thing({
                 name: 'Neptune',
+                diameterKm: 49528,
+                massKg: 1.02e26,
                 bodyAE: Body.Neptune,
                 kind: 'heliocentric',
                 colorHex: '#5a74e0',
@@ -486,6 +584,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Triton',
+                diameterKm: 2705.2,
+                massKg: 2.14e22,
                 kind: 'moon',
                 colorHex: '#c9d8e0',
                 orbitalPeriodDays: 5.877119,
@@ -500,6 +600,7 @@ export class Thing {
             // offsetFromParent() solves the real ellipse instead.
             new Thing({
                 name: 'Nereid',
+                diameterKm: 340,
                 kind: 'moon',
                 colorHex: '#9fa0a3',
                 orbitalPeriodDays: 360.655661,
@@ -511,6 +612,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Despina',
+                diameterKm: 148,
                 kind: 'moon',
                 colorHex: '#8f909a',
                 orbitalPeriodDays: 0.335448,
@@ -520,6 +622,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Galatea',
+                diameterKm: 158,
                 kind: 'moon',
                 colorHex: '#8a8b94',
                 orbitalPeriodDays: 0.429472,
@@ -529,6 +632,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Larissa',
+                diameterKm: 192,
                 kind: 'moon',
                 colorHex: '#7f8089',
                 orbitalPeriodDays: 0.555318,
@@ -538,6 +642,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Proteus',
+                diameterKm: 416,
                 kind: 'moon',
                 colorHex: '#6f7079',
                 orbitalPeriodDays: 1.122823,
@@ -548,6 +653,8 @@ export class Thing {
 
             new Thing({
                 name: 'Pluto',
+                diameterKm: 2376,
+                massKg: 1.303e22,
                 bodyAE: Body.Pluto,
                 kind: 'heliocentric',
                 colorHex: '#b8a08c',
@@ -555,6 +662,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Charon',
+                diameterKm: 1212,
+                massKg: 1.59e21,
                 kind: 'moon',
                 colorHex: '#a89a8c',
                 orbitalPeriodDays: 6.387221,
@@ -563,8 +672,7 @@ export class Thing {
                 epochAngleDeg: 195.0751,
             }),
             // Other Trans-Neptunian objects (TNOs): every one with a best current
-            // measured diameter at least as large as Varuna's own (668 km, per
-            // Herschel thermal measurements - Lellouch et al. 2013). Diameters
+            // measured diameter of at least 668 km. Diameters
             // from Johnston's Archive (johnstonsarchive.net/astro/tnodiam.html),
             // cross-checked against Wikipedia. Orbital elements fetched the same
             // way as everything else above: JPL Horizons osculating elements at
@@ -588,6 +696,8 @@ export class Thing {
             // are all comparable to or lower than Ceres'/Vesta's own (~0.08).
             new Thing({
                 name: 'Orcus',
+                diameterKm: 910,
+                massKg: 5.478e20,
                 kind: 'asteroid',
                 colorHex: '#9fb0b8',
                 orbitalPeriodDays: 89858.842999,
@@ -597,6 +707,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Achlys', // 2003 AZ84
+                diameterKm: 772, // occultation; Johnston's older thermal value is 686
                 kind: 'asteroid',
                 colorHex: '#8f7a6a',
                 orbitalPeriodDays: 90511.211881,
@@ -606,6 +717,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Ixion',
+                diameterKm: 697,
                 kind: 'asteroid',
                 colorHex: '#7a5248',
                 orbitalPeriodDays: 90604.038287,
@@ -617,6 +729,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Ritona', // 2005 RN43
+                diameterKm: 679,
                 kind: 'asteroid',
                 colorHex: '#827a70',
                 orbitalPeriodDays: 97629.551428,
@@ -626,6 +739,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Mani', // 2002 MS4
+                diameterKm: 796,
                 kind: 'asteroid',
                 colorHex: '#7a5f55',
                 orbitalPeriodDays: 98422.675932,
@@ -635,6 +749,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Goibniu', // 2004 GV9
+                diameterKm: 680,
                 kind: 'asteroid',
                 colorHex: '#8a7a68',
                 orbitalPeriodDays: 99157.788905,
@@ -644,6 +759,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Salacia',
+                diameterKm: 838,
+                massKg: 4.861e20, // system, incl. Actaea
                 kind: 'asteroid',
                 colorHex: '#6b6b6f',
                 orbitalPeriodDays: 99445.037399,
@@ -653,6 +770,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Uni', // 2002 UX25
+                diameterKm: 659, // ALMA 2017; 2026 occultations suggest ~570-610
+                massKg: 1.25e20, // system, incl. Tinia
                 kind: 'asteroid',
                 colorHex: '#7d7d7d',
                 orbitalPeriodDays: 101730.412251,
@@ -662,6 +781,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Varuna',
+                diameterKm: 654,
                 kind: 'asteroid',
                 colorHex: '#9a6a52',
                 orbitalPeriodDays: 102737.646564,
@@ -671,6 +791,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Haumea',
+                diameterKm: 1544, // volume-equivalent mean; Haumea is very elongated
+                massKg: 3.952e21,
                 kind: 'asteroid',
                 colorHex: '#eef2f5',
                 orbitalPeriodDays: 103290.237023,
@@ -682,6 +804,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Quaoar',
+                diameterKm: 1116,
+                massKg: 1.212e21,
                 kind: 'asteroid',
                 colorHex: '#8a6a5a',
                 orbitalPeriodDays: 104127.208876,
@@ -691,6 +815,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Makemake',
+                diameterKm: 1430,
+                massKg: 2.69e21,
                 kind: 'asteroid',
                 colorHex: '#b5704a',
                 orbitalPeriodDays: 112022.364296,
@@ -700,6 +826,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Varda',
+                diameterKm: 648, // 2026 volume-equivalent; 2020's area-equivalent was 740
+                massKg: 2.675e20, // system, incl. Ilmare
                 kind: 'asteroid',
                 colorHex: '#857064',
                 orbitalPeriodDays: 112934.211987,
@@ -709,6 +837,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Aya', // 2002 AW197
+                diameterKm: 802,
                 kind: 'asteroid',
                 colorHex: '#9a5a46',
                 orbitalPeriodDays: 118349.368157,
@@ -718,6 +847,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Chiminigagua', // 2013 FY27
+                diameterKm: 742,
                 kind: 'asteroid',
                 colorHex: '#7d7873',
                 orbitalPeriodDays: 164520.090082,
@@ -729,6 +859,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Gonggong',
+                diameterKm: 1230,
+                massKg: 1.75e21,
                 kind: 'asteroid',
                 colorHex: '#a84a3a',
                 orbitalPeriodDays: 200476.359847,
@@ -740,6 +872,8 @@ export class Thing {
             }),
             new Thing({
                 name: 'Eris',
+                diameterKm: 2326,
+                massKg: 1.638e22,
                 kind: 'asteroid',
                 colorHex: '#e8e4da',
                 orbitalPeriodDays: 203938.828094,
@@ -751,6 +885,8 @@ export class Thing {
             }),
             new Thing({
                 name: "G!kún||'hòmdímà", // 2007 UK126, aka Gkunhomdima
+                diameterKm: 634,
+                massKg: 1.361e20, // system, incl. G!o'e !Hu
                 kind: 'asteroid',
                 colorHex: '#8c4536',
                 orbitalPeriodDays: 229715.696183,
@@ -762,6 +898,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Sedna',
+                diameterKm: 906,
                 kind: 'asteroid',
                 colorHex: '#8b2e22',
                 orbitalPeriodDays: 4160095.140159,
