@@ -76,8 +76,6 @@ export function ThingMenu({
     if (distanceFromSolAu < 0.0001) {
         fields.push(['Sunniness', `Maximum`]);
     } else {
-        // const sunnyString = 0.95 < distanceFromSolAu && distanceFromSolAu < 1.05 ?
-        //     100 :
         const sunnyPercentString = (
             (1 / distanceFromSolAu ** 2) *
             100
@@ -100,40 +98,27 @@ export function ThingMenu({
         } else if (thing.diameterKm <= 1000) {
             diameterText = `${formatDiameterKm(thing.diameterKm)} km`;
         } else {
-            const earthDiameters = (thing.diameterKm / 12756).toLocaleString(
-                'en-US',
-                { maximumSignificantDigits: 2 },
-            );
-            diameterText = `${earthDiameters} Earths`;
+            diameterText = formatEarthRatio(thing.diameterKm / 12756);
         }
         fields.push(['Diameter', diameterText]);
 
         if (thing.diameterKm !== undefined) {
             const surfaceArea = 4 * Math.PI * (thing.diameterKm / 2) ** 2;
 
-            // fields.push(['Surface Area', `${surfaceArea.toLocaleString(
-            //     'en-US',
-            //     { maximumSignificantDigits: 2 }
-            // )} km²`]);
-
             const EARTH_KM2 = 510.1e6;
             fields.push([
                 'Surface Area',
-                `${(surfaceArea / EARTH_KM2).toLocaleString('en-US', {
-                    maximumSignificantDigits: 2,
-                })} Earths`,
+                formatEarthRatio(surfaceArea / EARTH_KM2),
             ]);
         }
 
         // TODO surface area via lookup table: Argentina, etc.
 
-        const earthMasses = (thing.massKg / EARTH_KG).toLocaleString('en-US', {
-            maximumSignificantDigits: 2,
-        });
-
         fields.push([
             'Mass',
-            thing.massKg === undefined ? 'Unknown' : `${earthMasses} Earths`, //formatScientific(thing.massKg, 'kg'),
+            thing.massKg === undefined
+                ? 'Unknown'
+                : formatEarthRatio(thing.massKg / EARTH_KG),
         ]);
     }
 
@@ -210,6 +195,20 @@ function formatSeconds(seconds: number): string {
             maximumSignificantDigits: 1,
         })} day`;
     }
+}
+
+function formatEarthRatio(ratio: number): string {
+    if (ratio < 1) {
+        const denominator = (1 / ratio).toLocaleString('en-US', {
+            maximumSignificantDigits: 2,
+        });
+
+        return `1 / ${denominator} of Earth`;
+    }
+
+    return `${ratio.toLocaleString('en-US', {
+        maximumSignificantDigits: 2,
+    })} Earths`;
 }
 
 const menuBorder = '1px solid #3a3f52';
