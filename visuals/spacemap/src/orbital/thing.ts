@@ -147,9 +147,9 @@ export class Thing {
         this.periapsisLongitudeDeg = periapsisLongitudeDeg;
     }
 
+    // Could move this to catalog.js if it makes it easier to maintain.
     static MAIN_THINGS: Thing[] = (() => {
         const things: Thing[] = [
-            // TODO reorder all of these by AU
             new Thing('Sol', Body.Sun, 'star', '#ffd27f', 0),
             new Thing(
                 'Mercury',
@@ -160,7 +160,64 @@ export class Thing {
             ),
             new Thing('Venus', Body.Venus, 'heliocentric', '#e0c074', 224.701),
             new Thing('Earth', Body.EMB, 'heliocentric', '#4f82c6', 365.256),
+            new Thing(
+                'Luna',
+                null,
+                'moon',
+                '#d8d8d8',
+                27.115683,
+                'earth',
+                0.002558939,
+                167.1504,
+                0.03972,
+                76.5518,
+            ),
             new Thing('Mars', Body.Mars, 'heliocentric', '#c1562d', 686.98),
+            new Thing(
+                'Phobos',
+                null,
+                'moon',
+                '#8a7d6b',
+                0.3191196,
+                'mars',
+                0.00006268688,
+                176.5605,
+            ),
+            new Thing(
+                'Deimos',
+                null,
+                'moon',
+                '#a89a86',
+                1.262587,
+                'mars',
+                0.0001568129,
+                50.2769,
+            ),
+
+            // Asteroids: just the two biggest main-belt bodies for now (Ceres is
+            // also classified as a dwarf planet). Smaller Belt objects, Trojans,
+            // etc. aren't included.
+            new Thing(
+                'Ceres',
+                null,
+                'asteroid',
+                '#b5a898',
+                1680.497869,
+                'sol',
+                2.766260186,
+                99.894,
+            ),
+            new Thing(
+                'Vesta',
+                null,
+                'asteroid',
+                '#cbb89a',
+                1325.220467,
+                'sol',
+                2.361165733,
+                16.833,
+            ),
+
             new Thing(
                 'Jupiter',
                 Body.Jupiter,
@@ -168,28 +225,6 @@ export class Thing {
                 '#c99a6b',
                 4332.59,
             ),
-            new Thing(
-                'Saturn',
-                Body.Saturn,
-                'heliocentric',
-                '#d4c58a',
-                10759.22,
-            ),
-            new Thing(
-                'Uranus',
-                Body.Uranus,
-                'heliocentric',
-                '#9fd4d8',
-                30688.5,
-            ),
-            new Thing(
-                'Neptune',
-                Body.Neptune,
-                'heliocentric',
-                '#5a74e0',
-                60182,
-            ),
-            new Thing('Pluto', Body.Pluto, 'heliocentric', '#b8a08c', 90560),
             // Every moon's (and asteroid's) period, semi-major axis, and mean
             // longitude (OM + W + MA) at SIMPLE_ORBIT_EPOCH below are osculating
             // elements from JPL Horizons (ssd.jpl.nasa.gov/api/horizons.api),
@@ -266,6 +301,14 @@ export class Thing {
                 0.001216563,
                 294.5177,
             ),
+
+            new Thing(
+                'Saturn',
+                Body.Saturn,
+                'heliocentric',
+                '#d4c58a',
+                10759.22,
+            ),
             new Thing(
                 'Titan',
                 null,
@@ -275,26 +318,6 @@ export class Thing {
                 'saturn',
                 0.00816813,
                 93.0371,
-            ),
-            new Thing(
-                'Phobos',
-                null,
-                'moon',
-                '#8a7d6b',
-                0.3191196,
-                'mars',
-                0.00006268688,
-                176.5605,
-            ),
-            new Thing(
-                'Deimos',
-                null,
-                'moon',
-                '#a89a86',
-                1.262587,
-                'mars',
-                0.0001568129,
-                50.2769,
             ),
             new Thing(
                 'Mimas',
@@ -387,6 +410,14 @@ export class Thing {
                 271.3066,
             ),
             // new Thing('Epimetheus', null, 'moon', '#b0ab9f', 0.699856, 'saturn', 0.001016175, 341.6707),
+
+            new Thing(
+                'Uranus',
+                Body.Uranus,
+                'heliocentric',
+                '#9fd4d8',
+                30688.5,
+            ),
             new Thing(
                 'Miranda',
                 null,
@@ -436,6 +467,14 @@ export class Thing {
                 'uranus',
                 0.003900537,
                 242.4414,
+            ),
+
+            new Thing(
+                'Neptune',
+                Body.Neptune,
+                'heliocentric',
+                '#5a74e0',
+                60182,
             ),
             new Thing(
                 'Triton',
@@ -504,6 +543,8 @@ export class Thing {
                 0.000786598,
                 285.4243,
             ),
+
+            new Thing('Pluto', Body.Pluto, 'heliocentric', '#b8a08c', 90560),
             new Thing(
                 'Charon',
                 null,
@@ -514,42 +555,7 @@ export class Thing {
                 0.00013099,
                 195.0751,
             ),
-            new Thing(
-                'Luna',
-                null,
-                'moon',
-                '#d8d8d8',
-                27.115683,
-                'earth',
-                0.002558939,
-                167.1504,
-                0.03972,
-                76.5518,
-            ),
-            // Asteroids: just the two biggest main-belt bodies for now (Ceres is
-            // also classified as a dwarf planet). Smaller Belt objects, Trojans,
-            // etc. aren't included - flag if you want specific ones added.
-            new Thing(
-                'Ceres',
-                null,
-                'asteroid',
-                '#b5a898',
-                1680.497869,
-                'sol',
-                2.766260186,
-                99.894,
-            ),
-            new Thing(
-                'Vesta',
-                null,
-                'asteroid',
-                '#cbb89a',
-                1325.220467,
-                'sol',
-                2.361165733,
-                16.833,
-            ),
-            // Trans-Neptunian objects (TNOs): every one with a best current
+            // Other Trans-Neptunian objects (TNOs): every one with a best current
             // measured diameter at least as large as Varuna's own (668 km, per
             // Herschel thermal measurements - Lellouch et al. 2013). Diameters
             // from Johnston's Archive (johnstonsarchive.net/astro/tnodiam.html),
