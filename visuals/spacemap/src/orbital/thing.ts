@@ -79,6 +79,26 @@ function solveEccentricAnomaly(
     return eccentricAnomalyRad;
 }
 
+// Constructor input for Thing: the same fields Thing itself has (see their
+// comments there), minus the derived `id`. Optional fields are left
+// undefined when omitted, except parentID (defaults to 'sol') and
+// eccentricity (defaults to 0, a circular orbit).
+export interface ThingOptions {
+    name: string;
+    label?: string;
+    colorHex: string;
+    kind: ThingKind;
+    bodyAE?: Body;
+    parentID?: string;
+    orbitalPeriodDays?: number;
+    lagrangeNumber?: number;
+    bigLagrangeParent?: Body;
+    semiMajorAxisAu?: number;
+    epochAngleDeg?: number;
+    eccentricity?: number;
+    periapsisLongitudeDeg?: number;
+}
+
 export class Thing {
     id: string; // lowercase key used in the ?focus= query param
     name: string; // full display label; also what `id` is slugified from
@@ -94,9 +114,7 @@ export class Thing {
 
     parentID: string; // this orbits parent. SOL.parentID === 'sol', ie itself.
 
-    // Sidereal orbital period: a fixed astronomical constant, not live data.
-    // Only set for Things that actually orbit something (not Sol). Used to
-    // trace orbitPathAu, and by lagrange() to trace its own orbit path.
+    // Used to trace orbitPathAu, and by lagrange() to trace its own orbit path.
     orbitalPeriodDays?: number;
 
     lagrangeNumber?: number; // for Lagrange points, 1-5.
@@ -121,109 +139,121 @@ export class Thing {
     eccentricity: number;
     periapsisLongitudeDeg?: number; // OM+W; required once eccentricity != 0
 
-    constructor(
-        name: string,
-        body: Body,
-        kind: ThingKind,
-        colorHex: string,
-        orbitalPeriodDays: number,
-        parentID: string = 'sol',
-        semiMajorAxisAu?: number,
-        epochAngleDeg?: number,
-        eccentricity: number = 0,
-        periapsisLongitudeDeg?: number,
-    ) {
-        this.name = name;
-        this.id = slugify(name);
-        this.colorHex = colorHex;
-        this.kind = kind;
-        this.bodyAE = body; // TODO make build process stricter, catch null passed here at compile time.
-        this.orbitalPeriodDays = orbitalPeriodDays;
-        this.parentID = parentID;
-        this.semiMajorAxisAu = semiMajorAxisAu;
-        this.epochAngleDeg = epochAngleDeg;
-        this.eccentricity = eccentricity;
-        this.periapsisLongitudeDeg = periapsisLongitudeDeg;
+    // `id` is derived from `name`, never passed in.
+    constructor(options: ThingOptions) {
+        this.name = options.name;
+        this.id = slugify(options.name);
+        this.label = options.label;
+        this.colorHex = options.colorHex;
+        this.kind = options.kind;
+        this.bodyAE = options.bodyAE;
+        this.parentID = options.parentID ?? 'sol';
+        this.orbitalPeriodDays = options.orbitalPeriodDays;
+        this.lagrangeNumber = options.lagrangeNumber;
+        this.bigLagrangeParent = options.bigLagrangeParent;
+        this.semiMajorAxisAu = options.semiMajorAxisAu;
+        this.epochAngleDeg = options.epochAngleDeg;
+        this.eccentricity = options.eccentricity ?? 0;
+        this.periapsisLongitudeDeg = options.periapsisLongitudeDeg;
     }
 
     // Could move this to catalog.js if it makes it easier to maintain.
-    static MAIN_THINGS: Thing[] = (() => {
+    static MAIN_THINGS: Thing[] = ((): Thing[] => {
         const things: Thing[] = [
-            new Thing('Sol', Body.Sun, 'star', '#ffd27f', 0),
-            new Thing(
-                'Mercury',
-                Body.Mercury,
-                'heliocentric',
-                '#9e9e9e',
-                87.969,
-            ),
-            new Thing('Venus', Body.Venus, 'heliocentric', '#e0c074', 224.701),
-            new Thing('Earth', Body.EMB, 'heliocentric', '#4f82c6', 365.256),
-            new Thing(
-                'Luna',
-                null,
-                'moon',
-                '#d8d8d8',
-                27.115683,
-                'earth',
-                0.002558939,
-                167.1504,
-                0.03972,
-                76.5518,
-            ),
-            new Thing('Mars', Body.Mars, 'heliocentric', '#c1562d', 686.98),
-            new Thing(
-                'Phobos',
-                null,
-                'moon',
-                '#8a7d6b',
-                0.3191196,
-                'mars',
-                0.00006268688,
-                176.5605,
-            ),
-            new Thing(
-                'Deimos',
-                null,
-                'moon',
-                '#a89a86',
-                1.262587,
-                'mars',
-                0.0001568129,
-                50.2769,
-            ),
+            new Thing({
+                name: 'Sol',
+                bodyAE: Body.Sun,
+                kind: 'star',
+                colorHex: '#ffd27f',
+                orbitalPeriodDays: 0,
+            }),
+            new Thing({
+                name: 'Mercury',
+                bodyAE: Body.Mercury,
+                kind: 'heliocentric',
+                colorHex: '#9e9e9e',
+                orbitalPeriodDays: 87.969,
+            }),
+            new Thing({
+                name: 'Venus',
+                bodyAE: Body.Venus,
+                kind: 'heliocentric',
+                colorHex: '#e0c074',
+                orbitalPeriodDays: 224.701,
+            }),
+            new Thing({
+                name: 'Earth',
+                bodyAE: Body.EMB,
+                kind: 'heliocentric',
+                colorHex: '#4f82c6',
+                orbitalPeriodDays: 365.256,
+            }),
+            new Thing({
+                name: 'Luna',
+                kind: 'moon',
+                colorHex: '#d8d8d8',
+                orbitalPeriodDays: 27.115683,
+                parentID: 'earth',
+                semiMajorAxisAu: 0.002558939,
+                epochAngleDeg: 167.1504,
+                eccentricity: 0.03972,
+                periapsisLongitudeDeg: 76.5518,
+            }),
+            new Thing({
+                name: 'Mars',
+                bodyAE: Body.Mars,
+                kind: 'heliocentric',
+                colorHex: '#c1562d',
+                orbitalPeriodDays: 686.98,
+            }),
+            new Thing({
+                name: 'Phobos',
+                kind: 'moon',
+                colorHex: '#8a7d6b',
+                orbitalPeriodDays: 0.3191196,
+                parentID: 'mars',
+                semiMajorAxisAu: 0.00006268688,
+                epochAngleDeg: 176.5605,
+            }),
+            new Thing({
+                name: 'Deimos',
+                kind: 'moon',
+                colorHex: '#a89a86',
+                orbitalPeriodDays: 1.262587,
+                parentID: 'mars',
+                semiMajorAxisAu: 0.0001568129,
+                epochAngleDeg: 50.2769,
+            }),
 
             // Asteroids: just the two biggest main-belt bodies for now (Ceres is
             // also classified as a dwarf planet). Smaller Belt objects, Trojans,
             // etc. aren't included.
-            new Thing(
-                'Ceres',
-                null,
-                'asteroid',
-                '#b5a898',
-                1680.497869,
-                'sol',
-                2.766260186,
-                99.894,
-            ),
-            new Thing(
-                'Vesta',
-                null,
-                'asteroid',
-                '#cbb89a',
-                1325.220467,
-                'sol',
-                2.361165733,
-                16.833,
-            ),
+            new Thing({
+                name: 'Ceres',
+                kind: 'asteroid',
+                colorHex: '#b5a898',
+                orbitalPeriodDays: 1680.497869,
+                parentID: 'sol',
+                semiMajorAxisAu: 2.766260186,
+                epochAngleDeg: 99.894,
+            }),
+            new Thing({
+                name: 'Vesta',
+                kind: 'asteroid',
+                colorHex: '#cbb89a',
+                orbitalPeriodDays: 1325.220467,
+                parentID: 'sol',
+                semiMajorAxisAu: 2.361165733,
+                epochAngleDeg: 16.833,
+            }),
 
-            new Thing(
-                'Jupiter',
-                Body.Jupiter,
-                'heliocentric',
-                '#c99a6b',
-                4332.59,
-            ),
+            new Thing({
+                name: 'Jupiter',
+                bodyAE: Body.Jupiter,
+                kind: 'heliocentric',
+                colorHex: '#c99a6b',
+                orbitalPeriodDays: 4332.59,
+            }),
             // Every moon's (and asteroid's) period, semi-major axis, and mean
             // longitude (OM + W + MA) at SIMPLE_ORBIT_EPOCH below are osculating
             // elements from JPL Horizons (ssd.jpl.nasa.gov/api/horizons.api),
@@ -240,320 +270,298 @@ export class Thing {
             // radius ~58 km, per JPL's Planetary Satellite Physical Parameters
             // table at ssd.jpl.nasa.gov/sats/phys_par/), plus Phobos and Deimos
             // (both smaller, included anyway since they're Mars' only moons).
-            new Thing(
-                'Io',
-                null,
-                'moon',
-                '#e8d99a',
-                1.771433,
-                'jupiter',
-                0.002821179,
-                5.6688,
-            ),
-            new Thing(
-                'Europa',
-                null,
-                'moon',
-                '#d8dde0',
-                3.552391,
-                'jupiter',
-                0.004486332,
-                181.1794,
-            ),
-            new Thing(
-                'Ganymede',
-                null,
-                'moon',
-                '#a9977f',
-                7.157812,
-                'jupiter',
-                0.007157128,
-                358.9916,
-            ),
-            new Thing(
-                'Callisto',
-                null,
-                'moon',
-                '#7d7265',
-                16.692561,
-                'jupiter',
-                0.012586283,
-                252.772,
-            ),
-            new Thing(
-                'Himalia',
-                null,
-                'moon',
-                '#8f8064',
-                250.285587,
-                'jupiter',
-                0.076529912,
-                149.3419,
-            ),
-            new Thing(
-                'Amalthea',
-                null,
-                'moon',
-                '#b08a6a',
-                0.501639,
-                'jupiter',
-                0.001216563,
-                294.5177,
-            ),
+            new Thing({
+                name: 'Io',
+                kind: 'moon',
+                colorHex: '#e8d99a',
+                orbitalPeriodDays: 1.771433,
+                parentID: 'jupiter',
+                semiMajorAxisAu: 0.002821179,
+                epochAngleDeg: 5.6688,
+            }),
+            new Thing({
+                name: 'Europa',
+                kind: 'moon',
+                colorHex: '#d8dde0',
+                orbitalPeriodDays: 3.552391,
+                parentID: 'jupiter',
+                semiMajorAxisAu: 0.004486332,
+                epochAngleDeg: 181.1794,
+            }),
+            new Thing({
+                name: 'Ganymede',
+                kind: 'moon',
+                colorHex: '#a9977f',
+                orbitalPeriodDays: 7.157812,
+                parentID: 'jupiter',
+                semiMajorAxisAu: 0.007157128,
+                epochAngleDeg: 358.9916,
+            }),
+            new Thing({
+                name: 'Callisto',
+                kind: 'moon',
+                colorHex: '#7d7265',
+                orbitalPeriodDays: 16.692561,
+                parentID: 'jupiter',
+                semiMajorAxisAu: 0.012586283,
+                epochAngleDeg: 252.772,
+            }),
+            new Thing({
+                name: 'Himalia',
+                kind: 'moon',
+                colorHex: '#8f8064',
+                orbitalPeriodDays: 250.285587,
+                parentID: 'jupiter',
+                semiMajorAxisAu: 0.076529912,
+                epochAngleDeg: 149.3419,
+            }),
+            new Thing({
+                name: 'Amalthea',
+                kind: 'moon',
+                colorHex: '#b08a6a',
+                orbitalPeriodDays: 0.501639,
+                parentID: 'jupiter',
+                semiMajorAxisAu: 0.001216563,
+                epochAngleDeg: 294.5177,
+            }),
 
-            new Thing(
-                'Saturn',
-                Body.Saturn,
-                'heliocentric',
-                '#d4c58a',
-                10759.22,
-            ),
-            new Thing(
-                'Titan',
-                null,
-                'moon',
-                '#d9b36c',
-                15.947349,
-                'saturn',
-                0.00816813,
-                93.0371,
-            ),
-            new Thing(
-                'Mimas',
-                null,
-                'moon',
-                '#c9c9c9',
-                0.947399,
-                'saturn',
-                0.001243515,
-                72.9939,
-            ),
-            new Thing(
-                'Enceladus',
-                null,
-                'moon',
-                '#eef0f2',
-                1.374539,
-                'saturn',
-                0.001593679,
-                106.3438,
-            ),
-            new Thing(
-                'Tethys',
-                null,
-                'moon',
-                '#d8d8d8',
-                1.891653,
-                'saturn',
-                0.001971774,
-                177.9322,
-            ),
-            new Thing(
-                'Dione',
-                null,
-                'moon',
-                '#cfcfcf',
-                2.74034,
-                'saturn',
-                0.002524445,
-                60.738,
-            ),
-            new Thing(
-                'Rhea',
-                null,
-                'moon',
-                '#bdbdbd',
-                4.520396,
-                'saturn',
-                0.003524366,
-                302.8426,
-            ),
-            new Thing(
-                'Hyperion',
-                null,
-                'moon',
-                '#a89880',
-                21.382504,
-                'saturn',
-                0.009931201,
-                345.79,
-            ),
-            new Thing(
-                'Iapetus',
-                null,
-                'moon',
-                '#8f8370',
-                79.471398,
-                'saturn',
-                0.023828887,
-                69.7235,
-            ),
-            new Thing(
-                'Phoebe',
-                null,
-                'moon',
-                '#6f6a63',
-                548.154922,
-                'saturn',
-                0.086343888,
-                266.5226,
-            ),
-            new Thing(
-                'Janus',
-                null,
-                'moon',
-                '#b9b4a8',
-                0.700196,
-                'saturn',
-                0.001016504,
-                271.3066,
-            ),
-            // new Thing('Epimetheus', null, 'moon', '#b0ab9f', 0.699856, 'saturn', 0.001016175, 341.6707),
+            new Thing({
+                name: 'Saturn',
+                bodyAE: Body.Saturn,
+                kind: 'heliocentric',
+                colorHex: '#d4c58a',
+                orbitalPeriodDays: 10759.22,
+            }),
+            new Thing({
+                name: 'Titan',
+                kind: 'moon',
+                colorHex: '#d9b36c',
+                orbitalPeriodDays: 15.947349,
+                parentID: 'saturn',
+                semiMajorAxisAu: 0.00816813,
+                epochAngleDeg: 93.0371,
+            }),
+            new Thing({
+                name: 'Mimas',
+                kind: 'moon',
+                colorHex: '#c9c9c9',
+                orbitalPeriodDays: 0.947399,
+                parentID: 'saturn',
+                semiMajorAxisAu: 0.001243515,
+                epochAngleDeg: 72.9939,
+            }),
+            new Thing({
+                name: 'Enceladus',
+                kind: 'moon',
+                colorHex: '#eef0f2',
+                orbitalPeriodDays: 1.374539,
+                parentID: 'saturn',
+                semiMajorAxisAu: 0.001593679,
+                epochAngleDeg: 106.3438,
+            }),
+            new Thing({
+                name: 'Tethys',
+                kind: 'moon',
+                colorHex: '#d8d8d8',
+                orbitalPeriodDays: 1.891653,
+                parentID: 'saturn',
+                semiMajorAxisAu: 0.001971774,
+                epochAngleDeg: 177.9322,
+            }),
+            new Thing({
+                name: 'Dione',
+                kind: 'moon',
+                colorHex: '#cfcfcf',
+                orbitalPeriodDays: 2.74034,
+                parentID: 'saturn',
+                semiMajorAxisAu: 0.002524445,
+                epochAngleDeg: 60.738,
+            }),
+            new Thing({
+                name: 'Rhea',
+                kind: 'moon',
+                colorHex: '#bdbdbd',
+                orbitalPeriodDays: 4.520396,
+                parentID: 'saturn',
+                semiMajorAxisAu: 0.003524366,
+                epochAngleDeg: 302.8426,
+            }),
+            new Thing({
+                name: 'Hyperion',
+                kind: 'moon',
+                colorHex: '#a89880',
+                orbitalPeriodDays: 21.382504,
+                parentID: 'saturn',
+                semiMajorAxisAu: 0.009931201,
+                epochAngleDeg: 345.79,
+            }),
+            new Thing({
+                name: 'Iapetus',
+                kind: 'moon',
+                colorHex: '#8f8370',
+                orbitalPeriodDays: 79.471398,
+                parentID: 'saturn',
+                semiMajorAxisAu: 0.023828887,
+                epochAngleDeg: 69.7235,
+            }),
+            new Thing({
+                name: 'Phoebe',
+                kind: 'moon',
+                colorHex: '#6f6a63',
+                orbitalPeriodDays: 548.154922,
+                parentID: 'saturn',
+                semiMajorAxisAu: 0.086343888,
+                epochAngleDeg: 266.5226,
+            }),
+            new Thing({
+                name: 'Janus',
+                kind: 'moon',
+                colorHex: '#b9b4a8',
+                orbitalPeriodDays: 0.700196,
+                parentID: 'saturn',
+                semiMajorAxisAu: 0.001016504,
+                epochAngleDeg: 271.3066,
+            }),
+            // new Thing({ name: 'Epimetheus', kind: 'moon', colorHex: '#b0ab9f', orbitalPeriodDays: 0.699856, parentID: 'saturn', semiMajorAxisAu: 0.001016175, epochAngleDeg: 341.6707 }),
 
-            new Thing(
-                'Uranus',
-                Body.Uranus,
-                'heliocentric',
-                '#9fd4d8',
-                30688.5,
-            ),
-            new Thing(
-                'Miranda',
-                null,
-                'moon',
-                '#9fa8ad',
-                1.413995,
-                'uranus',
-                0.000868135,
-                281.0398,
-            ),
-            new Thing(
-                'Ariel',
-                null,
-                'moon',
-                '#b9c4c9',
-                2.52079,
-                'uranus',
-                0.001276386,
-                37.8302,
-            ),
-            new Thing(
-                'Umbriel',
-                null,
-                'moon',
-                '#7d7d80',
-                4.145019,
-                'uranus',
-                0.001778178,
-                359.8002,
-            ),
-            new Thing(
-                'Titania',
-                null,
-                'moon',
-                '#9aa6ad',
-                8.704609,
-                'uranus',
-                0.002916043,
-                154.1154,
-            ),
-            new Thing(
-                'Oberon',
-                null,
-                'moon',
-                '#8f8a84',
-                13.466214,
-                'uranus',
-                0.003900537,
-                242.4414,
-            ),
+            new Thing({
+                name: 'Uranus',
+                bodyAE: Body.Uranus,
+                kind: 'heliocentric',
+                colorHex: '#9fd4d8',
+                orbitalPeriodDays: 30688.5,
+            }),
+            new Thing({
+                name: 'Miranda',
+                kind: 'moon',
+                colorHex: '#9fa8ad',
+                orbitalPeriodDays: 1.413995,
+                parentID: 'uranus',
+                semiMajorAxisAu: 0.000868135,
+                epochAngleDeg: 281.0398,
+            }),
+            new Thing({
+                name: 'Ariel',
+                kind: 'moon',
+                colorHex: '#b9c4c9',
+                orbitalPeriodDays: 2.52079,
+                parentID: 'uranus',
+                semiMajorAxisAu: 0.001276386,
+                epochAngleDeg: 37.8302,
+            }),
+            new Thing({
+                name: 'Umbriel',
+                kind: 'moon',
+                colorHex: '#7d7d80',
+                orbitalPeriodDays: 4.145019,
+                parentID: 'uranus',
+                semiMajorAxisAu: 0.001778178,
+                epochAngleDeg: 359.8002,
+            }),
+            new Thing({
+                name: 'Titania',
+                kind: 'moon',
+                colorHex: '#9aa6ad',
+                orbitalPeriodDays: 8.704609,
+                parentID: 'uranus',
+                semiMajorAxisAu: 0.002916043,
+                epochAngleDeg: 154.1154,
+            }),
+            new Thing({
+                name: 'Oberon',
+                kind: 'moon',
+                colorHex: '#8f8a84',
+                orbitalPeriodDays: 13.466214,
+                parentID: 'uranus',
+                semiMajorAxisAu: 0.003900537,
+                epochAngleDeg: 242.4414,
+            }),
 
-            new Thing(
-                'Neptune',
-                Body.Neptune,
-                'heliocentric',
-                '#5a74e0',
-                60182,
-            ),
-            new Thing(
-                'Triton',
-                null,
-                'moon',
-                '#c9d8e0',
-                5.877119,
-                'neptune',
-                0.002371476,
-                59.9426,
-            ),
+            new Thing({
+                name: 'Neptune',
+                bodyAE: Body.Neptune,
+                kind: 'heliocentric',
+                colorHex: '#5a74e0',
+                orbitalPeriodDays: 60182,
+            }),
+            new Thing({
+                name: 'Triton',
+                kind: 'moon',
+                colorHex: '#c9d8e0',
+                orbitalPeriodDays: 5.877119,
+                parentID: 'neptune',
+                semiMajorAxisAu: 0.002371476,
+                epochAngleDeg: 59.9426,
+            }),
             // Nereid's orbit is eccentric enough (e=0.746) that the plain
             // circular model above would put it visibly in the wrong place -
             // same EC/OM/W/MA source and epoch as everything else here, just
             // also given eccentricity + periapsisLongitudeDeg (OM+W) so
             // offsetFromParent() solves the real ellipse instead.
-            new Thing(
-                'Nereid',
-                null,
-                'moon',
-                '#9fa0a3',
-                360.655661,
-                'neptune',
-                0.036892716,
-                194.1457,
-                0.7461,
-                256.0251,
-            ),
-            new Thing(
-                'Despina',
-                null,
-                'moon',
-                '#8f909a',
-                0.335448,
-                'neptune',
-                0.00035153,
-                252.0855,
-            ),
-            new Thing(
-                'Galatea',
-                null,
-                'moon',
-                '#8a8b94',
-                0.429472,
-                'neptune',
-                0.000414479,
-                88.0302,
-            ),
-            new Thing(
-                'Larissa',
-                null,
-                'moon',
-                '#7f8089',
-                0.555318,
-                'neptune',
-                0.000491934,
-                317.6936,
-            ),
-            new Thing(
-                'Proteus',
-                null,
-                'moon',
-                '#6f7079',
-                1.122823,
-                'neptune',
-                0.000786598,
-                285.4243,
-            ),
+            new Thing({
+                name: 'Nereid',
+                kind: 'moon',
+                colorHex: '#9fa0a3',
+                orbitalPeriodDays: 360.655661,
+                parentID: 'neptune',
+                semiMajorAxisAu: 0.036892716,
+                epochAngleDeg: 194.1457,
+                eccentricity: 0.7461,
+                periapsisLongitudeDeg: 256.0251,
+            }),
+            new Thing({
+                name: 'Despina',
+                kind: 'moon',
+                colorHex: '#8f909a',
+                orbitalPeriodDays: 0.335448,
+                parentID: 'neptune',
+                semiMajorAxisAu: 0.00035153,
+                epochAngleDeg: 252.0855,
+            }),
+            new Thing({
+                name: 'Galatea',
+                kind: 'moon',
+                colorHex: '#8a8b94',
+                orbitalPeriodDays: 0.429472,
+                parentID: 'neptune',
+                semiMajorAxisAu: 0.000414479,
+                epochAngleDeg: 88.0302,
+            }),
+            new Thing({
+                name: 'Larissa',
+                kind: 'moon',
+                colorHex: '#7f8089',
+                orbitalPeriodDays: 0.555318,
+                parentID: 'neptune',
+                semiMajorAxisAu: 0.000491934,
+                epochAngleDeg: 317.6936,
+            }),
+            new Thing({
+                name: 'Proteus',
+                kind: 'moon',
+                colorHex: '#6f7079',
+                orbitalPeriodDays: 1.122823,
+                parentID: 'neptune',
+                semiMajorAxisAu: 0.000786598,
+                epochAngleDeg: 285.4243,
+            }),
 
-            new Thing('Pluto', Body.Pluto, 'heliocentric', '#b8a08c', 90560),
-            new Thing(
-                'Charon',
-                null,
-                'moon',
-                '#a89a8c',
-                6.387221,
-                'pluto',
-                0.00013099,
-                195.0751,
-            ),
+            new Thing({
+                name: 'Pluto',
+                bodyAE: Body.Pluto,
+                kind: 'heliocentric',
+                colorHex: '#b8a08c',
+                orbitalPeriodDays: 90560,
+            }),
+            new Thing({
+                name: 'Charon',
+                kind: 'moon',
+                colorHex: '#a89a8c',
+                orbitalPeriodDays: 6.387221,
+                parentID: 'pluto',
+                semiMajorAxisAu: 0.00013099,
+                epochAngleDeg: 195.0751,
+            }),
             // Other Trans-Neptunian objects (TNOs): every one with a best current
             // measured diameter at least as large as Varuna's own (668 km, per
             // Herschel thermal measurements - Lellouch et al. 2013). Diameters
@@ -578,210 +586,191 @@ export class Thing {
             // the rest are left on the circular approximation, same as every
             // main-belt asteroid/moon above - fine, since their eccentricities
             // are all comparable to or lower than Ceres'/Vesta's own (~0.08).
-            new Thing(
-                'Orcus',
-                null,
-                'asteroid',
-                '#9fb0b8',
-                89858.842999,
-                'sol',
-                39.279780416,
-                171.948,
-            ),
-            new Thing(
-                'Achlys',
-                null,
-                'asteroid',
-                '#8f7a6a',
-                90511.211881,
-                'sol',
-                39.469663417,
-                150.7006,
-            ), // 2003 AZ84
-            new Thing(
-                'Ixion',
-                null,
-                'asteroid',
-                '#7a5248',
-                90604.038287,
-                'sol',
-                39.496644981,
-                307.256,
-                0.244049,
-                10.8943,
-            ),
-            new Thing(
-                'Ritona',
-                null,
-                'asteroid',
-                '#827a70',
-                97629.551428,
-                'sol',
-                41.512864217,
-                354.7265,
-            ), // 2005 RN43
-            new Thing(
-                'Mani',
-                null,
-                'asteroid',
-                '#7a5f55',
-                98422.675932,
-                'sol',
-                41.737389478,
-                302.43,
-            ), // 2002 MS4
-            new Thing(
-                'Goibniu',
-                null,
-                'asteroid',
-                '#8a7a68',
-                99157.788905,
-                'sol',
-                41.944954311,
-                232.9718,
-            ), // 2004 GV9
-            new Thing(
-                'Salacia',
-                null,
-                'asteroid',
-                '#6b6b6f',
-                99445.037399,
-                'sol',
-                42.025921662,
-                4.1625,
-            ),
-            new Thing(
-                'Uni',
-                null,
-                'asteroid',
-                '#7d7d7d',
-                101730.412251,
-                'sol',
-                42.667353498,
-                71.1968,
-            ), // 2002 UX25
-            new Thing(
-                'Varuna',
-                null,
-                'asteroid',
-                '#9a6a52',
-                102737.646564,
-                'sol',
-                42.948524187,
-                126.8887,
-            ),
-            new Thing(
-                'Haumea',
-                null,
-                'asteroid',
-                '#eef2f5',
-                103290.237023,
-                'sol',
-                43.102390018,
-                226.4926,
-                0.195026,
-                1.8938,
-            ),
-            new Thing(
-                'Quaoar',
-                null,
-                'asteroid',
-                '#8a6a5a',
-                104127.208876,
-                'sol',
-                43.334918876,
-                285.5082,
-            ),
-            new Thing(
-                'Makemake',
-                null,
-                'asteroid',
-                '#b5704a',
-                112022.364296,
-                'sol',
-                45.498630639,
-                187.1252,
-            ),
-            new Thing(
-                'Varda',
-                null,
-                'asteroid',
-                '#857064',
-                112934.211987,
-                'sol',
-                45.745198902,
-                286.7399,
-            ),
-            new Thing(
-                'Aya',
-                null,
-                'asteroid',
-                '#9a5a46',
-                118349.368157,
-                'sol',
-                47.196065893,
-                176.5155,
-            ), // 2002 AW197
-            new Thing(
-                'Chiminigagua',
-                null,
-                'asteroid',
-                '#7d7873',
-                164520.090082,
-                'sol',
-                58.786074691,
-                185.7727,
-                0.394895,
-                326.2602,
-            ), // 2013 FY27
-            new Thing(
-                'Gonggong',
-                null,
-                'asteroid',
-                '#a84a3a',
-                200476.359847,
-                'sol',
-                67.066238396,
-                295.0887,
-                0.503411,
-                183.8297,
-            ),
-            new Thing(
-                'Eris',
-                null,
-                'asteroid',
-                '#e8e4da',
-                203938.828094,
-                'sol',
-                67.836241717,
-                38.3488,
-                0.438418,
-                187.1967,
-            ),
-            new Thing(
-                "G!kún||'hòmdímà",
-                null,
-                'asteroid',
-                '#8c4536',
-                229715.696183,
-                'sol',
-                73.438243982,
-                106.4853,
-                0.48874,
-                117.6101,
-            ), // 2007 UK126, aka Gkunhomdima
-            new Thing(
-                'Sedna',
-                null,
-                'asteroid',
-                '#8b2e22',
-                4160095.140159,
-                'sol',
-                506.443123106,
-                94.1288,
-                0.849556,
-                95.6863,
-            ),
+            new Thing({
+                name: 'Orcus',
+                kind: 'asteroid',
+                colorHex: '#9fb0b8',
+                orbitalPeriodDays: 89858.842999,
+                parentID: 'sol',
+                semiMajorAxisAu: 39.279780416,
+                epochAngleDeg: 171.948,
+            }),
+            new Thing({
+                name: 'Achlys', // 2003 AZ84
+                kind: 'asteroid',
+                colorHex: '#8f7a6a',
+                orbitalPeriodDays: 90511.211881,
+                parentID: 'sol',
+                semiMajorAxisAu: 39.469663417,
+                epochAngleDeg: 150.7006,
+            }),
+            new Thing({
+                name: 'Ixion',
+                kind: 'asteroid',
+                colorHex: '#7a5248',
+                orbitalPeriodDays: 90604.038287,
+                parentID: 'sol',
+                semiMajorAxisAu: 39.496644981,
+                epochAngleDeg: 307.256,
+                eccentricity: 0.244049,
+                periapsisLongitudeDeg: 10.8943,
+            }),
+            new Thing({
+                name: 'Ritona', // 2005 RN43
+                kind: 'asteroid',
+                colorHex: '#827a70',
+                orbitalPeriodDays: 97629.551428,
+                parentID: 'sol',
+                semiMajorAxisAu: 41.512864217,
+                epochAngleDeg: 354.7265,
+            }),
+            new Thing({
+                name: 'Mani', // 2002 MS4
+                kind: 'asteroid',
+                colorHex: '#7a5f55',
+                orbitalPeriodDays: 98422.675932,
+                parentID: 'sol',
+                semiMajorAxisAu: 41.737389478,
+                epochAngleDeg: 302.43,
+            }),
+            new Thing({
+                name: 'Goibniu', // 2004 GV9
+                kind: 'asteroid',
+                colorHex: '#8a7a68',
+                orbitalPeriodDays: 99157.788905,
+                parentID: 'sol',
+                semiMajorAxisAu: 41.944954311,
+                epochAngleDeg: 232.9718,
+            }),
+            new Thing({
+                name: 'Salacia',
+                kind: 'asteroid',
+                colorHex: '#6b6b6f',
+                orbitalPeriodDays: 99445.037399,
+                parentID: 'sol',
+                semiMajorAxisAu: 42.025921662,
+                epochAngleDeg: 4.1625,
+            }),
+            new Thing({
+                name: 'Uni', // 2002 UX25
+                kind: 'asteroid',
+                colorHex: '#7d7d7d',
+                orbitalPeriodDays: 101730.412251,
+                parentID: 'sol',
+                semiMajorAxisAu: 42.667353498,
+                epochAngleDeg: 71.1968,
+            }),
+            new Thing({
+                name: 'Varuna',
+                kind: 'asteroid',
+                colorHex: '#9a6a52',
+                orbitalPeriodDays: 102737.646564,
+                parentID: 'sol',
+                semiMajorAxisAu: 42.948524187,
+                epochAngleDeg: 126.8887,
+            }),
+            new Thing({
+                name: 'Haumea',
+                kind: 'asteroid',
+                colorHex: '#eef2f5',
+                orbitalPeriodDays: 103290.237023,
+                parentID: 'sol',
+                semiMajorAxisAu: 43.102390018,
+                epochAngleDeg: 226.4926,
+                eccentricity: 0.195026,
+                periapsisLongitudeDeg: 1.8938,
+            }),
+            new Thing({
+                name: 'Quaoar',
+                kind: 'asteroid',
+                colorHex: '#8a6a5a',
+                orbitalPeriodDays: 104127.208876,
+                parentID: 'sol',
+                semiMajorAxisAu: 43.334918876,
+                epochAngleDeg: 285.5082,
+            }),
+            new Thing({
+                name: 'Makemake',
+                kind: 'asteroid',
+                colorHex: '#b5704a',
+                orbitalPeriodDays: 112022.364296,
+                parentID: 'sol',
+                semiMajorAxisAu: 45.498630639,
+                epochAngleDeg: 187.1252,
+            }),
+            new Thing({
+                name: 'Varda',
+                kind: 'asteroid',
+                colorHex: '#857064',
+                orbitalPeriodDays: 112934.211987,
+                parentID: 'sol',
+                semiMajorAxisAu: 45.745198902,
+                epochAngleDeg: 286.7399,
+            }),
+            new Thing({
+                name: 'Aya', // 2002 AW197
+                kind: 'asteroid',
+                colorHex: '#9a5a46',
+                orbitalPeriodDays: 118349.368157,
+                parentID: 'sol',
+                semiMajorAxisAu: 47.196065893,
+                epochAngleDeg: 176.5155,
+            }),
+            new Thing({
+                name: 'Chiminigagua', // 2013 FY27
+                kind: 'asteroid',
+                colorHex: '#7d7873',
+                orbitalPeriodDays: 164520.090082,
+                parentID: 'sol',
+                semiMajorAxisAu: 58.786074691,
+                epochAngleDeg: 185.7727,
+                eccentricity: 0.394895,
+                periapsisLongitudeDeg: 326.2602,
+            }),
+            new Thing({
+                name: 'Gonggong',
+                kind: 'asteroid',
+                colorHex: '#a84a3a',
+                orbitalPeriodDays: 200476.359847,
+                parentID: 'sol',
+                semiMajorAxisAu: 67.066238396,
+                epochAngleDeg: 295.0887,
+                eccentricity: 0.503411,
+                periapsisLongitudeDeg: 183.8297,
+            }),
+            new Thing({
+                name: 'Eris',
+                kind: 'asteroid',
+                colorHex: '#e8e4da',
+                orbitalPeriodDays: 203938.828094,
+                parentID: 'sol',
+                semiMajorAxisAu: 67.836241717,
+                epochAngleDeg: 38.3488,
+                eccentricity: 0.438418,
+                periapsisLongitudeDeg: 187.1967,
+            }),
+            new Thing({
+                name: "G!kún||'hòmdímà", // 2007 UK126, aka Gkunhomdima
+                kind: 'asteroid',
+                colorHex: '#8c4536',
+                orbitalPeriodDays: 229715.696183,
+                parentID: 'sol',
+                semiMajorAxisAu: 73.438243982,
+                epochAngleDeg: 106.4853,
+                eccentricity: 0.48874,
+                periapsisLongitudeDeg: 117.6101,
+            }),
+            new Thing({
+                name: 'Sedna',
+                kind: 'asteroid',
+                colorHex: '#8b2e22',
+                orbitalPeriodDays: 4160095.140159,
+                parentID: 'sol',
+                semiMajorAxisAu: 506.443123106,
+                epochAngleDeg: 94.1288,
+                eccentricity: 0.849556,
+                periapsisLongitudeDeg: 95.6863,
+            }),
         ];
 
         const sol = things.find((thing) => thing.id === 'sol')!;
@@ -1025,19 +1014,16 @@ export class Thing {
         bigBody: Body,
         smallBody: Body,
     ): Thing {
-        const lp = new Thing(
-            `${this.name}–${smallParent.name} L${lagrangeNumber}`,
-            smallBody,
-            'lagrangePoint',
-            '#aaffaa',
-            smallParent.orbitalPeriodDays,
-            this.id, // parentID: the major body, eg 'sol' or 'earth'
-        );
-
-        lp.lagrangeNumber = lagrangeNumber;
-        lp.bigLagrangeParent = bigBody;
-        lp.label = `L${lagrangeNumber}`;
-
-        return lp;
+        return new Thing({
+            name: `${this.name}–${smallParent.name} L${lagrangeNumber}`,
+            label: `L${lagrangeNumber}`,
+            bodyAE: smallBody,
+            kind: 'lagrangePoint',
+            colorHex: '#aaffaa',
+            orbitalPeriodDays: smallParent.orbitalPeriodDays,
+            parentID: this.id, // major body, eg 'sol' or 'earth'
+            lagrangeNumber,
+            bigLagrangeParent: bigBody,
+        });
     }
 }
