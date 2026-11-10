@@ -7,6 +7,10 @@ export interface Point2D {
     y: number;
 }
 
+export interface Point3D extends Point2D {
+    z: number;
+}
+
 // Lagrange points render as a "+", since they aren't physical objects;
 // everything else renders as a solid circle.
 export type ThingKind =

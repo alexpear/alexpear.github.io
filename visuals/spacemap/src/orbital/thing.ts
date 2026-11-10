@@ -1,6 +1,6 @@
 // Every entity that we might display at a location on the map is a Thing, including stars, planets, moons, asteroids, spacecraft, debris, & Lagrange points.
 
-import { Point2D, MILLISECONDS_PER_DAY, ThingKind } from './types';
+import { Point2D, Point3D, MILLISECONDS_PER_DAY, ThingKind } from './types';
 import {
     Body,
     HelioVector,
@@ -37,9 +37,9 @@ const EQJ_TO_ECL = Rotation_EQJ_ECL();
 const SIMPLE_ORBIT_EPOCH = new Date('2026-11-05T00:00:00Z');
 
 // TODO put inside class Thing.
-function toFixedEclipticPoint(vector: Vector): Point2D {
+function toFixedEcliptic(vector: Vector): Point3D {
     const ecliptic = RotateVector(EQJ_TO_ECL, vector);
-    return { x: ecliptic.x, y: ecliptic.y };
+    return { x: ecliptic.x, y: ecliptic.y, z: ecliptic.z };
 }
 
 // Turns a display name into a Thing.id: lowercase, alphanumeric runs joined
@@ -932,6 +932,28 @@ export class Thing {
     // orbital tilt (eg Pluto's), so we discard the z-component.
     // Expressed in astronomical units (AU).
     position(date: Date): Point2D {
+        const { x, y } = this.position3D(date);
+        return { x, y };
+    }
+
+    // True distance from Sol's center, in AU, at `date`. Uses position3D()
+    // rather than the flattened position(), since dropping z understates
+    // the distance of anything well off the ecliptic plane (eg Pluto, ~17
+    // degrees). For a Thing on the simplified Kepler model (z is always 0
+    // there), the in-plane ellipse radius is already the true orbital
+    // radius - that model ignores inclination rather than projecting it -
+    // so this is still right.
+    distanceFromSolAu(date: Date): number {
+        const { x, y, z } = this.position3D(date);
+        return Math.hypot(x, y, z);
+    }
+
+    // Heliocentric position in the fixed J2000 ecliptic frame (see
+    // EQJ_TO_ECL), in AU, before position() flattens it. z is the height
+    // above/below the ecliptic plane: real for astronomy-engine bodies and
+    // Lagrange points; for the simplified Kepler model, just the parent's
+    // own z (the model has no inclination of its own).
+    position3D(date: Date): Point3D {
         if (this.lagrangeNumber) {
             // LagrangePoint() returns the point's position relative to the
             // MAJOR body's own center, not an absolute heliocentric
@@ -948,7 +970,7 @@ export class Thing {
                 this.bodyAE,
             );
 
-            return toFixedEclipticPoint(
+            return toFixedEcliptic(
                 new Vector(
                     stateVector.x + majorBodyVector.x,
                     stateVector.y + majorBodyVector.y,
@@ -970,15 +992,16 @@ export class Thing {
                 );
             }
             // TODO standardize variable name suffices like position, vector, point, pt.
-            const parentPosition = parent.position(date);
+            const parentPosition = parent.position3D(date);
             const offset = this.offsetFromParent(date);
             return {
                 x: parentPosition.x + offset.x,
                 y: parentPosition.y + offset.y,
+                z: parentPosition.z,
             };
         }
 
-        return toFixedEclipticPoint(HelioVector(this.bodyAE, date));
+        return toFixedEcliptic(HelioVector(this.bodyAE, date));
     }
 
     // The simplified Kepler-orbit model (see the semiMajorAxisAu/

@@ -42,21 +42,53 @@ export function computeMenuLayout(width: number, height: number): MenuLayout {
 
 interface Props {
     thing: Thing;
+    date: Date;
     layout: MenuLayout;
     onClose: () => void;
 }
 
-export function ThingMenu({ thing, layout, onClose }: Props): JSX.Element {
+export function ThingMenu({
+    thing,
+    date,
+    layout,
+    onClose,
+}: Props): JSX.Element {
     const parent =
         thing.parentID !== thing.id
             ? THINGS_BY_ID.get(thing.parentID)
             : undefined;
 
+    // Memoized because this menu re-renders on every pan/zoom tick of the
+    // map behind it, and a moon's position walks up its parent chain.
+    const distanceFromSolAu = React.useMemo(
+        () => thing.distanceFromSolAu(date),
+        [thing, date],
+    );
+
     // LATER: ~10 fields per Thing, eg surface gravity, lightspeed lag from
-    // Earth. `fields` is the placeholder for that list.
+    // Earth.
     const fields: [string, string][] = [];
     if (parent) {
         fields.push(['Orbits', parent.name]);
+    }
+    if (thing.kind !== 'star') {
+        fields.push(['Distance from Sol', formatAu(distanceFromSolAu)]);
+    }
+    // A Lagrange point is a location, not a physical body: no size or mass
+    // to report, as opposed to a body whose value just isn't known.
+    if (thing.kind !== 'lagrangePoint') {
+        fields.push([
+            'Diameter',
+            thing.diameterKm === undefined
+                ? 'Unknown'
+                : `${formatDiameterKm(thing.diameterKm)} km`,
+        ]);
+        fields.push([
+            'Mass',
+            thing.massKg === undefined
+                ? 'Unknown'
+                : formatScientific(thing.massKg, 'kg'),
+        ]);
     }
 
     return (
@@ -97,6 +129,32 @@ export function ThingMenu({ thing, layout, onClose }: Props): JSX.Element {
             <p style={placeholderStyle}>More details coming soon.</p>
         </div>
     );
+}
+
+// 4 significant figures: enough to see Earth's distance vary over a year
+// (0.983-1.017 AU), without false precision for distant bodies.
+function formatAu(au: number): string {
+    return `${au.toLocaleString('en-US', { maximumSignificantDigits: 4 })} AU`;
+}
+
+// Whole km for anything big; one decimal place for the few tiny moons
+// (Phobos, Deimos) where whole km would lose most of the precision.
+function formatDiameterKm(km: number): string {
+    return km.toLocaleString('en-US', {
+        maximumFractionDigits: km < 100 ? 1 : 0,
+    });
+}
+
+const SUPERSCRIPT_DIGITS = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+
+// eg 5.97e24 -> "5.97 × 10²⁴ kg", to 3 significant figures.
+function formatScientific(value: number, unit: string): string {
+    const [mantissa, exponent] = value.toExponential(2).split('e');
+    const superscript = String(Number(exponent))
+        .split('')
+        .map((char) => (char === '-' ? '⁻' : SUPERSCRIPT_DIGITS[Number(char)]))
+        .join('');
+    return `${Number(mantissa)} × 10${superscript} ${unit}`;
 }
 
 const menuBorder = '1px solid #3a3f52';

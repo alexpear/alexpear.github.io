@@ -518,6 +518,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
             {selectedThing && (
                 <ThingMenu
                     thing={selectedThing}
+                    date={config.date}
                     layout={menuLayout}
                     onClose={closeMenu}
                 />
