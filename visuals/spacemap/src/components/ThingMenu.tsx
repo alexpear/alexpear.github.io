@@ -7,6 +7,8 @@ import { Thing } from '../orbital/thing';
 // landscape windows so the map keeps at least half the screen.
 const SIDEBAR_WIDTH_PX = 340;
 
+const EARTH_KG = 5.97e24;
+
 // Where the info menu sits, and the center of the screen area it leaves
 // uncovered - which is where a clicked Thing gets panned to. The menu
 // overlays the map rather than shrinking it, so opening/closing it doesn't
@@ -68,9 +70,6 @@ export function ThingMenu({
     // LATER: ~10 fields per Thing, eg surface gravity, lightspeed lag from
     // Earth.
     const fields: [string, string][] = [];
-    if (parent) {
-        fields.push(['Orbits', parent.name]);
-    }
     if (thing.kind !== 'star') {
         fields.push(['Distance from Sol', formatAu(distanceFromSolAu)]);
     }
@@ -81,13 +80,17 @@ export function ThingMenu({
             'Diameter',
             thing.diameterKm === undefined
                 ? 'Unknown'
-                : `${formatDiameterKm(thing.diameterKm)} km`,
+                : // TODO if diameter is large, show it relative to Earth
+                  `${formatDiameterKm(thing.diameterKm)} km`,
         ]);
+
+        const earthMasses = (thing.massKg / EARTH_KG).toLocaleString('en-US', {
+            maximumSignificantDigits: 2,
+        });
+
         fields.push([
             'Mass',
-            thing.massKg === undefined
-                ? 'Unknown'
-                : formatScientific(thing.massKg, 'kg'),
+            thing.massKg === undefined ? 'Unknown' : `${earthMasses} Earths`, //formatScientific(thing.massKg, 'kg'),
         ]);
     }
 
@@ -126,15 +129,12 @@ export function ThingMenu({
                     </React.Fragment>
                 ))}
             </dl>
-            <p style={placeholderStyle}>More details coming soon.</p>
         </div>
     );
 }
 
-// 4 significant figures: enough to see Earth's distance vary over a year
-// (0.983-1.017 AU), without false precision for distant bodies.
 function formatAu(au: number): string {
-    return `${au.toLocaleString('en-US', { maximumSignificantDigits: 4 })} AU`;
+    return `${au.toLocaleString('en-US', { maximumSignificantDigits: 2 })} AU`;
 }
 
 // Whole km for anything big; one decimal place for the few tiny moons
@@ -142,6 +142,7 @@ function formatAu(au: number): string {
 function formatDiameterKm(km: number): string {
     return km.toLocaleString('en-US', {
         maximumFractionDigits: km < 100 ? 1 : 0,
+        maximumSignificantDigits: 2,
     });
 }
 
