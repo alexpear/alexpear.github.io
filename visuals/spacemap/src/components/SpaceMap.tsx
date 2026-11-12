@@ -28,8 +28,13 @@ const DEFAULT_VIEW_RADIUS_AU = 1.8;
 // from Sol. Measured via astronomy-engine for Jan 1 of 2026-2040 - it
 // stays within ~0.6 degrees of this every year.
 const DEFAULT_VIEW_ROTATION_DEG = 10;
-const MIN_ZOOM_MULTIPLIER = 0.05;
-const MAX_ZOOM_MULTIPLIER = 100_000;
+// Zoom limits, as the distance from the screen's center to the nearer edge
+// (same measure as DEFAULT_VIEW_RADIUS_AU) - absolute, so they're the same
+// whatever the ?focus= framing is. Zoomed fully out shows a bit past
+// Sedna's aphelion (~937 AU), the farthest any catalog body gets from Sol;
+// zoomed fully in shows ~3,000 km, a bit more than Mars' diameter.
+const MAX_VIEW_RADIUS_AU = 1200;
+const MIN_VIEW_RADIUS_AU = 2e-5;
 // Wheel deltaY -> zoom ratio. Chosen so an ordinary mouse wheel notch
 // (deltaY roughly 100-120 in most browsers) is a gentle ~8% step; a trackpad's
 // continuous small deltas each nudge the zoom by a fraction of a percent.
@@ -350,6 +355,14 @@ export function SpaceMap({ config }: Props): JSX.Element {
         return hidden;
     }, [displayedThings, thingPositions, toScreen]);
 
+    // MAX_/MIN_VIEW_RADIUS_AU, converted into zoomMultiplier's own terms
+    // (a multiple of framing.scale, which does depend on ?focus=).
+    const shorterSidePx = Math.min(viewportSize.width, viewportSize.height);
+    const minZoomMultiplier =
+        shorterSidePx / (2 * MAX_VIEW_RADIUS_AU) / framing.scale;
+    const maxZoomMultiplier =
+        shorterSidePx / (2 * MIN_VIEW_RADIUS_AU) / framing.scale;
+
     // Applies a zoom change by `zoomRatio` (newZoom / oldZoom) anchored at
     // `anchorScreen` (a cursor position or a pinch midpoint, in the SVG's
     // own coordinate space), so that point stays fixed on screen.
@@ -366,8 +379,8 @@ export function SpaceMap({ config }: Props): JSX.Element {
         setViewState((current) => {
             const nextZoomMultiplier = clamp(
                 current.zoomMultiplier * zoomRatio,
-                MIN_ZOOM_MULTIPLIER,
-                MAX_ZOOM_MULTIPLIER,
+                minZoomMultiplier,
+                maxZoomMultiplier,
             );
             const appliedZoomRatio =
                 nextZoomMultiplier / current.zoomMultiplier;
@@ -394,8 +407,8 @@ export function SpaceMap({ config }: Props): JSX.Element {
         setViewState((current) => {
             const nextZoomMultiplier = clamp(
                 targetZoomMultiplier,
-                MIN_ZOOM_MULTIPLIER,
-                MAX_ZOOM_MULTIPLIER,
+                minZoomMultiplier,
+                maxZoomMultiplier,
             );
             const appliedZoomRatio =
                 nextZoomMultiplier / current.zoomMultiplier;
