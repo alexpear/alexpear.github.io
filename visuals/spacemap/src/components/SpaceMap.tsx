@@ -20,6 +20,14 @@ const RADIUS_PX: Record<ThingKind, number> = {
     spacecraft: 3,
     lagrangePoint: 4,
 };
+// The view on load when the URL has no ?focus= list: Sol-centered, wide
+// enough to show the whole of Mars' orbit (aphelion ~1.666 AU) plus a
+// little margin, along whichever of the screen's width/height is shorter.
+const DEFAULT_VIEW_RADIUS_AU = 1.8;
+// The default view's rotation: puts Earth's Jan 1 position straight up
+// from Sol. Measured via astronomy-engine for Jan 1 of 2026-2040 - it
+// stays within ~0.6 degrees of this every year.
+const DEFAULT_VIEW_ROTATION_DEG = 10;
 const MIN_ZOOM_MULTIPLIER = 0.05;
 const MAX_ZOOM_MULTIPLIER = 100_000;
 // Wheel deltaY -> zoom ratio. Chosen so an ordinary mouse wheel notch
@@ -147,12 +155,20 @@ export function SpaceMap({ config }: Props): JSX.Element {
 
     const framing = React.useMemo(
         () =>
-            computeFraming(
-                focusPoints,
-                viewportSize.width,
-                viewportSize.height,
-            ),
-        [focusPoints, viewportSize],
+            config.focusFromUrl
+                ? computeFraming(
+                      focusPoints,
+                      viewportSize.width,
+                      viewportSize.height,
+                  )
+                : {
+                      centroid: { x: 0, y: 0 },
+                      rotationDeg: DEFAULT_VIEW_ROTATION_DEG,
+                      scale:
+                          Math.min(viewportSize.width, viewportSize.height) /
+                          (2 * DEFAULT_VIEW_RADIUS_AU),
+                  },
+        [config, focusPoints, viewportSize],
     );
 
     // Used only for the screen-pixel-distance check in hiddenThingIds below;
