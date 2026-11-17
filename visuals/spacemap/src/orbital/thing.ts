@@ -146,8 +146,8 @@ export class Thing {
     lagrangeSmallParentID?: string;
 
     // Simplified Kepler-orbit model, used for every Thing with no
-    // astronomy-engine body: every moon (astronomy-engine has no ephemeris
-    // for any of them, including Jupiter's), plus any Sol-orbiting body
+    // astronomy-engine body: every moon except Luna (astronomy-engine has
+    // no ephemeris for any other, including Jupiter's), plus any Sol-orbiting body
     // (eg an asteroid) astronomy-engine doesn't track either. Flattened like
     // everything else here: no inclination, just a fixed ellipse of
     // semi-major axis semiMajorAxisAu and eccentricity around the parent
@@ -256,7 +256,14 @@ export class Thing {
                 aliases: ['Terra'],
                 diameterKm: 12756,
                 massKg: 5.97e24,
-                bodyAE: Body.EMB,
+                // Earth's own center, not Body.EMB (the Earth-Luna
+                // barycenter, ~4,700 km away): Luna is placed by
+                // astronomy-engine too, relative to the real Earth, so
+                // drawing Earth at the barycenter would visibly offset the
+                // two when zoomed in. The cost is that Earth's position
+                // (and orbit line) wobbles by that ~4,700 km each month -
+                // which is real.
+                bodyAE: Body.Earth,
                 kind: 'heliocentric',
                 colorHex: '#4f82c6',
                 orbitalPeriodDays: 365.256,
@@ -268,12 +275,18 @@ export class Thing {
                 massKg: 7.346e22,
                 kind: 'moon',
                 colorHex: '#d8d8d8',
-                orbitalPeriodDays: 27.115683,
+                // The only moon astronomy-engine has an ephemeris for, and
+                // the one that most needs it: the Sun perturbs Luna's orbit
+                // far more than any other moon's, so a single snapshot of
+                // its elements (the simplified Kepler model every other
+                // moon uses) drifts ~0.1 degrees/day out of phase, and
+                // can't follow its periapsis precessing ~40 degrees/year.
+                // Its orbit line is a plain circle instead - see orbitPath().
+                bodyAE: Body.Moon,
+                // Sidereal month. Only used for hide priority and by
+                // Earth-Luna Lagrange points; position comes from bodyAE.
+                orbitalPeriodDays: 27.321661,
                 parentID: 'earth',
-                semiMajorAxisAu: 0.002558939,
-                epochAngleDeg: 167.1504,
-                eccentricity: 0.03972,
-                periapsisLongitudeDeg: 76.5518,
             }),
             new Thing({
                 name: 'Mars',
@@ -439,7 +452,8 @@ export class Thing {
                 colorHex: '#c99a6b',
                 orbitalPeriodDays: 4332.59,
             }),
-            // Every moon's (and asteroid's) period, semi-major axis, and mean
+            // Every moon's (and asteroid's) - except Luna's, which comes from
+            // astronomy-engine - period, semi-major axis, and mean
             // longitude (OM + W + MA) at SIMPLE_ORBIT_EPOCH below are osculating
             // elements from JPL Horizons (ssd.jpl.nasa.gov/api/horizons.api),
             // queried relative to each one's own parent (Sol, for an asteroid)
@@ -1130,6 +1144,13 @@ export class Thing {
                     sol.lagrange(earth, lagrangeNumber, Body.Sun, Body.EMB),
                 );
             }
+            // From astronomy-engine, the same as Earth (Body.Earth) and Luna
+            // (Body.Moon) themselves. All three have to come from the same
+            // model: mixing in a different one for any of them (eg the
+            // simplified Kepler model for Luna, or Body.EMB for Earth)
+            // knocks L1, Luna and L2 visibly out of line. Flattening onto
+            // the ecliptic keeps a straight 3D line straight, so they stay
+            // collinear on the map too.
             things.push(
                 earth.lagrange(luna, lagrangeNumber, Body.Earth, Body.Moon),
             );
@@ -1213,8 +1234,8 @@ export class Thing {
 
         // TODO case where there's no Body and no known parent (eg spacecraft)
 
-        // Anything astronomy-engine doesn't track directly: every moon, or a
-        // Sol-orbiting body like an asteroid.
+        // Anything astronomy-engine doesn't track directly: every moon but
+        // Luna, or a Sol-orbiting body like an asteroid.
         if (!this.bodyAE) {
             const parent = Thing.byID(this.parentID);
             if (!parent) {
@@ -1356,6 +1377,40 @@ export class Thing {
         // across that period would trace mostly Jupiter's own heliocentric
         // drift, not an ellipse around Jupiter - this is why moon orbits
         // used to render "Sol-relative" instead of centered on their parent.
+        // A moon astronomy-engine tracks (ie Luna): a plain circle around
+        // its parent's position at `date`, at its current distance, so it
+        // passes right through the moon's marker. Its real path never
+        // closes on itself (its orbit shifts noticeably every month), and
+        // a circle reads cleanly where an exact trace would leave a gap.
+        if (
+            this.bodyAE !== undefined &&
+            !this.lagrangeNumber &&
+            this.parentID !== 'sol' &&
+            this.parentID !== this.id
+        ) {
+            const parent = Thing.byID(this.parentID);
+            if (!parent) {
+                throw new Error(
+                    `${this.id}'s parentID "${this.parentID}" doesn't match any Thing`,
+                );
+            }
+            const center = parent.position(date);
+            const current = this.position(date);
+            const radius = Math.hypot(
+                current.x - center.x,
+                current.y - center.y,
+            );
+            const points: Point2D[] = [];
+            for (let i = 0; i < samples; i++) {
+                const angle = (2 * Math.PI * i) / samples;
+                points.push({
+                    x: center.x + radius * Math.cos(angle),
+                    y: center.y + radius * Math.sin(angle),
+                });
+            }
+            return points;
+        }
+
         if (!this.bodyAE && !this.lagrangeNumber) {
             const parent = Thing.byID(this.parentID);
             if (!parent) {
@@ -1415,10 +1470,9 @@ export class Thing {
     // than read off this.bodyAE/smallParent.bodyAE, because
     // astronomy-engine's own documented convention for LagrangePoint()'s
     // major_body/minor_body doesn't always match the Body a Thing uses for
-    // its own position: eg Earth's own Thing uses Body.EMB (appropriate for
-    // its own heliocentric position), but astronomy-engine's Earth-Moon
-    // Lagrange point convention specifically wants major_body=Body.Earth,
-    // not Body.EMB. Callers must pass whatever astronomy-engine's own docs
+    // its own position: eg Earth's own Thing uses Body.Earth, but
+    // astronomy-engine's Sol-Earth Lagrange point convention specifically
+    // wants minor_body=Body.EMB, not Body.Earth. Callers must pass whatever astronomy-engine's own docs
     // say for that particular pair - see LagrangePoint()'s doc comment in
     // astronomy.d.ts. Usage: sol.lagrange(earth, 1, Body.Sun, Body.EMB)
     // returns the Sol-Earth L1 point.
@@ -1464,8 +1518,11 @@ export class Thing {
         }
         const lagrangeNumbers = [1, 2, 3, 4, 5];
         if (parent.kind === 'star' && this.bodyAE !== undefined) {
+            // See lagrange(): Sol-Earth points want Body.EMB.
+            const smallBody =
+                this.bodyAE === Body.Earth ? Body.EMB : this.bodyAE;
             return lagrangeNumbers.map((n) =>
-                parent.lagrange(this, n, Body.Sun, this.bodyAE),
+                parent.lagrange(this, n, Body.Sun, smallBody),
             );
         }
         if (parent.massKg === undefined || this.massKg === undefined) {
