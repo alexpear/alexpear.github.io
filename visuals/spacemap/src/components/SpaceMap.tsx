@@ -130,6 +130,14 @@ function isSmallHeliocentric(thing: Thing): boolean {
     return (thing.diameterKm ?? 0) < SMALL_HELIOCENTRIC_MAX_DIAMETER_KM;
 }
 
+// True for a small heliocentric itself, not its moons. These only get their
+// orbit line drawn while selected or moused over (there are too many of
+// them, on too many crisscrossing orbits, to draw all the time); planets'
+// and moons' orbit lines are always drawn.
+function hasOnDemandOrbitLine(thing: Thing): boolean {
+    return thing.parentID === 'sol' && isSmallHeliocentric(thing);
+}
+
 interface Props {
     config: SpaceMapConfig;
 }
@@ -198,6 +206,11 @@ export function SpaceMap({ config }: Props): JSX.Element {
     >(undefined);
     const [showSmallHeliocentrics, setShowSmallHeliocentrics] =
         React.useState(false);
+    // The Thing whose marker/label the mouse is over, if any. See
+    // hasOnDemandOrbitLine.
+    const [hoveredThingId, setHoveredThingId] = React.useState<
+        string | undefined
+    >(undefined);
 
     React.useEffect(() => {
         const container = containerRef.current;
@@ -528,6 +541,21 @@ export function SpaceMap({ config }: Props): JSX.Element {
         });
     }
 
+    // pointerover bubbles, so this one handler on the <svg> sees the mouse
+    // entering any marker (-> that Thing) or anything else (-> undefined).
+    // Mouse only: a touch has no hover, and would otherwise leave the last
+    // tapped Thing "hovered" after the finger lifts.
+    function handlePointerOver(event: React.PointerEvent<SVGSVGElement>): void {
+        if (event.pointerType !== 'mouse') {
+            return;
+        }
+        setHoveredThingId(
+            (event.target as Element)
+                .closest('[data-thing-id]')
+                ?.getAttribute('data-thing-id') ?? undefined,
+        );
+    }
+
     function handleWheel(event: React.WheelEvent<SVGSVGElement>): void {
         event.preventDefault();
         const rect = event.currentTarget.getBoundingClientRect();
@@ -646,17 +674,26 @@ export function SpaceMap({ config }: Props): JSX.Element {
                     touchAction: 'none',
                 }}
                 onWheel={handleWheel}
+                onPointerOver={handlePointerOver}
+                onPointerLeave={() => setHoveredThingId(undefined)}
             >
                 <g transform={viewTransform}>
-                    {visibleBaseLayer.map((thing) => (
-                        <OrbitPath
-                            key={thing.id}
-                            object={thing}
-                            date={config.date}
-                            toWorld={toWorld}
-                            zoomMultiplier={zoomMultiplier}
-                        />
-                    ))}
+                    {visibleBaseLayer
+                        .filter(
+                            (thing) =>
+                                !hasOnDemandOrbitLine(thing) ||
+                                thing.id === selectedThingId ||
+                                thing.id === hoveredThingId,
+                        )
+                        .map((thing) => (
+                            <OrbitPath
+                                key={thing.id}
+                                object={thing}
+                                date={config.date}
+                                toWorld={toWorld}
+                                zoomMultiplier={zoomMultiplier}
+                            />
+                        ))}
                     {focusedExtras.map((object) => (
                         <OrbitPath
                             key={object.id}
