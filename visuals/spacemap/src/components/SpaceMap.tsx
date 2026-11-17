@@ -10,7 +10,14 @@ import {
     makeAuToWorldTransform,
     panOffsetForZoomAnchor,
 } from '../view/transform';
-import { ThingMenu, computeMenuLayout } from './ThingMenu';
+import { searchThings } from '../orbital/search';
+import { SearchResults } from './SearchResults';
+import {
+    SCREEN_MARGIN_PX,
+    SEARCH_BAR_HEIGHT_PX,
+    ThingMenu,
+    computeMenuLayout,
+} from './ThingMenu';
 
 const RADIUS_PX: Record<ThingKind, number> = {
     star: 8,
@@ -68,6 +75,11 @@ const LABEL_GAP_PX = 4;
 // wide: an overestimate just hides a neighbor slightly early, while an
 // underestimate lets two names touch.
 const LABEL_CHAR_WIDTH_PX = 7.5;
+// The searchbar's width, except in portrait with the pane open, where it
+// spans the screen.
+const SEARCH_BAR_WIDTH_PX = 200;
+// Gap between the searchbar and the controls stacked under it.
+const CONTROLS_GAP_PX = 8;
 
 // A screen-space rectangle, as offsets from wherever it's anchored.
 interface Box {
@@ -184,6 +196,7 @@ function loses(a: Thing, b: Thing): boolean {
 export function SpaceMap({ config }: Props): JSX.Element {
     const containerRef = React.useRef<HTMLDivElement>(null);
     const svgRef = React.useRef<SVGSVGElement>(null);
+    const searchInputRef = React.useRef<HTMLInputElement>(null);
 
     const [viewportSize, setViewportSize] = React.useState({
         width: 800,
@@ -211,6 +224,13 @@ export function SpaceMap({ config }: Props): JSX.Element {
     const [hoveredThingId, setHoveredThingId] = React.useState<
         string | undefined
     >(undefined);
+    // The searchbar's text. Kept after a result is picked, so clicking the
+    // searchbar again brings the same results back.
+    const [searchQuery, setSearchQuery] = React.useState('');
+    // Whether the pane is in search-results mode rather than Thing-info
+    // mode. Only takes effect while there's a query - see resultsShowing.
+    const [searchActive, setSearchActive] = React.useState(false);
+    const [highlightIndex, setHighlightIndex] = React.useState(0);
 
     React.useEffect(() => {
         const container = containerRef.current;
@@ -393,14 +413,32 @@ export function SpaceMap({ config }: Props): JSX.Element {
         (thing) => thing.id === selectedThingId,
     );
 
+    const searchResults = React.useMemo(
+        () => searchThings(searchQuery),
+        [searchQuery],
+    );
+    // The pane shows search results while the searchbar is in use and has
+    // text in it; otherwise the selected Thing's info, if any.
+    const resultsShowing = searchActive && searchQuery.trim() !== '';
+    const paneOpen = resultsShowing || selectedThing !== undefined;
+
     // Opens `thingId`'s info menu and pans (without zooming) so the Thing
     // sits at the center of the screen area the menu leaves uncovered.
-    function selectThing(thingId: string): void {
-        const worldPoint = thingWorldPoints.get(thingId);
-        if (!worldPoint) {
-            return;
+    //
+    // Takes a Thing rather than an id because a search result may not be on
+    // the map yet: the only catalog Things that aren't are the small
+    // heliocentrics (and their moons) while their checkbox is unchecked, so
+    // picking one of those ticks it.
+    function selectThing(thing: Thing): void {
+        const thingId = thing.id;
+        if (!thingWorldPoints.has(thingId)) {
+            setShowSmallHeliocentrics(true);
         }
+        const worldPoint =
+            thingWorldPoints.get(thingId) ??
+            toWorld(thing.position(config.date));
         setSelectedThingId(thingId);
+        setSearchActive(false);
         // Moving between the anchor and its own Lagrange points keeps them
         // shown; clicking anything else makes it the new anchor instead.
         if (!anchorLagrangePoints.some((point) => point.id === thingId)) {
@@ -426,17 +464,60 @@ export function SpaceMap({ config }: Props): JSX.Element {
     const closeMenu = React.useCallback(() => {
         setSelectedThingId(undefined);
         setLagrangeAnchorId(undefined);
+        setSearchActive(false);
     }, []);
 
+    // Leaves search-results mode, back to whatever the pane showed before:
+    // the selected Thing's info, or nothing.
+    const closeSearchResults = React.useCallback(() => {
+        setSearchActive(false);
+    }, []);
+
+    // Escape backs out one step: from search results first, then the pane.
     React.useEffect(() => {
         function handleKeyDown(event: KeyboardEvent): void {
             if (event.key === 'Escape') {
-                closeMenu();
+                if (resultsShowing) {
+                    closeSearchResults();
+                } else {
+                    closeMenu();
+                }
             }
         }
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [closeMenu]);
+    }, [closeMenu, closeSearchResults, resultsShowing]);
+
+    // Picking a search result is the same as clicking that Thing on the
+    // map. Blurring the searchbar puts away a phone's on-screen keyboard,
+    // which would otherwise cover the map the Thing was just centered on.
+    function pickSearchResult(thing: Thing): void {
+        searchInputRef.current?.blur();
+        selectThing(thing);
+    }
+
+    function handleSearchKeyDown(
+        event: React.KeyboardEvent<HTMLInputElement>,
+    ): void {
+        if (!resultsShowing || searchResults.length === 0) {
+            return;
+        }
+        if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            setHighlightIndex((index) =>
+                Math.min(index + 1, searchResults.length - 1),
+            );
+        } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            setHighlightIndex((index) => Math.max(index - 1, 0));
+        } else if (event.key === 'Enter') {
+            pickSearchResult(
+                searchResults[
+                    Math.min(highlightIndex, searchResults.length - 1)
+                ].thing,
+            );
+        }
+    }
 
     // See MIN_MARKER_SEPARATION_PX for the approximation this applies.
     // Things claim their screen area in priority order (see loses()), and
@@ -449,9 +530,21 @@ export function SpaceMap({ config }: Props): JSX.Element {
                 point: toScreen(thingPositions.get(thing.id)!),
                 box: collisionBox(thing, isLabeled(thing)),
             }))
-            .sort((a, b) =>
-                loses(a.thing, b.thing) ? 1 : loses(b.thing, a.thing) ? -1 : 0,
-            );
+            // The selected Thing goes first, so it's always shown: a search
+            // can select one that would otherwise lose its spot (eg Io,
+            // zoomed out far enough to sit on top of Jupiter).
+            .sort((a, b) => {
+                if (a.thing.id === selectedThingId) {
+                    return -1;
+                }
+                if (b.thing.id === selectedThingId) {
+                    return 1;
+                }
+                if (loses(a.thing, b.thing)) {
+                    return 1;
+                }
+                return loses(b.thing, a.thing) ? -1 : 0;
+            });
         const shown: typeof candidates = [];
         const hidden = new Set<string>();
         for (const candidate of candidates) {
@@ -470,7 +563,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
             }
         }
         return hidden;
-    }, [displayedThings, thingPositions, toScreen, isLabeled]);
+    }, [displayedThings, thingPositions, toScreen, isLabeled, selectedThingId]);
 
     // MAX_/MIN_VIEW_RADIUS_AU, converted into zoomMultiplier's own terms
     // (a multiple of framing.scale, which does depend on ?focus=).
@@ -603,8 +696,11 @@ export function SpaceMap({ config }: Props): JSX.Element {
                 }
                 if (tap) {
                     const thingId = thingIdAtPoint(event);
-                    if (thingId) {
-                        selectThing(thingId);
+                    const thing = displayedThings.find(
+                        (candidate) => candidate.id === thingId,
+                    );
+                    if (thing) {
+                        selectThing(thing);
                     } else {
                         closeMenu();
                     }
@@ -741,18 +837,75 @@ export function SpaceMap({ config }: Props): JSX.Element {
                         ))}
                 </g>
             </svg>
-            {selectedThing && (
-                <ThingMenu
-                    thing={selectedThing}
-                    date={config.date}
+            {resultsShowing ? (
+                <SearchResults
+                    results={searchResults}
+                    highlightIndex={highlightIndex}
                     layout={menuLayout}
-                    onClose={closeMenu}
+                    onHighlight={setHighlightIndex}
+                    onPick={pickSearchResult}
+                    onClose={closeSearchResults}
                 />
+            ) : (
+                selectedThing && (
+                    <ThingMenu
+                        thing={selectedThing}
+                        date={config.date}
+                        layout={menuLayout}
+                        onClose={closeMenu}
+                    />
+                )
             )}
+            {/* Always at the top of the screen, and always this same
+                element (only restyled, never moved in the DOM), so it keeps
+                focus - and a phone keeps its keyboard up - when the first
+                keystroke opens the pane. In portrait the pane opens
+                underneath it, so it widens to span the pane's top edge;
+                otherwise it shifts left with the other controls to clear
+                the sidebar. */}
+            <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                placeholder="Search"
+                aria-label="Search"
+                enterKeyHint="search"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                onChange={(event) => {
+                    setSearchQuery(event.target.value);
+                    setSearchActive(true);
+                    setHighlightIndex(0);
+                }}
+                onFocus={() => setSearchActive(true)}
+                onClick={() => setSearchActive(true)}
+                onKeyDown={handleSearchKeyDown}
+                style={{
+                    ...searchInputStyle,
+                    right: paneOpen
+                        ? menuLayout.resetButtonOffset.right
+                        : SCREEN_MARGIN_PX,
+                    width:
+                        paneOpen && menuLayout.isPortrait
+                            ? viewportSize.width - 2 * SCREEN_MARGIN_PX
+                            : SEARCH_BAR_WIDTH_PX,
+                }}
+            />
             <div
                 style={{
                     ...controlsStyle,
-                    ...(selectedThing ? menuLayout.resetButtonOffset : {}),
+                    ...(paneOpen ? menuLayout.resetButtonOffset : {}),
+                    // Under the searchbar - except in portrait with the
+                    // pane open, where the searchbar stays up on the pane
+                    // and these sit just below the pane instead.
+                    top:
+                        paneOpen && menuLayout.isPortrait
+                            ? menuLayout.resetButtonOffset.top
+                            : SCREEN_MARGIN_PX +
+                              SEARCH_BAR_HEIGHT_PX +
+                              CONTROLS_GAP_PX,
                 }}
             >
                 <button onClick={resetView} style={resetButtonStyle}>
@@ -935,10 +1088,26 @@ function clamp(value: number, min: number, max: number): number {
 // The top-right stack of controls: the Reset view button, with the 'Show
 // small heliocentrics' checkbox under it. Moves as one when the menu opens
 // (see MenuLayout.resetButtonOffset).
+const searchInputStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: SCREEN_MARGIN_PX,
+    height: SEARCH_BAR_HEIGHT_PX,
+    boxSizing: 'border-box',
+    padding: '0 10px',
+    background: '#1b1f2b',
+    color: '#e6e6e6',
+    border: '1px solid #3a3f52',
+    borderRadius: 4,
+    // 16px, not the other controls' 13: iOS Safari zooms the whole page in
+    // when an input with smaller text than that is focused.
+    fontSize: 16,
+    fontFamily: "'Gelasio', Georgia, serif",
+};
+
 const controlsStyle: React.CSSProperties = {
     position: 'absolute',
-    top: 12,
-    right: 12,
+    top: SCREEN_MARGIN_PX,
+    right: SCREEN_MARGIN_PX,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-end',

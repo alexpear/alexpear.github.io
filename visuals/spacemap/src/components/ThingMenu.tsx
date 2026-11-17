@@ -9,6 +9,12 @@ const SIDEBAR_WIDTH_PX = 340;
 
 const EARTH_KG = 5.97e24;
 
+// The searchbar's height and its margin from the screen edges. Lives here
+// because the pane has to leave room for it: in portrait the searchbar
+// sits on top of the pane's top edge (see MenuPane).
+export const SEARCH_BAR_HEIGHT_PX = 32;
+export const SCREEN_MARGIN_PX = 12;
+
 // Where the info menu sits, and the center of the screen area it leaves
 // uncovered - which is where a clicked Thing gets panned to. The menu
 // overlays the map rather than shrinking it, so opening/closing it doesn't
@@ -47,6 +53,33 @@ interface Props {
     date: Date;
     layout: MenuLayout;
     onClose: () => void;
+}
+
+// The info pane's outer box: shared by ThingMenu (one Thing's info) and
+// SearchResults (the searchbar's results), which fill it with content.
+export function MenuPane({
+    layout,
+    children,
+}: {
+    layout: MenuLayout;
+    children: React.ReactNode;
+}): JSX.Element {
+    return (
+        <div
+            style={{
+                ...menuBaseStyle,
+                ...layout.menuStyle,
+                borderLeft: layout.isPortrait ? undefined : menuBorder,
+                borderBottom: layout.isPortrait ? menuBorder : undefined,
+                // In portrait the searchbar overlays the pane's top edge.
+                paddingTop: layout.isPortrait
+                    ? SEARCH_BAR_HEIGHT_PX + 2 * SCREEN_MARGIN_PX
+                    : undefined,
+            }}
+        >
+            {children}
+        </div>
+    );
 }
 
 export function ThingMenu({
@@ -123,14 +156,7 @@ export function ThingMenu({
     }
 
     return (
-        <div
-            style={{
-                ...menuBaseStyle,
-                ...layout.menuStyle,
-                borderLeft: layout.isPortrait ? undefined : menuBorder,
-                borderBottom: layout.isPortrait ? menuBorder : undefined,
-            }}
-        >
+        <MenuPane layout={layout}>
             <div style={headerStyle}>
                 <h2 style={titleStyle}>
                     <span
@@ -157,7 +183,7 @@ export function ThingMenu({
                     </React.Fragment>
                 ))}
             </dl>
-        </div>
+        </MenuPane>
     );
 }
 
@@ -223,7 +249,7 @@ const menuBaseStyle: React.CSSProperties = {
     fontFamily: "'Gelasio', Georgia, serif",
 };
 
-const headerStyle: React.CSSProperties = {
+export const headerStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -239,7 +265,7 @@ const titleStyle: React.CSSProperties = {
     fontWeight: 700,
 };
 
-const swatchStyle: React.CSSProperties = {
+export const swatchStyle: React.CSSProperties = {
     display: 'inline-block',
     width: 12,
     height: 12,
@@ -247,7 +273,7 @@ const swatchStyle: React.CSSProperties = {
     flexShrink: 0,
 };
 
-const closeButtonStyle: React.CSSProperties = {
+export const closeButtonStyle: React.CSSProperties = {
     background: 'none',
     border: 'none',
     color: '#e6e6e6',
@@ -274,7 +300,7 @@ const fieldValueStyle: React.CSSProperties = {
     margin: 0,
 };
 
-const placeholderStyle: React.CSSProperties = {
+export const placeholderStyle: React.CSSProperties = {
     marginTop: 16,
     color: '#9aa0b4',
     fontStyle: 'italic',

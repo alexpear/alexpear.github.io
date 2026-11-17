@@ -96,6 +96,7 @@ function solveEccentricAnomaly(
 // eccentricity (defaults to 0, a circular orbit).
 export interface ThingOptions {
     name: string;
+    aliases?: string[];
     label?: string;
     colorHex: string;
     kind: ThingKind;
@@ -121,6 +122,10 @@ export class Thing {
     // `name` has to stay long enough (eg "Sol–Earth L4") to keep `id`
     // unique from "Earth–Luna L4"'s.
     label?: string;
+    // Other names the searchbar should find this Thing by, eg 'Moon' for
+    // Luna, or a provisional designation like '2003 AZ84'. Never displayed
+    // except to explain a search match. Defaults to none.
+    aliases: string[];
     colorHex: string;
     kind: ThingKind;
 
@@ -180,6 +185,7 @@ export class Thing {
         this.name = options.name;
         this.id = slugify(options.name);
         this.label = options.label;
+        this.aliases = options.aliases ?? [];
         this.colorHex = options.colorHex;
         this.kind = options.kind;
         this.bodyAE = options.bodyAE;
@@ -219,6 +225,7 @@ export class Thing {
         const things: Thing[] = [
             new Thing({
                 name: 'Sol',
+                aliases: ['Sun', 'The Sun'],
                 diameterKm: 1391400,
                 massKg: 1.9884e30,
                 bodyAE: Body.Sun,
@@ -246,6 +253,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Earth',
+                aliases: ['Terra'],
                 diameterKm: 12756,
                 massKg: 5.97e24,
                 bodyAE: Body.EMB,
@@ -255,6 +263,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Luna',
+                aliases: ['Moon', 'The Moon'],
                 diameterKm: 3475,
                 massKg: 7.346e22,
                 kind: 'moon',
@@ -330,6 +339,7 @@ export class Thing {
             // measured mass (NEAR Shoemaker: GM 4.463e-4 km^3/s^2).
             new Thing({
                 name: 'Aethra', // 132
+                aliases: ['132'],
                 diameterKm: 42.9,
                 kind: 'asteroid',
                 colorHex: '#a8a29a',
@@ -342,6 +352,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Brucia', // 323
+                aliases: ['323'],
                 diameterKm: 27.7,
                 kind: 'asteroid',
                 colorHex: '#c2b49c',
@@ -354,6 +365,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Ganymed', // 1036; not Jupiter's moon Ganymede
+                aliases: ['1036'],
                 diameterKm: 37.7,
                 kind: 'asteroid',
                 colorHex: '#b9a888',
@@ -366,6 +378,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Taurinensis', // 512
+                aliases: ['512'],
                 diameterKm: 23.1,
                 kind: 'asteroid',
                 colorHex: '#b8ab95',
@@ -378,6 +391,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Ingeborg', // 391
+                aliases: ['391'],
                 diameterKm: 15.8,
                 kind: 'asteroid',
                 colorHex: '#c4b8a2',
@@ -390,6 +404,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Eros', // 433
+                aliases: ['433'],
                 diameterKm: 16.84, // volume-equivalent; ~34 x 11 x 11 km
                 massKg: 6.687e15,
                 kind: 'asteroid',
@@ -403,6 +418,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Don Quixote', // 3552
+                aliases: ['3552'],
                 diameterKm: 19,
                 kind: 'asteroid',
                 colorHex: '#6e6560',
@@ -826,6 +842,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Achlys', // 2003 AZ84
+                aliases: ['2003 AZ84'],
                 diameterKm: 772, // occultation; Johnston's older thermal value is 686
                 kind: 'asteroid',
                 colorHex: '#8f7a6a',
@@ -848,6 +865,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Ritona', // 2005 RN43
+                aliases: ['2005 RN43'],
                 diameterKm: 679,
                 kind: 'asteroid',
                 colorHex: '#827a70',
@@ -858,6 +876,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Mani', // 2002 MS4
+                aliases: ['2002 MS4'],
                 diameterKm: 796,
                 kind: 'asteroid',
                 colorHex: '#7a5f55',
@@ -868,6 +887,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Goibniu', // 2004 GV9
+                aliases: ['2004 GV9'],
                 diameterKm: 680,
                 kind: 'asteroid',
                 colorHex: '#8a7a68',
@@ -889,6 +909,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Uni', // 2002 UX25
+                aliases: ['2002 UX25'],
                 diameterKm: 659, // ALMA 2017; 2026 occultations suggest ~570-610
                 massKg: 1.25e20, // system, incl. Tinia
                 kind: 'asteroid',
@@ -956,6 +977,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Aya', // 2002 AW197
+                aliases: ['2002 AW197'],
                 diameterKm: 802,
                 kind: 'asteroid',
                 colorHex: '#9a5a46',
@@ -966,6 +988,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Chiminigagua', // 2013 FY27
+                aliases: ['2013 FY27'],
                 diameterKm: 742,
                 kind: 'asteroid',
                 colorHex: '#7d7873',
@@ -1004,6 +1027,7 @@ export class Thing {
             }),
             new Thing({
                 name: "G!kún||'hòmdímà", // 2007 UK126, aka Gkunhomdima
+                aliases: ['2007 UK126'],
                 diameterKm: 634,
                 massKg: 1.361e20, // system, incl. G!o'e !Hu
                 kind: 'asteroid',
@@ -1039,6 +1063,7 @@ export class Thing {
             // least like its real projected path.
             new Thing({
                 name: 'Swift–Tuttle', // 109P
+                aliases: ['109P'],
                 diameterKm: 26,
                 kind: 'comet',
                 colorHex: '#bfe3ff',
@@ -1052,6 +1077,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Neujmin 1', // 28P
+                aliases: ['28P'],
                 diameterKm: 21.4,
                 kind: 'comet',
                 colorHex: '#a9cbe0',
@@ -1064,6 +1090,7 @@ export class Thing {
             }),
             new Thing({
                 name: 'Pons–Brooks', // 12P
+                aliases: ['12P'],
                 kind: 'comet',
                 colorHex: '#b5ffe9',
                 orbitalPeriodDays: 26277.809923,
@@ -1075,6 +1102,7 @@ export class Thing {
             }),
             new Thing({
                 name: "Halley's Comet", // 1P
+                aliases: ['1P', 'Comet Halley'],
                 diameterKm: 11, // mean; the nucleus is ~15 x 8 km
                 kind: 'comet',
                 colorHex: '#d6ecff',
