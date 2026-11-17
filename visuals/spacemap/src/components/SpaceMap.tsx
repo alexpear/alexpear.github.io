@@ -43,10 +43,12 @@ const WHEEL_ZOOM_SENSITIVITY = 0.0007;
 // Clamp on a single wheel event's zoom ratio, so an inertial scroll's
 // occasional large deltaY spike can't jump the zoom level all at once.
 const MAX_WHEEL_ZOOM_RATIO = 1.3;
-// When two Things would render within this many screen pixels of each
-// other, the lower-priority one's marker and label are hidden rather than
-// drawn on top of (or right next to) the other - mainly moons and distant
-// asteroids/TNOs collapsing onto a planet, or onto each other, at low zoom.
+// When two Things' markers would render within this many screen pixels of
+// each other horizontally and vertically - or one's label would run into the
+// other's marker or label (see collisionBox()) - the lower-priority one's
+// marker and label are hidden rather than drawn on top of (or right next
+// to) the other - mainly moons and distant asteroids/TNOs collapsing onto a
+// planet, or onto each other, at low zoom.
 // Real mass data isn't tracked anywhere here, so priority is approximated
 // instead - see hidePriority() below: Sol always wins; otherwise a
 // heliocentric planet always beats a non-heliocentric body; any physical
@@ -59,6 +61,54 @@ const MIN_MARKER_SEPARATION_PX = 20;
 // still easy to hit with a finger. Half of MIN_MARKER_SEPARATION_PX, so two
 // visible markers' targets never overlap.
 const MARKER_HIT_RADIUS_PX = MIN_MARKER_SEPARATION_PX / 2;
+// Gap between a marker's right edge and the start of its label.
+const LABEL_GAP_PX = 4;
+// Estimated on-screen width of one character of a label (13px Gelasio),
+// for sizing a labeled Thing's collision box - see collisionBox(). Erring
+// wide: an overestimate just hides a neighbor slightly early, while an
+// underestimate lets two names touch.
+const LABEL_CHAR_WIDTH_PX = 7.5;
+
+// A screen-space rectangle, as offsets from wherever it's anchored.
+interface Box {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+}
+
+// The screen area a Thing claims, relative to its marker's center: a
+// MIN_MARKER_SEPARATION_PX square around the marker, stretched rightward
+// over its label (if it has one showing) in proportion to the name's length.
+// Two Things whose boxes overlap can't both be shown - see hiddenThingIds.
+function collisionBox(thing: Thing, labeled: boolean): Box {
+    const half = MIN_MARKER_SEPARATION_PX / 2;
+    const labelRight = labeled
+        ? RADIUS_PX[thing.kind] +
+          LABEL_GAP_PX +
+          (thing.label ?? thing.name).length * LABEL_CHAR_WIDTH_PX
+        : 0;
+    return {
+        left: -half,
+        right: Math.max(half, labelRight),
+        top: -half,
+        bottom: half,
+    };
+}
+
+function boxesOverlap(
+    aPoint: Point2D,
+    aBox: Box,
+    bPoint: Point2D,
+    bBox: Box,
+): boolean {
+    return (
+        aPoint.x + aBox.left < bPoint.x + bBox.right &&
+        bPoint.x + bBox.left < aPoint.x + aBox.right &&
+        aPoint.y + aBox.top < bPoint.y + bBox.bottom &&
+        bPoint.y + bBox.top < aPoint.y + aBox.bottom
+    );
+}
 // Sol-orbiting bodies smaller than this are what the 'Show small
 // heliocentrics' checkbox toggles. Mercury is the smallest planet, so this
 // splits the planets from everything else orbiting Sol: comets, asteroids,
@@ -314,6 +364,14 @@ export function SpaceMap({ config }: Props): JSX.Element {
         [displayedThings, thingPositions, toWorld],
     );
 
+    // Whether a Thing's name is drawn next to its marker: always, except
+    // for a base-layer Thing that isn't in the focus list.
+    const isLabeled = React.useCallback(
+        (thing: Thing) =>
+            focusIdSet.has(thing.id) || !baseLayerIdSet.has(thing.id),
+        [focusIdSet, baseLayerIdSet],
+    );
+
     const menuLayout = computeMenuLayout(
         viewportSize.width,
         viewportSize.height,
@@ -368,31 +426,38 @@ export function SpaceMap({ config }: Props): JSX.Element {
     }, [closeMenu]);
 
     // See MIN_MARKER_SEPARATION_PX for the approximation this applies.
+    // Things claim their screen area in priority order (see loses()), and
+    // one is hidden only if its box overlaps a Thing that's actually being
+    // shown - so a hidden Thing's label can't knock out a third one.
     const hiddenThingIds = React.useMemo(() => {
-        const screenPoints = displayedThings.map((thing) =>
-            toScreen(thingPositions.get(thing.id)!),
-        );
+        const candidates = displayedThings
+            .map((thing) => ({
+                thing,
+                point: toScreen(thingPositions.get(thing.id)!),
+                box: collisionBox(thing, isLabeled(thing)),
+            }))
+            .sort((a, b) =>
+                loses(a.thing, b.thing) ? 1 : loses(b.thing, a.thing) ? -1 : 0,
+            );
+        const shown: typeof candidates = [];
         const hidden = new Set<string>();
-        for (let i = 0; i < displayedThings.length; i++) {
-            for (let j = 0; j < displayedThings.length; j++) {
-                if (i === j) {
-                    continue;
-                }
-                const distance = Math.hypot(
-                    screenPoints[i].x - screenPoints[j].x,
-                    screenPoints[i].y - screenPoints[j].y,
-                );
-                if (
-                    distance < MIN_MARKER_SEPARATION_PX &&
-                    loses(displayedThings[i], displayedThings[j])
-                ) {
-                    hidden.add(displayedThings[i].id);
-                    break;
-                }
+        for (const candidate of candidates) {
+            const blocked = shown.some((other) =>
+                boxesOverlap(
+                    candidate.point,
+                    candidate.box,
+                    other.point,
+                    other.box,
+                ),
+            );
+            if (blocked) {
+                hidden.add(candidate.thing.id);
+            } else {
+                shown.push(candidate);
             }
         }
         return hidden;
-    }, [displayedThings, thingPositions, toScreen]);
+    }, [displayedThings, thingPositions, toScreen, isLabeled]);
 
     // MAX_/MIN_VIEW_RADIUS_AU, converted into zoomMultiplier's own terms
     // (a multiple of framing.scale, which does depend on ?focus=).
@@ -609,7 +674,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
                                 object={thing}
                                 worldPoint={thingWorldPoints.get(thing.id)!}
                                 zoomMultiplier={zoomMultiplier}
-                                showLabel={focusIdSet.has(thing.id)}
+                                showLabel={isLabeled(thing)}
                                 selected={thing.id === selectedThingId}
                             />
                         ))}
@@ -793,7 +858,7 @@ const ObjectMarker = React.memo(function ObjectMarker({
             )}
             {showLabel && (
                 <text
-                    x={radius + 4}
+                    x={radius + LABEL_GAP_PX}
                     y={4}
                     fill="#e6e6e6"
                     fontSize={13}
