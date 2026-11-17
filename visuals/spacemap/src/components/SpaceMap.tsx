@@ -168,8 +168,12 @@ const INITIAL_VIEW_STATE: ViewState = {
 // See MIN_MARKER_SEPARATION_PX: a [category, orbitalPeriodDays] pair, lower
 // in both is higher priority (less likely to be hidden on overlap).
 // Within a category, the shorter orbital period wins.
+// Earth gets priority over other heliocentrics.
 function hidePriority(thing: Thing): [number, number] {
-    return [HIDE_CATEGORY[thing.kind], thing.orbitalPeriodDays ?? 0];
+    return [
+        thing.id === 'earth' ? 0 : HIDE_CATEGORY[thing.kind],
+        thing.orbitalPeriodDays ?? 0,
+    ];
 }
 
 const HIDE_CATEGORY: Record<ThingKind, number> = {
