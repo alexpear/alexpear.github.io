@@ -51,26 +51,31 @@ function toFixedEcliptic(vector: Vector): Point3D {
 // Turns a display name into a Thing.id: lowercase, alphanumeric runs joined
 // by single hyphens, no leading/trailing hyphen. Handles names toLowerCase()
 // alone can't, eg lagrange()'s "Sol–Earth L1" (en dash + space) -> "sol-earth-l1".
+// Apostrophes are dropped rather than hyphenated, so "Halley's Comet" ->
+// "halleys-comet", not "halley-s-comet".
 function slugify(name: string): string {
     if (name.startsWith('G!kun')) return 'gkunhomdima';
 
     return name
         .toLowerCase()
+        .replace(/['’]/g, '')
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 }
 
 // Solves Kepler's equation M = E - e*sin(E) for the eccentric anomaly E
 // (radians) given the mean anomaly M (radians) and eccentricity e, by
-// Newton's method. Starting the guess at M itself converges in well under
-// 20 iterations for every eccentricity in this file (up to Sedna's 0.85) -
-// this orbit model has no use for anything approaching e=1, where that
-// guess would stop being good enough.
+// Newton's method. M is first wrapped into [0, 2pi). The starting guess is
+// M itself for e < 0.8, but pi above that: for a near-parabolic orbit (eg
+// Halley's e=0.968) a guess of M can overshoot wildly near perihelion,
+// where pi is the standard guess that reliably converges for any e < 1.
 function solveEccentricAnomaly(
     meanAnomalyRad: number,
     eccentricity: number,
 ): number {
-    let eccentricAnomalyRad = meanAnomalyRad;
+    meanAnomalyRad =
+        ((meanAnomalyRad % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    let eccentricAnomalyRad = eccentricity < 0.8 ? meanAnomalyRad : Math.PI;
     for (let i = 0; i < 30; i++) {
         const delta =
             (eccentricAnomalyRad -
@@ -104,6 +109,7 @@ export interface ThingOptions {
     epochAngleDeg?: number;
     eccentricity?: number;
     periapsisLongitudeDeg?: number;
+    retrograde?: boolean;
     diameterKm?: number;
     massKg?: number;
 }
@@ -152,6 +158,15 @@ export class Thing {
     epochAngleDeg?: number; // this Thing's mean longitude (OM+W+MA) at SIMPLE_ORBIT_EPOCH
     eccentricity: number;
     periapsisLongitudeDeg?: number; // OM+W; required once eccentricity != 0
+    // True for an orbit inclined more than 90 degrees (eg Halley's Comet,
+    // 162), ie one that runs clockwise around its parent seen from ecliptic
+    // north. This model's flattening has no inclination to express that
+    // with, so the direction is a flag instead: it reverses which way the
+    // mean longitude advances and which way the true anomaly is measured
+    // from periapsis. For such an orbit, the "longitudes" above are the
+    // flattened-retrograde equivalents: periapsisLongitudeDeg = OM-W and
+    // epochAngleDeg = OM-W-MA, not OM+W and OM+W+MA. Defaults to false.
+    retrograde: boolean;
 
     // Physical properties, for the info menu (ThingMenu) only - the map
     // itself draws fixed-size markers regardless (see RADIUS_PX).
@@ -177,6 +192,7 @@ export class Thing {
         this.epochAngleDeg = options.epochAngleDeg;
         this.eccentricity = options.eccentricity ?? 0;
         this.periapsisLongitudeDeg = options.periapsisLongitudeDeg;
+        this.retrograde = options.retrograde ?? false;
         this.diameterKm = options.diameterKm;
         this.massKg = options.massKg;
     }
@@ -306,6 +322,96 @@ export class Thing {
                 parentID: 'sol',
                 semiMajorAxisAu: 2.361165733,
                 epochAngleDeg: 16.833,
+            }),
+            // Smaller asteroids, each with an eccentric enough orbit to be
+            // given its real ellipse: elements from JPL Horizons (same epoch
+            // and frame as everything here), diameters from JPL's Small-Body
+            // Database (ssd-api.jpl.nasa.gov/sbdb.api). Only Eros has a
+            // measured mass (NEAR Shoemaker: GM 4.463e-4 km^3/s^2).
+            new Thing({
+                name: 'Aethra', // 132
+                diameterKm: 42.9,
+                kind: 'asteroid',
+                colorHex: '#a8a29a',
+                orbitalPeriodDays: 1541.816383,
+                parentID: 'sol',
+                semiMajorAxisAu: 2.611897639,
+                epochAngleDeg: 348.19,
+                eccentricity: 0.387174,
+                periapsisLongitudeDeg: 153.6828,
+            }),
+            new Thing({
+                name: 'Brucia', // 323
+                diameterKm: 27.7,
+                kind: 'asteroid',
+                colorHex: '#c2b49c',
+                orbitalPeriodDays: 1343.1419,
+                parentID: 'sol',
+                semiMajorAxisAu: 2.382405302,
+                epochAngleDeg: 312.8011,
+                eccentricity: 0.299291,
+                periapsisLongitudeDeg: 28.7907,
+            }),
+            new Thing({
+                name: 'Ganymed', // 1036; not Jupiter's moon Ganymede
+                diameterKm: 37.7,
+                kind: 'asteroid',
+                colorHex: '#b9a888',
+                orbitalPeriodDays: 1587.746619,
+                parentID: 'sol',
+                semiMajorAxisAu: 2.663515202,
+                epochAngleDeg: 164.66,
+                eccentricity: 0.533774,
+                periapsisLongitudeDeg: 347.8867,
+            }),
+            new Thing({
+                name: 'Taurinensis', // 512
+                diameterKm: 23.1,
+                kind: 'asteroid',
+                colorHex: '#b8ab95',
+                orbitalPeriodDays: 1183.277177,
+                parentID: 'sol',
+                semiMajorAxisAu: 2.189401312,
+                epochAngleDeg: 326.199,
+                eccentricity: 0.254259,
+                periapsisLongitudeDeg: 356.202,
+            }),
+            new Thing({
+                name: 'Ingeborg', // 391
+                diameterKm: 15.8,
+                kind: 'asteroid',
+                colorHex: '#c4b8a2',
+                orbitalPeriodDays: 1291.191526,
+                parentID: 'sol',
+                semiMajorAxisAu: 2.32057082,
+                epochAngleDeg: 145.9526,
+                eccentricity: 0.305665,
+                periapsisLongitudeDeg: 359.9386,
+            }),
+            new Thing({
+                name: 'Eros', // 433
+                diameterKm: 16.84, // volume-equivalent; ~34 x 11 x 11 km
+                massKg: 6.687e15,
+                kind: 'asteroid',
+                colorHex: '#c8a27a',
+                orbitalPeriodDays: 643.217433,
+                parentID: 'sol',
+                semiMajorAxisAu: 1.458275524,
+                epochAngleDeg: 269.0942,
+                eccentricity: 0.222847,
+                periapsisLongitudeDeg: 123.1931,
+            }),
+            new Thing({
+                name: 'Don Quixote', // 3552
+                diameterKm: 19,
+                kind: 'asteroid',
+                colorHex: '#6e6560',
+                orbitalPeriodDays: 3223.982811,
+                parentID: 'sol',
+                semiMajorAxisAu: 4.270999565,
+                epochAngleDeg: 293.7238,
+                eccentricity: 0.707447,
+                periapsisLongitudeDeg: 306.4618,
             }),
 
             new Thing({
@@ -921,6 +1027,65 @@ export class Thing {
                 eccentricity: 0.849556,
                 periapsisLongitudeDeg: 95.6863,
             }),
+
+            // Comets: elements from JPL Horizons, same epoch and frame as
+            // everything above (each comet's current-apparition solution).
+            // Diameters are nucleus diameters from JPL's Small-Body Database
+            // (ssd-api.jpl.nasa.gov/sbdb.api); none has a measured mass, and
+            // Pons-Brooks has no diameter there either. Swift-Tuttle and
+            // Halley are retrograde (inclined 113 and 162 degrees) - see the
+            // `retrograde` field. Swift-Tuttle is closest to perpendicular to
+            // the ecliptic of anything here, so its flattened ellipse is the
+            // least like its real projected path.
+            new Thing({
+                name: 'Swift–Tuttle', // 109P
+                diameterKm: 26,
+                kind: 'comet',
+                colorHex: '#bfe3ff',
+                orbitalPeriodDays: 48908.527297,
+                parentID: 'sol',
+                semiMajorAxisAu: 26.173237093,
+                epochAngleDeg: 255.5713,
+                eccentricity: 0.96337,
+                periapsisLongitudeDeg: 346.6655,
+                retrograde: true,
+            }),
+            new Thing({
+                name: 'Neujmin 1', // 28P
+                diameterKm: 21.4,
+                kind: 'comet',
+                colorHex: '#a9cbe0',
+                orbitalPeriodDays: 6728.669237,
+                parentID: 'sol',
+                semiMajorAxisAu: 6.975154561,
+                epochAngleDeg: 84.4638,
+                eccentricity: 0.772262,
+                periapsisLongitudeDeg: 333.8201,
+            }),
+            new Thing({
+                name: 'Pons–Brooks', // 12P
+                kind: 'comet',
+                colorHex: '#b5ffe9',
+                orbitalPeriodDays: 26277.809923,
+                parentID: 'sol',
+                semiMajorAxisAu: 17.297917708,
+                epochAngleDeg: 107.6186,
+                eccentricity: 0.954792,
+                periapsisLongitudeDeg: 94.9081,
+            }),
+            new Thing({
+                name: "Halley's Comet", // 1P
+                diameterKm: 11, // mean; the nucleus is ~15 x 8 km
+                kind: 'comet',
+                colorHex: '#d6ecff',
+                orbitalPeriodDays: 27567.995133,
+                parentID: 'sol',
+                semiMajorAxisAu: 17.859577104,
+                epochAngleDeg: 112.8075,
+                eccentricity: 0.968037,
+                periapsisLongitudeDeg: 307.0992,
+                retrograde: true,
+            }),
         ];
 
         const sol = things.find((thing) => thing.id === 'sol')!;
@@ -1053,33 +1218,31 @@ export class Thing {
         const daysSinceEpoch =
             (date.getTime() - SIMPLE_ORBIT_EPOCH.getTime()) /
             MILLISECONDS_PER_DAY;
+        const direction = this.retrograde ? -1 : 1;
         // Mean longitude: this is exact (constant-rate) regardless of
         // eccentricity - it's the *position* angle that isn't, once
-        // eccentricity != 0, which is why a circular orbit can read it
-        // directly as the position angle but an eccentric one can't.
+        // eccentricity != 0, which is why it goes through Kepler's
+        // equation below. (For a circular orbit, mean anomaly = eccentric
+        // anomaly = true anomaly, so that reduces to reading the mean
+        // longitude directly as the position angle.)
         const meanLongitudeDeg =
             this.epochAngleDeg +
-            (360 * daysSinceEpoch) / this.orbitalPeriodDays;
-
-        if (!this.eccentricity) {
-            const angleRad = (meanLongitudeDeg * Math.PI) / 180;
-            return {
-                x: this.semiMajorAxisAu * Math.cos(angleRad),
-                y: this.semiMajorAxisAu * Math.sin(angleRad),
-            };
-        }
-        if (this.periapsisLongitudeDeg === undefined) {
-            throw new Error(
-                `${this.id} has eccentricity set but no periapsisLongitudeDeg`,
-            );
-        }
-
+            (direction * 360 * daysSinceEpoch) / this.orbitalPeriodDays;
         const meanAnomalyRad =
-            ((meanLongitudeDeg - this.periapsisLongitudeDeg) * Math.PI) / 180;
-        const eccentricAnomalyRad = solveEccentricAnomaly(
-            meanAnomalyRad,
-            this.eccentricity,
+            (direction *
+                (meanLongitudeDeg - this.simplePeriapsisLongitudeDeg()) *
+                Math.PI) /
+            180;
+        return this.offsetAtEccentricAnomaly(
+            solveEccentricAnomaly(meanAnomalyRad, this.eccentricity),
         );
+    }
+
+    // The simplified Kepler-orbit model's offset from the parent at a given
+    // eccentric anomaly - ie a point on the orbit's fixed ellipse, with no
+    // time involved. Used by offsetFromParent() (at the date's anomaly) and
+    // by orbitPath() (sampling the whole ellipse evenly).
+    private offsetAtEccentricAnomaly(eccentricAnomalyRad: number): Point2D {
         const trueAnomalyRad =
             2 *
             Math.atan2(
@@ -1091,12 +1254,29 @@ export class Thing {
         const radiusAu =
             this.semiMajorAxisAu *
             (1 - this.eccentricity * Math.cos(eccentricAnomalyRad));
+        const direction = this.retrograde ? -1 : 1;
         const angleRad =
-            (this.periapsisLongitudeDeg * Math.PI) / 180 + trueAnomalyRad;
+            (this.simplePeriapsisLongitudeDeg() * Math.PI) / 180 +
+            direction * trueAnomalyRad;
         return {
             x: radiusAu * Math.cos(angleRad),
             y: radiusAu * Math.sin(angleRad),
         };
+    }
+
+    // periapsisLongitudeDeg, which a circular orbit doesn't need (any
+    // direction works as its "periapsis"; 0 is used), but an eccentric one
+    // does.
+    private simplePeriapsisLongitudeDeg(): number {
+        if (!this.eccentricity) {
+            return 0;
+        }
+        if (this.periapsisLongitudeDeg === undefined) {
+            throw new Error(
+                `${this.id} has eccentricity set but no periapsisLongitudeDeg`,
+            );
+        }
+        return this.periapsisLongitudeDeg;
     }
 
     // Traces an object's orbit by sampling its position across one period.
@@ -1121,18 +1301,27 @@ export class Thing {
     // Cheap to raise: this only reruns when `date` changes (useMemo in
     // OrbitPath), not on every zoom/pan.
     orbitPath(date: Date, samples: number = 2000): Point2D[] {
+        // The simplified Kepler model (every moon, plus asteroids, TNOs, and
+        // comets): its orbit is a fixed ellipse, so it's traced directly,
+        // sampled evenly by eccentric anomaly rather than by time. Even time
+        // steps would bunch samples up at aphelion, where the body is
+        // slowest, and spread them thinnest at perihelion, where the curve
+        // is tightest - eg one 14-day step of Halley's Comet near perihelion
+        // covers ~0.4 AU, a visibly jagged corner. Even eccentric-anomaly
+        // steps are densest near perihelion instead. It also closes exactly,
+        // with no seam where a time sweep wraps back to its start.
+        //
         // A moon's orbit is drawn around its parent's position AT `date`,
-        // held fixed for the whole sweep - not the parent's position at each
-        // sample's own (later) date, which is what position() would give if
-        // called per sample. The difference matters because a moon is swept
-        // across its own full period while its parent keeps moving along a
-        // much bigger, slower orbit of its own: eg Jupiter moves ~21 degrees
-        // (~1.9 AU of arc) during Himalia's 250-day period, dwarfing
-        // Himalia's own ~0.077 AU orbit around Jupiter. Using position()
-        // directly would trace mostly Jupiter's own heliocentric drift, not
-        // a circle/ellipse around Jupiter - this is why moon orbits used to
-        // render "Sol-relative" instead of centered on their parent.
-        if (this.parentID !== 'sol') {
+        // held fixed for the whole ellipse - not the parent's position at
+        // each sample's own date. The difference matters because a moon is
+        // swept across its own full period while its parent keeps moving
+        // along a much bigger, slower orbit of its own: eg Jupiter moves ~21
+        // degrees (~1.9 AU of arc) during Himalia's 250-day period, dwarfing
+        // Himalia's own ~0.077 AU orbit around Jupiter. Tracing positions
+        // across that period would trace mostly Jupiter's own heliocentric
+        // drift, not an ellipse around Jupiter - this is why moon orbits
+        // used to render "Sol-relative" instead of centered on their parent.
+        if (!this.bodyAE && !this.lagrangeNumber) {
             const parent = Thing.byID(this.parentID);
             if (!parent) {
                 throw new Error(
@@ -1142,11 +1331,9 @@ export class Thing {
             const parentPosition = parent.position(date);
             const points: Point2D[] = [];
             for (let i = 0; i < samples; i++) {
-                const dayOffset = (this.orbitalPeriodDays * i) / samples;
-                const sampleDate = new Date(
-                    date.getTime() + dayOffset * MILLISECONDS_PER_DAY,
+                const offset = this.offsetAtEccentricAnomaly(
+                    (2 * Math.PI * i) / samples,
                 );
-                const offset = this.offsetFromParent(sampleDate);
                 points.push({
                     x: parentPosition.x + offset.x,
                     y: parentPosition.y + offset.y,
@@ -1157,7 +1344,7 @@ export class Thing {
 
         // This body has real ephemeris (astronomy-engine), which doesn't
         // repeat exactly every orbitalPeriodDays the way the simplified
-        // moon/asteroid model above does by construction - so the seam
+        // model's ellipse above does by construction - so the seam
         // where the sweep wraps back to its own start (see the comment
         // above on stopping short of a full period) is a real, visible
         // kink, not just a theoretical one. Starting the sweep half an
@@ -1262,7 +1449,7 @@ export class Thing {
     //   where it's only rough).
     // - L3: opposite the small body, at -r * (1 + 5mu/12).
     // - L4, L5: r rotated 60 degrees ahead of / behind the small body in
-    //   its orbit (every orbit here runs counterclockwise in the ecliptic),
+    //   its orbit (counterclockwise in the ecliptic, unless retrograde),
     //   so each forms an equilateral triangle with the two bodies.
     // As with the rest of the simplified Kepler model, rotation is within
     // the ecliptic plane only.
@@ -1302,8 +1489,12 @@ export class Thing {
                 return offsetAlongR(-(1 + (5 * mu) / 12));
             case 4:
             case 5: {
+                // "Ahead" is clockwise for a retrograde small body.
+                const aheadDeg = small.retrograde ? -60 : 60;
                 const angleRad =
-                    ((this.lagrangeNumber === 4 ? 60 : -60) * Math.PI) / 180;
+                    ((this.lagrangeNumber === 4 ? aheadDeg : -aheadDeg) *
+                        Math.PI) /
+                    180;
                 const cos = Math.cos(angleRad);
                 const sin = Math.sin(angleRad);
                 return {

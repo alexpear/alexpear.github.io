@@ -18,5 +18,6 @@ export type ThingKind =
     | 'heliocentric'
     | 'moon'
     | 'asteroid'
+    | 'comet'
     | 'spacecraft'
     | 'lagrangePoint';

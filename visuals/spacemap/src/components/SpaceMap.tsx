@@ -17,6 +17,7 @@ const RADIUS_PX: Record<ThingKind, number> = {
     heliocentric: 5,
     moon: 5,
     asteroid: 3,
+    comet: 3,
     spacecraft: 3,
     lagrangePoint: 4,
 };
@@ -86,6 +87,7 @@ const HIDE_CATEGORY: Record<ThingKind, number> = {
     heliocentric: 1,
     moon: 2,
     asteroid: 3,
+    comet: 3,
     spacecraft: 4,
     lagrangePoint: 5,
 };
