@@ -1091,10 +1091,17 @@ export class Thing {
         const sol = things.find((thing) => thing.id === 'sol')!;
         const earth = things.find((thing) => thing.id === 'earth')!;
         const luna = things.find((thing) => thing.id === 'luna')!;
+        // Lagrange points that are always on the map: Sol-Earth L1 & L2
+        // (where real spacecraft are parked) and all 5 Earth-Luna points.
+        // Every other Lagrange point, Sol-Earth L3-L5 included, only
+        // appears while its small body is selected - see
+        // lagrangePointsWithParent().
         for (const lagrangeNumber of [1, 2, 3, 4, 5]) {
-            things.push(
-                sol.lagrange(earth, lagrangeNumber, Body.Sun, Body.EMB),
-            );
+            if (lagrangeNumber <= 2) {
+                things.push(
+                    sol.lagrange(earth, lagrangeNumber, Body.Sun, Body.EMB),
+                );
+            }
             things.push(
                 earth.lagrange(luna, lagrangeNumber, Body.Earth, Body.Moon),
             );
