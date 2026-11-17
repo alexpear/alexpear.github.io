@@ -59,6 +59,26 @@ const MIN_MARKER_SEPARATION_PX = 20;
 // still easy to hit with a finger. Half of MIN_MARKER_SEPARATION_PX, so two
 // visible markers' targets never overlap.
 const MARKER_HIT_RADIUS_PX = MIN_MARKER_SEPARATION_PX / 2;
+// Sol-orbiting bodies smaller than this are what the 'Show small
+// heliocentrics' checkbox toggles. Mercury is the smallest planet, so this
+// splits the planets from everything else orbiting Sol: comets, asteroids,
+// and TNOs (Pluto & Eris included).
+const SMALL_HELIOCENTRIC_MAX_DIAMETER_KM =
+    Thing.byID('mercury')?.diameterKm ?? 4879;
+
+// True for a Sol-orbiting body smaller than Mercury, and for anything
+// orbiting one (eg Charon), which would otherwise be left circling an empty
+// spot. A body with no known diameter (eg comet Pons-Brooks) counts as small.
+function isSmallHeliocentric(thing: Thing): boolean {
+    if (thing.kind === 'star') {
+        return false;
+    }
+    if (thing.parentID !== 'sol') {
+        const parent = Thing.byID(thing.parentID);
+        return parent !== undefined && isSmallHeliocentric(parent);
+    }
+    return (thing.diameterKm ?? 0) < SMALL_HELIOCENTRIC_MAX_DIAMETER_KM;
+}
 
 interface Props {
     config: SpaceMapConfig;
@@ -126,6 +146,8 @@ export function SpaceMap({ config }: Props): JSX.Element {
     const [lagrangeAnchorId, setLagrangeAnchorId] = React.useState<
         string | undefined
     >(undefined);
+    const [showSmallHeliocentrics, setShowSmallHeliocentrics] =
+        React.useState(false);
 
     React.useEffect(() => {
         const container = containerRef.current;
@@ -219,10 +241,25 @@ export function SpaceMap({ config }: Props): JSX.Element {
         [config, baseLayerIdSet],
     );
 
+    // BASE_LAYER, minus the small heliocentrics when their checkbox is
+    // unchecked. Anything an embedding page explicitly asked for via ?focus=
+    // stays regardless, so eg ?focus=pluto can't be left framing nothing.
+    const visibleBaseLayer = React.useMemo(
+        () =>
+            showSmallHeliocentrics
+                ? BASE_LAYER
+                : BASE_LAYER.filter(
+                      (thing) =>
+                          !isSmallHeliocentric(thing) ||
+                          (config.focusFromUrl && focusIdSet.has(thing.id)),
+                  ),
+        [showSmallHeliocentrics, config, focusIdSet],
+    );
+
     // Everything shown regardless of selection.
     const baseDisplayedThings = React.useMemo(
-        () => [...BASE_LAYER, ...focusedExtras],
-        [focusedExtras],
+        () => [...visibleBaseLayer, ...focusedExtras],
+        [visibleBaseLayer, focusedExtras],
     );
 
     // The anchor Thing's Lagrange points with its parent (see
@@ -546,7 +583,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
                 onWheel={handleWheel}
             >
                 <g transform={viewTransform}>
-                    {BASE_LAYER.map((thing) => (
+                    {visibleBaseLayer.map((thing) => (
                         <OrbitPath
                             key={thing.id}
                             object={thing}
@@ -564,18 +601,18 @@ export function SpaceMap({ config }: Props): JSX.Element {
                             zoomMultiplier={zoomMultiplier}
                         />
                     ))}
-                    {BASE_LAYER.filter(
-                        (thing) => !hiddenThingIds.has(thing.id),
-                    ).map((thing) => (
-                        <ObjectMarker
-                            key={thing.id}
-                            object={thing}
-                            worldPoint={thingWorldPoints.get(thing.id)!}
-                            zoomMultiplier={zoomMultiplier}
-                            showLabel={focusIdSet.has(thing.id)}
-                            selected={thing.id === selectedThingId}
-                        />
-                    ))}
+                    {visibleBaseLayer
+                        .filter((thing) => !hiddenThingIds.has(thing.id))
+                        .map((thing) => (
+                            <ObjectMarker
+                                key={thing.id}
+                                object={thing}
+                                worldPoint={thingWorldPoints.get(thing.id)!}
+                                zoomMultiplier={zoomMultiplier}
+                                showLabel={focusIdSet.has(thing.id)}
+                                selected={thing.id === selectedThingId}
+                            />
+                        ))}
                     {focusedExtras
                         .filter((object) => !hiddenThingIds.has(object.id))
                         .map((object) => (
@@ -610,15 +647,27 @@ export function SpaceMap({ config }: Props): JSX.Element {
                     onClose={closeMenu}
                 />
             )}
-            <button
-                onClick={resetView}
+            <div
                 style={{
-                    ...resetButtonStyle,
+                    ...controlsStyle,
                     ...(selectedThing ? menuLayout.resetButtonOffset : {}),
                 }}
             >
-                Reset view
-            </button>
+                <button onClick={resetView} style={resetButtonStyle}>
+                    Reset view
+                </button>
+                <label style={checkboxLabelStyle}>
+                    <input
+                        type="checkbox"
+                        checked={showSmallHeliocentrics}
+                        onChange={(event) =>
+                            setShowSmallHeliocentrics(event.target.checked)
+                        }
+                        style={{ margin: 0, cursor: 'pointer' }}
+                    />
+                    Show small heliocentrics
+                </label>
+            </div>
         </div>
     );
 }
@@ -781,10 +830,31 @@ function clamp(value: number, min: number, max: number): number {
     return Math.max(min, Math.min(max, value));
 }
 
-const resetButtonStyle: React.CSSProperties = {
+// The top-right stack of controls: the Reset view button, with the 'Show
+// small heliocentrics' checkbox under it. Moves as one when the menu opens
+// (see MenuLayout.resetButtonOffset).
+const controlsStyle: React.CSSProperties = {
     position: 'absolute',
     top: 12,
     right: 12,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: 8,
+};
+
+const checkboxLabelStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 6,
+    color: '#e6e6e6',
+    fontSize: 13,
+    fontFamily: "'Gelasio', Georgia, serif",
+    cursor: 'pointer',
+    userSelect: 'none',
+};
+
+const resetButtonStyle: React.CSSProperties = {
     padding: '6px 12px',
     background: '#1b1f2b',
     color: '#e6e6e6',
