@@ -14,6 +14,10 @@ const EARTH_KG = 5.97e24;
 // sits on top of the pane's top edge (see MenuPane).
 export const SEARCH_BAR_HEIGHT_PX = 32;
 export const SCREEN_MARGIN_PX = 12;
+// Space above the pane's header (the Thing's name and × button): from the
+// pane's top edge, or in portrait from the bottom of the searchbar that
+// overlays it.
+const MENU_TOP_PADDING_PX = 20;
 
 // Where the info menu sits, and the center of the screen area it leaves
 // uncovered - which is where a clicked Thing gets panned to. The menu
@@ -73,8 +77,10 @@ export function MenuPane({
                 borderBottom: layout.isPortrait ? menuBorder : undefined,
                 // In portrait the searchbar overlays the pane's top edge.
                 paddingTop: layout.isPortrait
-                    ? SEARCH_BAR_HEIGHT_PX + 2 * SCREEN_MARGIN_PX
-                    : undefined,
+                    ? SCREEN_MARGIN_PX +
+                      SEARCH_BAR_HEIGHT_PX +
+                      MENU_TOP_PADDING_PX
+                    : MENU_TOP_PADDING_PX,
             }}
         >
             {children}
