@@ -3,7 +3,7 @@ import { useGesture } from '@use-gesture/react';
 import { SpaceMapConfig } from '../config';
 import { BASE_LAYER } from '../orbital/catalog';
 import { Point2D, ThingKind } from '../orbital/types';
-import { Thing } from '../orbital/thing';
+import { KM_PER_AU, Thing } from '../orbital/thing';
 import {
     computeFraming,
     makeAuToScreenTransform,
@@ -40,9 +40,12 @@ const DEFAULT_VIEW_ROTATION_DEG = 10;
 // (same measure as DEFAULT_VIEW_RADIUS_AU) - absolute, so they're the same
 // whatever the ?focus= framing is. Zoomed fully out shows a bit past
 // Sedna's aphelion (~937 AU), the farthest any catalog body gets from Sol;
-// zoomed fully in shows ~3,000 km, a bit more than Mars' diameter.
+// zoomed fully in shows ~150 km, enough to clearly separate LRO (~67-114
+// km up) from Luna's surface. Zooming that far is only possible because
+// every rendered coordinate is computed in screen space - see
+// screenOffset's comment in SpaceMap.
 const MAX_VIEW_RADIUS_AU = 1200;
-const MIN_VIEW_RADIUS_AU = 2e-5;
+const MIN_VIEW_RADIUS_AU = 1e-6;
 // Wheel deltaY -> zoom ratio. Chosen so an ordinary mouse wheel notch
 // (deltaY roughly 100-120 in most browsers) is a gentle ~8% step; a trackpad's
 // continuous small deltas each nudge the zoom by a fraction of a percent.
@@ -52,7 +55,7 @@ const WHEEL_ZOOM_SENSITIVITY = 0.0007;
 const MAX_WHEEL_ZOOM_RATIO = 1.3;
 // When two Things' markers would render within this many screen pixels of
 // each other horizontally and vertically - or one's label would run into the
-// other's marker or label (see collisionBox()) - the lower-priority one's
+// other's marker or label (see collisionBoxes()) - the lower-priority one's
 // marker and label are hidden rather than drawn on top of (or right next
 // to) the other - mainly moons and distant asteroids/TNOs collapsing onto a
 // planet, or onto each other, at low zoom.
@@ -71,7 +74,7 @@ const MARKER_HIT_RADIUS_PX = MIN_MARKER_SEPARATION_PX / 2;
 // Gap between a marker's right edge and the start of its label.
 const LABEL_GAP_PX = 4;
 // Estimated on-screen width of one character of a label (13px Gelasio),
-// for sizing a labeled Thing's collision box - see collisionBox(). Erring
+// for sizing a labeled Thing's collision box - see collisionBoxes(). Erring
 // wide: an overestimate just hides a neighbor slightly early, while an
 // underestimate lets two names touch.
 const LABEL_CHAR_WIDTH_PX = 7.5;
@@ -96,38 +99,69 @@ interface Box {
     bottom: number;
 }
 
-// The screen area a Thing claims, relative to its marker's center: a
-// MIN_MARKER_SEPARATION_PX square around the marker, stretched rightward
-// over its label (if it has one showing) in proportion to the name's length.
-// Two Things whose boxes overlap can't both be shown - see hiddenThingIds.
-function collisionBox(thing: Thing, labeled: boolean): Box {
+// A Thing's on-screen radius in pixels: its fixed-size marker (RADIUS_PX),
+// or - once zoomed in far enough that its real size is bigger than that -
+// a circle of its true diameter, eg Luna's disk when zoomed in on LRO.
+// `pixelsPerAu` is the current zoom level, in screen pixels per AU.
+function drawnRadiusPx(thing: Thing, pixelsPerAu: number): number {
+    const trueRadiusPx =
+        thing.diameterKm === undefined
+            ? 0
+            : (thing.diameterKm / 2 / KM_PER_AU) * pixelsPerAu;
+    return Math.max(RADIUS_PX[thing.kind], trueRadiusPx);
+}
+
+// The screen areas a Thing claims, relative to its center: a
+// MIN_MARKER_SEPARATION_PX square around its center, plus (if it has one
+// showing) its label, which starts just right of its drawn edge (see
+// drawnRadiusPx) and is as long as the name. Two Things whose boxes
+// overlap can't both be shown - see hiddenThingIds. A big true-size disk
+// doesn't claim its whole area, just its center and label, so eg LRO stays
+// visible as it passes close by Luna's disk.
+function collisionBoxes(
+    thing: Thing,
+    labeled: boolean,
+    radiusPx: number,
+): Box[] {
     const half = MIN_MARKER_SEPARATION_PX / 2;
-    const labelRight = labeled
-        ? RADIUS_PX[thing.kind] +
-          LABEL_GAP_PX +
-          (thing.label ?? thing.name).length * LABEL_CHAR_WIDTH_PX
-        : 0;
-    return {
-        left: -half,
-        right: Math.max(half, labelRight),
-        top: -half,
-        bottom: half,
-    };
+    const boxes: Box[] = [
+        { left: -half, right: half, top: -half, bottom: half },
+    ];
+    if (labeled) {
+        const labelLeft = radiusPx + LABEL_GAP_PX;
+        boxes.push({
+            left: labelLeft,
+            right:
+                labelLeft +
+                (thing.label ?? thing.name).length * LABEL_CHAR_WIDTH_PX,
+            top: -half,
+            bottom: half,
+        });
+    }
+    return boxes;
 }
 
 function boxesOverlap(
     aPoint: Point2D,
-    aBox: Box,
+    aBoxes: Box[],
     bPoint: Point2D,
-    bBox: Box,
+    bBoxes: Box[],
 ): boolean {
-    return (
-        aPoint.x + aBox.left < bPoint.x + bBox.right &&
-        bPoint.x + bBox.left < aPoint.x + aBox.right &&
-        aPoint.y + aBox.top < bPoint.y + bBox.bottom &&
-        bPoint.y + bBox.top < aPoint.y + aBox.bottom
+    return aBoxes.some((aBox) =>
+        bBoxes.some(
+            (bBox) =>
+                aPoint.x + aBox.left < bPoint.x + bBox.right &&
+                bPoint.x + bBox.left < aPoint.x + aBox.right &&
+                aPoint.y + aBox.top < bPoint.y + bBox.bottom &&
+                bPoint.y + bBox.top < aPoint.y + aBox.bottom,
+        ),
     );
 }
+
+// How far past the screen's edges geometry is still drawn - see
+// clipSegment. Enough that a stroke's own width (or a marker partly
+// on-screen) never shows a cut-off edge.
+const OFFSCREEN_MARGIN_PX = 50;
 // Sol-orbiting bodies smaller than this are what the 'Show small
 // heliocentrics' checkbox toggles. Mercury is the smallest planet, so this
 // splits the planets from everything else orbiting Sol: comets, asteroids,
@@ -312,9 +346,9 @@ export function SpaceMap({ config }: Props): JSX.Element {
         [config, focusPoints, viewportSize],
     );
 
-    // Used only for the screen-pixel-distance check in hiddenThingIds below;
-    // rendering itself uses toWorld, not this - see makeAuToWorldTransform's
-    // comment for why.
+    // Used for screen-pixel checks like hiddenThingIds below; rendering
+    // itself uses toWorld plus screenOffset, not this - see
+    // makeAuToWorldTransform's comment for why.
     const toScreen = React.useMemo(
         () =>
             makeAuToScreenTransform(
@@ -328,13 +362,40 @@ export function SpaceMap({ config }: Props): JSX.Element {
     );
 
     // Deliberately NOT dependent on panOffset/zoomMultiplier: this is the
-    // "world" position every rendered element is actually placed at, with
-    // the viewer's pan/zoom applied afterward as a single <g transform=...>
-    // in the render below, instead of being baked into every point here.
+    // "world" position of every rendered element, cached per Thing/orbit,
+    // with the viewer's pan/zoom applied afterward at render time (see
+    // screenOffset) instead of being baked into every point here.
     const toWorld = React.useMemo(
         () => makeAuToWorldTransform(framing),
         [framing],
     );
+
+    // The current zoom level, in screen pixels per AU: world space is AU
+    // scaled by framing.scale (see makeAuToWorldTransform), then the
+    // viewer's zoomMultiplier on top.
+    const pixelsPerAu = framing.scale * zoomMultiplier;
+
+    // Where world point (0, 0) - Sol, by default - is on screen, ie every
+    // rendered point is screenOffset + world * zoomMultiplier. That sum is
+    // computed here in JS (64-bit floats) for every point, rather than left
+    // to an SVG transform: browsers compose SVG transforms in 32-bit
+    // floats, good to only ~7 significant digits, and zoomed in on LRO a
+    // body ~1 AU from Sol is ~400,000,000 pixels from Sol on screen - a
+    // translate() of that size, cancelled out by another, would leave
+    // everything jittering by dozens of pixels. Keeping every coordinate
+    // the browser sees close to the screen avoids that (and see clipSegment
+    // for orbit lines, whose far-off points would otherwise still be huge).
+    //
+    // Zoom is deliberately never an SVG scale() either: mobile browsers
+    // rasterize a scaled SVG group into a bitmap at some resolution of their
+    // own choosing and then stretch that bitmap, so after a pinch the whole
+    // map (text included) could come out blurry/pixelated, at a seemingly
+    // random level per gesture. Multiplying zoom into each point's
+    // coordinates draws all geometry at true screen resolution instead.
+    const screenOffset: Point2D = {
+        x: viewportSize.width / 2 + panOffset.x,
+        y: viewportSize.height / 2 + panOffset.y,
+    };
 
     const baseLayerIdSet = React.useMemo(
         () => new Set(BASE_LAYER.map((thing) => thing.id)),
@@ -515,19 +576,23 @@ export function SpaceMap({ config }: Props): JSX.Element {
             return false;
         }
         const point = toScreen(auPoint);
-        const box = collisionBox(thing, isLabeled(thing));
+        const boxes = collisionBoxes(
+            thing,
+            isLabeled(thing),
+            drawnRadiusPx(thing, pixelsPerAu),
+        );
         if (menuLayout.isPortrait) {
             // The uncovered area is the bottom part, centered on
             // uncoveredCenter.y; the menu is everything above it.
             const menuBottom =
                 viewportSize.height -
                 2 * (viewportSize.height - menuLayout.uncoveredCenter.y);
-            return point.y + box.top < menuBottom;
+            return boxes.some((box) => point.y + box.top < menuBottom);
         }
         // The uncovered area is the left part, centered on uncoveredCenter.x;
         // the menu is everything right of it.
         const menuLeft = 2 * menuLayout.uncoveredCenter.x;
-        return point.x + box.right > menuLeft;
+        return boxes.some((box) => point.x + box.right > menuLeft);
     }
 
     // The Reset view button: closes the menu (or search results), and
@@ -734,7 +799,11 @@ export function SpaceMap({ config }: Props): JSX.Element {
             .map((thing) => ({
                 thing,
                 point: toScreen(thingPositions.get(thing.id)!),
-                box: collisionBox(thing, isLabeled(thing)),
+                boxes: collisionBoxes(
+                    thing,
+                    isLabeled(thing),
+                    drawnRadiusPx(thing, pixelsPerAu),
+                ),
             }))
             // The selected Thing goes first, so it's always shown: a search
             // can select one that would otherwise lose its spot (eg Io,
@@ -757,9 +826,9 @@ export function SpaceMap({ config }: Props): JSX.Element {
             const blocked = shown.some((other) =>
                 boxesOverlap(
                     candidate.point,
-                    candidate.box,
+                    candidate.boxes,
                     other.point,
-                    other.box,
+                    other.boxes,
                 ),
             );
             if (blocked) {
@@ -769,7 +838,14 @@ export function SpaceMap({ config }: Props): JSX.Element {
             }
         }
         return hidden;
-    }, [displayedThings, thingPositions, toScreen, isLabeled, selectedThingId]);
+    }, [
+        displayedThings,
+        thingPositions,
+        toScreen,
+        isLabeled,
+        selectedThingId,
+        pixelsPerAu,
+    ]);
 
     // MAX_/MIN_VIEW_RADIUS_AU, converted into zoomMultiplier's own terms
     // (a multiple of framing.scale, which does depend on ?focus=).
@@ -855,10 +931,16 @@ export function SpaceMap({ config }: Props): JSX.Element {
         );
     }
 
-    function handleWheel(event: React.WheelEvent<SVGSVGElement>): void {
+    function handleWheel(event: WheelEvent): void {
+        // Also stops a desktop trackpad pinch (which browsers report as a
+        // ctrl+wheel) from zooming the whole page - see the listener below.
         event.preventDefault();
         cancelViewAnimation();
-        const rect = event.currentTarget.getBoundingClientRect();
+        const svg = svgRef.current;
+        if (!svg) {
+            return;
+        }
+        const rect = svg.getBoundingClientRect();
         const anchorScreen: Point2D = {
             x: event.clientX - rect.left,
             y: event.clientY - rect.top,
@@ -870,6 +952,29 @@ export function SpaceMap({ config }: Props): JSX.Element {
         );
         applyZoom(anchorScreen, zoomRatio);
     }
+
+    // The latest handleWheel, for the listener below: that listener is
+    // attached once, but handleWheel closes over this render's state.
+    const handleWheelRef = React.useRef(handleWheel);
+    handleWheelRef.current = handleWheel;
+
+    // Attached by hand rather than via the <svg>'s onWheel prop, because
+    // React attaches its own wheel listeners as passive (see
+    // github.com/facebook/react/issues/19651), where preventDefault() is
+    // silently ignored. A desktop trackpad pinch then zoomed the browser
+    // page as well as the map: every step of that resized the map, and
+    // with it re-ran the auto-framing, which used to re-trace every orbit
+    // line (see OrbitPath) - enough to hang the page for a minute.
+    React.useEffect(() => {
+        const svg = svgRef.current;
+        if (!svg) {
+            return undefined;
+        }
+        const listener = (event: WheelEvent): void =>
+            handleWheelRef.current(event);
+        svg.addEventListener('wheel', listener, { passive: false });
+        return () => svg.removeEventListener('wheel', listener);
+    }, []);
 
     // Dragging (mouse or single-finger touch) and pinch-zoom (two-finger
     // touch) are both handled by @use-gesture rather than hand-rolled
@@ -940,7 +1045,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
             },
             pinch: {
                 from: () => [zoomMultiplier, 0],
-                // Wheel-to-zoom is handled by handleWheel/onWheel below,
+                // Wheel-to-zoom is handled by handleWheel above,
                 // already tuned for a gentle per-notch step; leave pinch
                 // out of the wheel event entirely rather than double up.
                 pinchOnWheel: false,
@@ -948,20 +1053,62 @@ export function SpaceMap({ config }: Props): JSX.Element {
         },
     );
 
-    // Pan only, applied once here rather than baked into every rendered
-    // point - a pure pan only touches this one attribute (OrbitPath and
-    // ObjectMarker don't re-render at all, since none of their own props
-    // changed).
-    //
-    // Zoom is deliberately NOT a scale() here: mobile browsers rasterize a
-    // scaled SVG group into a bitmap at some resolution of their own
-    // choosing and then stretch that bitmap, so after a pinch the whole map
-    // (text included) could come out blurry/pixelated, at a seemingly random
-    // level per gesture. Instead, zoom is multiplied into each point's
-    // coordinates (see OrbitPath, ObjectMarker), so geometry is always drawn
-    // at true screen resolution. OrbitPath still caches its world-space
-    // points, so a zoom tick is just a multiply per point, not a re-solve.
-    const viewTransform = `translate(${viewportSize.width / 2 + panOffset.x}, ${viewportSize.height / 2 + panOffset.y})`;
+    // A marker/label for every Thing in `things` that isn't hidden (see
+    // hiddenThingIds) and is at least partly on screen.
+    function renderMarkers(
+        things: Thing[],
+        showLabel: (thing: Thing) => boolean,
+    ): JSX.Element[] {
+        const markers: JSX.Element[] = [];
+        for (const thing of things) {
+            if (hiddenThingIds.has(thing.id)) {
+                continue;
+            }
+            const worldPoint = thingWorldPoints.get(thing.id)!;
+            const screenPoint = {
+                x: screenOffset.x + worldPoint.x * zoomMultiplier,
+                y: screenOffset.y + worldPoint.y * zoomMultiplier,
+            };
+            const radius = drawnRadiusPx(thing, pixelsPerAu);
+            // Generous on the right, for the label.
+            const reach = radius + MIN_MARKER_SEPARATION_PX;
+            if (
+                screenPoint.x + reach + 300 < 0 ||
+                screenPoint.x - reach > viewportSize.width ||
+                screenPoint.y + reach < 0 ||
+                screenPoint.y - reach > viewportSize.height
+            ) {
+                continue;
+            }
+            markers.push(
+                <ObjectMarker
+                    key={thing.id}
+                    object={thing}
+                    screenPoint={screenPoint}
+                    radius={radius}
+                    showLabel={showLabel(thing)}
+                    selected={thing.id === selectedThingId}
+                />,
+            );
+        }
+        return markers;
+    }
+
+    function renderOrbitPath(thing: Thing): JSX.Element {
+        return (
+            <OrbitPath
+                key={thing.id}
+                object={thing}
+                date={config.date}
+                toWorld={toWorld}
+                zoomMultiplier={zoomMultiplier}
+                screenOffsetX={screenOffset.x}
+                screenOffsetY={screenOffset.y}
+                viewportWidth={viewportSize.width}
+                viewportHeight={viewportSize.height}
+            />
+        );
+    }
 
     return (
         <div
@@ -978,73 +1125,21 @@ export function SpaceMap({ config }: Props): JSX.Element {
                     cursor: 'grab',
                     touchAction: 'none',
                 }}
-                onWheel={handleWheel}
                 onPointerOver={handlePointerOver}
                 onPointerLeave={() => setHoveredThingId(undefined)}
             >
-                <g transform={viewTransform}>
-                    {visibleBaseLayer
-                        .filter(
-                            (thing) =>
-                                !hasOnDemandOrbitLine(thing) ||
-                                thing.id === selectedThingId ||
-                                thing.id === hoveredThingId,
-                        )
-                        .map((thing) => (
-                            <OrbitPath
-                                key={thing.id}
-                                object={thing}
-                                date={config.date}
-                                toWorld={toWorld}
-                                zoomMultiplier={zoomMultiplier}
-                            />
-                        ))}
-                    {focusedExtras.map((object) => (
-                        <OrbitPath
-                            key={object.id}
-                            object={object}
-                            date={config.date}
-                            toWorld={toWorld}
-                            zoomMultiplier={zoomMultiplier}
-                        />
-                    ))}
-                    {visibleBaseLayer
-                        .filter((thing) => !hiddenThingIds.has(thing.id))
-                        .map((thing) => (
-                            <ObjectMarker
-                                key={thing.id}
-                                object={thing}
-                                worldPoint={thingWorldPoints.get(thing.id)!}
-                                zoomMultiplier={zoomMultiplier}
-                                showLabel={isLabeled(thing)}
-                                selected={thing.id === selectedThingId}
-                            />
-                        ))}
-                    {focusedExtras
-                        .filter((object) => !hiddenThingIds.has(object.id))
-                        .map((object) => (
-                            <ObjectMarker
-                                key={object.id}
-                                object={object}
-                                worldPoint={thingWorldPoints.get(object.id)!}
-                                zoomMultiplier={zoomMultiplier}
-                                showLabel
-                                selected={object.id === selectedThingId}
-                            />
-                        ))}
-                    {anchorLagrangePoints
-                        .filter((point) => !hiddenThingIds.has(point.id))
-                        .map((point) => (
-                            <ObjectMarker
-                                key={point.id}
-                                object={point}
-                                worldPoint={thingWorldPoints.get(point.id)!}
-                                zoomMultiplier={zoomMultiplier}
-                                showLabel
-                                selected={point.id === selectedThingId}
-                            />
-                        ))}
-                </g>
+                {visibleBaseLayer
+                    .filter(
+                        (thing) =>
+                            !hasOnDemandOrbitLine(thing) ||
+                            thing.id === selectedThingId ||
+                            thing.id === hoveredThingId,
+                    )
+                    .map(renderOrbitPath)}
+                {focusedExtras.map(renderOrbitPath)}
+                {renderMarkers(visibleBaseLayer, isLabeled)}
+                {renderMarkers(focusedExtras, () => true)}
+                {renderMarkers(anchorLagrangePoints, () => true)}
             </svg>
             {resultsShowing ? (
                 <SearchResults
@@ -1141,6 +1236,12 @@ interface OrbitPathProps {
     date: Date;
     toWorld: (point: Point2D) => Point2D;
     zoomMultiplier: number;
+    // Where world point (0, 0) is on screen - see SpaceMap's screenOffset.
+    // Split into numbers, not a Point2D, so React.memo can compare them.
+    screenOffsetX: number;
+    screenOffsetY: number;
+    viewportWidth: number;
+    viewportHeight: number;
 }
 
 const OrbitPath = React.memo(function OrbitPath({
@@ -1148,31 +1249,76 @@ const OrbitPath = React.memo(function OrbitPath({
     date,
     toWorld,
     zoomMultiplier,
+    screenOffsetX,
+    screenOffsetY,
+    viewportWidth,
+    viewportHeight,
 }: OrbitPathProps): JSX.Element | null {
-    // World-space points (see makeAuToWorldTransform): independent of
-    // pan/zoom, so only recomputed when the date or framing changes.
-    const worldPoints = React.useMemo(() => {
+    // The orbit itself, in AU: only re-traced when the date changes. Tracing
+    // is the expensive part - a planet's is 2,000 astronomy-engine position
+    // calculations - so it's kept separate from the framing (toWorld),
+    // which changes whenever the map is resized.
+    const auPoints = React.useMemo(() => {
         if (object.kind === 'lagrangePoint') {
             return undefined;
         }
-        return object.orbitPath?.(date)?.map(toWorld);
-    }, [object, date, toWorld]);
-    // Screen-scale geometry relative to the viewport center + pan (which
-    // SpaceMap's <g> applies as a translate). See SpaceMap's viewTransform
-    // comment for why zoom is applied here rather than as an SVG scale().
+        return object.orbitPath?.(date);
+    }, [object, date]);
+    // World-space points (see makeAuToWorldTransform): independent of
+    // pan/zoom, so only recomputed when the orbit or framing changes - a
+    // cheap rotate-and-scale per point.
+    const worldPoints = React.useMemo(
+        () => auPoints?.map(toWorld),
+        [auPoints, toWorld],
+    );
+    // Screen-space geometry (see SpaceMap's screenOffset), clipped to just
+    // past the screen's edges - see clipSegment.
     const pathData = React.useMemo(() => {
-        if (!worldPoints) {
+        if (!worldPoints || worldPoints.length < 2) {
             return undefined;
         }
-        return (
-            worldPoints
-                .map(
-                    (point, index) =>
-                        `${index === 0 ? 'M' : 'L'}${roundTenth(point.x * zoomMultiplier)},${roundTenth(point.y * zoomMultiplier)}`,
-                )
-                .join(' ') + ' Z'
-        );
-    }, [worldPoints, zoomMultiplier]);
+        const clipRect = {
+            left: -OFFSCREEN_MARGIN_PX,
+            top: -OFFSCREEN_MARGIN_PX,
+            right: viewportWidth + OFFSCREEN_MARGIN_PX,
+            bottom: viewportHeight + OFFSCREEN_MARGIN_PX,
+        };
+        const screenPoints = worldPoints.map((point) => ({
+            x: screenOffsetX + point.x * zoomMultiplier,
+            y: screenOffsetY + point.y * zoomMultiplier,
+        }));
+        const commands: string[] = [];
+        // Whether the last drawn segment ended exactly at its own (unclipped)
+        // end point, so the next one can continue from there with L rather
+        // than starting a new subpath with M.
+        let penDown = false;
+        for (let i = 0; i < screenPoints.length; i++) {
+            // The orbit is a closed loop, so the last point joins the first.
+            const clipped = clipSegment(
+                screenPoints[i],
+                screenPoints[(i + 1) % screenPoints.length],
+                clipRect,
+            );
+            if (!clipped) {
+                penDown = false;
+                continue;
+            }
+            const [start, end, endClipped] = clipped;
+            if (!penDown || start !== screenPoints[i]) {
+                commands.push(`M${roundTenth(start.x)},${roundTenth(start.y)}`);
+            }
+            commands.push(`L${roundTenth(end.x)},${roundTenth(end.y)}`);
+            penDown = !endClipped;
+        }
+        return commands.length > 0 ? commands.join(' ') : undefined;
+    }, [
+        worldPoints,
+        zoomMultiplier,
+        screenOffsetX,
+        screenOffsetY,
+        viewportWidth,
+        viewportHeight,
+    ]);
     if (!pathData) {
         return null;
     }
@@ -1187,6 +1333,57 @@ const OrbitPath = React.memo(function OrbitPath({
     );
 });
 
+// Clips the line segment a->b to `rect` (Liang-Barsky): returns the part
+// inside it as [start, end, whether end was cut short], or undefined if no
+// part is inside. `start` is `a` itself (the same object) when it wasn't
+// cut short.
+//
+// Orbit lines are clipped like this, rather than handed whole to the
+// browser, because zoomed in close their far side is enormous in screen
+// pixels - eg Earth's orbit, zoomed in on LRO, spans ~2,500,000,000 pixels
+// - and browsers draw SVG in 32-bit floats, where coordinates that size
+// are off by hundreds of pixels (see SpaceMap's screenOffset).
+function clipSegment(
+    a: Point2D,
+    b: Point2D,
+    rect: { left: number; top: number; right: number; bottom: number },
+): [Point2D, Point2D, boolean] | undefined {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    let tStart = 0;
+    let tEnd = 1;
+    // Each [p, q] pair is one of the rect's 4 edges, as the inequality
+    // p * t <= q that a point a + t * (b - a) has to satisfy to be inside it.
+    const edges: [number, number][] = [
+        [-dx, a.x - rect.left],
+        [dx, rect.right - a.x],
+        [-dy, a.y - rect.top],
+        [dy, rect.bottom - a.y],
+    ];
+    for (const [p, q] of edges) {
+        if (p === 0) {
+            // Parallel to this edge: entirely inside or outside of it.
+            if (q < 0) {
+                return undefined;
+            }
+            continue;
+        }
+        const t = q / p;
+        if (p < 0) {
+            tStart = Math.max(tStart, t);
+        } else {
+            tEnd = Math.min(tEnd, t);
+        }
+        if (tStart > tEnd) {
+            return undefined;
+        }
+    }
+    const start =
+        tStart === 0 ? a : { x: a.x + tStart * dx, y: a.y + tStart * dy };
+    const end = tEnd === 1 ? b : { x: a.x + tEnd * dx, y: a.y + tEnd * dy };
+    return [start, end, tEnd !== 1];
+}
+
 // Sub-pixel precision finer than this is invisible, and rounding keeps the
 // path strings short.
 function roundTenth(value: number): number {
@@ -1195,34 +1392,38 @@ function roundTenth(value: number): number {
 
 interface ObjectMarkerProps {
     object: Thing;
-    worldPoint: Point2D;
-    zoomMultiplier: number;
+    // Already in screen space - see SpaceMap's screenOffset.
+    screenPoint: Point2D;
+    // See drawnRadiusPx.
+    radius: number;
     showLabel: boolean;
     selected: boolean;
 }
 
 const ObjectMarker = React.memo(function ObjectMarker({
     object,
-    worldPoint,
-    zoomMultiplier,
+    screenPoint,
+    radius,
     showLabel,
     selected,
 }: ObjectMarkerProps): JSX.Element {
-    const radius = RADIUS_PX[object.kind];
     const isLagrangePoint = object.kind === 'lagrangePoint';
     return (
-        // Translate only, never scale: see SpaceMap's viewTransform comment
-        // for why zoom is multiplied in here instead of being an SVG
-        // scale(). The marker/label's own size stays constant on screen.
         // data-thing-id is how a tap on the marker or its label is mapped
         // back to this Thing - see thingIdAtPoint.
         <g
-            transform={`translate(${worldPoint.x * zoomMultiplier}, ${worldPoint.y * zoomMultiplier})`}
+            transform={`translate(${screenPoint.x}, ${screenPoint.y})`}
             data-thing-id={object.id}
             style={{ cursor: 'pointer' }}
         >
-            {/* Invisible, finger-sized tap target. */}
-            <circle cx={0} cy={0} r={MARKER_HIT_RADIUS_PX} fill="transparent" />
+            {/* Invisible, finger-sized tap target - or the whole disk, once
+                that's bigger. */}
+            <circle
+                cx={0}
+                cy={0}
+                r={Math.max(MARKER_HIT_RADIUS_PX, radius)}
+                fill="transparent"
+            />
             {selected && (
                 <circle
                     cx={0}

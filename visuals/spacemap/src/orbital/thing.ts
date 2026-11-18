@@ -38,7 +38,7 @@ const SIMPLE_ORBIT_EPOCH = new Date('2026-11-05T00:00:00Z');
 
 // Both exact by definition (IAU 2012 for the AU; SI for c), so their
 // ratio - ~499.005 s, light's travel time across 1 AU - is too.
-const KM_PER_AU = 149_597_870.7;
+export const KM_PER_AU = 149_597_870.7;
 const LIGHTSPEED_KM_PER_S = 299_792.458;
 const LIGHT_SECONDS_PER_AU = KM_PER_AU / LIGHTSPEED_KM_PER_S;
 
@@ -287,6 +287,29 @@ export class Thing {
                 // Earth-Luna Lagrange points; position comes from bodyAE.
                 orbitalPeriodDays: 27.321661,
                 parentID: 'earth',
+            }),
+            // Lunar Reconnaissance Orbiter. Osculating elements from JPL
+            // Horizons (target -85, centered on the Moon, 500@301), same
+            // epoch and frame as the moons below: a near-polar orbit
+            // (inclined ~83 degrees to the ecliptic), ~67-114 km above
+            // Luna's surface. Like everything on the simplified Kepler model,
+            // drawn flattened at its true shape rather than projected - seen
+            // from ecliptic north, a polar orbit would project to a thin
+            // sliver mostly hidden behind Luna. Its phase drifts quickly
+            // away from reality (a ~2-hour orbit, perturbed by Luna's lumpy
+            // gravity), so where along the orbit it's drawn is only
+            // illustrative; the orbit's shape and size are what's accurate.
+            new Thing({
+                name: 'LRO',
+                aliases: ['Lunar Reconnaissance Orbiter'],
+                kind: 'spacecraft',
+                colorHex: '#e8a33d',
+                orbitalPeriodDays: 0.0811648,
+                parentID: 'luna',
+                semiMajorAxisAu: 1.2218664e-5,
+                epochAngleDeg: 220.1183,
+                eccentricity: 0.012963,
+                periapsisLongitudeDeg: 38.3834,
             }),
             new Thing({
                 name: 'Mars',
