@@ -80,6 +80,13 @@ const LABEL_CHAR_WIDTH_PX = 7.5;
 const SEARCH_BAR_WIDTH_PX = 200;
 // Gap between the searchbar and the controls stacked under it.
 const CONTROLS_GAP_PX = 8;
+// When a selected Thing's orbit is framed (see selectThing), the fraction
+// of the screen area the menu leaves uncovered that the orbit fills, along
+// whichever of width/height is tighter - the rest is a buffer around it.
+const ORBIT_FRAME_FILL = 0.8;
+// How long selectThing's pan/zoom to a Thing takes. Skipped (an instant
+// jump) for anyone whose OS asks for reduced motion.
+const VIEW_ANIMATION_MS = 500;
 
 // A screen-space rectangle, as offsets from wherever it's anchored.
 interface Box {
@@ -209,6 +216,12 @@ export function SpaceMap({ config }: Props): JSX.Element {
     const [viewState, setViewState] =
         React.useState<ViewState>(INITIAL_VIEW_STATE);
     const { panOffset, zoomMultiplier } = viewState;
+    // The latest viewState, for animateView() to start from: its frames run
+    // outside of any render, so they can't read viewState itself.
+    const viewStateRef = React.useRef(viewState);
+    viewStateRef.current = viewState;
+    // The pending requestAnimationFrame of a running animateView(), if any.
+    const animationFrameRef = React.useRef<number | undefined>(undefined);
     // The Thing whose info menu is open, if any.
     const [selectedThingId, setSelectedThingId] = React.useState<
         string | undefined
@@ -254,9 +267,21 @@ export function SpaceMap({ config }: Props): JSX.Element {
         return () => observer.disconnect();
     }, []);
 
-    const resetView = React.useCallback(() => {
-        setViewState(INITIAL_VIEW_STATE);
+    // Stops a running animateView() where it is, eg when the user starts
+    // dragging or zooming themselves partway through.
+    const cancelViewAnimation = React.useCallback(() => {
+        if (animationFrameRef.current !== undefined) {
+            cancelAnimationFrame(animationFrameRef.current);
+            animationFrameRef.current = undefined;
+        }
     }, []);
+
+    React.useEffect(() => cancelViewAnimation, [cancelViewAnimation]);
+
+    const resetView = React.useCallback(() => {
+        cancelViewAnimation();
+        setViewState(INITIAL_VIEW_STATE);
+    }, [cancelViewAnimation]);
 
     // Re-frame automatically whenever the embed config (focus list, timestamp) changes.
     React.useEffect(() => {
@@ -426,21 +451,28 @@ export function SpaceMap({ config }: Props): JSX.Element {
     const resultsShowing = searchActive && searchQuery.trim() !== '';
     const paneOpen = resultsShowing || selectedThing !== undefined;
 
-    // Opens `thingId`'s info menu and pans (without zooming) so the Thing
-    // sits at the center of the screen area the menu leaves uncovered.
+    // Opens `thing`'s info menu. By default - a map click, on something
+    // already in view - the view stays exactly where it is, unless the menu
+    // would open over the Thing's marker or label (see coveredByMenu): then
+    // it animates a pan (no zoom change) to center the Thing in the screen
+    // area the menu leaves uncovered. With `moveView` -
+    // used for search results, where the Thing may be anywhere and the user
+    // likely has no idea of its scale yet - the view animates (see
+    // animateView) to frame its whole orbit in the screen area the menu
+    // leaves uncovered, with a buffer around it (see ORBIT_FRAME_FILL), eg
+    // all of Sedna's ellipse, or Io's circle around Jupiter. Sol and
+    // Lagrange points have no orbit line to frame, so for those it pans
+    // (without zooming) to put the Thing at that area's center instead.
     //
     // Takes a Thing rather than an id because a search result may not be on
     // the map yet: the only catalog Things that aren't are the small
     // heliocentrics (and their moons) while their checkbox is unchecked, so
     // picking one of those ticks it.
-    function selectThing(thing: Thing): void {
+    function selectThing(thing: Thing, moveView = false): void {
         const thingId = thing.id;
         if (!thingWorldPoints.has(thingId)) {
             setShowSmallHeliocentrics(true);
         }
-        const worldPoint =
-            thingWorldPoints.get(thingId) ??
-            toWorld(thing.position(config.date));
         setSelectedThingId(thingId);
         setSearchActive(false);
         // Moving between the anchor and its own Lagrange points keeps them
@@ -448,21 +480,191 @@ export function SpaceMap({ config }: Props): JSX.Element {
         if (!anchorLagrangePoints.some((point) => point.id === thingId)) {
             setLagrangeAnchorId(thingId);
         }
+        const uncoveredAnchor: Point2D = {
+            x: menuLayout.uncoveredCenter.x - viewportSize.width / 2,
+            y: menuLayout.uncoveredCenter.y - viewportSize.height / 2,
+        };
+        const worldPoint =
+            thingWorldPoints.get(thingId) ??
+            toWorld(thing.position(config.date));
+        if (!moveView) {
+            if (coveredByMenu(thing)) {
+                animateView(
+                    worldPoint,
+                    viewStateRef.current.zoomMultiplier,
+                    uncoveredAnchor,
+                );
+            }
+            return;
+        }
+        const orbitFrame = orbitFraming(thing);
+        animateView(
+            orbitFrame?.worldCenter ?? worldPoint,
+            orbitFrame?.zoomMultiplier ?? viewStateRef.current.zoomMultiplier,
+            uncoveredAnchor,
+        );
+    }
+
+    // Whether the open menu would cover any of `thing`'s marker or label,
+    // as approximated by its collision box (see collisionBox) at its
+    // current screen position. The menu is a right sidebar, or the top half
+    // of the screen in portrait - see computeMenuLayout.
+    function coveredByMenu(thing: Thing): boolean {
+        const auPoint = thingPositions.get(thing.id);
+        if (!auPoint) {
+            return false;
+        }
+        const point = toScreen(auPoint);
+        const box = collisionBox(thing, isLabeled(thing));
+        if (menuLayout.isPortrait) {
+            // The uncovered area is the bottom part, centered on
+            // uncoveredCenter.y; the menu is everything above it.
+            const menuBottom =
+                viewportSize.height -
+                2 * (viewportSize.height - menuLayout.uncoveredCenter.y);
+            return point.y + box.top < menuBottom;
+        }
+        // The uncovered area is the left part, centered on uncoveredCenter.x;
+        // the menu is everything right of it.
+        const menuLeft = 2 * menuLayout.uncoveredCenter.x;
+        return point.x + box.right > menuLeft;
+    }
+
+    // The Reset view button: closes the menu (or search results), and
+    // animates back to the view the map opened on. INITIAL_VIEW_STATE (no
+    // pan, zoom 1) puts world point (0, 0) at the screen's center.
+    function animateResetView(): void {
+        closeMenu();
+        animateView({ x: 0, y: 0 }, INITIAL_VIEW_STATE.zoomMultiplier, {
+            x: 0,
+            y: 0,
+        });
+    }
+
+    // Animates the view, over VIEW_ANIMATION_MS, to one where world-space
+    // point `targetCenter` sits at screen point `anchor`, at zoom
+    // `targetZoom`. `anchor` is relative to the screen's center, ie in
+    // panOffset's terms - eg the center of the area the menu leaves
+    // uncovered, or (0, 0) for the screen's own center.
+    //
+    // Zoom is interpolated geometrically (evenly in log space), since a
+    // single selection can change it by a factor of 100,000+ (eg Io to
+    // Sedna). The center isn't interpolated linearly alongside it, which
+    // would swing the view far off course while zoomed in: instead it moves
+    // in step with the view's *width* (1 / zoom). Zooming out, that keeps
+    // the start point in view while the view widens, then pans once it's
+    // wide; zooming in, it does most of the panning early, while the view is
+    // still wide enough that a big move is a short one on screen.
+    function animateView(
+        targetCenter: Point2D,
+        targetZoom: number,
+        anchor: Point2D,
+    ): void {
+        cancelViewAnimation();
         // Inverse of makeAuToScreenTransform's
         // screen = viewportCenter + panOffset + world * zoomMultiplier.
-        setViewState((current) => ({
-            ...current,
+        const viewAt = (center: Point2D, zoom: number): ViewState => ({
+            zoomMultiplier: zoom,
             panOffset: {
-                x:
-                    menuLayout.uncoveredCenter.x -
-                    viewportSize.width / 2 -
-                    worldPoint.x * current.zoomMultiplier,
-                y:
-                    menuLayout.uncoveredCenter.y -
-                    viewportSize.height / 2 -
-                    worldPoint.y * current.zoomMultiplier,
+                x: anchor.x - center.x * zoom,
+                y: anchor.y - center.y * zoom,
             },
-        }));
+        });
+        const start = viewStateRef.current;
+        const startZoom = start.zoomMultiplier;
+        // The world point currently at the anchor.
+        const startCenter: Point2D = {
+            x: (anchor.x - start.panOffset.x) / startZoom,
+            y: (anchor.y - start.panOffset.y) / startZoom,
+        };
+        const reduceMotion = window.matchMedia?.(
+            '(prefers-reduced-motion: reduce)',
+        ).matches;
+        if (reduceMotion) {
+            setViewState(viewAt(targetCenter, targetZoom));
+            return;
+        }
+
+        const startWidth = 1 / startZoom;
+        const targetWidth = 1 / targetZoom;
+        // Below this, the zoom is effectively unchanged (eg a plain pan),
+        // and the width-based progress would divide by ~0.
+        const zoomChanges = Math.abs(Math.log(targetZoom / startZoom)) > 1e-6;
+        const startTime = performance.now();
+
+        function frame(now: number): void {
+            const t = Math.min((now - startTime) / VIEW_ANIMATION_MS, 1);
+            const eased = easeInOutCubic(t);
+            const zoom = startZoom * (targetZoom / startZoom) ** eased;
+            const centerProgress = zoomChanges
+                ? (1 / zoom - startWidth) / (targetWidth - startWidth)
+                : eased;
+            setViewState(
+                viewAt(
+                    {
+                        x:
+                            startCenter.x +
+                            (targetCenter.x - startCenter.x) * centerProgress,
+                        y:
+                            startCenter.y +
+                            (targetCenter.y - startCenter.y) * centerProgress,
+                    },
+                    zoom,
+                ),
+            );
+            animationFrameRef.current =
+                t < 1 ? requestAnimationFrame(frame) : undefined;
+        }
+        animationFrameRef.current = requestAnimationFrame(frame);
+    }
+
+    // The zoom, and the world-space point to center on, that fit `thing`'s
+    // orbit line into the screen area the menu leaves uncovered - or
+    // undefined if it has no orbit line (Sol, a Lagrange point).
+    function orbitFraming(
+        thing: Thing,
+    ): { zoomMultiplier: number; worldCenter: Point2D } | undefined {
+        if (thing.kind === 'star' || thing.kind === 'lagrangePoint') {
+            return undefined;
+        }
+        const worldPoints = thing.orbitPath(config.date).map(toWorld);
+        if (worldPoints.length === 0) {
+            return undefined;
+        }
+        const xs = worldPoints.map((point) => point.x);
+        const ys = worldPoints.map((point) => point.y);
+        const minX = Math.min(...xs);
+        const maxX = Math.max(...xs);
+        const minY = Math.min(...ys);
+        const maxY = Math.max(...ys);
+        // The uncovered area is centered on uncoveredCenter, so its size is
+        // twice the distance from there to its nearer edge on each axis.
+        const uncoveredWidth =
+            2 *
+            Math.min(
+                menuLayout.uncoveredCenter.x,
+                viewportSize.width - menuLayout.uncoveredCenter.x,
+            );
+        const uncoveredHeight =
+            2 *
+            Math.min(
+                menuLayout.uncoveredCenter.y,
+                viewportSize.height - menuLayout.uncoveredCenter.y,
+            );
+        // Math.max guards a degenerate (zero-width or -height) orbit.
+        const zoomMultiplier = clamp(
+            ORBIT_FRAME_FILL *
+                Math.min(
+                    uncoveredWidth / Math.max(maxX - minX, 1e-9),
+                    uncoveredHeight / Math.max(maxY - minY, 1e-9),
+                ),
+            minZoomMultiplier,
+            maxZoomMultiplier,
+        );
+        return {
+            zoomMultiplier,
+            worldCenter: { x: (minX + maxX) / 2, y: (minY + maxY) / 2 },
+        };
     }
 
     const closeMenu = React.useCallback(() => {
@@ -497,7 +699,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
     // which would otherwise cover the map the Thing was just centered on.
     function pickSearchResult(thing: Thing): void {
         searchInputRef.current?.blur();
-        selectThing(thing);
+        selectThing(thing, true);
     }
 
     function handleSearchKeyDown(
@@ -655,6 +857,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
 
     function handleWheel(event: React.WheelEvent<SVGSVGElement>): void {
         event.preventDefault();
+        cancelViewAnimation();
         const rect = event.currentTarget.getBoundingClientRect();
         const anchorScreen: Point2D = {
             x: event.clientX - rect.left,
@@ -710,12 +913,14 @@ export function SpaceMap({ config }: Props): JSX.Element {
                     }
                     return;
                 }
+                cancelViewAnimation();
                 setViewState((current) => ({
                     ...current,
                     panOffset: { x, y },
                 }));
             },
             onPinch: ({ origin: [originX, originY], offset: [scale] }) => {
+                cancelViewAnimation();
                 const rect = svgRef.current?.getBoundingClientRect();
                 if (!rect) {
                     return;
@@ -912,7 +1117,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
                               CONTROLS_GAP_PX,
                 }}
             >
-                <button onClick={resetView} style={resetButtonStyle}>
+                <button onClick={animateResetView} style={resetButtonStyle}>
                     Reset view
                 </button>
                 <label style={checkboxLabelStyle}>
@@ -1083,6 +1288,10 @@ function thingIdAtPoint(event: Event): string | undefined {
             ?.closest('[data-thing-id]')
             ?.getAttribute('data-thing-id') ?? undefined
     );
+}
+
+function easeInOutCubic(t: number): number {
+    return t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2;
 }
 
 function clamp(value: number, min: number, max: number): number {
