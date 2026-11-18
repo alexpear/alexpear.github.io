@@ -106,6 +106,12 @@ export function ThingMenu({
         [thing, date],
     );
 
+    // At the map's date, not now - see distanceFromSolAu's memo comment.
+    const lagFromEarthSeconds = React.useMemo(
+        () => THINGS_BY_ID.get('earth')!.lightSeconds(thing, date),
+        [thing, date],
+    );
+
     // LATER: ~10 fields per Thing, eg surface gravity, lightspeed lag from
     // Earth.
     const fields: [string, string][] = [];
@@ -123,9 +129,7 @@ export function ThingMenu({
         fields.push(['Sunniness', `${sunnyPercentString}% of Earth normal`]);
     }
 
-    // TODO Pass in the date being displayed.
-    const seconds = THINGS_BY_ID.get('earth').lightSeconds(thing);
-    fields.push([`Lag from Earth`, formatSeconds(seconds)]);
+    fields.push([`Lag from Earth`, formatSeconds(lagFromEarthSeconds)]);
 
     // A Lagrange point is a location, not a physical body: no size or mass
     // to report, as opposed to a body whose value just isn't known.
@@ -206,25 +210,28 @@ function formatDiameterKm(km: number): string {
     });
 }
 
+// 2 significant digits, like the other fields: 1 rounded away almost all
+// the variation, eg Vesta's ~11-28 minutes came out as only "10 min",
+// "20 min" or "30 min".
 function formatSeconds(seconds: number): string {
     if (seconds < 59.5) {
         return `${seconds.toLocaleString('en-US', {
-            maximumSignificantDigits: 1,
+            maximumSignificantDigits: 2,
         })} sec`;
     } else if (seconds < 59.5 * 60) {
         const minutes = seconds / 60;
         return `${minutes.toLocaleString('en-US', {
-            maximumSignificantDigits: 1,
+            maximumSignificantDigits: 2,
         })} min`;
     } else if (seconds < 23.5 * 3600) {
         const hours = seconds / 3600;
         return `${hours.toLocaleString('en-US', {
-            maximumSignificantDigits: 1,
+            maximumSignificantDigits: 2,
         })} hour`;
     } else {
         const days = seconds / 86400;
         return `${days.toLocaleString('en-US', {
-            maximumSignificantDigits: 1,
+            maximumSignificantDigits: 2,
         })} day`;
     }
 }

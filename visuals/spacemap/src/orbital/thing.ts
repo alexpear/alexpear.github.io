@@ -1183,14 +1183,16 @@ export class Thing {
     }
 
     // How long light takes to travel between this Thing and `other` at
-    // `date` (default: now), in seconds - eg ~500 for Sol-Earth, ~1.3 for
+    // `date`, in seconds - eg ~500 for Sol-Earth, ~1.3 for
     // Earth-Luna. Straight-line distance between their position3D()s, so
     // it has the same limit as that model: two bodies on the simplified
     // Kepler model (z = 0, no inclination) are treated as sharing the
     // ecliptic plane, so eg Eris (inclined ~44 degrees) vs Neptune comes
     // out somewhat off. Anything involving Earth is barely affected, since
     // Earth sits at ~1 AU and nearly on the ecliptic anyway.
-    lightSeconds(other: Thing, date: Date = new Date()): number {
+    // No default date: defaulting to now is how the info menu came to show
+    // today's lag whatever date the map was showing.
+    lightSeconds(other: Thing, date: Date): number {
         const a = this.position3D(date);
         const b = other.position3D(date);
         const distanceAu = Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
