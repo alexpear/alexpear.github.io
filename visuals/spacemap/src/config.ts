@@ -24,15 +24,24 @@ export function parseConfigFromUrl(search: string): SpaceMapConfig {
         .map((id) => THINGS_BY_ID.get(id))
         .filter((object): object is Thing => object !== undefined);
 
-    const timeParam = params.get('t');
-    const parsedDate = timeParam ? new Date(timeParam) : new Date();
+    let dateShown = new Date();
+    if (params.has('t')) {
+        const timeParam = params.get('t');
+        if (timeParam === 'random') {
+            dateShown = new Date(
+                `${Math.ceil(Math.random() * 20_000) - 10_000}-${Math.ceil(Math.random() * 12)}-${Math.ceil(Math.random() * 12)}`,
+            );
+        } else {
+            dateShown = new Date(timeParam);
+        }
+    }
 
     return {
         focusedThings:
             focusObjects.length > 0
                 ? focusObjects
                 : DEFAULT_FOCUS_IDS.map((id) => THINGS_BY_ID.get(id)!),
-        date: isNaN(parsedDate.getTime()) ? new Date() : parsedDate,
+        date: dateShown,
         focusFromUrl: focusParam !== null && focusObjects.length > 0,
     };
 }
