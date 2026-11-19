@@ -186,7 +186,7 @@ export function ThingMenu({
             ? undefined
             : THINGS_BY_ID.get(thing.parentID)?.kind === 'star'
               ? 'Trajectory simplified from JPL Horizons data.'
-              : 'Orbit from JPL Horizons data. Its shape is accurate, but where along it the spacecraft is drawn is only illustrative.';
+              : 'Orbit from JPL Horizons data.';
 
     return (
         <MenuPane layout={layout}>
