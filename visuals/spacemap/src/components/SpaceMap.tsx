@@ -71,8 +71,12 @@ const MIN_MARKER_SEPARATION_PX = 20;
 // still easy to hit with a finger. Half of MIN_MARKER_SEPARATION_PX, so two
 // visible markers' targets never overlap.
 const MARKER_HIT_RADIUS_PX = MIN_MARKER_SEPARATION_PX / 2;
-// Gap between a marker's right edge and the start of its label.
-const LABEL_GAP_PX = 4;
+// Gap between a marker's right edge and the start of its label: enough to
+// clear the selection ring (radius + 4, plus half its 1.5px stroke).
+const LABEL_GAP_PX = 8;
+// How far a label's black backing (see ObjectMarker) extends past its text.
+const LABEL_PADDING_X_PX = 3;
+const LABEL_PADDING_Y_PX = 1;
 // Estimated on-screen width of one character of a label (13px Gelasio),
 // for sizing a labeled Thing's collision box - see collisionBoxes(). Erring
 // wide: an overestimate just hides a neighbor slightly early, while an
@@ -1509,6 +1513,37 @@ const ObjectMarker = React.memo(function ObjectMarker({
     // A bit past `radius` at its corners, so it reads as about the same
     // size as a circle of that radius.
     const diamondRadius = radius * 1.3;
+    const labelText = object.label ?? object.name;
+
+    // The label's rendered size, for the black backing behind it, which
+    // keeps it readable over anything bright (eg Luna's disk). Measured
+    // rather than estimated, since glyph widths vary - and measured again
+    // once the webfont has loaded, since it's drawn in a fallback font
+    // until then.
+    const labelRef = React.useRef<SVGTextElement>(null);
+    const [labelSize, setLabelSize] = React.useState<
+        { width: number; height: number; top: number } | undefined
+    >(undefined);
+    React.useLayoutEffect(() => {
+        if (!showLabel) {
+            return undefined;
+        }
+        let cancelled = false;
+        const measure = (): void => {
+            const text = labelRef.current;
+            if (cancelled || !text) {
+                return;
+            }
+            const box = text.getBBox();
+            setLabelSize({ width: box.width, height: box.height, top: box.y });
+        };
+        measure();
+        document.fonts?.ready.then(measure);
+        return () => {
+            cancelled = true;
+        };
+    }, [showLabel, labelText]);
+
     return (
         // data-thing-id is how a tap on the marker or its label is mapped
         // back to this Thing - see thingIdAtPoint.
@@ -1562,15 +1597,27 @@ const ObjectMarker = React.memo(function ObjectMarker({
             ) : (
                 <circle cx={0} cy={0} r={radius} fill={object.colorHex} />
             )}
+            {showLabel && labelSize && (
+                <rect
+                    x={radius + LABEL_GAP_PX - LABEL_PADDING_X_PX}
+                    y={labelSize.top - LABEL_PADDING_Y_PX}
+                    width={labelSize.width + 2 * LABEL_PADDING_X_PX}
+                    height={labelSize.height + 2 * LABEL_PADDING_Y_PX}
+                    rx={2}
+                    fill="#000"
+                    fillOpacity={0.75}
+                />
+            )}
             {showLabel && (
                 <text
+                    ref={labelRef}
                     x={radius + LABEL_GAP_PX}
                     y={4}
                     fill="#e6e6e6"
                     fontSize={13}
                     fontFamily="'Gelasio', Georgia, serif"
                 >
-                    {object.label ?? object.name}
+                    {labelText}
                 </text>
             )}
         </g>
