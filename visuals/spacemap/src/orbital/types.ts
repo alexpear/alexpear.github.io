@@ -36,9 +36,11 @@ export interface EllipsePhase extends SpacecraftPhaseBase {
     retrograde?: boolean;
 }
 
-// Heliocentric positions sampled every stepDays from `start`, as flat
-// [x, y, z, x, y, z, ...] in AU (fixed J2000 ecliptic frame), interpolated
-// linearly between - for a near-straight escape path like Voyager 2's.
+// Positions relative to parentID, sampled every stepDays (possibly a
+// fraction of a day) from `start`, as flat [x, y, z, x, y, z, ...] in AU
+// (fixed J2000 ecliptic frame), interpolated linearly between - for a
+// near-straight escape path like Voyager 2's (relative to Sol), or a
+// flyby's close pass by a planet (relative to that planet).
 export interface TrackPhase extends SpacecraftPhaseBase {
     type: 'track';
     stepDays: number;

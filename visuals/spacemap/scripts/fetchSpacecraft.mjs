@@ -24,6 +24,12 @@
 // - 'track': sampled 3D positions, for anything on a near-straight escape
 //   path out of the solar system (Voyagers, New Horizons), interpolated.
 //
+// Any gap left between two phases - a flyby, or a stretch of fast-changing
+// orbit, eg BepiColombo's capture by Mercury - is then filled with a short
+// 'track' too, sampled finely. If the craft is passing close to a planet
+// then, its positions are relative to that planet, so it's drawn by the
+// planet at about the right distance from it even between samples.
+//
 // Windows outside of Horizons' coverage are trimmed to fit it.
 
 import { writeFileSync } from 'node:fs';
@@ -60,6 +66,7 @@ const DEFAULT_STOP = '2031-01-01';
 const CENTERS = {
     sol: '500@10',
     mercury: '500@199',
+    venus: '500@299',
     earth: '500@399',
     luna: '500@301',
     mars: '500@499',
@@ -514,6 +521,178 @@ async function trackPhases(spacecraft, segment) {
     ];
 }
 
+// Gap tracks get about this many samples, but at most one every
+// MIN_GAP_STEP_HOURS (so a flyby is followed closely) and at least one
+// every MAX_GAP_STEP_HOURS.
+const GAP_SAMPLES = 60;
+const MIN_GAP_STEP_HOURS = 3;
+const MAX_GAP_STEP_HOURS = 48;
+
+// Roughly each planet's Hill sphere radius, in AU: about how far out its
+// gravity, rather than Sol's, steers a passing craft.
+const HILL_RADIUS_AU = {
+    mercury: 0.0012,
+    venus: 0.0067,
+    earth: 0.01,
+    mars: 0.0072,
+    jupiter: 0.35,
+};
+// A gap's track is relative to the planet whose Hill sphere the craft gets
+// deepest inside during the gap (in Hill radii), if any is within this
+// many; otherwise relative to Sol.
+const MAX_FLYBY_HILL_RADII = 5;
+// A flyby's gap only covers the few days its elements were changing
+// fastest; the phases either side are trimmed back by this much more, so
+// the planet-relative track covers the whole pass through the planet's
+// Hill sphere, where Sol-relative ellipses go most wrong.
+const FLYBY_MARGIN_DAYS = 4;
+
+// How deep inside each planet's Hill sphere `spacecraft` is (distance /
+// HILL_RADIUS_AU), every SCAN_STEP_DAYS across [start, end): for each
+// planet, a list of [timestamp, Hill radii].
+async function hillDepths(spacecraft, start, end) {
+    const depths = {};
+    for (const [planet, hillRadiusAu] of Object.entries(HILL_RADIUS_AU)) {
+        const rows = await ephemerisRows(
+            {
+                COMMAND: `'${spacecraft.horizonsId}'`,
+                EPHEM_TYPE: 'VECTORS',
+                CENTER: `'${CENTERS[planet]}'`,
+                VEC_TABLE: '1',
+                STEP_SIZE: `'${SCAN_STEP_DAYS}d'`,
+            },
+            start,
+            end,
+        );
+        depths[planet] = (rows ?? []).map((cells) => [
+            Date.parse(`${parseHorizonsDate(cells[1])}T00:00:00Z`),
+            Math.hypot(+cells[2], +cells[3], +cells[4]) / hillRadiusAu,
+        ]);
+    }
+    return depths;
+}
+
+// The planet `spacecraft` passes closest to (in Hill radii) during [start,
+// end], if it gets within MAX_FLYBY_HILL_RADII of any - or 'sol' if not.
+function flybyPlanet(depths, start, end) {
+    const from = Date.parse(`${start}T00:00:00Z`);
+    const to = Date.parse(`${end}T00:00:00Z`);
+    let best = 'sol';
+    let bestRadii = MAX_FLYBY_HILL_RADII;
+    for (const [planet, series] of Object.entries(depths)) {
+        for (const [time, radii] of series) {
+            if (time >= from && time <= to && radii < bestRadii) {
+                best = planet;
+                bestRadii = radii;
+            }
+        }
+    }
+    return best;
+}
+
+// A 'track' phase filling [start, end), relative to `center`.
+async function gapTrack(spacecraft, start, end, center) {
+    const gapHours =
+        (Date.parse(`${end}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) /
+        3_600_000;
+    const stepHours = Math.max(
+        MIN_GAP_STEP_HOURS,
+        Math.min(MAX_GAP_STEP_HOURS, Math.round(gapHours / GAP_SAMPLES)),
+    );
+    // One step past `end`, so the last stretch has a sample on both sides.
+    const stopIso = new Date(
+        Date.parse(`${end}T00:00:00Z`) + stepHours * 3_600_000,
+    )
+        .toISOString()
+        .slice(0, 16)
+        .replace('T', ' ');
+    const rows = await ephemerisRows(
+        {
+            COMMAND: `'${spacecraft.horizonsId}'`,
+            EPHEM_TYPE: 'VECTORS',
+            CENTER: `'${CENTERS[center]}'`,
+            VEC_TABLE: '1',
+            STEP_SIZE: `'${stepHours}h'`,
+        },
+        start,
+        stopIso,
+    );
+    if (!rows || rows.length < 2 || parseHorizonsDate(rows[0][1]) !== start) {
+        return undefined;
+    }
+    return {
+        type: 'track',
+        start,
+        end,
+        parentID: center,
+        stepDays: stepHours / 24,
+        // 6 significant digits: relative to a planet, that's still to
+        // within a few km.
+        points: rows.flatMap((cells) =>
+            [+cells[2], +cells[3], +cells[4]].map((value) => round(value, 6)),
+        ),
+    };
+}
+
+// `phases` with a track (see gapTrack) between any two that don't meet,
+// and around any flyby: wherever two phases meet (or don't) while the
+// craft passes close to a planet, the phases either side are trimmed back
+// by FLYBY_MARGIN_DAYS and the track covers the pass. A flyby can leave no
+// gap at all, when it's quick enough to fall between two scan samples (eg
+// JUICE past Earth in Sep 2026).
+async function fillGaps(spacecraft, phases) {
+    if (phases.length < 2) {
+        return phases;
+    }
+    const depths = await hillDepths(
+        spacecraft,
+        phases[0].start,
+        phases[phases.length - 1].end,
+    );
+    const filled = [];
+    for (let i = 0; i < phases.length; i++) {
+        const phase = phases[i];
+        filled.push(phase);
+        const next = phases[i + 1];
+        if (!next) {
+            continue;
+        }
+        const center = flybyPlanet(
+            depths,
+            addDays(phase.end, -FLYBY_MARGIN_DAYS),
+            addDays(next.start, FLYBY_MARGIN_DAYS),
+        );
+        if (center !== 'sol') {
+            // Only trimming an ellipse that'll still last a while.
+            const margin = 2 * FLYBY_MARGIN_DAYS;
+            if (
+                phase.type === 'ellipse' &&
+                addDays(phase.start, margin) < phase.end
+            ) {
+                phase.end = addDays(phase.end, -FLYBY_MARGIN_DAYS);
+            }
+            if (
+                next.type === 'ellipse' &&
+                addDays(next.start, margin) < next.end
+            ) {
+                next.start = addDays(next.start, FLYBY_MARGIN_DAYS);
+            }
+        }
+        if (phase.end >= next.start) {
+            continue;
+        }
+        const track = await gapTrack(spacecraft, phase.end, next.start, center);
+        if (track) {
+            filled.push(track);
+        } else {
+            console.warn(
+                `${spacecraft.id}: couldn't fill ${phase.end}..${next.start}`,
+            );
+        }
+    }
+    return filled;
+}
+
 const trajectories = {};
 for (const spacecraft of SPACECRAFT) {
     const phases = [];
@@ -523,9 +702,10 @@ for (const spacecraft of SPACECRAFT) {
             ellipsePhases;
         phases.push(...(await fetchPhases(spacecraft, segment)));
     }
-    trajectories[spacecraft.id] = phases;
+    const filled = await fillGaps(spacecraft, phases);
+    trajectories[spacecraft.id] = filled;
     console.log(
-        `${spacecraft.id}: ${phases.map((phase) => `${phase.start}..${phase.end} ${phase.parentID}`).join(', ') || 'NO DATA'}`,
+        `${spacecraft.id}: ${filled.map((phase) => `${phase.start}..${phase.end} ${phase.parentID}${phase.type === 'track' ? ' (track)' : ''}`).join(', ') || 'NO DATA'}`,
     );
 }
 

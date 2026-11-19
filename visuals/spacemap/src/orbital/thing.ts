@@ -113,9 +113,10 @@ interface KeplerOrbit {
     retrograde?: boolean;
 }
 
-// A 'track' phase's position at `date`, interpolated linearly between its
-// two nearest samples (or extrapolated, within a step of either end).
-function trackPosition(phase: TrackPhase, date: Date): Point3D {
+// A 'track' phase's position relative to its parent at `date`,
+// interpolated linearly between its two nearest samples (or extrapolated,
+// within a step of either end).
+function trackOffset(phase: TrackPhase, date: Date): Point3D {
     const sampleCount = phase.points.length / 3;
     const steps =
         (date.getTime() - Date.parse(`${phase.start}T00:00:00Z`)) /
@@ -1491,10 +1492,15 @@ export class Thing {
                 `${this.id} has no trajectory at ${date.toISOString()} - check isPresentAt() first`,
             );
         }
-        if (phase.type === 'track') {
-            return trackPosition(phase, date);
-        }
         const parentPosition = this.phaseParent(phase).position3D(date);
+        if (phase.type === 'track') {
+            const offset = trackOffset(phase, date);
+            return {
+                x: parentPosition.x + offset.x,
+                y: parentPosition.y + offset.y,
+                z: parentPosition.z + offset.z,
+            };
+        }
         const offset = this.keplerOffset(
             phase,
             new Date(`${phase.epoch}T00:00:00Z`),
@@ -1519,31 +1525,37 @@ export class Thing {
 
     // A spacecraft's orbit line at `date`: its current phase's ellipse
     // around the parent's position at `date` (as for a moon - see
-    // orbitPath()), or for a 'track' phase, the path it has flown so far
-    // in that phase, ending at its current position. [] at a date it isn't
-    // present.
+    // orbitPath()), or for a 'track' phase, its sampled path, also around
+    // the parent's position at `date`. [] at a date it isn't present.
     private spacecraftOrbitPath(date: Date, samples: number): Point2D[] {
         const phase = this.phaseAt(date);
         if (!phase) {
             return [];
         }
+        const parentPosition = this.phaseParent(phase).position(date);
         if (phase.type === 'track') {
+            // Relative to Sol (eg Voyager 2's decades-long track), only the
+            // part already flown, up to its current position. Relative to a
+            // planet (a flyby), the whole pass, which is short, and shows
+            // the planet bending the craft's path.
+            const flownOnly = phase.parentID === 'sol';
             const points: Point2D[] = [];
             const stepMs = phase.stepDays * MILLISECONDS_PER_DAY;
             const startMs = Date.parse(`${phase.start}T00:00:00Z`);
             for (let i = 0; i * 3 < phase.points.length; i++) {
-                if (startMs + i * stepMs >= date.getTime()) {
+                if (flownOnly && startMs + i * stepMs >= date.getTime()) {
                     break;
                 }
                 points.push({
-                    x: phase.points[i * 3],
-                    y: phase.points[i * 3 + 1],
+                    x: parentPosition.x + phase.points[i * 3],
+                    y: parentPosition.y + phase.points[i * 3 + 1],
                 });
             }
-            points.push(this.position(date));
+            if (flownOnly) {
+                points.push(this.position(date));
+            }
             return points;
         }
-        const parentPosition = this.phaseParent(phase).position(date);
         const points: Point2D[] = [];
         for (let i = 0; i < samples; i++) {
             const offset = this.offsetAtEccentricAnomaly(
