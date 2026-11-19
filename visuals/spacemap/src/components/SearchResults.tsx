@@ -58,9 +58,9 @@ export function SearchResults({
                 <p style={placeholderStyle}>No matches</p>
             ) : (
                 <div style={listStyle}>
-                    {results.map(({ thing, matchedAlias }, index) => (
+                    {results.map(({ thing, resident, matchedAlias }, index) => (
                         <button
-                            key={thing.id}
+                            key={`${thing.id}/${resident?.name ?? ''}`}
                             ref={
                                 index === highlightIndex
                                     ? highlightedRowRef
@@ -83,9 +83,13 @@ export function SearchResults({
                                 }}
                             />
                             <span>
-                                <span style={nameStyle}>{thing.name}</span>
+                                <span style={nameStyle}>
+                                    {resident?.name ?? thing.name}
+                                </span>
                                 <span style={subtitleStyle}>
-                                    {describeThing(thing)}
+                                    {resident
+                                        ? `${resident.note} · at ${thing.name}`
+                                        : describeThing(thing)}
                                     {matchedAlias && ` · aka ${matchedAlias}`}
                                 </span>
                             </span>
@@ -116,8 +120,12 @@ function describeThing(thing: Thing): string {
                 : 'Asteroid';
         case 'comet':
             return 'Comet';
-        case 'spacecraft':
-            return 'Spacecraft';
+        case 'spacecraft': {
+            const parent = Thing.byID(thing.parentID);
+            return parent && parent.kind !== 'star'
+                ? `Spacecraft orbiting ${parent.name}`
+                : 'Spacecraft';
+        }
         case 'lagrangePoint':
             return 'Lagrange point';
     }

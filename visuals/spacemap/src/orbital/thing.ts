@@ -1,6 +1,16 @@
 // Every entity that we might display at a location on the map is a Thing, including stars, planets, moons, asteroids, spacecraft, debris, & Lagrange points.
 
-import { Point2D, Point3D, MILLISECONDS_PER_DAY, ThingKind } from './types';
+import {
+    Point2D,
+    Point3D,
+    MILLISECONDS_PER_DAY,
+    Resident,
+    SpacecraftPhase,
+    ThingKind,
+    TrackPhase,
+} from './types';
+import { RESIDENTS, SPACECRAFT } from './spacecraft';
+import { SPACECRAFT_PHASES } from './spacecraftData';
 import {
     Body,
     HelioVector,
@@ -90,6 +100,35 @@ function solveEccentricAnomaly(
     return eccentricAnomalyRad;
 }
 
+// The elements the simplified Kepler model needs (see Thing's
+// semiMajorAxisAu etc), which both a Thing and a spacecraft's EllipsePhase
+// have. Optional to match Thing's own fields, though the model needs all
+// but periapsisLongitudeDeg (for a circle) and retrograde.
+interface KeplerOrbit {
+    semiMajorAxisAu?: number;
+    eccentricity: number;
+    periapsisLongitudeDeg?: number;
+    epochAngleDeg?: number;
+    orbitalPeriodDays?: number;
+    retrograde?: boolean;
+}
+
+// A 'track' phase's position at `date`, interpolated linearly between its
+// two nearest samples (or extrapolated, within a step of either end).
+function trackPosition(phase: TrackPhase, date: Date): Point3D {
+    const sampleCount = phase.points.length / 3;
+    const steps =
+        (date.getTime() - Date.parse(`${phase.start}T00:00:00Z`)) /
+        (phase.stepDays * MILLISECONDS_PER_DAY);
+    const i = Math.max(0, Math.min(sampleCount - 2, Math.floor(steps)));
+    const fraction = steps - i;
+    const at = (axis: number): number =>
+        phase.points[i * 3 + axis] +
+        (phase.points[(i + 1) * 3 + axis] - phase.points[i * 3 + axis]) *
+            fraction;
+    return { x: at(0), y: at(1), z: at(2) };
+}
+
 // Constructor input for Thing: the same fields Thing itself has (see their
 // comments there), minus the derived `id`. Optional fields are left
 // undefined when omitted, except parentID (defaults to 'sol') and
@@ -113,6 +152,11 @@ export interface ThingOptions {
     retrograde?: boolean;
     diameterKm?: number;
     massKg?: number;
+    phases?: SpacecraftPhase[];
+    agency?: string;
+    launchYear?: number;
+    description?: string;
+    residents?: Resident[];
 }
 
 export class Thing {
@@ -180,6 +224,23 @@ export class Thing {
     diameterKm?: number; // mean, or equatorial for planets - see MAIN_THINGS
     massKg?: number;
 
+    // A spacecraft's trajectory, as a series of simple phases (see
+    // SpacecraftPhase), in date order. Replaces everything above about
+    // position: the phase covering a date says where the craft is relative
+    // to which parent. Outside every phase, the craft isn't on the map at
+    // all - see isPresentAt(). Undefined for everything else, which is
+    // always present.
+    phases?: SpacecraftPhase[];
+    // Each phase's [start, end) as millisecond timestamps, parsed once.
+    private phaseTimes?: [number, number][];
+    // For the info menu: who flies it, when, and what it's doing.
+    agency?: string;
+    launchYear?: number;
+    description?: string;
+    // Things at this Thing too small, or too crowded, to draw: eg rovers
+    // on Mars, or the telescopes around Sol-Earth L2. Defaults to none.
+    residents: Resident[];
+
     // `id` is derived from `name`, never passed in.
     constructor(options: ThingOptions) {
         this.name = options.name;
@@ -201,6 +262,24 @@ export class Thing {
         this.retrograde = options.retrograde ?? false;
         this.diameterKm = options.diameterKm;
         this.massKg = options.massKg;
+        this.phases = options.phases;
+        this.phaseTimes = options.phases?.map((phase) => [
+            Date.parse(`${phase.start}T00:00:00Z`),
+            Date.parse(`${phase.end}T00:00:00Z`),
+        ]);
+        this.agency = options.agency;
+        this.launchYear = options.launchYear;
+        this.description = options.description;
+        this.residents = options.residents ?? [];
+        if (options.phases && options.parentID === undefined) {
+            // The parent of whichever phase covers today, or else the
+            // latest one: what eg the search results describe it as
+            // orbiting. Its position uses each date's own phase instead.
+            const current =
+                this.phaseAt(new Date()) ??
+                options.phases[options.phases.length - 1];
+            this.parentID = current?.parentID ?? 'sol';
+        }
     }
 
     // Could move this to catalog.js if it makes it easier to maintain.
@@ -287,29 +366,6 @@ export class Thing {
                 // Earth-Luna Lagrange points; position comes from bodyAE.
                 orbitalPeriodDays: 27.321661,
                 parentID: 'earth',
-            }),
-            // Lunar Reconnaissance Orbiter. Osculating elements from JPL
-            // Horizons (target -85, centered on the Moon, 500@301), same
-            // epoch and frame as the moons below: a near-polar orbit
-            // (inclined ~83 degrees to the ecliptic), ~67-114 km above
-            // Luna's surface. Like everything on the simplified Kepler model,
-            // drawn flattened at its true shape rather than projected - seen
-            // from ecliptic north, a polar orbit would project to a thin
-            // sliver mostly hidden behind Luna. Its phase drifts quickly
-            // away from reality (a ~2-hour orbit, perturbed by Luna's lumpy
-            // gravity), so where along the orbit it's drawn is only
-            // illustrative; the orbit's shape and size are what's accurate.
-            new Thing({
-                name: 'LRO',
-                aliases: ['Lunar Reconnaissance Orbiter'],
-                kind: 'spacecraft',
-                colorHex: '#e8a33d',
-                orbitalPeriodDays: 0.0811648,
-                parentID: 'luna',
-                semiMajorAxisAu: 1.2218664e-5,
-                epochAngleDeg: 220.1183,
-                eccentricity: 0.012963,
-                periapsisLongitudeDeg: 38.3834,
             }),
             new Thing({
                 name: 'Mars',
@@ -1178,11 +1234,58 @@ export class Thing {
                 earth.lagrange(luna, lagrangeNumber, Body.Earth, Body.Moon),
             );
         }
+        for (const options of SPACECRAFT) {
+            const id = slugify(options.name);
+            const phases = SPACECRAFT_PHASES[id];
+            if (!phases) {
+                throw new Error(
+                    `Spacecraft ${id} has no trajectory in spacecraftData.ts - add it to scripts/fetchSpacecraft.mjs and rerun npm run fetchspacecraft`,
+                );
+            }
+            things.push(new Thing({ ...options, kind: 'spacecraft', phases }));
+        }
+
+        const seenIds = new Set<string>();
+        for (const thing of things) {
+            if (seenIds.has(thing.id)) {
+                throw new Error(`Two Things share the id "${thing.id}"`);
+            }
+            seenIds.add(thing.id);
+            thing.residents = RESIDENTS[thing.id] ?? [];
+        }
         return things;
     })();
 
     static byID(id: string): Thing | undefined {
         return Thing.MAIN_THINGS.find((thing) => thing.id === id);
+    }
+
+    // The spacecraft phase covering `date`, if any.
+    phaseAt(date: Date): SpacecraftPhase | undefined {
+        const time = date.getTime();
+        const index = this.phaseTimes?.findIndex(
+            ([start, end]) => start <= time && time < end,
+        );
+        return index === undefined || index < 0
+            ? undefined
+            : this.phases[index];
+    }
+
+    // Whether this Thing is on the map at `date`: always, except for a
+    // spacecraft at a date none of its phases cover - eg before launch, or
+    // during a flyby's few days of rapidly changing trajectory, or past the
+    // end of the trajectory data fetched so far. Nothing else about such a
+    // Thing (position, orbit) can be computed at that date.
+    isPresentAt(date: Date): boolean {
+        return !this.phases || this.phaseAt(date) !== undefined;
+    }
+
+    // `this.residents` as of `date`.
+    residentsAt(date: Date): Resident[] {
+        const time = date.getTime();
+        return this.residents.filter(
+            (resident) => Date.parse(`${resident.since}T00:00:00Z`) <= time,
+        );
     }
 
     // Flattened onto the ecliptic plane: this map is 2D and does not express
@@ -1257,7 +1360,9 @@ export class Thing {
             );
         }
 
-        // TODO case where there's no Body and no known parent (eg spacecraft)
+        if (this.phases) {
+            return this.spacecraftPosition3D(date);
+        }
 
         // Anything astronomy-engine doesn't track directly: every moon but
         // Luna, or a Sol-orbiting body like an asteroid.
@@ -1296,10 +1401,16 @@ export class Thing {
                 `${this.id} needs semiMajorAxisAu and epochAngleDeg: astronomy-engine doesn't track it directly, and it has no parent "${this.parentID}" lookup either`,
             );
         }
+        return this.keplerOffset(this, SIMPLE_ORBIT_EPOCH, date);
+    }
+
+    // The simplified Kepler model's offset from the parent at `date`, for
+    // `orbit`: either this Thing's own elements, or (for a spacecraft) the
+    // current phase's. epochAngleDeg is the mean longitude at `epoch`.
+    private keplerOffset(orbit: KeplerOrbit, epoch: Date, date: Date): Point2D {
         const daysSinceEpoch =
-            (date.getTime() - SIMPLE_ORBIT_EPOCH.getTime()) /
-            MILLISECONDS_PER_DAY;
-        const direction = this.retrograde ? -1 : 1;
+            (date.getTime() - epoch.getTime()) / MILLISECONDS_PER_DAY;
+        const direction = orbit.retrograde ? -1 : 1;
         // Mean longitude: this is exact (constant-rate) regardless of
         // eccentricity - it's the *position* angle that isn't, once
         // eccentricity != 0, which is why it goes through Kepler's
@@ -1307,15 +1418,16 @@ export class Thing {
         // anomaly = true anomaly, so that reduces to reading the mean
         // longitude directly as the position angle.)
         const meanLongitudeDeg =
-            this.epochAngleDeg +
-            (direction * 360 * daysSinceEpoch) / this.orbitalPeriodDays;
+            orbit.epochAngleDeg +
+            (direction * 360 * daysSinceEpoch) / orbit.orbitalPeriodDays;
         const meanAnomalyRad =
             (direction *
-                (meanLongitudeDeg - this.simplePeriapsisLongitudeDeg()) *
+                (meanLongitudeDeg - this.simplePeriapsisLongitudeDeg(orbit)) *
                 Math.PI) /
             180;
         return this.offsetAtEccentricAnomaly(
-            solveEccentricAnomaly(meanAnomalyRad, this.eccentricity),
+            solveEccentricAnomaly(meanAnomalyRad, orbit.eccentricity),
+            orbit,
         );
     }
 
@@ -1323,21 +1435,24 @@ export class Thing {
     // eccentric anomaly - ie a point on the orbit's fixed ellipse, with no
     // time involved. Used by offsetFromParent() (at the date's anomaly) and
     // by orbitPath() (sampling the whole ellipse evenly).
-    private offsetAtEccentricAnomaly(eccentricAnomalyRad: number): Point2D {
+    private offsetAtEccentricAnomaly(
+        eccentricAnomalyRad: number,
+        orbit: KeplerOrbit = this,
+    ): Point2D {
         const trueAnomalyRad =
             2 *
             Math.atan2(
-                Math.sqrt(1 + this.eccentricity) *
+                Math.sqrt(1 + orbit.eccentricity) *
                     Math.sin(eccentricAnomalyRad / 2),
-                Math.sqrt(1 - this.eccentricity) *
+                Math.sqrt(1 - orbit.eccentricity) *
                     Math.cos(eccentricAnomalyRad / 2),
             );
         const radiusAu =
-            this.semiMajorAxisAu *
-            (1 - this.eccentricity * Math.cos(eccentricAnomalyRad));
-        const direction = this.retrograde ? -1 : 1;
+            orbit.semiMajorAxisAu *
+            (1 - orbit.eccentricity * Math.cos(eccentricAnomalyRad));
+        const direction = orbit.retrograde ? -1 : 1;
         const angleRad =
-            (this.simplePeriapsisLongitudeDeg() * Math.PI) / 180 +
+            (this.simplePeriapsisLongitudeDeg(orbit) * Math.PI) / 180 +
             direction * trueAnomalyRad;
         return {
             x: radiusAu * Math.cos(angleRad),
@@ -1348,16 +1463,99 @@ export class Thing {
     // periapsisLongitudeDeg, which a circular orbit doesn't need (any
     // direction works as its "periapsis"; 0 is used), but an eccentric one
     // does.
-    private simplePeriapsisLongitudeDeg(): number {
-        if (!this.eccentricity) {
+    private simplePeriapsisLongitudeDeg(orbit: KeplerOrbit = this): number {
+        if (!orbit.eccentricity) {
             return 0;
         }
-        if (this.periapsisLongitudeDeg === undefined) {
+        if (orbit.periapsisLongitudeDeg === undefined) {
             throw new Error(
                 `${this.id} has eccentricity set but no periapsisLongitudeDeg`,
             );
         }
-        return this.periapsisLongitudeDeg;
+        return orbit.periapsisLongitudeDeg;
+    }
+
+    // Where a spacecraft is at `date`, from the phase covering it. Throws
+    // if none does: check isPresentAt() first.
+    private spacecraftPosition3D(date: Date): Point3D {
+        const phase = this.phaseAt(date);
+        if (!phase) {
+            throw new Error(
+                `${this.id} has no trajectory at ${date.toISOString()} - check isPresentAt() first`,
+            );
+        }
+        if (phase.type === 'track') {
+            return trackPosition(phase, date);
+        }
+        const parentPosition = this.phaseParent(phase).position3D(date);
+        const offset = this.keplerOffset(
+            phase,
+            new Date(`${phase.epoch}T00:00:00Z`),
+            date,
+        );
+        return {
+            x: parentPosition.x + offset.x,
+            y: parentPosition.y + offset.y,
+            z: parentPosition.z,
+        };
+    }
+
+    private phaseParent(phase: SpacecraftPhase): Thing {
+        const parent = Thing.byID(phase.parentID);
+        if (!parent) {
+            throw new Error(
+                `${this.id}'s phase parentID "${phase.parentID}" doesn't match any Thing`,
+            );
+        }
+        return parent;
+    }
+
+    // A spacecraft's orbit line at `date`: its current phase's ellipse
+    // around the parent's position at `date` (as for a moon - see
+    // orbitPath()), or for a 'track' phase, the path it has flown so far
+    // in that phase, ending at its current position. [] at a date it isn't
+    // present.
+    private spacecraftOrbitPath(date: Date, samples: number): Point2D[] {
+        const phase = this.phaseAt(date);
+        if (!phase) {
+            return [];
+        }
+        if (phase.type === 'track') {
+            const points: Point2D[] = [];
+            const stepMs = phase.stepDays * MILLISECONDS_PER_DAY;
+            const startMs = Date.parse(`${phase.start}T00:00:00Z`);
+            for (let i = 0; i * 3 < phase.points.length; i++) {
+                if (startMs + i * stepMs >= date.getTime()) {
+                    break;
+                }
+                points.push({
+                    x: phase.points[i * 3],
+                    y: phase.points[i * 3 + 1],
+                });
+            }
+            points.push(this.position(date));
+            return points;
+        }
+        const parentPosition = this.phaseParent(phase).position(date);
+        const points: Point2D[] = [];
+        for (let i = 0; i < samples; i++) {
+            const offset = this.offsetAtEccentricAnomaly(
+                (2 * Math.PI * i) / samples,
+                phase,
+            );
+            points.push({
+                x: parentPosition.x + offset.x,
+                y: parentPosition.y + offset.y,
+            });
+        }
+        return points;
+    }
+
+    // Whether orbitPath() is a closed loop, ie its last point should be
+    // joined back to its first: true for every orbit, false for a
+    // spacecraft's path so far along a 'track' phase.
+    orbitPathIsClosed(date: Date): boolean {
+        return this.phaseAt(date)?.type !== 'track';
     }
 
     // Traces an object's orbit by sampling its position across one period.
@@ -1382,6 +1580,9 @@ export class Thing {
     // Cheap to raise: this only reruns when `date` changes (useMemo in
     // OrbitPath), not on every zoom/pan.
     orbitPath(date: Date, samples: number = 2000): Point2D[] {
+        if (this.phases) {
+            return this.spacecraftOrbitPath(date, samples);
+        }
         // The simplified Kepler model (every moon, plus asteroids, TNOs, and
         // comets): its orbit is a fixed ellipse, so it's traced directly,
         // sampled evenly by eccentric anomaly rather than by time. Even time

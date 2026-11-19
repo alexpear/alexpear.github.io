@@ -1,2 +1,3 @@
 **/*.js
 intergame/data/dnd5e-monsters.json
+visuals/spacemap/src/orbital/spacecraftData.ts

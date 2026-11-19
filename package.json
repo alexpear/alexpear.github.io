@@ -94,6 +94,7 @@
     "buildspacemap": "webpack --config visuals/spacemap/webpack.config.js",
     "spacemap": "npm run lint && npm run prettierwrite && npm run buildspacemap && npm run openspacemap",
     "openspacemap": "open visuals/spacemap/spacemap.html",
+    "fetchspacecraft": "node visuals/spacemap/scripts/fetchSpacecraft.mjs",
     "buildblockscout": "tsc -p games/blockscout && browserify games/blockscout/dist/blockscout.js -o games/blockscout/dist/bundle.js",
     "openblockscout": "open games/blockscout/blockscout.html",
     "buildspoilerfree": "tsc -p spoilerfree/tsconfig.json && browserify spoilerfree/dist/*.js -o spoilerfree/bundle/spoilerfree.bundle.js",

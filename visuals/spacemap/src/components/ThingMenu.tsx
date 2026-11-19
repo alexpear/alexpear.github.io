@@ -131,9 +131,19 @@ export function ThingMenu({
 
     fields.push([`Lag from Earth`, formatSeconds(lagFromEarthSeconds)]);
 
+    if (thing.kind === 'spacecraft') {
+        if (thing.agency) {
+            fields.push(['Agency', thing.agency]);
+        }
+        if (thing.launchYear) {
+            fields.push(['Launched', String(thing.launchYear)]);
+        }
+    }
+
     // A Lagrange point is a location, not a physical body: no size or mass
-    // to report, as opposed to a body whose value just isn't known.
-    if (thing.kind !== 'lagrangePoint') {
+    // to report, as opposed to a body whose value just isn't known. Nor
+    // does a spacecraft have any worth comparing to a world's.
+    if (thing.kind !== 'lagrangePoint' && thing.kind !== 'spacecraft') {
         let diameterText: string;
 
         if (thing.diameterKm === undefined) {
@@ -165,6 +175,19 @@ export function ThingMenu({
         ]);
     }
 
+    const residents = thing.residentsAt(date);
+
+    // How far to trust a spacecraft's drawn position. Orbiting a planet or
+    // moon, it's on a snapshot of its real orbit, but at an illustrative
+    // point along it; elsewhere, it's on a simplified version of its real
+    // trajectory.
+    const positionNote =
+        thing.kind !== 'spacecraft'
+            ? undefined
+            : THINGS_BY_ID.get(thing.parentID)?.kind === 'star'
+              ? 'Trajectory simplified from JPL Horizons data.'
+              : 'Orbit from JPL Horizons data. Its shape is accurate, but where along it the spacecraft is drawn is only illustrative.';
+
     return (
         <MenuPane layout={layout}>
             <div style={headerStyle}>
@@ -193,6 +216,27 @@ export function ThingMenu({
                     </React.Fragment>
                 ))}
             </dl>
+            {thing.description && (
+                <p style={descriptionStyle}>{thing.description}</p>
+            )}
+            {residents.length > 0 && (
+                <>
+                    <h3 style={sectionTitleStyle}>
+                        {thing.kind === 'lagrangePoint'
+                            ? 'Spacecraft here'
+                            : 'On the surface'}
+                    </h3>
+                    <dl style={fieldListStyle}>
+                        {residents.map((resident) => (
+                            <React.Fragment key={resident.name}>
+                                <dt style={fieldLabelStyle}>{resident.name}</dt>
+                                <dd style={fieldValueStyle}>{resident.note}</dd>
+                            </React.Fragment>
+                        ))}
+                    </dl>
+                </>
+            )}
+            {positionNote && <p style={placeholderStyle}>{positionNote}</p>}
         </MenuPane>
     );
 }
@@ -311,6 +355,17 @@ const fieldLabelStyle: React.CSSProperties = {
 
 const fieldValueStyle: React.CSSProperties = {
     margin: 0,
+};
+
+const descriptionStyle: React.CSSProperties = {
+    margin: '16px 0 0',
+    lineHeight: 1.45,
+};
+
+const sectionTitleStyle: React.CSSProperties = {
+    margin: '20px 0 0',
+    fontSize: 16,
+    fontWeight: 700,
 };
 
 export const placeholderStyle: React.CSSProperties = {

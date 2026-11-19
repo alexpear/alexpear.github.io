@@ -2,9 +2,14 @@
 // (eg 'uranis' for 'uranus') and matches each Thing's aliases too.
 
 import { Thing } from './thing';
+import { Resident } from './types';
 
 export interface SearchResult {
+    // The Thing to select for this result: the match itself, or for a
+    // resident, the Thing it's at (eg Mars, for Perseverance).
     thing: Thing;
+    // Set when what matched is one of `thing`'s residents.
+    resident?: Resident;
     // Set when an alias (eg '2003 AZ84') matched better than the Thing's
     // own name, so the results list can say why this Thing is in it.
     matchedAlias?: string;
@@ -115,40 +120,72 @@ function matchScore(query: string, key: string): number | undefined {
     return fewestTypos <= allowed ? FUZZY + fewestTypos : undefined;
 }
 
-// Every catalog Thing matching `rawQuery`, best match first. Ties go to the
-// physically bigger Thing, as a stand-in for the better-known one: 'ganyme'
-// lists Jupiter's Ganymede above the asteroid Ganymed, while 'ganymed'
-// (an exact match) lists the asteroid first.
-export function searchThings(rawQuery: string): SearchResult[] {
+// How well `query` matches `name` or any of its `aliases`, and which alias
+// if one of those matched best - or undefined if none match.
+function bestMatch(
+    query: string,
+    name: string,
+    aliases: string[],
+): { score: number; matchedAlias?: string } | undefined {
+    let score = matchScore(query, normalize(name));
+    let matchedAlias: string | undefined;
+    for (const alias of aliases) {
+        const aliasScore = matchScore(query, normalize(alias));
+        if (
+            aliasScore !== undefined &&
+            (score === undefined || aliasScore < score)
+        ) {
+            score = aliasScore;
+            matchedAlias = alias;
+        }
+    }
+    return score === undefined ? undefined : { score, matchedAlias };
+}
+
+// Every catalog Thing (and resident - see Thing.residents) matching
+// `rawQuery` and on the map at `date`, best match first. Leaving out what
+// isn't on the map means eg a spacecraft is only found while it's flying.
+// Ties go to the physically bigger Thing, as a stand-in for the
+// better-known one: 'ganyme' lists Jupiter's Ganymede above the asteroid
+// Ganymed, while 'ganymed' (an exact match) lists the asteroid first.
+export function searchThings(rawQuery: string, date: Date): SearchResult[] {
     const query = normalize(rawQuery);
     if (query === '') {
         return [];
     }
-    const scored: { result: SearchResult; score: number }[] = [];
+    const scored: { result: SearchResult; score: number; size: number }[] = [];
     for (const thing of Thing.MAIN_THINGS) {
-        const nameScore = matchScore(query, normalize(thing.name));
-        let score = nameScore;
-        let matchedAlias: string | undefined;
-        for (const alias of thing.aliases) {
-            const aliasScore = matchScore(query, normalize(alias));
-            if (
-                aliasScore !== undefined &&
-                (score === undefined || aliasScore < score)
-            ) {
-                score = aliasScore;
-                matchedAlias = alias;
-            }
+        if (!thing.isPresentAt(date)) {
+            continue;
         }
-        if (score !== undefined) {
-            scored.push({ result: { thing, matchedAlias }, score });
+        const match = bestMatch(query, thing.name, thing.aliases);
+        if (match) {
+            scored.push({
+                result: { thing, matchedAlias: match.matchedAlias },
+                score: match.score,
+                size: thing.diameterKm ?? 0,
+            });
+        }
+        for (const resident of thing.residentsAt(date)) {
+            const residentMatch = bestMatch(
+                query,
+                resident.name,
+                resident.aliases ?? [],
+            );
+            if (residentMatch) {
+                scored.push({
+                    result: {
+                        thing,
+                        resident,
+                        matchedAlias: residentMatch.matchedAlias,
+                    },
+                    score: residentMatch.score,
+                    size: 0,
+                });
+            }
         }
     }
     return scored
-        .sort(
-            (a, b) =>
-                a.score - b.score ||
-                (b.result.thing.diameterKm ?? 0) -
-                    (a.result.thing.diameterKm ?? 0),
-        )
+        .sort((a, b) => a.score - b.score || b.size - a.size)
         .map((entry) => entry.result);
 }

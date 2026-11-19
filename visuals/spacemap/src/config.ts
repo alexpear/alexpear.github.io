@@ -20,10 +20,6 @@ export function parseConfigFromUrl(search: string): SpaceMapConfig {
     const requestedIds = focusParam
         ? focusParam.split(',').map((id) => id.trim().toLowerCase())
         : DEFAULT_FOCUS_IDS;
-    const focusObjects = requestedIds
-        .map((id) => THINGS_BY_ID.get(id))
-        .filter((object): object is Thing => object !== undefined);
-
     let dateShown = new Date();
     if (params.has('t')) {
         const timeParam = params.get('t');
@@ -36,11 +32,22 @@ export function parseConfigFromUrl(search: string): SpaceMapConfig {
         }
     }
 
+    // A spacecraft not flying at that date can't be placed, so it's
+    // dropped like an unknown id.
+    const focusObjects = requestedIds
+        .map((id) => THINGS_BY_ID.get(id))
+        .filter(
+            (object): object is Thing =>
+                object !== undefined && object.isPresentAt(dateShown),
+        );
+
     return {
         focusedThings:
             focusObjects.length > 0
                 ? focusObjects
-                : DEFAULT_FOCUS_IDS.map((id) => THINGS_BY_ID.get(id)!),
+                : DEFAULT_FOCUS_IDS.map((id) => THINGS_BY_ID.get(id)!).filter(
+                      (object) => object.isPresentAt(dateShown),
+                  ),
         date: dateShown,
         focusFromUrl: focusParam !== null && focusObjects.length > 0,
     };

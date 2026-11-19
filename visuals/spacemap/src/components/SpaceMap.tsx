@@ -169,6 +169,25 @@ const OFFSCREEN_MARGIN_PX = 50;
 const SMALL_HELIOCENTRIC_MAX_DIAMETER_KM =
     Thing.byID('mercury')?.diameterKm ?? 4879;
 
+// Earth's orbit bands, drawn as rings by renderEarthOrbitBands, at radii
+// from Earth's center (its mean radius, 6,371 km, plus the altitude). Low
+// Earth orbit is everything up to 2,000 km up (the ISS is ~400 km);
+// medium Earth orbit is the wide band above that, shown at the altitude of
+// the GPS satellites (~20,200 km), its best-known residents; geostationary
+// orbit, 35,786 km up, is the one altitude where an orbit takes exactly a
+// day, so a satellite there hangs over one spot on the equator.
+const EARTH_ORBIT_BANDS: { label: string; radiusKm: number }[] = [
+    { label: 'Low Earth orbit', radiusKm: 6371 + 2000 },
+    { label: 'Medium Earth orbit (GPS)', radiusKm: 6371 + 20200 },
+    { label: 'Geostationary orbit', radiusKm: 6371 + 35786 },
+];
+// Smaller than this, a ring would just be a halo around Earth's marker.
+const MIN_ORBIT_BAND_RADIUS_PX = 25;
+// Bigger than this, it's far too big to see as a ring anyway, and its
+// coordinates would get big enough for browsers' 32-bit SVG math to blur
+// (see SpaceMap's screenOffset).
+const MAX_ORBIT_BAND_RADIUS_PX = 1e6;
+
 // True for a Sol-orbiting body smaller than Mercury, and for anything
 // orbiting one (eg Charon), which would otherwise be left circling an empty
 // spot. A body with no known diameter (eg comet Pons-Brooks) counts as small.
@@ -183,12 +202,16 @@ function isSmallHeliocentric(thing: Thing): boolean {
     return (thing.diameterKm ?? 0) < SMALL_HELIOCENTRIC_MAX_DIAMETER_KM;
 }
 
-// True for a small heliocentric itself, not its moons. These only get their
-// orbit line drawn while selected or moused over (there are too many of
-// them, on too many crisscrossing orbits, to draw all the time); planets'
+// True for a small heliocentric itself (not its moons), and for every
+// spacecraft. These only get their orbit line drawn while selected or
+// moused over (there are too many of them, on too many crisscrossing
+// orbits - eg half a dozen around Mars - to draw all the time); planets'
 // and moons' orbit lines are always drawn.
 function hasOnDemandOrbitLine(thing: Thing): boolean {
-    return thing.parentID === 'sol' && isSmallHeliocentric(thing);
+    return (
+        thing.kind === 'spacecraft' ||
+        (thing.parentID === 'sol' && isSmallHeliocentric(thing))
+    );
 }
 
 interface Props {
@@ -269,7 +292,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
         string | undefined
     >(undefined);
     const [showSmallHeliocentrics, setShowSmallHeliocentrics] =
-        React.useState(false);
+        React.useState(true);
     // The Thing whose marker/label the mouse is over, if any. See
     // hasOnDemandOrbitLine.
     const [hoveredThingId, setHoveredThingId] = React.useState<
@@ -417,15 +440,17 @@ export function SpaceMap({ config }: Props): JSX.Element {
     // BASE_LAYER, minus the small heliocentrics when their checkbox is
     // unchecked. Anything an embedding page explicitly asked for via ?focus=
     // stays regardless, so eg ?focus=pluto can't be left framing nothing.
+    // Minus, too, any spacecraft not flying at this date (see
+    // Thing.isPresentAt) - those can't be placed at all.
     const visibleBaseLayer = React.useMemo(
         () =>
-            showSmallHeliocentrics
-                ? BASE_LAYER
-                : BASE_LAYER.filter(
-                      (thing) =>
-                          !isSmallHeliocentric(thing) ||
-                          (config.focusFromUrl && focusIdSet.has(thing.id)),
-                  ),
+            BASE_LAYER.filter(
+                (thing) =>
+                    thing.isPresentAt(config.date) &&
+                    (showSmallHeliocentrics ||
+                        !isSmallHeliocentric(thing) ||
+                        (config.focusFromUrl && focusIdSet.has(thing.id))),
+            ),
         [showSmallHeliocentrics, config, focusIdSet],
     );
 
@@ -504,8 +529,8 @@ export function SpaceMap({ config }: Props): JSX.Element {
     );
 
     const searchResults = React.useMemo(
-        () => searchThings(searchQuery),
-        [searchQuery],
+        () => searchThings(searchQuery, config.date),
+        [searchQuery, config.date],
     );
     // The pane shows search results while the searchbar is in use and has
     // text in it; otherwise the selected Thing's info, if any.
@@ -1094,6 +1119,66 @@ export function SpaceMap({ config }: Props): JSX.Element {
         return markers;
     }
 
+    // Reference rings around Earth for its orbit bands (see
+    // EARTH_ORBIT_BANDS): not Things, just guides for the satellites
+    // within them, eg the ISS in low Earth orbit. Each is only drawn while
+    // big enough to tell apart from Earth, and while some of it is on
+    // screen.
+    function renderEarthOrbitBands(): JSX.Element[] {
+        const earthAu = thingPositions.get('earth');
+        if (!earthAu) {
+            return [];
+        }
+        const earthWorld = thingWorldPoints.get('earth')!;
+        const center = {
+            x: screenOffset.x + earthWorld.x * zoomMultiplier,
+            y: screenOffset.y + earthWorld.y * zoomMultiplier,
+        };
+        // The nearest and farthest the screen gets from Earth's center.
+        const nearestX = Math.max(0, Math.min(viewportSize.width, center.x));
+        const nearestY = Math.max(0, Math.min(viewportSize.height, center.y));
+        const nearest = Math.hypot(nearestX - center.x, nearestY - center.y);
+        const farthest = Math.hypot(
+            Math.max(center.x, viewportSize.width - center.x),
+            Math.max(center.y, viewportSize.height - center.y),
+        );
+        return EARTH_ORBIT_BANDS.flatMap(({ label, radiusKm }) => {
+            const radiusPx = (radiusKm / KM_PER_AU) * pixelsPerAu;
+            if (
+                radiusPx < MIN_ORBIT_BAND_RADIUS_PX ||
+                radiusPx > MAX_ORBIT_BAND_RADIUS_PX ||
+                radiusPx < nearest ||
+                radiusPx > farthest
+            ) {
+                return [];
+            }
+            return [
+                <g key={label} pointerEvents="none">
+                    <circle
+                        cx={center.x}
+                        cy={center.y}
+                        r={radiusPx}
+                        fill="none"
+                        stroke="#8fa3c8"
+                        strokeOpacity={0.35}
+                        strokeDasharray="3 5"
+                    />
+                    <text
+                        x={center.x}
+                        y={center.y - radiusPx - 4}
+                        textAnchor="middle"
+                        fill="#8fa3c8"
+                        fillOpacity={0.8}
+                        fontSize={11}
+                        fontFamily="'Gelasio', Georgia, serif"
+                    >
+                        {label}
+                    </text>
+                </g>,
+            ];
+        });
+    }
+
     function renderOrbitPath(thing: Thing): JSX.Element {
         return (
             <OrbitPath
@@ -1137,6 +1222,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
                     )
                     .map(renderOrbitPath)}
                 {focusedExtras.map(renderOrbitPath)}
+                {renderEarthOrbitBands()}
                 {renderMarkers(visibleBaseLayer, isLabeled)}
                 {renderMarkers(focusedExtras, () => true)}
                 {renderMarkers(anchorLagrangePoints, () => true)}
@@ -1264,6 +1350,10 @@ const OrbitPath = React.memo(function OrbitPath({
         }
         return object.orbitPath?.(date);
     }, [object, date]);
+    const closed = React.useMemo(
+        () => object.orbitPathIsClosed(date),
+        [object, date],
+    );
     // World-space points (see makeAuToWorldTransform): independent of
     // pan/zoom, so only recomputed when the orbit or framing changes - a
     // cheap rotate-and-scale per point.
@@ -1292,8 +1382,11 @@ const OrbitPath = React.memo(function OrbitPath({
         // end point, so the next one can continue from there with L rather
         // than starting a new subpath with M.
         let penDown = false;
-        for (let i = 0; i < screenPoints.length; i++) {
-            // The orbit is a closed loop, so the last point joins the first.
+        // A closed loop's last point joins back to its first.
+        const segmentCount = closed
+            ? screenPoints.length
+            : screenPoints.length - 1;
+        for (let i = 0; i < segmentCount; i++) {
             const clipped = clipSegment(
                 screenPoints[i],
                 screenPoints[(i + 1) % screenPoints.length],
@@ -1313,6 +1406,7 @@ const OrbitPath = React.memo(function OrbitPath({
         return commands.length > 0 ? commands.join(' ') : undefined;
     }, [
         worldPoints,
+        closed,
         zoomMultiplier,
         screenOffsetX,
         screenOffsetY,
@@ -1408,6 +1502,13 @@ const ObjectMarker = React.memo(function ObjectMarker({
     selected,
 }: ObjectMarkerProps): JSX.Element {
     const isLagrangePoint = object.kind === 'lagrangePoint';
+    // Spacecraft are diamonds, to tell them apart from natural bodies -
+    // once zoomed out far enough to be drawn at marker size (see
+    // drawnRadiusPx), which for a spacecraft is always.
+    const isSpacecraft = object.kind === 'spacecraft';
+    // A bit past `radius` at its corners, so it reads as about the same
+    // size as a circle of that radius.
+    const diamondRadius = radius * 1.3;
     return (
         // data-thing-id is how a tap on the marker or its label is mapped
         // back to this Thing - see thingIdAtPoint.
@@ -1453,6 +1554,11 @@ const ObjectMarker = React.memo(function ObjectMarker({
                         strokeWidth={1.5}
                     />
                 </>
+            ) : isSpacecraft ? (
+                <polygon
+                    points={`0,${-diamondRadius} ${diamondRadius},0 0,${diamondRadius} ${-diamondRadius},0`}
+                    fill={object.colorHex}
+                />
             ) : (
                 <circle cx={0} cy={0} r={radius} fill={object.colorHex} />
             )}
