@@ -428,8 +428,25 @@ export class Thing {
             // Smaller asteroids, each with an eccentric enough orbit to be
             // given its real ellipse: elements from JPL Horizons (same epoch
             // and frame as everything here), diameters from JPL's Small-Body
-            // Database (ssd-api.jpl.nasa.gov/sbdb.api). Only Eros has a
-            // measured mass (NEAR Shoemaker: GM 4.463e-4 km^3/s^2).
+            // Database (ssd-api.jpl.nasa.gov/sbdb.api). Only Eros (NEAR
+            // Shoemaker: GM 4.463e-4 km^3/s^2) and 16 Psyche (SBDB: GM
+            // 1.601 km^3/s^2, Farnocchia et al. 2024) have measured masses.
+            new Thing({
+                // Named with its number, unlike the others, since the
+                // spacecraft heading to it already has the id 'psyche'.
+                name: '16 Psyche',
+                aliases: ['Psyche', '16'],
+                diameterKm: 222, // ~278 x 238 x 171 km
+                massKg: 2.399e19,
+                kind: 'asteroid',
+                colorHex: '#a9a49c',
+                orbitalPeriodDays: 1828.134567,
+                parentID: 'sol',
+                semiMajorAxisAu: 2.925992144,
+                epochAngleDeg: 129.0438,
+                eccentricity: 0.13557,
+                periapsisLongitudeDeg: 20.0693,
+            }),
             new Thing({
                 name: 'Aethra', // 132
                 aliases: ['132'],
