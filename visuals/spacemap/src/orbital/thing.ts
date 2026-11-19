@@ -1,6 +1,7 @@
 // Every entity that we might display at a location on the map is a Thing, including stars, planets, moons, asteroids, spacecraft, debris, & Lagrange points.
 
 import {
+    EllipsePhase,
     Point2D,
     Point3D,
     MILLISECONDS_PER_DAY,
@@ -45,6 +46,26 @@ const EQJ_TO_ECL = Rotation_EQJ_ECL();
 // needs updating again once it doesn't. The slower the orbit (eg Ceres,
 // 4.6 years), the longer this stays good.
 const SIMPLE_ORBIT_EPOCH = new Date('2026-11-05T00:00:00Z');
+
+// Samples per orbit of each ellipse phase in a spacecraft's planned path
+// (see Thing.plannedPath()) - fewer than a full orbit line's 2000, since a
+// path can run through many orbits (eg Parker Solar Probe's, ~14 of them).
+const PLANNED_PATH_STEPS_PER_ORBIT = 360;
+// At most how far back a planned path starts - see Thing.plannedPath().
+const PLANNED_PATH_PAST_DAYS = 90;
+// Samples in a full orbit line - see Thing.orbitPath().
+const ORBIT_PATH_SAMPLES = 2000;
+
+// An orbit line, as Thing.orbitLine() gives it to draw: `points` (in AU,
+// as Thing.orbitPath()), joined back from last to first if `closed`. Open
+// lines are spacecraft paths, drawn solid up to the craft's current
+// position - points[futureFrom] - and dashed from there on, where it's
+// still to go. futureFrom is undefined if the whole line is solid.
+export interface OrbitLine {
+    points: Point2D[];
+    closed: boolean;
+    futureFrom?: number;
+}
 
 // Both exact by definition (IAU 2012 for the AU; SI for c), so their
 // ratio - ~499.005 s, light's travel time across 1 AU - is too.
@@ -1540,38 +1561,191 @@ export class Thing {
         return parent;
     }
 
-    // A spacecraft's orbit line at `date`: its current phase's ellipse
-    // around the parent's position at `date` (as for a moon - see
-    // orbitPath()), or for a 'track' phase, its sampled path, also around
-    // the parent's position at `date`. [] at a date it isn't present.
-    private spacecraftOrbitPath(date: Date, samples: number): Point2D[] {
+    // Whether a spacecraft's orbit line at `date` is its planned path (see
+    // plannedPath()): while it's cruising around Sol, on any multi-phase
+    // trajectory - its current ellipse alone is misleading for a craft
+    // that's about to change orbit, eg Psyche, whose ion engines are
+    // steadily stretching its orbit out to the asteroid's.
+    private showsPlannedPath(phase: SpacecraftPhase): boolean {
+        return phase.parentID === 'sol' && (this.phases?.length ?? 0) > 1;
+    }
+
+    // Mean anomaly (radians) of an ellipse phase at `date`, unwrapped:
+    // keeps increasing past 2pi, so differences count whole revolutions.
+    private phaseMeanAnomaly(phase: EllipsePhase, date: Date): number {
+        const daysSinceEpoch =
+            (date.getTime() - Date.parse(`${phase.epoch}T00:00:00Z`)) /
+            MILLISECONDS_PER_DAY;
+        const direction = phase.retrograde ? -1 : 1;
+        return (
+            (direction *
+                (phase.epochAngleDeg -
+                    this.simplePeriapsisLongitudeDeg(phase)) *
+                Math.PI) /
+                180 +
+            (2 * Math.PI * daysSinceEpoch) / phase.orbitalPeriodDays
+        );
+    }
+
+    // Eccentric anomaly for an unwrapped mean anomaly, likewise unwrapped.
+    private static unwrappedEccentricAnomaly(
+        meanAnomalyRad: number,
+        eccentricity: number,
+    ): number {
+        const turns = Math.floor(meanAnomalyRad / (2 * Math.PI));
+        return (
+            2 * Math.PI * turns +
+            solveEccentricAnomaly(meanAnomalyRad, eccentricity)
+        );
+    }
+
+    // Appends `phase`'s path over (fromMs, toMs] to `points`, ending exactly
+    // at toMs. Ellipse phases are sampled evenly by eccentric anomaly
+    // (PLANNED_PATH_STEPS_PER_ORBIT per orbit, so a tight perihelion pass
+    // isn't cut short - see orbitPath()), around the parent's position at
+    // `date`; tracks at their own samples, each added to the parent's
+    // position at that sample's time - so a flyby swings by the planet
+    // where it will be then.
+    private appendPathStretch(
+        points: Point2D[],
+        phase: SpacecraftPhase,
+        fromMs: number,
+        toMs: number,
+        date: Date,
+    ): void {
+        const parent = this.phaseParent(phase);
+        if (phase.type === 'track') {
+            const startMs = Date.parse(`${phase.start}T00:00:00Z`);
+            const stepMs = phase.stepDays * MILLISECONDS_PER_DAY;
+            const at = (ms: number, offset: Point2D): Point2D => {
+                const parentPosition = parent.position(new Date(ms));
+                return {
+                    x: parentPosition.x + offset.x,
+                    y: parentPosition.y + offset.y,
+                };
+            };
+            for (let i = 0; i * 3 < phase.points.length; i++) {
+                const sampleMs = startMs + i * stepMs;
+                if (sampleMs > fromMs && sampleMs < toMs) {
+                    points.push(
+                        at(sampleMs, {
+                            x: phase.points[i * 3],
+                            y: phase.points[i * 3 + 1],
+                        }),
+                    );
+                }
+            }
+            points.push(at(toMs, trackOffset(phase, new Date(toMs))));
+            return;
+        }
+        const parentPosition = parent.position(date);
+        const fromE = Thing.unwrappedEccentricAnomaly(
+            this.phaseMeanAnomaly(phase, new Date(fromMs)),
+            phase.eccentricity,
+        );
+        const toE = Thing.unwrappedEccentricAnomaly(
+            this.phaseMeanAnomaly(phase, new Date(toMs)),
+            phase.eccentricity,
+        );
+        const stepE = (2 * Math.PI) / PLANNED_PATH_STEPS_PER_ORBIT;
+        for (let e = fromE + stepE; ; e += stepE) {
+            const offset = this.offsetAtEccentricAnomaly(
+                Math.min(e, toE),
+                phase,
+            );
+            points.push({
+                x: parentPosition.x + offset.x,
+                y: parentPosition.y + offset.y,
+            });
+            if (e >= toE) {
+                break;
+            }
+        }
+    }
+
+    // A spacecraft's planned path from `date` on, through each phase after
+    // it, up to the end of its trajectory data - or until it settles into
+    // orbit around something other than Sol (eg BepiColombo at Mercury),
+    // since from there on its path is just loops around that body. Led by
+    // a short stretch of where it's just been (within the current phase,
+    // and at most PLANNED_PATH_PAST_DAYS or a quarter orbit - enough to show
+    // which way it came from, without loops); `futureFrom` is the index of
+    // its current position, where that stretch ends.
+    private plannedPath(date: Date): OrbitLine {
+        const time = date.getTime();
+        const index = this.phaseTimes!.findIndex(
+            ([startMs, endMs]) => startMs <= time && time < endMs,
+        );
+        const current = this.phases![index];
+        const pastDays = Math.min(
+            PLANNED_PATH_PAST_DAYS,
+            current.type === 'ellipse'
+                ? current.orbitalPeriodDays / 4
+                : PLANNED_PATH_PAST_DAYS,
+        );
+        const pastFromMs = Math.max(
+            this.phaseTimes![index][0],
+            time - pastDays * MILLISECONDS_PER_DAY,
+        );
+        const points: Point2D[] = [this.position(new Date(pastFromMs))];
+        this.appendPathStretch(points, current, pastFromMs, time, date);
+        const futureFrom = points.length - 1;
+        for (let i = index; i < this.phases!.length; i++) {
+            const phase = this.phases![i];
+            if (phase.type === 'ellipse' && phase.parentID !== 'sol') {
+                break;
+            }
+            const [startMs, endMs] = this.phaseTimes![i];
+            this.appendPathStretch(
+                points,
+                phase,
+                Math.max(startMs, time),
+                endMs,
+                date,
+            );
+        }
+        return { points, closed: false, futureFrom };
+    }
+
+    // A spacecraft's orbit line at `date`: its planned path, if
+    // showsPlannedPath(); otherwise its current phase's ellipse around the
+    // parent's position at `date` (as for a moon - see orbitPath()), or for
+    // a 'track' phase, its sampled path, also around the parent's position
+    // at `date`. No points at a date it isn't present.
+    private spacecraftOrbitLine(date: Date, samples: number): OrbitLine {
         const phase = this.phaseAt(date);
         if (!phase) {
-            return [];
+            return { points: [], closed: false };
+        }
+        if (this.showsPlannedPath(phase)) {
+            return this.plannedPath(date);
         }
         const parentPosition = this.phaseParent(phase).position(date);
         if (phase.type === 'track') {
-            // Relative to Sol (eg Voyager 2's decades-long track), only the
-            // part already flown, up to its current position. Relative to a
-            // planet (a flyby), the whole pass, which is short, and shows
-            // the planet bending the craft's path.
-            const flownOnly = phase.parentID === 'sol';
+            // Relative to Sol (eg Voyager 2's decades-long track), split at
+            // its current position into flown and still to come. Relative
+            // to a planet (a flyby), the whole pass, which is short, and
+            // shows the planet bending the craft's path.
+            const split = phase.parentID === 'sol';
             const points: Point2D[] = [];
+            let futureFrom: number | undefined;
             const stepMs = phase.stepDays * MILLISECONDS_PER_DAY;
             const startMs = Date.parse(`${phase.start}T00:00:00Z`);
             for (let i = 0; i * 3 < phase.points.length; i++) {
-                if (flownOnly && startMs + i * stepMs >= date.getTime()) {
-                    break;
+                if (
+                    split &&
+                    futureFrom === undefined &&
+                    startMs + i * stepMs >= date.getTime()
+                ) {
+                    futureFrom = points.length;
+                    points.push(this.position(date));
                 }
                 points.push({
                     x: parentPosition.x + phase.points[i * 3],
                     y: parentPosition.y + phase.points[i * 3 + 1],
                 });
             }
-            if (flownOnly) {
-                points.push(this.position(date));
-            }
-            return points;
+            return { points, closed: false, futureFrom };
         }
         const points: Point2D[] = [];
         for (let i = 0; i < samples; i++) {
@@ -1584,14 +1758,16 @@ export class Thing {
                 y: parentPosition.y + offset.y,
             });
         }
-        return points;
+        return { points, closed: true };
     }
 
-    // Whether orbitPath() is a closed loop, ie its last point should be
-    // joined back to its first: true for every orbit, false for a
-    // spacecraft's path so far along a 'track' phase.
-    orbitPathIsClosed(date: Date): boolean {
-        return this.phaseAt(date)?.type !== 'track';
+    // This Thing's orbit line at `date`, as drawn: orbitPath()'s points,
+    // plus how to draw them - see OrbitLine.
+    orbitLine(date: Date): OrbitLine {
+        if (this.phases) {
+            return this.spacecraftOrbitLine(date, ORBIT_PATH_SAMPLES);
+        }
+        return { points: this.orbitPath(date), closed: true };
     }
 
     // Traces an object's orbit by sampling its position across one period.
@@ -1615,9 +1791,9 @@ export class Thing {
     // distance to span. More samples means each one covers less distance.
     // Cheap to raise: this only reruns when `date` changes (useMemo in
     // OrbitPath), not on every zoom/pan.
-    orbitPath(date: Date, samples: number = 2000): Point2D[] {
+    orbitPath(date: Date, samples: number = ORBIT_PATH_SAMPLES): Point2D[] {
         if (this.phases) {
-            return this.spacecraftOrbitPath(date, samples);
+            return this.spacecraftOrbitLine(date, samples).points;
         }
         // The simplified Kepler model (every moon, plus asteroids, TNOs, and
         // comets): its orbit is a fixed ellipse, so it's traced directly,

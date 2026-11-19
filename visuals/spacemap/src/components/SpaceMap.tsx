@@ -185,6 +185,10 @@ const EARTH_ORBIT_BANDS: { label: string; radiusKm: number }[] = [
     { label: 'Medium Earth orbit (GPS)', radiusKm: 6371 + 20200 },
     { label: 'Geostationary orbit', radiusKm: 6371 + 35786 },
 ];
+// Dotted, so they don't look like a dashed path (FUTURE_PATH_DASH).
+const ORBIT_BAND_DOTS = '1 4';
+// Where a spacecraft's path is still to come - see OrbitLine in thing.ts.
+const FUTURE_PATH_DASH = '6 5';
 // Smaller than this, a ring would just be a halo around Earth's marker.
 const MIN_ORBIT_BAND_RADIUS_PX = 25;
 // Bigger than this, it's far too big to see as a ring anyway, and its
@@ -1165,7 +1169,7 @@ export function SpaceMap({ config }: Props): JSX.Element {
                         fill="none"
                         stroke="#8fa3c8"
                         strokeOpacity={0.35}
-                        strokeDasharray="3 5"
+                        strokeDasharray={ORBIT_BAND_DOTS}
                     />
                     <text
                         x={center.x}
@@ -1348,29 +1352,28 @@ const OrbitPath = React.memo(function OrbitPath({
     // is the expensive part - a planet's is 2,000 astronomy-engine position
     // calculations - so it's kept separate from the framing (toWorld),
     // which changes whenever the map is resized.
-    const auPoints = React.useMemo(() => {
-        if (object.kind === 'lagrangePoint') {
-            return undefined;
-        }
-        return object.orbitPath?.(date);
-    }, [object, date]);
-    const closed = React.useMemo(
-        () => object.orbitPathIsClosed(date),
+    const line = React.useMemo(
+        () =>
+            object.kind === 'lagrangePoint'
+                ? undefined
+                : object.orbitLine(date),
         [object, date],
     );
     // World-space points (see makeAuToWorldTransform): independent of
     // pan/zoom, so only recomputed when the orbit or framing changes - a
     // cheap rotate-and-scale per point.
     const worldPoints = React.useMemo(
-        () => auPoints?.map(toWorld),
-        [auPoints, toWorld],
+        () => line?.points.map(toWorld),
+        [line, toWorld],
     );
     // Screen-space geometry (see SpaceMap's screenOffset), clipped to just
-    // past the screen's edges - see clipSegment.
+    // past the screen's edges - see clipSegment. Two paths: the solid line,
+    // and the dashed part of a spacecraft's path still to come.
     const pathData = React.useMemo(() => {
-        if (!worldPoints || worldPoints.length < 2) {
+        if (!line || !worldPoints || worldPoints.length < 2) {
             return undefined;
         }
+        const { closed, futureFrom } = line;
         const clipRect = {
             left: -OFFSCREEN_MARGIN_PX,
             top: -OFFSCREEN_MARGIN_PX,
@@ -1381,7 +1384,8 @@ const OrbitPath = React.memo(function OrbitPath({
             x: screenOffsetX + point.x * zoomMultiplier,
             y: screenOffsetY + point.y * zoomMultiplier,
         }));
-        const commands: string[] = [];
+        const solid: string[] = [];
+        const dashed: string[] = [];
         // Whether the last drawn segment ended exactly at its own (unclipped)
         // end point, so the next one can continue from there with L rather
         // than starting a new subpath with M.
@@ -1391,6 +1395,11 @@ const OrbitPath = React.memo(function OrbitPath({
             ? screenPoints.length
             : screenPoints.length - 1;
         for (let i = 0; i < segmentCount; i++) {
+            const commands =
+                futureFrom !== undefined && i >= futureFrom ? dashed : solid;
+            if (i === futureFrom) {
+                penDown = false; // a new path
+            }
             const clipped = clipSegment(
                 screenPoints[i],
                 screenPoints[(i + 1) % screenPoints.length],
@@ -1407,27 +1416,44 @@ const OrbitPath = React.memo(function OrbitPath({
             commands.push(`L${roundTenth(end.x)},${roundTenth(end.y)}`);
             penDown = !endClipped;
         }
-        return commands.length > 0 ? commands.join(' ') : undefined;
+        return {
+            solid: solid.length > 0 ? solid.join(' ') : undefined,
+            dashed: dashed.length > 0 ? dashed.join(' ') : undefined,
+        };
     }, [
+        line,
         worldPoints,
-        closed,
         zoomMultiplier,
         screenOffsetX,
         screenOffsetY,
         viewportWidth,
         viewportHeight,
     ]);
-    if (!pathData) {
+    if (!pathData || (!pathData.solid && !pathData.dashed)) {
         return null;
     }
     return (
-        <path
-            d={pathData}
-            fill="none"
-            stroke={object.colorHex}
-            strokeOpacity={0.35}
-            strokeWidth={1}
-        />
+        <>
+            {pathData.solid && (
+                <path
+                    d={pathData.solid}
+                    fill="none"
+                    stroke={object.colorHex}
+                    strokeOpacity={0.35}
+                    strokeWidth={1}
+                />
+            )}
+            {pathData.dashed && (
+                <path
+                    d={pathData.dashed}
+                    fill="none"
+                    stroke={object.colorHex}
+                    strokeOpacity={0.35}
+                    strokeWidth={1}
+                    strokeDasharray={FUTURE_PATH_DASH}
+                />
+            )}
+        </>
     );
 });
 
