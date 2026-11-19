@@ -272,12 +272,87 @@ export const SPACECRAFT_PHASES: Record<string, SpacecraftPhase[]> = {
         {"type":"ellipse","start":"2024-01-01","end":"2031-01-01","parentID":"luna","epoch":"2026-11-20","semiMajorAxisAu":0.000012295737,"eccentricity":0.0145554,"periapsisLongitudeDeg":312.226,"epochAngleDeg":39.6655,"orbitalPeriodDays":0.081933969,"retrograde":true},
     ],
     'iss': [
-        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.000045407021,"eccentricity":0.0014176,"periapsisLongitudeDeg":311.854,"epochAngleDeg":13.2412,"orbitalPeriodDays":0.064486659},
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.000045406914,"eccentricity":0.0014207,"periapsisLongitudeDeg":311.771,"epochAngleDeg":13.2618,"orbitalPeriodDays":0.064486431},
     ],
     'tiangong': [
-        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.000045240512,"eccentricity":0.000631495,"periapsisLongitudeDeg":58.0369,"epochAngleDeg":55.7379,"orbitalPeriodDays":0.064132273},
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.000045240482,"eccentricity":0.000622997,"periapsisLongitudeDeg":57.2821,"epochAngleDeg":55.7471,"orbitalPeriodDays":0.064132209},
     ],
     'hubble': [
-        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.000045788384,"eccentricity":0.000284447,"periapsisLongitudeDeg":96.4318,"epochAngleDeg":25.0258,"orbitalPeriodDays":0.065300775},
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.000045788367,"eccentricity":0.000293826,"periapsisLongitudeDeg":96.3962,"epochAngleDeg":25.0283,"orbitalPeriodDays":0.065300738},
+    ],
+    'chandra': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.00054006232,"eccentricity":0.762879,"periapsisLongitudeDeg":48.1793,"epochAngleDeg":217.814,"orbitalPeriodDays":2.6451553},
+    ],
+    'xmm-newton': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.000447513,"eccentricity":0.46342,"periapsisLongitudeDeg":356.903,"epochAngleDeg":189.59,"orbitalPeriodDays":1.995234},
+    ],
+    'tess': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.0015544254,"eccentricity":0.572638,"periapsisLongitudeDeg":85.6157,"epochAngleDeg":260.554,"orbitalPeriodDays":12.916361},
+    ],
+    'sdo': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.00028185585,"eccentricity":0.000193714,"periapsisLongitudeDeg":178.593,"epochAngleDeg":309.299,"orbitalPeriodDays":0.9973003},
+    ],
+    'aqua': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.000047249054,"eccentricity":0.00150071,"periapsisLongitudeDeg":43.5995,"epochAngleDeg":336.743,"orbitalPeriodDays":0.06845025},
+    ],
+    'nisar': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.000047641996,"eccentricity":0.0012537,"periapsisLongitudeDeg":96.174,"epochAngleDeg":298.4,"orbitalPeriodDays":0.069305911,"retrograde":true},
+    ],
+    'lageos-1': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.000081988258,"eccentricity":0.00341668,"periapsisLongitudeDeg":310.856,"epochAngleDeg":313.404,"orbitalPeriodDays":0.15646343,"retrograde":true},
+    ],
+    'goes-19': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.0002818625,"eccentricity":0.000117475,"periapsisLongitudeDeg":305.356,"epochAngleDeg":343.17,"orbitalPeriodDays":0.99733559},
+    ],
+    'goes-18': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.00028186118,"eccentricity":0.0000862876,"periapsisLongitudeDeg":278.444,"epochAngleDeg":281.33,"orbitalPeriodDays":0.99732856},
+    ],
+    'goes-16': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.00028186236,"eccentricity":0.000291293,"periapsisLongitudeDeg":260.719,"epochAngleDeg":313.499,"orbitalPeriodDays":0.99733483},
+    ],
+    'goes-17': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.00028186026,"eccentricity":0.000155602,"periapsisLongitudeDeg":280.135,"epochAngleDeg":328.59,"orbitalPeriodDays":0.99732369},
+    ],
+    'himawari-9': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-20","semiMajorAxisAu":0.00028186237,"eccentricity":0.00013926,"periapsisLongitudeDeg":250.936,"epochAngleDeg":199.121,"orbitalPeriodDays":0.99733489},
+    ],
+    'fermi': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-18","semiMajorAxisAu":0.000045922295,"eccentricity":0.00079778,"periapsisLongitudeDeg":208.837,"epochAngleDeg":213.916,"orbitalPeriodDays":0.065587447},
+    ],
+    'landsat-9': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-19","semiMajorAxisAu":0.000047331134,"eccentricity":0.00009946,"periapsisLongitudeDeg":110.842,"epochAngleDeg":133.518,"orbitalPeriodDays":0.068628691},
+    ],
+    'icesat-2': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-19","semiMajorAxisAu":0.000045849839,"eccentricity":0.00016239,"periapsisLongitudeDeg":146.84,"epochAngleDeg":270.534,"orbitalPeriodDays":0.065432285},
+    ],
+    'amsat-oscar-7': [
+        {"type":"ellipse","start":"2026-01-01","end":"2031-01-01","parentID":"earth","epoch":"2026-11-19","semiMajorAxisAu":0.000052321541,"eccentricity":0.00121951,"periapsisLongitudeDeg":180.982,"epochAngleDeg":270.923,"orbitalPeriodDays":0.079763858},
+    ],
+    'x-37b-otv-8': [
+        {"type":"ellipse","start":"2025-08-22","end":"2027-07-01","parentID":"earth","epoch":"2025-08-22","semiMajorAxisAu":0.000044843553,"eccentricity":0.000521726,"periapsisLongitudeDeg":0,"epochAngleDeg":0,"orbitalPeriodDays":0.063290041},
+    ],
+    'themis-b': [
+        {"type":"ellipse","start":"2024-01-01","end":"2031-01-01","parentID":"luna","epoch":"2026-11-20","semiMajorAxisAu":0.000066704987,"eccentricity":0.816908,"periapsisLongitudeDeg":98.2486,"epochAngleDeg":339.131,"orbitalPeriodDays":1.0353081,"retrograde":true},
+    ],
+    'themis-c': [
+        {"type":"ellipse","start":"2024-01-01","end":"2031-01-01","parentID":"luna","epoch":"2026-11-20","semiMajorAxisAu":0.000070114063,"eccentricity":0.748092,"periapsisLongitudeDeg":271.007,"epochAngleDeg":120.181,"orbitalPeriodDays":1.1156805},
+    ],
+    'queqiao-2': [
+        {"type":"ellipse","start":"2024-04-02","end":"2031-01-01","parentID":"luna","epoch":"2024-04-02","semiMajorAxisAu":0.000069081866,"eccentricity":0.807344,"periapsisLongitudeDeg":0,"epochAngleDeg":0,"orbitalPeriodDays":1.0911344,"retrograde":true},
+    ],
+    'change-5-orbiter': [
+        {"type":"ellipse","start":"2022-02-15","end":"2031-01-01","parentID":"luna","epoch":"2022-02-15","semiMajorAxisAu":0.0004679211,"eccentricity":0,"periapsisLongitudeDeg":0,"epochAngleDeg":0,"orbitalPeriodDays":28.714715,"retrograde":true},
+    ],
+    'dro-a': [
+        {"type":"ellipse","start":"2024-08-01","end":"2031-01-01","parentID":"luna","epoch":"2024-08-01","semiMajorAxisAu":0.0004679211,"eccentricity":0,"periapsisLongitudeDeg":0,"epochAngleDeg":120,"orbitalPeriodDays":28.714715,"retrograde":true},
+    ],
+    'dro-b': [
+        {"type":"ellipse","start":"2024-08-01","end":"2031-01-01","parentID":"luna","epoch":"2024-08-01","semiMajorAxisAu":0.0004679211,"eccentricity":0,"periapsisLongitudeDeg":0,"epochAngleDeg":240,"orbitalPeriodDays":28.714715,"retrograde":true},
+    ],
+    'tianwen-1': [
+        {"type":"ellipse","start":"2021-11-08","end":"2031-01-01","parentID":"mars","epoch":"2021-11-08","semiMajorAxisAu":0.000059349107,"eccentricity":0.587656,"periapsisLongitudeDeg":0,"epochAngleDeg":0,"orbitalPeriodDays":0.29397456},
+    ],
+    'tianwen-2': [
+        {"type":"ellipse","start":"2026-07-04","end":"2027-04-24","parentID":"sol","epoch":"2026-11-20","semiMajorAxisAu":1.0008054,"eccentricity":0.102176,"periapsisLongitudeDeg":9.81679,"epochAngleDeg":54.7596,"orbitalPeriodDays":365.69826},
     ],
 };

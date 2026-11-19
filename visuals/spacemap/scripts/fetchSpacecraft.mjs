@@ -23,6 +23,15 @@
 //   anyway at the map's scale. Drawn from `start` to `holdUntil`.
 // - 'track': sampled 3D positions, for anything on a near-straight escape
 //   path out of the solar system (Voyagers, New Horizons), interpolated.
+// - 'celestrak': a 'snapshot' of an Earth satellite Horizons doesn't carry,
+//   from CelesTrak's latest TLE-style elements for its NORAD catalog number
+//   (`noradId`), converted from Earth's equator to the ecliptic.
+// - 'manual': a fixed orbit typed in by hand, for craft with no public
+//   trajectory data (eg China's lunar craft, the classified X-37B) - only
+//   as good as the published figures it's based on.
+//
+// A segment's own `horizonsId` overrides the craft's - eg to have a craft
+// accompanying an asteroid follow the asteroid's orbit.
 //
 // Any gap left between two phases - a flyby, or a stretch of fast-changing
 // orbit, eg BepiColombo's capture by Mercury - is then filled with a short
@@ -37,6 +46,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const API = 'https://ssd.jpl.nasa.gov/api/horizons.api';
+const CELESTRAK_API = 'https://celestrak.org/NORAD/elements/gp.php';
 const OUTPUT = join(
     dirname(fileURLToPath(import.meta.url)),
     '../src/orbital/spacecraftData.ts',
@@ -72,6 +82,49 @@ const CENTERS = {
     mars: '500@499',
     jupiter: '500@599',
 };
+
+// For 'celestrak' and 'manual' orbits: each center's equatorial radius (km)
+// and GM (km^3/s^2).
+const BODIES = {
+    earth: { radiusKm: 6378.137, gm: 398600.4418 },
+    luna: { radiusKm: 1737.4, gm: 4902.8 },
+    mars: { radiusKm: 3396.2, gm: 42828.37 },
+};
+const KM_PER_AU = 149_597_870.7;
+// Tilt of Earth's equator to the ecliptic (J2000).
+const OBLIQUITY_DEG = 23.4392911;
+
+// A lunar distant retrograde orbit (DRO), drawn as a circle around Luna:
+// about 70,000 km out, and seen from the Earth-Luna line (which turns
+// once a month), looping backwards around Luna about every 14 days. In a
+// fixed frame, that's a retrograde circle with a period P where
+// 1/14 = 1/P + 1/27.32 - about 28.7 days. A real DRO is an oval, twice as
+// long across the Earth-Luna line as along it, so this is only roughly
+// right. China's DRO craft publish no orbits; spacing them a third of an
+// orbit apart is a guess.
+function lunarDRO(meanLongitudeDeg, start) {
+    return {
+        type: 'manual',
+        center: 'luna',
+        periapsisKm: 70_000,
+        apoapsisKm: 70_000,
+        orbitalPeriodDays: 1 / (1 / 14 - 1 / 27.32),
+        retrograde: true,
+        meanLongitudeDeg,
+        start,
+        holdUntil: DEFAULT_STOP,
+    };
+}
+
+// An Earth satellite's 'snapshot' from Horizons.
+function earthSnapshot(holdUntil = DEFAULT_STOP) {
+    return {
+        type: 'snapshot',
+        center: 'earth',
+        start: '2026-01-01',
+        holdUntil,
+    };
+}
 
 // `id` must match the Thing id the map gives the spacecraft (its name,
 // slugified - see SPACECRAFT in spacecraft.ts). Each segment is fetched
@@ -234,7 +287,118 @@ const SPACECRAFT = [
             },
         ],
     },
+    { id: 'chandra', horizonsId: -151, segments: [earthSnapshot()] },
+    { id: 'xmm-newton', horizonsId: -125989, segments: [earthSnapshot()] },
+    { id: 'tess', horizonsId: -95, segments: [earthSnapshot()] },
+    { id: 'sdo', horizonsId: -136395, segments: [earthSnapshot()] },
+    { id: 'aqua', horizonsId: -127424, segments: [earthSnapshot()] },
+    { id: 'nisar', horizonsId: -165053, segments: [earthSnapshot()] },
+    { id: 'lageos-1', horizonsId: -108820, segments: [earthSnapshot()] },
+    // Geostationary, so where along the orbit each is drawn is about right
+    // (over its longitude), unlike most other orbiters here.
+    { id: 'goes-19', horizonsId: -160133, segments: [earthSnapshot()] },
+    { id: 'goes-18', horizonsId: -151850, segments: [earthSnapshot()] },
+    { id: 'goes-16', horizonsId: -141866, segments: [earthSnapshot()] },
+    { id: 'goes-17', horizonsId: -143226, segments: [earthSnapshot()] },
+    { id: 'himawari-9', horizonsId: -141836, segments: [earthSnapshot()] },
+    // Not in Horizons.
+    {
+        id: 'fermi',
+        noradId: 33053,
+        segments: [{ type: 'celestrak', start: '2026-01-01' }],
+    },
+    {
+        id: 'landsat-9',
+        noradId: 49260,
+        segments: [{ type: 'celestrak', start: '2026-01-01' }],
+    },
+    {
+        id: 'icesat-2',
+        noradId: 43613,
+        segments: [{ type: 'celestrak', start: '2026-01-01' }],
+    },
+    {
+        id: 'amsat-oscar-7',
+        noradId: 7530,
+        segments: [{ type: 'celestrak', start: '2026-01-01' }],
+    },
+    {
+        // Classified: its orbit isn't published. About 330 km up at 49.5
+        // degrees, per amateur trackers; launched 2025-08-21, with no
+        // announced landing date - held into 2027 as a guess.
+        id: 'x-37b-otv-8',
+        segments: [
+            {
+                type: 'manual',
+                center: 'earth',
+                periapsisKm: 6378 + 327,
+                apoapsisKm: 6378 + 334,
+                start: '2025-08-22',
+                holdUntil: '2027-07-01',
+            },
+        ],
+    },
+
+    // Around Luna.
+    { id: 'themis-b', horizonsId: -192, segments: [lunaSnapshot()] },
+    { id: 'themis-c', horizonsId: -193, segments: [lunaSnapshot()] },
+    {
+        // Its planned orbit was 200 x 16,000 km, prograde; reportedly it
+        // ended up in this retrograde one instead.
+        id: 'queqiao-2',
+        segments: [
+            {
+                type: 'manual',
+                center: 'luna',
+                periapsisKm: 1737 + 254,
+                apoapsisKm: 1737 + 16_941,
+                retrograde: true,
+                start: '2024-04-02',
+                holdUntil: DEFAULT_STOP,
+            },
+        ],
+    },
+    // DRO since Feb 2022 - its last reported orbit.
+    { id: 'change-5-orbiter', segments: [lunarDRO(0, '2022-02-15')] },
+    { id: 'dro-a', segments: [lunarDRO(120, '2024-08-01')] },
+    { id: 'dro-b', segments: [lunarDRO(240, '2024-08-01')] },
+
+    // Around Mars. Tianwen-1's trajectory in Horizons is unofficial and
+    // ends in 2021; this is its published science orbit, 265 x 10,700 km.
+    {
+        id: 'tianwen-1',
+        segments: [
+            {
+                type: 'manual',
+                center: 'mars',
+                periapsisKm: 3396 + 265,
+                apoapsisKm: 3396 + 10_700,
+                start: '2021-11-08',
+                holdUntil: DEFAULT_STOP,
+            },
+        ],
+    },
+
+    // Tianwen-2 isn't in Horizons, so while it's at the near-Earth
+    // asteroid Kamo'oalewa (arrived Jul 2026; due to leave about 24 Apr
+    // 2027), it's drawn on the asteroid's orbit around Sol.
+    {
+        id: 'tianwen-2',
+        segments: [
+            {
+                type: 'snapshot',
+                horizonsId: '469219;',
+                center: 'sol',
+                start: '2026-07-04',
+                holdUntil: '2027-04-24',
+            },
+        ],
+    },
 ];
+
+function lunaSnapshot() {
+    return { type: 'snapshot', center: 'luna', holdUntil: DEFAULT_STOP };
+}
 
 const MS_PER_DAY = 86_400_000;
 const MONTHS = {
@@ -356,7 +520,7 @@ function sameShape(first, sample) {
 function elementRows(spacecraft, segment, start, stop, step) {
     return ephemerisRows(
         {
-            COMMAND: `'${spacecraft.horizonsId}'`,
+            COMMAND: `'${segment.horizonsId ?? spacecraft.horizonsId}'`,
             EPHEM_TYPE: 'ELEMENTS',
             CENTER: `'${CENTERS[segment.center]}'`,
             STEP_SIZE: `'${step}'`,
@@ -484,6 +648,136 @@ async function snapshotPhases(spacecraft, segment) {
             segment.holdUntil,
             segment.center,
         ),
+    ];
+}
+
+function degrees(radians) {
+    return ((((radians * 180) / Math.PI) % 360) + 360) % 360;
+}
+
+function radians(degrees) {
+    return (degrees * Math.PI) / 180;
+}
+
+// A sample (as parseElements returns) from elements relative to Earth's
+// equator: rotates the orbit's plane and periapsis onto the ecliptic, then
+// takes longitudes as parseElements does.
+function eclipticSample({
+    date,
+    a,
+    e,
+    periodDays,
+    inclinationDeg,
+    nodeDeg,
+    argumentDeg,
+    meanAnomalyDeg,
+}) {
+    const i = radians(inclinationDeg);
+    const node = radians(nodeDeg);
+    const argument = radians(argumentDeg);
+    // Orbit normal, and the unit vector toward periapsis, on the equator.
+    const normal = [
+        Math.sin(i) * Math.sin(node),
+        -Math.sin(i) * Math.cos(node),
+        Math.cos(i),
+    ];
+    const periapsis = [
+        Math.cos(node) * Math.cos(argument) -
+            Math.sin(node) * Math.sin(argument) * Math.cos(i),
+        Math.sin(node) * Math.cos(argument) +
+            Math.cos(node) * Math.sin(argument) * Math.cos(i),
+        Math.sin(argument) * Math.sin(i),
+    ];
+    const tilt = radians(OBLIQUITY_DEG);
+    const toEcliptic = ([x, y, z]) => [
+        x,
+        y * Math.cos(tilt) + z * Math.sin(tilt),
+        -y * Math.sin(tilt) + z * Math.cos(tilt),
+    ];
+    const [hx, hy, hz] = toEcliptic(normal);
+    const p = toEcliptic(periapsis);
+    const eclipticNode = Math.atan2(hx, -hy);
+    const nodeVector = [Math.cos(eclipticNode), Math.sin(eclipticNode), 0];
+    // normal x nodeVector: 90 degrees past the node, along the orbit.
+    const ahead = [
+        hy * nodeVector[2] - hz * nodeVector[1],
+        hz * nodeVector[0] - hx * nodeVector[2],
+        hx * nodeVector[1] - hy * nodeVector[0],
+    ];
+    const dot = (u, v) => u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+    const eclipticArgument = Math.atan2(dot(ahead, p), dot(nodeVector, p));
+    const retrograde = hz < 0;
+    const sign = retrograde ? -1 : 1;
+    return {
+        date,
+        e,
+        a,
+        periodDays,
+        retrograde,
+        periapsisLongitudeDeg: degrees(eclipticNode + sign * eclipticArgument),
+        meanLongitudeDeg: degrees(
+            eclipticNode + sign * (eclipticArgument + radians(meanAnomalyDeg)),
+        ),
+    };
+}
+
+// 'celestrak' segments: like 'snapshot', from CelesTrak's latest elements.
+async function celestrakPhases(spacecraft, segment) {
+    const response = await fetch(
+        `${CELESTRAK_API}?CATNR=${spacecraft.noradId}&FORMAT=json`,
+    );
+    if (!response.ok) {
+        throw new Error(`CelesTrak: HTTP ${response.status}`);
+    }
+    const [elements] = await response.json();
+    // Mean anomaly back to midnight, the phase's epoch.
+    const epochTime = Date.parse(`${elements.EPOCH}Z`);
+    const date = isoDay(new Date(epochTime));
+    const daysPastMidnight =
+        (epochTime - Date.parse(`${date}T00:00:00Z`)) / MS_PER_DAY;
+    const revsPerDay = elements.MEAN_MOTION;
+    const radiansPerSecond = (revsPerDay * 2 * Math.PI) / 86_400;
+    const aKm = Math.cbrt(BODIES.earth.gm / radiansPerSecond ** 2);
+    const sample = eclipticSample({
+        date,
+        a: aKm / KM_PER_AU,
+        e: elements.ECCENTRICITY,
+        periodDays: 1 / revsPerDay,
+        inclinationDeg: elements.INCLINATION,
+        nodeDeg: elements.RA_OF_ASC_NODE,
+        argumentDeg: elements.ARG_OF_PERICENTER,
+        meanAnomalyDeg:
+            elements.MEAN_ANOMALY - 360 * revsPerDay * daysPastMidnight,
+    });
+    return [
+        ellipsePhase(
+            sample,
+            segment.start ?? DEFAULT_START,
+            segment.holdUntil ?? DEFAULT_STOP,
+            'earth',
+        ),
+    ];
+}
+
+// 'manual' segments: periapsisKm and apoapsisKm from the center's center;
+// the period follows from those unless given.
+function manualPhases(spacecraft, segment) {
+    const aKm = (segment.periapsisKm + segment.apoapsisKm) / 2;
+    const periodSeconds =
+        2 * Math.PI * Math.sqrt(aKm ** 3 / BODIES[segment.center].gm);
+    const sample = {
+        date: segment.start,
+        a: aKm / KM_PER_AU,
+        e:
+            (segment.apoapsisKm - segment.periapsisKm) /
+            (segment.apoapsisKm + segment.periapsisKm),
+        periodDays: segment.orbitalPeriodDays ?? periodSeconds / 86_400,
+        retrograde: segment.retrograde ?? false,
+        periapsisLongitudeDeg: segment.periapsisLongitudeDeg ?? 0,
+        meanLongitudeDeg: segment.meanLongitudeDeg ?? 0,
+    };
+    return [
+        ellipsePhase(sample, segment.start, segment.holdUntil, segment.center),
     ];
 }
 
@@ -698,8 +992,12 @@ for (const spacecraft of SPACECRAFT) {
     const phases = [];
     for (const segment of spacecraft.segments) {
         const fetchPhases =
-            { track: trackPhases, snapshot: snapshotPhases }[segment.type] ??
-            ellipsePhases;
+            {
+                track: trackPhases,
+                snapshot: snapshotPhases,
+                celestrak: celestrakPhases,
+                manual: manualPhases,
+            }[segment.type] ?? ellipsePhases;
         phases.push(...(await fetchPhases(spacecraft, segment)));
     }
     const filled = await fillGaps(spacecraft, phases);

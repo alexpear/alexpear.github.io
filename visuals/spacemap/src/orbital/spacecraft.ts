@@ -14,6 +14,8 @@ export type SpacecraftOptions = Omit<
 
 const NASA = 'NASA';
 const ESA = 'ESA';
+const CNSA = 'CNSA';
+const NOAA_NASA = 'NOAA & NASA';
 
 // Ordered roughly outward from Sol, then by what they orbit.
 export const SPACECRAFT: SpacecraftOptions[] = [
@@ -118,6 +120,14 @@ export const SPACECRAFT: SpacecraftOptions[] = [
             'Martian Moons eXploration: en route to Mars, to land on Phobos and bring a sample of it back to Earth.',
     },
     {
+        name: 'Tianwen-2',
+        aliases: ['Tianwen 2', 'ZhengHe'],
+        agency: CNSA,
+        launchYear: 2025,
+        description:
+            "At the small near-Earth asteroid Kamoʻoalewa (possibly a chip of Luna) from Jul 2026, to grab a sample and bring it to Earth, then visit comet 311P. Drawn on Kamoʻoalewa's orbit, since its own trajectory isn't public.",
+    },
+    {
         name: 'Voyager 1',
         agency: NASA,
         launchYear: 1977,
@@ -167,6 +177,142 @@ export const SPACECRAFT: SpacecraftOptions[] = [
             'Space telescope about 530 km up, observing in visible, ultraviolet and near-infrared light since 1990.',
     },
     {
+        name: 'Chandra',
+        aliases: ['Chandra X-ray Observatory', 'CXO'],
+        agency: NASA,
+        launchYear: 1999,
+        description:
+            'X-ray telescope on a long, stretched orbit reaching a third of the way to Luna, mostly far above the belts of radiation around Earth.',
+    },
+    {
+        name: 'XMM-Newton',
+        aliases: ['XMM', 'X-ray Multi-Mirror Mission'],
+        agency: ESA,
+        launchYear: 1999,
+        description:
+            "ESA's X-ray telescope, on a stretched orbit that takes 2 days and reaches about 90,000 km up.",
+    },
+    {
+        name: 'TESS',
+        aliases: ['Transiting Exoplanet Survey Satellite'],
+        agency: NASA,
+        launchYear: 2018,
+        description:
+            'Hunts planets around nearby stars, from a stretched orbit timed to Luna: it circles Earth exactly twice for each time Luna does.',
+    },
+    {
+        name: 'SDO',
+        aliases: ['Solar Dynamics Observatory'],
+        agency: NASA,
+        launchYear: 2010,
+        description:
+            'Films Sol nonstop in many wavelengths, from a geosynchronous orbit 36,000 km up.',
+    },
+    {
+        name: 'Fermi',
+        aliases: ['Fermi Gamma-ray Space Telescope', 'GLAST'],
+        agency: NASA,
+        launchYear: 2008,
+        description:
+            'Gamma-ray telescope about 500 km up, scanning the whole sky every 3 hours for black holes, pulsars and gamma-ray bursts.',
+    },
+    {
+        name: 'Landsat 9',
+        aliases: ['Landsat'],
+        agency: `${NASA} & USGS`,
+        launchYear: 2021,
+        description:
+            "Photographs all of Earth's land every 16 days from 705 km up, continuing a record that goes back to 1972.",
+    },
+    {
+        name: 'Aqua',
+        aliases: ['EOS PM-1'],
+        agency: NASA,
+        launchYear: 2002,
+        description:
+            "Earth science satellite tracking Earth's water cycle: clouds, rain, sea ice, snow and ocean temperatures.",
+    },
+    {
+        name: 'ICESat-2',
+        aliases: ['ICESat 2', 'Ice, Cloud and land Elevation Satellite'],
+        agency: NASA,
+        launchYear: 2018,
+        description:
+            "Measures the height of Earth's ice sheets, sea ice and forests by timing laser pulses bounced off the surface.",
+    },
+    {
+        name: 'NISAR',
+        aliases: ['NASA-ISRO Synthetic Aperture Radar'],
+        agency: `${NASA} & ISRO`,
+        launchYear: 2025,
+        description:
+            "Radar satellite mapping how Earth's surface moves - earthquakes, volcanoes, landslides, melting ice - every 12 days.",
+    },
+    {
+        name: 'GOES-19',
+        aliases: ['GOES East', 'GOES-U', 'GOES'],
+        agency: NOAA_NASA,
+        launchYear: 2024,
+        description:
+            'Weather satellite watching the Americas and the Atlantic, as GOES East, from geostationary orbit over 75° W.',
+    },
+    {
+        name: 'GOES-18',
+        aliases: ['GOES West', 'GOES-T', 'GOES'],
+        agency: NOAA_NASA,
+        launchYear: 2022,
+        description:
+            'Weather satellite watching the Americas and the Pacific, as GOES West, from geostationary orbit over 137° W.',
+    },
+    {
+        name: 'GOES-16',
+        aliases: ['GOES-R', 'GOES'],
+        agency: NOAA_NASA,
+        launchYear: 2016,
+        description:
+            'Weather satellite, GOES East until 2025; now the standby spare, in geostationary orbit over about 105° W.',
+    },
+    {
+        name: 'GOES-17',
+        aliases: ['GOES-S', 'GOES'],
+        agency: NOAA_NASA,
+        launchYear: 2018,
+        description:
+            'Weather satellite, GOES West until 2023; now a spare in storage in geostationary orbit.',
+    },
+    {
+        name: 'Himawari-9',
+        aliases: ['Himawari 9', 'Himawari'],
+        agency: 'JMA',
+        launchYear: 2016,
+        description:
+            "Japan's weather satellite watching East Asia and the western Pacific, from geostationary orbit over 140.7° E.",
+    },
+    {
+        name: 'LAGEOS-1',
+        aliases: ['LAGEOS', 'Laser Geodynamics Satellite'],
+        agency: NASA,
+        launchYear: 1976,
+        description:
+            "A 60 cm brass and aluminum ball covered in mirrors, 5,900 km up. Lasers bounced off it from the ground measure Earth's shape and the drift of continents.",
+    },
+    {
+        name: 'AMSAT-OSCAR 7',
+        aliases: ['AO-7', 'OSCAR 7'],
+        agency: 'AMSAT',
+        launchYear: 1974,
+        description:
+            'Amateur radio satellite, 1,450 km up. Its batteries failed in 1981, but in 2002 it came back to life, and it still relays radio hams whenever its solar panels are in sunlight.',
+    },
+    {
+        name: 'X-37B OTV-8',
+        aliases: ['X-37B', 'OTV-8', 'Orbital Test Vehicle'],
+        agency: 'US Space Force',
+        launchYear: 2025,
+        description:
+            "Robotic spaceplane on its 8th secret test mission. Its orbit isn't published: drawn about 330 km up, per amateur trackers.",
+    },
+    {
         name: 'LRO',
         aliases: ['Lunar Reconnaissance Orbiter'],
         agency: NASA,
@@ -189,6 +335,52 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         launchYear: 2019,
         description:
             "India's lunar orbiter, mapping Luna since 2019. It also relayed for Chandrayaan-3's lander, which touched down near Luna's south pole in 2023.",
+    },
+    {
+        name: 'THEMIS-B',
+        aliases: ['ARTEMIS-P1', 'ARTEMIS P1', 'THEMIS'],
+        agency: NASA,
+        launchYear: 2007,
+        description:
+            "One of 5 THEMIS craft launched to study Earth's auroras; in 2011 it and THEMIS-C were moved to long, stretched orbits around Luna, as ARTEMIS, to measure the solar wind hitting Luna.",
+    },
+    {
+        name: 'THEMIS-C',
+        aliases: ['ARTEMIS-P2', 'ARTEMIS P2', 'THEMIS'],
+        agency: NASA,
+        launchYear: 2007,
+        description:
+            "One of 5 THEMIS craft launched to study Earth's auroras; in 2011 it and THEMIS-B were moved to long, stretched orbits around Luna, as ARTEMIS, to measure the solar wind hitting Luna.",
+    },
+    {
+        name: 'Queqiao-2',
+        aliases: ['Queqiao 2', 'Magpie Bridge 2'],
+        agency: CNSA,
+        launchYear: 2024,
+        description:
+            "Relays radio between Earth and Chang'e landers on Luna's far side and south pole, from a stretched orbit reaching about 17,000 km above Luna. Orbit approximate: China doesn't publish it.",
+    },
+    {
+        name: "Chang'e-5 orbiter",
+        aliases: ["Chang'e 5", 'Change-5', 'CE-5'],
+        agency: CNSA,
+        launchYear: 2020,
+        description:
+            'Brought Luna samples back to Earth in 2020, then tested a distant retrograde orbit (DRO) around Luna in 2022 - its last reported orbit. A DRO is a stable loop about 70,000 km from Luna; drawn here as a circle, only roughly.',
+    },
+    {
+        name: 'DRO-A',
+        agency: 'CAS',
+        launchYear: 2024,
+        description:
+            "Chinese test satellite in a distant retrograde orbit (DRO): a stable loop about 70,000 km from Luna. Drawn here as a circle, only roughly - China doesn't publish its orbit.",
+    },
+    {
+        name: 'DRO-B',
+        agency: 'CAS',
+        launchYear: 2024,
+        description:
+            "DRO-A's partner, testing navigation and communications with it around Luna. Drawn in the same distant retrograde orbit (DRO), only roughly - China doesn't publish its orbit, and it may since have moved.",
     },
     {
         name: 'MRO',
@@ -229,6 +421,14 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         launchYear: 2020,
         description:
             "The Arab world's first planetary mission, studying Mars' weather from a high orbit since 2021.",
+    },
+    {
+        name: 'Tianwen-1',
+        aliases: ['Tianwen 1'],
+        agency: CNSA,
+        launchYear: 2020,
+        description:
+            "China's first Mars mission: this orbiter delivered the Zhurong rover in 2021, and has mapped Mars since. Orbit approximate: China doesn't publish it.",
     },
     {
         name: 'Juno',
@@ -312,6 +512,46 @@ export const RESIDENTS: Record<string, Resident[]> = {
             ],
             note: 'Wide-field infrared space telescope; launched 2026',
             since: '2026-08-30',
+        },
+        {
+            name: 'Spektr-RG',
+            aliases: ['SRG', 'eROSITA', 'ART-XC'],
+            note: 'Russian-German X-ray observatory, here since 2019',
+            since: '2019-10-21',
+        },
+        {
+            name: "Chang'e-6 orbiter",
+            aliases: ["Chang'e 6", 'Change-6', 'CE-6'],
+            note: 'Brought far-side Luna samples to Earth in 2024; here since',
+            since: '2024-09-09',
+        },
+    ],
+    'earth-luna-l2': [
+        {
+            name: 'Queqiao',
+            aliases: ['Queqiao-1', 'Queqiao 1', 'Magpie Bridge'],
+            note: "Relay for Chang'e-4 on Luna's far side, here since 2018",
+            since: '2018-06-14',
+        },
+    ],
+    luna: [
+        {
+            name: "Chang'e-3 lander",
+            aliases: ["Chang'e 3", 'Change-3', 'CE-3'],
+            note: 'Lander in Mare Imbrium, landed 2013',
+            since: '2013-12-14',
+        },
+        {
+            name: "Chang'e-4 lander",
+            aliases: ["Chang'e 4", 'Change-4', 'CE-4'],
+            note: "Lander in Von Kármán crater, on Luna's far side, landed 2019",
+            since: '2019-01-03',
+        },
+        {
+            name: 'Yutu-2',
+            aliases: ['Yutu 2', 'Jade Rabbit 2'],
+            note: "Chang'e-4's rover, on Luna's far side, landed 2019",
+            since: '2019-01-03',
         },
     ],
     mars: [
