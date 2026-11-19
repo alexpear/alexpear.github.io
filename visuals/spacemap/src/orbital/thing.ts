@@ -1242,7 +1242,14 @@ export class Thing {
                     `Spacecraft ${id} has no trajectory in spacecraftData.ts - add it to scripts/fetchSpacecraft.mjs and rerun npm run fetchspacecraft`,
                 );
             }
-            things.push(new Thing({ ...options, kind: 'spacecraft', phases }));
+            things.push(
+                new Thing({
+                    ...options,
+                    kind: 'spacecraft',
+                    phases,
+                    colorHex: '#33ff33',
+                }),
+            );
         }
 
         const seenIds = new Set<string>();
@@ -1719,7 +1726,7 @@ export class Thing {
             label: `L${lagrangeNumber}`,
             bodyAE: useAstronomyEngine ? smallBody : undefined,
             kind: 'lagrangePoint',
-            colorHex: '#aaffaa',
+            colorHex: '#9999ff',
             orbitalPeriodDays: smallParent.orbitalPeriodDays,
             parentID: this.id, // major body, eg 'sol' or 'earth'
             lagrangeNumber,

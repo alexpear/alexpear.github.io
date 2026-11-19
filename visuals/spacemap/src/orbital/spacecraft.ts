@@ -7,8 +7,10 @@
 import type { ThingOptions } from './thing';
 import { Resident } from './types';
 
-// The fields Thing.MAIN_THINGS fills in itself (kind, phases) left out.
-export type SpacecraftOptions = Omit<ThingOptions, 'kind' | 'phases'>;
+export type SpacecraftOptions = Omit<
+    ThingOptions,
+    'colorHex' | 'kind' | 'phases'
+>;
 
 const NASA = 'NASA';
 const ESA = 'ESA';
@@ -18,7 +20,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'Parker Solar Probe',
         aliases: ['PSP'],
-        colorHex: '#ffb347',
         agency: NASA,
         launchYear: 2018,
         description:
@@ -27,7 +28,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'Solar Orbiter',
         aliases: ['SolO'],
-        colorHex: '#f5c26b',
         agency: `${ESA} & ${NASA}`,
         launchYear: 2020,
         description:
@@ -36,7 +36,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'STEREO-A',
         aliases: ['STEREO Ahead'],
-        colorHex: '#e0b070',
         agency: NASA,
         launchYear: 2006,
         description:
@@ -45,7 +44,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'BepiColombo',
         aliases: ['MPO', 'Mio', 'Mercury Planetary Orbiter'],
-        colorHex: '#d9a066',
         agency: `${ESA} & JAXA`,
         launchYear: 2018,
         description:
@@ -54,7 +52,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'JUICE',
         aliases: ['Jupiter Icy Moons Explorer'],
-        colorHex: '#e8c07a',
         agency: ESA,
         launchYear: 2023,
         description:
@@ -62,7 +59,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     },
     {
         name: 'Europa Clipper',
-        colorHex: '#f0d090',
         agency: NASA,
         launchYear: 2024,
         description:
@@ -70,7 +66,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     },
     {
         name: 'Lucy',
-        colorHex: '#e6b85c',
         agency: NASA,
         launchYear: 2021,
         description:
@@ -78,7 +73,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     },
     {
         name: 'Psyche',
-        colorHex: '#c9a46a',
         agency: NASA,
         launchYear: 2023,
         description:
@@ -86,7 +80,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     },
     {
         name: 'Hera',
-        colorHex: '#d8b080',
         agency: ESA,
         launchYear: 2024,
         description:
@@ -95,7 +88,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'Hayabusa2',
         aliases: ['Hayabusa 2'],
-        colorHex: '#e0a860',
         agency: 'JAXA',
         launchYear: 2014,
         description:
@@ -104,7 +96,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'OSIRIS-APEX',
         aliases: ['OSIRIS-REx'],
-        colorHex: '#d4a45c',
         agency: NASA,
         launchYear: 2016,
         description:
@@ -113,7 +104,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'ESCAPADE',
         aliases: ['ESCAPADE Blue', 'ESCAPADE Gold'],
-        colorHex: '#e5c35a',
         agency: NASA,
         launchYear: 2025,
         description:
@@ -122,7 +112,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'MMX',
         aliases: ['Martian Moons eXploration'],
-        colorHex: '#d9b56a',
         agency: 'JAXA',
         launchYear: 2026,
         description:
@@ -130,7 +119,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     },
     {
         name: 'Voyager 1',
-        colorHex: '#f2d16b',
         agency: NASA,
         launchYear: 1977,
         description:
@@ -138,7 +126,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     },
     {
         name: 'Voyager 2',
-        colorHex: '#ead27e',
         agency: NASA,
         launchYear: 1977,
         description:
@@ -146,7 +133,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     },
     {
         name: 'New Horizons',
-        colorHex: '#e7c27d',
         agency: NASA,
         launchYear: 2006,
         description:
@@ -159,7 +145,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'ISS',
         aliases: ['International Space Station'],
-        colorHex: '#f0e0b0',
         agency: 'NASA, Roscosmos, ESA, JAXA & CSA',
         launchYear: 1998,
         description:
@@ -168,7 +153,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'Tiangong',
         aliases: ['Chinese Space Station', 'CSS', 'Tiangong Space Station'],
-        colorHex: '#f0c8a0',
         agency: 'CMSA',
         launchYear: 2021,
         description:
@@ -177,7 +161,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'Hubble',
         aliases: ['Hubble Space Telescope', 'HST'],
-        colorHex: '#d8d0b8',
         agency: `${NASA} & ${ESA}`,
         launchYear: 1990,
         description:
@@ -186,7 +169,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'LRO',
         aliases: ['Lunar Reconnaissance Orbiter'],
-        colorHex: '#e8a33d',
         agency: NASA,
         launchYear: 2009,
         description:
@@ -195,7 +177,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'Danuri',
         aliases: ['KPLO', 'Korea Pathfinder Lunar Orbiter'],
-        colorHex: '#e0b878',
         agency: 'KARI',
         launchYear: 2022,
         description:
@@ -204,7 +185,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'Chandrayaan-2',
         aliases: ['Chandrayaan 2'],
-        colorHex: '#e6a860',
         agency: 'ISRO',
         launchYear: 2019,
         description:
@@ -213,7 +193,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'MRO',
         aliases: ['Mars Reconnaissance Orbiter'],
-        colorHex: '#e8a050',
         agency: NASA,
         launchYear: 2005,
         description:
@@ -222,7 +201,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'Mars Odyssey',
         aliases: ['2001 Mars Odyssey'],
-        colorHex: '#d89a58',
         agency: NASA,
         launchYear: 2001,
         description:
@@ -231,7 +209,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'Mars Express',
         aliases: ['MEX'],
-        colorHex: '#e0a868',
         agency: ESA,
         launchYear: 2003,
         description:
@@ -240,7 +217,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'TGO',
         aliases: ['ExoMars Trace Gas Orbiter', 'ExoMars'],
-        colorHex: '#d8a070',
         agency: `${ESA} & Roscosmos`,
         launchYear: 2016,
         description:
@@ -249,7 +225,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     {
         name: 'Hope',
         aliases: ['Emirates Mars Mission', 'EMM', 'Al Amal'],
-        colorHex: '#e8b070',
         agency: 'UAE Space Agency',
         launchYear: 2020,
         description:
@@ -257,7 +232,6 @@ export const SPACECRAFT: SpacecraftOptions[] = [
     },
     {
         name: 'Juno',
-        colorHex: '#e8b060',
         agency: NASA,
         launchYear: 2011,
         description:
