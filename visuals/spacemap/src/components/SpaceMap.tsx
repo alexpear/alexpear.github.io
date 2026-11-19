@@ -20,10 +20,10 @@ import {
 } from './ThingMenu';
 
 const RADIUS_PX: Record<ThingKind, number> = {
-    star: 8,
-    heliocentric: 5,
-    moon: 5,
-    asteroid: 3,
+    star: 10,
+    planet: 6,
+    moon: 3,
+    asteroid: 4,
     comet: 3,
     spacecraft: 3,
     lagrangePoint: 4,
@@ -250,12 +250,12 @@ function hidePriority(thing: Thing): [number, number] {
 
 const HIDE_CATEGORY: Record<ThingKind, number> = {
     star: 0,
-    heliocentric: 1,
-    moon: 2,
-    asteroid: 3,
-    comet: 3,
-    spacecraft: 4,
-    lagrangePoint: 5,
+    planet: 1,
+    asteroid: 2,
+    moon: 3,
+    comet: 4,
+    spacecraft: 5,
+    lagrangePoint: 6,
 };
 
 // True if `a` loses to `b` under hidePriority() - ie `a` is the one that

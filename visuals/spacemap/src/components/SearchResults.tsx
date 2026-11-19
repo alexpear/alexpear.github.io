@@ -107,9 +107,8 @@ function describeThing(thing: Thing): string {
     switch (thing.kind) {
         case 'star':
             return 'Star';
-        case 'heliocentric':
-            // The only non-planet of this kind is Pluto.
-            return thing.id === 'pluto' ? 'Dwarf planet' : 'Planet';
+        case 'planet':
+            return 'Planet';
         case 'moon': {
             const parent = Thing.byID(thing.parentID);
             return parent ? `Moon of ${parent.name}` : 'Moon';

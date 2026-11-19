@@ -63,7 +63,7 @@ export interface Resident {
 // everything else renders as a solid circle.
 export type ThingKind =
     | 'star'
-    | 'heliocentric'
+    | 'planet'
     | 'moon'
     | 'asteroid'
     | 'comet'
