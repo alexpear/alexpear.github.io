@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Permissions
 
-Do not run any git commands. Only the user runs git.
+Do not run any git commands. Only the user runs git. To edit files, prefer the Edit/Write tools over editing files via bespoke python, sed, or node scripts. The user prefers to manually review all python & node scripts you write, so it's better not to use all-purpose scripting languages for this.
 
 ## Commands
 
