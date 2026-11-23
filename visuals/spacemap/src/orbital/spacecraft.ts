@@ -25,15 +25,13 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NASA,
         launchYear: 2018,
         description:
-            'Dives closer to Sol than any other spacecraft: about 6 million km from its surface at each perihelion.',
+            "Passes very close to Sol's surface each orbit.",
     },
     {
         name: 'Solar Orbiter',
         aliases: ['SolO'],
         agency: `${ESA} & ${NASA}`,
         launchYear: 2020,
-        description:
-            "Photographs Sol from up close, on an orbit that Venus flybys tilt ever further out of the ecliptic, to see Sol's poles.",
     },
     {
         name: 'STEREO-A',
@@ -49,7 +47,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: `${ESA} & JAXA`,
         launchYear: 2018,
         description:
-            "A pair of orbiters, ESA's MPO and JAXA's Mio, arriving at Mercury in late 2026 after 9 flybys of Earth, Venus and Mercury.",
+            "A pair of orbiters, ESA's MPO and JAXA's Mio, arriving at Mercury in late 2026 after flybys of Earth, Venus and Mercury.",
     },
     {
         name: 'JUICE',
@@ -57,14 +55,14 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: ESA,
         launchYear: 2023,
         description:
-            'En route to Jupiter, arriving 2031, to study its icy moons Ganymede, Callisto and Europa. Gravity assists from Earth and Venus build up its speed along the way.',
+            'Arriving at Jupiter in 2031, to study its icy moons Ganymede, Callisto and Europa. Gravity assists from Earth and Venus build up its speed along the way.',
     },
     {
         name: 'Europa Clipper',
         agency: NASA,
         launchYear: 2024,
         description:
-            'En route to Jupiter, arriving 2030, to fly past Europa ~50 times and find out whether its buried ocean could support life.',
+            'Arriving near Jupiter in 2030, to fly past Europa ~50 times and find out whether its buried ocean could support life.',
     },
     {
         name: 'Lucy',
@@ -85,7 +83,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: ESA,
         launchYear: 2024,
         description:
-            'Arriving at the asteroid Didymos and its moon Dimorphos, to survey the crater left when NASA crashed DART into Dimorphos in 2022.',
+            'Surveying the asteroid Didymos and its moon Dimorphos, to inspect the crater left when NASA crashed DART into Dimorphos in 2022.',
     },
     {
         name: 'Hayabusa2',
@@ -101,7 +99,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NASA,
         launchYear: 2016,
         description:
-            "As OSIRIS-REx, brought samples of asteroid Bennu back to Earth in 2023. Now heading for asteroid Apophis, arriving soon after Apophis's close pass by Earth in 2029.",
+            "As OSIRIS-REx, brought samples of asteroid Bennu back to Earth in 2023. Then heading for asteroid Apophis, arriving soon after Apophis's close pass by Earth in 2029.",
     },
     {
         name: 'ESCAPADE',
@@ -117,7 +115,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: 'JAXA',
         launchYear: 2026,
         description:
-            'Martian Moons eXploration: en route to Mars, to land on Phobos and bring a sample of it back to Earth.',
+            'Martian Moons eXploration: en route to Mars, to land on Phobos in 2029 and bring a sample of it back to Earth.',
     },
     {
         name: 'Tianwen-2',
@@ -125,7 +123,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: CNSA,
         launchYear: 2025,
         description:
-            "At the small near-Earth asteroid Kamoʻoalewa (possibly a chip of Luna) from Jul 2026, to grab a sample and bring it to Earth, then visit comet 311P. Drawn on Kamoʻoalewa's orbit, since its own trajectory isn't public.",
+            "At the small near-Earth asteroid Kamoʻoalewa (possibly a chip of Luna) to grab a sample and bring it to Earth, then visit comet 311P.",
     },
     {
         name: 'Voyager 1',
@@ -158,7 +156,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: 'NASA, Roscosmos, ESA, JAXA & CSA',
         launchYear: 1998,
         description:
-            'Crewed continuously since 2000, about 400 km up, circling Earth every 93 minutes.',
+            'Carrying a crew of 7, about 400 km up, circling Earth every 93 minutes.',
     },
     {
         name: 'Tiangong',
@@ -166,7 +164,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: 'CMSA',
         launchYear: 2021,
         description:
-            "China's crewed space station, about 390 km up, circling Earth every 92 minutes.",
+            "China's 3rd space station, with a crew of 3 onboard.",
     },
     {
         name: 'Hubble',
@@ -182,7 +180,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NASA,
         launchYear: 1999,
         description:
-            'X-ray telescope on a long, stretched orbit reaching a third of the way to Luna, mostly far above the belts of radiation around Earth.',
+            "X-ray telescope on a long, stretched orbit reaching a third of the way to Luna, mostly far above Earth's belts of radiation.",
     },
     {
         name: 'XMM-Newton',
@@ -190,7 +188,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: ESA,
         launchYear: 1999,
         description:
-            "ESA's X-ray telescope, on a stretched orbit that takes 2 days and reaches about 90,000 km up.",
+            "ESA's X-ray telescope, orbiting every 2 days.",
     },
     {
         name: 'TESS',
@@ -198,7 +196,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NASA,
         launchYear: 2018,
         description:
-            'Hunts planets around nearby stars, from a stretched orbit timed to Luna: it circles Earth exactly twice for each time Luna does.',
+            'Looks for planets around nearby stars. It circles Earth exactly twice for each time Luna does.',
     },
     {
         name: 'SDO',
@@ -206,7 +204,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NASA,
         launchYear: 2010,
         description:
-            'Films Sol nonstop in many wavelengths, from a geosynchronous orbit 36,000 km up.',
+            'Films Sol in many wavelengths, from a geosynchronous orbit.',
     },
     {
         name: 'Fermi',
@@ -214,7 +212,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NASA,
         launchYear: 2008,
         description:
-            'Gamma-ray telescope about 500 km up, scanning the whole sky every 3 hours for black holes, pulsars and gamma-ray bursts.',
+            'Gamma-ray telescope scanning the whole sky every 3 hours for black holes, pulsars and gamma-ray bursts.',
     },
     {
         name: 'Landsat 9',
@@ -222,7 +220,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: `${NASA} & USGS`,
         launchYear: 2021,
         description:
-            "Photographs all of Earth's land every 16 days from 705 km up, continuing a record that goes back to 1972.",
+            "Photographs all of Earth's land every 16 days.",
     },
     {
         name: 'Aqua',
@@ -254,7 +252,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NOAA_NASA,
         launchYear: 2024,
         description:
-            'Weather satellite watching the Americas and the Atlantic, as GOES East, from geostationary orbit over 75° W.',
+            'Weather satellite watching the Americas and the Atlantic from geostationary orbit over 75° W.',
     },
     {
         name: 'GOES-18',
@@ -262,7 +260,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NOAA_NASA,
         launchYear: 2022,
         description:
-            'Weather satellite watching the Americas and the Pacific, as GOES West, from geostationary orbit over 137° W.',
+            'Weather satellite watching the Americas and the Pacific from geostationary orbit over 137° W.',
     },
     {
         name: 'GOES-16',
@@ -270,7 +268,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NOAA_NASA,
         launchYear: 2016,
         description:
-            'Weather satellite, GOES East until 2025; now the standby spare, in geostationary orbit over about 105° W.',
+            'Spare satellite for the GOES series.',
     },
     {
         name: 'GOES-17',
@@ -278,7 +276,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NOAA_NASA,
         launchYear: 2018,
         description:
-            'Weather satellite, GOES West until 2023; now a spare in storage in geostationary orbit.',
+            'Spare satellite for the GOES series.',
     },
     {
         name: 'Himawari-9',
@@ -294,7 +292,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NASA,
         launchYear: 1976,
         description:
-            "A 60 cm brass and aluminum ball covered in mirrors, 5,900 km up. Lasers bounced off it from the ground measure Earth's shape and the drift of continents.",
+            "A 60 cm brass and aluminum ball covered in mirrors. Lasers bounced off it from the ground measure Earth's shape and the drift of continents.",
     },
     {
         name: 'AMSAT-OSCAR 7',
@@ -302,7 +300,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: 'AMSAT',
         launchYear: 1974,
         description:
-            'Amateur radio satellite, 1,450 km up. Its batteries failed in 1981, but in 2002 it came back to life, and it still relays radio hams whenever its solar panels are in sunlight.',
+            'Amateur radio relay. Once thought to be broken, it was secretly used by anti-Soviet Polish groups in 1982. It still transmits intermittently.',
     },
     {
         name: 'X-37B OTV-8',
@@ -310,7 +308,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: 'US Space Force',
         launchYear: 2025,
         description:
-            "Robotic spaceplane on its 8th secret test mission. Its orbit isn't published: drawn about 330 km up, per amateur trackers.",
+            "Uncrewed space shuttle variant on its 8th secret test mission. Its orbit isn't published, but amateur observers can track it visually.",
     },
     {
         name: 'LRO',
@@ -318,7 +316,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NASA,
         launchYear: 2009,
         description:
-            "Has mapped Luna from a low polar orbit since 2009, including the Apollo landing sites and the permanently shadowed craters near Luna's poles.",
+            "Has mapped Luna from a low polar orbit since 2009.",
     },
     {
         name: 'Danuri',
@@ -326,7 +324,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: 'KARI',
         launchYear: 2022,
         description:
-            "South Korea's first lunar orbiter, mapping Luna's surface and resources since 2022.",
+            "South Korea's first lunar orbiter, mapping Luna's surface and resources since 2022. Danuri is short for Dal + Nurida, 'moon joy'.",
     },
     {
         name: 'Chandrayaan-2',
@@ -342,7 +340,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NASA,
         launchYear: 2007,
         description:
-            "One of 5 THEMIS craft launched to study Earth's auroras; in 2011 it and THEMIS-C were moved to long, stretched orbits around Luna, as ARTEMIS, to measure the solar wind hitting Luna.",
+            "One of 5 THEMIS craft launched to study Earth's auroras; in 2011 it and THEMIS-C were moved to long, stretched orbits around Luna, to measure the solar wind hitting Luna.",
     },
     {
         name: 'THEMIS-C',
@@ -350,7 +348,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: NASA,
         launchYear: 2007,
         description:
-            "One of 5 THEMIS craft launched to study Earth's auroras; in 2011 it and THEMIS-B were moved to long, stretched orbits around Luna, as ARTEMIS, to measure the solar wind hitting Luna.",
+            "One of 5 THEMIS craft launched to study Earth's auroras; in 2011 it and THEMIS-B were moved to long, stretched orbits around Luna, to measure the solar wind hitting Luna.",
     },
     {
         name: 'Queqiao-2',
@@ -358,7 +356,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: CNSA,
         launchYear: 2024,
         description:
-            "Relays radio between Earth and Chang'e landers on Luna's far side and south pole, from a stretched orbit reaching about 17,000 km above Luna. Orbit approximate: China doesn't publish it.",
+            "Relays radio between Earth and Chang'e landers on Luna's far side and south pole. Name means 'Magpie Bridge'.",
     },
     {
         name: "Chang'e-5 orbiter",
@@ -373,14 +371,14 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: 'CAS',
         launchYear: 2024,
         description:
-            "Chinese test satellite in a distant retrograde orbit (DRO): a stable loop about 70,000 km from Luna. Drawn here as a circle, only roughly - China doesn't publish its orbit.",
+            "Chinese test satellite in a distant retrograde orbit (DRO), shown here as more circular than it really is. The orbital details are not public.",
     },
     {
         name: 'DRO-B',
         agency: 'CAS',
         launchYear: 2024,
         description:
-            "DRO-A's partner, testing navigation and communications with it around Luna. Drawn in the same distant retrograde orbit (DRO), only roughly - China doesn't publish its orbit, and it may since have moved.",
+            "DRO-A's partner, testing navigation and communications with it around Luna. In a distant retrograde orbit (DRO), shown here as more circular than it really is. The orbital details are not public.",
     },
     {
         name: 'MRO',
@@ -530,7 +528,7 @@ export const RESIDENTS: Record<string, Resident[]> = {
         {
             name: 'Queqiao',
             aliases: ['Queqiao-1', 'Queqiao 1', 'Magpie Bridge'],
-            note: "Relay for Chang'e-4 on Luna's far side, here since 2018",
+            note: "Relay for Chang'e-4 on Luna's far side, here since 2018. Circles L2 widely enough to see the Earth behind the Moon. Name means 'Magpie Bridge'.",
             since: '2018-06-14',
         },
     ],
