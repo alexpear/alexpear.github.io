@@ -519,8 +519,8 @@ export const RESIDENTS: Record<string, Resident[]> = {
     ],
     'earth-luna-l2': [
         {
-            name: 'Queqiao',
-            aliases: ['Queqiao-1', 'Queqiao 1', 'Magpie Bridge'],
+            name: 'Queqiao-1',
+            aliases: ['Queqiao', 'Queqiao 1', 'Magpie Bridge'],
             note: "Relay for Chang'e-4 on Luna's far side, here since 2018. Circles L2 widely enough to see the Earth behind the Moon. Name means 'Magpie Bridge'.",
             since: '2018-06-14',
         },
