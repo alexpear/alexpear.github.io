@@ -218,7 +218,9 @@ export function ThingMenu({
                     <dl style={fieldListStyle}>
                         {residents.map((resident) => (
                             <React.Fragment key={resident.name}>
-                                <dt style={fieldLabelStyle}>{resident.name}</dt>
+                                <dt style={spacecraftNameStyle}>
+                                    {resident.name}
+                                </dt>
                                 <dd style={fieldValueStyle}>{resident.note}</dd>
                             </React.Fragment>
                         ))}
@@ -343,6 +345,10 @@ const fieldLabelStyle: React.CSSProperties = {
 
 const fieldValueStyle: React.CSSProperties = {
     margin: 0,
+};
+
+const spacecraftNameStyle: React.CSSProperties = {
+    color: '#33ff33',
 };
 
 const descriptionStyle: React.CSSProperties = {
