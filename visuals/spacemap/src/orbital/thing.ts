@@ -2039,4 +2039,24 @@ export class Thing {
                 );
         }
     }
+
+    public lagrangeNickname(): string {
+        const NICKNAMES = this.id.startsWith('sol-')
+            ? [
+                  'Noon Anchor',
+                  'Midnight Anchor',
+                  'Counterplanet Anchor',
+                  'Morning Anchor',
+                  'Evening Anchor',
+              ]
+            : [
+                  'Near Side Anchor',
+                  'Far Side Anchor',
+                  'Countermoon Anchor',
+                  'Moonset Anchor', // NOTE This name would be wrong for a moon that orbits in the opposite direction from the planet's rotation, such as Venus - but Venus has no moon.
+                  'Moonrise Anchor',
+              ];
+
+        return NICKNAMES[this.lagrangeNumber];
+    }
 }
