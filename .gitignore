@@ -2,6 +2,7 @@
 .eslintcache
 .vscode/
 node_modules
+bundle.js
 ppp_2020_1km_Aggregated.tif
 worldpop-4x4res.txt
 squareList.txt
@@ -29,5 +30,6 @@ textGen/bundle.js
 titleGen/bundle.js
 treebrowser/bundle.js
 villainverse/bundle.js
+visuals/spacemap/dist/bundle.js
 warofwhispers/bundle.js
 util/fandomscraper/*/
