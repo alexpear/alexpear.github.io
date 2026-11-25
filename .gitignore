@@ -2,7 +2,6 @@
 .eslintcache
 .vscode/
 node_modules
-bundle.js
 ppp_2020_1km_Aggregated.tif
 worldpop-4x4res.txt
 squareList.txt
