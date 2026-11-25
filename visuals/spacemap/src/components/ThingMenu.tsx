@@ -177,17 +177,6 @@ export function ThingMenu({
 
     const residents = thing.residentsAt(date);
 
-    // How far to trust a spacecraft's drawn position. Orbiting a planet or
-    // moon, it's on a snapshot of its real orbit, but at an illustrative
-    // point along it; elsewhere, it's on a simplified version of its real
-    // trajectory.
-    const positionNote =
-        thing.kind !== 'spacecraft'
-            ? undefined
-            : THINGS_BY_ID.get(thing.parentID)?.kind === 'star'
-              ? 'Trajectory simplified from JPL Horizons data.'
-              : 'Orbit from JPL Horizons data.';
-
     return (
         <MenuPane layout={layout}>
             <div style={headerStyle}>
@@ -236,7 +225,6 @@ export function ThingMenu({
                     </dl>
                 </>
             )}
-            {positionNote && <p style={placeholderStyle}>{positionNote}</p>}
         </MenuPane>
     );
 }
