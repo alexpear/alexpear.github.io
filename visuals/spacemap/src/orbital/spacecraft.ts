@@ -24,8 +24,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         aliases: ['PSP'],
         agency: NASA,
         launchYear: 2018,
-        description:
-            "Passes very close to Sol's surface each orbit.",
+        description: "Passes very close to Sol's surface each orbit.",
     },
     {
         name: 'Solar Orbiter',
@@ -123,7 +122,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: CNSA,
         launchYear: 2025,
         description:
-            "At the small near-Earth asteroid Kamoʻoalewa (possibly a chip of Luna) to grab a sample and bring it to Earth, then visit comet 311P.",
+            'At the small near-Earth asteroid Kamoʻoalewa (possibly a chip of Luna) to grab a sample and bring it to Earth, then visit comet 311P.',
     },
     {
         name: 'Voyager 1',
@@ -163,8 +162,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         aliases: ['Chinese Space Station', 'CSS', 'Tiangong Space Station'],
         agency: 'CMSA',
         launchYear: 2021,
-        description:
-            "China's 3rd space station, with a crew of 3 onboard.",
+        description: "China's 3rd space station, with a crew of 3 onboard.",
     },
     {
         name: 'Hubble',
@@ -172,7 +170,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: `${NASA} & ${ESA}`,
         launchYear: 1990,
         description:
-            'Space telescope about 530 km up, observing in visible, ultraviolet and near-infrared light since 1990.',
+            'Space telescope observing in visible, ultraviolet and near-infrared light since 1990.',
     },
     {
         name: 'Chandra',
@@ -187,8 +185,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         aliases: ['XMM', 'X-ray Multi-Mirror Mission'],
         agency: ESA,
         launchYear: 1999,
-        description:
-            "ESA's X-ray telescope, orbiting every 2 days.",
+        description: "ESA's X-ray telescope, orbiting every 2 days.",
     },
     {
         name: 'TESS',
@@ -219,8 +216,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         aliases: ['Landsat'],
         agency: `${NASA} & USGS`,
         launchYear: 2021,
-        description:
-            "Photographs all of Earth's land every 16 days.",
+        description: "Photographs all of Earth's land every 16 days.",
     },
     {
         name: 'Aqua',
@@ -267,16 +263,14 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         aliases: ['GOES-R', 'GOES'],
         agency: NOAA_NASA,
         launchYear: 2016,
-        description:
-            'Spare satellite for the GOES series.',
+        description: 'Spare satellite for the GOES series.',
     },
     {
         name: 'GOES-17',
         aliases: ['GOES-S', 'GOES'],
         agency: NOAA_NASA,
         launchYear: 2018,
-        description:
-            'Spare satellite for the GOES series.',
+        description: 'Spare satellite for the GOES series.',
     },
     {
         name: 'Himawari-9',
@@ -315,8 +309,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         aliases: ['Lunar Reconnaissance Orbiter'],
         agency: NASA,
         launchYear: 2009,
-        description:
-            "Has mapped Luna from a low polar orbit since 2009.",
+        description: 'Has mapped Luna from a low polar orbit since 2009.',
     },
     {
         name: 'Danuri',
@@ -324,7 +317,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: 'KARI',
         launchYear: 2022,
         description:
-            "South Korea's first lunar orbiter, mapping Luna's surface and resources since 2022. Danuri is short for Dal + Nurida, 'moon joy'.",
+            "South Korea's first lunar orbiter, mapping Luna's surface and resources since 2022. Danuri is short for dal + nurida, 'moon + enjoy'.",
     },
     {
         name: 'Chandrayaan-2',
@@ -371,7 +364,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: 'CAS',
         launchYear: 2024,
         description:
-            "Chinese test satellite in a distant retrograde orbit (DRO), shown here as more circular than it really is. The orbital details are not public.",
+            'Chinese test satellite in a distant retrograde orbit (DRO), shown here as more circular than it really is. The orbital details are not public.',
     },
     {
         name: 'DRO-B',
@@ -446,24 +439,24 @@ export const RESIDENTS: Record<string, Resident[]> = {
         {
             name: 'SOHO',
             aliases: ['Solar and Heliospheric Observatory'],
-            note: 'Solar observatory, here since 1996',
+            note: 'Studies the sun, here since 1996',
             since: '1996-02-14',
         },
         {
             name: 'ACE',
             aliases: ['Advanced Composition Explorer'],
-            note: 'Solar wind monitor, here since 1997',
+            note: 'Studies solar wind, here since 1997',
             since: '1997-12-12',
         },
         {
             name: 'Wind',
-            note: 'Solar wind monitor, here since 2004',
+            note: 'Studies solar wind, here since 2004',
             since: '2004-05-01',
         },
         {
             name: 'DSCOVR',
             aliases: ['Deep Space Climate Observatory'],
-            note: 'Space weather monitor and Earth camera, here since 2015',
+            note: "Studies space weather and Earth's climate, here since 2015",
             since: '2015-06-08',
         },
         {
@@ -494,7 +487,7 @@ export const RESIDENTS: Record<string, Resident[]> = {
         {
             name: 'JWST',
             aliases: ['James Webb Space Telescope', 'Webb'],
-            note: 'Infrared space telescope, here since 2022',
+            note: 'Infrared space telescope, studies planets of distant stars, here since 2022',
             since: '2022-01-24',
         },
         {
@@ -520,7 +513,7 @@ export const RESIDENTS: Record<string, Resident[]> = {
         {
             name: "Chang'e-6 orbiter",
             aliases: ["Chang'e 6", 'Change-6', 'CE-6'],
-            note: 'Brought far-side Luna samples to Earth in 2024; here since',
+            note: 'Brought far-side Lunar soil to Earth in 2024; here since',
             since: '2024-09-09',
         },
     ],
@@ -536,13 +529,13 @@ export const RESIDENTS: Record<string, Resident[]> = {
         {
             name: "Chang'e-3 lander",
             aliases: ["Chang'e 3", 'Change-3', 'CE-3'],
-            note: 'Lander in Mare Imbrium, landed 2013',
+            note: 'Robotic lander, arrived in 2013',
             since: '2013-12-14',
         },
         {
             name: "Chang'e-4 lander",
             aliases: ["Chang'e 4", 'Change-4', 'CE-4'],
-            note: "Lander in Von Kármán crater, on Luna's far side, landed 2019",
+            note: "Lander on Luna's far side, arrived 2019",
             since: '2019-01-03',
         },
         {
