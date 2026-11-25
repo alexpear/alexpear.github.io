@@ -1273,8 +1273,8 @@ export class Thing {
                 earth.lagrange(luna, lagrangeNumber, Body.Earth, Body.Moon),
             );
         }
-        for (const options of SPACECRAFT) {
-            const id = slugify(options.name);
+        for (const craft of SPACECRAFT) {
+            const id = slugify(craft.name);
             const phases = SPACECRAFT_PHASES[id];
             if (!phases) {
                 throw new Error(
@@ -1283,7 +1283,7 @@ export class Thing {
             }
             things.push(
                 new Thing({
-                    ...options,
+                    ...craft,
                     kind: 'spacecraft',
                     phases,
                     colorHex: '#33ff33',
