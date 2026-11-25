@@ -122,7 +122,7 @@ export const SPACECRAFT: SpacecraftOptions[] = [
         agency: CNSA,
         launchYear: 2025,
         description:
-            'At the small near-Earth asteroid Kamoʻoalewa (possibly a chip of Luna) to grab a sample and bring it to Earth, then visit comet 311P.',
+            "At the small near-Earth asteroid Kamo'oalewa (possibly a chip of Luna) to grab a sample and bring it to Earth, then visit comet 311P.",
     },
     {
         name: 'Voyager 1',
